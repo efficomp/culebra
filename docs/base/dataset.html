@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>base.dataset &#8212; culebra</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="base.individual" href="individual.html" />
+    <link rel="prev" title="Base subpackage" href="../base.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-base.dataset">
+<span id="base-dataset"></span><h1><a class="reference internal" href="#module-base.dataset" title="base.dataset"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.dataset</span></code></a><a class="headerlink" href="#module-base.dataset" title="Permalink to this headline">¶</a></h1>
+<p>Provides the <a class="reference internal" href="#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a> class.</p>
+<dl class="py data">
+<dt id="base.dataset.DEFAULT_SEP">
+<code class="sig-prename descclassname">base.dataset.</code><code class="sig-name descname">DEFAULT_SEP</code><em class="property"> = '\\s+'</em><a class="headerlink" href="#base.dataset.DEFAULT_SEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default column separator used within the files.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.dataset.Dataset">
+<em class="property">class </em><code class="sig-prename descclassname">base.dataset.</code><code class="sig-name descname">Dataset</code><a class="headerlink" href="#base.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Dataset handler.</p>
+<dl class="py method">
+<dt id="base.dataset.Dataset.X">
+<em class="property">property </em><code class="sig-name descname">X</code><a class="headerlink" href="#base.dataset.Dataset.X" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input data of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an empty dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.__reduce__">
+<code class="sig-name descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.__repr__">
+<code class="sig-name descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dataset representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.__setstate__">
+<code class="sig-name descname">__setstate__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.dataset.Dataset.__weakref__">
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#base.dataset.Dataset.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.append_random_features">
+<code class="sig-name descname">append_random_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_feats</span></em>, <em class="sig-param"><span class="n">random_seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.append_random_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new dataset with some random features appended.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_feats</strong> (An <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> greater than 0) – Number of random features to be appended</p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If the number of random features is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the number of random features not greater than
+0</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The new dataset</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">files</span></em>, <em class="sig-param"><span class="n">output_index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">'\\s+'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a dataset.</p>
+<p>Datasets can be organized in only one file or in two files. If one
+file per dataset is used, then <em>output_index</em> must be used to indicate
+which column stores the output values. If <em>output_index</em> is set to
+<cite>None</cite> (its default value), it will be assumed that each dataset is
+composed by two consecutive files, the first one containing the input
+columns and the second one storing the output column. Only the first
+column of the second file will be loaded (just one output value per
+sample).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, path object or
+file-like objects) – Files containing the dataset. If <em>output_index</em> is
+<cite>None</cite>, two files are necessary, the first one containing the input
+columns and the second one containing the output column. Otherwise,
+only one file will be used to access to the whole dataset (input
+and output columns)</p></li>
+<li><p><strong>output_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – If the dataset is provided with only one file,
+this parameter indicates which column in the file does contain the
+output values. Otherwise this parameter must be set to <cite>None</cite> to
+express that inputs and ouputs are stored in two different files
+Its default value is <cite>None</cite></p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Column separator used within the files. Defaults to
+<a class="reference internal" href="#base.dataset.DEFAULT_SEP" title="base.dataset.DEFAULT_SEP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SEP</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If at least one dataset is not provided</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>output_index</em> is not <cite>None</cite> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>sep</em> is not a string</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <em>output_index</em> is out of range</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If any input value is not numeric or there is any
+missing data</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – When loading a dataset composed of two files, if
+the file containing the input columns and the file containing the
+output column do not have the same number of rows.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The dataset</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.load_train_test">
+<em class="property">classmethod </em><code class="sig-name descname">load_train_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">files</span></em>, <em class="sig-param"><span class="n">test_prop</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_index</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">'\\s+'</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">random_feats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">random_seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.load_train_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the training and test data.</p>
+<p>Datasets can be organized in only one file or in two files. If one
+file per dataset is used, then <em>output_index</em> must be used to indicate
+which column stores the output values. If <em>output_index</em> is set to
+<cite>None</cite> (its default value), it will be assumed that each dataset is
+composed by two consecutive files, the first one containing the input
+columns and the second one storing the output column. Only the first
+column of the second file will be loaded (just one output value per
+sample).</p>
+<p>If <em>test_prop</em> is set a valid proportion, the training and test
+datasets will be generated splitting the first dataset provided.
+Otherwise a test dataset can be provided appending more files, but if
+it isn’t, the training dataset is assumed to be also the test dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, path object or
+file-like objects) – Files containing the data. If <em>output_index</em> is <cite>None</cite>,
+two consecutive files are required for each dataset, otherwise,
+each file contains a whole dataset (input and output columns).</p></li>
+<li><p><strong>test_prop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Proportion of the first dataset used as test data.
+The remaining samples will be used as training data.</p></li>
+<li><p><strong>output_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – If datasets are provided with only one file,
+this parameter indicates which column in the file does contain the
+output values. Otherwise this parameter must be set to <cite>None</cite> to
+express that inputs and ouputs are stored in two different files.
+Its default value is <cite>None</cite></p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Column separator used within the files. Defaults to
+<a class="reference internal" href="#base.dataset.DEFAULT_SEP" title="base.dataset.DEFAULT_SEP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SEP</span></code></a></p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – It <cite>True</cite>, datasets will be normalized into [0, 1].
+Defaults to <cite>False</cite></p></li>
+<li><p><strong>random_feats</strong> (An <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> greater than 0, optional) – Number of random features to be appended, defaults
+to <cite>None</cite></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If at least one dataset is not provided</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>output_index</em> is not None or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>test_prop</em> is not None or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>sep</em> is not a string</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If <em>test_prop</em> is not in (0, 1)</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <em>output_index</em> is out of range</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If any input value is not numeric or there is any
+missing data</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – When loading a dataset composed of two files, if
+the file containing the input columns and the file containing the
+output column do not have the same number of rows.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – When training and test datasets do not have the
+same number of columns.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>
+containing the training and test datasets</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.normalize">
+<code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the dataset between 0 and 1.</p>
+<p>If a test dataset is provided, both are taken into account to calculate
+the minimum and maximum value and then both are normalized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>test</strong> (<a class="reference internal" href="#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>, optional) – Test dataset or <cite>None</cite>, defaults to <cite>None</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.num_feats">
+<em class="property">property </em><code class="sig-name descname">num_feats</code><a class="headerlink" href="#base.dataset.Dataset.num_feats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of features in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#base.dataset.Dataset.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of samples in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.split">
+<code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test_prop</span></em>, <em class="sig-param"><span class="n">random_seed</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.dataset.Dataset.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_prop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Proportion of the dataset used as test data.
+The remaining samples will be returned as training data</p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>test_prop</em> is not <cite>None</cite> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If <em>test_prop</em> is not in (0, 1)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The training and test datasets</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.dataset.Dataset.y">
+<em class="property">property </em><code class="sig-name descname">y</code><a class="headerlink" href="#base.dataset.Dataset.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output data of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">culebra</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../base.html">Base subpackage</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="individual.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.individual</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="species.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.species</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fitness.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.fitness</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="wrapper.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.wrapper</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../individual.html">Individual subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitness.html">Fitness subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wrapper.html">Wrapper subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools subpackage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../base.html">Base subpackage</a><ul>
+      <li>Previous: <a href="../base.html" title="previous chapter">Base subpackage</a></li>
+      <li>Next: <a href="individual.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.individual</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/base/dataset.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+    
+
+    
+
+    
+  </body>
+</html>

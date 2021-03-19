@@ -1,0 +1,7 @@
+numpy
+pandas
+sklearn
+deap
+toml
+openpyxl
+sphinx

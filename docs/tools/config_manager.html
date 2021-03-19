@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tools.config_manager &#8212; culebra</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tools.experiment" href="experiment.html" />
+    <link rel="prev" title="tools.feature_metrics" href="feature_metrics.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-tools.config_manager">
+<span id="tools-config-manager"></span><h1><a class="reference internal" href="#module-tools.config_manager" title="tools.config_manager"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.config_manager</span></code></a><a class="headerlink" href="#module-tools.config_manager" title="Permalink to this headline">¶</a></h1>
+<p>Provides the <a class="reference internal" href="#tools.config_manager.ConfigManager" title="tools.config_manager.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigManager</span></code></a> class.</p>
+<dl class="py class">
+<dt id="tools.config_manager.ConfigKeys">
+<em class="property">class </em><code class="sig-prename descclassname">tools.config_manager.</code><code class="sig-name descname">ConfigKeys</code><a class="headerlink" href="#tools.config_manager.ConfigKeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Keys in the config file.</p>
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.__weakref__">
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#tools.config_manager.ConfigKeys.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.classifier_cls">
+<code class="sig-name descname">classifier_cls</code><em class="property"> = 'classifier_cls'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.classifier_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the classifier class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.file">
+<code class="sig-name descname">file</code><em class="property"> = 'file'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inputs file name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.fitness_cls">
+<code class="sig-name descname">fitness_cls</code><em class="property"> = 'fitness_cls'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.fitness_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the fitness class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.individual_cls">
+<code class="sig-name descname">individual_cls</code><em class="property"> = 'individual_cls'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.individual_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the individual class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.output_file">
+<code class="sig-name descname">output_file</code><em class="property"> = 'output_file'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.output_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.test_prop">
+<code class="sig-name descname">test_prop</code><em class="property"> = 'test_prop'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.test_prop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proportion of data used to test.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigKeys.wrapper_cls">
+<code class="sig-name descname">wrapper_cls</code><em class="property"> = 'wrapper_cls'</em><a class="headerlink" href="#tools.config_manager.ConfigKeys.wrapper_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the wrapper class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="tools.config_manager.ConfigManager">
+<em class="property">class </em><code class="sig-prename descclassname">tools.config_manager.</code><code class="sig-name descname">ConfigManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Manage the configuration file.</p>
+<dl class="py method">
+<dt id="tools.config_manager.ConfigManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the manager from a TOML configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>A path to a file</em>) – Configuration file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigManager.__weakref__">
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#tools.config_manager.ConfigManager.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigManager._object_suffixes">
+<code class="sig-name descname">_object_suffixes</code><em class="property"> = ('_func', '_cls')</em><a class="headerlink" href="#tools.config_manager.ConfigManager._object_suffixes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key suffixes of values containing object names that should be replaced
+by the the object they name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigManager._toml_sep">
+<code class="sig-name descname">_toml_sep</code><em class="property"> = '.'</em><a class="headerlink" href="#tools.config_manager.ConfigManager._toml_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section separator in TOML files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tools.config_manager.ConfigManager.build_batch">
+<code class="sig-name descname">build_batch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager.build_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a batch of experiments to test the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any mandatory value is missing</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The batch</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A <a class="reference internal" href="batch.html#tools.batch.Batch" title="tools.batch.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tools.config_manager.ConfigManager.build_experiment">
+<code class="sig-name descname">build_experiment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager.build_experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an experiment to run the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any mandatory value is missing</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The experiment</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>An <a class="reference internal" href="experiment.html#tools.experiment.Experiment" title="tools.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tools.config_manager.ConfigManager.build_fitness">
+<code class="sig-name descname">build_fitness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager.build_fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the training and test fitness objects.</p>
+<p>If the test fitness is omitted in the config file, the training
+fitness will also be returned as test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any mandatory value is missing</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The training and test fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> composed by two instances of any subclass
+of <a class="reference internal" href="../base/fitness.html#base.fitness.Fitness" title="base.fitness.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tools.config_manager.ConfigManager.build_wrapper">
+<code class="sig-name descname">build_wrapper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager.build_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a wrapper method built from the configuration parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the structure of the config file is not valid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The wrapper object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A subclass of <a class="reference internal" href="../base/wrapper.html#base.wrapper.Wrapper" title="base.wrapper.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tools.config_manager.ConfigManager.load_dataset">
+<code class="sig-name descname">load_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tools.config_manager.ConfigManager.load_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the config parameters to load the training and test data.</p>
+<p>Once the configuration parameters are processed, this functions calls
+to <a class="reference internal" href="../base/dataset.html#base.dataset.Dataset.load_train_test" title="base.dataset.Dataset.load_train_test"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load_train_test()</span></code></a> to load the
+data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the structure of the config file is not valid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="../base/dataset.html#base.dataset.Dataset" title="base.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>
+containing the training and test datasets</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="tools.config_manager.ConfigSections">
+<em class="property">class </em><code class="sig-prename descclassname">tools.config_manager.</code><code class="sig-name descname">ConfigSections</code><a class="headerlink" href="#tools.config_manager.ConfigSections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Sections in the config file.</p>
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.__weakref__">
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#tools.config_manager.ConfigSections.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.batch">
+<code class="sig-name descname">batch</code><em class="property"> = 'batch'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the batch configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.classifier">
+<code class="sig-name descname">classifier</code><em class="property"> = 'classifier'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the details of the classifier.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.dataset">
+<code class="sig-name descname">dataset</code><em class="property"> = 'dataset'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the dataset configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.fitness">
+<code class="sig-name descname">fitness</code><em class="property"> = 'fitness'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the fitness configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.parameters">
+<code class="sig-name descname">parameters</code><em class="property"> = 'parameters'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the parameters of any object or class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.species">
+<code class="sig-name descname">species</code><em class="property"> = 'species'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the species configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.test">
+<code class="sig-name descname">test</code><em class="property"> = 'test'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the test configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.training">
+<code class="sig-name descname">training</code><em class="property"> = 'training'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.training" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the training configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tools.config_manager.ConfigSections.wrapper">
+<code class="sig-name descname">wrapper</code><em class="property"> = 'wrapper'</em><a class="headerlink" href="#tools.config_manager.ConfigSections.wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the wrapper configuration.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">culebra</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../base.html">Base subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../individual.html">Individual subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitness.html">Fitness subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wrapper.html">Wrapper subpackage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools subpackage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="individual_tester.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.individual_tester</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.feature_metrics</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.config_manager</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="experiment.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.experiment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.batch</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_file.html">Configuration file</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../tools.html">Tools subpackage</a><ul>
+      <li>Previous: <a href="feature_metrics.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.feature_metrics</span></code></a></li>
+      <li>Next: <a href="experiment.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.experiment</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tools/config_manager.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+    
+
+    
+
+    
+  </body>
+</html>

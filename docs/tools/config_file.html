@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuration file &#8212; culebra</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="tools.batch" href="batch.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration-file">
+<h1>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h1>
+<p>Experiments can be automated by means of a  <a class="reference external" href="https://github.com/toml-lang/toml">TOML</a> configuration file, detailed below,
+which is processed by the <a class="reference internal" href="config_manager.html#tools.config_manager.ConfigManager" title="tools.config_manager.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigManager</span></code></a>
+class to build a complete <a class="reference internal" href="experiment.html#tools.experiment.Experiment" title="tools.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and even
+a <a class="reference internal" href="batch.html#tools.batch.Batch" title="tools.batch.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> of experiments.</p>
+<div class="highlight-cfg notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Parameters regarding the batch</span>
+<span class="k">[batch]</span>
+  <span class="c1"># Number of experiments in the batch. Defaults to 1 if omitted</span>
+  <span class="na">n_experiments</span> <span class="o">=</span> <span class="s">&lt;int value&gt;</span>
+
+  <span class="c1"># Path to create the batch folder. Defaults to the current</span>
+  <span class="c1"># folder if omitted</span>
+  <span class="na">path</span> <span class="o">=</span> <span class="s">&lt;path&gt;</span>
+
+<span class="c1"># Parameters regarding the datset</span>
+<span class="k">[dataset]</span>
+  <span class="c1"># Parameters regarding the whole dataset</span>
+  <span class="k">[dataset.parameters]</span>
+    <span class="c1"># Index of the output column. Only used if input and ouput</span>
+    <span class="c1"># columns are in the same file.</span>
+    <span class="c1"># If input and output columns are in different files this</span>
+    <span class="c1"># parameter should be omitted</span>
+    <span class="na">output_index</span> <span class="o">=</span> <span class="s">&lt;index&gt;</span>
+
+    <span class="c1"># Seperator for columns in the files. Defaults to &quot;\\s+&quot; if</span>
+    <span class="c1"># omitted</span>
+    <span class="na">sep</span> <span class="o">=</span> <span class="s">&lt;separator&gt;</span>
+
+    <span class="c1"># If this parameter is set, the training dataset will be</span>
+    <span class="c1"># considered as the only dataset, which will be split into a</span>
+    <span class="c1"># training and test dataset according to this proportion.</span>
+    <span class="c1"># The [dataset.test] section will be ignored.</span>
+    <span class="na">test_prop</span> <span class="o">=</span> <span class="s">&lt;float value in (0, 1)&gt;</span>
+
+    <span class="c1"># If true the input data is normalized in [0, 1]. Defaults to</span>
+    <span class="c1"># false if omitted</span>
+    <span class="na">normalize</span> <span class="o">=</span> <span class="s">&lt;true or false&gt;</span>
+
+    <span class="c1"># If this parameter is set, some random features add appended</span>
+    <span class="c1"># to the dataset</span>
+    <span class="na">random_feats</span> <span class="o">=</span> <span class="s">&lt;number of feats to be appended&gt;</span>
+
+    <span class="c1"># Seed for the random number generator, defaults to None if</span>
+    <span class="c1"># omitted</span>
+    <span class="na">random_seed</span> <span class="o">=</span> <span class="s">&lt;int value&gt;</span>
+
+  <span class="c1"># Parameters regarding the training data</span>
+  <span class="k">[dataset.training]</span>
+
+    <span class="c1"># Inputs file if input and output columns are seperated in two</span>
+    <span class="c1"># files. Otherwise this file contains the whole dataset</span>
+    <span class="na">file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+    <span class="c1"># Output values. Only used if output_index is omitted</span>
+    <span class="na">output_file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+  <span class="c1"># Parameters regarding the test data</span>
+  <span class="k">[dataset.test]</span>
+    <span class="c1"># Inputs file if input and output columns are seperated in two</span>
+    <span class="c1"># files. Otherwise this file contains the whole dataset</span>
+    <span class="c1"># Only used if test_prop is omitted</span>
+    <span class="na">file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+    <span class="c1"># Output values. Only used if both test_prop and output_index</span>
+    <span class="c1"># are omitted</span>
+    <span class="na">output_file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+<span class="c1"># Parameters regarding the wrapper method</span>
+<span class="k">[wrapper]</span>
+  <span class="c1"># Type of wrapper used</span>
+  <span class="na">wrapper_cls</span> <span class="o">=</span> <span class="s">&lt;wrapper class&gt;</span>
+
+  <span class="c1"># Type of individual used</span>
+  <span class="na">individual_cls</span> <span class="o">=</span> <span class="s">&lt;individual class&gt;</span>
+
+  <span class="c1"># Parameters for the individual species</span>
+  <span class="k">[wrapper.species]</span>
+    <span class="c1"># Number of features</span>
+    <span class="na">num_feats</span> <span class="o">=</span> <span class="s">&lt;Number of features in the dataset&gt;</span>
+
+    <span class="c1"># Minimum feature index. Defauts to 0 if omitted</span>
+    <span class="na">min_feat</span> <span class="o">=</span> <span class="s">&lt;Minimum feature index&gt;</span>
+
+    <span class="c1"># Maximum feature index. Defauts to -1 if omitted (the maximum</span>
+    <span class="c1"># possible feature index)</span>
+    <span class="na">max_feat</span> <span class="o">=</span> <span class="s">&lt;Maximum feature index&gt;</span>
+
+    <span class="c1"># Minimum individual size. Defauts to 0 if omitted</span>
+    <span class="na">min_size</span> <span class="o">=</span> <span class="s">&lt;Minimum individual size&gt;</span>
+
+    <span class="c1"># Maximum individual size. Defauts to -1 if omitted (the</span>
+    <span class="c1"># maximum possible size)</span>
+    <span class="na">max_size</span> <span class="o">=</span> <span class="s">&lt;Maximum individual size&gt;</span>
+
+  <span class="c1"># Parameters for the wrapper method. These parameters will</span>
+  <span class="c1"># depend on the wrapper method. Here are some examples.</span>
+  <span class="k">[wrapper.parameters]</span>
+
+    <span class="c1"># Seed for the random number generator, defaults to None if</span>
+    <span class="c1"># omitted</span>
+    <span class="na">random_seed</span> <span class="o">=</span> <span class="s">&lt;int value&gt;</span>
+
+    <span class="c1"># Whether or not to log the statistics, defaults to true</span>
+    <span class="na">verbose</span> <span class="o">=</span> <span class="s">&lt;true or false&gt;</span>
+
+    <span class="c1"># Checkpoint frequency</span>
+    <span class="na">checkpoint_freq</span> <span class="o">=</span> <span class="s">&lt;The checkpoint frequency&gt;</span>
+
+    <span class="c1"># Checkpoint filepath</span>
+    <span class="na">checkpoint_file</span> <span class="o">=</span> <span class="s">&lt;The checkpoint file&gt;</span>
+
+    <span class="c1"># Population size</span>
+    <span class="na">pop_size</span> <span class="o">=</span> <span class="s">&lt;The population size&gt;</span>
+
+    <span class="c1"># Number of generations</span>
+    <span class="na">n_gens</span> <span class="o">=</span> <span class="s">&lt;The number of generations&gt;</span>
+
+    <span class="c1"># Crossover function. The Individual&#39;s default is used if</span>
+    <span class="c1"># omitted</span>
+    <span class="na">xover_func</span> <span class="o">=</span> <span class="s">&lt;Crossover function&gt;</span>
+
+    <span class="c1"># Crossover probability</span>
+    <span class="na">xover_pb</span> <span class="o">=</span> <span class="s">&lt;Crossover probability&gt;</span>
+
+    <span class="c1"># Mutation function. The Individual&#39;s default is used if</span>
+    <span class="c1"># omitted</span>
+    <span class="na">mut_func</span> <span class="o">=</span> <span class="s">&lt;mutation function&gt;</span>
+
+    <span class="c1"># Mutation probability</span>
+    <span class="na">mut_pb</span> <span class="o">=</span> <span class="s">&lt;mutation probability&gt;</span>
+
+    <span class="c1"># Independent gene mutation probability</span>
+    <span class="na">mut_ind_pb</span> <span class="o">=</span> <span class="s">&lt;Independent gene mutation probability&gt;</span>
+
+    <span class="c1"># Selection function</span>
+    <span class="na">sel_func</span> <span class="o">=</span> <span class="s">&lt;selection function&gt;</span>
+
+    <span class="c1"># Selection function parameters</span>
+    <span class="k">[wrapper.parameters.sel_func_params]</span>
+      <span class="c1"># Parameters for the function</span>
+
+<span class="c1"># Parameters regarding the fitness evaluation</span>
+<span class="k">[fitness]</span>
+  <span class="c1"># Parameters for the training fitness</span>
+  <span class="k">[fitness.training]</span>
+    <span class="na">fitness_cls</span> <span class="o">=</span> <span class="s">&lt;Fitness class&gt;</span>
+
+    <span class="c1"># Parameters for the fitness evaluation</span>
+    <span class="k">[fitness.training.parameters]</span>
+      <span class="c1"># Configuration parameters for the fitness object (if</span>
+      <span class="c1"># needed)</span>
+      <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+      <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+
+    <span class="c1"># Classifier</span>
+    <span class="k">[fitness.training.classifier]</span>
+      <span class="c1"># Classifier class</span>
+      <span class="na">classifier_cls</span> <span class="o">=</span> <span class="s">&lt;Classifier class&gt;</span>
+
+      <span class="c1"># Parameters for the classifier</span>
+      <span class="k">[fitness.training.classifier.parameters]</span>
+        <span class="c1"># Configuration parameters for the classifier</span>
+        <span class="c1"># (if needed)</span>
+        <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+        <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+
+  <span class="c1"># Parameters for the test Fitness</span>
+  <span class="c1"># If omitted, the training fitness will be also used to test</span>
+  <span class="k">[fitness.test]</span>
+    <span class="na">fitness_cls</span> <span class="o">=</span> <span class="s">&lt;Fitness class&gt;</span>
+
+    <span class="c1"># Parameters for the fitness evaluation</span>
+    <span class="k">[fitness.test.parameters]</span>
+      <span class="c1"># Configuration parameters for the fitness object (if</span>
+      <span class="c1"># needed)</span>
+      <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+      <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+
+    <span class="c1"># Classifier</span>
+    <span class="k">[fitness.test.classifier]</span>
+      <span class="c1"># Classifier class</span>
+      <span class="na">classifier_cls</span> <span class="o">=</span> <span class="s">&lt;Classifier class&gt;</span>
+
+      <span class="c1"># Parameters for the classifier</span>
+      <span class="k">[fitness.test.classifier.parameters]</span>
+        <span class="c1"># Configuration parameters for the classifier (if needed)</span>
+        <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+        <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">culebra</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../base.html">Base subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../individual.html">Individual subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fitness.html">Fitness subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wrapper.html">Wrapper subpackage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools subpackage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="individual_tester.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.individual_tester</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.feature_metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_manager.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.config_manager</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="experiment.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.experiment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.batch</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configuration file</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../tools.html">Tools subpackage</a><ul>
+      <li>Previous: <a href="batch.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools.batch</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tools/config_file.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+    
+
+    
+
+    
+  </body>
+</html>
