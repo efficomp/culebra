@@ -32,12 +32,13 @@ This work was supported by project *New Computing Paradigms and Heterogeneous Pa
 
 <div style="text-align: right">
   <a href="https://www.ciencia.gob.es/">
-    <img src="https://raw.githubusercontent.com/jesusatc/culebra/master/doc/source/_static/micinu.png" height="75">
+    <img src="https://raw.githubusercontent.com/efficomp/culebra/master/doc/source/_static/micinu.png" height="75">
   </a>
   <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">
-    <img src="https://raw.githubusercontent.com/jesusatc/culebra/master/doc/source/_static/erdf.png" height="75">
+    <img src="https://raw.githubusercontent.com/efficomp/culebra/master/doc/source/_static/erdf.png" height="75">
   </a>
 </div>
+
 
 ## License
 
