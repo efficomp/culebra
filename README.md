@@ -20,7 +20,7 @@ Culebra requires Python 3. It also depends on the following Python packages:
 
 ## Documentation
 
-Culebra is fully documented in its [github-pages](https://jesusatc.github.io/culebra/). You can also generate its docs from the source code. Simply change directory to the `doc` subfolder and type in `make html`, the documentation will be under `build/html`. You will need [Sphinx](https://www.sphinx-doc.org/en/master/) to build the documentation.
+Culebra is fully documented in its [github-pages](https://efficomp.github.io/culebra/). You can also generate its docs from the source code. Simply change directory to the `doc` subfolder and type in `make html`, the documentation will be under `build/html`. You will need [Sphinx](https://www.sphinx-doc.org/en/master/) to build the documentation.
 
 ## Usage
 
