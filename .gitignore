@@ -1,10 +1,7 @@
 # Files and folders ignored by git
 
 # Virtual environment
-bin
-lib
-pyvenv.cfg
-share
+.venv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

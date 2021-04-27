@@ -18,24 +18,12 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-Wrapper subpackage
-==================
+:py:mod:`wrapper` module
+========================
 
-This package provides an abstract base class for all the generarational
-wrapper procedures:
-
-* :py:mod:`wrapper.generational_wrapper`
-
-And two generational wrapper procedures: a simple evolutionary algorithm and
-another one, based on Non-dominated sorting, able to run NSGA-II and NSGA-III
-algorithms:
- 
-* :py:mod:`wrapper.evolutionary_wrapper`
-* :py:mod:`wrapper.nsga_wrapper`
-
-.. toctree::
-   :hidden:
-   
-   wrapper/generational_wrapper
-   wrapper/evolutionary_wrapper
-   wrapper/nsga_wrapper
+.. automodule:: wrapper
+   :members:
+   :inherited-members:
+   :special-members:
+   :private-members:
+   :show-inheritance:

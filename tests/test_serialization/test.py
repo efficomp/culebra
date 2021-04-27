@@ -19,13 +19,96 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
+"""Test the serialization ob culebra objects."""
+
 import pickle
+import copy
 from sklearn.naive_bayes import GaussianNB
-from culebra.base.species import Species
-from culebra.base.dataset import Dataset
-from culebra.fitness.kappa_num_feats_fitness import KappaNumFeatsFitness
-from culebra.individual.int_vector import IntVector as Individual
-from culebra.wrapper.evolutionary_wrapper import EvolutionaryWrapper
+import culebra
+
+b = culebra.base.Base()
+data = pickle.dumps(b)
+b2 = pickle.loads(data)
+b3 = copy.copy(b)
+b4 = copy.deepcopy(b)
+
+print(b.__repr__())
+print(b2.__repr__())
+print(b3.__repr__())
+print(b4.__repr__())
+print(b4.__str__())
+
+s = culebra.base.Species()
+data = pickle.dumps(s)
+s2 = pickle.loads(data)
+s3 = copy.copy(s)
+s4 = copy.deepcopy(s)
+
+print(s.__repr__())
+print(s2.__repr__())
+print(s3.__repr__())
+print(s4.__repr__())
+print(s4.__str__())
+
+f = culebra.base.Fitness(thresholds=4)
+data = pickle.dumps(f)
+f2 = pickle.loads(data)
+f3 = copy.copy(f)
+f4 = copy.deepcopy(f)
+
+print(f.__repr__())
+print(f2.__repr__())
+print(f3.__repr__())
+print(f4.__repr__())
+print(f4.__str__())
+
+i = culebra.base.Individual(s, f)
+data = pickle.dumps(i)
+i2 = pickle.loads(data)
+i3 = copy.copy(i)
+i4 = copy.deepcopy(i)
+
+print(i.__repr__())
+print(i2.__repr__())
+print(i3.__repr__())
+print(i4.__repr__())
+print(i4.__str__())
+
+d = culebra.base.Dataset()
+data = pickle.dumps(d)
+d2 = pickle.loads(data)
+d3 = copy.copy(d)
+d4 = copy.deepcopy(d)
+
+print(d.__repr__())
+print(d2.__repr__())
+print(d3.__repr__())
+print(d4.__repr__())
+print(d4.__str__())
+
+w = culebra.base.Wrapper(culebra.base.Individual, s)
+data = pickle.dumps(w)
+w2 = pickle.loads(data)
+w3 = copy.copy(w)
+w4 = copy.deepcopy(w)
+
+print(w.__repr__())
+print(w2.__repr__())
+print(w3.__repr__())
+print(w4.__repr__())
+print(w4.__str__())
+
+s = culebra.feature_selector.Species(8)
+data = pickle.dumps(s)
+s2 = pickle.loads(data)
+s3 = copy.copy(s)
+s4 = copy.deepcopy(s)
+
+print(s.__repr__())
+print(s2.__repr__())
+print(s3.__repr__())
+print(s4.__repr__())
+print(s4.__str__())
 
 # Dataset
 DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
@@ -34,7 +117,7 @@ DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
 # Proportion of data used to test
 TEST_PROP = 0.25
 
-dataset = Dataset.load(DATASET_PATH, output_index=-1)
+dataset = culebra.base.Dataset.load(DATASET_PATH, output_index=-1)
 
 # Normalize inputs between 0 and 1
 dataset.normalize()
@@ -47,7 +130,7 @@ print(f"Dataset 1: {dataset}")
 print(f"Dataset 2: {dataset2}")
 
 print("\nSerialization of Species")
-s = Species.from_proportion(dataset.num_feats)
+s = culebra.feature_selector.Species.from_proportion(dataset.num_feats)
 data = pickle.dumps(s)
 s2 = pickle.loads(data)
 
@@ -55,7 +138,8 @@ print(f"Species 1: {s}")
 print(f"Species 2: {s2}")
 
 print("\nSerialization of Fitness:")
-f = KappaNumFeatsFitness(valid_prop=0.25, classifier=GaussianNB())
+f = culebra.fitness.KappaNumFeatsFitness(
+    valid_prop=0.25, classifier=GaussianNB())
 f.setValues((1, 4))
 data = pickle.dumps(f)
 f2 = pickle.loads(data)
@@ -64,7 +148,7 @@ print(f"Fitness 2: {f2.__repr__()}")
 
 print("\nSerialization of IntVectors")
 
-i = Individual(s, f)
+i = culebra.feature_selector.BitVector(s, f)
 i.fitness.setValues(f.eval(i, dataset))
 data = pickle.dumps(i)
 i2 = pickle.loads(data)
@@ -73,7 +157,9 @@ print(f"Individual 1: {i.__repr__()}")
 print(f"Individual 2: {i2.__repr__()}")
 
 print("\nSerialization of wrappers")
-w = EvolutionaryWrapper(Individual, Species(dataset.num_feats), verbose=False)
+w = culebra.wrapper.EvolutionaryWrapper(
+    culebra.feature_selector.IntVector,
+    culebra.feature_selector.Species(dataset.num_feats), verbose=False)
 data2 = pickle.dumps(w)
 w2 = pickle.loads(data2)
 

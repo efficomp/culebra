@@ -19,11 +19,13 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
+"""Test the fitness class."""
+
 from sklearn.naive_bayes import GaussianNB
-from culebra.base.species import Species
-from culebra.base.dataset import Dataset
-from culebra.fitness.kappa_num_feats_fitness import KappaNumFeatsFitness as Fitness
-from culebra.individual.bit_vector import BitVector as Individual
+from culebra.base import Dataset
+from culebra.feature_selector import Species
+from culebra.feature_selector import BitVector as Individual
+from culebra.fitness import KappaNumFeatsFitness as Fitness
 
 # Dataset
 DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
@@ -39,19 +41,17 @@ fitness = Fitness(valid_prop=0.25, classifier=GaussianNB(),
                   thresholds=[0.1, 0.2])
 
 print(f"fitness.classifier: {fitness.classifier}")
-print(f"fitness.thresholds: {fitness.thresholds}")
-print()
+print(f"fitness.thresholds: {fitness.thresholds}\n")
 
 s = Species(dataset.num_feats, min_feat=2)
 i1 = Individual(s, fitness, (3, 4))
 i2 = Individual(s, fitness, (5, 6))
 
-
 i1.fitness.setValues(fitness.eval(i1, dataset))
 i2.fitness.setValues(fitness.eval(i2, dataset))
 
 print(f"i1: {i1} \t {fitness.names}: {i1.fitness}")
-print(f"i2: {i2} \t {fitness.names}: {i2.fitness}")
-print()
+print(f"i2: {i2} \t {fitness.names}: {i2.fitness}\n")
+
 print(f"i1<i2: {i1<i2}")
 print(f"i1 dominates i2: {i1.dominates(i2)}")

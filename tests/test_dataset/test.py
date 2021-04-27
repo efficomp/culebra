@@ -19,25 +19,23 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-from culebra.base.dataset import Dataset
+"""Test the Dataset class."""
+
+from culebra.base import Dataset
 
 dataset = Dataset.load("a.dat", "b.dat", output_index=None, sep='\\s+')
 
 print(f"num_feats: {dataset.num_feats}")
 print(f"size: {dataset.size}")
-print(f"X: {dataset.X}")
-print(f"y: {dataset.y}")
+print(f"inputs: {dataset.inputs}")
+print(f"outputs: {dataset.outputs}")
 
-(training,
- test) = Dataset.load_train_test("a.dat", "b.dat", "c.dat", "d.dat",
-                                 test_prop=None, output_index=None, sep='\\s+',
-                                 normalize=True, random_feats=None,
-                                 random_seed=None)
+(training, test) = Dataset.load_train_test(
+    "a.dat", "b.dat", "c.dat", "d.dat", test_prop=None, output_index=None,
+    sep='\\s+', normalize=True, random_feats=None, random_seed=None)
 
-print("training")
-print(f"training.X: {training.X}")
-print(f"training.y: {training.y}")
+print(f"\ntraining inputs: {training.inputs}")
+print(f"training outputs: {training.outputs}")
 
-print("test")
-print(f"test.X: {test.X}")
-print(f"test.y: {test.y}")
+print(f"\ntest inputs: {test.inputs}")
+print(f"test outputs: {test.outputs}")

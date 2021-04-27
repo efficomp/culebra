@@ -16,13 +16,26 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Provides the :py:class:`~fitness.kappa_index_fitness.KappaIndexFitness`
-class.
+"""Fitness classes for feature selection problems.
+
+This module provides several fitness classes designed to solve feature
+selection problems using a wrapper method:
+
+  * :py:class:`~fitness.NumFeatsFitness`: Dummy single-objective fitness class
+    that tries to minimize the number of features selected by a wrapper.
+  * :py:class:`~fitness.KappaIndexFitness`: Single-objective fitness class
+    that maximizes the Kohen's Kappa index of the solutions found by a wrapper.
+    The Kappa index may be claculated over the whole traininf dataset or only
+    over a validation proportion of the data.
+  * :py:class:`~fitness.KappaNumFeatsFitness`: Bi-objective fitness class that
+    combine the two above fitness classes.
 """
+
 import numbers
-from culebra.base.fitness import Fitness
 from sklearn.base import ClassifierMixin
 from sklearn.metrics import cohen_kappa_score
+from culebra.base import Fitness
+
 
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2021, EFFICOMP'
@@ -31,6 +44,35 @@ __version__ = '0.1.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
+
+
+class NumFeatsFitness(Fitness):
+    """Dummy single-objective Fitness class for testing purposes.
+
+    Minimize the number of features that an individual has selected. Do not
+    take into account any classification index.
+    """
+
+    weights = (-1.0,)
+    """Minimize the number of features that an individual has selected."""
+
+    names = ("NF",)
+    """Name of the objectives."""
+
+    def eval(self, ind, dataset):
+        """Evaluate an individual.
+
+        Returns the number of features selected by *ind*.
+
+        :param ind: The individual
+        :type ind: Any subclass of
+            :py:class:`~feature_selector.BaseIndividual`
+        :param dataset: A dataset
+        :type dataset: :py:class:`~base.Dataset`
+        :return: The number of features selected by *ind*
+        :rtype: :py:class:`tuple`
+        """
+        return (ind.num_feats,)
 
 
 class KappaIndexFitness(Fitness):
@@ -67,7 +109,7 @@ class KappaIndexFitness(Fitness):
             will be used for all the objectives. A different threshold can be
             provided for each objective with a
             :py:class:`~collections.abc.Sequence`. Defaults to
-            :py:attr:`~base.fitness.DEFAULT_THRESHOLD`
+            :py:attr:`~base.DEFAULT_FITNESS_THRESHOLD`
         :type thresholds: :py:class:`float` or a
             :py:class:`~collections.abc.Sequence` of :py:class:`float` numbers,
             optional
@@ -91,9 +133,10 @@ class KappaIndexFitness(Fitness):
         """Evaluate an individual.
 
         :param ind: The individual
-        :type ind: Any subclass of :py:class:`~base.individual.Individual`
+        :type ind: Any subclass of
+            :py:class:`~feature_selector.BaseIndividual`
         :param dataset: A dataset
-        :type dataset: :py:class:`~base.dataset.Dataset`
+        :type dataset: :py:class:`~base.Dataset`
         :return: The Kappa index achieved by the classifier with the validation
             data when using the features selected by *ind*
         :rtype: :py:class:`tuple`
@@ -107,16 +150,16 @@ class KappaIndexFitness(Fitness):
                 # Use all the data
                 training = validation = dataset
 
-            y_pred = self.classifier.fit(
-                training.X[:, ind.features],
-                training.y).predict(validation.X[:, ind.features])
-            kappa = cohen_kappa_score(validation.y, y_pred)
+            outputs_pred = self.classifier.fit(
+                training.inputs[:, ind.features],
+                training.outputs).predict(validation.inputs[:, ind.features])
+            kappa = cohen_kappa_score(validation.outputs, outputs_pred)
 
         return (kappa,)
 
     @property
     def valid_prop(self):
-        """Proportion of data used for validation.
+        """Get and set the proportion of data used for validation.
 
         :getter: Return the proportion
         :setter: Set a new value for the porportion. A real value in (0, 1) or
@@ -146,7 +189,7 @@ class KappaIndexFitness(Fitness):
 
     @property
     def classifier(self):
-        """Classifier applied within this wrapper.
+        """Get and set the classifier applied within this wrapper.
 
         :getter: Return the classifier
         :setter: Set a new classifier
@@ -170,39 +213,33 @@ class KappaIndexFitness(Fitness):
         self.__classifier = value
 
 
-# Perform some tests
-if __name__ == '__main__':
+class KappaNumFeatsFitness(KappaIndexFitness, NumFeatsFitness):
+    """Bi-objective fitness class for feature selection.
 
-    from sklearn.naive_bayes import GaussianNB
-    from culebra.base.species import Species
-    from culebra.base.dataset import Dataset
-    from culebra.individual.int_vector import IntVector as Individual
+    Maximizes the Kohen's Kappa index and minimizes the number of features
+    that an individual has selected.
+    """
 
-    # Dataset
-    DATASET_PATH = ('https://archive.ics.uci.edu/ml/'
-                    'machine-learning-databases/statlog/australian/'
-                    'australian.dat')
+    weights = KappaIndexFitness.weights + NumFeatsFitness.weights
+    """Maximizes the Kohen's Kappa index and minimizes the number of features
+    that an individual has selected.
+    """
 
-    # Proportion of training data used for validation
-    VALID_PROP = 0.25
+    names = KappaIndexFitness.names + NumFeatsFitness.names
+    """Name of the objectives."""
 
-    # Minimum individual size
-    MIN_SIZE = 1
+    def eval(self, ind, dataset):
+        """Evaluate an individual.
 
-    dataset = Dataset.load(DATASET_PATH, output_index=-1)
-
-    # Normalize inputs between 0 and 1
-    dataset.normalize()
-
-    fitness = KappaIndexFitness(valid_prop=VALID_PROP, classifier=GaussianNB())
-
-    # Create the species for the individuals of the population
-    species = Species(num_feats=dataset.num_feats, min_size=MIN_SIZE)
-    ind = Individual(species, fitness)
-
-    ind.fitness.setValues(fitness.eval(ind, dataset))
-    print(ind, ind.fitness)
-
-    fitness.valid_prop = None
-    ind.fitness.setValues(fitness.eval(ind, dataset))
-    print(ind, ind.fitness)
+        :param ind: The individual
+        :type ind: Any subclass of
+            :py:class:`~feature_selector.BaseIndividual`
+        :param dataset: A dataset
+        :type dataset: :py:class:`~base.Dataset`
+        :return: The Kappa index achieved by the classifier with the validation
+            data when using the features selected by *ind* and the number of
+            selected features
+        :rtype: :py:class:`tuple`
+        """
+        return (KappaIndexFitness.eval(self, ind, dataset) +
+                NumFeatsFitness.eval(self, ind, dataset))

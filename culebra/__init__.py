@@ -20,9 +20,9 @@
 
 from . import base
 from . import fitness
-from . import individual
+from . import feature_selector
 from . import wrapper
-from . import tools
+from . import experiment
 
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2021, EFFICOMP'
@@ -34,6 +34,6 @@ __status__ = 'Development'
 
 __all__ = ['base',
            'fitness',
-           'individual',
+           'feature_selector',
            'wrapper',
-           'tools']
+           'experiment']

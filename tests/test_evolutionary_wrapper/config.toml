@@ -8,10 +8,10 @@
     # If input and output columns are in different files this parameter should
     # be omitted
     output_index = -1
-  
+
     # Seperator for columns in the files. Defaults to "\\s+" if omitted
     sep = "\\s+"
-  
+
     # If this parameter is set, the training dataset will be considered as the
     # only dataset, which will be split into a training and test dataset
     # according to this proportion. The [dataset.test] section will be ignored.
@@ -20,11 +20,11 @@
     # If true the input data is normalized in [0, 1]. Defaults to false if
     # omitted
     normalize = true
-    
+
     # If this parameter is set, some random features add appended to the
     # dataset
     # random_feats = 10
-  
+
     # Seed for the random number generator, defaults to None if omitted
     random_seed = 0
 
@@ -51,89 +51,93 @@
 # Parameters regarding the wrapper method
 [wrapper]
   # Type of wrapper used
-  wrapper_cls = "culebra.wrapper.evolutionary_wrapper.EvolutionaryWrapper"
+  wrapper_cls = "culebra.wrapper.EvolutionaryWrapper"
 
   # Type of individual used
-  individual_cls = "culebra.individual.bit_vector.BitVector"
-  
-  # Parameters for the individual species
+  individual_cls = "culebra.feature_selector.BitVector"
+
+  # Individual species
   [wrapper.species]
-    # Number of features
-    num_feats = 14
-    
-    # Minimum feature index
-    # min_feat = # Use the default value
-    
-    # Maximum feature index
-    # max_feat = # Use the default value
-    
-    # Minimum individual size
-    min_size = 1
-    
-    # Maximum individual size
-    # max_size = # Use the default value
-  
+    species_cls = "culebra.feature_selector.Species"
+
+    # Parameters for the individual species
+    [wrapper.species.parameters]
+      # Number of features
+      num_feats = 14
+
+      # Minimum feature index
+      # min_feat = # Use the default value
+
+      # Maximum feature index
+      # max_feat = # Use the default value
+
+      # Minimum individual size
+      min_size = 1
+
+      # Maximum individual size
+      # max_size = # Use the default value
+
   # Parameters for the wrapper method
   [wrapper.parameters]
 
     # Seed for the random number generator, defaults to None if omitted
     random_seed = 0
-  
+
     # Whether or not to log the statistics, defaults to true
     # verbose = true
 
     # Checkpoint frequency
     checkpoint_freq = 10
-    
+
     # Checkpoint filepath
     checkpoint_file = "checkpoint.gz"
 
     # Population size
     pop_size = 100
-  
+
     # Number of generations
     n_gens = 100
-  
+
     # Crossover function
     # xover_func = # Use the individual's default
-  
+
     # Crossover probability
     xover_pb = 0.5
-  
-    # Mutation function 
+
+    # Mutation function
     # mut_func = # Use the individual's default
-  
+
     # Mutation probability
     mut_pb = 0.1
-    
+
     # Independent gene mutation probability
     mut_ind_pb = 0.05
-    
+
     # Selection function
     sel_func = "deap.tools.selTournament"
-    
+
     # Selection function parameters
     [wrapper.parameters.sel_func_params]
       tournsize = 2
-      
+
 # Parameters regarding the fitness evaluation
 [fitness]
   # Parameters for the training fitness
   [fitness.training]
-#    fitness_cls = "culebra.fitness.kappa_index_fitness.KappaIndexFitness"
-    fitness_cls = "culebra.fitness.num_feats_fitness.NumFeatsFitness"
-  
+#    fitness_cls = "culebra.fitness.KappaIndexFitness"
+    fitness_cls = "culebra.fitness.NumFeatsFitness"
+
     # Parameters for the fitness evaluation
     [fitness.training.parameters]
       # Validation proportion
       valid_prop = 0.25
       thresholds = 0.00001
-  
+
     # Classifier
     [fitness.training.classifier]
       # Classifier class
       classifier_cls = "sklearn.naive_bayes.GaussianNB"
-  
+
       # Parameters for the classifier
       # [fitness.training.classifier.parameters]
         # Portion of the largest variance of all features that is added to
@@ -143,19 +147,19 @@
   # Parameters for the test Fitness
   # If omitted, the training fitness will be also used to test
   [fitness.test]
-#    fitness_cls = "culebra.fitness.kappa_index_fitness.KappaIndexFitness"
-    fitness_cls = "culebra.fitness.num_feats_fitness.NumFeatsFitness"
-  
+#    fitness_cls = "culebra.fitness.KappaIndexFitness"
+    fitness_cls = "culebra.fitness.NumFeatsFitness"
+
     # Parameters for the fitness evaluation
     # [fitness.test.parameters]
       # Validation proportion
       # valid_prop = # Use the whole dataset
-  
+
     # Classifier
     [fitness.test.classifier]
       # Classifier class
       classifier_cls = "sklearn.naive_bayes.GaussianNB"
-  
+
       # Parameters for the classifier
       # [fitness.test.classifier.parameters]
         # Portion of the largest variance of all features that is added to

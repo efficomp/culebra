@@ -49,7 +49,7 @@ $(RESULTS): $(RUN)
 $(RUN): $(CONFIG)
 	@echo "Generating the run script ..."
 	@echo -e \
-"import culebra\\nculebra.tools.experiment.Experiment.generate_script('$(CONFIG)')" | $(PYTHON)
+"import culebra\\nculebra.experiment.Experiment.generate_script('$(CONFIG)')" | $(PYTHON)
 	@echo
 
 .PHONY: clean

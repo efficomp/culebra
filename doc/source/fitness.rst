@@ -18,19 +18,12 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-Fitness subpackage
-==================
+:py:mod:`fitness` module
+========================
 
-This subpackage defines different fitness objects that can be used to guide the
-wrapper procedure towards optimal solutions:
-
-* :py:mod:`fitness.num_feats_fitness`
-* :py:mod:`fitness.kappa_index_fitness`
-* :py:mod:`fitness.kappa_num_feats_fitness`
-
-.. toctree::
-   :hidden:
-   
-   fitness/num_feats_fitness
-   fitness/kappa_index_fitness
-   fitness/kappa_num_feats_fitness
+.. automodule:: fitness
+   :members:
+   :inherited-members:
+   :special-members:
+   :private-members:
+   :show-inheritance:
