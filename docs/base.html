@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Base subpackage &#8212; culebra</title>
+    <title>base module &#8212; culebra</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -14,7 +14,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="base.dataset" href="base/dataset.html" />
+    <link rel="next" title="feature_selector module" href="feature_selector.html" />
     <link rel="prev" title="Welcome to culebra’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -32,23 +32,1669 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="base-subpackage">
-<h1>Base subpackage<a class="headerlink" href="#base-subpackage" title="Permalink to this headline">¶</a></h1>
-<p>Culebra is based in some base modules to define the fundamental pieces that are
-necessary to solve a feature selection problem. The base subpackage defines:</p>
-<ul class="simple">
-<li><p>A <a class="reference internal" href="base/dataset.html"><span class="doc">dataset</span></a> with samples, where the most relevant input
-features need to be selected</p></li>
-<li><p>The <a class="reference internal" href="base/individual.html"><span class="doc">individuals</span></a>, which will be used within the
-wrapper method to search the best subset of features</p></li>
-<li><p>A <a class="reference internal" href="base/species.html"><span class="doc">species</span></a> to define the characteristics of the
+  <div class="section" id="module-base">
+<span id="base-module"></span><h1><a class="reference internal" href="#module-base" title="base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base</span></code></a> module<a class="headerlink" href="#module-base" title="Permalink to this headline">¶</a></h1>
+<p>Base classes of culebra.</p>
+<p>Culebra is based in some base classes to define the fundamental pieces that are
+necessary to solve a feature selection problem. This module defines:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> class from which all the classes of culebra
+inherit</p></li>
+<li><p>A <a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a> class containing samples, where the most
+relevant input features need to be selected</p></li>
+<li><p>An <a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> class, which will be used within the
+<a class="reference internal" href="#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> class to search the best subset of features</p></li>
+<li><p>A <a class="reference internal" href="#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to define the characteristics of the
 individuals</p></li>
-<li><p>The <a class="reference internal" href="base/fitness.html"><span class="doc">fitness function</span></a> to guide the search towards
-optimal solutions</p></li>
-<li><p>The <a class="reference internal" href="base/wrapper.html"><span class="doc">wrapper</span></a> method to perform the search</p></li>
+<li><p>A <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> class to guide the search towards optimal
+solutions</p></li>
+<li><p>A <a class="reference internal" href="#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> class to perform the search</p></li>
+<li><p>A <a class="reference internal" href="#base.Metrics" title="base.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a> class to calculate some metrics about the
+frequency of each selected feature in the solutions found by the
+<a class="reference internal" href="#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p></li>
 </ul>
-<div class="toctree-wrapper compound">
-</div>
+</div></blockquote>
+<dl class="py class">
+<dt id="base.Base">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Base</span></code><a class="headerlink" href="#base.Base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Define the base class for all objects in culebra.</p>
+<dl class="py method">
+<dt id="base.Base.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Base.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Base.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Base.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Object attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The same than the original object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Base.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Base.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Base.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Base.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Base.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Base.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Base.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Base.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt id="base.DEFAULT_DATASET_SEP">
+<code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_DATASET_SEP</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\\s+'</span></em><a class="headerlink" href="#base.DEFAULT_DATASET_SEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default column separator used within dataset files.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="base.DEFAULT_FITNESS_THRESHOLD">
+<code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_FITNESS_THRESHOLD</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#base.DEFAULT_FITNESS_THRESHOLD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default similarity threshold for fitness objects.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="base.DEFAULT_WRAPPER_CHECKPOINT_FILE">
+<code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FILE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'checkpoint.gz'</span></em><a class="headerlink" href="#base.DEFAULT_WRAPPER_CHECKPOINT_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default checkpointing file for wrappers.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="base.DEFAULT_WRAPPER_CHECKPOINT_FREQ">
+<code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FREQ</span></code><em class="property"> <span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#base.DEFAULT_WRAPPER_CHECKPOINT_FREQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default checkpointing frequency for wrappers.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="base.DEFAULT_WRAPPER_OBJECTIVE_STATS">
+<code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_WRAPPER_OBJECTIVE_STATS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#base.DEFAULT_WRAPPER_OBJECTIVE_STATS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for each objective within a wrapper.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="base.DEFAULT_WRAPPER_STATS_NAMES">
+<code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_WRAPPER_STATS_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('N',)</span></em><a class="headerlink" href="#base.DEFAULT_WRAPPER_STATS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated within a wrapper each time.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.Dataset">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Dataset</span></code><a class="headerlink" href="#base.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Base</span></code></a></p>
+<p>Dataset handler.</p>
+<dl class="py method">
+<dt id="base.Dataset.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Object attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The same than the original object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__has_missing_data">
+<code class="sig-name descname"><span class="pre">__has_missing_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__has_missing_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a dataframe has missing values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframe</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – A dataframe</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if there is any missing value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an empty dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__is_numeric">
+<code class="sig-name descname"><span class="pre">__is_numeric</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__is_numeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all the elements in a dataframe are numeric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframe</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – A dataframe</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if all the elements are numeric</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__labels_to_numeric">
+<code class="sig-name descname"><span class="pre">__labels_to_numeric</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__labels_to_numeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace output labels by numeric identifiers.</p>
+<p>The replacement is performed only if output data is not numeric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_s</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>) – The outputs</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A series of numeric values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__load_mixed_dataset">
+<code class="sig-name descname"><span class="pre">__load_mixed_dataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\s+'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__load_mixed_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a mixed data set.</p>
+<p>Inputs and output are in the same file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the file containing the input and output data</p></li>
+<li><p><strong>output_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Index of the column containing the outuput data</p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Separator between columns, defaults to
+<a class="reference internal" href="#base.DEFAULT_DATASET_SEP" title="base.DEFAULT_DATASET_SEP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_DATASET_SEP</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>sep</em> is not a string</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If any input value is not numeric or there is any
+missing data</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple containing a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with the
+input columns and a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> with the output
+column</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__load_split_dataset">
+<code class="sig-name descname"><span class="pre">__load_split_dataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\s+'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__load_split_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a separated data set.</p>
+<p>Inputs and output are in separated files. If the output file has more
+than one column, only the first column is read.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Tuple of files containing the dataset. The first file
+contains the input columns and the second one the output column</p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Separator between columns, defaults to
+<a class="reference internal" href="#base.DEFAULT_DATASET_SEP" title="base.DEFAULT_DATASET_SEP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_DATASET_SEP</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>sep</em> is not a string</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If any input value is not numeric, if there is
+any missing data, or if the <em>files</em> do not have the same number of
+rows</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple containing a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with the
+input columns and a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> with the output
+column</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.__split_input_output">
+<code class="sig-name descname"><span class="pre">__split_input_output</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.__split_input_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a dataframe into input and output data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – A dataframe containing input and output data</p></li>
+<li><p><strong>output_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Index of the column containing the outuput data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>output_index</em> is not an integer value</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <em>output_index</em> is out of range</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple containing a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with the
+input columns and a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> with the output
+column</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Dataset.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Dataset.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.append_random_features">
+<code class="sig-name descname"><span class="pre">append_random_features</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_feats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.append_random_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new dataset with some random features appended.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_feats</strong> (An <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> greater than 0) – Number of random features to be appended</p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If the number of random features is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the number of random features not greater than
+0</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The new dataset</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.inputs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">inputs</span></code><a class="headerlink" href="#base.Dataset.inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input data of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.load">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\s+'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a dataset.</p>
+<p>Datasets can be organized in only one file or in two files. If one
+file per dataset is used, then <em>output_index</em> must be used to indicate
+which column stores the output values. If <em>output_index</em> is set to
+<cite>None</cite> (its default value), it will be assumed that each dataset is
+composed by two consecutive files, the first one containing the input
+columns and the second one storing the output column. Only the first
+column of the second file will be loaded (just one output value per
+sample).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, path object or
+file-like objects) – Files containing the dataset. If <em>output_index</em> is
+<cite>None</cite>, two files are necessary, the first one containing the input
+columns and the second one containing the output column. Otherwise,
+only one file will be used to access to the whole dataset (input
+and output columns)</p></li>
+<li><p><strong>output_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – If the dataset is provided with only one file,
+this parameter indicates which column in the file does contain the
+output values. Otherwise this parameter must be set to <cite>None</cite> to
+express that inputs and ouputs are stored in two different files
+Its default value is <cite>None</cite></p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Column separator used within the files. Defaults to
+<a class="reference internal" href="#base.DEFAULT_DATASET_SEP" title="base.DEFAULT_DATASET_SEP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_DATASET_SEP</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If at least one dataset is not provided</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>output_index</em> is not <cite>None</cite> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>sep</em> is not a string</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <em>output_index</em> is out of range</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If any input value is not numeric or there is any
+missing data</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – When loading a dataset composed of two files, if
+the file containing the input columns and the file containing the
+output column do not have the same number of rows.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The dataset</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.load_train_test">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">load_train_test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\\s+'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.load_train_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the training and test data.</p>
+<p>Datasets can be organized in only one file or in two files. If one
+file per dataset is used, then <em>output_index</em> must be used to indicate
+which column stores the output values. If <em>output_index</em> is set to
+<cite>None</cite> (its default value), it will be assumed that each dataset is
+composed by two consecutive files, the first one containing the input
+columns and the second one storing the output column. Only the first
+column of the second file will be loaded (just one output value per
+sample).</p>
+<p>If <em>test_prop</em> is set a valid proportion, the training and test
+datasets will be generated splitting the first dataset provided.
+Otherwise a test dataset can be provided appending more files, but if
+it isn’t, the training dataset is assumed to be also the test dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, path object or
+file-like objects) – Files containing the data. If <em>output_index</em> is <cite>None</cite>,
+two consecutive files are required for each dataset, otherwise,
+each file contains a whole dataset (input and output columns).</p></li>
+<li><p><strong>test_prop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Proportion of the first dataset used as test data.
+The remaining samples will be used as training data.</p></li>
+<li><p><strong>output_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – If datasets are provided with only one file,
+this parameter indicates which column in the file does contain the
+output values. Otherwise this parameter must be set to <cite>None</cite> to
+express that inputs and ouputs are stored in two different files.
+Its default value is <cite>None</cite></p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Column separator used within the files. Defaults to
+<a class="reference internal" href="#base.DEFAULT_DATASET_SEP" title="base.DEFAULT_DATASET_SEP"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_DATASET_SEP</span></code></a></p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – It <cite>True</cite>, datasets will be normalized into [0, 1].
+Defaults to <cite>False</cite></p></li>
+<li><p><strong>random_feats</strong> (An <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> greater than 0, optional) – Number of random features to be appended, defaults
+to <cite>None</cite></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If at least one dataset is not provided</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>output_index</em> is not None or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>test_prop</em> is not None or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>sep</em> is not a string</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If <em>test_prop</em> is not in (0, 1)</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <em>output_index</em> is out of range</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If any input value is not numeric or there is any
+missing data</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – When loading a dataset composed of two files, if
+the file containing the input columns and the file containing the
+output column do not have the same number of rows.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – When training and test datasets do not have the
+same number of columns.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>
+containing the training and test datasets</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.normalize">
+<code class="sig-name descname"><span class="pre">normalize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the dataset between 0 and 1.</p>
+<p>If a test dataset is provided, both are taken into account to calculate
+the minimum and maximum value and then both are normalized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>test</strong> (<a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>, optional) – Test dataset or <cite>None</cite>, defaults to <cite>None</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.num_feats">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">num_feats</span></code><a class="headerlink" href="#base.Dataset.num_feats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of features in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.outputs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">outputs</span></code><a class="headerlink" href="#base.Dataset.outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the output data of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.size">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">size</span></code><a class="headerlink" href="#base.Dataset.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of samples in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Dataset.split">
+<code class="sig-name descname"><span class="pre">split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Dataset.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_prop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Proportion of the dataset used as test data.
+The remaining samples will be returned as training data</p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>test_prop</em> is not <cite>None</cite> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If <em>test_prop</em> is not in (0, 1)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The training and test datasets</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.Fitness">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Fitness</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Base</span></code></a>, <a class="reference external" href="https://deap.readthedocs.io/en/master/api/base.html#deap.base.Fitness" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">deap.base.Fitness</span></code></a></p>
+<p>Define the base class for the fitness evaluation of an individual.</p>
+<dl class="py method">
+<dt id="base.Fitness.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Object attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The same than the original object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__eq__">
+<code class="sig-name descname"><span class="pre">__eq__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equal to operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__ge__">
+<code class="sig-name descname"><span class="pre">__ge__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than or equal to operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__gt__">
+<code class="sig-name descname"><span class="pre">__gt__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__hash__">
+<code class="sig-name descname"><span class="pre">__hash__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the hash number for this individual.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Fitness object.</p>
+<p>Fitness objects are compared lexicographically. The comparison applies
+a similarity threshold to assume that two fitness values are similar
+(if their difference is lower then the similarity threshold).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>thresholds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or a
+<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> numbers,
+optional) – Thresholds to assume if two fitness values are
+equivalent. If only a single value is provided, the same threshold
+will be used for all the objectives. A different threshold can be
+provided for each objective with a
+<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>. Defaults to
+<a class="reference internal" href="#base.DEFAULT_FITNESS_THRESHOLD" title="base.DEFAULT_FITNESS_THRESHOLD"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_FITNESS_THRESHOLD</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <em>thresholds</em> is not a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> value or
+a <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>
+numbers</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If a negative threshold is provided</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__le__">
+<code class="sig-name descname"><span class="pre">__le__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than or equal to operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__lt__">
+<code class="sig-name descname"><span class="pre">__lt__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__ne__">
+<code class="sig-name descname"><span class="pre">__ne__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not equal to operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.__str__">
+<code class="sig-name descname"><span class="pre">__str__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the values of the Fitness object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Fitness.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Fitness.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.dominates">
+<code class="sig-name descname"><span class="pre">dominates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">slice(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.dominates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if this fitness dominates another one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (Any <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> subclass) – The other fitness</p></li>
+<li><p><strong>which</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>) – Slice indicating on which objectives the domination is
+tested. The default value is <cite>slice(None)</cite>, representing every
+objectives</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if each objective of <em>self</em> is not strictly worse than
+the corresponding objective of <em>other</em> and at least one objective
+is strictly better</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.eval">
+<code class="sig-name descname"><span class="pre">eval</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Fitness.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate an individual.</p>
+<p>This method must be overriden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ind</strong> (Any subclass of <a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – A dataset</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The fitness of <em>ind</em></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.n_obj">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_obj</span></code><a class="headerlink" href="#base.Fitness.n_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of objectives to be optimized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Fitness.names">
+<code class="sig-name descname"><span class="pre">names</span></code><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#base.Fitness.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Names of the objectives.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.thresholds">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">thresholds</span></code><a class="headerlink" href="#base.Fitness.thresholds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the similarity thresholds.</p>
+<p>Applied to assume if two fitness values are equivalent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the similarity threshold for each objective</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set the similarity thresholds. If only a single value is
+provided, the same threshold will be used for all the objectives.
+A different threshold can be provided for each objective with a
+<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> numbers</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set with a value which is not a
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> value or a <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
+of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> numbers</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If a negative threshold is provided</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.valid">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">valid</span></code><a class="headerlink" href="#base.Fitness.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assess if a fitness is valid or not.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Fitness.values">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">values</span></code><a class="headerlink" href="#base.Fitness.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fitness values. Use directly <code class="docutils literal notranslate"><span class="pre">individual.fitness.values</span> <span class="pre">=</span> <span class="pre">values</span></code> in order to set the fitness and <code class="docutils literal notranslate"><span class="pre">del</span> <span class="pre">individual.fitness.values</span></code> in order to clear (invalidate) the fitness. The (unweighted) fitness can be directly accessed via <code class="docutils literal notranslate"><span class="pre">individual.fitness.values</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Fitness.weights">
+<code class="sig-name descname"><span class="pre">weights</span></code><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#base.Fitness.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weights for each one of the objectives.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.Individual">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Individual</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Base</span></code></a></p>
+<p>Base class for all the individuals.</p>
+<dl class="py method">
+<dt id="base.Individual.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the individual.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__eq__">
+<code class="sig-name descname"><span class="pre">__eq__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equality test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the individual codes the same features. <cite>False</cite>
+otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__ge__">
+<code class="sig-name descname"><span class="pre">__ge__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than or equal to operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the individual’s fitness is greater than or equal to
+the other’s fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__gt__">
+<code class="sig-name descname"><span class="pre">__gt__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the individual’s fitness is greater than the other’s
+fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__hash__">
+<code class="sig-name descname"><span class="pre">__hash__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the hash number for this individual.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>species</strong> (<a class="reference internal" href="#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species the individual will belong to</p></li>
+<li><p><strong>fitness</strong> (Instance of any subclass of
+<a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – The fitness object for the individual</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter type is wrong</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__le__">
+<code class="sig-name descname"><span class="pre">__le__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than or equal to operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the individual’s fitness is less than or equal to
+the other’s fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__lt__">
+<code class="sig-name descname"><span class="pre">__lt__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the individual’s fitness is less than the other’s
+fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__ne__">
+<code class="sig-name descname"><span class="pre">__ne__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not equality test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>False</cite> if the individual codes the same features. <cite>True</cite>
+otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Individual.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Individual.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.crossover">
+<code class="sig-name descname"><span class="pre">crossover</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.crossover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross this individual with another one.</p>
+<p>This method must be overriden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The other individual</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The two offspring</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.dominates">
+<code class="sig-name descname"><span class="pre">dominates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">slice(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.dominates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dominate operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p></li>
+<li><p><strong>which</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>) – Slice object indicating on which objectives the
+domination is tested. The default value is <cite>slice(None)</cite>,
+representing every objectives.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if each objective of <em>self</em> is not strictly worse than
+the corresponding objective of <em>other</em> and at least one objective
+is strictly better.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.mutate">
+<code class="sig-name descname"><span class="pre">mutate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indpb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual.mutate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutate the individual.</p>
+<p>This method must be overriden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indpb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Independent probability for each feature to be mutated.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The mutant</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Individual.species">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">species</span></code><a class="headerlink" href="#base.Individual.species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the individuals species.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.Metrics">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Metrics</span></code><a class="headerlink" href="#base.Metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Base</span></code></a></p>
+<p>Some metrics about the selected features obtained by a wrapper.</p>
+<p>Evaluate the set of solutions found by a <a class="reference internal" href="#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> and
+calculate some metrics about the frequency of each selected feature.</p>
+<dl class="py method">
+<dt id="base.Metrics.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Metrics.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Object attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The same than the original object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Metrics.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Metrics.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Metrics.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Metrics.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Metrics.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Metrics.rank">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">rank</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the rank of the features selected by a wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>individuals</strong> (<em>Any iterable type.</em>) – Best individuals returned by the wrapper method.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The relevance of each feature appearing in the individuals.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Metrics.relevance">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">relevance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Metrics.relevance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the relevance of the features selected by a wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>individuals</strong> (<em>Any iterable type.</em>) – Best individuals returned by the wrapper method.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The relevance of each feature appearing in the individuals.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.Species">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Species</span></code><a class="headerlink" href="#base.Species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Base</span></code></a></p>
+<p>Base class for all the species in culebra.</p>
+<p>Each individual evolved within a wrapper must belong to a species which
+constraints the individual parameter values.</p>
+<dl class="py method">
+<dt id="base.Species.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Species.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Species.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Species.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Object attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The same than the original object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Species.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Species.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Species.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Species.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Species.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Species.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Species.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Species.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Species.check">
+<code class="sig-name descname"><span class="pre">check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Species.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an individual meets the constraints imposed by the species.</p>
+<p>This method must be overriden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ind</strong> (Any subclass of <a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if the individual belong to the species. <cite>False</cite>
+otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="base.Wrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">base.</span></code><code class="sig-name descname"><span class="pre">Wrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#base.Base" title="base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Base</span></code></a></p>
+<p>Base class for all the wrapper methods.</p>
+<dl class="py method">
+<dt id="base.Wrapper.__check_dataset_and_fitness">
+<code class="sig-name descname"><span class="pre">__check_dataset_and_fitness</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__check_dataset_and_fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the parameters before training or testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – A dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used while training or testing</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the dataset
+does not match that of the species.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>individual_cls</strong> (Any subclass of
+<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Individual representation.</p></li>
+<li><p><strong>species</strong> (<a class="reference internal" href="#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species the individual will belong to</p></li>
+<li><p><strong>checkpoint_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Frequency for checkpointing, defaults to
+<a class="reference internal" href="#base.DEFAULT_WRAPPER_CHECKPOINT_FREQ" title="base.DEFAULT_WRAPPER_CHECKPOINT_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FREQ</span></code></a></p></li>
+<li><p><strong>checkpoint_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – File path for checkpointing, defaults to
+<a class="reference internal" href="#base.DEFAULT_WRAPPER_CHECKPOINT_FILE" title="base.DEFAULT_WRAPPER_CHECKPOINT_FILE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FILE</span></code></a></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to log the statistics, defaults to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#__debug__" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">__debug__</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Wrapper.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#base.Wrapper.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper._get_fitness_values">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_get_fitness_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper._get_fitness_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fitness values of an individual.</p>
+<p>DEAP <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Statistics" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Statistics</span></code></a> class needs a function to
+obtain the fitness values of an individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ind</strong> (Any subclass of <a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The fitness values of <em>ind</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper._search">
+<code class="sig-name descname"><span class="pre">_search</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper._search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the search algorithm.</p>
+<p>This method must be overriden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The best individuals found</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.checkpoint_file">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_file</span></code><a class="headerlink" href="#base.Wrapper.checkpoint_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint file path</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the checkpoint file path</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.checkpoint_freq">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_freq</span></code><a class="headerlink" href="#base.Wrapper.checkpoint_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint frequency</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a value for the checkpoint frequency</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Wrapper.objective_stats">
+<code class="sig-name descname"><span class="pre">objective_stats</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#base.Wrapper.objective_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statistics calculated for each objective.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.objective_stats_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">objective_stats_names</span></code><a class="headerlink" href="#base.Wrapper.objective_stats_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the names of the objectives stats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.random_seed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">random_seed</span></code><a class="headerlink" href="#base.Wrapper.random_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the initial random seed used by this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the seed</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the random seed</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="base.Wrapper.stats_names">
+<code class="sig-name descname"><span class="pre">stats_names</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('N',)</span></em><a class="headerlink" href="#base.Wrapper.stats_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statistics calculated each time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.test">
+<code class="sig-name descname"><span class="pre">test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the test data to the solutions found by the wrapper method.</p>
+<p>Update the solutions in <em>hof</em> with their test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Test dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used to evaluate the final solutions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the test data does
+not match that of the species.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Wrapper.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the feature selection process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Training dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used while training</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the training data
+does not match that of the species.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="base.Wrapper.verbose">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#base.Wrapper.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the verbosity of this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the verbosity</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the verbosity</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -69,18 +1715,12 @@ optimal solutions</p></li>
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Base subpackage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="base/dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base/individual.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.individual</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base/species.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.species</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base/fitness.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.fitness</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base/wrapper.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.wrapper</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="individual.html">Individual subpackage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitness.html">Fitness subpackage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="wrapper.html">Wrapper subpackage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools subpackage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feature_selector.html">feature_selector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitness.html">fitness module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrapper.html">wrapper module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiment.html">experiment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_file.html">configuration file</a></li>
 </ul>
 
 <div class="relations">
@@ -88,7 +1728,7 @@ optimal solutions</p></li>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to culebra’s documentation!</a></li>
-      <li>Next: <a href="base/dataset.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base.dataset</span></code></a></li>
+      <li>Next: <a href="feature_selector.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">feature_selector</span></code> module</a></li>
   </ul></li>
 </ul>
 </div>
@@ -118,7 +1758,7 @@ optimal solutions</p></li>
       &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

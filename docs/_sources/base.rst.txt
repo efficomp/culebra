@@ -18,28 +18,12 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-Base subpackage
-===============
+:py:mod:`base` module
+=====================
 
-Culebra is based in some base modules to define the fundamental pieces that are
-necessary to solve a feature selection problem. The base subpackage defines:
-
-* A :doc:`dataset <base/dataset>` with samples, where the most relevant input
-  features need to be selected
-* The :doc:`individuals <base/individual>`, which will be used within the
-  wrapper method to search the best subset of features
-* A :doc:`species <base/species>` to define the characteristics of the
-  individuals
-* The :doc:`fitness function <base/fitness>` to guide the search towards
-  optimal solutions
-* The :doc:`wrapper <base/wrapper>` method to perform the search 
-
-
-.. toctree::
-   :hidden:
-
-   base/dataset
-   base/individual
-   base/species
-   base/fitness
-   base/wrapper
+.. automodule:: base
+   :members:
+   :inherited-members:
+   :special-members:
+   :private-members:
+   :show-inheritance:

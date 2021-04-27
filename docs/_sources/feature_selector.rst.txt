@@ -18,10 +18,10 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:mod:`individual.int_vector`
-===============================
+:py:mod:`feature_selector` module
+=================================
 
-.. automodule:: individual.int_vector
+.. automodule:: feature_selector
    :members:
    :inherited-members:
    :special-members:

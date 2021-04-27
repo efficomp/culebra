@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuration file &#8212; culebra</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="experiment module" href="experiment.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration-file">
+<h1>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h1>
+<p>Experiments can be automated by means of a  <a class="reference external" href="https://github.com/toml-lang/toml">TOML</a> configuration file, detailed below, which
+is processed by the <a class="reference internal" href="experiment.html#experiment.ConfigManager" title="experiment.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigManager</span></code></a> class to build a
+complete <a class="reference internal" href="experiment.html#experiment.Experiment" title="experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and even a
+<a class="reference internal" href="experiment.html#experiment.Batch" title="experiment.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> of experiments.</p>
+<div class="highlight-cfg notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Parameters regarding the batch</span>
+<span class="k">[batch]</span>
+  <span class="c1"># Number of experiments in the batch. Defaults to 1 if</span>
+  <span class="c1"># omitted</span>
+  <span class="na">n_experiments</span> <span class="o">=</span> <span class="s">&lt;int value&gt;</span>
+
+  <span class="c1"># Path to create the batch folder. Defaults to the</span>
+  <span class="c1"># current folder if omitted</span>
+  <span class="na">path</span> <span class="o">=</span> <span class="s">&lt;path&gt;</span>
+
+<span class="c1"># Parameters regarding the datset</span>
+<span class="k">[dataset]</span>
+  <span class="c1"># Parameters regarding the whole dataset</span>
+  <span class="k">[dataset.parameters]</span>
+    <span class="c1"># Index of the output column. Only used if input and</span>
+    <span class="c1"># output columns are in the same file.</span>
+    <span class="c1"># If input and output columns are in different files</span>
+    <span class="c1"># this parameter should be omitted</span>
+    <span class="na">output_index</span> <span class="o">=</span> <span class="s">&lt;index&gt;</span>
+
+    <span class="c1"># Seperator for columns in the files. Defaults to</span>
+    <span class="c1"># &quot;\\s+&quot; if omitted</span>
+    <span class="na">sep</span> <span class="o">=</span> <span class="s">&lt;separator&gt;</span>
+
+    <span class="c1"># If this parameter is set, the training dataset will</span>
+    <span class="c1"># be considered as the only dataset, which will be</span>
+    <span class="c1"># split into a training and test dataset according to</span>
+    <span class="c1"># this proportion.</span>
+    <span class="c1"># The [dataset.test] section will be ignored.</span>
+    <span class="na">test_prop</span> <span class="o">=</span> <span class="s">&lt;float value in (0, 1)&gt;</span>
+
+    <span class="c1"># If true the input data is normalized in [0, 1].</span>
+    <span class="c1"># Defaults to false if omitted</span>
+    <span class="na">normalize</span> <span class="o">=</span> <span class="s">&lt;true or false&gt;</span>
+
+    <span class="c1"># If this parameter is set, some random features add</span>
+    <span class="c1"># appended to the dataset</span>
+    <span class="na">random_feats</span> <span class="o">=</span> <span class="s">&lt;number of feats to be appended&gt;</span>
+
+    <span class="c1"># Seed for the random number generator, defaults to</span>
+    <span class="c1"># None if omitted</span>
+    <span class="na">random_seed</span> <span class="o">=</span> <span class="s">&lt;int value&gt;</span>
+
+  <span class="c1"># Parameters regarding the training data</span>
+  <span class="k">[dataset.training]</span>
+
+    <span class="c1"># Inputs file if input and output columns are seperated</span>
+    <span class="c1"># in two files. Otherwise this file contains the whole</span>
+    <span class="c1"># dataset</span>
+    <span class="na">file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+    <span class="c1"># Output values. Only used if output_index is omitted</span>
+    <span class="na">output_file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+  <span class="c1"># Parameters regarding the test data</span>
+  <span class="k">[dataset.test]</span>
+    <span class="c1"># Inputs file if input and output columns are seperated</span>
+    <span class="c1"># in two files. Otherwise this file contains the whole</span>
+    <span class="c1"># dataset</span>
+    <span class="c1"># Only used if test_prop is omitted</span>
+    <span class="na">file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+    <span class="c1"># Output values. Only used if both test_prop and</span>
+    <span class="c1"># output_index are omitted</span>
+    <span class="na">output_file</span> <span class="o">=</span> <span class="s">&lt;path, buffer or URL to the data&gt;</span>
+
+<span class="c1"># Parameters regarding the wrapper method</span>
+<span class="k">[wrapper]</span>
+  <span class="c1"># Type of wrapper used</span>
+  <span class="na">wrapper_cls</span> <span class="o">=</span> <span class="s">&lt;wrapper class&gt;</span>
+
+  <span class="c1"># Type of individual used</span>
+  <span class="na">individual_cls</span> <span class="o">=</span> <span class="s">&lt;individual class&gt;</span>
+
+  <span class="c1"># Individual species</span>
+  <span class="k">[wrapper.species]</span>
+    <span class="na">species_cls</span> <span class="o">=</span> <span class="s">&lt;individual species class&gt;</span>
+
+    <span class="c1"># Parameters for the individual species</span>
+    <span class="k">[wrapper.species.parameters]</span>
+      <span class="c1"># Parameters for the species</span>
+
+  <span class="c1"># Parameters for the wrapper method. These parameters</span>
+  <span class="c1"># will depend on the wrapper method.</span>
+  <span class="c1"># Here are some examples</span>
+  <span class="k">[wrapper.parameters]</span>
+
+    <span class="c1"># Seed for the random number generator, defaults to</span>
+    <span class="c1"># None if omitted</span>
+    <span class="na">random_seed</span> <span class="o">=</span> <span class="s">&lt;int value&gt;</span>
+
+    <span class="c1"># Whether or not to log the statistics, defaults to</span>
+    <span class="c1"># true</span>
+    <span class="na">verbose</span> <span class="o">=</span> <span class="s">&lt;true or false&gt;</span>
+
+    <span class="c1"># Checkpoint frequency</span>
+    <span class="na">checkpoint_freq</span> <span class="o">=</span> <span class="s">&lt;The checkpoint frequency&gt;</span>
+
+    <span class="c1"># Checkpoint filepath</span>
+    <span class="na">checkpoint_file</span> <span class="o">=</span> <span class="s">&lt;The checkpoint file&gt;</span>
+
+    <span class="c1"># Population size</span>
+    <span class="na">pop_size</span> <span class="o">=</span> <span class="s">&lt;The population size&gt;</span>
+
+    <span class="c1"># Number of generations</span>
+    <span class="na">n_gens</span> <span class="o">=</span> <span class="s">&lt;The number of generations&gt;</span>
+
+    <span class="c1"># Crossover function. The Individual&#39;s default is used</span>
+    <span class="c1"># if omitted</span>
+    <span class="na">xover_func</span> <span class="o">=</span> <span class="s">&lt;Crossover function&gt;</span>
+
+    <span class="c1"># Crossover probability</span>
+    <span class="na">xover_pb</span> <span class="o">=</span> <span class="s">&lt;Crossover probability&gt;</span>
+
+    <span class="c1"># Mutation function. The Individual&#39;s default is used</span>
+    <span class="c1"># if omitted</span>
+    <span class="na">mut_func</span> <span class="o">=</span> <span class="s">&lt;mutation function&gt;</span>
+
+    <span class="c1"># Mutation probability</span>
+    <span class="na">mut_pb</span> <span class="o">=</span> <span class="s">&lt;mutation probability&gt;</span>
+
+    <span class="c1"># Independent gene mutation probability</span>
+    <span class="na">mut_ind_pb</span> <span class="o">=</span> <span class="s">&lt;Independent gene mutation probability&gt;</span>
+
+    <span class="c1"># Selection function</span>
+    <span class="na">sel_func</span> <span class="o">=</span> <span class="s">&lt;selection function&gt;</span>
+
+    <span class="c1"># Selection function parameters</span>
+    <span class="k">[wrapper.parameters.sel_func_params]</span>
+      <span class="c1"># Parameters for the function</span>
+
+<span class="c1"># Parameters regarding the fitness evaluation</span>
+<span class="k">[fitness]</span>
+  <span class="c1"># Parameters for the training fitness</span>
+  <span class="k">[fitness.training]</span>
+    <span class="na">fitness_cls</span> <span class="o">=</span> <span class="s">&lt;Fitness class&gt;</span>
+
+    <span class="c1"># Parameters for the fitness evaluation</span>
+    <span class="k">[fitness.training.parameters]</span>
+      <span class="c1"># Configuration parameters for the fitness object</span>
+      <span class="c1"># (if needed)</span>
+      <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+      <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+
+    <span class="c1"># Classifier</span>
+    <span class="k">[fitness.training.classifier]</span>
+      <span class="c1"># Classifier class</span>
+      <span class="na">classifier_cls</span> <span class="o">=</span> <span class="s">&lt;Classifier class&gt;</span>
+
+      <span class="c1"># Parameters for the classifier</span>
+      <span class="k">[fitness.training.classifier.parameters]</span>
+        <span class="c1"># Configuration parameters for the classifier</span>
+        <span class="c1"># (if needed)</span>
+        <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+        <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+
+  <span class="c1"># Parameters for the test Fitness</span>
+  <span class="c1"># If omitted, the training fitness will be also used to</span>
+  <span class="c1"># test</span>
+  <span class="k">[fitness.test]</span>
+    <span class="na">fitness_cls</span> <span class="o">=</span> <span class="s">&lt;Fitness class&gt;</span>
+
+    <span class="c1"># Parameters for the fitness evaluation</span>
+    <span class="k">[fitness.test.parameters]</span>
+      <span class="c1"># Configuration parameters for the fitness object</span>
+      <span class="c1"># (if needed)</span>
+      <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+      <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+
+    <span class="c1"># Classifier</span>
+    <span class="k">[fitness.test.classifier]</span>
+      <span class="c1"># Classifier class</span>
+      <span class="na">classifier_cls</span> <span class="o">=</span> <span class="s">&lt;Classifier class&gt;</span>
+
+      <span class="c1"># Parameters for the classifier</span>
+      <span class="k">[fitness.test.classifier.parameters]</span>
+        <span class="c1"># Configuration parameters for the classifier</span>
+        <span class="c1"># (if needed)</span>
+        <span class="na">parameter1</span> <span class="o">=</span> <span class="s">&lt;value1&gt;</span>
+        <span class="na">parameter2</span> <span class="o">=</span> <span class="s">&lt;value2&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">culebra</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="base.html">base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feature_selector.html">feature_selector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitness.html">fitness module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrapper.html">wrapper module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiment.html">experiment module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">configuration file</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="experiment.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">experiment</span></code> module</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/config_file.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+    
+
+    
+
+    
+  </body>
+</html>

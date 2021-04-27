@@ -18,10 +18,17 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:mod:`wrapper.nsga_wrapper`
-==============================
+:py:mod:`experiment` module
+===========================
 
-.. automodule:: wrapper.nsga_wrapper
+Automated experimentation is also a quite valuable characteristic when a
+:py:class:`~base.Wrapper` method has to be run many times. Culebra provides
+this features by means of a `TOML <https://github.com/toml-lang/toml>`_
+:doc:`configuration file <config_file>` and the
+:py:class:`~experiment.ConfigManager` class, which is able to generate
+experiments and even batchs of experiments from a single configuration file.
+
+.. automodule:: experiment
    :members:
    :inherited-members:
    :special-members:

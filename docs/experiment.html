@@ -1,0 +1,1464 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>experiment module &#8212; culebra</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuration file" href="config_file.html" />
+    <link rel="prev" title="wrapper module" href="wrapper.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="experiment-module">
+<h1><a class="reference internal" href="#module-experiment" title="experiment"><code class="xref py py-mod docutils literal notranslate"><span class="pre">experiment</span></code></a> module<a class="headerlink" href="#experiment-module" title="Permalink to this headline">¶</a></h1>
+<p>Automated experimentation is also a quite valuable characteristic when a
+<a class="reference internal" href="base.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> method has to be run many times. Culebra provides
+this features by means of a <a class="reference external" href="https://github.com/toml-lang/toml">TOML</a>
+<a class="reference internal" href="config_file.html"><span class="doc">configuration file</span></a> and the
+<a class="reference internal" href="#experiment.ConfigManager" title="experiment.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigManager</span></code></a> class, which is able to generate
+experiments and even batchs of experiments from a single configuration file.</p>
+<span class="target" id="module-experiment"></span><p>This module provides some classes to make the experimentation easier.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#experiment.ConfigManager" title="experiment.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigManager</span></code></a> class: Build an
+<a class="reference internal" href="#experiment.Experiment" title="experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> or a <a class="reference internal" href="#experiment.Batch" title="experiment.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> of
+experiment from a TOML configuration file.</p></li>
+<li><p><a class="reference internal" href="#experiment.Base" title="experiment.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> class: Base class for
+<a class="reference internal" href="#experiment.Experiment" title="experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and <a class="reference internal" href="#experiment.Batch" title="experiment.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a></p></li>
+<li><p><a class="reference internal" href="#experiment.Experiment" title="experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> class: Run an experiment</p></li>
+<li><p><a class="reference internal" href="#experiment.Batch" title="experiment.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> class: Run a batch of experiments</p></li>
+</ul>
+<dl class="py class">
+<dt id="experiment.Base">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">Base</span></code><a class="headerlink" href="#experiment.Base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.base.Base</span></code></p>
+<p>Base class for experiments.</p>
+<dl class="py method">
+<dt id="experiment.Base.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Object attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The same than the original object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Base.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.Base.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base._reset">
+<code class="sig-name descname"><span class="pre">_reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base._reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Base._results">
+<code class="sig-name descname"><span class="pre">_results</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#experiment.Base._results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results provided by the experiment.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Base._script_code">
+<code class="sig-name descname"><span class="pre">_script_code</span></code><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#experiment.Base._script_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameterized script to run this experiment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.generate_script">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">generate_script</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.generate_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a script to run the experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file</p></li>
+<li><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the script. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">script_file</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.load">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to load the experiment from. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">backup_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.results">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">results</span></code><a class="headerlink" href="#experiment.Base.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the results provided by this batch of experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.results_to_excel">
+<code class="sig-name descname"><span class="pre">results_to_excel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.results_to_excel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the results to a Excel file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the results. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the experiment.</p>
+<p>This method must be overriden by subclasses to return a correct
+value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Base.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Base.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the experiment. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">backup_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.Batch">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">Batch</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_experiments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#experiment.Base" title="experiment.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">experiment.Base</span></code></a></p>
+<p>Generate a batch of experiments.</p>
+<dl class="py method">
+<dt id="experiment.Batch.__append_data">
+<code class="sig-name descname"><span class="pre">__append_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__append_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append data from an experiment to a result dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the result</p></li>
+<li><p><strong>exp_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the experiment</p></li>
+<li><p><strong>exp_data</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> or
+<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data of the result</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the batch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__do_best_solutions_stats">
+<code class="sig-name descname"><span class="pre">__do_best_solutions_stats</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__do_best_solutions_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform stats on the best solutions found for each objective.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__do_execution_metrics_stats">
+<code class="sig-name descname"><span class="pre">__do_execution_metrics_stats</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__do_execution_metrics_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform some stats on the execution metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__do_feature_metrics_stats">
+<code class="sig-name descname"><span class="pre">__do_feature_metrics_stats</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__do_feature_metrics_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pertorm stats on the feature metrics of all the experiments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__gather_results">
+<code class="sig-name descname"><span class="pre">__gather_results</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__gather_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather the results of a batch of experiments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_experiments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a batch of experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file</p></li>
+<li><p><strong>n_experiments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Number of experiments in the batch, defaults to
+<a class="reference internal" href="#experiment.DEFAULT_N_EXPERIMENTS" title="experiment.DEFAULT_N_EXPERIMENTS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_N_EXPERIMENTS</span></code></a></p></li>
+<li><p><strong>folder_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path for the batch folder. If <cite>None</cite> the current
+folder is assumed. Defaults to <cite>None</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Batch.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.Batch.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Batch._default_stats">
+<code class="sig-name descname"><span class="pre">_default_stats</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.max&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.min&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.std&gt;}</span></em><a class="headerlink" href="#experiment.Batch._default_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statistics calculated for the results gathered from all the
+experiments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch._reset">
+<code class="sig-name descname"><span class="pre">_reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch._reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Batch._script_code">
+<code class="sig-name descname"><span class="pre">_script_code</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'#!/usr/bin/env</span> <span class="pre">python3\n#</span> <span class="pre">-*-</span> <span class="pre">coding:</span> <span class="pre">utf-8</span> <span class="pre">-*-\n\nfrom</span> <span class="pre">culebra.experiment</span> <span class="pre">import</span> <span class="pre">ConfigManager\n\n#</span> <span class="pre">Parameter</span> <span class="pre">file\nCONFIG</span> <span class="pre">=</span> <span class="pre">&quot;{config_file}&quot;\n\n#</span> <span class="pre">Get</span> <span class="pre">the</span> <span class="pre">configuration</span> <span class="pre">parameters\nconfig_manager</span> <span class="pre">=</span> <span class="pre">ConfigManager(CONFIG)\n\n#</span> <span class="pre">Create</span> <span class="pre">the</span> <span class="pre">batch\nbatch</span> <span class="pre">=</span> <span class="pre">config_manager.build_batch()\n\n#</span> <span class="pre">Run</span> <span class="pre">the</span> <span class="pre">experiments</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">batch\nbatch.run()\n\n#</span> <span class="pre">Save</span> <span class="pre">the</span> <span class="pre">batch\nbatch.save()\n\n#</span> <span class="pre">Save</span> <span class="pre">the</span> <span class="pre">results</span> <span class="pre">to</span> <span class="pre">Excel\nbatch.results_to_excel()\n\n#</span> <span class="pre">Print</span> <span class="pre">the</span> <span class="pre">results\nfor</span> <span class="pre">res,</span> <span class="pre">val</span> <span class="pre">in</span> <span class="pre">batch.results.items():\n</span>&#160;&#160;&#160; <span class="pre">print(f&quot;\\n\\n{res}:&quot;)\n</span>&#160;&#160;&#160; <span class="pre">print(val)\n'</span></em><a class="headerlink" href="#experiment.Batch._script_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Script to run all the experiments in a batch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.config_file">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">config_file</span></code><a class="headerlink" href="#experiment.Batch.config_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the path to the configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.exp_folders">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">exp_folders</span></code><a class="headerlink" href="#experiment.Batch.exp_folders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the experiment folders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.generate_script">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">generate_script</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.generate_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a script to run the experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file</p></li>
+<li><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the script. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">script_file</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.load">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to load the experiment from. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">backup_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.n_experiments">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_experiments</span></code><a class="headerlink" href="#experiment.Batch.n_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of experiments in the batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.path">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">path</span></code><a class="headerlink" href="#experiment.Batch.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the path to the batch folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.results">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">results</span></code><a class="headerlink" href="#experiment.Batch.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the results provided by this batch of experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.results_to_excel">
+<code class="sig-name descname"><span class="pre">results_to_excel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.results_to_excel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the results to a Excel file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the results. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a batch of experiments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Batch.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Batch.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the experiment. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">backup_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.ConfigKeys">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">ConfigKeys</span></code><a class="headerlink" href="#experiment.ConfigKeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Keys in the config file.</p>
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.ConfigKeys.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.classifier_cls">
+<code class="sig-name descname"><span class="pre">classifier_cls</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'classifier_cls'</span></em><a class="headerlink" href="#experiment.ConfigKeys.classifier_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the classifier class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.file">
+<code class="sig-name descname"><span class="pre">file</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'file'</span></em><a class="headerlink" href="#experiment.ConfigKeys.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inputs file name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.fitness_cls">
+<code class="sig-name descname"><span class="pre">fitness_cls</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'fitness_cls'</span></em><a class="headerlink" href="#experiment.ConfigKeys.fitness_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the fitness class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.individual_cls">
+<code class="sig-name descname"><span class="pre">individual_cls</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'individual_cls'</span></em><a class="headerlink" href="#experiment.ConfigKeys.individual_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the individual class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.output_file">
+<code class="sig-name descname"><span class="pre">output_file</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'output_file'</span></em><a class="headerlink" href="#experiment.ConfigKeys.output_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output file name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.species_cls">
+<code class="sig-name descname"><span class="pre">species_cls</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'species_cls'</span></em><a class="headerlink" href="#experiment.ConfigKeys.species_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the species class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.test_prop">
+<code class="sig-name descname"><span class="pre">test_prop</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'test_prop'</span></em><a class="headerlink" href="#experiment.ConfigKeys.test_prop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proportion of data used to test.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigKeys.wrapper_cls">
+<code class="sig-name descname"><span class="pre">wrapper_cls</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'wrapper_cls'</span></em><a class="headerlink" href="#experiment.ConfigKeys.wrapper_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key containing the wrapper class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.ConfigManager">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">ConfigManager</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.base.Base</span></code></p>
+<p>Manage the configuration file.</p>
+<dl class="py method">
+<dt id="experiment.ConfigManager.__build_fitness">
+<code class="sig-name descname"><span class="pre">__build_fitness</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitness_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__build_fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a fitness object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitness_config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Section where the fitness is defined</p></li>
+<li><p><strong>section_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The fitness object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__build_obj">
+<code class="sig-name descname"><span class="pre">__build_obj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__build_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build an object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Object key</p></li>
+<li><p><strong>obj_config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Section where the object is defined</p></li>
+<li><p><strong>section_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the config manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the config manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__get_dataset_files">
+<code class="sig-name descname"><span class="pre">__get_dataset_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__get_dataset_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dataset file names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Section where the file names are defined</p></li>
+<li><p><strong>section_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the structure of <em>dataset_config</em> is not
+valid.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The file dataset file names</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__get_value">
+<code class="sig-name descname"><span class="pre">__get_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_section</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mandatory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a value from a section in a config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Full name of the value.</p></li>
+<li><p><strong>section_config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Section containing the value.</p></li>
+<li><p><strong>section_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <cite>None</cite>) – Name of the section containing the value, defaults
+to <cite>None</cite></p></li>
+<li><p><strong>is_section</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <cite>True</cite> if the value is a section, defaults to
+<cite>False</cite></p></li>
+<li><p><strong>mandatory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <cite>True</cite> if the value is mandatory, defaults to <cite>False</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If a mandatory value is missing</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The value it it exists, or <cite>None</cite> otherwise</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any valid value in a TOML file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the manager from a TOML configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>A path to a file</em>) – Configuration file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the config manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__replace_objects">
+<code class="sig-name descname"><span class="pre">__replace_objects</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__replace_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace all object names by the objects they name.</p>
+<p>Check all the keys in the config parameters and replaces the
+values of all the keys having a suffix in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">object_suffixes</span></code>, which
+contain object names, by the objects they name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Any valid TOML value</em>) – Configuration parameters</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – A key, defaults to <cite>None</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any object can not be found.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The modiffied parameters</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>The same of <em>config</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigManager.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.ConfigManager.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigManager._object_suffixes">
+<code class="sig-name descname"><span class="pre">_object_suffixes</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('_func',</span> <span class="pre">'_cls')</span></em><a class="headerlink" href="#experiment.ConfigManager._object_suffixes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key suffixes of values containing object names that should be replaced
+by the the object they name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigManager._toml_sep">
+<code class="sig-name descname"><span class="pre">_toml_sep</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'.'</span></em><a class="headerlink" href="#experiment.ConfigManager._toml_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section separator in TOML files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.build_batch">
+<code class="sig-name descname"><span class="pre">build_batch</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.build_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a batch of experiments to test the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any mandatory value is missing</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The batch</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.build_experiment">
+<code class="sig-name descname"><span class="pre">build_experiment</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.build_experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an experiment to run the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any mandatory value is missing</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The experiment</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>An <code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.build_fitness">
+<code class="sig-name descname"><span class="pre">build_fitness</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.build_fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the training and test fitness objects.</p>
+<p>If the test fitness is omitted in the config file, the training
+fitness will also be returned as test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If any mandatory value is missing</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The training and test fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> composed by two instances of any subclass
+of <code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.build_wrapper">
+<code class="sig-name descname"><span class="pre">build_wrapper</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.build_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a wrapper method built from the configuration parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the structure of the config file is not valid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The wrapper object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.ConfigManager.load_dataset">
+<code class="sig-name descname"><span class="pre">load_dataset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.ConfigManager.load_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the config parameters to load the training and test data.</p>
+<p>Once the configuration parameters are processed, this functions calls
+to <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_train_test()</span></code> to load the
+data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the structure of the config file is not valid.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code>
+containing the training and test datasets</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.ConfigSections">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">ConfigSections</span></code><a class="headerlink" href="#experiment.ConfigSections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Sections in the config file.</p>
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.ConfigSections.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.batch">
+<code class="sig-name descname"><span class="pre">batch</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'batch'</span></em><a class="headerlink" href="#experiment.ConfigSections.batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the batch configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.classifier">
+<code class="sig-name descname"><span class="pre">classifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'classifier'</span></em><a class="headerlink" href="#experiment.ConfigSections.classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the details of the classifier.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.dataset">
+<code class="sig-name descname"><span class="pre">dataset</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'dataset'</span></em><a class="headerlink" href="#experiment.ConfigSections.dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the dataset configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.fitness">
+<code class="sig-name descname"><span class="pre">fitness</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'fitness'</span></em><a class="headerlink" href="#experiment.ConfigSections.fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the fitness configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.parameters">
+<code class="sig-name descname"><span class="pre">parameters</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'parameters'</span></em><a class="headerlink" href="#experiment.ConfigSections.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the parameters of any object or class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.species">
+<code class="sig-name descname"><span class="pre">species</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'species'</span></em><a class="headerlink" href="#experiment.ConfigSections.species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the species configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.test">
+<code class="sig-name descname"><span class="pre">test</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'test'</span></em><a class="headerlink" href="#experiment.ConfigSections.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the test configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.training">
+<code class="sig-name descname"><span class="pre">training</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'training'</span></em><a class="headerlink" href="#experiment.ConfigSections.training" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the training configuration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.ConfigSections.wrapper">
+<code class="sig-name descname"><span class="pre">wrapper</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'wrapper'</span></em><a class="headerlink" href="#experiment.ConfigSections.wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Section containing the wrapper configuration.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt id="experiment.DEFAULT_BATCH_STATS">
+<code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_BATCH_STATS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.max&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.min&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.std&gt;}</span></em><a class="headerlink" href="#experiment.DEFAULT_BATCH_STATS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for the results gathered from all the
+experiments.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="experiment.DEFAULT_FEATURE_METRICS">
+<code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_FEATURE_METRICS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#experiment.DEFAULT_FEATURE_METRICS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default metrics calculated for the features in the set of solutions.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="experiment.DEFAULT_N_EXPERIMENTS">
+<code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_N_EXPERIMENTS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#experiment.DEFAULT_N_EXPERIMENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of experiments in the batch.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="experiment.DEFAULT_TEST_STATS">
+<code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_TEST_STATS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#experiment.DEFAULT_TEST_STATS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for tested solutions.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.Experiment">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">Experiment</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr_fitness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tst_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tst_fitness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#experiment.Base" title="experiment.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">experiment.Base</span></code></a></p>
+<p>Run a wrapper method from the parameters in a config file.</p>
+<dl class="py method">
+<dt id="experiment.Experiment.__add_execution_metrix">
+<code class="sig-name descname"><span class="pre">__add_execution_metrix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__add_execution_metrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an execution metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the metric</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Value of the metric</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the experiment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__do_best_solutions">
+<code class="sig-name descname"><span class="pre">__do_best_solutions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__do_best_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a DataFrame with the best solutions found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__do_feature_metrics">
+<code class="sig-name descname"><span class="pre">__do_feature_metrics</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__do_feature_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform stats about features frequency in the set of solutions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__do_test_solutions">
+<code class="sig-name descname"><span class="pre">__do_test_solutions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__do_test_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the test fitness values to the solutions found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – Individuals to be appended</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__do_test_stats">
+<code class="sig-name descname"><span class="pre">__do_test_stats</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__do_test_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform some stats on the tested solutions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found (evaluated with test data)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__do_training_solutions">
+<code class="sig-name descname"><span class="pre">__do_training_solutions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fitness_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__do_training_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the training fitness values to the solutions found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – Individuals to be appended</p></li>
+<li><p><strong>fitness_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>) – Fitness names</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__do_training_stats">
+<code class="sig-name descname"><span class="pre">__do_training_stats</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__do_training_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the training stats from a logbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – The logbook</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr_fitness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tst_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tst_fitness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an experiment to run a wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrapper</strong> (Any subclass of <a class="reference internal" href="base.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>.) – The wrapper method</p></li>
+<li><p><strong>tr_data</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Training data</p></li>
+<li><p><strong>tr_fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – The fitness used for training</p></li>
+<li><p><strong>tst_data</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>, optional) – Test data. If <cite>None</cite>, <em>tr_data</em> will be used. Defaults
+to <cite>None</cite></p></li>
+<li><p><strong>tst_fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>,
+optional) – The fitness used to test. If <cite>None</cite>, <em>tr_fitness</em>
+will be used. Defaults to <cite>None</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__test">
+<code class="sig-name descname"><span class="pre">__test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the test step.</p>
+<p>Test the solutions found by the wrapper append their fitness to the
+best solutions dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The best solutions found, updated with the test fitness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.__train">
+<code class="sig-name descname"><span class="pre">__train</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.__train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the training step.</p>
+<p>Train the wrapper and append the solutions to the best solutions
+dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Experiment.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.Experiment.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Experiment._default_feature_metrics">
+<code class="sig-name descname"><span class="pre">_default_feature_metrics</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#experiment.Experiment._default_feature_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metrics calculated for the features in the set of solutions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Experiment._default_stats">
+<code class="sig-name descname"><span class="pre">_default_stats</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#experiment.Experiment._default_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statistics calculated for the tested solutions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment._reset">
+<code class="sig-name descname"><span class="pre">_reset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment._reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Experiment._script_code">
+<code class="sig-name descname"><span class="pre">_script_code</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'#!/usr/bin/env</span> <span class="pre">python3\n#</span> <span class="pre">-*-</span> <span class="pre">coding:</span> <span class="pre">utf-8</span> <span class="pre">-*-\n\nfrom</span> <span class="pre">culebra.experiment</span> <span class="pre">import</span> <span class="pre">ConfigManager\n\n#</span> <span class="pre">Parameter</span> <span class="pre">file\nCONFIG</span> <span class="pre">=</span> <span class="pre">&quot;{config_file}&quot;\n\n#</span> <span class="pre">Get</span> <span class="pre">the</span> <span class="pre">configuration</span> <span class="pre">parameters\nconfig_manager</span> <span class="pre">=</span> <span class="pre">ConfigManager(CONFIG)\n\n#</span> <span class="pre">Create</span> <span class="pre">the</span> <span class="pre">experiment\nexperiment</span> <span class="pre">=</span> <span class="pre">config_manager.build_experiment()\n\n#</span> <span class="pre">Run</span> <span class="pre">the</span> <span class="pre">experiment\nexperiment.run()\n\n#</span> <span class="pre">Save</span> <span class="pre">the</span> <span class="pre">experiment\nexperiment.save()\n\n#</span> <span class="pre">Save</span> <span class="pre">the</span> <span class="pre">results</span> <span class="pre">to</span> <span class="pre">Excel\nexperiment.results_to_excel()\n\n#</span> <span class="pre">Print</span> <span class="pre">the</span> <span class="pre">results\nfor</span> <span class="pre">res,</span> <span class="pre">val</span> <span class="pre">in</span> <span class="pre">experiment.results.items():\n</span>&#160;&#160;&#160; <span class="pre">print(f&quot;\\n\\n{res}:&quot;)\n</span>&#160;&#160;&#160; <span class="pre">print(val)\n'</span></em><a class="headerlink" href="#experiment.Experiment._script_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameterized script to run this experiment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.generate_script">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">generate_script</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.generate_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a script to run the experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file</p></li>
+<li><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the script. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">script_file</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.load">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to load the experiment from. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">backup_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.results">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">results</span></code><a class="headerlink" href="#experiment.Experiment.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the results provided by this batch of experiments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.results_to_excel">
+<code class="sig-name descname"><span class="pre">results_to_excel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.results_to_excel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the results to a Excel file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the results. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the wrapper method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="experiment.Experiment.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiment.Experiment.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>A path to a file</em><em>, </em><em>optional.</em>) – File to store the experiment. Defaults to
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">backup_file</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.Files">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">Files</span></code><a class="headerlink" href="#experiment.Files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Files generated by an experiment.</p>
+<dl class="py attribute">
+<dt id="experiment.Files.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.Files.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Files.backup">
+<code class="sig-name descname"><span class="pre">backup</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'backup.gz'</span></em><a class="headerlink" href="#experiment.Files.backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default name for the file to backup the experiment.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Files.results">
+<code class="sig-name descname"><span class="pre">results</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'results.xlsx'</span></em><a class="headerlink" href="#experiment.Files.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name for the file to store the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Files.script">
+<code class="sig-name descname"><span class="pre">script</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'run.py'</span></em><a class="headerlink" href="#experiment.Files.script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name for the script to run an experiment.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="experiment.Labels">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">experiment.</span></code><code class="sig-name descname"><span class="pre">Labels</span></code><a class="headerlink" href="#experiment.Labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Labels for the results dataframes.</p>
+<dl class="py attribute">
+<dt id="experiment.Labels.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#experiment.Labels.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.avg">
+<code class="sig-name descname"><span class="pre">avg</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Avg'</span></em><a class="headerlink" href="#experiment.Labels.avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the avg column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.batch">
+<code class="sig-name descname"><span class="pre">batch</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Batch'</span></em><a class="headerlink" href="#experiment.Labels.batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the batch column in dataframes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.best">
+<code class="sig-name descname"><span class="pre">best</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Best'</span></em><a class="headerlink" href="#experiment.Labels.best" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the best column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.experiment">
+<code class="sig-name descname"><span class="pre">experiment</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Exp'</span></em><a class="headerlink" href="#experiment.Labels.experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the experiment column in dataframes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.feature">
+<code class="sig-name descname"><span class="pre">feature</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Feature'</span></em><a class="headerlink" href="#experiment.Labels.feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the feature column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.fitness">
+<code class="sig-name descname"><span class="pre">fitness</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Fitness'</span></em><a class="headerlink" href="#experiment.Labels.fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the fitness column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.individual">
+<code class="sig-name descname"><span class="pre">individual</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Individual'</span></em><a class="headerlink" href="#experiment.Labels.individual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the individual column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.max">
+<code class="sig-name descname"><span class="pre">max</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Max'</span></em><a class="headerlink" href="#experiment.Labels.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the max column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.metric">
+<code class="sig-name descname"><span class="pre">metric</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Metric'</span></em><a class="headerlink" href="#experiment.Labels.metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the metric column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.min">
+<code class="sig-name descname"><span class="pre">min</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Min'</span></em><a class="headerlink" href="#experiment.Labels.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the min column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.phase">
+<code class="sig-name descname"><span class="pre">phase</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Phase'</span></em><a class="headerlink" href="#experiment.Labels.phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the phase column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.rank">
+<code class="sig-name descname"><span class="pre">rank</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Rank'</span></em><a class="headerlink" href="#experiment.Labels.rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the rank column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.relevance">
+<code class="sig-name descname"><span class="pre">relevance</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Relevance'</span></em><a class="headerlink" href="#experiment.Labels.relevance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the relevance column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.runtime">
+<code class="sig-name descname"><span class="pre">runtime</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Runtime'</span></em><a class="headerlink" href="#experiment.Labels.runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the runtime column in dataframes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.stat">
+<code class="sig-name descname"><span class="pre">stat</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Stat'</span></em><a class="headerlink" href="#experiment.Labels.stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the stat column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.std">
+<code class="sig-name descname"><span class="pre">std</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Std'</span></em><a class="headerlink" href="#experiment.Labels.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label for the std column in the dataframes</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.test">
+<code class="sig-name descname"><span class="pre">test</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Test'</span></em><a class="headerlink" href="#experiment.Labels.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test phase label</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="experiment.Labels.training">
+<code class="sig-name descname"><span class="pre">training</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Training'</span></em><a class="headerlink" href="#experiment.Labels.training" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training phase label</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">culebra</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="base.html">base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feature_selector.html">feature_selector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitness.html">fitness module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrapper.html">wrapper module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">experiment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_file.html">configuration file</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="wrapper.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code> module</a></li>
+      <li>Next: <a href="config_file.html" title="next chapter">Configuration file</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/experiment.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+    
+
+    
+
+    
+  </body>
+</html>

@@ -28,9 +28,9 @@ evolutionary computation library designed to solve feature selection problems.
 It provides several individual representations, such as bitvectors and set
 of feature indices, several fitness functions and several wrapper algorithms.
 
-Experiments and experiment batchs are automatized by means of the 
-:py:class:`~tools.experiment.Experiment` and :py:class:`~tools.batch.Batch`
-classes, both in the :doc:`tools` subpackage.
+Experiments and experiment batchs are automatized by means of the
+:py:class:`~experiment.Experiment` and :py:class:`~experiment.Batch`
+classes, both in the :py:mod:`experiment` module.
 
 
 Contents:
@@ -38,11 +38,12 @@ Contents:
 .. toctree::
    :titlesonly:
 
-   Base subpackage <base>
-   Individual subpackage <individual>
-   Fitness subpackage <fitness>
-   Wrapper subpackage <wrapper>
-   Tools subpackage <tools> 
+   base module <base>
+   feature_selector module <feature_selector>
+   fitness module <fitness>
+   wrapper module <wrapper>
+   experiment module <experiment>
+   configuration file <config_file>
 
 
 

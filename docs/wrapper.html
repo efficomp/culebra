@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wrapper subpackage &#8212; culebra</title>
+    <title>wrapper module &#8212; culebra</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -14,8 +14,8 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="wrapper.generational_wrapper" href="wrapper/generational_wrapper.html" />
-    <link rel="prev" title="fitness.kappa_num_feats_fitness" href="fitness/kappa_num_feats_fitness.html" />
+    <link rel="next" title="experiment module" href="experiment.html" />
+    <link rel="prev" title="fitness module" href="fitness.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -32,22 +32,1701 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="wrapper-subpackage">
-<h1>Wrapper subpackage<a class="headerlink" href="#wrapper-subpackage" title="Permalink to this headline">¶</a></h1>
-<p>This package provides an abstract base class for all the generarational
-wrapper procedures:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="wrapper/generational_wrapper.html#module-wrapper.generational_wrapper" title="wrapper.generational_wrapper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.generational_wrapper</span></code></a></p></li>
+  <div class="section" id="module-wrapper">
+<span id="wrapper-module"></span><h1><a class="reference internal" href="#module-wrapper" title="wrapper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code></a> module<a class="headerlink" href="#module-wrapper" title="Permalink to this headline">¶</a></h1>
+<p>Implementation of some wrapper algorithms.</p>
+<dl class="simple">
+<dt>This module provides the following wrapper method implementations:</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#wrapper.GenerationalWrapper" title="wrapper.GenerationalWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenerationalWrapper</span></code></a>: Base class for all the
+generational-based wrapper algorithms</p></li>
+<li><p><a class="reference internal" href="#wrapper.EvolutionaryWrapper" title="wrapper.EvolutionaryWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolutionaryWrapper</span></code></a>: Simple evolutionary algorithm</p></li>
+<li><p><a class="reference internal" href="#wrapper.NSGAWrapper" title="wrapper.NSGAWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSGAWrapper</span></code></a>: Multi-objective evolutionary algorithm,
+based on Non-dominated sorting, able to run the NSGA-II or the NSGA-III
+algorithms</p></li>
 </ul>
-<p>And two generational wrapper procedures: a simple evolutionary algorithm and
-another one, based on Non-dominated sorting, able to run NSGA-II and NSGA-III
-algorithms:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="wrapper/evolutionary_wrapper.html#module-wrapper.evolutionary_wrapper" title="wrapper.evolutionary_wrapper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.evolutionary_wrapper</span></code></a></p></li>
-<li><p><a class="reference internal" href="wrapper/nsga_wrapper.html#module-wrapper.nsga_wrapper" title="wrapper.nsga_wrapper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.nsga_wrapper</span></code></a></p></li>
+</dd>
+</dl>
+<dl class="py data">
+<dt id="wrapper.DEFAULT_MUT_IND_PB">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_MUT_IND_PB</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.05</span></em><a class="headerlink" href="#wrapper.DEFAULT_MUT_IND_PB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default independent gene mutation probability.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_MUT_PB">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_MUT_PB</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#wrapper.DEFAULT_MUT_PB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default mutation probability.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="wrapper.DEFAULT_NSGA_SEL_FUNC">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_NSGA_SEL_FUNC</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.DEFAULT_NSGA_SEL_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function for NSGA-based algorithms.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_NSGA_SEL_FUNC_PARAMS">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_NSGA_SEL_FUNC_PARAMS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#wrapper.DEFAULT_NSGA_SEL_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function parameters for NSGA-based algorithms.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_N_GENS">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_N_GENS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#wrapper.DEFAULT_N_GENS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of generations.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_POP_SIZE">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_POP_SIZE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#wrapper.DEFAULT_POP_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default population size.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="wrapper.DEFAULT_SEL_FUNC">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_SEL_FUNC</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tournsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fitness'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.DEFAULT_SEL_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_SEL_FUNC_PARAMS">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_SEL_FUNC_PARAMS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">2}</span></em><a class="headerlink" href="#wrapper.DEFAULT_SEL_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function parameters.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_STATS_NAMES">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_STATS_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('Gen',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#wrapper.DEFAULT_STATS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for each generation.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_XOVER_PB">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_XOVER_PB</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#wrapper.DEFAULT_XOVER_PB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default xover probability.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="wrapper.EvolutionaryWrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">EvolutionaryWrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wrapper.GenerationalWrapper" title="wrapper.GenerationalWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.GenerationalWrapper</span></code></a></p>
+<p>Base class for all the evolutionary wrapper methods.</p>
+<p>This class implements the simplest evolutionary algorithm.</p>
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>individual_cls</strong> (Any subclass of
+<a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Individual representation.</p></li>
+<li><p><strong>species</strong> (Any sublass of <a class="reference internal" href="base.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species the individual will belong to</p></li>
+<li><p><strong>pop_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Population size, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_POP_SIZE" title="wrapper.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a></p></li>
+<li><p><strong>n_gens</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Number of generations, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_N_GENS" title="wrapper.DEFAULT_N_GENS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_N_GENS</span></code></a></p></li>
+<li><p><strong>xover_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Crossover function, defaults to the
+<a class="reference internal" href="base.html#base.Individual.crossover" title="base.Individual.crossover"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crossover()</span></code></a> method of
+<em>individual_cls</em></p></li>
+<li><p><strong>xover_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Crossover rate, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_XOVER_PB" title="wrapper.DEFAULT_XOVER_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_XOVER_PB</span></code></a></p></li>
+<li><p><strong>mut_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Mutation function, defaults to the
+<a class="reference internal" href="base.html#base.Individual.mutate" title="base.Individual.mutate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mutate()</span></code></a> method of
+<em>individual_cls</em></p></li>
+<li><p><strong>mut_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Mutation rate, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_MUT_PB" title="wrapper.DEFAULT_MUT_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUT_PB</span></code></a></p></li>
+<li><p><strong>mut_ind_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Independent gene mutation probability, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_MUT_IND_PB" title="wrapper.DEFAULT_MUT_IND_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUT_IND_PB</span></code></a></p></li>
+<li><p><strong>sel_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Selection function, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_SEL_FUNC" title="wrapper.DEFAULT_SEL_FUNC"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SEL_FUNC</span></code></a></p></li>
+<li><p><strong>sel_func_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, optional) – Selection function parameters, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_SEL_FUNC_PARAMS" title="wrapper.DEFAULT_SEL_FUNC_PARAMS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SEL_FUNC_PARAMS</span></code></a></p></li>
+<li><p><strong>checkpoint_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Frequency for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FREQ" title="base.DEFAULT_WRAPPER_CHECKPOINT_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FREQ</span></code></a></p></li>
+<li><p><strong>checkpoint_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – File path for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FILE" title="base.DEFAULT_WRAPPER_CHECKPOINT_FILE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FILE</span></code></a></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to log the statistics, defaults to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#__debug__" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">__debug__</span></code></a></p></li>
 </ul>
-<div class="toctree-wrapper compound">
-</div>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="wrapper.EvolutionaryWrapper.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper._do_generation">
+<code class="sig-name descname"><span class="pre">_do_generation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper._do_generation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement a generation of the search process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p></li>
+<li><p><strong>gen_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The generation number</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – Logbook for the stats</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper._do_stats">
+<code class="sig-name descname"><span class="pre">_do_stats</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_evals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper._do_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile the stats of a generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p></li>
+<li><p><strong>gen_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The generation number</p></li>
+<li><p><strong>num_evals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of evaluations performed</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – Logbook for the stats</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper._eval">
+<code class="sig-name descname"><span class="pre">_eval</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper._eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the individuals of a population with an invalid fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>Any iterable type.</em>) – The population.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The number of individuals evaluated.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper._get_fitness_values">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_get_fitness_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper._get_fitness_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fitness values of an individual.</p>
+<p>DEAP <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Statistics" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Statistics</span></code></a> class needs a function to
+obtain the fitness values of an individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ind</strong> (Any subclass of <a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The fitness values of <em>ind</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper._search">
+<code class="sig-name descname"><span class="pre">_search</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper._search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the search algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper._select_best">
+<code class="sig-name descname"><span class="pre">_select_best</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper._select_best" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the best individuals of the population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The best individuals found</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.checkpoint_file">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_file</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.checkpoint_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint file path</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the checkpoint file path</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.checkpoint_freq">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_freq</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.checkpoint_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint frequency</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a value for the checkpoint frequency</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.mut_func">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mut_func</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.mut_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current mutation function</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new mutation function</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any callable object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a non callable object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.mut_ind_pb">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mut_ind_pb</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.mut_ind_pb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gene independent mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current gene independent mutation probability</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new gene independent mutation probability</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.mut_pb">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mut_pb</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.mut_pb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current mutation probability</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new mutation probability</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.n_gens">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_gens</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.n_gens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the number of generations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current number of generations</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the number of generations</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.objective_stats_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">objective_stats_names</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.objective_stats_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the names of the objectives stats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.pop_size">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pop_size</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.pop_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the population size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current population size</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the population size</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.random_seed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">random_seed</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.random_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the initial random seed used by this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the seed</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the random seed</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.sel_func">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sel_func</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.sel_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the selection function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current selection function</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new selection function</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any callable object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a non callable object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.sel_func_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sel_func_params</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.sel_func_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the selection function parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current selection function parameters</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set new selection function parameters</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.test">
+<code class="sig-name descname"><span class="pre">test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the test data to the solutions found by the wrapper method.</p>
+<p>Update the solutions in <em>hof</em> with their test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Test dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used to evaluate the final solutions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the test data does
+not match that of the species.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the feature selection process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Training dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used while training</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the training data
+does not match that of the species.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.verbose">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the verbosity of this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the verbosity</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the verbosity</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.xover_func">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">xover_func</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.xover_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crossover function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current crossover function</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new crossover function</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any callable object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a non callable object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.xover_pb">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">xover_pb</span></code><a class="headerlink" href="#wrapper.EvolutionaryWrapper.xover_pb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crossover probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current crossover probability</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new crossover probability</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wrapper.GenerationalWrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">GenerationalWrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.base.Wrapper</span></code></p>
+<p>Base class for all the generational wrapper methods.</p>
+<p>It is an abstract class. The
+<a class="reference internal" href="#wrapper.GenerationalWrapper._do_generation" title="wrapper.GenerationalWrapper._do_generation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_do_generation()</span></code></a> method must be
+implemented in its subclasses to obtain a complete generational algorithm.</p>
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>individual_cls</strong> (Any subclass of <a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Individual representation.</p></li>
+<li><p><strong>species</strong> (Any sublass of <a class="reference internal" href="base.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species the individual will belong to</p></li>
+<li><p><strong>pop_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Population size, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_POP_SIZE" title="wrapper.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a></p></li>
+<li><p><strong>n_gens</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Number of generations, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_N_GENS" title="wrapper.DEFAULT_N_GENS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_N_GENS</span></code></a></p></li>
+<li><p><strong>checkpoint_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Frequency for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FREQ" title="base.DEFAULT_WRAPPER_CHECKPOINT_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FREQ</span></code></a></p></li>
+<li><p><strong>checkpoint_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – File path for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FILE" title="base.DEFAULT_WRAPPER_CHECKPOINT_FILE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FILE</span></code></a></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to log the statistics, defaults to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#__debug__" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">__debug__</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__load_checkpoint">
+<code class="sig-name descname"><span class="pre">__load_checkpoint</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__load_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the state of the last checkpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – If the checkpoint file can’t be loaded</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The last saved population</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The last executed generation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The last saved logbook</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The runtime until checkpoint was reached</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__save_checkpoint">
+<code class="sig-name descname"><span class="pre">__save_checkpoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runtime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__save_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the state at a new checkpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>) – The last population</p></li>
+<li><p><strong>gen</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The last executed generation</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – The last logbook</p></li>
+<li><p><strong>runtime</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The runtime until checkpoint was reached</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="wrapper.GenerationalWrapper.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper._do_generation">
+<code class="sig-name descname"><span class="pre">_do_generation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper._do_generation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement a generation of the search process.</p>
+<p>This method must be overriden by subclasses to implement the different
+generational algorithms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p></li>
+<li><p><strong>gen_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The generation number</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – Logbook for the stats</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper._do_stats">
+<code class="sig-name descname"><span class="pre">_do_stats</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_evals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper._do_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile the stats of a generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p></li>
+<li><p><strong>gen_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The generation number</p></li>
+<li><p><strong>num_evals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of evaluations performed</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – Logbook for the stats</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper._eval">
+<code class="sig-name descname"><span class="pre">_eval</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper._eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the individuals of a population with an invalid fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>Any iterable type.</em>) – The population.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The number of individuals evaluated.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper._get_fitness_values">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_get_fitness_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper._get_fitness_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fitness values of an individual.</p>
+<p>DEAP <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Statistics" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Statistics</span></code></a> class needs a function to
+obtain the fitness values of an individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ind</strong> (Any subclass of <a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The fitness values of <em>ind</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper._search">
+<code class="sig-name descname"><span class="pre">_search</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper._search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the search algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper._select_best">
+<code class="sig-name descname"><span class="pre">_select_best</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper._select_best" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the best individuals of the population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The best individuals found</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.checkpoint_file">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_file</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.checkpoint_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint file path</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the checkpoint file path</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.checkpoint_freq">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_freq</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.checkpoint_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint frequency</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a value for the checkpoint frequency</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.n_gens">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_gens</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.n_gens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the number of generations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current number of generations</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the number of generations</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.objective_stats_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">objective_stats_names</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.objective_stats_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the names of the objectives stats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.pop_size">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pop_size</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.pop_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the population size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current population size</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the population size</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.random_seed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">random_seed</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.random_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the initial random seed used by this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the seed</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the random seed</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="wrapper.GenerationalWrapper.stats_names">
+<code class="sig-name descname"><span class="pre">stats_names</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('Gen',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#wrapper.GenerationalWrapper.stats_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statistics calculated for each generation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.test">
+<code class="sig-name descname"><span class="pre">test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the test data to the solutions found by the wrapper method.</p>
+<p>Update the solutions in <em>hof</em> with their test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Test dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used to evaluate the final solutions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the test data does
+not match that of the species.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.GenerationalWrapper.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the feature selection process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Training dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used while training</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the training data
+does not match that of the species.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.GenerationalWrapper.verbose">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#wrapper.GenerationalWrapper.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the verbosity of this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the verbosity</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the verbosity</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wrapper.NSGAWrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">NSGAWrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wrapper.EvolutionaryWrapper" title="wrapper.EvolutionaryWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.EvolutionaryWrapper</span></code></a></p>
+<p>NSGA-based wrapper method.</p>
+<p>This class allows to run the NSGA2 or NSGA3 algorithm as the search method
+within the wrapper method.</p>
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>individual_cls</strong> (Any subclass of
+<a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Individual representation.</p></li>
+<li><p><strong>species</strong> (Any sublass of <a class="reference internal" href="base.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species the individual will belong to</p></li>
+<li><p><strong>pop_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Population size, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_POP_SIZE" title="wrapper.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a></p></li>
+<li><p><strong>n_gens</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Number of generations, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_N_GENS" title="wrapper.DEFAULT_N_GENS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_N_GENS</span></code></a></p></li>
+<li><p><strong>xover_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Crossover function, defaults to the
+<a class="reference internal" href="base.html#base.Individual.crossover" title="base.Individual.crossover"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crossover()</span></code></a> method of
+<em>individual_cls</em></p></li>
+<li><p><strong>xover_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Crossover rate, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_XOVER_PB" title="wrapper.DEFAULT_XOVER_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_XOVER_PB</span></code></a></p></li>
+<li><p><strong>mut_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Mutation function, defaults to the
+<a class="reference internal" href="base.html#base.Individual.mutate" title="base.Individual.mutate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mutate()</span></code></a> method of
+<em>individual_cls</em></p></li>
+<li><p><strong>mut_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Mutation rate, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_MUT_PB" title="wrapper.DEFAULT_MUT_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUT_PB</span></code></a></p></li>
+<li><p><strong>mut_ind_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Independent gene mutation probability, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_MUT_IND_PB" title="wrapper.DEFAULT_MUT_IND_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUT_IND_PB</span></code></a></p></li>
+<li><p><strong>sel_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Selection function (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.selNSGA2" title="(in DEAP v1.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">selNSGA2()</span></code></a> or
+<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.selNSGA3" title="(in DEAP v1.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">selNSGA3()</span></code></a>), defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_NSGA_SEL_FUNC" title="wrapper.DEFAULT_NSGA_SEL_FUNC"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NSGA_SEL_FUNC</span></code></a></p></li>
+<li><p><strong>sel_func_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, optional) – Selection function parameters. If NSGA-III is
+used, this attribute must include a key named <em>‘ref_points’</em>
+containing a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> with the parameters needed to
+generate the reference points (the arguments of
+<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.uniform_reference_points" title="(in DEAP v1.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">uniform_reference_points()</span></code></a>). Since <em>sel_func</em>
+defaults to NSGA-II, the default value for <em>sel_func_params</em>
+is <a class="reference internal" href="#wrapper.DEFAULT_NSGA_SEL_FUNC_PARAMS" title="wrapper.DEFAULT_NSGA_SEL_FUNC_PARAMS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NSGA_SEL_FUNC_PARAMS</span></code></a></p></li>
+<li><p><strong>checkpoint_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Frequency for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FREQ" title="base.DEFAULT_WRAPPER_CHECKPOINT_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FREQ</span></code></a></p></li>
+<li><p><strong>checkpoint_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – File path for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FILE" title="base.DEFAULT_WRAPPER_CHECKPOINT_FILE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FILE</span></code></a></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to log the statistics, defaults to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#__debug__" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">__debug__</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="wrapper.NSGAWrapper.__weakref__">
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper._do_generation">
+<code class="sig-name descname"><span class="pre">_do_generation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper._do_generation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement a generation of the search process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p></li>
+<li><p><strong>gen_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The generation number</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – Logbook for the stats</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper._do_stats">
+<code class="sig-name descname"><span class="pre">_do_stats</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_evals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logbook</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper._do_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile the stats of a generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p></li>
+<li><p><strong>gen_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The generation number</p></li>
+<li><p><strong>num_evals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of evaluations performed</p></li>
+<li><p><strong>logbook</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a>) – Logbook for the stats</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper._eval">
+<code class="sig-name descname"><span class="pre">_eval</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper._eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the individuals of a population with an invalid fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>Any iterable type.</em>) – The population.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The number of individuals evaluated.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper._get_fitness_values">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_get_fitness_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper._get_fitness_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fitness values of an individual.</p>
+<p>DEAP <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Statistics" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Statistics</span></code></a> class needs a function to
+obtain the fitness values of an individual.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ind</strong> (Any subclass of <a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The fitness values of <em>ind</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper._search">
+<code class="sig-name descname"><span class="pre">_search</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper._search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the search algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper._select_best">
+<code class="sig-name descname"><span class="pre">_select_best</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper._select_best" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the best indiividuals of the population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>Any iterable type</em>) – The population</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The best individuals found</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.checkpoint_file">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_file</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.checkpoint_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint file path</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the checkpoint file path</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.checkpoint_freq">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">checkpoint_freq</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.checkpoint_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the checkpoint frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the checkpoint frequency</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a value for the checkpoint frequency</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.mut_func">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mut_func</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.mut_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutation function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current mutation function</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new mutation function</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any callable object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a non callable object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.mut_ind_pb">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mut_ind_pb</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.mut_ind_pb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gene independent mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current gene independent mutation probability</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new gene independent mutation probability</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.mut_pb">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mut_pb</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.mut_pb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutation probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current mutation probability</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new mutation probability</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.n_gens">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_gens</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.n_gens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the number of generations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current number of generations</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the number of generations</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.objective_stats_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">objective_stats_names</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.objective_stats_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the names of the objectives stats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.pop_size">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">pop_size</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.pop_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the population size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current population size</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the population size</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.random_seed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">random_seed</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.random_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the initial random seed used by this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the seed</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the random seed</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.sel_func">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sel_func</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.sel_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the selection function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current selection function</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new selection function</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any callable object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a non callable object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.sel_func_params">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sel_func_params</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.sel_func_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the selection function parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current selection function parameters</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set new selection function parameters</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.test">
+<code class="sig-name descname"><span class="pre">test</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the test data to the solutions found by the wrapper method.</p>
+<p>Update the solutions in <em>hof</em> with their test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hof</strong> (<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals) – The best individuals found</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Test dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used to evaluate the final solutions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the test data does
+not match that of the species.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.train">
+<code class="sig-name descname"><span class="pre">train</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.NSGAWrapper.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the feature selection process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="base.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – Training dataset</p></li>
+<li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="base.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – Fitness used while training</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the number of features in the training data
+does not match that of the species.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The best individuals found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of individuals</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A logbook with the statistics of the evolution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The runtime of the algorithm</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.verbose">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the verbosity of this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the verbosity</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new value for the verbosity</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.xover_func">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">xover_func</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.xover_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crossover function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current crossover function</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new crossover function</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any callable object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a non callable object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.NSGAWrapper.xover_pb">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">xover_pb</span></code><a class="headerlink" href="#wrapper.NSGAWrapper.xover_pb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crossover probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Return the current crossover probability</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Set a new crossover probability</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -68,24 +1747,20 @@ algorithms:</p>
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="base.html">Base subpackage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="individual.html">Individual subpackage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitness.html">Fitness subpackage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Wrapper subpackage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="wrapper/generational_wrapper.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.generational_wrapper</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="wrapper/evolutionary_wrapper.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.evolutionary_wrapper</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="wrapper/nsga_wrapper.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.nsga_wrapper</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools subpackage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feature_selector.html">feature_selector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitness.html">fitness module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">wrapper module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiment.html">experiment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_file.html">configuration file</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="fitness/kappa_num_feats_fitness.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitness.kappa_num_feats_fitness</span></code></a></li>
-      <li>Next: <a href="wrapper/generational_wrapper.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.generational_wrapper</span></code></a></li>
+      <li>Previous: <a href="fitness.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitness</span></code> module</a></li>
+      <li>Next: <a href="experiment.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">experiment</span></code> module</a></li>
   </ul></li>
 </ul>
 </div>
@@ -115,7 +1790,7 @@ algorithms:</p>
       &copy;2021, <a href="https://atcproyectos.ugr.es/efficomp/">EFFICOMP</a>.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
