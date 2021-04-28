@@ -42,4 +42,4 @@ This work was supported by project *New Computing Paradigms and Heterogeneous Pa
 
 ## License
 
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.md) © [EFFICOMP](https://atcproyectos.ugr.es/efficomp/).
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.md) © 2020-2021 [EFFICOMP](https://atcproyectos.ugr.es/efficomp/).
