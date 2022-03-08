@@ -26,7 +26,7 @@ Culebra is fully documented in its [github-pages](https://efficomp.github.io/cul
 
 The `tests` subfolder contains several examples that show the basic usage of culebra.
 
-## Acknowledgments
+## Funding
 
 This work was supported by project *New Computing Paradigms and Heterogeneous Parallel Architectures for High-Performance and Energy Efficiency of Classification and Optimization Tasks on Biomedical Engineering Applications* ([HPEE-COBE](https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/)), with reference PGC2018-098813-B-C31, funded by the Spanish [*Ministerio de Ciencia, Innovación y Universidades*](https://www.ciencia.gob.es/), and by the [European Regional Development Fund (ERDF)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
 
