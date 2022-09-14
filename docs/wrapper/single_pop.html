@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>wrapper.single_pop module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="wrapper.single_pop.SinglePop class" href="single_pop/single_pop.html" />
+    <link rel="prev" title="wrapper.Generational class" href="generational.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="single_pop/single_pop.html" title="wrapper.single_pop.SinglePop class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generational.html" title="wrapper.Generational class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../wrapper.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-wrapper.single_pop">
+<span id="wrapper-single-pop-module"></span><h1><a class="reference internal" href="#module-wrapper.single_pop" title="wrapper.single_pop"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop</span></code></a> module<a class="headerlink" href="#module-wrapper.single_pop" title="Permalink to this headline">¶</a></h1>
+<p>Implementation of single-population generational evolutionary algorithms.</p>
+<dl class="simple">
+<dt>This module provides the following wrapper method implementations:</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="single_pop/single_pop.html#wrapper.single_pop.SinglePop" title="wrapper.single_pop.SinglePop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePop</span></code></a>: Abstract base class for all
+the single-population generational wrappers</p></li>
+<li><p><a class="reference internal" href="single_pop/evolutionary.html#wrapper.single_pop.Evolutionary" title="wrapper.single_pop.Evolutionary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evolutionary</span></code></a>: Simple evolutionary
+algorithm</p></li>
+<li><p><a class="reference internal" href="single_pop/elitist.html#wrapper.single_pop.Elitist" title="wrapper.single_pop.Elitist"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elitist</span></code></a>: Elitist evolutionary
+algorithm</p></li>
+<li><p><a class="reference internal" href="single_pop/nsga.html#wrapper.single_pop.NSGA" title="wrapper.single_pop.NSGA"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSGA</span></code></a>: Multi-objective evolutionary
+algorithm, based on Non-dominated sorting, able to run the NSGA-II or the
+NSGA-III algorithms</p></li>
+</ul>
+</dd>
+</dl>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_POP_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_POP_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_POP_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default population size.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_CROSSOVER_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_CROSSOVER_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.9</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_CROSSOVER_PROB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default crossover probability.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_MUTATION_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_MUTATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_MUTATION_PROB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default mutation probability.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_GENE_IND_MUTATION_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_GENE_IND_MUTATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_GENE_IND_MUTATION_PROB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default gene independent mutation probability.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_SELECTION_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selTournament&gt;</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_SELECTION_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_NSGA_SELECTION_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_NSGA_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selNSGA2&gt;</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_NSGA_SELECTION_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function for NSGA-based algorithms.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_SELECTION_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">2}</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_SELECTION_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function parameters.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_NSGA_SELECTION_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_NSGA_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_NSGA_SELECTION_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function parameters for NSGA-based algorithms.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_ELITE_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_ELITE_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_ELITE_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of elite individuals.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.single_pop.DEFAULT_NSGA3_REFERENCE_POINTS_P">
+<span class="sig-name descname"><span class="pre">DEFAULT_NSGA3_REFERENCE_POINTS_P</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#wrapper.single_pop.DEFAULT_NSGA3_REFERENCE_POINTS_P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of divisions along each objective for the reference points
+of NSGA-III.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop</span></code> module</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="generational.html"
+                          title="previous chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.Generational</span></code> class</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="single_pop/single_pop.html"
+                          title="next chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop.SinglePop</span></code> class</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/wrapper/single_pop.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="single_pop/single_pop.html" title="wrapper.single_pop.SinglePop class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generational.html" title="wrapper.Generational class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../wrapper.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2022, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../_sources/wrapper/single_pop.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

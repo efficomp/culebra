@@ -4,7 +4,7 @@ Culebra is a [DEAP](https://deap.readthedocs.io/en/master/)-based evolutionary c
 
 It provides several individual representations, such as bitvectors and sets of feature indices, several fitness functions and several wrapper algorithms.
 
-Experiments and experiment batchs are automatized by means of the *Experiment* and *Batch* classes, both constructed from a [toml](https://pypi.org/project/toml/) configuration file.
+Experiments and experiment batchs are automatized by means of the *Experiment* and *Batch* classes.
 
 ## Requirements
 
@@ -24,11 +24,11 @@ Culebra is fully documented in its [github-pages](https://efficomp.github.io/cul
 
 ## Usage
 
-The `tests` subfolder contains several examples that show the basic usage of culebra.
+The `examples` subfolder contains several examples that show the basic usage of culebra.
 
-## Acknowledgments
+## Funding
 
-This work was supported by project *New Computing Paradigms and Heterogeneous Parallel Architectures for High-Performance and Energy Efficiency of Classification and Optimization Tasks on Biomedical Engineering Applications* ([HPEE-COBE](https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/)), with reference PGC2018-098813-B-C31, funded by the Spanish [*Ministerio de Ciencia, Innovación y Universidades*](https://www.ciencia.gob.es/), and by the [European Regional Development Fund (ERDF)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
+This work was supported by project *New Computing Paradigms and Heterogeneous Parallel Architectures for High-Performance and Energy Efficiency of Classification and Optimization Tasks on Biomedical Engineering Applications* ([HPEE-COBE](https://efficomp.ugr.es/research/projects/hpee-cobe/)), with reference PGC2018-098813-B-C31, funded by the Spanish [*Ministerio de Ciencia, Innovación y Universidades*](https://www.ciencia.gob.es/), and by the [European Regional Development Fund (ERDF)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
 
 <div style="text-align: right">
   <a href="https://www.ciencia.gob.es/">
@@ -42,4 +42,9 @@ This work was supported by project *New Computing Paradigms and Heterogeneous Pa
 
 ## License
 
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.md) © 2020-2021 [EFFICOMP](https://atcproyectos.ugr.es/efficomp/).
+[GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.md).
+
+## Copyright
+
+Culebra © 2020-2022 [EFFICOMP](https://efficomp.ugr.es).
+

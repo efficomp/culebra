@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>tools module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tools.Results class" href="tools/results.html" />
+    <link rel="prev" title="wrapper.multi_pop.topology module" href="wrapper/multi_pop/topology.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tools/results.html" title="tools.Results class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="wrapper/multi_pop/topology.html" title="wrapper.multi_pop.topology module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-tools">
+<span id="tools-module"></span><h1><a class="reference internal" href="#module-tools" title="tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> module<a class="headerlink" href="#module-tools" title="Permalink to this headline">¶</a></h1>
+<p>Tools to automate the execution of experiments.</p>
+<p>Automated experimentation is also a quite valuable characteristic when a
+<a class="reference internal" href="base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> method has to be run many times. Culebra provides
+this features by means of the following classes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="tools/results.html#tools.Results" title="tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> class, to manage the results provided by
+the evaluation of any <a class="reference internal" href="base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p></li>
+<li><p>The <a class="reference internal" href="tools/evaluation.html#tools.Evaluation" title="tools.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluation</span></code></a> class, a base class for the evaluation
+of wrappers</p></li>
+<li><p>The <a class="reference internal" href="tools/experiment.html#tools.Experiment" title="tools.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> class, designed to run a single
+experiment with a <a class="reference internal" href="base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p></li>
+<li><p>The <a class="reference internal" href="tools/batch.html#tools.Batch" title="tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> class, which allows to run a batch of
+experiments with the same configuration</p></li>
+</ul>
+</div></blockquote>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_KEY">
+<span class="sig-name descname"><span class="pre">DEFAULT_KEY</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'Unlabeled'</span></em><a class="headerlink" href="#tools.DEFAULT_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default key for results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_RESULTS_BACKUP_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESULTS_BACKUP_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'results.gz'</span></em><a class="headerlink" href="#tools.DEFAULT_RESULTS_BACKUP_FILENAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default file name for results backups.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_RESULTS_EXCEL_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESULTS_EXCEL_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'results.xlsx'</span></em><a class="headerlink" href="#tools.DEFAULT_RESULTS_EXCEL_FILENAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default name of the datasheet to store the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_STATS_FUNCTIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_STATS_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#tools.DEFAULT_STATS_FUNCTIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_FEATURE_METRIC_FUNCTIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_FEATURE_METRIC_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#tools.DEFAULT_FEATURE_METRIC_FUNCTIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default metrics calculated for the features in the set of solutions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_BATCH_STATS_FUNCTIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_BATCH_STATS_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.max&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.min&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.std&gt;}</span></em><a class="headerlink" href="#tools.DEFAULT_BATCH_STATS_FUNCTIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for the results gathered from all the
+experiments.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_NUM_EXPERIMENTS">
+<span class="sig-name descname"><span class="pre">DEFAULT_NUM_EXPERIMENTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#tools.DEFAULT_NUM_EXPERIMENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of experiments in the batch.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_SCRIPT_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_SCRIPT_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'run.py'</span></em><a class="headerlink" href="#tools.DEFAULT_SCRIPT_FILENAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default file name for the script to run an evaluation.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.DEFAULT_CONFIG_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_CONFIG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'config.py'</span></em><a class="headerlink" href="#tools.DEFAULT_CONFIG_FILENAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default name for the configuration file for the evaluation.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="wrapper/multi_pop/topology.html"
+                          title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper.multi_pop.topology</span></code> module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tools/results.html"
+                          title="next chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Results</span></code> class</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tools/results.html" title="tools.Results class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="wrapper/multi_pop/topology.html" title="wrapper.multi_pop.topology module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2022, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="_sources/tools.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

@@ -1,5 +1,8 @@
 # Files and folders ignored by git
 
+# Pending work
+TODO.txt
+
 # Virtual environment
 .venv
 
@@ -18,9 +21,6 @@ __pycache__/
 # Cython tests
 cython
 
-# Test datasets
-datasets
-
 # Sphinx docs
 doc/build
 
@@ -30,3 +30,6 @@ doc/build
 **/exp*
 !**/experiment*
 **/run.py
+**/__pycache__
+
+

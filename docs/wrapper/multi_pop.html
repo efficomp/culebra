@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>wrapper.multi_pop module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="wrapper.multi_pop.MultiPop class" href="multi_pop/multi_pop.html" />
+    <link rel="prev" title="wrapper.single_pop.NSGA class" href="single_pop/nsga.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="multi_pop/multi_pop.html" title="wrapper.multi_pop.MultiPop class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="single_pop/nsga.html" title="wrapper.single_pop.NSGA class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../wrapper.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.multi_pop</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-wrapper.multi_pop">
+<span id="wrapper-multi-pop-module"></span><h1><a class="reference internal" href="#module-wrapper.multi_pop" title="wrapper.multi_pop"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.multi_pop</span></code></a> module<a class="headerlink" href="#module-wrapper.multi_pop" title="Permalink to this headline">¶</a></h1>
+<p>Implementation of distributed evolutionary algorithms.</p>
+<p>The base abstract class for all distributed generational wrappers is
+<a class="reference internal" href="multi_pop/multi_pop.html#wrapper.multi_pop.MultiPop" title="wrapper.multi_pop.MultiPop"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPop</span></code></a>, which provides the basic mechanisms
+to support multiple subpopulations and <a class="reference internal" href="../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> exchanges
+between them. Each subpopulation will be handled by a
+<a class="reference internal" href="single_pop/single_pop.html#wrapper.single_pop.SinglePop" title="wrapper.single_pop.SinglePop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePop</span></code></a> wrapper.</p>
+<p>However, any distributed wrapper could be executed both sequentially or in
+parallel. Thus, the <a class="reference internal" href="multi_pop/multi_pop.html#wrapper.multi_pop.MultiPop" title="wrapper.multi_pop.MultiPop"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPop</span></code></a> class has two
+abstract subclasses to allow users to choose the way they want to execute a
+distributed wrapper:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="multi_pop/sequential_multi_pop.html#wrapper.multi_pop.SequentialMultiPop" title="wrapper.multi_pop.SequentialMultiPop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialMultiPop</span></code></a>: Abstract sequential
+multi-population model for generational evolutionary wrappers</p></li>
+<li><p><a class="reference internal" href="multi_pop/parallel_multi_pop.html#wrapper.multi_pop.ParallelMultiPop" title="wrapper.multi_pop.ParallelMultiPop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelMultiPop</span></code></a>: Abstract parallel
+multi-population model for generational evolutionary wrappers</p></li>
+</ul>
+</div></blockquote>
+<p>Regarding the evolutionary models, by the moment the following ones have been
+implemented:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="multi_pop/islands.html#wrapper.multi_pop.Islands" title="wrapper.multi_pop.Islands"><code class="xref py py-class docutils literal notranslate"><span class="pre">Islands</span></code></a>: Abstract island-based model for
+evolutionary wrappers. Each island evolves a subpopulation and all the
+islands evolve the same kind (<a class="reference internal" href="../base/species.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) of
+<a class="reference internal" href="../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p></li>
+<li><p><a class="reference internal" href="multi_pop/homogeneous_islands.html#wrapper.multi_pop.HomogeneousIslands" title="wrapper.multi_pop.HomogeneousIslands"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousIslands</span></code></a>: Abstract island-based
+model for evolutionary wrappers where all the islands must use the same
+hyperparameters (population size, breeding operators, probabilities,
+etc.)</p></li>
+<li><p><a class="reference internal" href="multi_pop/heterogeneous_islands.html#wrapper.multi_pop.HeterogeneousIslands" title="wrapper.multi_pop.HeterogeneousIslands"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousIslands</span></code></a>: Abstract island-based
+model for evolutionary wrappers where each island can have different
+values for its hyper-parameters (population size, breeding operators,
+probabilities, etc.)</p></li>
+<li><p><a class="reference internal" href="multi_pop/cooperative.html#wrapper.multi_pop.Cooperative" title="wrapper.multi_pop.Cooperative"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cooperative</span></code></a>: Abstract island-based
+model for cooperative co-evolutionary wrappers, where each island evolves
+a different <a class="reference internal" href="../base/species.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> of <a class="reference internal" href="../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> that
+cooperate to solve a problem. The hyperparameters of each island can be
+different too.</p></li>
+</ul>
+</div></blockquote>
+<p>The above models have been used to develop the following distributed wrapper
+implementations:</p>
+<blockquote>
+<div><ul>
+<li><p>Island model implementations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="multi_pop/homogeneous_sequential_islands.html#wrapper.multi_pop.HomogeneousSequentialIslands" title="wrapper.multi_pop.HomogeneousSequentialIslands"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousSequentialIslands</span></code></a>: Sequential
+implementation of the homogeneous island model</p></li>
+<li><p><a class="reference internal" href="multi_pop/homogeneous_parallel_islands.html#wrapper.multi_pop.HomogeneousParallelIslands" title="wrapper.multi_pop.HomogeneousParallelIslands"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousParallelIslands</span></code></a>: Parallel
+implementation of the homogeneous island model</p></li>
+<li><p><a class="reference internal" href="multi_pop/heterogeneous_sequential_islands.html#wrapper.multi_pop.HeterogeneousSequentialIslands" title="wrapper.multi_pop.HeterogeneousSequentialIslands"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousSequentialIslands</span></code></a>:
+Sequential implementation of the heterogeneous island model</p></li>
+<li><p><a class="reference internal" href="multi_pop/heterogeneous_parallel_islands.html#wrapper.multi_pop.HeterogeneousParallelIslands" title="wrapper.multi_pop.HeterogeneousParallelIslands"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousParallelIslands</span></code></a>: Parallel
+implementation of the heterogeneous island model</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><dl class="simple">
+<dt>Cooperative model implementations:</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="multi_pop/sequential_cooperative.html#wrapper.multi_pop.SequentialCooperative" title="wrapper.multi_pop.SequentialCooperative"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialCooperative</span></code></a>: Sequential
+implementation of the cooperative co-evolutionary model</p></li>
+<li><p><a class="reference internal" href="multi_pop/parallel_cooperative.html#wrapper.multi_pop.ParallelCooperative" title="wrapper.multi_pop.ParallelCooperative"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelCooperative</span></code></a>: Parallel
+implementation of the cooperative co-evolutionary model</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Independently of the chosen model, <a class="reference internal" href="multi_pop/multi_pop.html#wrapper.multi_pop.MultiPop" title="wrapper.multi_pop.MultiPop"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPop</span></code></a>
+subclasses may send individuals from any subpopulation wrapper to others. The
+<a class="reference internal" href="multi_pop/topology.html#module-wrapper.multi_pop.topology" title="wrapper.multi_pop.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">topology</span></code></a> sub-module provides several commonly used
+communication topologies.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_NUM_SUBPOPS">
+<span class="sig-name descname"><span class="pre">DEFAULT_NUM_SUBPOPS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_NUM_SUBPOPS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of subpopulations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_REPRESENTATION_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_REPRESENTATION_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the number of representatives sent to the other
+subpopulations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_REPRESENTATION_FREQ">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_REPRESENTATION_FREQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the number of generations between representatives
+sending.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">full_connected_destinations&gt;</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default topology function for representatives sending.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default parameters to obtain the destinations with the topology function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">ring_destinations&gt;</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default topology function for the islands model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameters for the default topology function in the islands model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_REPRESENTATION_SELECTION_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selTournament&gt;</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_REPRESENTATION_SELECTION_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection policy function to choose the representatives.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="wrapper.multi_pop.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">3}</span></em><a class="headerlink" href="#wrapper.multi_pop.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default parameters for the representatives selection policy function.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.multi_pop</span></code> module</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="single_pop/nsga.html"
+                          title="previous chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop.NSGA</span></code> class</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="multi_pop/multi_pop.html"
+                          title="next chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.multi_pop.MultiPop</span></code> class</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/wrapper/multi_pop.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="multi_pop/multi_pop.html" title="wrapper.multi_pop.MultiPop class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="single_pop/nsga.html" title="wrapper.single_pop.NSGA class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../wrapper.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.multi_pop</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2022, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../_sources/wrapper/multi_pop.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

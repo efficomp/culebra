@@ -1,5 +1,5 @@
 ..
-   This file is part of culebra.
+   This file is part of
 
    Culebra is free software: you can redistribute it and/or modify it under the
    terms of the GNU General Public License as published by the Free Software
@@ -12,7 +12,7 @@
    details.
 
    You should have received a copy of the GNU General Public License along with
-   Culebra. If not, see <http://www.gnu.org/licenses/>.
+    If not, see <http://www.gnu.org/licenses/>.
 
    This work was supported by project PGC2018-098813-B-C31 (Spanish "Ministerio
    de Ciencia, Innovación y Universidades"), and by the European Regional
@@ -22,8 +22,28 @@
 ========================
 
 .. automodule:: wrapper
-   :members:
-   :inherited-members:
-   :special-members:
-   :private-members:
-   :show-inheritance:
+
+
+Attributes
+----------
+
+.. attribute:: DEFAULT_STATS_NAMES
+    :annotation: = ('Gen', 'Pop', 'NEvals')
+
+    Default statistics calculated for each generation.
+
+.. attribute:: DEFAULT_NUM_GENS
+    :annotation: = 100
+
+    Default number of generations.
+
+..
+    .. autodata:: DEFAULT_STATS_NAMES
+    .. autodata:: DEFAULT_NUM_GENS
+
+.. toctree::
+    :hidden:
+
+    generational <wrapper/generational>
+    single_pop <wrapper/single_pop>
+    multi_pop <wrapper/multi_pop>

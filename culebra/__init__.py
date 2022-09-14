@@ -16,13 +16,16 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""A cooperative co-evolutionary approach to the feature selection problem."""
+"""Culebra is a `DEAP <https://deap.readthedocs.io/en/master/>`_-based
+evolutionary computation library designed to solve feature selection problems.
 
-from . import base
-from . import fitness
-from . import feature_selector
-from . import wrapper
-from . import experiment
+It provides several individual representations, such as bitvectors and set
+of feature indices, several fitness functions and several wrapper algorithms.
+
+Experiments and experiment batchs are automatized by means of the
+:py:class:`~tools.Experiment` and :py:class:`~tools.Batch`
+classes, both in the :py:mod:`~tools` module.
+"""
 
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2021, EFFICOMP'
@@ -32,8 +35,18 @@ __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
-__all__ = ['base',
-           'fitness',
-           'feature_selector',
-           'wrapper',
-           'experiment']
+from . import (
+    base,
+    genotype,
+    fitness_function,
+    wrapper,
+    tools
+)
+
+__all__ = [
+    'base',
+    'genotype',
+    'fitness_function'
+    'wrapper',
+    'tools'
+]

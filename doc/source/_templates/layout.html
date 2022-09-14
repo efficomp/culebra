@@ -5,8 +5,6 @@
       {% if show_copyright %}&copy;{{ copyright }}.{% endif %}
       {% if theme_show_powered_by|lower == 'true' %}
       {% if show_copyright %}|{% endif %}
-      Powered by <a href="http://sphinx-doc.org/">Sphinx {{ sphinx_version }}</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster {{ alabaster_version }}</a>
       {% endif %}
       {%- if show_source and has_source and sourcename %}
       {% if show_copyright or theme_show_powered_by %}|{% endif %}
@@ -20,7 +18,7 @@
         Heterogeneous Parallel Architectures for High-Performance and Energy
         Efficiency of Classification and Optimization Tasks on Biomedical
         Engineering Applications</i>
-        (<a href="https://atcproyectos.ugr.es/efficomp/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
         with reference PGC2018-098813-B-C31, funded by the Spanish
         <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
       <div class="footer">
@@ -28,13 +26,6 @@
         <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="{{ pathto('_static/erdf.png', true) }}" alt="European Regional Development Fund (ERDF)"/></a>
       </div>
     </div>
-    
-
-    {% if theme_github_banner|lower != 'false' %}
-    <a href="https://github.com/{{ theme_github_user }}/{{ theme_github_repo }}" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="{{ pathto('_static/' ~ theme_github_banner, 1) if theme_github_banner|lower != 'true' else 'https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png' }}" alt="Fork me on GitHub"  class="github"/>
-    </a>
-    {% endif %}
 
     {% if theme_analytics_id %}
     <script type="text/javascript">

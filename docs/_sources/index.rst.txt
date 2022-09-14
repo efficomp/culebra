@@ -22,15 +22,8 @@
 Welcome to culebra's documentation!
 ===================================
 
-Culebra is a `DEAP <https://deap.readthedocs.io/en/master/>`_-based
-evolutionary computation library designed to solve feature selection problems.
-
-It provides several individual representations, such as bitvectors and set
-of feature indices, several fitness functions and several wrapper algorithms.
-
-Experiments and experiment batchs are automatized by means of the
-:py:class:`~experiment.Experiment` and :py:class:`~experiment.Batch`
-classes, both in the :py:mod:`experiment` module.
+.. automodule:: culebra
+    :noindex:
 
 
 Contents:
@@ -39,12 +32,10 @@ Contents:
    :titlesonly:
 
    base module <base>
-   feature_selector module <feature_selector>
-   fitness module <fitness>
+   genotype module <genotype>
+   fitness_function module <fitness_function>
    wrapper module <wrapper>
-   experiment module <experiment>
-   configuration file <config_file>
-
+   tools module <tools>
 
 
 Indices and tables
