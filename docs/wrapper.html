@@ -46,6 +46,7 @@
   <section id="module-wrapper">
 <span id="wrapper-module"></span><h1><a class="reference internal" href="#module-wrapper" title="wrapper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrapper</span></code></a> module<a class="headerlink" href="#module-wrapper" title="Permalink to this headline">¶</a></h1>
 <p>Implementation of some wrapper algorithms.</p>
+<<<<<<< HEAD
 <p>By the moment, culebra is centered on the use of generationsl evolutionary
 algorithms as the search engine for wrapper procedures. Thus, the wrapper
 module is composed by:</p>
@@ -62,6 +63,184 @@ multiple-population generational wrappers.</p></li>
 </div></blockquote>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+=======
+<dl class="simple">
+<dt>This module provides the following wrapper method implementations:</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#wrapper.GenerationalWrapper" title="wrapper.GenerationalWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenerationalWrapper</span></code></a>: Base class for all the
+generational-based wrapper algorithms</p></li>
+<li><p><a class="reference internal" href="#wrapper.EvolutionaryWrapper" title="wrapper.EvolutionaryWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolutionaryWrapper</span></code></a>: Simple evolutionary algorithm</p></li>
+<li><p><a class="reference internal" href="#wrapper.NSGAWrapper" title="wrapper.NSGAWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSGAWrapper</span></code></a>: Multi-objective evolutionary algorithm,
+based on Non-dominated sorting, able to run the NSGA-II or the NSGA-III
+algorithms</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py data">
+<dt id="wrapper.DEFAULT_MUT_IND_PB">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_MUT_IND_PB</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.05</span></em><a class="headerlink" href="#wrapper.DEFAULT_MUT_IND_PB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default independent gene mutation probability.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_MUT_PB">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_MUT_PB</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#wrapper.DEFAULT_MUT_PB" title="Permalink to this definition">¶</a></dt>
+</dd></dl>
+
+<dl class="py function">
+<dt id="wrapper.DEFAULT_NSGA_SEL_FUNC">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_NSGA_SEL_FUNC</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.DEFAULT_NSGA_SEL_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function for NSGA-based algorithms.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_NSGA_SEL_FUNC_PARAMS">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_NSGA_SEL_FUNC_PARAMS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#wrapper.DEFAULT_NSGA_SEL_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function parameters for NSGA-based algorithms.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_N_GENS">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_N_GENS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#wrapper.DEFAULT_N_GENS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of generations.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_POP_SIZE">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_POP_SIZE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#wrapper.DEFAULT_POP_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default population size.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="wrapper.DEFAULT_SEL_FUNC">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_SEL_FUNC</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tournsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fitness'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.DEFAULT_SEL_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_SEL_FUNC_PARAMS">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_SEL_FUNC_PARAMS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">2}</span></em><a class="headerlink" href="#wrapper.DEFAULT_SEL_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection function parameters.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_STATS_NAMES">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_STATS_NAMES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('Gen',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#wrapper.DEFAULT_STATS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for each generation.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="wrapper.DEFAULT_XOVER_PB">
+<code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">DEFAULT_XOVER_PB</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#wrapper.DEFAULT_XOVER_PB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default xover probability.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="wrapper.EvolutionaryWrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">wrapper.</span></code><code class="sig-name descname"><span class="pre">EvolutionaryWrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#wrapper.GenerationalWrapper" title="wrapper.GenerationalWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.GenerationalWrapper</span></code></a></p>
+<p>Base class for all the evolutionary wrapper methods.</p>
+<p>This class implements the simplest evolutionary algorithm.</p>
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__copy__">
+<code class="sig-name descname"><span class="pre">__copy__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__copy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shallow copy the wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__deepcopy__">
+<code class="sig-name descname"><span class="pre">__deepcopy__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__deepcopy__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deepcopy the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>memo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Individual attributes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the individual</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the wrapper method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>individual_cls</strong> (Any subclass of
+<a class="reference internal" href="base.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Individual representation.</p></li>
+<li><p><strong>species</strong> (Any sublass of <a class="reference internal" href="base.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species the individual will belong to</p></li>
+<li><p><strong>pop_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Population size, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_POP_SIZE" title="wrapper.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a></p></li>
+<li><p><strong>n_gens</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Number of generations, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_N_GENS" title="wrapper.DEFAULT_N_GENS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_N_GENS</span></code></a></p></li>
+<li><p><strong>xover_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Crossover function, defaults to the
+<a class="reference internal" href="base.html#base.Individual.crossover" title="base.Individual.crossover"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crossover()</span></code></a> method of
+<em>individual_cls</em></p></li>
+<li><p><strong>xover_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Crossover rate, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_XOVER_PB" title="wrapper.DEFAULT_XOVER_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_XOVER_PB</span></code></a></p></li>
+<li><p><strong>mut_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Mutation function, defaults to the
+<a class="reference internal" href="base.html#base.Individual.mutate" title="base.Individual.mutate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mutate()</span></code></a> method of
+<em>individual_cls</em></p></li>
+<li><p><strong>mut_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Mutation rate, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_MUT_PB" title="wrapper.DEFAULT_MUT_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUT_PB</span></code></a></p></li>
+<li><p><strong>mut_ind_pb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Independent gene mutation probability, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_MUT_IND_PB" title="wrapper.DEFAULT_MUT_IND_PB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUT_IND_PB</span></code></a></p></li>
+<li><p><strong>sel_func</strong> (<em>Any callable object</em><em>, </em><em>optional</em>) – Selection function, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_SEL_FUNC" title="wrapper.DEFAULT_SEL_FUNC"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SEL_FUNC</span></code></a></p></li>
+<li><p><strong>sel_func_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, optional) – Selection function parameters, defaults to
+<a class="reference internal" href="#wrapper.DEFAULT_SEL_FUNC_PARAMS" title="wrapper.DEFAULT_SEL_FUNC_PARAMS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SEL_FUNC_PARAMS</span></code></a></p></li>
+<li><p><strong>checkpoint_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Frequency for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FREQ" title="base.DEFAULT_WRAPPER_CHECKPOINT_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FREQ</span></code></a></p></li>
+<li><p><strong>checkpoint_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – File path for checkpointing, defaults to
+<a class="reference internal" href="base.html#base.DEFAULT_WRAPPER_CHECKPOINT_FILE" title="base.DEFAULT_WRAPPER_CHECKPOINT_FILE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_WRAPPER_CHECKPOINT_FILE</span></code></a></p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Random seed for the random generator, defaults to
+<cite>None</cite></p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to log the statistics, defaults to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#__debug__" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">__debug__</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__reduce__">
+<code class="sig-name descname"><span class="pre">__reduce__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The reduction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__repr__">
+<code class="sig-name descname"><span class="pre">__repr__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wrapper.EvolutionaryWrapper.__setstate__">
+<code class="sig-name descname"><span class="pre">__setstate__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.EvolutionaryWrapper.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state of the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The state</p>
+</dd>
+</dl>
+</dd></dl>
+
+>>>>>>> 5a5c2e084d78e2e73947c86aaa5591f0dd549efb
 <dl class="py attribute">
 <dt class="sig sig-object py" id="wrapper.DEFAULT_STATS_NAMES">
 <span class="sig-name descname"><span class="pre">DEFAULT_STATS_NAMES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">('Gen',</span> <span class="pre">'Pop',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#wrapper.DEFAULT_STATS_NAMES" title="Permalink to this definition">¶</a></dt>

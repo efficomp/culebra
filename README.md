@@ -42,9 +42,13 @@ This work was supported by project *New Computing Paradigms and Heterogeneous Pa
 
 ## License
 
+<<<<<<< HEAD
 [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.md).
 
 ## Copyright
 
 Culebra © 2020-2022 [EFFICOMP](https://efficomp.ugr.es).
 
+=======
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.md) © 2020-2021 [EFFICOMP](https://atcproyectos.ugr.es/efficomp/).
+>>>>>>> 5a5c2e084d78e2e73947c86aaa5591f0dd549efb
