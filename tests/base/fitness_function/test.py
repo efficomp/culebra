@@ -65,6 +65,47 @@ class FitnessFunctionTester(unittest.TestCase):
         self.assertEqual(func.test_prop, None)
         self.assertTrue(isinstance(func.classifier, DEFAULT_CLASSIFIER))
 
+    def test_set_fitness_thresholds(self):
+        """Test the set_fitness_thresholds class method."""
+        invalid_threshold_types = (type, {}, len)
+        invalid_threshold_value = -1
+        valid_thresholds = (0.33, 0.5, 2)
+
+        # Try invalid types for the thresholds. Should fail
+        for threshold in invalid_threshold_types:
+            with self.assertRaises(TypeError):
+                MyFitnessFunction.set_fitness_thresholds(threshold)
+
+        # Try invalid values for the threshold. Should fail
+        with self.assertRaises(ValueError):
+            MyFitnessFunction.set_fitness_thresholds(invalid_threshold_value)
+
+        # Try a fixed value for all the thresholds
+        for threshold in valid_thresholds:
+            MyFitnessFunction.set_fitness_thresholds(threshold)
+            # Check the length of the sequence
+            self.assertEqual(
+                len(MyFitnessFunction.Fitness.thresholds),
+                len(MyFitnessFunction.Fitness.weights)
+            )
+
+            # Check that all the values match
+            for th in MyFitnessFunction.Fitness.thresholds:
+                self.assertEqual(threshold, th)
+
+        # Try different values of threshold for each objective
+        MyFitnessFunction.set_fitness_thresholds(
+            valid_thresholds[:len(MyFitnessFunction.Fitness.weights)]
+        )
+        for th1, th2 in zip(
+            valid_thresholds, MyFitnessFunction.Fitness.thresholds
+        ):
+            self.assertEqual(th1, th2)
+
+        # Try a wrong number of thresholds
+        with self.assertRaises(ValueError):
+            MyFitnessFunction.set_fitness_thresholds(valid_thresholds)
+
     def test_num_obj(self):
         """Test the num_obj property."""
         # Fitness function to be tested

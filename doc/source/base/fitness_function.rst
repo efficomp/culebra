@@ -37,6 +37,10 @@ Class attributes
     (:py:attr:`~base.Fitness.weights`, :py:attr:`~base.Fitness.names`, and
     :py:attr:`~base.Fitness.thresholds`) according to the fitness function.
 
+Class methods
+-------------
+.. automethod:: base.FitnessFunction.set_fitness_thresholds
+
 Properties
 ----------
 .. autoproperty:: base.FitnessFunction.num_obj
