@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Usage example of the experiment class."""
+"""Usage example of the batch class."""
 
 from culebra.base import Dataset
 from culebra.fitness_function.cooperative import KappaNumFeatsC
