@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for the individuals defined in :py:mod:`feature_selector`."""
+"""Unit test for the feature selection individuals."""
 
 import unittest
 import pickle

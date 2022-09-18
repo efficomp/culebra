@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Test the Dataset class."""
+"""Usage example of elitist sequential cooperative wrapper."""
 
 from pandas import Series, DataFrame, MultiIndex
 from culebra.base import Dataset
@@ -44,6 +44,9 @@ DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
 # Load the dataset
 dataset = Dataset(DATASET_PATH, output_index=-1)
 
+# Remove outliers
+dataset.remove_outliers()
+
 # Normalize inputs between 0 and 1
 dataset.normalize()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
@@ -52,6 +55,9 @@ dataset.normalize()
 training_fitness_function = KappaNumFeatsC(
     training_data=training_data, test_prop=0.5
 )
+
+# Fix the fitness similarity threshold to 0.1 for all the objectives
+training_fitness_function.set_fitness_thresholds(0.1)
 
 # Test fitness function
 test_fitness_function = KappaNumFeatsC(
@@ -81,12 +87,17 @@ params = {
     "fitness_function": training_fitness_function,
     "subpop_wrapper_cls": Elitist,
     "representation_size": 2,
-    "num_gens": 50,
-    "pop_sizes": 25,
-    # At least one hyperparameter will be mutated
+    "crossover_probs": 0.8,
+    "mutation_probs": 0.2,
     "gene_ind_mutation_probs": (
-        1.0/classifierOptimizationSpecies.num_hyperparams
-    )
+        # At least one hyperparameter will be mutated
+        1.0/classifierOptimizationSpecies.num_hyperparams,
+        # probability of 0.5 to select/unselect any feature
+        0.5
+    ),
+    "num_gens": 100,
+    "pop_sizes": 100,
+    "verbose": True
 }
 
 # Create the wrapper

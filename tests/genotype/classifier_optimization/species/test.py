@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`classifier_hyperparameters.Species`."""
+"""Unit test for the classifier optimization species."""
 
 import unittest
 import pickle

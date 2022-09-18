@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`feature_selector.Species`."""
+"""Unit test for the feature selection species."""
 
 import unittest
 import pickle

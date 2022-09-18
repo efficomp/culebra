@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Usage example of the islands wrapper."""
+"""Usage example of an elitist wrapper."""
 
 from pandas import Series, DataFrame, MultiIndex
 from culebra.base import Dataset
@@ -37,6 +37,9 @@ DATASET_PATH = (
 # Load the dataset
 dataset = Dataset(DATASET_PATH, output_index=-1)
 
+# Remove outliers
+dataset.remove_outliers()
+
 # Normalize inputs between 0 and 1
 dataset.normalize()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
@@ -45,6 +48,9 @@ dataset.normalize()
 training_fitness_function = KappaC(
     training_data=training_data, test_prop=0.5
 )
+
+# Fix the fitness similarity threshold to 0.1 for all the objectives
+training_fitness_function.set_fitness_thresholds(0.1)
 
 # Test fitness function
 test_fitness_function = KappaC(
@@ -59,10 +65,12 @@ params = {
     "individual_cls": Individual,
     "species": species,
     "fitness_function": training_fitness_function,
-    "num_gens": 100,
-    "pop_size": 100,
+    "crossover_prob": 0.8,
+    "mutation_prob": 0.2,
     # At least one hyperparameter will be mutated
-    "gene_ind_mutation_prob": 1.0/species.num_hyperparams
+    "gene_ind_mutation_prob": 1.0/species.num_hyperparams,
+    "pop_size": 100,
+    "num_gens": 100
 }
 
 # Create the wrapper

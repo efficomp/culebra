@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`wrapper.generational.Generational`."""
+"""Unit test for :py:class:`wrapper.Generational`."""
 
 import os
 import unittest

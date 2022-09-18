@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Test the homogeneous parallel island-based wrapper."""
+"""Usage example of an homogeneous parallel island-based wrapper."""
 
 from os import cpu_count
 from pandas import Series, DataFrame, MultiIndex
@@ -39,6 +39,9 @@ DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
 # Load the dataset
 dataset = Dataset(DATASET_PATH, output_index=-1)
 
+# Remove outliers
+dataset.remove_outliers()
+
 # Normalize inputs between 0 and 1
 dataset.normalize()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
@@ -47,6 +50,9 @@ dataset.normalize()
 training_fitness_function = KappaNumFeats(
     training_data=training_data, test_prop=0.5
 )
+
+# Fix the fitness similarity threshold to 0.1 for all the objectives
+training_fitness_function.set_fitness_thresholds(0.1)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(
@@ -62,13 +68,16 @@ params = {
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "subpop_wrapper_cls": NSGA,
-    "num_gens": 30,
-    "pop_size": 50,
     "num_subpops": num_subpops,
     "representation_topology_func": ring_destinations,
     "representation_topology_func_params": {"offset": 1},
     "representation_selection_func": selTournament,
-    "representation_selection_func_params": {"tournsize": 10}
+    "representation_selection_func_params": {"tournsize": 10},
+    "crossover_prob": 0.8,
+    "mutation_prob": 0.2,
+    "gene_ind_mutation_prob": 0.5,
+    "num_gens": 30,
+    "pop_size": 50
 }
 
 # Create the wrapper

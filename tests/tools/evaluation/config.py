@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Usage example of the experiment class."""
+"""Configuration file to test the :py:class:`tools.Evaluation` class."""
 
 from culebra.base import Dataset
 from culebra.fitness_function.cooperative import KappaNumFeatsC
