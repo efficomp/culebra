@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Test the Dataset class."""
+"""Unit test for :py:class:`base.Dataset`."""
 
 import unittest
 from copy import copy, deepcopy
@@ -306,28 +306,145 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(max(max_values), 1)
         self.assertEqual(max(max_values), 1)
 
+    def test_robust_scale(self):
+        """Test the robust_scale method."""
+        num_feats = 1000
+        size = 1000
+
+        # Create a dataset with repeated samples, there isn't any outlier
+        dataset = Dataset()
+        dataset._inputs = np.concatenate(
+            (
+                np.ones((int(size/2), num_feats)),
+                np.ones((int(size/2), num_feats)) * 10
+            )
+        )
+
+        dataset._outputs = np.concatenate(
+            (
+                np.ones((int(size/2), 1)),
+                np.ones((int(size/2), 1)) * 10
+            )
+        )
+
+        # Try robust_scale
+        dataset.robust_scale()
+
+        # Check the scale
+        self.assertEqual(np.min(dataset.inputs), -0.5)
+        self.assertEqual(np.max(dataset.inputs), 0.5)
+
+        # Insert outliers
+        dataset._inputs = np.concatenate(
+            (
+                [[-1000] * num_feats],
+                np.concatenate(
+                    (
+                        np.ones((int(size/2), num_feats)),
+                        np.ones((int(size/2), num_feats)) * 10
+                    )
+                ),
+                [[1000] * num_feats]
+            )
+        )
+        dataset._outputs = np.concatenate(
+            (
+                [[-1000]],
+                np.concatenate(
+                    (
+                        np.ones((int(size/2), 1)),
+                        np.ones((int(size/2), 1)) * 10
+                    )
+                ),
+                [[1000]]
+            )
+        )
+
+        # Try robust_scale again
+        dataset.robust_scale()
+
+        # Remove the outliers
+        dataset.remove_outliers()
+
+        # The scale should be the same than without outliers
+        self.assertEqual(np.min(dataset.inputs), -0.5)
+        self.assertEqual(np.max(dataset.inputs), 0.5)
+
     def test_remove_outliers(self):
         """Test the outliers removal method."""
-        # Try with the whole data
-        dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
-        size_before = dataset.size
+        num_feats = 10
+        size = 100
+
+        # Create a dataset with repeated samples, there isn't any outlier
+        dataset = Dataset()
+        dataset._inputs = np.ones((size, num_feats))
+        dataset._outputs = np.ones((size, 1))
+
+        # Try to remove the outliers
         dataset.remove_outliers()
-        size_after = dataset.size
-        self.assertLessEqual(size_after, size_before)
 
-        # Try a split dataset
-        dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
-        (training_data, test_data) = dataset.split(
-            test_prop=0.3, random_seed=0
+        # Check that all the samples remain
+        self.assertEqual(dataset.size, size)
+        self.assertEqual(dataset._inputs.shape[0], size)
+        self.assertEqual(dataset._outputs.shape[0], size)
+
+        # Insert outliers
+        dataset._inputs = np.concatenate(
+            ([[-100] * num_feats], dataset._inputs, [[100] * num_feats])
         )
-        size_training_before = training_data.size
-        size_test_before = test_data.size
+        dataset._outputs = np.concatenate(
+            ([[-100]], dataset._outputs, [[100]])
+        )
 
-        training_data.remove_outliers(test_data)
-        size_training_after = training_data.size
-        size_test_after = test_data.size
-        self.assertLessEqual(size_training_after, size_training_before)
-        self.assertLessEqual(size_test_after, size_test_before)
+        # Check that the size has increased
+        self.assertEqual(dataset.size, size + 2)
+        self.assertEqual(dataset._inputs.shape[0], size + 2)
+        self.assertEqual(dataset._outputs.shape[0], size + 2)
+
+        # Try to remove the outliers again
+        dataset.remove_outliers()
+
+        # The outlier should have dissapeared
+        self.assertEqual(dataset.size, size)
+        self.assertEqual(dataset._inputs.shape[0], size)
+        self.assertEqual(dataset._outputs.shape[0], size)
+        self.assertTrue((dataset._inputs == 1).all())
+        self.assertTrue((dataset._outputs == 1).all())
+
+        # Try also with a test dataset having outliers
+        test_dataset = copy(dataset)
+
+        # Insert outliers
+        test_dataset._inputs = np.concatenate(
+            ([[-100] * num_feats], test_dataset._inputs, [[100] * num_feats])
+        )
+        test_dataset._outputs = np.concatenate(
+            ([[-100]], test_dataset._outputs, [[100]])
+        )
+
+        # Check that the size has increased
+        self.assertEqual(dataset.size, size)
+        self.assertEqual(dataset._inputs.shape[0], size)
+        self.assertEqual(dataset._outputs.shape[0], size)
+        self.assertEqual(test_dataset.size, size + 2)
+        self.assertEqual(test_dataset._inputs.shape[0], size + 2)
+        self.assertEqual(test_dataset._outputs.shape[0], size + 2)
+
+        # Try to remove the outliers again
+        dataset.remove_outliers(test_dataset)
+
+        # The outlier should have dissapeared
+        self.assertEqual(dataset.size, size)
+        self.assertEqual(dataset._inputs.shape[0], size)
+        self.assertEqual(dataset._outputs.shape[0], size)
+        self.assertTrue((dataset._inputs == 1).all())
+        self.assertTrue((dataset._outputs == 1).all())
+
+        self.assertEqual(test_dataset.size, size)
+        self.assertEqual(test_dataset._inputs.shape[0], size)
+        self.assertEqual(test_dataset._outputs.shape[0], size)
+        self.assertTrue((test_dataset._inputs == 1).all())
+        self.assertTrue((test_dataset._outputs == 1).all())
 
     def test_copy(self):
         """Test the :py:meth:`~base.Dataset.__copy__` method."""

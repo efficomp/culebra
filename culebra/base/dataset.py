@@ -192,7 +192,7 @@ class Dataset(Base):
             test._inputs /= max_inputs
 
     def robust_scale(self, test: Optional[Dataset] = None) -> None:
-        """Scale features robust to ourliers.
+        """Scale features robust to outliers.
 
         If a test dataset is provided, both are taken into account and then
         both are scaled.
@@ -208,7 +208,8 @@ class Dataset(Base):
 
         transformer = RobustScaler().fit(inputs)
         self._inputs = transformer.transform(self._inputs)
-        test._inputs = transformer.transform(test._inputs)
+        if test is not None:
+            test._inputs = transformer.transform(test._inputs)
 
     def remove_outliers(self, test: Optional[Dataset] = None) -> None:
         """Remove the outliers.
