@@ -19,6 +19,9 @@ __pycache__/
 .spyderproject
 .spyproject
 
+# VS Code settings
+.vscode
+
 # Cython tests
 cython
 
