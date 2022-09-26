@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>base.Species class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,7 +46,7 @@
           <div class="body" role="main">
             
   <section id="base-species-class">
-<h1><a class="reference internal" href="#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Species</span></code></a> class<a class="headerlink" href="#base-species-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Species</span></code></a> class<a class="headerlink" href="#base-species-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="base.Species">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Species</span></span><a class="headerlink" href="#base.Species" title="Permalink to this definition">¶</a></dt>
@@ -55,22 +56,22 @@ constraints the individual parameter values.</p>
 </dd></dl>
 
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Species.is_member">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Species.</span></span><span class="sig-name descname"><span class="pre">is_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="individual.html#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Species.is_member" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Species.</span></span><span class="sig-name descname"><span class="pre">is_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="individual.html#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Species.is_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if an individual meets the constraints imposed by the species.</p>
 <p>This method must be overriden by subclasses to return a correct
 value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ind</strong> (<a class="reference internal" href="individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the individual belongs to the species, or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> otherwise</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -122,7 +123,7 @@ value.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

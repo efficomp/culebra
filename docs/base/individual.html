@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>base.Individual class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,19 +46,19 @@
           <div class="body" role="main">
             
   <section id="base-individual-class">
-<h1><a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Individual</span></code></a> class<a class="headerlink" href="#base-individual-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Individual</span></code></a> class<a class="headerlink" href="#base-individual-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="base.Individual">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Individual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="species.html#base.Species" title="base.abc.Species"><span class="pre">base.abc.Species</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="fitness.html#base.Fitness" title="base.abc.Fitness"><span class="pre">base.abc.Fitness</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Individual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="species.html#base.Species" title="base.abc.Species"><span class="pre">Species</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="fitness.html#base.Fitness" title="base.abc.Fitness"><span class="pre">Fitness</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.Individual" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a default individual.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>species</strong> (<a class="reference internal" href="#base.Individual.species_cls" title="base.Individual.species_cls"><code class="xref py py-class docutils literal notranslate"><span class="pre">species_cls</span></code></a>) – The species the individual will belong to</p></li>
 <li><p><strong>fitness</strong> (Any subclass of <a class="reference internal" href="fitness.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a>) – The individual’s fitness class</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>species</em> is not a valid species</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>fitness_cls</em> is not a valid fitness class</p></li>
@@ -67,7 +68,7 @@
 </dd></dl>
 
 <section id="class-attributes">
-<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="base.Individual.species_cls">
 <span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">species_cls</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;class</span> <span class="pre">'base.abc.Species'&gt;</span></em><a class="headerlink" href="#base.Individual.species_cls" title="Permalink to this definition">¶</a></dt>
@@ -77,16 +78,16 @@ to constrain all its instances.</p>
 
 </section>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="base.Individual.species">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">species</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="species.html#base.Species" title="base.abc.Species"><span class="pre">base.abc.Species</span></a></em><a class="headerlink" href="#base.Individual.species" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">species</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="species.html#base.Species" title="base.abc.Species"><span class="pre">Species</span></a></em><a class="headerlink" href="#base.Individual.species" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the individual’s species.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The species</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="species.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a></p>
 </dd>
 </dl>
@@ -94,16 +95,16 @@ to constrain all its instances.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="base.Individual.fitness">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">fitness</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="fitness.html#base.Fitness" title="base.abc.Fitness"><span class="pre">base.abc.Fitness</span></a></em><a class="headerlink" href="#base.Individual.fitness" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">fitness</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="fitness.html#base.Fitness" title="base.abc.Fitness"><span class="pre">Fitness</span></a></em><a class="headerlink" href="#base.Individual.fitness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the individual’s fitness.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current fitness</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new Fitness</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="fitness.html#base.Fitness" title="base.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a></p>
 </dd>
 </dl>
@@ -111,24 +112,24 @@ to constrain all its instances.</p>
 
 </section>
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.crossover">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">crossover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#base.Individual.crossover" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">crossover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#base.Individual.crossover" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cross this individual with another one.</p>
 <p>This method must be overriden by subclasses to return a correct
 value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The other individual</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.10)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The two offspring</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 </dd>
 </dl>
@@ -136,21 +137,21 @@ value.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.mutate">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">mutate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indpb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#base.Individual.mutate" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">mutate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indpb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#base.Individual.mutate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mutate the individual.</p>
 <p>This method must be overriden by subclasses to return a correct
 value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>indpb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Independent probability for each feature to be mutated.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.10)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The mutant</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 </dd>
 </dl>
@@ -158,18 +159,18 @@ value.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.dominates">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">dominates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.dominates" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">dominates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.dominates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dominate operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if each objective of the individual is not
 strictly worse than the corresponding objective of <em>other</em> and at
 least one objective is strictly better.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -183,22 +184,22 @@ least one objective is strictly better.</p>
 
 </section>
 <section id="special-methods">
-<h2>Special methods<a class="headerlink" href="#special-methods" title="Permalink to this headline">¶</a></h2>
+<h2>Special methods<a class="headerlink" href="#special-methods" title="Permalink to this heading">¶</a></h2>
 <p>Intended to compare (lexicographically) two individuals according to their
 fitness.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.__eq__">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__eq__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Equality test.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the individual codes the same features, or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> otherwise</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -206,17 +207,17 @@ fitness.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.__ne__">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__ne__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Not equality test.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> if the individual codes the same features, or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> otherwise</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -224,17 +225,17 @@ fitness.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.__lt__">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__lt__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Less than operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the individual’s fitness is less than the
 <em>other</em>’s fitness</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -242,17 +243,17 @@ fitness.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.__gt__">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__gt__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the individual’s fitness is greater than
 the <em>other</em>’s fitness</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -260,17 +261,17 @@ the <em>other</em>’s fitness</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.__le__">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__le__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Less than or equal to operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the individual’s fitness is less than or
 equal to the <em>other</em>’s fitness</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -278,17 +279,17 @@ equal to the <em>other</em>’s fitness</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="base.Individual.__ge__">
-<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__ge__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">base.abc.Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__ge__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Individual.</span></span><span class="sig-name descname"><span class="pre">__ge__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.Individual" title="base.abc.Individual"><span class="pre">Individual</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#base.Individual.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than or equal to operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Other individual</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the individual’s fitness is greater than
 or equal to the <em>other</em>’s fitness</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
@@ -343,7 +344,7 @@ or equal to the <em>other</em>’s fitness</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

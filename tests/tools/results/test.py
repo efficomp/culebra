@@ -30,7 +30,6 @@ from copy import copy, deepcopy
 from pandas import DataFrame
 from culebra.tools import (
     Results,
-    DEFAULT_KEY,
     DEFAULT_RESULTS_BACKUP_FILENAME,
     DEFAULT_RESULTS_EXCEL_FILENAME
 )
@@ -41,9 +40,6 @@ class ResultsTester(unittest.TestCase):
 
     def test_init(self):
         """Test the constructor."""
-        filename = "data.csv"
-        key = "test_fitness"
-
         # Try an empty results manager
         results = Results()
 
@@ -54,31 +50,13 @@ class ResultsTester(unittest.TestCase):
         self.assertIsInstance(results, Results)
         self.assertIsInstance(results, UserDict)
 
-        # Provide only a filename, the results should be unlabeled
-        results = Results(file=filename)
-        self.assertEqual(len(results.keys()), 1)
-        self.assertTrue(DEFAULT_KEY in results)
-
-        # Provide only a key, the results should be empty
-        results = Results(key=key)
-        self.assertEqual(len(results.keys()), 0)
-
-        # Provide both a file and a key, the results should be loaded
-        results = Results(filename, key)
-
-        # Check the key
-        self.assertTrue(key in results)
-
-        # Check the data
-        self.assertIsInstance(results[key], DataFrame)
-
     def test_setitem(self):
         """Test the :py:meth:`~tools.Results.__setitem__` method."""
         results = Results()
 
         data = DataFrame()
-        data["entradas"] = [1, 2, 3]
-        data["salidas"] = [4, 5, 6]
+        data["inputs"] = [1, 2, 3]
+        data["outputs"] = [4, 5, 6]
         key = "data"
 
         # Try to add an item with an invalid key
@@ -98,46 +76,57 @@ class ResultsTester(unittest.TestCase):
         # Check the data
         self.assertTrue(results[key].equals(data))
 
-    def test_read_csv(self):
-        """Test the :py:meth:`~tools.Results.read_csv` method."""
+    def test_from_csv_files(self):
+        """Test the :py:meth:`~tools.Results.from_csv_files` class method."""
         results = Results()
 
         bad_filename = "bad.csv"
         bad_key = 1
         bad_sep = 2
-        good_filename = "data.csv"
-        good_key = "test_fitness"
+        good_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        good_keys = ("test_fitness", "execution_metrics")
 
         # Try to read a non-existing file
         with self.assertRaises(FileNotFoundError):
-            results.read_csv(bad_filename, good_key)
+            Results.from_csv_files(
+                (bad_filename, *good_filenames),
+                ("a", *good_keys)
+            )
 
-        # Try a bad name
+        # Try to a bad key
+        with self.assertRaises(ValueError):
+            Results.from_csv_files(
+                good_filenames,
+                ("a", bad_key)
+            )
+
+        # Try a bad separator
         with self.assertRaises(TypeError):
-            results.read_csv(good_filename, bad_key)
+            Results.from_csv_files(
+                good_filenames, good_keys, sep=bad_sep
+            )
 
-        # Try a bad name
-        with self.assertRaises(TypeError):
-            results.read_csv(good_filename, good_key, bad_sep)
+        # Try sequences with different lengthd
+        with self.assertRaises(ValueError):
+            Results.from_csv_files(
+                good_filenames, ("a", *good_keys)
+            )
 
-        # Read the file
-        results.read_csv(good_filename, good_key)
-
-        # Check the key
-        self.assertTrue(good_key in results)
-
-        # Check the data
-        self.assertIsInstance(results[good_key], DataFrame)
+        # Try default keys
+        results = Results.from_csv_files(good_filenames)
+        for key1, key2 in zip(good_keys, results.keys()):
+            self.assertEqual(key1, key2)
+            self.assertIsInstance(results[key1], DataFrame)
 
     def test_load_save(self):
         """Test the save and load methods."""
-        data_filename = "data.csv"
-        data_key = "test_fitness"
+        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_keys = ("test_fitness", "execution_metrics")
         bad_backup_filename_type = 1
         bad_backup_filename_values = ["file", "file.tar"]
         good_backup_filename = "myresults.gz"
 
-        results = Results(data_filename, data_key)
+        results = Results.from_csv_files(data_filenames, data_keys)
 
         # Try saving with a wrong filename type
         with self.assertRaises(TypeError):
@@ -163,11 +152,10 @@ class ResultsTester(unittest.TestCase):
         # Try loading with a custom filename
         results2 = Results.load(good_backup_filename)
 
-        # Check the key
-        self.assertTrue(data_key in results2)
-
-        # Check the data
-        self.assertTrue(results2[data_key].equals(results[data_key]))
+        # Check keys and data
+        for key in data_keys:
+            self.assertTrue(key in results2)
+            self.assertTrue(results2[key].equals(results[key]))
 
         # Remove the file
         remove(good_backup_filename)
@@ -178,24 +166,23 @@ class ResultsTester(unittest.TestCase):
         # Try loading with the default filename
         results3 = Results.load()
 
-        # Check the key
-        self.assertTrue(data_key in results3)
-
-        # Check the data
-        self.assertTrue(results3[data_key].equals(results[data_key]))
+        # Check keys and data
+        for key in data_keys:
+            self.assertTrue(key in results3)
+            self.assertTrue(results3[key].equals(results[key]))
 
         # Remove the file
         remove(DEFAULT_RESULTS_BACKUP_FILENAME)
 
     def test_to_excel(self):
         """Test the to_excel method."""
-        data_filename = "data.csv"
-        data_key = "test_fitness"
+        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_keys = ("test_fitness", "execution_metrics")
         bad_excel_filename_type = 1
         bad_excel_filename_values = ["file", "file.tar"]
         good_excel_filename = "myresults.xlsx"
 
-        results = Results(data_filename, data_key)
+        results = Results.from_csv_files(data_filenames, data_keys)
 
         # Try saving with a wrong filename type
         with self.assertRaises(TypeError):
@@ -222,10 +209,10 @@ class ResultsTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the :py:meth:`~tools.Results.__copy__` method."""
-        data_filename = "data.csv"
-        data_key = "test_fitness"
+        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_keys = ("test_fitness", "execution_metrics")
 
-        results1 = Results(data_filename, data_key)
+        results1 = Results.from_csv_files(data_filenames, data_keys)
         results2 = copy(results1)
 
         # Copy only copies the first level (results1 != results2)
@@ -237,10 +224,10 @@ class ResultsTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test :py:meth:`~tools.Results.__deepcopy__`."""
-        data_filename = "data.csv"
-        data_key = "test_fitness"
+        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_keys = ("test_fitness", "execution_metrics")
 
-        results1 = Results(data_filename, data_key)
+        results1 = Results.from_csv_files(data_filenames, data_keys)
         results2 = deepcopy(results1)
 
         # Check the copy
@@ -252,10 +239,10 @@ class ResultsTester(unittest.TestCase):
         Test the :py:meth:`~tools.Results.__setstate__` and
         :py:meth:`~tools.Results.__reduce__` methods.
         """
-        data_filename = "data.csv"
-        data_key = "test_fitness"
+        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_keys = ("test_fitness", "execution_metrics")
 
-        results1 = Results(data_filename, data_key)
+        results1 = Results.from_csv_files(data_filenames, data_keys)
 
         data = pickle.dumps(results1)
         results2 = pickle.loads(data)

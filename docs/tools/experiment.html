@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>tools.Experiment class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,13 +46,13 @@
           <div class="body" role="main">
             
   <section id="tools-experiment-class">
-<h1><a class="reference internal" href="#tools.Experiment" title="tools.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Experiment</span></code></a> class<a class="headerlink" href="#tools-experiment-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="#tools.Experiment" title="tools.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Experiment</span></code></a> class<a class="headerlink" href="#tools-experiment-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tools.Experiment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">culebra.base.abc.Wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.FitnessFunction</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.Experiment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">FitnessFunction</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.Experiment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a wrapper evaluation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>wrapper</strong> (<a class="reference internal" href="../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>) – The wrapper method</p></li>
 <li><p><strong>test_fitness_function</strong> (<a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>,
@@ -60,7 +61,7 @@ optional) – The fitness used to test. If
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>wrapper</em> is not a valid wrapper</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>test_fitness_function</em> is not a valid
@@ -71,7 +72,7 @@ fitness function</p></li>
 </dd></dl>
 
 <section id="class-attributes">
-<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tools.Experiment.feature_metric_functions">
 <span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">feature_metric_functions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#tools.Experiment.feature_metric_functions" title="Permalink to this definition">¶</a></dt>
@@ -86,7 +87,7 @@ fitness function</p></li>
 
 </section>
 <section id="private-class-attributes">
-<h2>Private class attributes<a class="headerlink" href="#private-class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Private class attributes<a class="headerlink" href="#private-class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tools.Experiment._ResultKeys">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.Experiment.</span></span><span class="sig-name descname"><span class="pre">_ResultKeys</span></span><a class="headerlink" href="#tools.Experiment._ResultKeys" title="Permalink to this definition">¶</a></dt>
@@ -101,22 +102,22 @@ fitness function</p></li>
 
 </section>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="tools.Experiment.wrapper">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">wrapper</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Wrapper</span></em><a class="headerlink" href="#tools.Experiment.wrapper" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">wrapper</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Wrapper</span></em><a class="headerlink" href="#tools.Experiment.wrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the wrapper method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the wrapper method</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new wrapper method</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid wrapper</p>
 </dd>
 </dl>
@@ -127,17 +128,17 @@ fitness function</p></li>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">test_fitness_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><span class="pre">FitnessFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.Experiment.test_fitness_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the test fitness gunction.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the test fitness function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new test fitness function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 the training fitness function will also be used for testing.</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid fitness
 funtion</p>
 </dd>
@@ -149,7 +150,7 @@ funtion</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.Experiment.results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the results provided.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="results.html#tools.Results" title="tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
 </dd>
 </dl>
@@ -169,18 +170,18 @@ funtion</p>
 
 </section>
 <section id="class-methods">
-<h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this headline">¶</a></h2>
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.Experiment.from_config">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="evaluation.html#tools.Evaluation" title="tools.evaluation.Evaluation"><span class="pre">tools.evaluation.Evaluation</span></a></span></span><a class="headerlink" href="#tools.Experiment.from_config" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="evaluation.html#tools.Evaluation" title="tools.evaluation.Evaluation"><span class="pre">Evaluation</span></a></span></span><a class="headerlink" href="#tools.Experiment.from_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new evaluation from a configuration file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#tools.DEFAULT_CONFIG_FILENAME" title="tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a> is used.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>config_filename</em> is an invalid file path</p>
 </dd>
 </dl>
@@ -193,7 +194,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <p>The parameters for the experiment are obtained from a
 configuration file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#tools.DEFAULT_CONFIG_FILENAME" title="tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a> is used.
@@ -208,7 +209,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 
 </section>
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.Experiment.reset">
 <span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Experiment.reset" title="Permalink to this definition">¶</a></dt>
@@ -224,7 +225,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 
 </section>
 <section id="private-methods">
-<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this headline">¶</a></h2>
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.Experiment._do_training">
 <span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">_do_training</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Experiment._do_training" title="Permalink to this definition">¶</a></dt>
@@ -244,7 +245,7 @@ stats.</p>
 <span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">_add_fitness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Experiment._add_fitness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the training fitness values to the solutions found.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>result_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Result key.</p>
 </dd>
 </dl>
@@ -255,7 +256,7 @@ stats.</p>
 <span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">_add_fitness_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Experiment._add_fitness_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform some stats on the best solutions fitness.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>result_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Result key.</p>
 </dd>
 </dl>
@@ -266,7 +267,7 @@ stats.</p>
 <span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">_add_execution_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Experiment._add_execution_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an execution metric to the experiment results.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>metric</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the metric</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Value of the metric</p></li>
@@ -346,7 +347,7 @@ the best solutions dataframe.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

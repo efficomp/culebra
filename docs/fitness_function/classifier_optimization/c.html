@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>fitness_function.classifier_optimization.C class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,10 +47,10 @@
           <div class="body" role="main">
             
   <section id="fitness-function-classifier-optimization-c-class">
-<h1><a class="reference internal" href="#fitness_function.classifier_optimization.C" title="fitness_function.classifier_optimization.C"><code class="xref py py-class docutils literal notranslate"><span class="pre">fitness_function.classifier_optimization.C</span></code></a> class<a class="headerlink" href="#fitness-function-classifier-optimization-c-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="#fitness_function.classifier_optimization.C" title="fitness_function.classifier_optimization.C"><code class="xref py py-class docutils literal notranslate"><span class="pre">fitness_function.classifier_optimization.C</span></code></a> class<a class="headerlink" href="#fitness-function-classifier-optimization-c-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="fitness_function.classifier_optimization.C">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">culebra.base.dataset.Dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.dataset.Dataset</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_prop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="(in scikit-learn v1.1)"><span class="pre">sklearn.base.ClassifierMixin</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SVC()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fitness_function.classifier_optimization.C" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Dataset</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_prop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="(in scikit-learn v1.1)"><span class="pre">ClassifierMixin</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SVC()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fitness_function.classifier_optimization.C" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a fitness function.</p>
 <p>If <em>test_data</em> are provided, the whole <em>training_data</em> are used to
 train the <em>classifier</em>. Otherwise, if <em>test_prop</em> is provided,
@@ -57,7 +58,7 @@ train the <em>classifier</em>. Otherwise, if <em>test_prop</em> is provided,
 Finally, if both <em>test_data</em> and <em>test_prop</em> are omitted,
 <em>training_data</em> are also used to test.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>training_data</strong> (<a class="reference internal" href="../../base/dataset.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The training dataset</p></li>
 <li><p><strong>test_data</strong> (<a class="reference internal" href="../../base/dataset.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>, optional) – The test dataset, defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
@@ -71,7 +72,7 @@ RBF kernels, optional) – The classifier</p></li>
 </dd></dl>
 
 <section id="class-attributes">
-<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="fitness_function.classifier_optimization.C.Fitness">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fitness_function.classifier_optimization.C.</span></span><span class="sig-name descname"><span class="pre">Fitness</span></span><a class="headerlink" href="#fitness_function.classifier_optimization.C.Fitness" title="Permalink to this definition">¶</a></dt>
@@ -100,13 +101,13 @@ within an <a class="reference internal" href="../../genotype/classifier_optimiza
 
 </section>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="fitness_function.classifier_optimization.C.num_obj">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">num_obj</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.num_obj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of objectives.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
 </dl>
@@ -114,19 +115,19 @@ within an <a class="reference internal" href="../../genotype/classifier_optimiza
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fitness_function.classifier_optimization.C.training_data">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">training_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">culebra.base.dataset.Dataset</span></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.training_data" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">training_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dataset</span></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.training_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the training dataset.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the training dataset</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new training dataset</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../base/dataset.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to an invalid dataset</p>
 </dd>
 </dl>
@@ -137,16 +138,16 @@ within an <a class="reference internal" href="../../genotype/classifier_optimiza
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">test_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../base/dataset.html#base.Dataset" title="base.Dataset"><span class="pre">Dataset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.test_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the test dataset.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the test dataset</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new test dataset</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../base/dataset.html#base.Dataset" title="base.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to an invalid dataset</p>
 </dd>
 </dl>
@@ -157,17 +158,17 @@ within an <a class="reference internal" href="../../genotype/classifier_optimiza
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">test_prop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.test_prop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the proportion of data used to test.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the test data proportion</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the test data porportion. A real value in
 [0, 1] or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is expected</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not in [0, 1]</p></li>
@@ -178,20 +179,20 @@ within an <a class="reference internal" href="../../genotype/classifier_optimiza
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fitness_function.classifier_optimization.C.classifier">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">classifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="(in scikit-learn v1.1)"><span class="pre">sklearn.svm._classes.SVC</span></a></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.classifier" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">classifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="(in scikit-learn v1.1)"><span class="pre">SVC</span></a></em><a class="headerlink" href="#fitness_function.classifier_optimization.C.classifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the classifier applied within this wrapper.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the classifier</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new classifier</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Any subclass of <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="(in scikit-learn v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SVC</span></code></a> with
 RBF kernels</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a
 <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="(in scikit-learn v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SVC</span></code></a></p></li>
@@ -203,13 +204,13 @@ RBF kernels</p>
 
 </section>
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="fitness_function.classifier_optimization.C.evaluate">
 <span class="sig-prename descclassname"><span class="pre">C.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><span class="pre">Individual</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representatives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#fitness_function.classifier_optimization.C.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate an individual.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ind</strong> (<a class="reference internal" href="../../genotype/classifier_optimization/individual.html#genotype.classifier_optimization.Individual" title="genotype.classifier_optimization.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – Individual to be evaluated.</p></li>
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, ignored) – Index where <em>ind</em> should be inserted in the
@@ -220,10 +221,10 @@ problem. Only used by cooperative problems</p></li>
 being optimized. Only used by cooperative problems</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The fitness of <em>ind</em></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd>
 </dl>
@@ -277,7 +278,7 @@ being optimized. Only used by cooperative problems</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

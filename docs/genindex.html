@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +11,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -1363,8 +1364,6 @@
 </li>
       <li><a href="wrapper/multi_pop.html#wrapper.multi_pop.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS (in module wrapper.multi_pop)</a>
 </li>
-      <li><a href="tools.html#tools.DEFAULT_KEY">DEFAULT_KEY (in module tools)</a>
-</li>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_MUTATION_PROB">DEFAULT_MUTATION_PROB (in module wrapper.single_pop)</a>
 </li>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_NSGA3_REFERENCE_POINTS_P">DEFAULT_NSGA3_REFERENCE_POINTS_P (in module wrapper.single_pop)</a>
@@ -1381,10 +1380,10 @@
 </li>
       <li><a href="base.html#base.DEFAULT_OBJECTIVE_STATS">DEFAULT_OBJECTIVE_STATS (in module base)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_POP_SIZE">DEFAULT_POP_SIZE (in module wrapper.single_pop)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="genotype/feature_selection.html#genotype.feature_selection.DEFAULT_PROP">DEFAULT_PROP (in module genotype.feature_selection)</a>
 </li>
       <li><a href="wrapper/multi_pop.html#wrapper.multi_pop.DEFAULT_REPRESENTATION_FREQ">DEFAULT_REPRESENTATION_FREQ (in module wrapper.multi_pop)</a>
@@ -1647,6 +1646,8 @@
         <li><a href="tools/experiment.html#tools.Experiment.from_config">(Experiment class method)</a>
 </li>
       </ul></li>
+      <li><a href="tools/results.html#tools.Results.from_csv_files">from_csv_files() (Results class method)</a>
+</li>
       <li><a href="genotype/feature_selection/species.html#genotype.feature_selection.Species.from_proportion">from_proportion() (Species class method)</a>
 </li>
       <li><a href="wrapper/multi_pop/topology.html#wrapper.multi_pop.topology.full_connected_destinations">full_connected_destinations() (in module wrapper.multi_pop.topology)</a>
@@ -2395,8 +2396,6 @@
       <li><a href="genotype/feature_selection/metrics.html#genotype.feature_selection.Metrics.rank">rank() (Metrics static method)</a>
 </li>
       <li><a href="fitness_function/classifier_optimization/rbf_svc_fitness_function.html#fitness_function.classifier_optimization.RBFSVCFitnessFunction">RBFSVCFitnessFunction (class in fitness_function.classifier_optimization)</a>
-</li>
-      <li><a href="tools/results.html#tools.Results.read_csv">read_csv() (Results method)</a>
 </li>
       <li><a href="wrapper/multi_pop/cooperative.html#wrapper.multi_pop.Cooperative.receive_representatives">receive_representatives() (Cooperative static method)</a>
 
@@ -3395,7 +3394,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

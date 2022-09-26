@@ -19,8 +19,9 @@
 """Results management."""
 
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Sequence
 from collections import UserDict
+from os.path import basename, splitext
 from pandas import DataFrame, read_csv, ExcelWriter
 from pandas.io.pickle import to_pickle, read_pickle
 from culebra.base import (
@@ -28,6 +29,7 @@ from culebra.base import (
     DEFAULT_SEP,
     check_instance,
     check_str,
+    check_sequence,
     check_filename
 )
 
@@ -40,9 +42,6 @@ __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
-DEFAULT_KEY = "Unlabeled"
-"""Default key for results."""
-
 DEFAULT_RESULTS_BACKUP_FILENAME = "results.gz"
 """Default file name for results backups."""
 
@@ -53,30 +52,9 @@ DEFAULT_RESULTS_EXCEL_FILENAME = "results.xlsx"
 class Results(UserDict, Base):
     """Manages the results produced by the evaluation of a wrapper."""
 
-    def __init__(
-        self,
-        file: Optional[str] = None,
-        key: Optional[str] = None,
-        sep: Optional[str] = None
-    ) -> None:
-        """Create a results manager.
-
-        If a *file* is provided, the results are loaded from it. If a *key* is
-        also provided, the results are labeled with it. Otherwise, the results
-        manager keeps empty.
-
-        :param file: File containing the data
-        :type file: :py:class:`str`, path object or file-like objects, optional
-        :param key: Key for the data
-        :type key: :py:class:`str`, optional
-        :param sep: Separator, defaults to :py:attr:`~base.DEFAULT_SEP`
-        :type sep: :py:class:`str`, optional
-        """
-        # Init the superclasses
-        super().__init__()
-
-        if file is not None:
-            self.read_csv(file, key, sep)
+    def __init__(self) -> None:
+        """Create an empty results manager."""
+        return super().__init__()
 
     def __setitem__(self, key: str, data: DataFrame) -> DataFrame:
         """Overriden to verify the key and value.
@@ -96,35 +74,54 @@ class Results(UserDict, Base):
             check_instance(data, "data", DataFrame)
         )
 
-    def read_csv(
-        self, file: str,
-        key: Optional[str] = None,
+    @classmethod
+    def from_csv_files(
+        cls,
+        files: Sequence[str],
+        keys: Sequence[str] = None,
         sep: Optional[str] = None
     ) -> None:
-        """Load data from a file.
+        """Load some results from several csv files.
 
-        :param file: File containing the data
-        :type file: :py:class:`str`, path object or file-like objects
-        :param key: Key for the data. If set to :py:data:`None`,
-            :py:attr:`~tools.DEFAULT_KEY` is used. Defaults
-            to :py:data:`None`
-        :type key: :py:class:`str`, optional
+        :param files: Sequence of files containing the results
+        :type files: :py:class:`~collections.abc.Sequence` of :py:class:`str`,
+            path objects or file-like objects
+        :param keys: Keys for the different results. One key for each csv file.
+            If omitted, the basename of each file in *files* (without
+            extension) is used. Defaults to :py:data:`None`
+        :type keys: :py:class:`~collections.abc.Sequence` of :py:class:`str`
         :param sep: Separator. If :py:data:`None` is provided,
-            :py:attr:`~base.DEFAULT_SEP`is used. Defaults to :py:data:`None`
+            :py:attr:`~base.DEFAULT_SEP` is used. Defaults to :py:data:`None`
         :type sep: :py:class:`str`, optional
         :raises TypeError: If *sep* is not a string
+        :raises ValueError: If *files* and *keys* have different lengths
+        :raises ValueError: If any key in *keys* is not a string
+        :raises FileNotFoundError: If any file in *files* is not found
         """
+        # Check files
+        files = check_sequence(files, "csv files")
+
+        # If no keys are provided, take the base filenames, without extension
+        if keys is None:
+            keys = list(splitext(basename(file))[0] for file in files)
+
+        # Check keys
+        keys = check_sequence(
+            keys, "csv keys", size=len(files), item_checker=check_str
+        )
+
         # Check sep
         sep = check_str(sep, "separator") if sep is not None else DEFAULT_SEP
 
+        # Create the results
+        results = cls()
+
         # Read the data
-        data = read_csv(file, sep=sep)
+        for file, key in zip(files, keys):
+            results[key] = read_csv(file, sep=sep)
 
-        # Get the key
-        key = DEFAULT_KEY if key is None else key
-
-        # Insert the data
-        self.__setitem__(key, data)
+        # Return the results
+        return results
 
     def save(self, filename: Optional[str] = None) -> None:
         """Save these results.
@@ -188,12 +185,9 @@ class Results(UserDict, Base):
             for key, data in self.items():
                 data.to_excel(writer, sheet_name=key)
 
-            writer.save()
-
 
 # Exported symbols for this module
 __all__ = [
-    'DEFAULT_KEY',
     'DEFAULT_RESULTS_BACKUP_FILENAME',
     'DEFAULT_RESULTS_EXCEL_FILENAME',
     'Results'

@@ -26,9 +26,9 @@
 Class methods
 -------------
 .. automethod:: tools.Results.load
+.. automethod:: tools.Results.from_csv_files
 
 Methods
 -------
-.. automethod:: tools.Results.read_csv
 .. automethod:: tools.Results.save
 .. automethod:: tools.Results.to_excel

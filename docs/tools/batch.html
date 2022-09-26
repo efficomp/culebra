@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>tools.Batch class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -41,13 +42,13 @@
           <div class="body" role="main">
             
   <section id="tools-batch-class">
-<h1><a class="reference internal" href="#tools.Batch" title="tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Batch</span></code></a> class<a class="headerlink" href="#tools-batch-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="#tools.Batch" title="tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Batch</span></code></a> class<a class="headerlink" href="#tools-batch-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tools.Batch">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">culebra.base.abc.Wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.FitnessFunction</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_experiments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.Batch" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">FitnessFunction</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_experiments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.Batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a batch of experiments.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>wrapper</strong> (<a class="reference internal" href="../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>) – The wrapper method</p></li>
 <li><p><strong>test_fitness_function</strong> (<a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>,
@@ -62,7 +63,7 @@ defaults to <a class="reference internal" href="../tools.html#tools.DEFAULT_NUM_
 </dd></dl>
 
 <section id="class-attributes">
-<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tools.Batch.feature_metric_functions">
 <span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">feature_metric_functions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#tools.Batch.feature_metric_functions" title="Permalink to this definition">¶</a></dt>
@@ -78,7 +79,7 @@ experiments.</p>
 
 </section>
 <section id="private-class-attributes">
-<h2>Private class attributes<a class="headerlink" href="#private-class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Private class attributes<a class="headerlink" href="#private-class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tools.Batch._ResultKeys">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.Batch.</span></span><span class="sig-name descname"><span class="pre">_ResultKeys</span></span><a class="headerlink" href="#tools.Batch._ResultKeys" title="Permalink to this definition">¶</a></dt>
@@ -93,22 +94,22 @@ experiments.</p>
 
 </section>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="tools.Batch.wrapper">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">wrapper</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Wrapper</span></em><a class="headerlink" href="#tools.Batch.wrapper" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">wrapper</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Wrapper</span></em><a class="headerlink" href="#tools.Batch.wrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the wrapper method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the wrapper method</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new wrapper method</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid wrapper</p>
 </dd>
 </dl>
@@ -119,17 +120,17 @@ experiments.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">test_fitness_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><span class="pre">FitnessFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.Batch.test_fitness_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the test fitness gunction.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the test fitness function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new test fitness function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 the training fitness function will also be used for testing.</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid fitness
 funtion</p>
 </dd>
@@ -141,7 +142,7 @@ funtion</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.Batch.results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the results provided.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="results.html#tools.Results" title="tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
 </dd>
 </dl>
@@ -152,17 +153,17 @@ funtion</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">num_experiments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#tools.Batch.num_experiments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the number of experiments in the batch.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the number of experiments</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new number of experiments. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../tools.html#tools.DEFAULT_NUM_EXPERIMENTS" title="tools.DEFAULT_NUM_EXPERIMENTS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUM_EXPERIMENTS</span></code></a> is used</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not greater than
@@ -174,10 +175,10 @@ zero</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="tools.Batch.exp_labels">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">exp_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tools.Batch.exp_labels" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">exp_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tools.Batch.exp_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the label to identify each one of the experiments in the batch.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
 </dl>
@@ -185,16 +186,16 @@ zero</p></li>
 
 </section>
 <section id="class-methods">
-<h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this headline">¶</a></h2>
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.Batch.from_config">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="evaluation.html#tools.Evaluation" title="tools.evaluation.Evaluation"><span class="pre">tools.evaluation.Evaluation</span></a></span></span><a class="headerlink" href="#tools.Batch.from_config" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="evaluation.html#tools.Evaluation" title="tools.evaluation.Evaluation"><span class="pre">Evaluation</span></a></span></span><a class="headerlink" href="#tools.Batch.from_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new evaluation from a configuration file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the config file</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>config_filename</em> is an invalid file path</p>
 </dd>
 </dl>
@@ -207,7 +208,7 @@ zero</p></li>
 <p>The parameters for the experiment are obtained from a
 configuration file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#tools.DEFAULT_CONFIG_FILENAME" title="tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a> is used.
@@ -222,7 +223,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 
 </section>
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.Batch.reset">
 <span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tools.Batch.reset" title="Permalink to this definition">¶</a></dt>
@@ -237,18 +238,18 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 
 </section>
 <section id="private-methods">
-<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this headline">¶</a></h2>
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.Batch._append_data">
 <span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_append_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Batch._append_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append data from an experiment to a results dataframe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>result_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key of the result</p></li>
 <li><p><strong>exp_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Label of the experiment</p></li>
-<li><p><strong>exp_data</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.4.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> or
-<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data of the result</p></li>
+<li><p><strong>exp_data</strong> (<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> or
+<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data of the result</p></li>
 </ul>
 </dd>
 </dl>
@@ -271,7 +272,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_add_fitness_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Batch._add_fitness_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform some stats on the best solutions fitness.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_data_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Input data key.</p></li>
 <li><p><strong>result_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Result key.</p></li>
@@ -332,7 +333,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

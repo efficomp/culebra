@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>wrapper.single_pop.Evolutionary class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,13 +47,13 @@
           <div class="body" role="main">
             
   <section id="wrapper-single-pop-evolutionary-class">
-<h1><a class="reference internal" href="#wrapper.single_pop.Evolutionary" title="wrapper.single_pop.Evolutionary"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop.Evolutionary</span></code></a> class<a class="headerlink" href="#wrapper-single-pop-evolutionary-class" title="Permalink to this headline">¶</a></h1>
+<h1><a class="reference internal" href="#wrapper.single_pop.Evolutionary" title="wrapper.single_pop.Evolutionary"><code class="xref py py-class docutils literal notranslate"><span class="pre">wrapper.single_pop.Evolutionary</span></code></a> class<a class="headerlink" href="#wrapper-single-pop-evolutionary-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Evolutionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">culebra.base.abc.Species</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">culebra.base.abc.FitnessFunction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_gens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossover_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutation_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossover_prob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutation_prob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_ind_mutation_prob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_func_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.single_pop.Evolutionary" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Evolutionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individual_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Species</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FitnessFunction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_gens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossover_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutation_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossover_prob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutation_prob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_ind_mutation_prob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_func_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.single_pop.Evolutionary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new wrapper.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>individual_cls</strong> (An <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> subclass) – The individual class</p></li>
 <li><p><strong>species</strong> (<a class="reference internal" href="../../base/species.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – The species for all the individuals</p></li>
@@ -106,7 +107,7 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 <li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – The seed, defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If any argument is not of the appropriate type</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If any argument has an incorrect value</p></li>
@@ -116,7 +117,7 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 </dd></dl>
 
 <section id="class-attributes">
-<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.stats_names">
 <span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">stats_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Gen',</span> <span class="pre">'Pop',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.stats_names" title="Permalink to this definition">¶</a></dt>
@@ -131,22 +132,22 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 
 </section>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.individual_cls">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">individual_cls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.individual_cls" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">individual_cls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.individual_cls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the individual class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the individual class</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new individual class</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>An <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> subclass</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not an
 <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> subclass</p>
 </dd>
@@ -155,19 +156,19 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.species">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">species</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Species</span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.species" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">species</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Species</span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.species" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the species.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the species</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new species</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../base/species.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a
 <a class="reference internal" href="../../base/species.html#base.Species" title="base.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> instance</p>
 </dd>
@@ -176,19 +177,19 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.fitness_function">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">fitness_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">culebra.base.abc.FitnessFunction</span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.fitness_function" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">fitness_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FitnessFunction</span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.fitness_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the training fitness function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the fitness function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new fitness function</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a fitness function</p>
 </dd>
 </dl>
@@ -199,18 +200,18 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">num_gens</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.num_gens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the number of generations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current number of generations</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the number of generations. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the default number of generations,
 <a class="reference internal" href="../../wrapper.html#wrapper.DEFAULT_NUM_GENS" title="wrapper.DEFAULT_NUM_GENS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUM_GENS</span></code></a>, is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
@@ -224,18 +225,18 @@ be used. Defaults to <a class="reference external" href="https://docs.python.org
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">pop_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.pop_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the population size.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current population size</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the population size. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../single_pop.html#wrapper.single_pop.DEFAULT_POP_SIZE" title="wrapper.single_pop.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a>
 is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not an <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not greater than zero</p></li>
@@ -246,21 +247,21 @@ is chosen</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.crossover_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">crossover_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.crossover_func" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">crossover_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.crossover_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the crossover function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current crossover function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new crossover function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 the <a class="reference internal" href="../../base/individual.html#base.Individual.crossover" title="base.Individual.crossover"><code class="xref py py-meth docutils literal notranslate"><span class="pre">crossover()</span></code></a> method of the individual
 class evolved by the wrapper is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not callable</p>
 </dd>
 </dl>
@@ -268,21 +269,21 @@ class evolved by the wrapper is chosen</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.mutation_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">mutation_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.mutation_func" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">mutation_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.mutation_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the mutation function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current mutation function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new mutation function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the
 <a class="reference internal" href="../../base/individual.html#base.Individual.mutate" title="base.Individual.mutate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mutate()</span></code></a> method of the individual
 class evolved by the wrapper is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not callable</p>
 </dd>
 </dl>
@@ -290,20 +291,20 @@ class evolved by the wrapper is chosen</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.selection_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">selection_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.selection_func" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">selection_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.selection_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the selection function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current selection function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set the new selection function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../single_pop.html#wrapper.single_pop.DEFAULT_SELECTION_FUNC" title="wrapper.single_pop.DEFAULT_SELECTION_FUNC"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SELECTION_FUNC</span></code></a> is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not callable</p>
 </dd>
 </dl>
@@ -314,17 +315,17 @@ class evolved by the wrapper is chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">crossover_prob</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.crossover_prob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the crossover probability.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current crossover probability</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set the new crossover probability. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../single_pop.html#wrapper.single_pop.DEFAULT_CROSSOVER_PROB" title="wrapper.single_pop.DEFAULT_CROSSOVER_PROB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CROSSOVER_PROB</span></code></a> is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> in (0, 1)</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
@@ -338,17 +339,17 @@ class evolved by the wrapper is chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">mutation_prob</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.mutation_prob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the mutation probability.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current mutation probability</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set the new mutation probability. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../single_pop.html#wrapper.single_pop.DEFAULT_MUTATION_PROB" title="wrapper.single_pop.DEFAULT_MUTATION_PROB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MUTATION_PROB</span></code></a> is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> in (0, 1)</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
@@ -362,19 +363,19 @@ class evolved by the wrapper is chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">gene_ind_mutation_prob</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.gene_ind_mutation_prob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the gene independent mutation probability.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current gene independent mutation probability</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set the new gene independent mutation probability. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../single_pop.html#wrapper.single_pop.DEFAULT_GENE_IND_MUTATION_PROB" title="wrapper.single_pop.DEFAULT_GENE_IND_MUTATION_PROB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_GENE_IND_MUTATION_PROB</span></code></a>
 is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> in (0, 1)</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
@@ -385,21 +386,21 @@ is chosen</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.selection_func_params">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">selection_func_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.selection_func_params" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">selection_func_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.selection_func_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the parameters of the selection function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current parameters for the selection function</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set new parameters. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../single_pop.html#wrapper.single_pop.DEFAULT_SELECTION_FUNC_PARAMS" title="wrapper.single_pop.DEFAULT_SELECTION_FUNC_PARAMS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SELECTION_FUNC_PARAMS</span></code></a> is
 chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
 </dd>
 </dl>
@@ -410,19 +411,19 @@ chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">checkpoint_enable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.checkpoint_enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable or disable checkpointing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if checkpoinitng is enabled, or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> otherwise</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>New value for the checkpoint enablement. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../base.html#base.DEFAULT_CHECKPOINT_ENABLE" title="base.DEFAULT_CHECKPOINT_ENABLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CHECKPOINT_ENABLE</span></code></a> is
 chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not boolean</p>
 </dd>
 </dl>
@@ -433,17 +434,17 @@ chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">checkpoint_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.checkpoint_freq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the checkpoint frequency.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the checkpoint frequency</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a value for the checkpoint frequency. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../base.html#base.DEFAULT_CHECKPOINT_FREQ" title="base.DEFAULT_CHECKPOINT_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CHECKPOINT_FREQ</span></code></a> is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is not a positive number</p></li>
@@ -457,18 +458,18 @@ chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">checkpoint_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.checkpoint_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the checkpoint file path.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the checkpoint file path</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the checkpoint file path. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../base.html#base.DEFAULT_CHECKPOINT_FILENAME" title="base.DEFAULT_CHECKPOINT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CHECKPOINT_FILENAME</span></code></a> is
 chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a string</p>
 </dd>
 </dl>
@@ -479,17 +480,17 @@ chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">verbose</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the verbosity of this wrapper.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the verbosity</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the verbosity. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#debug__" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">__debug__</span></code></a> is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not boolean</p>
 </dd>
 </dl>
@@ -500,13 +501,13 @@ chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">random_seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.random_seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the initial random seed used by this wrapper.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the seed</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the random seed</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
 </dl>
@@ -517,7 +518,7 @@ chosen</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">pop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary.pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the population.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a></p>
 </dd>
 </dl>
@@ -530,7 +531,7 @@ chosen</p>
 <p>Return a logbook with the statistics of the search or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>
 if the search has not been done yet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
 </dd>
 </dl>
@@ -543,7 +544,7 @@ if the search has not been done yet.</p>
 <p>Return the number of evaluations or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the search has
 not been done yet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
 </dl>
@@ -556,7 +557,7 @@ not been done yet.</p>
 <p>Return the training runtime or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the search has not
 been done yet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd>
 </dl>
@@ -569,17 +570,17 @@ been done yet.</p>
 <p>The wrapper index is only used by distributed wrappers. For the rest
 of wrappers <a class="reference internal" href="../../base.html#base.DEFAULT_INDEX" title="base.DEFAULT_INDEX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_INDEX</span></code></a> is used.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the wrapper index</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for wrapper index. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../base.html#base.DEFAULT_INDEX" title="base.DEFAULT_INDEX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_INDEX</span></code></a> is chosen</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not an integer</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If set to a value which is a negative number</p></li>
@@ -595,16 +596,16 @@ of wrappers <a class="reference internal" href="../../base.html#base.DEFAULT_IND
 <p>The wrapper container is only used by distributed wrappers. For the
 rest of wrappers defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the container</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for container of this wrapper</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid wrapper</p>
 </dd>
 </dl>
@@ -620,20 +621,20 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 
 </section>
 <section id="private-properties">
-<h2>Private Properties<a class="headerlink" href="#private-properties" title="Permalink to this headline">¶</a></h2>
+<h2>Private Properties<a class="headerlink" href="#private-properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary._state">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary._state" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#wrapper.single_pop.Evolutionary._state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get and set the state of this wrapper.</p>
 <p>Overriden to add the current population to the wrapper’s state.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Getter</dt>
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the state</p>
 </dd>
-<dt class="field-even">Setter</dt>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new state</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
 </dd>
 </dl>
@@ -641,7 +642,7 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 
 </section>
 <section id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.reset">
 <span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary.reset" title="Permalink to this definition">¶</a></dt>
@@ -661,7 +662,7 @@ modified.</p>
 <p>Its fitness will be modified according with the fitness function
 results.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ind</strong> (<a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – The individual</p></li>
 <li><p><strong>fitness_func</strong> (<a class="reference internal" href="../../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>, optional) – The fitness function. If omitted, the default
@@ -683,14 +684,14 @@ or <a class="reference external" href="https://docs.python.org/3/library/constan
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.best_solutions">
-<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">best_solutions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">deap.tools.support.HallOfFame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary.best_solutions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">best_solutions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">HallOfFame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary.best_solutions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the best individuals found for each species.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list containing <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of
 individuals. One hof for each species</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a></p>
 </dd>
 </dl>
@@ -702,11 +703,11 @@ individuals. One hof for each species</p>
 <dd><p>Return a list of representatives from each species.</p>
 <p>Only used for cooperative wrappers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of representatives lists if the wrapper is
 cooperative or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> in other cases.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of
 <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
@@ -715,10 +716,10 @@ cooperative or <a class="reference external" href="https://docs.python.org/3/lib
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary.train">
-<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_proxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">multiprocessing.managers.DictProxy</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary.train" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_proxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">DictProxy</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform the feature selection process.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>state_proxy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DictProxy</span></code>,
 optional) – Dictionary proxy to copy the output state of the
 wrapper procedure. Only used if train is executed within a
@@ -733,7 +734,7 @@ wrapper procedure. Only used if train is executed within a
 <dd><p>Apply the test fitness function to the solutions found.</p>
 <p>Update the solutions in <em>best_found</em> with their test fitness.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>best_found</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
 <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a>) – The best individuals found for each species.
@@ -749,7 +750,7 @@ the current value of <a class="reference internal" href="../../base/wrapper.html
 used</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If any parameter has an invalid value.</p></li>
@@ -760,13 +761,13 @@ used</p></li>
 
 </section>
 <section id="private-methods">
-<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this headline">¶</a></h2>
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary._save_state">
 <span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_save_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary._save_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the state at a new checkpoint.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.10)"><strong>Exception</strong></a> – If the checkpoint file can’t be written</p>
 </dd>
 </dl>
@@ -777,7 +778,7 @@ used</p></li>
 <span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_load_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary._load_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the state of the last checkpoint.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.10)"><strong>Exception</strong></a> – If the checkpoint file can’t be loaded</p>
 </dd>
 </dl>
@@ -791,10 +792,10 @@ used</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary._evaluate_pop">
-<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_evaluate_pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary._evaluate_pop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_evaluate_pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary._evaluate_pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the individuals of <em>pop</em> that have an invalid fitness.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pop</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – A population</p>
 </dd>
 </dl>
@@ -802,10 +803,10 @@ used</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.single_pop.Evolutionary._do_generation_stats">
-<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_do_generation_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">culebra.base.abc.Individual</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary._do_generation_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Evolutionary.</span></span><span class="sig-name descname"><span class="pre">_do_generation_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Individual</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#wrapper.single_pop.Evolutionary._do_generation_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform the generation stats.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pop</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="../../base/individual.html#base.Individual" title="base.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>) – A population</p>
 </dd>
 </dl>
@@ -882,12 +883,13 @@ before performing a generation.</p>
 <dd><p>Implement a generation of the search process.</p>
 <p>In this case, the most simple evolutionary algorithm, as
 presented in chapter 7 of <a class="reference internal" href="#back2000" id="id1"><span>[Back2000]</span></a>, is implemented.</p>
-<dl class="citation">
-<dt class="label" id="back2000"><span class="brackets"><a class="fn-backref" href="#id1">Back2000</a></span></dt>
-<dd><p>T. Back, D. Fogel and Z. Michalewicz, eds. <em>Evolutionary
+<div role="list" class="citation-list">
+<div class="citation" id="back2000" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Back2000</a><span class="fn-bracket">]</span></span>
+<p>T. Back, D. Fogel and Z. Michalewicz, eds. <em>Evolutionary
 Computation 1: Basic Algorithms and Operators</em>, CRC Press, 2000.</p>
-</dd>
-</dl>
+</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -992,7 +994,7 @@ initialized.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>

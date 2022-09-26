@@ -25,11 +25,6 @@
 
 Attributes
 ----------
-.. attribute:: DEFAULT_KEY
-    :annotation: = 'Unlabeled'
-
-    Default key for results.
-
 .. attribute:: DEFAULT_RESULTS_BACKUP_FILENAME
     :annotation: = 'results.gz'
 
@@ -72,7 +67,6 @@ Attributes
     Default name for the configuration file for the evaluation.
 
 ..
-    .. autodata:: DEFAULT_KEY
     .. autodata:: DEFAULT_RESULTS_BACKUP_FILENAME
     .. autodata:: DEFAULT_RESULTS_EXCEL_FILENAME
     .. autodata:: DEFAULT_STATS_FUNCTIONS
