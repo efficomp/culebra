@@ -32,3 +32,7 @@ Methods
 -------
 .. automethod:: tools.Results.save
 .. automethod:: tools.Results.to_excel
+
+Private methods
+---------------
+.. automethod:: tools.Results.__setitem__

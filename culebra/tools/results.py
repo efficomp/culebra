@@ -57,17 +57,17 @@ class Results(UserDict, Base):
         return super().__init__()
 
     def __setitem__(self, key: str, data: DataFrame) -> DataFrame:
-        """Overriden to verify the key and value.
+        """Overriden to verify the *key* and *data*.
 
-        Assure that the key is a :py:class:`str` and the value is a
-        :py:class:`Dataframe`.
+        Assure that the *key* is a :py:class:`str` and the *data* is a
+        :py:class:`~pandas.DataFrame`.
 
-        :param key: Key for the results
+        :param key: Key to identify the *data* within the results
         :type key: :py:class:`str`
-        :param data: The data
-        :type data: :py:class:`Dataframe`
-        :return: The data inserted
-        :rtype: :py:class:`Dataframe`
+        :param data: The *data* to be inserted
+        :type data: :py:class:`~pandas.DataFrame`
+        :return: The inserted *data*
+        :rtype: :py:class:`~pandas.DataFrame`
         """
         return super().__setitem__(
             check_instance(key, "key for the results", str),
