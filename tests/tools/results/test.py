@@ -46,8 +46,7 @@ class ResultsTester(unittest.TestCase):
         # Check that the results manager is empty
         self.assertEqual(len(results.keys()), 0)
 
-        # Check that the results manager subclass of dict
-        self.assertIsInstance(results, Results)
+        # Check that the results manager subclass of UserDict
         self.assertIsInstance(results, UserDict)
 
     def test_setitem(self):
