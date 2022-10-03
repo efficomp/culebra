@@ -22,7 +22,7 @@ evolutionary computation library designed to solve feature selection problems.
 It provides several individual representations, such as bitvectors and set
 of feature indices, several fitness functions and several wrapper algorithms.
 
-Experiments and experiment batchs are automatized by means of the
+Experiments and experiment batches are automatized by means of the
 :py:class:`~tools.Experiment` and :py:class:`~tools.Batch`
 classes, both in the :py:mod:`~tools` module.
 """

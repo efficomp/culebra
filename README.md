@@ -4,7 +4,7 @@ Culebra is a [DEAP](https://deap.readthedocs.io/en/master/)-based evolutionary c
 
 It provides several individual representations, such as bitvectors and sets of feature indices, several fitness functions and several wrapper algorithms.
 
-Experiments and experiment batchs are automatized by means of the *Experiment* and *Batch* classes.
+Experiments and experiment batches are automatized by means of the *Experiment* and *Batch* classes.
 
 ## Requirements
 
