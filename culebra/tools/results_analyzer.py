@@ -22,6 +22,7 @@ from typing import Callable, NamedTuple, Dict
 from collections import UserDict, namedtuple
 from collections.abc import Sequence
 from functools import partial
+from warnings import catch_warnings, simplefilter
 import numpy as np
 from pandas import Series
 from scipy.stats import (
@@ -174,18 +175,17 @@ class ResultsComparison(NamedTuple):
 
     normality: TestOutcome
     """Outcome of the normality test."""
-    
+
     homoscedasticity: TestOutcome | None
     """Outcome of the homoscedasticity test. :py:data:`None` if the compared
     results did not follow a normal distribution."""
-    
+
     global_comparison: TestOutcome
     """Outcome of the global comparison of all the results."""
-    
+
     pairwise_comparison: TestOutcome | None
     """Outcome of the pairwise comparison of the results. Only performed if
     all the analyzed results did not follow the same distribution."""
-    
 
     def __str__(self) -> str:
         """Pretty print of the comparison result."""
@@ -285,7 +285,7 @@ class ResultsComparison(NamedTuple):
 
             output += "Results following the same distribution "
             output += f"(alpha = {self.pairwise_comparison.alpha})\n\n"
-            output += self.pairwise_comparison.__str__() + "\n\n\n"
+            output += self.pairwise_comparison.__str__()
 
         return output
 
@@ -396,7 +396,9 @@ class ResultsAnalyzer(UserDict, Base):
         # Apply the test to all the distributions
         pvalues = []
         for batch_key in data.keys():
-            results = test(data[batch_key])
+            with catch_warnings():
+                simplefilter("ignore")
+                results = test(data[batch_key])
             pvalues += (results.pvalue,)
 
         # Return the results
@@ -459,7 +461,9 @@ class ResultsAnalyzer(UserDict, Base):
             )
 
         # Apply the test
-        results = test(*data.values())
+        with catch_warnings():
+            simplefilter("ignore")
+            results = test(*data.values())
 
         # Return the results
         return TestOutcome(
@@ -520,7 +524,10 @@ class ResultsAnalyzer(UserDict, Base):
             # Apply the one-way ANOVA test
             test = f_oneway
 
-        results = test(*data.values())
+        # Apply the test
+        with catch_warnings():
+            simplefilter("ignore")
+            results = test(*data.values())
 
         # Return the results
         return TestOutcome(
@@ -580,7 +587,10 @@ class ResultsAnalyzer(UserDict, Base):
             # Apply the Kruskal-Wallis H-test
             test = kruskal
 
-        results = test(*data.values())
+        # Apply the test
+        with catch_warnings():
+            simplefilter("ignore")
+            results = test(*data.values())
 
         # Return the results
         return TestOutcome(
@@ -631,8 +641,10 @@ class ResultsAnalyzer(UserDict, Base):
                 "label"
             )
 
-        # Get the results
-        results = tukey_hsd(*data.values())
+        # Apply the test
+        with catch_warnings():
+            simplefilter("ignore")
+            results = tukey_hsd(*data.values())
 
         # Return the results
         return TestOutcome(
@@ -694,8 +706,10 @@ class ResultsAnalyzer(UserDict, Base):
                 "label"
             )
 
-        # Get the results
-        results = posthoc_dunn([*data.values()], p_adjust=p_adjust)
+        # Apply the test
+        with catch_warnings():
+            simplefilter("ignore")
+            results = posthoc_dunn([*data.values()], p_adjust=p_adjust)
 
         # Return the results
         test_name = (
