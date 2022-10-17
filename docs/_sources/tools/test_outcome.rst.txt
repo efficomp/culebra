@@ -18,21 +18,27 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.Results` class
-===============================
+:py:class:`tools.TestOutcome` class
+===================================
 
-.. autoclass:: tools.Results
+.. autoclass:: tools.TestOutcome
 
-Class methods
--------------
-.. automethod:: tools.Results.load
-.. automethod:: tools.Results.from_csv_files
 
-Methods
--------
-.. automethod:: tools.Results.save
-.. automethod:: tools.Results.to_excel
+Attributes
+----------
+.. autoattribute:: tools.TestOutcome.test
+.. autoattribute:: tools.TestOutcome.data
+.. autoattribute:: tools.TestOutcome.column
+.. autoattribute:: tools.TestOutcome.alpha
+.. autoattribute:: tools.TestOutcome.batches
+.. autoattribute:: tools.TestOutcome.pvalue
+
+
+Properties
+----------
+.. autoproperty:: tools.TestOutcome.success
 
 Dunder methods
 --------------
-.. automethod:: tools.Results.__setitem__
+.. automethod:: tools.TestOutcome.__str__
+.. automethod:: tools.TestOutcome.__repr__

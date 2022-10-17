@@ -83,11 +83,12 @@ autodoc_member_order = 'groupwise'
 
 # References to external modules
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3', None),
+    'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
     'pandas': ('https://pandas.pydata.org/docs/', None),
     'sklearn': ('https://scikit-learn.org/stable/', None),
-    'deap': ('https://deap.readthedocs.io/en/master/', None)
+    'deap': ('https://deap.readthedocs.io/en/master/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None)
 }
 
 # -- Options for HTML output -------------------------------------------------

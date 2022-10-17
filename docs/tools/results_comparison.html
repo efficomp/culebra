@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>tools.ResultsComparison class &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="tools.TestOutcome class" href="test_outcome.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="test_outcome.html" title="tools.TestOutcome class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.ResultsComparison</span></code> class</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tools-resultscomparison-class">
+<h1><a class="reference internal" href="#tools.ResultsComparison" title="tools.ResultsComparison"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.ResultsComparison</span></code></a> class<a class="headerlink" href="#tools-resultscomparison-class" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tools.ResultsComparison">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResultsComparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.TestOutcome"><span class="pre">TestOutcome</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">homoscedasticity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.TestOutcome"><span class="pre">TestOutcome</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_comparison</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.TestOutcome"><span class="pre">TestOutcome</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairwise_comparison</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.TestOutcome"><span class="pre">TestOutcome</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.ResultsComparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of ResultsComparison(normality, homoscedasticity, global_comparison, pairwise_comparison)</p>
+</dd></dl>
+
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.ResultsComparison.normality">
+<span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">normality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></em><a class="headerlink" href="#tools.ResultsComparison.normality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outcome of the normality test.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.ResultsComparison.homoscedasticity">
+<span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">homoscedasticity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.results_analyzer.TestOutcome"><span class="pre">tools.results_analyzer.TestOutcome</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.ResultsComparison.homoscedasticity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outcome of the homoscedasticity test. <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the compared
+results did not follow a normal distribution.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.ResultsComparison.global_comparison">
+<span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">global_comparison</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></em><a class="headerlink" href="#tools.ResultsComparison.global_comparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outcome of the global comparison of all the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tools.ResultsComparison.pairwise_comparison">
+<span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">pairwise_comparison</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.results_analyzer.TestOutcome"><span class="pre">tools.results_analyzer.TestOutcome</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.ResultsComparison.pairwise_comparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outcome of the pairwise comparison of the results. Only performed if
+all the analyzed results did not follow the same distribution.</p>
+</dd></dl>
+
+</section>
+<section id="dunder-methods">
+<h2>Dunder methods<a class="headerlink" href="#dunder-methods" title="Permalink to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.ResultsComparison.__str__">
+<span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#tools.ResultsComparison.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of the comparison result.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.ResultsComparison</span></code> class</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#dunder-methods">Dunder methods</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="test_outcome.html"
+                          title="previous chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.TestOutcome</span></code> class</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/results_comparison.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="test_outcome.html" title="tools.TestOutcome class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.ResultsComparison</span></code> class</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2022, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../_sources/tools/results_comparison.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

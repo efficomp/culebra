@@ -126,14 +126,24 @@
         <li><a href="genotype/feature_selection/individual/int_vector.html#genotype.feature_selection.individual.IntVector.__ne__">(IntVector method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/results.html#tools.Results.__setitem__">__setitem__() (Results method)</a>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.__repr__">__repr__() (TestOutcome method)</a>
 </li>
+      <li><a href="tools/results.html#tools.Results.__setitem__">__setitem__() (Results method)</a>
+
+      <ul>
+        <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.__setitem__">(ResultsAnalyzer method)</a>
+</li>
+      </ul></li>
       <li><a href="genotype/feature_selection/individual/bit_vector.html#genotype.feature_selection.individual.BitVector.__str__">__str__() (BitVector method)</a>
 
       <ul>
         <li><a href="genotype/classifier_optimization/individual.html#genotype.classifier_optimization.Individual.__str__">(Individual method)</a>, <a href="genotype/feature_selection/individual.html#genotype.feature_selection.Individual.__str__">[1]</a>
 </li>
         <li><a href="genotype/feature_selection/individual/int_vector.html#genotype.feature_selection.individual.IntVector.__str__">(IntVector method)</a>
+</li>
+        <li><a href="tools/results_comparison.html#tools.ResultsComparison.__str__">(ResultsComparison method)</a>
+</li>
+        <li><a href="tools/test_outcome.html#tools.TestOutcome.__str__">(TestOutcome method)</a>
 </li>
       </ul></li>
       <li><a href="tools/experiment.html#tools.Experiment._add_execution_metric">_add_execution_metric() (Experiment method)</a>
@@ -928,6 +938,10 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.alpha">alpha (TestOutcome attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="base/dataset.html#base.Dataset.append_random_features">append_random_features() (Dataset method)</a>
 </li>
   </ul></td>
@@ -955,6 +969,8 @@
       <li><a href="base/fitness_function.html#base.FitnessFunction.Fitness">base.FitnessFunction.Fitness (built-in class)</a>
 </li>
       <li><a href="tools/batch.html#tools.Batch">Batch (class in tools)</a>
+</li>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.batches">batches (TestOutcome attribute)</a>
 </li>
       <li><a href="tools/experiment.html#tools.Experiment.best_representatives">best_representatives (Experiment property)</a>
 </li>
@@ -1214,6 +1230,10 @@
         <li><a href="fitness_function/classifier_optimization/rbf_svc_fitness_function.html#fitness_function.classifier_optimization.RBFSVCFitnessFunction.classifier">(RBFSVCFitnessFunction property)</a>
 </li>
       </ul></li>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.column">column (TestOutcome attribute)</a>
+</li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.compare">compare() (ResultsAnalyzer method)</a>
+</li>
       <li><a href="wrapper/multi_pop/cooperative.html#wrapper.multi_pop.Cooperative.container">container (Cooperative property)</a>
 
       <ul>
@@ -1334,7 +1354,11 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.data">data (TestOutcome attribute)</a>
+</li>
       <li><a href="base/dataset.html#base.Dataset">Dataset (class in base)</a>
+</li>
+      <li><a href="tools.html#tools.DEFAULT_ALPHA">DEFAULT_ALPHA (in module tools)</a>
 </li>
       <li><a href="tools.html#tools.DEFAULT_BATCH_STATS_FUNCTIONS">DEFAULT_BATCH_STATS_FUNCTIONS (in module tools)</a>
 </li>
@@ -1358,6 +1382,8 @@
 </li>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_GENE_IND_MUTATION_PROB">DEFAULT_GENE_IND_MUTATION_PROB (in module wrapper.single_pop)</a>
 </li>
+      <li><a href="tools.html#tools.DEFAULT_HOMOSCEDASTICITY_TEST">DEFAULT_HOMOSCEDASTICITY_TEST (in module tools)</a>
+</li>
       <li><a href="genotype/classifier_optimization.html#genotype.classifier_optimization.DEFAULT_HYPERPARAMETER_NAME">DEFAULT_HYPERPARAMETER_NAME (in module genotype.classifier_optimization)</a>
 </li>
       <li><a href="base.html#base.DEFAULT_INDEX">DEFAULT_INDEX (in module base)</a>
@@ -1367,6 +1393,8 @@
       <li><a href="wrapper/multi_pop.html#wrapper.multi_pop.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS (in module wrapper.multi_pop)</a>
 </li>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_MUTATION_PROB">DEFAULT_MUTATION_PROB (in module wrapper.single_pop)</a>
+</li>
+      <li><a href="tools.html#tools.DEFAULT_NORMALITY_TEST">DEFAULT_NORMALITY_TEST (in module tools)</a>
 </li>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_NSGA3_REFERENCE_POINTS_P">DEFAULT_NSGA3_REFERENCE_POINTS_P (in module wrapper.single_pop)</a>
 </li>
@@ -1380,12 +1408,14 @@
 </li>
       <li><a href="wrapper/multi_pop.html#wrapper.multi_pop.DEFAULT_NUM_SUBPOPS">DEFAULT_NUM_SUBPOPS (in module wrapper.multi_pop)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="base.html#base.DEFAULT_OBJECTIVE_STATS">DEFAULT_OBJECTIVE_STATS (in module base)</a>
+</li>
+      <li><a href="tools.html#tools.DEFAULT_P_ADJUST">DEFAULT_P_ADJUST (in module tools)</a>
 </li>
       <li><a href="wrapper/single_pop.html#wrapper.single_pop.DEFAULT_POP_SIZE">DEFAULT_POP_SIZE (in module wrapper.single_pop)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="genotype/feature_selection.html#genotype.feature_selection.DEFAULT_PROP">DEFAULT_PROP (in module genotype.feature_selection)</a>
 </li>
       <li><a href="wrapper/multi_pop.html#wrapper.multi_pop.DEFAULT_REPRESENTATION_FREQ">DEFAULT_REPRESENTATION_FREQ (in module wrapper.multi_pop)</a>
@@ -1732,6 +1762,8 @@
       </ul></li>
       <li><a href="genotype/classifier_optimization/individual.html#genotype.classifier_optimization.Individual.get">get() (Individual method)</a>
 </li>
+      <li><a href="tools/results_comparison.html#tools.ResultsComparison.global_comparison">global_comparison (ResultsComparison attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1744,13 +1776,17 @@
 </li>
       <li><a href="wrapper/multi_pop/heterogeneous_sequential_islands.html#wrapper.multi_pop.HeterogeneousSequentialIslands">HeterogeneousSequentialIslands (class in wrapper.multi_pop)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wrapper/multi_pop/homogeneous_islands.html#wrapper.multi_pop.HomogeneousIslands">HomogeneousIslands (class in wrapper.multi_pop)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wrapper/multi_pop/homogeneous_parallel_islands.html#wrapper.multi_pop.HomogeneousParallelIslands">HomogeneousParallelIslands (class in wrapper.multi_pop)</a>
 </li>
       <li><a href="wrapper/multi_pop/homogeneous_sequential_islands.html#wrapper.multi_pop.HomogeneousSequentialIslands">HomogeneousSequentialIslands (class in wrapper.multi_pop)</a>
+</li>
+      <li><a href="tools/results_comparison.html#tools.ResultsComparison.homoscedasticity">homoscedasticity (ResultsComparison attribute)</a>
+</li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.homoscedasticity_test">homoscedasticity_test() (ResultsAnalyzer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2091,6 +2127,14 @@
         <li><a href="genotype/classifier_optimization/species.html#genotype.classifier_optimization.Species.names">(Species property)</a>
 </li>
       </ul></li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.non_parametric_pairwise_test">non_parametric_pairwise_test() (ResultsAnalyzer method)</a>
+</li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.non_parametric_test">non_parametric_test() (ResultsAnalyzer method)</a>
+</li>
+      <li><a href="tools/results_comparison.html#tools.ResultsComparison.normality">normality (ResultsComparison attribute)</a>
+</li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.normality_test">normality_test() (ResultsAnalyzer method)</a>
+</li>
       <li><a href="base/dataset.html#base.Dataset.normalize">normalize() (Dataset method)</a>
 </li>
       <li><a href="wrapper/single_pop/nsga.html#wrapper.single_pop.NSGA">NSGA (class in wrapper.single_pop)</a>
@@ -2155,6 +2199,8 @@
         <li><a href="genotype/feature_selection/species.html#genotype.feature_selection.Species.num_feats">(Species property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="wrapper/multi_pop/cooperative.html#wrapper.multi_pop.Cooperative.num_gens">num_gens (Cooperative property)</a>
 
       <ul>
@@ -2193,8 +2239,6 @@
         <li><a href="wrapper/single_pop/single_pop.html#wrapper.single_pop.SinglePop.num_gens">(SinglePop property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="genotype/classifier_optimization/species.html#genotype.classifier_optimization.Species.num_hyperparams">num_hyperparams (Species property)</a>
 </li>
       <li><a href="fitness_function/classifier_optimization/c.html#fitness_function.classifier_optimization.C.num_obj">num_obj (C property)</a>
@@ -2303,9 +2347,15 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools/results_comparison.html#tools.ResultsComparison.pairwise_comparison">pairwise_comparison (ResultsComparison attribute)</a>
+</li>
       <li><a href="wrapper/multi_pop/parallel_cooperative.html#wrapper.multi_pop.ParallelCooperative">ParallelCooperative (class in wrapper.multi_pop)</a>
 </li>
       <li><a href="wrapper/multi_pop/parallel_multi_pop.html#wrapper.multi_pop.ParallelMultiPop">ParallelMultiPop (class in wrapper.multi_pop)</a>
+</li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.parametric_pairwise_test">parametric_pairwise_test() (ResultsAnalyzer method)</a>
+</li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer.parametric_test">parametric_test() (ResultsAnalyzer method)</a>
 </li>
       <li><a href="wrapper/single_pop/elitist.html#wrapper.single_pop.Elitist.pop">pop (Elitist property)</a>
 
@@ -2349,6 +2399,8 @@
         <li><a href="wrapper/multi_pop/sequential_cooperative.html#wrapper.multi_pop.SequentialCooperative.pop_sizes">(SequentialCooperative property)</a>
 </li>
       </ul></li>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.pvalue">pvalue (TestOutcome attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -2697,6 +2749,10 @@
         <li><a href="tools/experiment.html#tools.Experiment.results">(Experiment property)</a>
 </li>
       </ul></li>
+      <li><a href="tools/results_analyzer.html#tools.ResultsAnalyzer">ResultsAnalyzer (class in tools)</a>
+</li>
+      <li><a href="tools/results_comparison.html#tools.ResultsComparison">ResultsComparison (class in tools)</a>
+</li>
       <li><a href="wrapper/multi_pop/topology.html#wrapper.multi_pop.topology.ring_destinations">ring_destinations() (in module wrapper.multi_pop.topology)</a>
 </li>
       <li><a href="base/dataset.html#base.Dataset.robust_scale">robust_scale() (Dataset method)</a>
@@ -3071,12 +3127,16 @@
         <li><a href="wrapper/multi_pop/sequential_multi_pop.html#wrapper.multi_pop.SequentialMultiPop.subpop_wrappers">(SequentialMultiPop property)</a>
 </li>
       </ul></li>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.success">success (TestOutcome property)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome.test">test (TestOutcome attribute)</a>
+</li>
       <li><a href="wrapper/multi_pop/cooperative.html#wrapper.multi_pop.Cooperative.test">test() (Cooperative method)</a>
 
       <ul>
@@ -3161,6 +3221,8 @@
         <li><a href="fitness_function/classifier_optimization/rbf_svc_fitness_function.html#fitness_function.classifier_optimization.RBFSVCFitnessFunction.test_prop">(RBFSVCFitnessFunction property)</a>
 </li>
       </ul></li>
+      <li><a href="tools/test_outcome.html#tools.TestOutcome">TestOutcome (class in tools)</a>
+</li>
       <li><a href="base/fitness.html#base.Fitness.thresholds">thresholds (Fitness attribute)</a>
 
       <ul>

@@ -18,21 +18,20 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.Results` class
-===============================
+:py:class:`tools.ResultsComparison` class
+=========================================
 
-.. autoclass:: tools.Results
+.. autoclass:: tools.ResultsComparison
 
-Class methods
--------------
-.. automethod:: tools.Results.load
-.. automethod:: tools.Results.from_csv_files
 
-Methods
--------
-.. automethod:: tools.Results.save
-.. automethod:: tools.Results.to_excel
+Attributes
+----------
+.. autoattribute:: tools.ResultsComparison.normality
+.. autoattribute:: tools.ResultsComparison.homoscedasticity
+.. autoattribute:: tools.ResultsComparison.global_comparison
+.. autoattribute:: tools.ResultsComparison.pairwise_comparison
+
 
 Dunder methods
 --------------
-.. automethod:: tools.Results.__setitem__
+.. automethod:: tools.ResultsComparison.__str__

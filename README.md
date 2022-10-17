@@ -14,9 +14,10 @@ Culebra requires Python 3. It also depends on the following Python packages:
 * [Pandas](https://pandas.pydata.org/docs/)
 * [Scikit-learn](https://scikit-learn.org/stable/)
 * [DEAP](https://deap.readthedocs.io/en/master/)
-* [Toml](https://pypi.org/project/toml/)
 * [OpenPyXL](https://openpyxl.readthedocs.io/en/stable/)
 * [Sphinx](https://www.sphinx-doc.org/en/master/)
+* [Tabulate](https://pypi.org/project/tabulate/)
+* [scikit-posthocs](https://scikit-posthocs.readthedocs.io/en/latest/)
 
 ## Documentation
 

@@ -37,8 +37,8 @@ Methods
 -------
 .. automethod:: base.Fitness.dominates
 
-Special methods
----------------
+Dunder methods
+--------------
 Intended to compare (lexicographically) two individuals according to their
 fitness.
 

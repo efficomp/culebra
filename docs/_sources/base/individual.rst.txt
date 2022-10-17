@@ -40,8 +40,8 @@ Methods
 .. automethod:: base.Individual.dominates
 .. automethod:: base.Individual.delete_fitness
 
-Special methods
----------------
+Dunder methods
+--------------
 Intended to compare (lexicographically) two individuals according to their
 fitness.
 

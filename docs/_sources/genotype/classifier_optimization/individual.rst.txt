@@ -47,9 +47,8 @@ Private methods
 ---------------
 .. automethod:: genotype.classifier_optimization.Individual._random_init
 
-Special methods
----------------
-
+Dunder methods
+--------------
 .. automethod:: genotype.classifier_optimization.Individual.__eq__
 .. automethod:: genotype.classifier_optimization.Individual.__ne__
 .. automethod:: genotype.classifier_optimization.Individual.__lt__

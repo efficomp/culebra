@@ -30,6 +30,16 @@ this features by means of the following classes:
     experiment with a :py:class:`~base.Wrapper`
   * The :py:class:`~tools.Batch` class, which allows to run a batch of
     experiments with the same configuration
+  * The :py:class:`~tools.ResultsAnalyzer` class, which analyzes and compare
+    the results of several batches. This class produce several types of
+    results:
+        
+      * A :py:class:`~tools.TestOutcome` for the results of any statistical
+        test applied to the :py:class:`~tools.Results` achieved by several
+        batches.
+      * A :py:class:`~tools.ResultsComparison` for the comparison of the
+        results obtained by several batches, according to a concrete and
+        common dataframe a column.
 """
 
 __author__ = 'Jesús González'
@@ -43,3 +53,5 @@ __status__ = 'Development'
 
 from .results import *
 from .evaluation import *
+from .results_analyzer import *
+

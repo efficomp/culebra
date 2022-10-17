@@ -5,3 +5,5 @@ deap
 toml
 openpyxl
 sphinx
+tabulate
+scikit_posthocs

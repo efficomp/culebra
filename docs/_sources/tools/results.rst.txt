@@ -33,6 +33,6 @@ Methods
 .. automethod:: tools.Results.save
 .. automethod:: tools.Results.to_excel
 
-Private methods
----------------
+Dunder methods
+--------------
 .. automethod:: tools.Results.__setitem__

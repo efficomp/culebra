@@ -49,9 +49,8 @@ Private methods
 ---------------
 .. automethod:: genotype.feature_selection.individual.IntVector._random_init
 
-Special methods
----------------
-
+Dunder methods
+--------------
 .. automethod:: genotype.feature_selection.individual.IntVector.__eq__
 .. automethod:: genotype.feature_selection.individual.IntVector.__ne__
 .. automethod:: genotype.feature_selection.individual.IntVector.__lt__

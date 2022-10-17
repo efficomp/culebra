@@ -66,6 +66,26 @@ Attributes
 
     Default name for the configuration file for the evaluation.
 
+.. attribute:: DEFAULT_ALPHA
+    :annotation: = 0.05
+    
+    Default significance level for statistical tests.
+
+.. attribute:: DEFAULT_NORMALITY_TEST
+    :annotation: = <function shapiro>
+    
+    Default normality test.
+
+.. attribute:: DEFAULT_HOMOSCEDASTICITY_TEST
+    :annotation: = <function bartlett>
+    
+    Default homoscedasticity test.
+
+.. attribute:: DEFAULT_P_ADJUST
+    :annotation: = 'fdr_tsbky'
+    
+    Default method for adjusting the p-values with the Dunn's test.
+
 ..
     .. autodata:: DEFAULT_RESULTS_BACKUP_FILENAME
     .. autodata:: DEFAULT_RESULTS_EXCEL_FILENAME
@@ -75,6 +95,10 @@ Attributes
     .. autodata:: DEFAULT_NUM_EXPERIMENTS
     .. autodata:: DEFAULT_SCRIPT_FILENAME
     .. autodata:: DEFAULT_CONFIG_FILENAME
+    .. autodata:: DEFAULT_ALPHA
+    .. autodata:: DEFAULT_NORMALITY_TEST
+    .. autodata:: DEFAULT_HOMOSCEDASTICITY_TEST
+    .. autodata:: DEFAULT_P_ADJUST
 
 
 .. toctree::
@@ -84,3 +108,6 @@ Attributes
     evaluation <tools/evaluation>
     experiment <tools/experiment>
     batch <tools/batch>
+    results_analyzer <tools/results_analyzer>
+    test_outcome <tools/test_outcome>
+    results_comparison <tools/results_comparison>

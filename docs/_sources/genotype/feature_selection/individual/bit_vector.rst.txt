@@ -51,9 +51,8 @@ Private methods
 ---------------
 .. automethod:: genotype.feature_selection.individual.BitVector._random_init
 
-Special methods
----------------
-
+Dunder methods
+--------------
 .. automethod:: genotype.feature_selection.individual.BitVector.__eq__
 .. automethod:: genotype.feature_selection.individual.BitVector.__ne__
 .. automethod:: genotype.feature_selection.individual.BitVector.__lt__
