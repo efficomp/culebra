@@ -118,42 +118,59 @@ class TestOutcome(NamedTuple):
 
     def __str__(self) -> str:
         """Pretty print of the success and p-values returned by a test."""
+        sorted_batches = list(
+            sorted(
+                dict(
+                    enumerate(self.batches)
+                ).items(),
+                key=lambda item: item[1]
+            )
+        )
+
+        data = []
         if len(self.pvalue.shape) == 1:
             if self.pvalue.size == 1:
                 headers = ('Success', 'p-value')
                 index = None
+                data = [
+                    [
+                        self.success,
+                        np.round(self.pvalue, _DEFAULT_PRECISION)
+                    ]
+                ]
             else:
                 headers = ('Batch', 'Success', 'p-value')
-                index = self.batches
-
-            output = tabulate(
-                {
-                    'Success': self.success,
-                    'p-value': np.round(self.pvalue, _DEFAULT_PRECISION)
-                },
-                headers=headers,
-                showindex=index
-            )
+                index = [
+                    batch for (_, batch) in sorted_batches
+                ]
+                data = [
+                    [
+                        self.success[i],
+                        np.round(self.pvalue[i], _DEFAULT_PRECISION)
+                    ]
+                    for (i, _) in sorted_batches
+                ]
         else:
-            data = []
-            for i, batch_i in enumerate(self.batches):
-                for j in range(i+1, len(self.batches)):
-                    batch_j = self.batches[j]
+            headers = ('Batch1', 'Batch2', 'Success', 'p-value')
+            index = None
+            num_batches = len(self.batches)
+            for i in range(num_batches):
+                index_i, batch_i = sorted_batches[i]
+                for j in range(i+1, num_batches):
+                    index_j, batch_j = sorted_batches[j]
                     data += [
                         [
                             batch_i,
                             batch_j,
-                            self.success[i][j],
-                            round(self.pvalue[i][j], _DEFAULT_PRECISION)
+                            self.success[index_i][index_j],
+                            round(
+                                self.pvalue[index_i][index_j],
+                                _DEFAULT_PRECISION
+                            )
                         ]
                     ]
 
-            output = tabulate(
-                data,
-                headers=('Batch1', 'Batch2', 'Success', 'p-value')
-            )
-
-        return output
+        return tabulate(data, headers=headers, showindex=index)
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
@@ -217,7 +234,7 @@ class ResultsComparison(NamedTuple):
 
         # Get batches as a string
         batches = ""
-        for batch_name in self.normality.batches:
+        for batch_name in sorted(self.normality.batches):
             if len(batches) == 0:
                 batches += batch_name
             else:
