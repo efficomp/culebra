@@ -16,7 +16,9 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""This module defines genotypes (genetic codings) for the different kinds of
+"""Genotypes definition.
+
+This module defines genotypes (genetic codings) for the different kinds of
 individuals involved in feature selection problems. The genotype of one
 individual is basically defined by the :py:class:`~base.Individual` subclass
 it belongs to, and also by the :py:class:`~base.Species` constraining all the

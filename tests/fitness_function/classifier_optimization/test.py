@@ -59,7 +59,10 @@ class MyFitnessFunction(RBFSVCFitnessFunction):
         thresholds = (0.001, 0.001)
 
     def evaluate(self, ind, index, representatives):
-        """Dummy implementation of the evaluation function."""
+        """Evaluate one individual.
+
+        Dummy implementation of the evaluation function.
+        """
 
 
 class RBFSVCFitnessFunctionTester(unittest.TestCase):

@@ -324,7 +324,7 @@ class MultiPop(Generational):
 
     @property
     def representation_freq(self) -> int:
-        """Get and set the number of generations between representatives sendings.
+        """Get/set the number of generations between representatives sendings.
 
         :getter: Return the current frequency
         :setter: Set a new value for the frequency. If set to :py:data:`None`,

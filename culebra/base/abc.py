@@ -1485,7 +1485,6 @@ class Wrapper(Base):
         if self.checkpoint_enable:
             self._save_state()
 
-
     def train(self, state_proxy: Optional[DictProxy] = None) -> None:
         """Perform the feature selection process.
 

@@ -33,7 +33,7 @@ this features by means of the following classes:
   * The :py:class:`~tools.ResultsAnalyzer` class, which analyzes and compare
     the results of several batches. This class produce several types of
     results:
-        
+
       * A :py:class:`~tools.TestOutcome` for the results of any statistical
         test applied to the :py:class:`~tools.Results` achieved by several
         batches.
@@ -54,4 +54,3 @@ __status__ = 'Development'
 from .results import *
 from .evaluation import *
 from .results_analyzer import *
-

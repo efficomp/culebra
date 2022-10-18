@@ -861,8 +861,7 @@ class Cooperative(MultiPop):
         species,
         representation_size
     ):
-        """Init the representatives of the other species for a given
-        subpopulation wrapper.
+        """Init the representatives of the other species.
 
         This method is used to override dynamically the
         :py:meth:`~base.Wrapper._init_representatives` of all the subpopulation

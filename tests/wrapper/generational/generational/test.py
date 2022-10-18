@@ -76,7 +76,10 @@ class MyFitnessFunction(FitnessFunction):
         names = ("obj1", "obj2")
 
     def evaluate(self, ind, index=None, representatives=None):
-        """Dummy implementation of the evaluation function."""
+        """Evaluate one individual.
+
+        Dummy implementation of the evaluation function.
+        """
         return (ind.fitness.num_obj, ) * ind.fitness.num_obj
 
 

@@ -19,14 +19,8 @@
 """Implementation of the simplest evolutionary algorithm."""
 
 from __future__ import annotations
-from typing import Any, Type, Callable, Tuple, List, Dict, Optional
 from deap.base import Toolbox
 from deap.algorithms import varAnd
-from culebra.base import (
-    Individual,
-    Species,
-    FitnessFunction
-)
 
 from . import SinglePop
 
