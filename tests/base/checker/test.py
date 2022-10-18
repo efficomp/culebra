@@ -116,6 +116,11 @@ class TypeCheckerTester(unittest.TestCase):
         self.assertEqual(check_limits(1.0, "name", ge=0), 1)
         self.assertEqual(check_limits(0.0, "name", ge=0), 0)
 
+        # Check forbidden values
+        value = 0
+        with self.assertRaises(ValueError):
+            check_int(value, "name", ne=value)
+
     def test_check_float(self):
         """Test the :py:func:`base.check_float` function."""
         # Check invalid types. Should fail

@@ -156,7 +156,8 @@ def check_int(
     gt: Optional[int] = None,
     ge: Optional[int] = None,
     lt: Optional[int] = None,
-    le: Optional[int] = None
+    le: Optional[int] = None,
+    ne: Optional[int] = None
 ) -> int:
     """Check if the given value is a valid integer.
 
@@ -174,10 +175,12 @@ def check_int(
     :param le: Superior limit. If provided, *value* must be lower than or
         equal to *le*
     :type le: :py:class:`int`, optional
+    :param ne: Not equal. If provided, *value* can not be equal to *ne*
+    :type ne: :py:class:`int`, optional
     :return: A valid integer
     :rtype: :py:class:`int`
     :raises TypeError: If *value* is not an integer number
-    :raises ValueError: If *value* does not meet any imposed limit
+    :raises ValueError: If *value* does not meet any imposed constraint
     """
     # Check that value is an integer number
     if not (
@@ -188,6 +191,13 @@ def check_int(
             f"The {name} must be an integer number: {value}"
         )
 
+    # Check that value is not equal to ne
+    if value == ne:
+        raise ValueError(
+            f"The {name} can not be equal to {ne}"
+        )
+
+    # Check the limits
     return check_limits(int(value), name, gt, ge, lt, le)
 
 
