@@ -35,7 +35,7 @@ __status__ = 'Development'
 
 
 class Evolutionary(SinglePop):
-    """This class implements the simplest evolutionary algorithm."""
+    """Implement the simplest evolutionary algorithm."""
 
     def _init_internals(self) -> None:
         """Set up the wrapper internal data structures to start searching.
