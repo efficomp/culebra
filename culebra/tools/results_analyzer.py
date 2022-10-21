@@ -18,13 +18,13 @@
 """Statistical analysis of batches results."""
 
 from __future__ import annotations
-from typing import Callable, NamedTuple, Dict
+from typing import Callable, NamedTuple, Dict, List
 from collections import UserDict, namedtuple
 from collections.abc import Sequence
 from functools import partial
 from warnings import catch_warnings, simplefilter
 import numpy as np
-from pandas import Series
+from pandas import Series, DataFrame, MultiIndex
 from scipy.stats import (
     shapiro,
     normaltest,
@@ -39,7 +39,13 @@ from scipy.stats import (
 )
 from scikit_posthocs import posthoc_dunn
 from tabulate import tabulate
-from culebra.base import Base, check_instance, check_float, check_str
+from culebra.base import (
+    Base,
+    check_int,
+    check_instance,
+    check_float,
+    check_str
+)
 from culebra.tools import Results
 
 __author__ = 'Jesús González'
@@ -678,7 +684,7 @@ class ResultsAnalyzer(UserDict, Base):
         dataframe_key: str,
         column: str,
         alpha: float = DEFAULT_ALPHA,
-        p_adjust: str = DEFAULT_P_ADJUST,
+        p_adjust: str = DEFAULT_P_ADJUST
     ) -> TestOutcome:
         """Pairwise comparison the results of several batches.
 
@@ -762,8 +768,8 @@ class ResultsAnalyzer(UserDict, Base):
                     [Sequence],
                     namedtuple
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
-        p_adjust: str = DEFAULT_P_ADJUST,
-    ) -> TestOutcome:
+        p_adjust: str = DEFAULT_P_ADJUST
+    ) -> ResultsComparison:
         """Pairwise comparison the results of several batches.
 
         Data should be independent.
@@ -849,6 +855,247 @@ class ResultsAnalyzer(UserDict, Base):
             global_comparison=global_comparison_result,
             pairwise_comparison=pairwise_comparison_result
         )
+
+    def rank(
+        self,
+        dataframe_key: str,
+        column: str,
+        weight: int,
+        alpha: float = DEFAULT_ALPHA,
+        normality_test: Callable[
+            [Sequence],
+            namedtuple
+        ] = DEFAULT_NORMALITY_TEST,
+        homoscedasticity_test: Callable[
+                    [Sequence],
+                    namedtuple
+                ] = DEFAULT_HOMOSCEDASTICITY_TEST,
+        p_adjust: str = DEFAULT_P_ADJUST
+    ) -> Series:
+        """Rank the batches according to a concrete result.
+
+        Batches are ranked according to the procedure proposed in
+        [Gonzalez2021]_. The rank of each batch is calculated as the number of
+        batches whose result is better (with a statistical significative
+        difference) than that of it. Batches with a statistically similar
+        result share the same rank.
+
+        :param dataframe_key: Key to select a dataframe from the results
+            of all the batches
+        :type dataframe_key: :py:class:`str`
+        :param column: Column label to be analyzed in the selected dataframes
+            from the results of all the batches
+        :type column: :py:class:`str`
+        :param weight: Used for the comparison of the batches results
+            selected by the *dataframe_key* and *column* provided. A negative
+            value implies minimization (lower values are better), while a
+            positive weight implies maximization.
+        :type weight: :py:class:`int`
+        :param alpha: Significance level, defaults to :py:data:`DEFAULT_ALPHA`
+        :type alpha: :py:class:`float`, optional
+        :param normality_test: Normality test to be applied, defaults to
+            :py:data:`DEFAULT_NORMALITY_TEST`
+        :type normality_test: :py:class:`~collections.abc.Callable`, optional
+        :param homoscedasticity_test: Homoscedasticity test to be applied,
+            defaults to :py:data:`DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type homoscedasticity_test: :py:class:`~collections.abc.Callable`,
+            optional
+        :param p_adjust: Method for adjusting the p-values, defaults to
+            :py:data:`DEFAULT_P_ADJUST`
+        :type p_adjust: :py:class:`str` or :py:data:`None`, optional
+        :return: The ranked batches
+        :rtype: :py:class:`~pandas.Series`
+        :raises TypeError: If *weight* is not an integer number
+        :raises ValueError: If *weight* is 0
+        :raises TypeError: If *alpha* is not a real number
+        :raises ValueError: If *alpha* is not in [0, 1]
+        :raises ValueError: If *normality_test* is not a valid normality test
+        :raises ValueError: If *homoscedasticity_test* is not a valid
+            homoscedasticity test
+        :raises ValueError: If *p_adjust* is not :py:data:`None` or any valid
+            p-value adjustment method.
+        :raises ValueError: If there aren't sufficient data in the analyzed
+            results with such dataframe key and column label
+        """
+        def average_ranks(first: int, last: int) -> List[float]:
+            """Return a list of averaged ranks.
+
+            :param first: The first considered rank
+            :type first: :py:class:`int`
+            :param last: The last considered rank
+            :type last: :py:class:`int`
+            :return: The list of averaged ranks
+            :rtype: :py:class:`list` of :py:class:`float`
+            """
+            if first == last:
+                ranks = [float(first)]
+            else:
+                ranks = [
+                    float((first + last) / 2)
+                ] * (last - first + 1)
+
+            return ranks
+
+        # Check weight
+        weight = check_int(weight, "weight", ne=0)
+
+        # Get the mean value for each batch
+        means = {
+            (index, name, data.mean())
+            for (index, (name, data))
+            in enumerate(self._gather_data(dataframe_key, column).items())
+        }
+
+        # Sort the means according to weight
+        # Better means first
+        sorted_means = list(
+            sorted(
+                means,
+                key=lambda item: item[2]*(-weight)
+            )
+        )
+
+        # Compare the results
+        comparison = self.compare(
+            dataframe_key,
+            column,
+            alpha,
+            normality_test,
+            homoscedasticity_test,
+            p_adjust
+        )
+
+        batch_names = [name for (_, name, _) in sorted_means]
+
+        num_batches = len(self)
+        # If all the batches results are equal
+        if comparison.global_comparison.success.all():
+            ranks = average_ranks(0, num_batches-1)
+        # If not ...
+        else:
+            # Start with an empty list of ranks
+            ranks = []
+
+            # First rank and index of the next interval of equal batches
+            first_rank = 0
+            first_index = sorted_means[first_rank][0]
+
+            # Shortcut for cleaner code
+            pairwise_equal = comparison.pairwise_comparison.success
+
+            # Iterate over the batches sorted by their mean result
+            for rank in range(0, num_batches):
+                # Index of the current batch
+                index = sorted_means[rank][0]
+
+                # If this batch is not equal than the previous ones ...
+                if not pairwise_equal[first_index][index]:
+                    # Append the previous interval of equal batches
+                    ranks += average_ranks(first_rank, rank-1)
+
+                    # A new interval starts
+                    first_rank = rank
+                    first_index = sorted_means[first_rank][0]
+
+            # Append the last interval
+            ranks += average_ranks(first_rank, rank)
+
+        # Return the ranks
+        rank_series = Series(ranks, index=batch_names, name=column)
+        rank_series.sort_index(inplace=True)
+        return rank_series
+
+    def multiple_rank(
+        self,
+        dataframe_keys: Sequence[str],
+        columns: Sequence[str],
+        weights: Sequence[int],
+        alpha: float = DEFAULT_ALPHA,
+        normality_test: Callable[
+            [Sequence],
+            namedtuple
+        ] = DEFAULT_NORMALITY_TEST,
+        homoscedasticity_test: Callable[
+                    [Sequence],
+                    namedtuple
+                ] = DEFAULT_HOMOSCEDASTICITY_TEST,
+        p_adjust: str = DEFAULT_P_ADJUST
+    ) -> DataFrame:
+        """Rank the batches according to multiple results.
+
+        Batches are ranked according to the procedure proposed in
+        [Gonzalez2021]_. The rank of each batch is calculated as the number of
+        batches whose result is better (with a statistical significative
+        difference) than that of it. Batches with a statistically similar
+        result share the same rank.
+
+        The *dataframe_keys*, *columns* and *weights* must have the same
+        length, and will be used to obtain different ranks for the results.
+
+        :param dataframe_keys: Sequence of dataframe keys to select the
+            different results of the batches
+        :type dataframe_keys: :py:class:`~collections.abc.Sequence` of
+            :py:class:`str`
+        :param columns: Sequence of column labels to select the different
+            results of the batches
+        :type columns: :py:class:`~collections.abc.Sequence` of :py:class:`str`
+        :param weights: Sequence of weights to be applied to the different
+            results of the batches. Negative values imply minimization (lower
+            values are better), while a positive weights imply maximization.
+        :type weights: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :param alpha: Significance level, defaults to :py:data:`DEFAULT_ALPHA`
+        :type alpha: :py:class:`float`, optional
+        :param normality_test: Normality test to be applied, defaults to
+            :py:data:`DEFAULT_NORMALITY_TEST`
+        :type normality_test: :py:class:`~collections.abc.Callable`, optional
+        :param homoscedasticity_test: Homoscedasticity test to be applied,
+            defaults to :py:data:`DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type homoscedasticity_test: :py:class:`~collections.abc.Callable`,
+            optional
+        :param p_adjust: Method for adjusting the p-values, defaults to
+            :py:data:`DEFAULT_P_ADJUST`
+        :type p_adjust: :py:class:`str` or :py:data:`None`, optional
+        :return: The ranked batches
+        :rtype: :py:class:`~pandas.DataFrame`
+        :raises TypeError: If any weight is not an integer number
+        :raises ValueError: If any weight is 0
+        :raises TypeError: If *alpha* is not a real number
+        :raises ValueError: If *alpha* is not in [0, 1]
+        :raises ValueError: If *normality_test* is not a valid normality test
+        :raises ValueError: If *homoscedasticity_test* is not a valid
+            homoscedasticity test
+        :raises ValueError: If *p_adjust* is not :py:data:`None` or any valid
+            p-value adjustment method.
+        :raises ValueError: If there aren't sufficient data in the analyzed
+            results with any given dataframe key and column label
+        """
+        multiple_ranking = DataFrame()
+        index_tuples = []
+        for (
+            dataframe_key,
+            column,
+            weight
+        ) in zip(dataframe_keys, columns, weights):
+            ranked_results = self.rank(
+                dataframe_key,
+                column,
+                weight,
+                alpha,
+                normality_test,
+                homoscedasticity_test,
+                p_adjust
+            )
+            index_tuples += [(dataframe_key, column)]
+            multiple_ranking[column] = ranked_results
+
+        multi_index = MultiIndex.from_tuples(
+            index_tuples, names=(
+                "DataFrame", "Column"
+            )
+        )
+        multiple_ranking.columns = multi_index
+        multiple_ranking.sort_index(axis=1, inplace=True)
+        return multiple_ranking
 
 
 # Exported symbols for this module

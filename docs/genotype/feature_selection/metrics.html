@@ -54,28 +54,17 @@
 <dd><p>Provide some metrics about the selected features obtained by a wrapper.</p>
 <p>Evaluate the set of solutions found by a <a class="reference internal" href="../../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> and
 calculate some metrics about the frequency of each selected feature. More
-information about such metrics can be found in:</p>
-<div role="list" class="citation-list">
-<div class="citation" id="gonzalez2019" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Gonzalez2019<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
-<p>J. González, J. Ortega, M. Damas, P. Martín-Smith,
-John Q. Gan. <em>A new multi-objective wrapper method for feature
-selection - Accuracy and stability analysis for BCI</em>.
-<strong>Neurocomputing</strong>, 333:407-418, 2019.
-<a class="reference external" href="https://doi.org/10.1016/j.neucom.2019.01.017">https://doi.org/10.1016/j.neucom.2019.01.017</a>.</p>
-</div>
-</div>
+information about such metrics can be found in <a class="reference internal" href="../../index.html#gonzalez2019" id="id1"><span>[Gonzalez2019]</span></a>.</p>
 </dd></dl>
 
 <section id="static-methods">
 <h2>Static methods<a class="headerlink" href="#static-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="genotype.feature_selection.Metrics.relevance">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">relevance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="individual.html#genotype.feature_selection.Individual" title="genotype.feature_selection.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.0)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#genotype.feature_selection.Metrics.relevance" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">relevance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="individual.html#genotype.feature_selection.Individual" title="genotype.feature_selection.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#genotype.feature_selection.Metrics.relevance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the relevance of the features selected by a wrapper method.</p>
 <p>The relevance is calculated according to the method proposed in
-<a class="reference internal" href="#gonzalez2019" id="id1"><span>[Gonzalez2019]</span></a></p>
+<a class="reference internal" href="../../index.html#gonzalez2019" id="id2"><span>[Gonzalez2019]</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>individuals</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Best individuals returned by the wrapper method.</p>
@@ -84,17 +73,17 @@ selection - Accuracy and stability analysis for BCI</em>.
 <dd class="field-even"><p>The relevance of each feature appearing in the individuals.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="genotype.feature_selection.Metrics.rank">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="individual.html#genotype.feature_selection.Individual" title="genotype.feature_selection.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.0)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#genotype.feature_selection.Metrics.rank" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="individual.html#genotype.feature_selection.Individual" title="genotype.feature_selection.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#genotype.feature_selection.Metrics.rank" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the rank of the features selected by a wrapper method.</p>
 <p>The rank is calculated according to the method proposed in
-<a class="reference internal" href="#gonzalez2019" id="id2"><span>[Gonzalez2019]</span></a></p>
+<a class="reference internal" href="../../index.html#gonzalez2019" id="id3"><span>[Gonzalez2019]</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>individuals</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Best individuals returned by the wrapper method.</p>
@@ -103,7 +92,7 @@ selection - Accuracy and stability analysis for BCI</em>.
 <dd class="field-even"><p>The relevance of each feature appearing in the individuals.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

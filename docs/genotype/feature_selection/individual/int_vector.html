@@ -178,9 +178,10 @@ selected</p>
 <dt class="sig sig-object py" id="genotype.feature_selection.individual.IntVector.crossover">
 <span class="sig-prename descclassname"><span class="pre">IntVector.</span></span><span class="sig-name descname"><span class="pre">crossover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#genotype.feature_selection.individual.IntVector" title="genotype.feature_selection.individual.int_vector.IntVector"><span class="pre">IntVector</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#genotype.feature_selection.individual.IntVector" title="genotype.feature_selection.individual.int_vector.IntVector"><span class="pre">IntVector</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#genotype.feature_selection.individual.IntVector" title="genotype.feature_selection.individual.int_vector.IntVector"><span class="pre">IntVector</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#genotype.feature_selection.individual.IntVector.crossover" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cross this individual with another one.</p>
-<p>All the common features will remain common in the new offspring. The
-remaining features will be randomly distributed to generate two new
-individuals.</p>
+<p>The crossover procedure is implemented according to that proposed in
+<a class="reference internal" href="../../../index.html#gonzalez2019" id="id1"><span>[Gonzalez2019]</span></a> and later modified in <a class="reference internal" href="../../../index.html#gonzalez2021" id="id2"><span>[Gonzalez2021]</span></a>. All the common
+features will remain common in the new offspring. The remaining
+features will be randomly distributed to generate two new individuals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#genotype.feature_selection.individual.IntVector" title="genotype.feature_selection.individual.IntVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntVector</span></code></a>) – The other individual</p>
@@ -198,8 +199,9 @@ individuals.</p>
 <dt class="sig sig-object py" id="genotype.feature_selection.individual.IntVector.mutate">
 <span class="sig-prename descclassname"><span class="pre">IntVector.</span></span><span class="sig-name descname"><span class="pre">mutate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indpb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#genotype.feature_selection.individual.IntVector" title="genotype.feature_selection.individual.int_vector.IntVector"><span class="pre">IntVector</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#genotype.feature_selection.individual.IntVector.mutate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mutate the individual.</p>
-<p>Each feature is independently mutated according to the given
-probability.</p>
+<p>The mutation procedure is implemented according to that proposed in
+<a class="reference internal" href="../../../index.html#gonzalez2019" id="id3"><span>[Gonzalez2019]</span></a> and later modified in <a class="reference internal" href="../../../index.html#gonzalez2021" id="id4"><span>[Gonzalez2021]</span></a>. Each feature
+is independently mutated according to the given probability.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>indpb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Independent probability for each feature to be mutated.</p>

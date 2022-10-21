@@ -33,6 +33,8 @@ Methods
 .. automethod:: tools.ResultsAnalyzer.parametric_pairwise_test
 .. automethod:: tools.ResultsAnalyzer.non_parametric_pairwise_test
 .. automethod:: tools.ResultsAnalyzer.compare
+.. automethod:: tools.ResultsAnalyzer.rank
+.. automethod:: tools.ResultsAnalyzer.multiple_rank
 
 Dunder methods
 --------------

@@ -48,11 +48,6 @@ class KappaNumFeatsC(KappaNumFeats, C):
 
     More information about this fitness function can be found in
     [Gonzalez2021]_.
-
-    .. [Gonzalez2021] J. González, J. Ortega, J. J. Escobar, M. Damas.
-       *A lexicographic cooperative co-evolutionary approach for feature
-       selection*. **Neurocomputing**, 463:59-76, 2021.
-       https://doi.org/10.1016/j.neucom.2021.08.003.
     """
 
     class Fitness(Fitness):

@@ -44,3 +44,17 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+References
+==========
+
+.. [Gonzalez2019] J. González, J. Ortega, M. Damas, P. Martín-Smith,
+   John Q. Gan. *A new multi-objective wrapper method for feature
+   selection - Accuracy and stability analysis for BCI*.
+   **Neurocomputing**, 333:407-418, 2019.
+   https://doi.org/10.1016/j.neucom.2019.01.017.
+
+.. [Gonzalez2021] J. González, J. Ortega, J. J. Escobar, M. Damas.
+   *A lexicographic cooperative co-evolutionary approach for feature
+   selection*. **Neurocomputing**, 463:59-76, 2021.
+   https://doi.org/10.1016/j.neucom.2021.08.003.

@@ -111,9 +111,10 @@ class IntVector(Individual):
     def crossover(self, other: IntVector) -> Tuple[IntVector, IntVector]:
         """Cross this individual with another one.
 
-        All the common features will remain common in the new offspring. The
-        remaining features will be randomly distributed to generate two new
-        individuals.
+        The crossover procedure is implemented according to that proposed in
+        [Gonzalez2019]_ and later modified in [Gonzalez2021]_. All the common
+        features will remain common in the new offspring. The remaining
+        features will be randomly distributed to generate two new individuals.
 
         :param other: The other individual
         :type other:
@@ -152,8 +153,9 @@ class IntVector(Individual):
     def mutate(self, indpb: float) -> Tuple[IntVector]:
         """Mutate the individual.
 
-        Each feature is independently mutated according to the given
-        probability.
+        The mutation procedure is implemented according to that proposed in
+        [Gonzalez2019]_ and later modified in [Gonzalez2021]_. Each feature
+        is independently mutated according to the given probability.
 
         :param indpb: Independent probability for each feature to be mutated.
         :type indpb: :py:class:`float`

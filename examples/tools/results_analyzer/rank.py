@@ -19,20 +19,18 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Usage example of the results analyzer."""
+"""Usage example of the results analyzer. Multiple ranking of results."""
 
 from culebra.tools import Results, ResultsAnalyzer
+from os import listdir, path
 
 # Create a results analyzer
 analyzer = ResultsAnalyzer()
 
 # Keys of the data to be analyzed
-# The dict keys will be used to select a results dataframe
-# Each value in its associated list is a column key within the dataframe
-data_keys = {
-    "execution_metrics": ["Runtime"],
-    "test_fitness": ["Kappa", "NF"]
-}
+dataframes = ("test_fitness", "test_fitness", "execution_metrics")
+columns = ("Kappa", "NF", "Runtime")
+weights = (1, -1, -1)
 
 # List of batches results in csv format
 csv_batches_results = ["elitist"]
@@ -42,8 +40,10 @@ batches_results = ["nsga2", "nsga3"]
 
 # Add the batches results in csv format
 for batch in csv_batches_results:
-    analyzer[batch] = Results.from_csv_files([
-            batch + "/" + data + ".csv" for data in data_keys.keys()
+    analyzer[batch] = Results.from_csv_files(
+        [
+            path.join(batch, file)
+            for file in listdir(batch) if file.endswith('.csv')
         ]
     )
 
@@ -51,9 +51,6 @@ for batch in csv_batches_results:
 for batch in batches_results:
     analyzer[batch] = Results.load(batch + ".gz")
 
-# Compare the results
-for dataframe in data_keys.keys():
-    for column in data_keys[dataframe]:
-        comparison = analyzer.compare(dataframe, column)
-        print("\n\n")
-        print(comparison)
+# Rank the results
+multiple_rank = analyzer.multiple_rank(dataframes, columns, weights)
+print(multiple_rank)

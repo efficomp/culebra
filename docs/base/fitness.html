@@ -91,10 +91,11 @@ occur at instantiation of a subclass fitness object:</p>
 <dt class="sig sig-object py" id="base.Fitness.thresholds">
 <span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">thresholds</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#base.Fitness.thresholds" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tuple with the similarity thresholds defined for all the objectives.
-Fitness objects are compared lexicographically. The comparison applies a
-similarity threshold to assume that two fitness values are similar (if
-their difference is lower than or equal to the similarity threshold).
-If not defined, 0 will be used for each objective.</p>
+The concept of <em>similarity threshold</em> for each objective, introduced in
+<a class="reference internal" href="../index.html#gonzalez2021" id="id1"><span>[Gonzalez2021]</span></a>, considers that two solutions are similar (for a given
+objective) if their difference (for that objective) is below the similarity
+threshold (of that objective). If not defined, 0 will be used for each
+objective.</p>
 </dd></dl>
 
 </section>

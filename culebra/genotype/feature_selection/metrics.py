@@ -39,13 +39,7 @@ class Metrics(Base):
 
     Evaluate the set of solutions found by a :py:class:`~base.Wrapper` and
     calculate some metrics about the frequency of each selected feature. More
-    information about such metrics can be found in:
-
-    .. [Gonzalez2019] J. González, J. Ortega, M. Damas, P. Martín-Smith,
-       John Q. Gan. *A new multi-objective wrapper method for feature
-       selection - Accuracy and stability analysis for BCI*.
-       **Neurocomputing**, 333:407-418, 2019.
-       https://doi.org/10.1016/j.neucom.2019.01.017.
+    information about such metrics can be found in [Gonzalez2019]_.
     """
 
     @staticmethod

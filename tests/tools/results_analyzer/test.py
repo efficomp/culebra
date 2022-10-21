@@ -1099,7 +1099,142 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertFalse(comparison_result.global_comparison.success.all())
         self.assertNotEqual(comparison_result.pairwise_comparison, None)
 
-        # print(comparison_result)
+    def test_rank(self):
+        """Test the rank method."""
+        column_key = "Data"
+        dataframe_key = "Rank"
+
+        # Fix the random seed
+        random.seed(0)
+        np.random.seed(0)
+
+        # Create the results analyzer
+        analyzer = ResultsAnalyzer()
+
+        # Prepare the DataFrame with some data for the first results manager
+        data1 = DataFrame()
+        data1[column_key] = np.random.normal(size=200)
+        results1 = Results()
+        results1[dataframe_key] = data1
+        analyzer["Results1"] = results1
+
+        # Prepare the DataFrame with some data for the second results manager
+        data2 = DataFrame()
+        data2[column_key] = np.random.normal(size=200, loc=5)
+        results2 = Results()
+        results2[dataframe_key] = data2
+        analyzer["Results2"] = results2
+
+        # Prepare the DataFrame with some data for the third results manager
+        data3 = DataFrame()
+        data3[column_key] = np.random.normal(size=200)
+        results3 = Results()
+        results3[dataframe_key] = data3
+        analyzer["Results3"] = results3
+
+        # Prepare the DataFrame with some data for the fourth results manager
+        data4 = DataFrame()
+        data4[column_key] = np.random.normal(size=200, loc=20)
+        results4 = Results()
+        results4[dataframe_key] = data4
+        analyzer["Results4"] = results4
+
+        weight = -1
+        ranked_results = analyzer.rank(dataframe_key, column_key, weight)
+
+        # Check ranks
+        self.assertEqual(ranked_results["Results1"], 0.5)
+        self.assertEqual(ranked_results["Results2"], 2.0)
+        self.assertEqual(ranked_results["Results3"], 0.5)
+        self.assertEqual(ranked_results["Results4"], 3.0)
+
+    def test_multiple_rank(self):
+        """Test the multiple_rank method."""
+        # Test fitness related results
+        test_fitness_key = "test_fitness"
+        kappa_key = "Kappa"
+        nf_key = "NF"
+
+        # Execution metrics related results
+        execution_metrics_key = "execution_metrics"
+        runtime_key = "Runtime"
+
+        # Fix the random seed
+        random.seed(0)
+        np.random.seed(0)
+
+        # Create the results analyzer
+        analyzer = ResultsAnalyzer()
+
+        # Prepare the DataFrame with some data for the first results manager
+        test_fitness_1 = DataFrame()
+        test_fitness_1[kappa_key] = np.random.normal(size=200, loc=0.9)
+        test_fitness_1[nf_key] = np.random.normal(size=200, loc=6)
+        execution_metrics_1 = DataFrame()
+        execution_metrics_1[runtime_key] = np.random.normal(size=200, loc=125)
+        results1 = Results()
+        results1[test_fitness_key] = test_fitness_1
+        results1[execution_metrics_key] = execution_metrics_1
+        analyzer["Results1"] = results1
+
+        # Prepare the DataFrame with some data for the second results manager
+        test_fitness_2 = DataFrame()
+        test_fitness_2[kappa_key] = np.random.normal(size=200, loc=0.8)
+        test_fitness_2[nf_key] = np.random.normal(size=200, loc=6)
+        execution_metrics_2 = DataFrame()
+        execution_metrics_2[runtime_key] = np.random.normal(size=200, loc=80)
+        results2 = Results()
+        results2[test_fitness_key] = test_fitness_2
+        results2[execution_metrics_key] = execution_metrics_2
+        analyzer["Results2"] = results2
+
+        # Prepare the DataFrame with some data for the third results manager
+        test_fitness_3 = DataFrame()
+        test_fitness_3[kappa_key] = np.random.normal(size=200, loc=0.4)
+        test_fitness_3[nf_key] = np.random.normal(size=200, loc=8)
+        execution_metrics_3 = DataFrame()
+        execution_metrics_3[runtime_key] = np.random.normal(size=200, loc=50)
+        results3 = Results()
+        results3[test_fitness_key] = test_fitness_3
+        results3[execution_metrics_key] = execution_metrics_3
+        analyzer["Results3"] = results3
+
+        # Prepare the DataFrame with some data for the fourth results manager
+        test_fitness_4 = DataFrame()
+        test_fitness_4[kappa_key] = np.random.normal(size=200, loc=0.9)
+        test_fitness_4[nf_key] = np.random.normal(size=200, loc=4)
+        execution_metrics_4 = DataFrame()
+        execution_metrics_4[runtime_key] = np.random.normal(size=200, loc=80)
+        results4 = Results()
+        results4[test_fitness_key] = test_fitness_4
+        results4[execution_metrics_key] = execution_metrics_4
+        analyzer["Results4"] = results4
+
+        dataframe_keys = (
+            test_fitness_key, test_fitness_key, execution_metrics_key
+        )
+
+        columns = (nf_key, kappa_key, runtime_key)
+        weights = (-1, 1, -1)
+
+        multiple_ranked_results = analyzer.multiple_rank(
+            dataframe_keys, columns, weights
+        )
+
+        self.assertEqual(
+            multiple_ranked_results[test_fitness_key][kappa_key]["Results3"],
+            3
+        )
+        self.assertEqual(
+            multiple_ranked_results[test_fitness_key][nf_key]["Results4"],
+            0
+        )
+        self.assertEqual(
+            multiple_ranked_results[
+                execution_metrics_key][runtime_key]["Results1"],
+            3
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

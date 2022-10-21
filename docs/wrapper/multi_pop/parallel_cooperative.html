@@ -657,7 +657,7 @@ other subpopulations</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="wrapper.multi_pop.ParallelCooperative.representation_freq">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ParallelCooperative.</span></span><span class="sig-name descname"><span class="pre">representation_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#wrapper.multi_pop.ParallelCooperative.representation_freq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get and set the number of generations between representatives sendings.</p>
+<dd><p>Get/set the number of generations between representatives sendings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the current frequency</p>
@@ -1054,8 +1054,7 @@ representatives</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="wrapper.multi_pop.ParallelCooperative._init_subpop_wrapper_representatives">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ParallelCooperative.</span></span><span class="sig-name descname"><span class="pre">_init_subpop_wrapper_representatives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subpop_wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representation_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper.multi_pop.ParallelCooperative._init_subpop_wrapper_representatives" title="Permalink to this definition">¶</a></dt>
-<dd><p>Init the representatives of the other species for a given
-subpopulation wrapper.</p>
+<dd><p>Init the representatives of the other species.</p>
 <p>This method is used to override dynamically the
 <a class="reference internal" href="../../base/wrapper.html#base.Wrapper._init_representatives" title="base.Wrapper._init_representatives"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_init_representatives()</span></code></a> of all the subpopulation
 wrappers, when they are generated with the

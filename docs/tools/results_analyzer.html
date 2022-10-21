@@ -129,8 +129,8 @@ results with such dataframe key and column label</p></li>
 <dd><p>Compare the results of several batches.</p>
 <p>Data should be independent, follow a normal distribution and also be
 homoscedastic. If only two results are analyzed, the T-test
-(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html#scipy.stats.ttest_ind" title="(in SciPy v1.9.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">ttest_ind()</span></code></a>) is applied. For more
-results, the one-way ANOVA test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html#scipy.stats.f_oneway" title="(in SciPy v1.9.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">f_oneway()</span></code></a>) is
+(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html#scipy.stats.ttest_ind" title="(in SciPy v1.9.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">ttest_ind()</span></code></a>) is applied. For more
+results, the one-way ANOVA test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html#scipy.stats.f_oneway" title="(in SciPy v1.9.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">f_oneway()</span></code></a>) is
 used instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -164,9 +164,9 @@ results with such dataframe key and column label</p></li>
 <span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">non_parametric_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#tools.ResultsAnalyzer.non_parametric_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the results of several batches.</p>
 <p>Data should be independent. If only two results are analyzed,
-the Mann-Whitney U-test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html#scipy.stats.mannwhitneyu" title="(in SciPy v1.9.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">mannwhitneyu()</span></code></a>) is
+the Mann-Whitney U-test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html#scipy.stats.mannwhitneyu" title="(in SciPy v1.9.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">mannwhitneyu()</span></code></a>) is
 applied. For more results, the Kruskal-Wallis H-test
-(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kruskal.html#scipy.stats.kruskal" title="(in SciPy v1.9.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">kruskal()</span></code></a>) is used instead.</p>
+(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kruskal.html#scipy.stats.kruskal" title="(in SciPy v1.9.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">kruskal()</span></code></a>) is used instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -265,7 +265,7 @@ results with such dataframe key and column label</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tools.ResultsAnalyzer.compare">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#tools.TestOutcome" title="tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#tools.ResultsAnalyzer.compare" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="results_comparison.html#tools.ResultsComparison" title="tools.results_analyzer.ResultsComparison"><span class="pre">ResultsComparison</span></a></span></span><a class="headerlink" href="#tools.ResultsAnalyzer.compare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pairwise comparison the results of several batches.</p>
 <p>Data should be independent.</p>
 <dl class="field-list simple">
@@ -302,6 +302,116 @@ homoscedasticity test</p></li>
 p-value adjustment method.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
 results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.ResultsAnalyzer.rank">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">weight:</span> <span class="pre">int,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#tools.ResultsAnalyzer.rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rank the batches according to a concrete result.</p>
+<p>Batches are ranked according to the procedure proposed in
+<a class="reference internal" href="../index.html#gonzalez2021" id="id1"><span>[Gonzalez2021]</span></a>. The rank of each batch is calculated as the number of
+batches whose result is better (with a statistical significative
+difference) than that of it. Batches with a statistically similar
+result share the same rank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Used for the comparison of the batches results
+selected by the <em>dataframe_key</em> and <em>column</em> provided. A negative
+value implies minimization (lower values are better), while a
+positive weight implies maximization.</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to <a class="reference internal" href="../tools.html#tools.DEFAULT_ALPHA" title="tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Normality test to be applied, defaults to
+<a class="reference internal" href="../tools.html#tools.DEFAULT_NORMALITY_TEST" title="tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
+<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>,
+optional) – Homoscedasticity test to be applied,
+defaults to <a class="reference internal" href="../tools.html#tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
+<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, optional) – Method for adjusting the p-values, defaults to
+<a class="reference internal" href="../tools.html#tools.DEFAULT_P_ADJUST" title="tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ranked batches</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>weight</em> is not an integer number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>weight</em> is 0</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>normality_test</em> is not a valid normality test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>homoscedasticity_test</em> is not a valid
+homoscedasticity test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
+p-value adjustment method.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.ResultsAnalyzer.multiple_rank">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">multiple_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_keys:</span> <span class="pre">~collections.abc.Sequence[str],</span> <span class="pre">columns:</span> <span class="pre">~collections.abc.Sequence[str],</span> <span class="pre">weights:</span> <span class="pre">~collections.abc.Sequence[int],</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.1)"><span class="pre">DataFrame</span></a></span></span><a class="headerlink" href="#tools.ResultsAnalyzer.multiple_rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rank the batches according to multiple results.</p>
+<p>Batches are ranked according to the procedure proposed in
+<a class="reference internal" href="../index.html#gonzalez2021" id="id2"><span>[Gonzalez2021]</span></a>. The rank of each batch is calculated as the number of
+batches whose result is better (with a statistical significative
+difference) than that of it. Batches with a statistically similar
+result share the same rank.</p>
+<p>The <em>dataframe_keys</em>, <em>columns</em> and <em>weights</em> must have the same
+length, and will be used to obtain different ranks for the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Sequence of dataframe keys to select the
+different results of the batches</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Sequence of column labels to select the different
+results of the batches</p></li>
+<li><p><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Sequence of weights to be applied to the different
+results of the batches. Negative values imply minimization (lower
+values are better), while a positive weights imply maximization.</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to <a class="reference internal" href="../tools.html#tools.DEFAULT_ALPHA" title="tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Normality test to be applied, defaults to
+<a class="reference internal" href="../tools.html#tools.DEFAULT_NORMALITY_TEST" title="tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
+<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>,
+optional) – Homoscedasticity test to be applied,
+defaults to <a class="reference internal" href="../tools.html#tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
+<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, optional) – Method for adjusting the p-values, defaults to
+<a class="reference internal" href="../tools.html#tools.DEFAULT_P_ADJUST" title="tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ranked batches</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If any weight is not an integer number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If any weight is 0</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>normality_test</em> is not a valid normality test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>homoscedasticity_test</em> is not a valid
+homoscedasticity test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
+p-value adjustment method.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with any given dataframe key and column label</p></li>
 </ul>
 </dd>
 </dl>
