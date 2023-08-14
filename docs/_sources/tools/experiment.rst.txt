@@ -18,30 +18,23 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.Experiment` class
-==================================
+:py:class:`culebra.tools.Experiment` class
+==========================================
 
-.. autoclass:: tools.Experiment
+.. autoclass:: culebra.tools.Experiment
 
 Class attributes
 ----------------
-.. autoattribute:: tools.Experiment.feature_metric_functions
-.. autoattribute:: tools.Experiment.stats_functions
-
-Private class attributes
-------------------------
-.. class:: tools.Experiment._ResultKeys
-
-    Handle the keys for the experiment results.
-
-.. autoattribute:: tools.Experiment._script_code
+.. autoattribute:: culebra.tools.Experiment.feature_metric_functions
+.. autoattribute:: culebra.tools.Experiment.stats_functions
 
 Properties
 ----------
-.. autoproperty:: tools.Experiment.wrapper
-.. autoproperty:: tools.Experiment.test_fitness_function
-.. autoproperty:: tools.Experiment.results
-.. autoproperty:: tools.Experiment.best_solutions
+.. autoproperty:: culebra.tools.Experiment.trainer
+.. autoproperty:: culebra.tools.Experiment.test_fitness_function
+.. autoproperty:: culebra.tools.Experiment.results_base_filename
+.. autoproperty:: culebra.tools.Experiment.results
+.. autoproperty:: culebra.tools.Experiment.best_solutions
 .. autoproperty:: tools.Experiment.best_representatives
 
 Class methods

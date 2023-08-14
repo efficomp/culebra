@@ -18,32 +18,35 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`fitness_function.feature_selection.KappaNumFeats` class
-==================================================================
+:py:class:`culebra.fitness_function.feature_selection.KappaNumFeats` class
+==========================================================================
 
-.. autoclass:: fitness_function.feature_selection.KappaNumFeats
+.. autoclass:: culebra.fitness_function.feature_selection.KappaNumFeats
 
 Class attributes
 ----------------
-.. class:: fitness_function.feature_selection.KappaNumFeats.Fitness
+.. class:: culebra.fitness_function.feature_selection.KappaNumFeats.Fitness
 
-    Fitness class to handle the values returned by the
-    :py:meth:`~fitness_function.feature_selection.KappaNumFeats.evaluate`
-    method within an :py:class:`~genotype.feature_selection.Individual`.
+    Handles the values returned by the
+    :py:meth:`~culebra.fitness_function.feature_selection.KappaNumFeats.evaluate`
+    method within a :py:class:`~culebra.solution.feature_selection.Solution`.
 
-    .. autoattribute:: fitness_function.feature_selection.KappaNumFeats.Fitness.weights
-    .. autoattribute:: fitness_function.feature_selection.KappaNumFeats.Fitness.names
-    .. autoattribute:: fitness_function.feature_selection.KappaNumFeats.Fitness.thresholds
+    .. autoattribute:: culebra.fitness_function.feature_selection.KappaNumFeats.Fitness.weights
+    .. autoattribute:: culebra.fitness_function.feature_selection.KappaNumFeats.Fitness.names
+    .. autoattribute:: culebra.fitness_function.feature_selection.KappaNumFeats.Fitness.thresholds
 
+Class methods
+-------------
+.. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.set_fitness_thresholds
 
 Properties
 ----------
-.. autoproperty:: fitness_function.feature_selection.KappaNumFeats.num_obj
-.. autoproperty:: fitness_function.feature_selection.KappaNumFeats.training_data
-.. autoproperty:: fitness_function.feature_selection.KappaNumFeats.test_data
-.. autoproperty:: fitness_function.feature_selection.KappaNumFeats.test_prop
-.. autoproperty:: fitness_function.feature_selection.KappaNumFeats.classifier
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.num_obj
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.training_data
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.test_data
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.test_prop
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.classifier
 
 Methods
 -------
-.. automethod:: fitness_function.feature_selection.KappaNumFeats.evaluate
+.. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.evaluate

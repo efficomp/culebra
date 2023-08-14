@@ -19,13 +19,14 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`tools.ResultsAnalyzer`."""
+"""Unit test for :py:class:`culebra.tools.ResultsAnalyzer`."""
 
 import unittest
 import random
+from collections import UserDict
+
 import numpy as np
 from pandas import DataFrame
-from collections import UserDict
 from scipy.stats import (
     shapiro,
     normaltest,
@@ -33,11 +34,12 @@ from scipy.stats import (
     levene,
     fligner
 )
+
 from culebra.tools import Results, ResultsAnalyzer
 
 
 class ResultsAnalyzerTester(unittest.TestCase):
-    """Test the :py:class:`~tools.ResultsAnalyzer` class."""
+    """Test the :py:class:`~culebra.tools.ResultsAnalyzer` class."""
 
     def test_init(self):
         """Test the constructor."""
@@ -51,7 +53,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertIsInstance(analyzer, UserDict)
 
     def test_setitem(self):
-        """Test the :py:meth:`~tools.ResultsAnalyzer.__setitem__` method."""
+        """Test the __setitem__ dunder method."""
         # Create the analyzer
         analyzer = ResultsAnalyzer()
         results = Results.from_csv_files(
@@ -77,7 +79,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertTrue(key in analyzer)
 
         # Check the results
-        for results_key, results_data in results.items():
+        for results_key in results:
             self.assertTrue(
                 analyzer[key][results_key].equals(results[results_key])
             )
@@ -194,7 +196,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         results4[dataframe_key] = data4
         analyzer["Results4"] = results4
 
-        # Try invalid significance level typess
+        # Try invalid significance level types
         not_valid_alpha_types = (int, len)
         for alpha in not_valid_alpha_types:
             with self.assertRaises(TypeError):

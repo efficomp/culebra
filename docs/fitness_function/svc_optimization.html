@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>culebra.fitness_function.svc_optimization module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="culebra.fitness_function.svc_optimization.C class" href="svc_optimization/c.html" />
+    <link rel="prev" title="culebra.fitness_function.feature_selection.KappaNumFeats class" href="feature_selection/kappa_num_feats.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="svc_optimization/c.html" title="culebra.fitness_function.svc_optimization.C class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="feature_selection/kappa_num_feats.html" title="culebra.fitness_function.feature_selection.KappaNumFeats class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../fitness_function.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.svc_optimization</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-culebra.fitness_function.svc_optimization">
+<span id="culebra-fitness-function-svc-optimization-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.svc_optimization" title="culebra.fitness_function.svc_optimization"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.svc_optimization</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.svc_optimization" title="Permalink to this heading">¶</a></h1>
+<p>Fitness functions for parameter optimization problems.</p>
+<p>This sub-module provides several fitness functions intended to optimize the
+Support Vector Classifier (SVC) hyperparameters for a given dataset. The
+following fitness functions are provided:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="svc_optimization/c.html#culebra.fitness_function.svc_optimization.C" title="culebra.fitness_function.svc_optimization.C"><code class="xref py py-class docutils literal notranslate"><span class="pre">C</span></code></a>: Dummy
+single-objective function that minimizes the regularization parameter <em>C</em>
+of a SVM-based classifier with RBF kernels.</p></li>
+<li><p><a class="reference internal" href="svc_optimization/kappa_index.html#culebra.fitness_function.svc_optimization.KappaIndex" title="culebra.fitness_function.svc_optimization.KappaIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaIndex</span></code></a>:
+Single-objective function that maximizes the Kohen’s Kappa index for a
+SVM-based classifier with RBF kernels.</p></li>
+<li><p><a class="reference internal" href="svc_optimization/kappa_c.html#culebra.fitness_function.svc_optimization.KappaC" title="culebra.fitness_function.svc_optimization.KappaC"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaC</span></code></a>: Bi-objective
+function that tries to both maximize the Kohen’s Kappa index and minimize
+the regularization parameter <em>C</em> of a SVM-based classifier with RBF
+kernels.</p></li>
+</ul>
+</div></blockquote>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="svc_optimization/c.html" title="culebra.fitness_function.svc_optimization.C class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="feature_selection/kappa_num_feats.html" title="culebra.fitness_function.feature_selection.KappaNumFeats class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.svc_optimization</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2023, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../_sources/fitness_function/svc_optimization.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

@@ -21,8 +21,10 @@
 
 """Usage example of the results analyzer. Multiple ranking of results."""
 
-from culebra.tools import Results, ResultsAnalyzer
 from os import listdir, path
+
+from culebra.tools import Results, ResultsAnalyzer
+
 
 # Create a results analyzer
 analyzer = ResultsAnalyzer()
@@ -33,10 +35,10 @@ columns = ("Kappa", "NF", "Runtime")
 weights = (1, -1, -1)
 
 # List of batches results in csv format
-csv_batches_results = ["elitist"]
+csv_batches_results = ["elitist_ea_wrapper"]
 
 # List of serialized batches results
-batches_results = ["nsga2", "nsga3"]
+batches_results = ["nsga2_ea_wrapper"]
 
 # Add the batches results in csv format
 for batch in csv_batches_results:
@@ -49,7 +51,9 @@ for batch in csv_batches_results:
 
 # Add the other batches results
 for batch in batches_results:
-    analyzer[batch] = Results.load(batch + ".gz")
+    analyzer[batch] = Results.load(
+        path.join(batch, Results.default_base_filename + ".gz")
+    )
 
 # Rank the results
 multiple_rank = analyzer.multiple_rank(dataframes, columns, weights)

@@ -18,20 +18,19 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.ResultsComparison` class
-=========================================
+:py:class:`culebra.tools.ResultsComparison` class
+=================================================
 
-.. autoclass:: tools.ResultsComparison
+.. autoclass:: culebra.tools.ResultsComparison
 
 
 Attributes
 ----------
-.. autoattribute:: tools.ResultsComparison.normality
-.. autoattribute:: tools.ResultsComparison.homoscedasticity
-.. autoattribute:: tools.ResultsComparison.global_comparison
-.. autoattribute:: tools.ResultsComparison.pairwise_comparison
-
+.. autoattribute:: culebra.tools.ResultsComparison.normality
+.. autoattribute:: culebra.tools.ResultsComparison.homoscedasticity
+.. autoattribute:: culebra.tools.ResultsComparison.global_comparison
+.. autoattribute:: culebra.tools.ResultsComparison.pairwise_comparison
 
 Dunder methods
 --------------
-.. automethod:: tools.ResultsComparison.__str__
+.. automethod:: culebra.tools.ResultsComparison.__str__

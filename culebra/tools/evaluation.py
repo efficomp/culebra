@@ -16,38 +16,43 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Evaluation of wrappers."""
+"""Evaluation of the solutions."""
 
 from __future__ import annotations
+
 from abc import abstractmethod
 from typing import Any, Tuple, List, Optional, Dict
 from collections.abc import Sequence
-from pandas import Series, DataFrame, concat
-import importlib.util
-import numpy as np
-import os
 from copy import deepcopy
-from deap.tools import HallOfFame
-from culebra.base import (
+import os
+import importlib.util
+
+import numpy as np
+from pandas import Series, DataFrame, concat
+from deap.tools import HallOfFame, ParetoFront
+
+from culebra.abc import (
     Base,
-    Individual,
+    Solution,
     FitnessFunction,
-    Wrapper,
+    Trainer
+)
+from culebra.checker import (
     check_int,
     check_instance,
     check_filename
 )
-from culebra.genotype.feature_selection import (
+from culebra.solution.feature_selection import (
     Species as FSSpecies,
     Metrics
 )
-
 from culebra.tools import Results
 
+
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2022, EFFICOMP'
+__copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.1.1'
+__version__ = '0.2.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -78,8 +83,8 @@ class _Labels:
     species = 'Species'
     """Label for the species column in the dataframes"""
 
-    individual = 'Individual'
-    """Label for the individual column in the dataframes"""
+    solution = 'Solution'
+    """Label for the solution column in the dataframes"""
 
     feature = 'Feature'
     """Label for the feature column in the dataframes"""
@@ -119,6 +124,9 @@ class _Labels:
 
     runtime = "Runtime"
     """Label for the runtime column in dataframes."""
+
+    num_evals = "NEvals"
+    """Label for the number of evaluations column in dataframes."""
 
     experiment = "Exp"
     """Label for the experiment column in dataframes."""
@@ -162,17 +170,15 @@ DEFAULT_CONFIG_FILENAME = "config.py"
 
 
 class Evaluation(Base):
-    """Base class for wrapper evaluations."""
+    """Base class for results evaluations."""
 
     class _ResultKeys(_ResultKeys):
         """Result keys for the evaluation.
 
-        It is empty, since :py:class:`~tools.Evaluation` is an abstract
+        It is empty, since :py:class:`~culebra.tools.Evaluation` is an abstract
         class. Subclasses should override this class to fill it with the
         appropriate result keys.
         """
-
-        pass
 
     feature_metric_functions = DEFAULT_FEATURE_METRIC_FUNCTIONS
     """Metrics calculated for the features in the set of solutions."""
@@ -203,48 +209,132 @@ for res, val in {var_name}.results.items():
     print(f"\\n\\n{res}:")
     print(val)
 """
-    """Parameterized script to evaluate the wrapper."""
+    """Parameterized script to evaluate the trainer."""
 
     def __init__(
         self,
-        wrapper: Wrapper,
-        test_fitness_function: Optional[FitnessFunction] = None
+        trainer: Trainer,
+        test_fitness_function: Optional[FitnessFunction] = None,
+        results_base_filename: Optional[str] = None
     ) -> None:
-        """Set a wrapper evaluation.
+        """Set a trainer evaluation.
 
-        :param wrapper: The wrapper method
-        :type wrapper: :py:class:`~base.Wrapper`
+        :param trainer: The trainer method
+        :type trainer: :py:class:`~culebra.abc.Trainer`
         :param test_fitness_function: The fitness used to test. If
             :py:data:`None`, the training fitness function will be used.
             Defaults to :py:data:`None`.
-        :type test_fitness_function: :py:class:`~base.FitnessFunction`,
+        :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
-        :raises TypeError: If *wrapper* is not a valid wrapper
+        :param results_base_filename: The base filename to save the results.
+        :type results_base_filename: :py:class:`~str`
+        :raises TypeError: If *trainer* is not a valid trainer
         :raises TypeError: If *test_fitness_function* is not a valid
             fitness function
+        :raises TypeError: If *results_base_filename* is not a valid file name
         """
-        self.wrapper = wrapper
+        self.trainer = trainer
         self.test_fitness_function = test_fitness_function
+        self.results_base_filename = results_base_filename
 
-    @staticmethod
-    def _load_config(config_filename: str) -> object:
-        """Generate a new evaluation from a configuration file.
+    @property
+    def trainer(self) -> Trainer:
+        """Get and set the trainer method.
 
-        :param config_filename: Path to the config file
-        :type config_filename: :py:class:`str`
-        :raises TypeError: If *config_filename* is an invalid file path
+        :getter: Return the trainer method
+        :setter: Set a new trainer method
+        :type: :py:class:`~culebra.abc.Trainer`
+        :raises TypeError: If set to a value which is not a valid trainer
         """
-        # Get the spec
-        spec = importlib.util.spec_from_file_location(
-            "config",
-            check_filename(config_filename, "config filename", ext=".py")
+        return self._trainer
+
+    @trainer.setter
+    def trainer(self, value: Trainer) -> None:
+        """Set a new trainer method.
+
+        :param value: New trainer
+        :type value: :py:class:`~culebra.abc.Trainer`
+        :raises TypeError: If *trainer* is not a valid trainer
+        """
+        # Check the value
+        self._trainer = check_instance(value, "trainer", Trainer)
+
+        # Reset results
+        self.reset()
+
+    @property
+    def test_fitness_function(self) -> FitnessFunction | None:
+        """Get and set the test fitness function.
+
+        :getter: Return the test fitness function
+        :setter: Set a new test fitness function. If set to :py:data:`None`,
+            the training fitness function will also be used for testing.
+        :type: :py:class:`~culebra.abc.FitnessFunction`
+        :raises TypeError: If set to a value which is not a valid fitness
+            funtion
+        """
+        return self._test_fitness_function
+
+    @test_fitness_function.setter
+    def test_fitness_function(self, func: FitnessFunction | None) -> None:
+        """Set a new trainer method.
+
+        :param func: New test fitness function. If set to :py:data:`None`,
+            the training fitness function will also be used for testing.
+        :type func: :py:class:`~culebra.abc.FitnessFunction`
+        :raises TypeError: If *func* is not a valid fitness
+            function
+        """
+        # Check the function
+        self._test_fitness_function = (
+            None if func is None else check_instance(
+                func, "test fitness function", FitnessFunction
+            )
         )
 
-        # Load the module
-        config = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(config)
+        # Reset results
+        self.reset()
 
-        return config
+    @property
+    def results_base_filename(self) -> str | None:
+        """Get and set the results base filename.
+
+        :getter: Return the results base filename
+        :setter: Set a new results base filename. If set to :py:data:`None`,
+            :py:attr:`culebra.tools.Results.default_base_filename` is used.
+            Defaults to :py:data:`None`.
+        :raises TypeError: If set to an invalid file name
+        """
+        return self._results_base_filename
+
+    @results_base_filename.setter
+    def results_base_filename(self, filename: str | None) -> None:
+        """Set a new results base filename.
+
+        :param filename: New results base filename. If set to :py:data:`None`,
+            :py:attr:`culebra.tools.Results.default_base_filename` is used.
+            Defaults to :py:data:`None`.
+        :type filename: :py:class:`~str`
+        :raises TypeError: If *filename* is not a valid file name
+        """
+        # Check the filename
+        self._results_base_filename = (
+            None if filename is None else check_filename(
+                filename,
+                name="base filename to save the results"
+            )
+        )
+
+        # Reset results
+        self.reset()
+
+    @property
+    def results(self) -> Dict[str, DataFrame] | None:
+        """Get all the results provided.
+
+        :type: :py:class:`~culebra.tools.Results`
+        """
+        return self._results
 
     @classmethod
     def from_config(
@@ -253,8 +343,8 @@ for res, val in {var_name}.results.items():
         """Generate a new evaluation from a configuration file.
 
         :param config_filename: Path to the configuration file. If set to
-            :py:data:`None`, :py:attr:`~tools.DEFAULT_CONFIG_FILENAME` is used.
-            Defaults to :py:data:`None`
+            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_CONFIG_FILENAME`
+            is used. Defaults to :py:data:`None`
         :type config_filename: :py:class:`str`, optional
         :raises TypeError: If *config_filename* is an invalid file path
         """
@@ -273,91 +363,8 @@ for res, val in {var_name}.results.items():
 
         # Generate the Evaluation from the config module
         return cls(
-            getattr(config, 'wrapper', None),
+            getattr(config, 'trainer', None),
             getattr(config, 'test_fitness_function', None)
-        )
-
-    @property
-    def wrapper(self) -> Wrapper:
-        """Get and set the wrapper method.
-
-        :getter: Return the wrapper method
-        :setter: Set a new wrapper method
-        :type: :py:class:`~base.Wrapper`
-        :raises TypeError: If set to a value which is not a valid wrapper
-        """
-        return self._wrapper
-
-    @wrapper.setter
-    def wrapper(self, value: Wrapper) -> None:
-        """Set a new wrapper method.
-
-        :param value: New wrapper
-        :type value: :py:class:`~base.wrapper`
-        :raises TypeError: If set to a value which is not a valid wrapper
-        """
-        # Check the value
-        self._wrapper = check_instance(value, "wrapper", Wrapper)
-
-        # Reset results
-        self.reset()
-
-    @property
-    def test_fitness_function(self) -> FitnessFunction | None:
-        """Get and set the test fitness gunction.
-
-        :getter: Return the test fitness function
-        :setter: Set a new test fitness function. If set to :py:data:`None`,
-            the training fitness function will also be used for testing.
-        :type: :py:class:`~base.FitnessFunction`
-        :raises TypeError: If set to a value which is not a valid fitness
-            funtion
-        """
-        return self._test_fitness_function
-
-    @test_fitness_function.setter
-    def test_fitness_function(self, func: FitnessFunction | None) -> None:
-        """Set a new wrapper method.
-
-        :param func: New test fitness function. If set to :py:data:`None`,
-            the training fitness function will also be used for testing.
-        :type func: :py:class:`~base.FitnessFunction`
-        :raises TypeError: If set to a value which is not a valid fitness
-            function
-        """
-        # Check the function
-        self._test_fitness_function = (
-            None if func is None else check_instance(
-                func, "test fitness function", FitnessFunction
-            )
-        )
-
-        # Reset results
-        self.reset()
-
-    @property
-    def results(self) -> Dict[str, DataFrame] | None:
-        """Get all the results provided.
-
-        :type: :py:class:`~tools.Results`
-        """
-        return self._results
-
-    def reset(self) -> None:
-        """Reset the results."""
-        self.wrapper.reset()
-        self._results = None
-
-    @abstractmethod
-    def _execute(self) -> None:
-        """Execute the evaluation.
-
-        This method must be overriden by subclasses to return a correct
-        value.
-        """
-        raise NotImplementedError(
-            "The _execute method has not been implemented in "
-            f"the {self.__class__.__name__} class"
         )
 
     @classmethod
@@ -372,12 +379,12 @@ for res, val in {var_name}.results.items():
         configuration file.
 
         :param config_filename: Path to the configuration file. If set to
-            :py:data:`None`, :py:attr:`~tools.DEFAULT_CONFIG_FILENAME` is used.
-            Defaults to :py:data:`None`
+            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_CONFIG_FILENAME`
+            is used. Defaults to :py:data:`None`
         :type config_filename: :py:class:`str`, optional
         :param script_filename: File path to store the script. If set to
-            :py:data:`None`, :py:attr:`~tools.DEFAULT_SCRIPT_FILENAME` is used.
-            Defaults to :py:data:`None`
+            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_SCRIPT_FILENAME`
+            is used. Defaults to :py:data:`None`
         :type script_filename: :py:class:`str`, optional.
         """
         config_filename = check_filename(
@@ -402,7 +409,7 @@ for res, val in {var_name}.results.items():
 
         cls_name = cls.__name__
         # Create the script file
-        with open(script_filename, 'w') as script:
+        with open(script_filename, 'w', encoding="utf8") as script:
             script.write(
                 cls._script_code.format_map(
                     {
@@ -417,8 +424,19 @@ for res, val in {var_name}.results.items():
         # Make the script file executable
         os.chmod(script_filename, 0o777)
 
+    def reset(self) -> None:
+        """Reset the results."""
+        self.trainer.reset()
+        self._results = None
+
     def run(self) -> None:
         """Execute the evaluation and save the results."""
+        # Forget previous results
+        self.reset()
+
+        # Init the results manager
+        self._results = Results(self.results_base_filename)
+
         # Run the evaluation
         self._execute()
 
@@ -428,10 +446,42 @@ for res, val in {var_name}.results.items():
         # Save the results to Excel
         self.results.to_excel()
 
+    @abstractmethod
+    def _execute(self) -> None:
+        """Execute the evaluation.
+
+        This method must be overriden by subclasses to return a correct
+        value.
+        """
+        raise NotImplementedError(
+            "The _execute method has not been implemented in "
+            f"the {self.__class__.__name__} class"
+        )
+
+    @staticmethod
+    def _load_config(config_filename: str) -> object:
+        """Generate a new evaluation from a configuration file.
+
+        :param config_filename: Path to the config file
+        :type config_filename: :py:class:`str`
+        :raises TypeError: If *config_filename* is an invalid file path
+        """
+        # Get the spec
+        spec = importlib.util.spec_from_file_location(
+            "config",
+            check_filename(config_filename, "config filename", ext=".py")
+        )
+
+        # Load the module
+        config = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(config)
+
+        return config
+
     def __copy__(self) -> Evaluation:
         """Shallow copy the object."""
         cls = self.__class__
-        result = cls(self.wrapper)
+        result = cls(self.trainer)
         result.__dict__.update(self.__dict__)
         return result
 
@@ -444,7 +494,7 @@ for res, val in {var_name}.results.items():
         :rtype: The same than the original object
         """
         cls = self.__class__
-        result = cls(self.wrapper)
+        result = cls(self.trainer)
         result.__dict__.update(deepcopy(self.__dict__, memo))
         return result
 
@@ -454,11 +504,11 @@ for res, val in {var_name}.results.items():
         :return: The reduction
         :rtype: :py:class:`tuple`
         """
-        return (self.__class__, (self.wrapper, ), self.__dict__)
+        return (self.__class__, (self.trainer, ), self.__dict__)
 
 
 class Experiment(Evaluation):
-    """Run a wrapper method from the parameters in a config file."""
+    """Run a trainer method from the parameters in a config file."""
 
     class _ResultKeys(_ResultKeys):
         """Handle the keys for the experiment results."""
@@ -486,12 +536,12 @@ class Experiment(Evaluation):
 
     @property
     def best_solutions(self) -> Sequence[HallOfFame] | None:
-        """Return the best solutions found by the wrapper."""
+        """Return the best solutions found by the trainer."""
         return self._best_solutions
 
     @property
-    def best_representatives(self) -> List[List[Individual]] | None:
-        """Return the best representatives found by the wrapper."""
+    def best_representatives(self) -> List[List[Solution]] | None:
+        """Return the best representatives found by the trainer."""
         return self._best_representatives
 
     def reset(self) -> None:
@@ -503,10 +553,32 @@ class Experiment(Evaluation):
         self._best_solutions = None
         self._best_representatives = None
 
+    def _do_training(self) -> None:
+        """Perform the training step.
+
+        Train the trainer and get the best solutions and the training
+        stats.
+        """
+        # Search the best solutions
+        self.trainer.train()
+
+        # Best solutions found by the trainer
+        self._best_solutions = self.trainer.best_solutions()
+        self._best_representatives = self.trainer.best_representatives()
+
+        # Add the training stats
+        self._add_training_stats()
+
+        # Add the training fitness to the best solutions dataframe
+        self._add_fitness(self._ResultKeys.training_fitness)
+
+        # Perform the training fitness stats
+        self._add_fitness_stats(self._ResultKeys.training_fitness_stats)
+
     def _add_training_stats(self) -> None:
         """Add the training stats to the experiment results."""
         # Training_fitness class
-        tr_fitness_func = self.wrapper.fitness_function
+        tr_fitness_func = self.trainer.fitness_function
 
         # Number of training objectives
         num_obj = tr_fitness_func.num_obj
@@ -515,7 +587,7 @@ class Experiment(Evaluation):
         obj_names = tr_fitness_func.Fitness.names
 
         # Training logbook
-        logbook = self.wrapper.logbook
+        logbook = self.trainer.logbook
 
         # Number of entries in the logbook
         n_entries = len(logbook)
@@ -526,9 +598,9 @@ class Experiment(Evaluation):
         # Create the dataframe
         df = DataFrame()
 
-        # Add the generational stats
+        # Add the iteration stats
         index = []
-        for stat in self._wrapper.stats_names:
+        for stat in self._trainer.stats_names:
             df[stat.capitalize()] = logbook.select(stat) * num_obj
             index += [stat.capitalize()]
 
@@ -539,7 +611,7 @@ class Experiment(Evaluation):
         df[_Labels.fitness] = fitness_index
 
         # For each objective stat
-        for stat in self.wrapper.objective_stats.keys():
+        for stat in self.trainer.objective_stats.keys():
             # Select the data of this stat for all the objectives
             data = logbook.select(stat)
             stat_data = np.zeros(n_entries * num_obj)
@@ -567,7 +639,7 @@ class Experiment(Evaluation):
         obj_names = list(self.best_solutions[0][0].fitness.names)
 
         # Index for the dataframe
-        index = [_Labels.species, _Labels.individual]
+        index = [_Labels.species, _Labels.solution]
 
         # Column names for the dataframe
         column_names = index + obj_names
@@ -577,11 +649,11 @@ class Experiment(Evaluation):
 
         # For each species
         for species_index, hof in enumerate(self.best_solutions):
-            # For each individual of the species
-            for ind in hof:
+            # For each solution of the species
+            for sol in hof:
                 # Create a row for the dataframe
                 row = Series(
-                    (species_index, ind) + ind.fitness.values,
+                    (species_index, sol) + sol.fitness.values,
                     index=column_names
                 )
 
@@ -593,7 +665,7 @@ class Experiment(Evaluation):
         df.columns.set_names(_Labels.fitness, inplace=True)
 
         # Add the dataframe to the results
-        self.results[result_key] = df
+        self.results[result_key] = df.astype(float)
 
     def _add_fitness_stats(self, result_key: str) -> None:
         """Perform some stats on the best solutions fitness.
@@ -618,15 +690,15 @@ class Experiment(Evaluation):
 
         # For each species
         for species_index, hof in enumerate(self.best_solutions):
-            # Number of individuals in the hof
-            n_ind = len(hof)
+            # Number of solutions in the hof
+            n_sol = len(hof)
 
             # Array to store all the fitnesses
-            fitness = np.zeros([n_obj, n_ind])
+            fitness = np.zeros([n_obj, n_sol])
 
             # Get the fitnesses
-            for i, ind in enumerate(hof):
-                fitness[:, i] = ind.fitness.values
+            for i, sol in enumerate(hof):
+                fitness[:, i] = sol.fitness.values
 
             # Perform the stats
             species_df = DataFrame(columns=column_names)
@@ -671,73 +743,57 @@ class Experiment(Evaluation):
 
     def _add_feature_metrics(self) -> None:
         """Perform stats about features frequency."""
+        # Flag to know if there are FS solutions in any hof
+        there_are_features = False
+
         # Name of the result
         result_key = self._ResultKeys.feature_metrics
 
         # Index for the dataframe
-        index = [_Labels.species, _Labels.feature]
+        index = [_Labels.feature]
 
         # Column names for the dataframe
         column_names = index + list(self.feature_metric_functions.keys())
 
         # Create the dataframe
         df = DataFrame(columns=column_names)
+        features_hof = ParetoFront()
 
         # For each species
         for species_index, hof in enumerate(self.best_solutions):
             # If the species codes features
-            if isinstance(hof[0].species, FSSpecies):
-                # Get the metrics for this species
-                species_df = DataFrame(columns=column_names)
-                metric = None
-                for name, func in self.feature_metric_functions.items():
-                    metric = func(hof)
-                    species_df[name] = metric
+            hof_species = hof[0].species
+            if isinstance(hof_species, FSSpecies):
+                # Feature selection individuals detected
+                there_are_features = True
+                features_hof.update(hof)
+
+        # Insert the df only if it is not empty
+        if there_are_features:
+            # Get the metrics
+            metric = None
+            for name, func in self.feature_metric_functions.items():
+                metric = func(features_hof)
+                df[name] = metric
                 # If there is any metric
                 if metric is not None:
-                    species_df[_Labels.species] = (
-                        [species_index] * species_df[name].count()
-                    )
-                    species_df[_Labels.feature] = metric.index
-                    df = concat([df, species_df], ignore_index=True)
+                    df[_Labels.feature] = metric.index
 
-        # Set the dataframe index
-        df.set_index(index, inplace=True)
-        df.columns.set_names(_Labels.metric, inplace=True)
+            # Set the dataframe index
+            df.set_index(index, inplace=True)
+            df.columns.set_names(_Labels.metric, inplace=True)
 
-        # Add the dataframe to the results
-        self.results[result_key] = df
-
-    def _do_training(self) -> None:
-        """Perform the training step.
-
-        Train the wrapper and get the best solutions and the training
-        stats.
-        """
-        # Search the best solutions
-        self.wrapper.train()
-
-        # Best solutions found by the wrapper
-        self._best_solutions = self.wrapper.best_solutions()
-        self._best_representatives = self.wrapper.best_representatives()
-
-        # Add the training stats
-        self._add_training_stats()
-
-        # Add the training fitness to the best solutions dataframe
-        self._add_fitness(self._ResultKeys.training_fitness)
-
-        # Perform the training fitness stats
-        self._add_fitness_stats(self._ResultKeys.training_fitness_stats)
+            # Add the dataframe to the results
+            self.results[result_key] = df
 
     def _do_test(self) -> None:
         """Perform the test step.
 
-        Test the solutions found by the wrapper append their fitness to
+        Test the solutions found by the trainer append their fitness to
         the best solutions dataframe.
         """
         # Test the best solutions found
-        self._wrapper.test(
+        self._trainer.test(
             self.best_solutions,
             self.test_fitness_function,
             self.best_representatives
@@ -750,18 +806,13 @@ class Experiment(Evaluation):
         self._add_fitness_stats(self._ResultKeys.test_fitness_stats)
 
     def _execute(self) -> None:
-        """Execute the wrapper method."""
-        # Forget previous results
-        self.reset()
-
-        # Init the results manager
-        self._results = Results()
-
-        # Train the wrapper
+        """Execute the trainer method."""
+        # Train the trainer
         self._do_training()
 
         # Add the execution metrics
-        self._add_execution_metric(_Labels.runtime, self.wrapper.runtime)
+        self._add_execution_metric(_Labels.runtime, self.trainer.runtime)
+        self._add_execution_metric(_Labels.num_evals, self.trainer.num_evals)
 
         # Add the features stats
         self._add_feature_metrics()
@@ -769,8 +820,8 @@ class Experiment(Evaluation):
         # Test the best solutions found
         self._do_test()
 
-        # Reset the state of the wrapper to allow serialization
-        self.wrapper.reset()
+        # Reset the state of the trainer to allow serialization
+        self.trainer.reset()
 
 
 class Batch(Evaluation):
@@ -797,47 +848,35 @@ class Batch(Evaluation):
 
     def __init__(
         self,
-        wrapper: Wrapper,
+        trainer: Trainer,
         test_fitness_function: Optional[FitnessFunction] = None,
+        results_base_filename: Optional[str] = None,
         num_experiments: Optional[int] = None
     ) -> None:
         """Generate a batch of experiments.
 
-        :param wrapper: The wrapper method
-        :type wrapper: :py:class:`~base.Wrapper`
+        :param trainer: The trainer method
+        :type trainer: :py:class:`~culebra.abc.Trainer`
         :param test_fitness_function: The fitness used to test. If
             :py:data:`None`, the training fitness function will be used.
             Defaults to :py:data:`None`.
-        :type test_fitness_function: :py:class:`~base.FitnessFunction`,
+        :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
-
+        :param results_base_filename: The base filename to save the results.
+        :type results_base_filename: :py:class:`~str`
         :param num_experiments: Number of experiments in the batch,
-            defaults to :py:attr:`~tools.DEFAULT_NUM_EXPERIMENTS`
+            defaults to :py:attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS`
         :type num_experiments: :py:class:`int`, optional
+        :raises TypeError: If *trainer* is not a valid trainer
+        :raises TypeError: If *test_fitness_function* is not a valid
+            fitness function
+        :raises TypeError: If *results_base_filename* is not a valid file name
         """
         # Init the super class
-        super().__init__(wrapper, test_fitness_function)
+        super().__init__(trainer, test_fitness_function, results_base_filename)
 
         # Number of experiments
         self.num_experiments = num_experiments
-
-    @classmethod
-    def from_config(cls, config_filename: str) -> Evaluation:
-        """Generate a new evaluation from a configuration file.
-
-        :param config_filename: Path to the config file
-        :type config_filename: :py:class:`str`
-        :raises TypeError: If *config_filename* is an invalid file path
-        """
-        # Load the config module
-        config = cls._load_config(config_filename)
-
-        # Generate the Evaluation from the config module
-        return cls(
-            getattr(config, 'wrapper', None),
-            getattr(config, 'test_fitness_function', None),
-            getattr(config, 'num_experiments', None)
-        )
 
     @property
     def num_experiments(self) -> int:
@@ -845,7 +884,7 @@ class Batch(Evaluation):
 
         :getter: Return the number of experiments
         :setter: Set a new number of experiments. If set to :py:data:`None`,
-            :py:attr:`~tools.DEFAULT_NUM_EXPERIMENTS` is used
+            :py:attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS` is used
         :type: :py:class:`int`
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not greater than
@@ -862,7 +901,7 @@ class Batch(Evaluation):
         """Set a new number of experiments.
 
         :param value: New number of experiments. If set to :py:data:`None`,
-            :py:attr:`~tools.DEFAULT_NUM_EXPERIMENTS` is used
+            :py:attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS` is used
         :type value: :py:class:`int`
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not greater than
@@ -883,12 +922,45 @@ class Batch(Evaluation):
         :type: :py:class:`tuple` of :py:class:`str`
         """
         # Suffix length
-        suffix_len = len((self.num_experiments-1).__str__())
+        suffix_len = len(str(self.num_experiments-1))
 
         # Return the experiment names
         return tuple(
             _Labels.experiment.lower() +
             f"{i:0{suffix_len}d}" for i in range(self.num_experiments)
+        )
+
+    @classmethod
+    def from_config(
+        cls, config_filename: Optional[str] = None
+    ) -> Evaluation:
+        """Generate a new evaluation from a configuration file.
+
+        :param config_filename: Path to the configuration file. If set to
+            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_CONFIG_FILENAME`
+            is used. Defaults to :py:data:`None`
+        :type config_filename: :py:class:`str`, optional
+        :raises TypeError: If *config_filename* is an invalid file path
+        """
+        config_filename = check_filename(
+            (
+                DEFAULT_CONFIG_FILENAME
+                if config_filename is None
+                else config_filename
+            ),
+            name="configuration file",
+            ext=".py"
+        )
+
+        # Load the config module
+        config = cls._load_config(config_filename)
+
+        # Generate the Evaluation from the config module
+        return cls(
+            getattr(config, 'trainer', None),
+            getattr(config, 'test_fitness_function', None),
+            getattr(config, 'results_base_filename', None),
+            getattr(config, 'num_experiments', None)
         )
 
     def reset(self):
@@ -998,54 +1070,58 @@ class Batch(Evaluation):
         self.results[result_key] = df
 
     def _add_feature_metrics_stats(self):
-        """Pertorm stats on the feature metrics of all the experiments."""
-        # Name of the result
-        result_key = self._ResultKeys.batch_feature_metrics_stats
+        """Perform stats on the feature metrics of all the experiments."""
+        try:
+            # Name of the result
+            result_key = self._ResultKeys.batch_feature_metrics_stats
 
-        # Input data
-        input_data_name = self._ResultKeys.feature_metrics
-        input_data = self.results[input_data_name]
+            # Input data
+            input_data_name = self._ResultKeys.feature_metrics
+            input_data = self.results[input_data_name]
 
-        # Index for the dataframe
-        index = [_Labels.metric, _Labels.feature]
+            # Index for the dataframe
+            index = [_Labels.metric, _Labels.feature]
 
-        # Column names for the dataframe
-        column_names = index + list(self.stats_functions.keys())
+            # Column names for the dataframe
+            column_names = index + list(self.stats_functions.keys())
 
-        # Create a dataframe
-        df = DataFrame(columns=column_names)
+            # Create a dataframe
+            df = DataFrame(columns=column_names)
 
-        # Get the features
-        features_index = input_data.index.names.index(_Labels.feature)
-        the_features = input_data.index.levels[features_index]
+            # Get the features
+            features_index = input_data.index.names.index(_Labels.feature)
+            the_features = input_data.index.levels[features_index]
 
-        # For all the metrics
-        for metric in input_data.columns:
-            # Get the values of this metric
-            metric_values = input_data[metric]
+            # For all the metrics
+            for metric in input_data.columns:
+                # Get the values of this metric
+                metric_values = input_data[metric]
 
-            # For all the features
-            for feature in the_features:
-                # Values for each feature
-                feature_metric_values = metric_values[:, :, feature]
+                # For all the features
+                for feature in the_features:
+                    # Values for each feature
+                    feature_metric_values = metric_values[:, feature]
 
-                # New row for the dataframe
-                stats = [metric, feature]
+                    # New row for the dataframe
+                    stats = [metric, feature]
 
-                # Apply the stats
-                for func in self.stats_functions.values():
-                    stats.append(func(feature_metric_values))
+                    # Apply the stats
+                    for func in self.stats_functions.values():
+                        stats.append(func(feature_metric_values))
 
-                # Append the row to the dataframe
-                df.loc[len(df)] = stats
+                    # Append the row to the dataframe
+                    df.loc[len(df)] = stats
 
-        # Feature indices should be int
-        df[_Labels.feature] = (df[_Labels.feature].astype(int))
+            # Feature indices should be int
+            df[_Labels.feature] = (df[_Labels.feature].astype(int))
 
-        df.set_index(index, inplace=True)
-        df.sort_index(inplace=True)
-        df.columns.set_names(_Labels.stat, inplace=True)
-        self.results[result_key] = df
+            df.set_index(index, inplace=True)
+            df.sort_index(inplace=True)
+            df.columns.set_names(_Labels.stat, inplace=True)
+            self.results[result_key] = df
+        except AttributeError:
+            # The experiments do not have feature metrics
+            pass
 
     def _add_fitness_stats(
         self,
@@ -1096,9 +1172,6 @@ class Batch(Evaluation):
 
     def _execute(self):
         """Execute a batch of experiments."""
-        # Init the results manager
-        self._results = Results()
-
         # For all the experiments to be generated ...
         for exp_label in self.exp_labels:
             try:
@@ -1113,7 +1186,9 @@ class Batch(Evaluation):
 
             # Create the experiment
             experiment = Experiment(
-                self.wrapper, self.test_fitness_function
+                self.trainer,
+                self.test_fitness_function,
+                self.results_base_filename
             )
 
             # Run the experiment
@@ -1127,7 +1202,7 @@ class Batch(Evaluation):
             os.chdir("..")
 
         # Sort the results dataframes
-        for result_key in self.results.keys():
+        for result_key in self.results:
             self.results[result_key].set_index(
                 self._results_indices[result_key], inplace=True)
             self.results[result_key].sort_index(inplace=True)
@@ -1147,13 +1222,13 @@ class Batch(Evaluation):
 
 # Exported symbols for this module
 __all__ = [
+    'Evaluation',
+    'Experiment',
+    'Batch',
     'DEFAULT_STATS_FUNCTIONS',
     'DEFAULT_FEATURE_METRIC_FUNCTIONS',
     'DEFAULT_BATCH_STATS_FUNCTIONS',
     'DEFAULT_NUM_EXPERIMENTS',
     'DEFAULT_SCRIPT_FILENAME',
-    'DEFAULT_CONFIG_FILENAME',
-    'Evaluation',
-    'Experiment',
-    'Batch'
+    'DEFAULT_CONFIG_FILENAME'
 ]

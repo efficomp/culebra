@@ -16,35 +16,45 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Implementation of different fitness functions.
+"""Fitness functions.
 
-This module provides fitness functions for several problems. They are grouped
-within the following sub-modules:
+This module provides several fitness functions, all related to the feature
+selection problem. Currently:
 
-  * :py:mod:`~fitness_function.feature_selection` sub-module: Fitness functions
-    to select a minimal subset of features from a :py:class:`~base.Dataset`.
-  * :py:mod:`~fitness_function.classifier_optimization` sub-module: Fitness
-    functions to find the optimal hyper-parameters of the classifier used
-    within a :py:class:`~base.Wrapper` procedure.
-  * :py:mod:`~fitness_function.cooperative` sub-module: Fitness functions to
-    solve the two former problems in a cooperative way.
+  * The :py:mod:`~culebra.fitness_function.abc` sub-module provides abstract
+    classes to define the remaining fitness functions.
+
+  * The :py:mod:`~culebra.fitness_function.feature_selection` sub-module is
+    centered in datasets dimensionality reduction.
+
+  * The :py:mod:`~culebra.fitness_function.svc_optimization` sub-module
+    provides several fitness functions intended to optimize the Support Vector
+    Classifier (SVC) hyperparameters for a given dataset.
+
+  * The :py:mod:`~culebra.fitness_function.cooperative` sub-module provides
+    fitness functions designed to the cooperative solving of a feature
+    selection problem while the classifier hyperparamters are also being
+    optimized.
 """
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2021, EFFICOMP'
+__copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.1.1'
+__version__ = '0.2.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-from . import feature_selection
-from . import classifier_optimization
-from . import cooperative
+from .constants import DEFAULT_CLASSIFIER, DEFAULT_THRESHOLD
+from . import abc, feature_selection, svc_optimization, cooperative
+
 
 __all__ = [
+    'abc',
     'feature_selection',
-    'classifier_optimization',
-    'cooperative'
+    'svc_optimization',
+    'cooperative',
+    'DEFAULT_CLASSIFIER',
+    'DEFAULT_THRESHOLD'
 ]

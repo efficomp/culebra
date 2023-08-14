@@ -18,32 +18,35 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`fitness_function.feature_selection.NumFeats` class
-=============================================================
+:py:class:`culebra.fitness_function.feature_selection.NumFeats` class
+=====================================================================
 
-.. autoclass:: fitness_function.feature_selection.NumFeats
+.. autoclass:: culebra.fitness_function.feature_selection.NumFeats
 
 Class attributes
 ----------------
-.. class:: fitness_function.feature_selection.NumFeats.Fitness
+.. class:: culebra.fitness_function.feature_selection.NumFeats.Fitness
 
-    Fitness class to handle the values returned by the
-    :py:meth:`~fitness_function.feature_selection.NumFeats.evaluate` method
-    within an :py:class:`~genotype.feature_selection.Individual`.
+    Handles the values returned by the
+    :py:meth:`~culebra.fitness_function.feature_selection.NumFeats.evaluate`
+    method within a :py:class:`~culebra.solution.feature_selection.Solution`.
 
-    .. autoattribute:: fitness_function.feature_selection.NumFeats.Fitness.weights
-    .. autoattribute:: fitness_function.feature_selection.NumFeats.Fitness.names
-    .. autoattribute:: fitness_function.feature_selection.NumFeats.Fitness.thresholds
+    .. autoattribute:: culebra.fitness_function.feature_selection.NumFeats.Fitness.weights
+    .. autoattribute:: culebra.fitness_function.feature_selection.NumFeats.Fitness.names
+    .. autoattribute:: culebra.fitness_function.feature_selection.NumFeats.Fitness.thresholds
 
+Class methods
+-------------
+.. automethod:: culebra.fitness_function.feature_selection.NumFeats.set_fitness_thresholds
 
 Properties
 ----------
-.. autoproperty:: fitness_function.feature_selection.NumFeats.num_obj
-.. autoproperty:: fitness_function.feature_selection.NumFeats.training_data
-.. autoproperty:: fitness_function.feature_selection.NumFeats.test_data
-.. autoproperty:: fitness_function.feature_selection.NumFeats.test_prop
-.. autoproperty:: fitness_function.feature_selection.NumFeats.classifier
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_obj
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.training_data
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.test_data
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.test_prop
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.classifier
 
 Methods
 -------
-.. automethod:: fitness_function.feature_selection.NumFeats.evaluate
+.. automethod:: culebra.fitness_function.feature_selection.NumFeats.evaluate

@@ -18,39 +18,81 @@
 
 """Tools to automate the execution of experiments.
 
-Automated experimentation is also a quite valuable characteristic when a
-:py:class:`~base.Wrapper` method has to be run many times. Culebra provides
-this features by means of the following classes:
+Since many interesting problems are based on data processing, this module
+provides the :py:class:`~culebra.tools.Dataset` class to hold and manage the
+data samples.
 
-  * The :py:class:`~tools.Results` class, to manage the results provided by
-    the evaluation of any :py:class:`~base.Wrapper`
-  * The :py:class:`~tools.Evaluation` class, a base class for the evaluation
-    of wrappers
-  * The :py:class:`~tools.Experiment` class, designed to run a single
-    experiment with a :py:class:`~base.Wrapper`
-  * The :py:class:`~tools.Batch` class, which allows to run a batch of
+Bresides, since automated experimentation is also a quite valuable
+characteristic when a :py:class:`~culebra.abc.Trainer` method has to be run
+many times, culebra provides this features by means of the following classes:
+
+  * The :py:class:`~culebra.tools.Evaluation` class, a base class for the
+    evaluation of trainers
+  * The :py:class:`~culebra.tools.Experiment` class, designed to run a single
+    experiment with a :py:class:`~culebra.abc.Trainer`
+  * The :py:class:`~culebra.tools.Batch` class, which allows to run a batch of
     experiments with the same configuration
-  * The :py:class:`~tools.ResultsAnalyzer` class, which analyzes and compare
-    the results of several batches. This class produce several types of
-    results:
-
-      * A :py:class:`~tools.TestOutcome` for the results of any statistical
-        test applied to the :py:class:`~tools.Results` achieved by several
-        batches.
-      * A :py:class:`~tools.ResultsComparison` for the comparison of the
-        results obtained by several batches, according to a concrete and
-        common dataframe a column.
+  * The :py:class:`~culebra.tools.Results` class, to manage the results
+    provided by the evaluation of any :py:class:`~culebra.abc.Trainer`
+  * The :py:class:`~culebra.tools.ResultsAnalyzer` class, to perform
+    statistical analysis over the results of several experimtent batchs
+  * The :py:class:`~culebra.tools.TestOutcome` class, to keep the outcome of a
+    statistical test
+  * The :py:class:`~culebra.tools.ResultsComparison` class, to keep the outcome
+    of a comperison of several batches results
 """
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2022, EFFICOMP'
+__copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.1.1'
+__version__ = '0.2.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-from .results import *
-from .evaluation import *
-from .results_analyzer import *
+from .dataset import Dataset, DEFAULT_SEP
+from .results import Results
+from .results_analyzer import (
+    TestOutcome,
+    ResultsComparison,
+    ResultsAnalyzer,
+    DEFAULT_ALPHA,
+    DEFAULT_NORMALITY_TEST,
+    DEFAULT_HOMOSCEDASTICITY_TEST,
+    DEFAULT_P_ADJUST
+)
+from .evaluation import (
+    Evaluation,
+    Experiment,
+    Batch,
+    DEFAULT_STATS_FUNCTIONS,
+    DEFAULT_FEATURE_METRIC_FUNCTIONS,
+    DEFAULT_BATCH_STATS_FUNCTIONS,
+    DEFAULT_NUM_EXPERIMENTS,
+    DEFAULT_SCRIPT_FILENAME,
+    DEFAULT_CONFIG_FILENAME
+)
+
+
+__all__ = [
+    'Dataset',
+    'Results',
+    'TestOutcome',
+    'ResultsComparison',
+    'ResultsAnalyzer',
+    'Evaluation',
+    'Experiment',
+    'Batch',
+    'DEFAULT_SEP',
+    'DEFAULT_ALPHA',
+    'DEFAULT_NORMALITY_TEST',
+    'DEFAULT_HOMOSCEDASTICITY_TEST',
+    'DEFAULT_P_ADJUST',
+    'DEFAULT_STATS_FUNCTIONS',
+    'DEFAULT_FEATURE_METRIC_FUNCTIONS',
+    'DEFAULT_BATCH_STATS_FUNCTIONS',
+    'DEFAULT_NUM_EXPERIMENTS',
+    'DEFAULT_SCRIPT_FILENAME',
+    'DEFAULT_CONFIG_FILENAME'
+]

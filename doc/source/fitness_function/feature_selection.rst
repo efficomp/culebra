@@ -18,14 +18,14 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`fitness_function.feature_selection` module
-=====================================================
+:py:class:`culebra.fitness_function.feature_selection` module
+=============================================================
 
-.. automodule:: fitness_function.feature_selection
+.. automodule:: culebra.fitness_function.feature_selection
 
 .. toctree::
     :hidden:
 
-    num_feats <feature_selection/num_feats>
-    kappa_index <feature_selection/kappa_index>
-    kappa_num_feats <feature_selection/kappa_num_feats>
+    NumFeats <feature_selection/num_feats>
+    KappaIndex <feature_selection/kappa_index>
+    KappaNumFeats <feature_selection/kappa_num_feats>

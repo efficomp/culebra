@@ -23,30 +23,80 @@ Welcome to culebra's documentation!
 ===================================
 
 .. automodule:: culebra
-    :noindex:
 
 
-Contents:
-=========
-.. toctree::
-   :titlesonly:
+Attributes:
+-----------
+.. attribute:: DEFAULT_STATS_NAMES
+    :annotation: = ('Iter', 'Pop', 'NEvals')
 
-   base module <base>
-   genotype module <genotype>
-   fitness_function module <fitness_function>
-   wrapper module <wrapper>
-   tools module <tools>
+    Default statistics calculated for each iteration of the
+    :py:class:`~culebra.abc.Trainer`
+
+.. attribute:: DEFAULT_OBJECTIVE_STATS
+    :annotation: = {'Avg': <function numpy.mean>, 'Max': <function numpy.max>, 'Min': <function numpy.min>, 'Std': <function numpy.std>}
+
+    Default statistics calculated for each objective within a
+    :py:class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_POP_SIZE
+    :annotation: = 100
+
+    Default population size.
+
+.. attribute:: DEFAULT_MAX_NUM_ITERS
+    :annotation: = 100
+
+    Default maximum number of iterations.
+
+.. attribute:: DEFAULT_CHECKPOINT_ENABLE
+    :annotation: = True
+
+    Default checkpointing enablement for a :py:class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_CHECKPOINT_FREQ
+    :annotation: = 10
+
+    Default checkpointing frequency for a :py:class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_CHECKPOINT_FILENAME
+    :annotation: = 'checkpoint.gz'
+
+    Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_VERBOSITY
+    :annotation: = True
+
+    Default verbosity for a :py:class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_INDEX
+    :annotation: = 0
+
+    Default :py:class:`~culebra.abc.Trainer` index. Only used within a
+    distributed approaches.
+
+..
+    .. autodata:: DEFAULT_STATS_NAMES
+    .. autodata:: DEFAULT_OBJECTIVE_STATS
+    .. autodata:: DEFAULT_POP_SIZE
+    .. autodata:: DEFAULT_MAX_NUM_ITERS
+    .. autodata:: DEFAULT_CHECKPOINT_ENABLE
+    .. autodata:: DEFAULT_CHECKPOINT_FREQ
+    .. autodata:: DEFAULT_CHECKPOINT_FILENAME
+    .. autodata:: DEFAULT_VERBOSITY
+    .. autodata:: DEFAULT_INDEX
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
 
+
 References
-==========
+----------
 
 .. [Gonzalez2019] J. González, J. Ortega, M. Damas, P. Martín-Smith,
    John Q. Gan. *A new multi-objective wrapper method for feature
@@ -58,3 +108,14 @@ References
    *A lexicographic cooperative co-evolutionary approach for feature
    selection*. **Neurocomputing**, 463:59-76, 2021.
    https://doi.org/10.1016/j.neucom.2021.08.003.
+
+
+.. toctree::
+    :hidden:
+
+    abc <abc>
+    checker <checker>
+    solution <solution>
+    fitness_function <fitness_function>
+    trainer <trainer>
+    tools <tools>

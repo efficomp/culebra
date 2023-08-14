@@ -19,35 +19,33 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`tools.Evaluation`."""
+"""Unit test for :py:class:`culebra.tools.Evaluation`."""
 
 import unittest
 import pickle
 from os import remove
 from os.path import exists
 from copy import copy, deepcopy
+
 from pandas import DataFrame
-from culebra.base import Dataset, FitnessFunction, Wrapper
-from culebra.fitness_function.cooperative import KappaNumFeatsC
-from culebra.genotype.feature_selection import (
-    Species as FeatureSelectionSpecies
-)
-from culebra.genotype.feature_selection.individual import (
+
+from culebra.abc import FitnessFunction, Trainer
+from culebra.solution.feature_selection import (
+    Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
 )
-from culebra.genotype.classifier_optimization import (
+from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.wrapper.single_pop import Elitist
-from culebra.wrapper.multi_pop import ParallelCooperative
+from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.trainer.ea import ElitistEA
+from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import (
+    Dataset,
     Evaluation,
     Results,
-    DEFAULT_SCRIPT_FILENAME,
-    DEFAULT_RESULTS_BACKUP_FILENAME,
-    DEFAULT_RESULTS_EXCEL_FILENAME
-
+    DEFAULT_SCRIPT_FILENAME
 )
 
 # Dataset
@@ -88,9 +86,9 @@ featureSelectionSpecies2 = FeatureSelectionSpecies(
     min_feat=dataset.num_feats/2 + 1,
 )
 
-# Parameters for the wrapper
+# Parameters for the trainer
 params = {
-    "individual_classes": [
+    "solution_classes": [
         ClassifierOptimizationIndividual,
         FeatureSelectionIndividual,
         FeatureSelectionIndividual
@@ -101,20 +99,20 @@ params = {
         featureSelectionSpecies2
     ],
     "fitness_function": training_fitness_function,
-    "subpop_wrapper_cls": Elitist,
+    "subpop_trainer_cls": ElitistEA,
     "representation_size": 2,
-    "num_gens": 3,
+    "max_num_iters": 3,
     "pop_sizes": 2,
     # At least one hyperparameter will be mutated
     "gene_ind_mutation_probs": (
-        1.0/classifierOptimizationSpecies.num_hyperparams
+        1.0/classifierOptimizationSpecies.num_params
     ),
     "checkpoint_enable": False,
     "verbose": False
 }
 
-# Create the wrapper
-wrapper = ParallelCooperative(**params)
+# Create the trainer
+trainer = ParallelCooperativeEA(**params)
 
 
 class MyEvaluation(Evaluation):
@@ -122,27 +120,25 @@ class MyEvaluation(Evaluation):
 
     def _execute(self):
         """Implement a dummy execution."""
-        # Init the results dictionary
-        self._results = Results()
-
         # Insert a dummy dataframe
         self._results["dummy"] = DataFrame()
 
 
 class EvaluationTester(unittest.TestCase):
-    """Test :py:class:`~tools.Evaluation`."""
+    """Test :py:class:`~culebra.tools.Evaluation`."""
 
     def test_init(self):
-        """Test the :py:meth:`~tools.Evaluation.__init__` constructor."""
+        """Test the constructor."""
         # Try default params
-        evaluation = MyEvaluation(wrapper)
+        evaluation = MyEvaluation(trainer)
 
-        self.assertEqual(evaluation.wrapper, wrapper)
+        self.assertEqual(evaluation.trainer, trainer)
         self.assertEqual(evaluation.test_fitness_function, None)
+        self.assertEqual(evaluation.results_base_filename, None)
         self.assertEqual(evaluation.results, None)
 
         # Try an evaluation with a test fitness function
-        evaluation = MyEvaluation(wrapper, test_fitness_function)
+        evaluation = MyEvaluation(trainer, test_fitness_function)
         self.assertEqual(
             evaluation.test_fitness_function, test_fitness_function)
 
@@ -151,8 +147,8 @@ class EvaluationTester(unittest.TestCase):
         # Generate the evaluation
         evaluation = MyEvaluation.from_config("config.py")
 
-        # Check the wrapper
-        self.assertIsInstance(evaluation.wrapper, Wrapper)
+        # Check the trainer
+        self.assertIsInstance(evaluation.trainer, Trainer)
 
         # Check the test fitness function
         self.assertIsInstance(
@@ -160,7 +156,7 @@ class EvaluationTester(unittest.TestCase):
 
     def test_reset(self):
         """Test the reset method."""
-        evaluation = MyEvaluation(wrapper)
+        evaluation = MyEvaluation(trainer)
         evaluation._results = 1
         evaluation.reset()
         self.assertEqual(evaluation.results, None)
@@ -168,9 +164,12 @@ class EvaluationTester(unittest.TestCase):
     def test_execute(self):
         """Test the _execute method."""
         # Create the evaluation
-        evaluation = MyEvaluation(wrapper, test_fitness_function)
+        evaluation = MyEvaluation(trainer, test_fitness_function)
 
-        # Execute the wrapper
+        # Init the results manager
+        evaluation._results = Results(evaluation.results_base_filename)
+
+        # Execute the trainer
         evaluation._execute()
 
         # Check the results
@@ -202,23 +201,29 @@ class EvaluationTester(unittest.TestCase):
     def test_run(self):
         """Test the run method."""
         # Create the evaluation
-        evaluation = MyEvaluation(wrapper, test_fitness_function)
+        evaluation = MyEvaluation(
+            trainer, test_fitness_function, "the_results"
+        )
 
-        # Run the wrapper
+        # Run the trainer
         evaluation.run()
 
+        # Check the results
+        self.assertIsInstance(evaluation.results, Results)
+
         # Check that backup and results files exist
-        self.assertTrue(exists(DEFAULT_RESULTS_BACKUP_FILENAME))
-        self.assertTrue(exists(DEFAULT_RESULTS_EXCEL_FILENAME))
+        self.assertTrue(exists(evaluation.results.backup_filename))
+        self.assertTrue(exists(evaluation.results.excel_filename))
 
         # Remove the files
-        remove(DEFAULT_RESULTS_BACKUP_FILENAME)
-        remove(DEFAULT_RESULTS_EXCEL_FILENAME)
+        remove(evaluation.results.backup_filename)
+        remove(evaluation.results.excel_filename)
 
     def test_copy(self):
-        """Test the :py:meth:`~tools.Evaluation.__copy__` method."""
-        evaluation1 = MyEvaluation(wrapper, test_fitness_function)
-        evaluation1._execute()
+        """Test the :py:meth:`~culebra.tools.Evaluation.__copy__` method."""
+        evaluation1 = MyEvaluation(trainer, test_fitness_function)
+
+        evaluation1.run()
         evaluation2 = copy(evaluation1)
 
         # Copy only copies the first level (evaluation1 != evaluation2)
@@ -227,23 +232,31 @@ class EvaluationTester(unittest.TestCase):
         # The species attributes are shared
         self.assertEqual(id(evaluation1._results), id(evaluation2._results))
 
+        # Remove the files
+        remove(evaluation1.results.backup_filename)
+        remove(evaluation1.results.excel_filename)
+
     def test_deepcopy(self):
-        """Test :py:meth:`~tools.Evaluation.__deepcopy__`."""
-        evaluation1 = MyEvaluation(wrapper, test_fitness_function)
-        evaluation1._execute()
+        """Test :py:meth:`~culebra.tools.Evaluation.__deepcopy__`."""
+        evaluation1 = MyEvaluation(trainer, test_fitness_function)
+        evaluation1.run()
         evaluation2 = deepcopy(evaluation1)
 
         # Check the copy
         self._check_deepcopy(evaluation1, evaluation2)
 
+        # Remove the files
+        remove(evaluation1.results.backup_filename)
+        remove(evaluation1.results.excel_filename)
+
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~feature_selector.Species.__setstate__` and
-        :py:meth:`~feature_selector.Species.__reduce__` methods.
+        Test the :py:meth:`~culebra.tools.Evaluation.__setstate__` and
+        :py:meth:`~culebra.tools.Evaluation.__reduce__` methods.
         """
-        evaluation1 = MyEvaluation(wrapper, test_fitness_function)
-        evaluation1._execute()
+        evaluation1 = MyEvaluation(trainer, test_fitness_function)
+        evaluation1.run()
 
         data = pickle.dumps(evaluation1)
         evaluation2 = pickle.loads(data)
@@ -251,13 +264,17 @@ class EvaluationTester(unittest.TestCase):
         # Check the copy
         self._check_deepcopy(evaluation1, evaluation2)
 
+        # Remove the files
+        remove(evaluation1.results.backup_filename)
+        remove(evaluation1.results.excel_filename)
+
     def _check_deepcopy(self, evaluation1, evaluation2):
         """Check if *evaluation1* is a deepcopy of *evaluation2*.
 
         :param evaluation1: The first evaluation
-        :type evaluation1: :py:class:`~tools.Evaluation`
+        :type evaluation1: :py:class:`~culebra.tools.Evaluation`
         :param evaluation2: The second evaluation
-        :type evaluation2: :py:class:`~tools.Evaluation`
+        :type evaluation2: :py:class:`~culebra.tools.Evaluation`
         """
         # Copies all the levels
         self.assertNotEqual(id(evaluation1), id(evaluation2))

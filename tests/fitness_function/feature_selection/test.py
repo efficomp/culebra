@@ -22,16 +22,20 @@
 """Test the feature selection fitness functions."""
 
 import unittest
-from copy import copy, deepcopy
 import pickle
-from culebra.base import Dataset
+from copy import copy, deepcopy
+
+from culebra.solution.feature_selection import (
+    Species,
+    BinarySolution as Solution
+)
 from culebra.fitness_function.feature_selection import (
     NumFeats,
     KappaIndex,
     KappaNumFeats
 )
-from culebra.genotype.feature_selection import Species
-from culebra.genotype.feature_selection.individual import BitVector
+from culebra.tools import Dataset
+
 
 # Dataset
 DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
@@ -45,7 +49,7 @@ dataset.normalize()
 
 
 class NumFeatsTester(unittest.TestCase):
-    """Test :py:class:`~fitness_function.feature_selection.NumFeats`."""
+    """Test NumFeats."""
 
     FitnessFunc = NumFeats
 
@@ -54,16 +58,16 @@ class NumFeatsTester(unittest.TestCase):
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
 
-        # Species for the individual
+        # Species for the solution
         species = Species(num_feats=dataset.num_feats)
 
-        # Create the individual
-        ind = BitVector(species=species, fitness_cls=func.Fitness)
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
 
-        ind.fitness.values = func.evaluate(ind)
+        sol.fitness.values = func.evaluate(sol)
 
         # Check the fitness function
-        self.assertEqual(ind.fitness.values, (ind.num_feats,))
+        self.assertEqual(sol.fitness.values, (sol.num_feats,))
 
     def test_copy(self):
         """Test the __copy__ method."""
@@ -119,7 +123,7 @@ class NumFeatsTester(unittest.TestCase):
 
 
 class KappaIndexTester(unittest.TestCase):
-    """Test :py:class:`~fitness_function.feature_selection.KappaIndex`."""
+    """Test KappaIndex."""
 
     FitnessFunc = KappaIndex
 
@@ -128,16 +132,16 @@ class KappaIndexTester(unittest.TestCase):
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
 
-        # Species for the individual
+        # Species for the solution
         species = Species(num_feats=dataset.num_feats)
 
-        # Create the individual
-        ind = BitVector(species=species, fitness_cls=func.Fitness)
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
 
         # Check that Kappa is in [-1, 1]
-        ind.fitness.values = func.evaluate(ind)
-        self.assertGreaterEqual(ind.fitness.values[0], -1)
-        self.assertLessEqual(ind.fitness.values[0], 1)
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], -1)
+        self.assertLessEqual(sol.fitness.values[0], 1)
 
     test_copy = NumFeatsTester.test_copy
     test_deepcopy = NumFeatsTester.test_deepcopy
@@ -146,7 +150,7 @@ class KappaIndexTester(unittest.TestCase):
 
 
 class KappaNumFeatsTester(unittest.TestCase):
-    """Test :py:class:`~fitness_function.feature_selection.KappaNumFeats`."""
+    """Test KappaNumFeats."""
 
     FitnessFunc = KappaNumFeats
 
@@ -155,21 +159,21 @@ class KappaNumFeatsTester(unittest.TestCase):
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
 
-        # Species for the individual
+        # Species for the solution
         species = Species(num_feats=dataset.num_feats)
 
-        # Create the individual
-        ind = BitVector(species=species, fitness_cls=func.Fitness)
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
 
-        # Evaluate the individual
-        ind.fitness.values = func.evaluate(ind)
+        # Evaluate the solution
+        sol.fitness.values = func.evaluate(sol)
 
         # Check that Kappa is in [-1, 1]
-        self.assertGreaterEqual(ind.fitness.values[0], -1)
-        self.assertLessEqual(ind.fitness.values[0], 1)
+        self.assertGreaterEqual(sol.fitness.values[0], -1)
+        self.assertLessEqual(sol.fitness.values[0], 1)
 
         # Check the number of features
-        self.assertEqual(ind.fitness.values[1], ind.num_feats)
+        self.assertEqual(sol.fitness.values[1], sol.num_feats)
 
     test_copy = NumFeatsTester.test_copy
     test_deepcopy = NumFeatsTester.test_deepcopy

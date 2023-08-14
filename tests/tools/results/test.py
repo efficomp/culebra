@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`tools.Results`."""
+"""Unit test for :py:class:`culebra.tools.Results`."""
 
 import unittest
 import pickle
@@ -28,15 +28,11 @@ from os import remove
 from os.path import exists
 from copy import copy, deepcopy
 from pandas import DataFrame
-from culebra.tools import (
-    Results,
-    DEFAULT_RESULTS_BACKUP_FILENAME,
-    DEFAULT_RESULTS_EXCEL_FILENAME
-)
+from culebra.tools import Results
 
 
 class ResultsTester(unittest.TestCase):
-    """Test :py:class:`~tools.Results`."""
+    """Test :py:class:`~culebra.tools.Results`."""
 
     def test_init(self):
         """Test the constructor."""
@@ -49,8 +45,33 @@ class ResultsTester(unittest.TestCase):
         # Check that the results manager subclass of UserDict
         self.assertIsInstance(results, UserDict)
 
+        # Check the results base filename
+        self.assertEqual(results.base_filename, Results.default_base_filename)
+
+        # Try an invalid base filename. Should fail
+        with self.assertRaises(TypeError):
+            Results(base_filename=1)
+
+        # Try a valid filename
+        filename = "name"
+        results = Results(base_filename=filename)
+        self.assertEqual(results.base_filename, filename)
+
+    def test_base_filename(self):
+        """Test the base_filename property."""
+        results = Results()
+
+        # Try an invalid basename. Should fail
+        with self.assertRaises(TypeError):
+            results.base_filename = 1
+
+        # Try a valid filename
+        filename = "name"
+        results.base_filename = filename
+        self.assertEqual(results.base_filename, filename)
+
     def test_setitem(self):
-        """Test the :py:meth:`~tools.Results.__setitem__` method."""
+        """Test the :py:meth:`~culebra.tools.Results.__setitem__` method."""
         results = Results()
 
         data = DataFrame()
@@ -76,7 +97,7 @@ class ResultsTester(unittest.TestCase):
         self.assertTrue(results[key].equals(data))
 
     def test_from_csv_files(self):
-        """Test the :py:meth:`~tools.Results.from_csv_files` class method."""
+        """Test the from_csv_files class method."""
         results = Results()
 
         bad_filename = "bad.csv"
@@ -171,7 +192,7 @@ class ResultsTester(unittest.TestCase):
             self.assertTrue(results3[key].equals(results[key]))
 
         # Remove the file
-        remove(DEFAULT_RESULTS_BACKUP_FILENAME)
+        remove(results.backup_filename)
 
     def test_to_excel(self):
         """Test the to_excel method."""
@@ -201,13 +222,13 @@ class ResultsTester(unittest.TestCase):
 
         # Try saving with to the default file
         results.to_excel()
-        self.assertTrue(exists(DEFAULT_RESULTS_EXCEL_FILENAME))
+        self.assertTrue(exists(results.excel_filename))
 
         # Remove the file
-        remove(DEFAULT_RESULTS_EXCEL_FILENAME)
+        remove(results.excel_filename)
 
     def test_copy(self):
-        """Test the :py:meth:`~tools.Results.__copy__` method."""
+        """Test the :py:meth:`~culebra.tools.Results.__copy__` method."""
         data_filenames = ("test_fitness.csv", "execution_metrics.csv")
         data_keys = ("test_fitness", "execution_metrics")
 
@@ -222,7 +243,7 @@ class ResultsTester(unittest.TestCase):
             self.assertEqual(id(results1[key]), id(results2[key]))
 
     def test_deepcopy(self):
-        """Test :py:meth:`~tools.Results.__deepcopy__`."""
+        """Test :py:meth:`~culebra.tools.Results.__deepcopy__`."""
         data_filenames = ("test_fitness.csv", "execution_metrics.csv")
         data_keys = ("test_fitness", "execution_metrics")
 
@@ -235,8 +256,8 @@ class ResultsTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~tools.Results.__setstate__` and
-        :py:meth:`~tools.Results.__reduce__` methods.
+        Test the :py:meth:`~culebra.tools.Results.__setstate__` and
+        :py:meth:`~culebra.tools.Results.__reduce__` methods.
         """
         data_filenames = ("test_fitness.csv", "execution_metrics.csv")
         data_keys = ("test_fitness", "execution_metrics")
@@ -253,9 +274,9 @@ class ResultsTester(unittest.TestCase):
         """Check if *results1* is a deepcopy of *results2*.
 
         :param results1: The first results
-        :type results1: :py:class:`~tools.Results`
+        :type results1: :py:class:`~culebra.tools.Results`
         :param results2: The second results
-        :type results2: :py:class:`~tools.Results`
+        :type results2: :py:class:`~culebra.tools.Results`
         """
         # Copies all the levels
         self.assertNotEqual(id(results1), id(results2))

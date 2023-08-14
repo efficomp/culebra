@@ -1,0 +1,198 @@
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# This file is part of culebra.
+#
+# Culebra is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# Culebra is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# Culebra. If not, see <http://www.gnu.org/licenses/>.
+#
+# This work was supported by project PGC2018-098813-B-C31 (Spanish "Ministerio
+# de Ciencia, Innovación y Universidades"), and by the European Regional
+# Development Fund (ERDF).
+
+"""Unit test for :py:class:`~culebra.trainer.ea.ElitistEA`."""
+
+import unittest
+
+from deap.tools import HallOfFame
+
+from culebra.trainer.ea import ElitistEA, DEFAULT_ELITE_SIZE
+from culebra.solution.feature_selection import (
+    Species,
+    BitVector as Individual
+)
+from culebra.fitness_function.feature_selection import KappaIndex as Fitness
+from culebra.tools import Dataset
+
+
+# Dataset
+DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
+                'statlog/australian/australian.dat')
+
+# Load the dataset
+dataset = Dataset(DATASET_PATH, output_index=-1)
+
+# Normalize inputs between 0 and 1
+dataset.normalize()
+
+
+class TrainerTester(unittest.TestCase):
+    """Test :py:class:`~culebra.trainer.ea.ElitistEA`."""
+
+    def test_init(self):
+        """Test __init__."""
+        # Trainer parameters
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset)
+        }
+
+        # Create the trainer
+        trainer = ElitistEA(**params)
+
+        # Test default parameter values
+        self.assertEqual(trainer.elite_size, DEFAULT_ELITE_SIZE)
+        self.assertEqual(trainer._elite, None)
+
+    def test_elite_size(self):
+        """Test elite_size."""
+        # Trainer parameters
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset)
+        }
+
+        # Create the trainer
+        trainer = ElitistEA(**params)
+
+        # Try a valid elite proportion
+        valid_size = 3
+        trainer.elite_size = valid_size
+        self.assertEqual(trainer.elite_size, valid_size)
+
+        # Try not valid elite proportion types, should fail
+        invalid_sizes = ['a', len, 1.4]
+        for size in invalid_sizes:
+            with self.assertRaises(TypeError):
+                trainer.elite_size = size
+
+        # Try not valid elite proportion values, should fail
+        invalid_sizes = [-1, 0]
+        for size in invalid_sizes:
+            with self.assertRaises(ValueError):
+                trainer.elite_size = size
+
+    def test_state(self):
+        """Test _state."""
+        # Trainer parameters
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset),
+            "pop_size": 1000,
+            "elite_size": 13
+        }
+
+        # Create the trainer
+        trainer = ElitistEA(**params)
+
+        # Save the trainer's state
+        state = trainer._state
+
+        # Check the state
+        self.assertEqual(state["num_evals"], trainer._num_evals)
+        self.assertEqual(state["elite"], trainer._elite)
+
+        # Change the state
+        state["num_evals"] = 100
+        state["elite"] = 200
+
+        # Set the new state
+        trainer._state = state
+
+        # Test if the new values have been set
+        self.assertEqual(state["num_evals"], trainer._num_evals)
+        self.assertEqual(state["elite"], trainer._elite)
+
+    def test_new_state(self):
+        """Test _new_state."""
+        # Trainer parameters
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset),
+            "pop_size": 100,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = ElitistEA(**params)
+
+        # Create a new state
+        trainer._init_internals()
+        trainer._new_state()
+
+        # Check the elite
+        self.assertIsInstance(trainer._elite, HallOfFame)
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(trainer._elite), max(1, trainer.elite_size))
+
+    def test_reset_state(self):
+        """Test _reset_state."""
+        # Trainer parameters
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset),
+            "pop_size": 100,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = ElitistEA(**params)
+
+        # Create a new state
+        trainer._init_internals()
+        trainer._new_state()
+
+        # Reset the state
+        trainer._reset_state()
+
+        # Check the elite
+        self.assertEqual(trainer._elite, None)
+
+    def test_do_iteration(self):
+        """Test _do_iteration."""
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset),
+            "checkpoint_enable": False,
+            "verbose": False
+        }
+        trainer = ElitistEA(**params)
+
+        # Init the search process
+        trainer._init_search()
+
+        # Do an iteration
+        pop_size_before = len(trainer.pop)
+        trainer._do_iteration()
+        pop_size_after = len(trainer.pop)
+        self.assertEqual(pop_size_before, pop_size_after)
+
+
+if __name__ == '__main__':
+    unittest.main()

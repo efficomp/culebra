@@ -18,14 +18,33 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:mod:`fitness_function` module
-=================================
+:py:mod:`culebra.fitness_function` module
+=========================================
 
-.. automodule:: fitness_function
+.. automodule:: culebra.fitness_function
+
+Attributes
+----------
+.. attribute:: DEFAULT_CLASSIFIER
+    :annotation: = <class 'sklearn.naive_bayes.GaussianNB'>
+
+    Default classifier for fitness functions
+
+.. attribute:: DEFAULT_THRESHOLD
+    :annotation: = 0.01
+
+    Default similarity threshold for fitnesses
+
+
+..
+    .. autodata:: DEFAULT_CLASSIFIER
+    .. autodata:: DEFAULT_THRESHOLD
+
 
 .. toctree::
     :hidden:
 
+    abc <fitness_function/abc>
     feature_selection <fitness_function/feature_selection>
-    classifier_optimization <fitness_function/classifier_optimization>
+    svc_optimization <fitness_function/svc_optimization>
     cooperative <fitness_function/cooperative>

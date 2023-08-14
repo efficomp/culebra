@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>culebra.trainer module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="culebra.trainer.topology module" href="trainer/topology.html" />
+    <link rel="prev" title="culebra.fitness_function.cooperative.KappaNumFeatsC class" href="fitness_function/cooperative/kappa_num_feats_c.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="trainer/topology.html" title="culebra.trainer.topology module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fitness_function/cooperative/kappa_num_feats_c.html" title="culebra.fitness_function.cooperative.KappaNumFeatsC class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-culebra.trainer">
+<span id="culebra-trainer-module"></span><h1><a class="reference internal" href="#module-culebra.trainer" title="culebra.trainer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code></a> module<a class="headerlink" href="#module-culebra.trainer" title="Permalink to this heading">¶</a></h1>
+<p>Implementation of some trainers.</p>
+<p>This module is composed by:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="trainer/abc.html#module-culebra.trainer.abc" title="culebra.trainer.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module, which defines some abstract base
+classes to implement several types of trainers.</p></li>
+<li><p>The <a class="reference internal" href="trainer/ea.html#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-class docutils literal notranslate"><span class="pre">ea</span></code></a> class, which implements several
+evolutionary algorithms-based trainers.</p></li>
+<li><p>The <a class="reference internal" href="trainer/topology.html#module-culebra.trainer.topology" title="culebra.trainer.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">topology</span></code></a> sub-module, which provides several
+tolpologies for distributed trainers.</p></li>
+</ul>
+</div></blockquote>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_NUM_SUBPOPS">
+<span class="sig-name descname"><span class="pre">DEFAULT_NUM_SUBPOPS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_NUM_SUBPOPS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default number of subpopulations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the number of representatives sent to the other
+subpopulations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_FREQ">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_FREQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for the number of generations between representatives
+sending.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">full_connected_destinations&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default topology function for representatives sending.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default parameters to obtain the destinations with the topology function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selTournament&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default selection policy function to choose the representatives.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">3}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default parameters for the representatives selection policy function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">ring_destinations&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default topology function for the islands model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameters for the default topology function in the islands model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;full_connected_destinationss&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default topology function for the cooperative model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameters for the default topology function in the cooperative model.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="trainer/topology.html" title="culebra.trainer.topology module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fitness_function/cooperative/kappa_num_feats_c.html" title="culebra.fitness_function.cooperative.KappaNumFeatsC class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2023, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="_sources/trainer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work was supported by project <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

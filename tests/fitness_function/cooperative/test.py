@@ -22,18 +22,18 @@
 """Test the cooperative fitness functions."""
 
 import unittest
-from culebra.base import Dataset
-from culebra.fitness_function.cooperative import KappaNumFeatsC
-from culebra.genotype.feature_selection import (
-    Species as FeatureSelectionSpecies
+
+from culebra.solution.feature_selection import (
+    Species as FeatureSelectionSpecies,
+    BinarySolution as FeatureSelectionSolution
 )
-from culebra.genotype.feature_selection.individual import (
-    BitVector as FeatureSelectionIndividual
-)
-from culebra.genotype.classifier_optimization import (
+from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
-    Individual as ClassifierOptimizationIndividual
+    Solution as ClassifierOptimizationSolution
 )
+from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.tools import Dataset
+
 
 # Dataset
 DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
@@ -47,7 +47,7 @@ dataset.normalize()
 
 
 class KappaNumFeatsCTester(unittest.TestCase):
-    """Test :py:class:`~fitness_function.cooperative.KappaNumFeatsC`."""
+    """Test KappaNumFeatsC."""
 
     def test_evaluate(self):
         """Test the evaluation method."""
@@ -75,42 +75,42 @@ class KappaNumFeatsCTester(unittest.TestCase):
             max_feat=max_feat2
         )
 
-        hyperparams_ind = ClassifierOptimizationIndividual(
+        hyperparams_sol = ClassifierOptimizationSolution(
             hyperparams_species, KappaNumFeatsC.Fitness
         )
 
-        features_ind1 = FeatureSelectionIndividual(
+        features_sol1 = FeatureSelectionSolution(
             features_species1, KappaNumFeatsC.Fitness
         )
 
-        features_ind2 = FeatureSelectionIndividual(
+        features_sol2 = FeatureSelectionSolution(
             features_species2, KappaNumFeatsC.Fitness
         )
 
-        representatives = [hyperparams_ind, features_ind1, features_ind2]
+        representatives = [hyperparams_sol, features_sol1, features_sol2]
 
         # Fitness function to be tested
         fitness_func = KappaNumFeatsC(dataset)
 
-        # Evaluate the individuals
-        for index, ind in enumerate(representatives):
-            ind.fitness.values = fitness_func.evaluate(
-                ind, index, representatives
+        # Evaluate the solutions
+        for index, sol in enumerate(representatives):
+            sol.fitness.values = fitness_func.evaluate(
+                sol, index, representatives
             )
 
         # Check that fitnesses match
         self.assertEqual(
-            hyperparams_ind.fitness.values, features_ind1.fitness.values
+            hyperparams_sol.fitness.values, features_sol1.fitness.values
         )
         self.assertEqual(
-            features_ind1.fitness.values, features_ind2.fitness.values
+            features_sol1.fitness.values, features_sol2.fitness.values
         )
 
-        # Try wrong individual species. Should fail
+        # Try wrong solution species. Should fail
         with self.assertRaises(AttributeError):
-            fitness_func.evaluate(features_ind1, 0, representatives)
+            fitness_func.evaluate(features_sol1, 0, representatives)
         with self.assertRaises(AttributeError):
-            fitness_func.evaluate(hyperparams_ind, 1, representatives)
+            fitness_func.evaluate(hyperparams_sol, 1, representatives)
 
 
 if __name__ == '__main__':

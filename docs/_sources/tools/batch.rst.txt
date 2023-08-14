@@ -18,46 +18,39 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.Batch` class
-=============================
+:py:class:`culebra.tools.Batch` class
+=====================================
 
-.. autoclass:: tools.Batch
+.. autoclass:: culebra.tools.Batch
 
 Class attributes
 ----------------
-.. autoattribute:: tools.Batch.feature_metric_functions
-.. autoattribute:: tools.Batch.stats_functions
-
-Private class attributes
-------------------------
-.. class:: tools.Batch._ResultKeys
-
-    Handle the keys for the batch results.
-
-.. autoattribute:: tools.Batch._script_code
+.. autoattribute:: culebra.tools.Batch.feature_metric_functions
+.. autoattribute:: culebra.tools.Batch.stats_functions
 
 Properties
 ----------
-.. autoproperty:: tools.Batch.wrapper
-.. autoproperty:: tools.Batch.test_fitness_function
-.. autoproperty:: tools.Batch.results
-.. autoproperty:: tools.Batch.num_experiments
-.. autoproperty:: tools.Batch.exp_labels
+.. autoproperty:: culebra.tools.Batch.trainer
+.. autoproperty:: culebra.tools.Batch.test_fitness_function
+.. autoproperty:: culebra.tools.Batch.results_base_filename
+.. autoproperty:: culebra.tools.Batch.results
+.. autoproperty:: culebra.tools.Batch.num_experiments
+.. autoproperty:: culebra.tools.Batch.exp_labels
 
 Class methods
 -------------
-.. automethod:: tools.Batch.from_config
-.. automethod:: tools.Batch.generate_script
+.. automethod:: culebra.tools.Batch.from_config
+.. automethod:: culebra.tools.Batch.generate_script
 
 Methods
 -------
-.. automethod:: tools.Batch.reset
-.. automethod:: tools.Batch.run
+.. automethod:: culebra.tools.Batch.reset
+.. automethod:: culebra.tools.Batch.run
 
 Private methods
 ---------------
-.. automethod:: tools.Batch._append_data
-.. automethod:: tools.Batch._add_execution_metrics_stats
-.. automethod:: tools.Batch._add_feature_metrics_stats
-.. automethod:: tools.Batch._add_fitness_stats
-.. automethod:: tools.Batch._execute
+.. automethod:: culebra.tools.Batch._append_data
+.. automethod:: culebra.tools.Batch._add_execution_metrics_stats
+.. automethod:: culebra.tools.Batch._add_feature_metrics_stats
+.. automethod:: culebra.tools.Batch._add_fitness_stats
+.. automethod:: culebra.tools.Batch._execute

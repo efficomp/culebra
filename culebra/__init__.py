@@ -16,37 +16,84 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Culebra is a `DEAP <https://deap.readthedocs.io/en/master/>`_-based
+"""Culebra was born as a `DEAP <https://deap.readthedocs.io/en/master/>`_-based
 evolutionary computation library designed to solve feature selection problems.
+However, it has been redesigned to support different kind of problems and also
+different metaheuristics.
 
-It provides several individual representations, such as bitvectors and set
-of feature indices, several fitness functions and several wrapper algorithms.
+Experiments and experiment batchs are automatized by means of the
+:py:class:`~culebra.tools.Experiment` and :py:class:`~culebra.tools.Batch`
+classes, both in the :py:mod:`~culebra.tools` module. Statistical analysis of
+the :py:class:`~culebra.tools.Results` is also provided by the
+:py:class:`~culebra.tools.ResultsAnalyzer` class.
 
-Experiments and experiment batches are automatized by means of the
-:py:class:`~tools.Experiment` and :py:class:`~tools.Batch`
-classes, both in the :py:mod:`~tools` module.
+Culebra is structured in the following modules:
+
+  * The :py:mod:`~culebra.abc` module, which defines the abstract base classes
+    that support culebra
+
+  * The :py:mod:`~culebra.checker` module, which provides several checker
+    functions used within culebra to prevent wrong arguments to functions
+    and methods
+
+  * The :py:mod:`~culebra.solution` module, which define solutions and solution
+    species for several problems
+
+  * The :py:mod:`~culebra.fitness_function` module, which provides fitness
+    functions for several problems
+
+  * The :py:mod:`~culebra.trainer` module, which implement several training
+    algorithms
+
+  * The :py:mod:`~culebra.tools` module, which implements several tools to
+    handle data and make easier the experimentation and the analysis of the
+    obtained results
 """
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2021, EFFICOMP'
+__copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.1.1'
+__version__ = '0.2.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
+
+from .constants import (
+    DEFAULT_STATS_NAMES,
+    DEFAULT_OBJECTIVE_STATS,
+    DEFAULT_POP_SIZE,
+    DEFAULT_MAX_NUM_ITERS,
+    DEFAULT_CHECKPOINT_ENABLE,
+    DEFAULT_CHECKPOINT_FREQ,
+    DEFAULT_CHECKPOINT_FILENAME,
+    DEFAULT_VERBOSITY,
+    DEFAULT_INDEX
+)
 from . import (
-    base,
-    genotype,
+    checker,
+    abc,
+    solution,
     fitness_function,
-    wrapper,
+    trainer,
     tools
 )
 
+
 __all__ = [
-    'base',
-    'genotype',
-    'fitness_function'
-    'wrapper',
-    'tools'
+    'checker',
+    'abc',
+    'solution',
+    'fitness_function',
+    'trainer',
+    'tools',
+    'DEFAULT_STATS_NAMES',
+    'DEFAULT_OBJECTIVE_STATS',
+    'DEFAULT_POP_SIZE',
+    'DEFAULT_MAX_NUM_ITERS',
+    'DEFAULT_CHECKPOINT_ENABLE',
+    'DEFAULT_CHECKPOINT_FREQ',
+    'DEFAULT_CHECKPOINT_FILENAME',
+    'DEFAULT_VERBOSITY',
+    'DEFAULT_INDEX'
 ]

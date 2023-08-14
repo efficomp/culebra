@@ -14,9 +14,10 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="base module" href="base.html" /> 
+    <link rel="next" title="culebra.abc module" href="abc.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -28,7 +29,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="base.html" title="base module"
+          <a href="abc.html" title="culebra.abc module"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">culebra</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to culebra’s documentation!</a></li> 
@@ -37,33 +38,100 @@
 
     <div class="document">
       <div class="documentwrapper">
-        <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="welcome-to-culebra-s-documentation">
-<h1>Welcome to culebra’s documentation!<a class="headerlink" href="#welcome-to-culebra-s-documentation" title="Permalink to this heading">¶</a></h1>
-<p>Culebra is a <a class="reference external" href="https://deap.readthedocs.io/en/master/">DEAP</a>-based
-evolutionary computation library designed to solve feature selection problems.</p>
-<p>It provides several individual representations, such as bitvectors and set
-of feature indices, several fitness functions and several wrapper algorithms.</p>
-<p>Experiments and experiment batches are automatized by means of the
-<a class="reference internal" href="tools/experiment.html#tools.Experiment" title="tools.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and <a class="reference internal" href="tools/batch.html#tools.Batch" title="tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a>
-classes, both in the <a class="reference internal" href="tools.html#module-tools" title="tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> module.</p>
-</section>
-<section id="contents">
-<h1>Contents:<a class="headerlink" href="#contents" title="Permalink to this heading">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="base.html">base module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genotype.html">genotype module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitness_function.html">fitness_function module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="wrapper.html">wrapper module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">tools module</a></li>
+  <section id="module-culebra">
+<span id="welcome-to-culebra-s-documentation"></span><h1>Welcome to culebra’s documentation!<a class="headerlink" href="#module-culebra" title="Permalink to this heading">¶</a></h1>
+<p>Culebra was born as a <a class="reference external" href="https://deap.readthedocs.io/en/master/">DEAP</a>-based
+evolutionary computation library designed to solve feature selection problems.
+However, it has been redesigned to support different kind of problems and also
+different metaheuristics.</p>
+<p>Experiments and experiment batchs are automatized by means of the
+<a class="reference internal" href="tools/experiment.html#culebra.tools.Experiment" title="culebra.tools.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and <a class="reference internal" href="tools/batch.html#culebra.tools.Batch" title="culebra.tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a>
+classes, both in the <a class="reference internal" href="tools.html#module-culebra.tools" title="culebra.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> module. Statistical analysis of
+the <a class="reference internal" href="tools/results.html#culebra.tools.Results" title="culebra.tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> is also provided by the
+<a class="reference internal" href="tools/results_analyzer.html#culebra.tools.ResultsAnalyzer" title="culebra.tools.ResultsAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsAnalyzer</span></code></a> class.</p>
+<p>Culebra is structured in the following modules:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="abc.html#module-culebra.abc" title="culebra.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module, which defines the abstract base classes
+that support culebra</p></li>
+<li><p>The <a class="reference internal" href="checker.html#module-culebra.checker" title="culebra.checker"><code class="xref py py-mod docutils literal notranslate"><span class="pre">checker</span></code></a> module, which provides several checker
+functions used within culebra to prevent wrong arguments to functions
+and methods</p></li>
+<li><p>The <a class="reference internal" href="solution.html#module-culebra.solution" title="culebra.solution"><code class="xref py py-mod docutils literal notranslate"><span class="pre">solution</span></code></a> module, which define solutions and solution
+species for several problems</p></li>
+<li><p>The <a class="reference internal" href="fitness_function.html#module-culebra.fitness_function" title="culebra.fitness_function"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitness_function</span></code></a> module, which provides fitness
+functions for several problems</p></li>
+<li><p>The <a class="reference internal" href="trainer.html#module-culebra.trainer" title="culebra.trainer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">trainer</span></code></a> module, which implement several training
+algorithms</p></li>
+<li><p>The <a class="reference internal" href="tools.html#module-culebra.tools" title="culebra.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> module, which implements several tools to
+handle data and make easier the experimentation and the analysis of the
+obtained results</p></li>
 </ul>
-</div>
+</div></blockquote>
+<section id="attributes">
+<h2>Attributes:<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_STATS_NAMES">
+<span class="sig-name descname"><span class="pre">DEFAULT_STATS_NAMES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">('Iter',</span> <span class="pre">'Pop',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#culebra.DEFAULT_STATS_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for each iteration of the
+<a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_OBJECTIVE_STATS">
+<span class="sig-name descname"><span class="pre">DEFAULT_OBJECTIVE_STATS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">numpy.mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">numpy.max&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">numpy.min&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">numpy.std&gt;}</span></em><a class="headerlink" href="#culebra.DEFAULT_OBJECTIVE_STATS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for each objective within a
+<a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_POP_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_POP_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.DEFAULT_POP_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default population size.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_MAX_NUM_ITERS">
+<span class="sig-name descname"><span class="pre">DEFAULT_MAX_NUM_ITERS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.DEFAULT_MAX_NUM_ITERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default maximum number of iterations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_ENABLE">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_ENABLE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_ENABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default checkpointing enablement for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_FREQ">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_FREQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default checkpointing frequency for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'checkpoint.gz'</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_FILENAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default checkpointing file name for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_VERBOSITY">
+<span class="sig-name descname"><span class="pre">DEFAULT_VERBOSITY</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#culebra.DEFAULT_VERBOSITY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default verbosity for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_INDEX">
+<span class="sig-name descname"><span class="pre">DEFAULT_INDEX</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#culebra.DEFAULT_INDEX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a> index. Only used within a
+distributed approaches.</p>
+</dd></dl>
+
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -71,7 +139,7 @@ classes, both in the <a class="reference internal" href="tools.html#module-tools
 </ul>
 </section>
 <section id="references">
-<h1>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h1>
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
 <div role="list" class="citation-list">
 <div class="citation" id="gonzalez2019" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>Gonzalez2019<span class="fn-bracket">]</span></span>
@@ -89,48 +157,14 @@ selection</em>. <strong>Neurocomputing</strong>, 463:59-76, 2021.
 <a class="reference external" href="https://doi.org/10.1016/j.neucom.2021.08.003">https://doi.org/10.1016/j.neucom.2021.08.003</a>.</p>
 </div>
 </div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
 </section>
 
 
             <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="#">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Welcome to culebra’s documentation!</a></li>
-<li><a class="reference internal" href="#contents">Contents:</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-<li><a class="reference internal" href="#references">References</a></li>
-</ul>
-
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="base.html"
-                          title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base</span></code> module</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-        </div>
       </div>
       <div class="clearer"></div>
     </div>
@@ -144,14 +178,14 @@ selection</em>. <strong>Neurocomputing</strong>, 463:59-76, 2021.
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="base.html" title="base module"
+          <a href="abc.html" title="culebra.abc module"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">culebra</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to culebra’s documentation!</a></li> 
       </ul>
     </div>
     <div class="footer">
-      &copy;2022, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2023, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="_sources/index.rst.txt"

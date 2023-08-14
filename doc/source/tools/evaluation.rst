@@ -18,45 +18,33 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.Evaluation` class
-==================================
+:py:class:`culebra.tools.Evaluation` class
+==========================================
 
-.. autoclass:: tools.Evaluation
+.. autoclass:: culebra.tools.Evaluation
 
 Class attributes
 ----------------
-.. autoattribute:: tools.Evaluation.feature_metric_functions
-.. autoattribute:: tools.Evaluation.stats_functions
-
-Private class attributes
-------------------------
-.. class:: tools.Evaluation._ResultKeys
-
-    Result keys for the evaluation.
-
-    It is empty, since :py:class:`~tools.Evaluation` is an abstract
-    class. Subclasses should override this class to fill it with the
-    appropriate result keys.
-
-.. autoattribute:: tools.Evaluation._script_code
+.. autoattribute:: culebra.tools.Evaluation.feature_metric_functions
+.. autoattribute:: culebra.tools.Evaluation.stats_functions
 
 Properties
 ----------
-.. autoproperty:: tools.Evaluation.wrapper
-.. autoproperty:: tools.Evaluation.test_fitness_function
-.. autoproperty:: tools.Evaluation.results
-
+.. autoproperty:: culebra.tools.Evaluation.trainer
+.. autoproperty:: culebra.tools.Evaluation.test_fitness_function
+.. autoproperty:: culebra.tools.Evaluation.results_base_filename
+.. autoproperty:: culebra.tools.Evaluation.results
 
 Class methods
 -------------
-.. automethod:: tools.Evaluation.from_config
-.. automethod:: tools.Evaluation.generate_script
+.. automethod:: culebra.tools.Evaluation.from_config
+.. automethod:: culebra.tools.Evaluation.generate_script
 
 Methods
 -------
-.. automethod:: tools.Evaluation.reset
-.. automethod:: tools.Evaluation.run
+.. automethod:: culebra.tools.Evaluation.reset
+.. automethod:: culebra.tools.Evaluation.run
 
 Private methods
 ---------------
-.. automethod:: tools.Evaluation._execute
+.. automethod:: culebra.tools.Evaluation._execute

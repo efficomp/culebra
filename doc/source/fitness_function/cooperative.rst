@@ -18,12 +18,12 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`fitness_function.cooperative` module
-===============================================
+:py:class:`culebra.fitness_function.cooperative` module
+=======================================================
 
-.. automodule:: fitness_function.cooperative
+.. automodule:: culebra.fitness_function.cooperative
 
 .. toctree::
     :hidden:
 
-    kappa_num_feats <cooperative/kappa_num_feats_c>
+    KappaNumFeats <cooperative/kappa_num_feats_c>

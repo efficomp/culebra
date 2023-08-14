@@ -16,22 +16,21 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Configuration file to test the :py:class:`tools.Batch` class."""
+"""Configuration file to test the :py:class:`culebra.tools.Batch` class."""
 
-from culebra.base import Dataset
-from culebra.fitness_function.cooperative import KappaNumFeatsC
-from culebra.genotype.feature_selection import (
-    Species as FeatureSelectionSpecies
-)
-from culebra.genotype.feature_selection.individual import (
+from culebra.solution.feature_selection import (
+    Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
 )
-from culebra.genotype.classifier_optimization import (
+from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.wrapper.single_pop import Elitist
-from culebra.wrapper.multi_pop import ParallelCooperative
+from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.trainer.ea import ElitistEA
+from culebra.trainer.ea import ParallelCooperativeEA
+from culebra.tools import Dataset
+
 
 # Dataset
 DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
@@ -71,9 +70,9 @@ featureSelectionSpecies2 = FeatureSelectionSpecies(
     min_feat=dataset.num_feats/2 + 1,
 )
 
-# Parameters for the wrapper
+# Parameters for the trainer
 params = {
-    "individual_classes": [
+    "solution_classes": [
         ClassifierOptimizationIndividual,
         FeatureSelectionIndividual,
         FeatureSelectionIndividual
@@ -84,19 +83,19 @@ params = {
         featureSelectionSpecies2
     ],
     "fitness_function": training_fitness_function,
-    "subpop_wrapper_cls": Elitist,
+    "subpop_trainer_cls": ElitistEA,
     "representation_size": 2,
-    "num_gens": 100,
+    "max_num_iters": 100,
     "pop_sizes": 100,
     # At least one hyperparameter will be mutated
     "gene_ind_mutation_probs": (
-        1.0/classifierOptimizationSpecies.num_hyperparams
+        1.0/classifierOptimizationSpecies.num_params
     ),
     "verbose": True
 }
 
-# Create the wrapper
-wrapper = ParallelCooperative(**params)
+# Create the trainer
+trainer = ParallelCooperativeEA(**params)
 
 # Number of experiments
 num_experiments = 10

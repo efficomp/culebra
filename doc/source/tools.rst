@@ -18,22 +18,37 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:mod:`tools` module
-======================
+:py:mod:`culebbra.tools` module
+===============================
 
-.. automodule:: tools
+.. automodule:: culebra.tools
 
 Attributes
 ----------
-.. attribute:: DEFAULT_RESULTS_BACKUP_FILENAME
-    :annotation: = 'results.gz'
+.. attribute:: DEFAULT_SEP
+    :annotation: = '\\s+'
 
-    Default file name for results backups.
+    Default column separator used within dataset files.
 
-.. attribute:: DEFAULT_RESULTS_EXCEL_FILENAME
-    :annotation: = 'results.xlsx'
+.. attribute:: DEFAULT_ALPHA
+    :annotation: = 0.05
 
-    Default name of the datasheet to store the results.
+    Default significance level for statistical tests.
+
+.. attribute:: DEFAULT_NORMALITY_TEST
+    :annotation: = <function shapiro>
+
+    Default normality test.
+
+.. attribute:: DEFAULT_HOMOSCEDASTICITY_TEST
+    :annotation: = <function bartlett>
+
+    Default homoscedasticity test.
+
+.. attribute:: DEFAULT_P_ADJUST
+    :annotation: = 'fdr_tsbky'
+
+    Default method for adjusting the p-values with the Dunn's test.
 
 .. attribute:: DEFAULT_STATS_FUNCTIONS
     :annotation: = {'Avg': <function mean>, 'Max': <function amax>, 'Min': <function amin>, 'Std': <function std>}
@@ -66,48 +81,29 @@ Attributes
 
     Default name for the configuration file for the evaluation.
 
-.. attribute:: DEFAULT_ALPHA
-    :annotation: = 0.05
-    
-    Default significance level for statistical tests.
-
-.. attribute:: DEFAULT_NORMALITY_TEST
-    :annotation: = <function shapiro>
-    
-    Default normality test.
-
-.. attribute:: DEFAULT_HOMOSCEDASTICITY_TEST
-    :annotation: = <function bartlett>
-    
-    Default homoscedasticity test.
-
-.. attribute:: DEFAULT_P_ADJUST
-    :annotation: = 'fdr_tsbky'
-    
-    Default method for adjusting the p-values with the Dunn's test.
 
 ..
-    .. autodata:: DEFAULT_RESULTS_BACKUP_FILENAME
-    .. autodata:: DEFAULT_RESULTS_EXCEL_FILENAME
+    .. autodata:: DEFAULT_SEP
+    .. autodata:: DEFAULT_ALPHA
+    .. autodata:: DEFAULT_NORMALITY_TEST
+    .. autodata:: DEFAULT_HOMOSCEDASTICITY_TEST
+    .. autodata:: DEFAULT_P_ADJUST
     .. autodata:: DEFAULT_STATS_FUNCTIONS
     .. autodata:: DEFAULT_FEATURE_METRIC_FUNCTIONS
     .. autodata:: DEFAULT_BATCH_STATS_FUNCTIONS
     .. autodata:: DEFAULT_NUM_EXPERIMENTS
     .. autodata:: DEFAULT_SCRIPT_FILENAME
     .. autodata:: DEFAULT_CONFIG_FILENAME
-    .. autodata:: DEFAULT_ALPHA
-    .. autodata:: DEFAULT_NORMALITY_TEST
-    .. autodata:: DEFAULT_HOMOSCEDASTICITY_TEST
-    .. autodata:: DEFAULT_P_ADJUST
 
 
 .. toctree::
     :hidden:
 
-    results <tools/results>
-    evaluation <tools/evaluation>
-    experiment <tools/experiment>
-    batch <tools/batch>
-    results_analyzer <tools/results_analyzer>
-    test_outcome <tools/test_outcome>
-    results_comparison <tools/results_comparison>
+    Dataset <tools/dataset>
+    Results <tools/results>
+    TestOutcome <tools/test_outcome>
+    ResultsComparison <tools/results_comparison>
+    ResultsAnalyzer <tools/results_analyzer>
+    Evaluation <tools/evaluation>
+    Experiment <tools/experiment>
+    Batch <tools/batch>

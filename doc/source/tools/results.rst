@@ -18,21 +18,31 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`tools.Results` class
-===============================
+:py:class:`culebra.tools.Results` class
+=======================================
 
-.. autoclass:: tools.Results
+.. autoclass:: culebra.tools.Results
+
+Class attributes
+----------------
+.. autoattribute:: culebra.tools.Results.default_base_filename
 
 Class methods
 -------------
-.. automethod:: tools.Results.load
-.. automethod:: tools.Results.from_csv_files
+.. automethod:: culebra.tools.Results.load
+.. automethod:: culebra.tools.Results.from_csv_files
+
+Properties
+----------
+.. autoproperty:: culebra.tools.Results.base_filename
+.. autoproperty:: culebra.tools.Results.backup_filename
+.. autoproperty:: culebra.tools.Results.excel_filename
 
 Methods
 -------
-.. automethod:: tools.Results.save
-.. automethod:: tools.Results.to_excel
+.. automethod:: culebra.tools.Results.save
+.. automethod:: culebra.tools.Results.to_excel
 
 Dunder methods
 --------------
-.. automethod:: tools.Results.__setitem__
+.. automethod:: culebra.tools.Results.__setitem__

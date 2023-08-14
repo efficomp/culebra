@@ -18,33 +18,38 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`fitness_function.cooperative.KappaNumFeatsC` class
-=============================================================
+:py:class:`culebra.fitness_function.cooperative.KappaNumFeatsC` class
+=====================================================================
 
-.. autoclass:: fitness_function.cooperative.KappaNumFeatsC
+.. autoclass:: culebra.fitness_function.cooperative.KappaNumFeatsC
 
-More information about this fitness function can be found in [Gonzalez2021]_.
+    More information about this fitness function can be found in
+    [Gonzalez2021]_.
 
 Class attributes
 ----------------
-.. class:: fitness_function.cooperative.KappaNumFeatsC.Fitness
+.. class:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness
 
-    Fitness class to handle the values returned by the
-    :py:meth:`~fitness_function.cooperative.KappaNumFeatsC.evaluate`
-    method within an :py:class:`~base.Individual`.
+    Handles the values returned by the
+    :py:meth:`~culebra.fitness_function.cooperative.KappaNumFeatsC.evaluate`
+    method within a :py:class:`~culebra.abc.Solution`.
 
-    .. autoattribute:: fitness_function.cooperative.KappaNumFeatsC.Fitness.weights
-    .. autoattribute:: fitness_function.cooperative.KappaNumFeatsC.Fitness.names
-    .. autoattribute:: fitness_function.cooperative.KappaNumFeatsC.Fitness.thresholds
+    .. autoattribute:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness.weights
+    .. autoattribute:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness.names
+    .. autoattribute:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness.thresholds
+
+Class methods
+-------------
+.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.set_fitness_thresholds
 
 Properties
 ----------
-.. autoproperty:: fitness_function.cooperative.KappaNumFeatsC.num_obj
-.. autoproperty:: fitness_function.cooperative.KappaNumFeatsC.training_data
-.. autoproperty:: fitness_function.cooperative.KappaNumFeatsC.test_data
-.. autoproperty:: fitness_function.cooperative.KappaNumFeatsC.test_prop
-.. autoproperty:: fitness_function.cooperative.KappaNumFeatsC.classifier
+.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.num_obj
+.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.training_data
+.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.test_data
+.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.test_prop
+.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.classifier
 
 Methods
 -------
-.. automethod:: fitness_function.cooperative.KappaNumFeatsC.evaluate
+.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.evaluate

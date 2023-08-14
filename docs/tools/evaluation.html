@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>tools.Evaluation class &#8212; culebra</title>
+    <title>culebra.tools.Evaluation class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -14,10 +14,11 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tools.Experiment class" href="experiment.html" />
-    <link rel="prev" title="tools.Results class" href="results.html" /> 
+    <link rel="next" title="culebra.tools.Experiment class" href="experiment.html" />
+    <link rel="prev" title="culebra.tools.ResultsAnalyzer class" href="results_analyzer.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,43 +30,44 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="experiment.html" title="tools.Experiment class"
+          <a href="experiment.html" title="culebra.tools.Experiment class"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="results.html" title="tools.Results class"
+          <a href="results_analyzer.html" title="culebra.tools.ResultsAnalyzer class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Evaluation</span></code> class</a></li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebbra.tools</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.Evaluation</span></code> class</a></li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
-        <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="tools-evaluation-class">
-<h1><a class="reference internal" href="#tools.Evaluation" title="tools.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Evaluation</span></code></a> class<a class="headerlink" href="#tools-evaluation-class" title="Permalink to this heading">¶</a></h1>
+  <section id="culebra-tools-evaluation-class">
+<h1><a class="reference internal" href="#culebra.tools.Evaluation" title="culebra.tools.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.Evaluation</span></code></a> class<a class="headerlink" href="#culebra-tools-evaluation-class" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="tools.Evaluation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Wrapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">FitnessFunction</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tools.Evaluation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a wrapper evaluation.</p>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><span class="pre">Trainer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_fitness_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><span class="pre">FitnessFunction</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_base_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.Evaluation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a trainer evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>wrapper</strong> (<a class="reference internal" href="../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>) – The wrapper method</p></li>
-<li><p><strong>test_fitness_function</strong> (<a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>,
+<li><p><strong>trainer</strong> (<a class="reference internal" href="../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>) – The trainer method</p></li>
+<li><p><strong>test_fitness_function</strong> (<a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>,
 optional) – The fitness used to test. If
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the training fitness function will be used.
-Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the training fitness function will be used.
+Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>results_base_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The base filename to save the results.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>wrapper</em> is not a valid wrapper</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>test_fitness_function</em> is not a valid
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If <em>trainer</em> is not a valid trainer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If <em>test_fitness_function</em> is not a valid
 fitness function</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If <em>results_base_filename</em> is not a valid file name</p></li>
 </ul>
 </dd>
 </dl>
@@ -74,87 +76,88 @@ fitness function</p></li>
 <section id="class-attributes">
 <h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tools.Evaluation.feature_metric_functions">
-<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">feature_metric_functions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#tools.Evaluation.feature_metric_functions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.feature_metric_functions">
+<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">feature_metric_functions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#culebra.tools.Evaluation.feature_metric_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metrics calculated for the features in the set of solutions.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tools.Evaluation.stats_functions">
-<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">stats_functions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#tools.Evaluation.stats_functions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.stats_functions">
+<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">stats_functions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#culebra.tools.Evaluation.stats_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Statistics calculated for the solutions.</p>
-</dd></dl>
-
-</section>
-<section id="private-class-attributes">
-<h2>Private class attributes<a class="headerlink" href="#private-class-attributes" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="tools.Evaluation._ResultKeys">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.Evaluation.</span></span><span class="sig-name descname"><span class="pre">_ResultKeys</span></span><a class="headerlink" href="#tools.Evaluation._ResultKeys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Result keys for the evaluation.</p>
-<p>It is empty, since <a class="reference internal" href="#tools.Evaluation" title="tools.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluation</span></code></a> is an abstract
-class. Subclasses should override this class to fill it with the
-appropriate result keys.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="tools.Evaluation._script_code">
-<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">_script_code</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#!/usr/bin/env</span> <span class="pre">python3\n\n#\n#</span> <span class="pre">This</span> <span class="pre">script</span> <span class="pre">relies</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">{config_filename}</span> <span class="pre">script.\n#\n#</span> <span class="pre">This</span> <span class="pre">script</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">simple</span> <span class="pre">python</span> <span class="pre">module</span> <span class="pre">defining</span> <span class="pre">variables</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">passed</span> <span class="pre">to\n#</span> <span class="pre">the</span> <span class="pre">{cls_name}</span> <span class="pre">constructor.</span> <span class="pre">These</span> <span class="pre">variables</span> <span class="pre">MUST</span> <span class="pre">have</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">name</span> <span class="pre">than\n#</span> <span class="pre">the</span> <span class="pre">constructor</span> <span class="pre">parameters.\n#\n\nfrom</span> <span class="pre">culebra.tools</span> <span class="pre">import</span> <span class="pre">{cls_name}\n\n#</span> <span class="pre">Create</span> <span class="pre">the</span> <span class="pre">{var_name}\n{var_name}</span> <span class="pre">=</span> <span class="pre">{cls_name}.from_config({config_filename})\n\n#</span> <span class="pre">Run</span> <span class="pre">the</span> <span class="pre">{var_name}\n{var_name}.run()\n\n#</span> <span class="pre">Print</span> <span class="pre">the</span> <span class="pre">results\nfor</span> <span class="pre">res,</span> <span class="pre">val</span> <span class="pre">in</span> <span class="pre">{var_name}.results.items():\n</span>&#160;&#160;&#160; <span class="pre">print(f&quot;\\n\\n{res}:&quot;)\n</span>&#160;&#160;&#160; <span class="pre">print(val)\n'</span></em><a class="headerlink" href="#tools.Evaluation._script_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parameterized script to evaluate the wrapper.</p>
 </dd></dl>
 
 </section>
 <section id="properties">
 <h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
 <dl class="py property">
-<dt class="sig sig-object py" id="tools.Evaluation.wrapper">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">wrapper</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Wrapper</span></em><a class="headerlink" href="#tools.Evaluation.wrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get and set the wrapper method.</p>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.trainer">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">trainer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><span class="pre">Trainer</span></a></em><a class="headerlink" href="#culebra.tools.Evaluation.trainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the trainer method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Return the wrapper method</p>
+<dd class="field-odd"><p>Return the trainer method</p>
 </dd>
 <dt class="field-even">Setter<span class="colon">:</span></dt>
-<dd class="field-even"><p>Set a new wrapper method</p>
+<dd class="field-even"><p>Set a new trainer method</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../base/wrapper.html#base.Wrapper" title="base.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid wrapper</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If set to a value which is not a valid trainer</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="tools.Evaluation.test_fitness_function">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">test_fitness_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">culebra.base.abc.FitnessFunction</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></em><a class="headerlink" href="#tools.Evaluation.test_fitness_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get and set the test fitness gunction.</p>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.test_fitness_function">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">test_fitness_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><span class="pre">FitnessFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.tools.Evaluation.test_fitness_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the test fitness function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the test fitness function</p>
 </dd>
 <dt class="field-even">Setter<span class="colon">:</span></dt>
-<dd class="field-even"><p>Set a new test fitness function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<dd class="field-even"><p>Set a new test fitness function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 the training fitness function will also be used for testing.</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../base/fitness_function.html#base.FitnessFunction" title="base.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If set to a value which is not a valid fitness
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If set to a value which is not a valid fitness
 funtion</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="tools.Evaluation.results">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.1)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tools.Evaluation.results" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.results_base_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">results_base_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.tools.Evaluation.results_base_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get and set the results base filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the results base filename</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new results base filename. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="results.html#culebra.tools.Results.default_base_filename" title="culebra.tools.Results.default_base_filename"><code class="xref py py-attr docutils literal notranslate"><span class="pre">culebra.tools.Results.default_base_filename</span></code></a> is used.
+Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If set to an invalid file name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.results">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.tools.Evaluation.results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the results provided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="results.html#tools.Results" title="tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="results.html#culebra.tools.Results" title="culebra.tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -163,36 +166,36 @@ funtion</p>
 <section id="class-methods">
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="tools.Evaluation.from_config">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tools.Evaluation" title="tools.evaluation.Evaluation"><span class="pre">Evaluation</span></a></span></span><a class="headerlink" href="#tools.Evaluation.from_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.from_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#culebra.tools.Evaluation" title="culebra.tools.evaluation.Evaluation"><span class="pre">Evaluation</span></a></span></span><a class="headerlink" href="#culebra.tools.Evaluation.from_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new evaluation from a configuration file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#tools.DEFAULT_CONFIG_FILENAME" title="tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a> is used.
-Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_FILENAME" title="culebra.tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a>
+is used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If <em>config_filename</em> is an invalid file path</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – If <em>config_filename</em> is an invalid file path</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="tools.Evaluation.generate_script">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">generate_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Evaluation.generate_script" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.generate_script">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">generate_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Evaluation.generate_script" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a script to run an evaluation.</p>
 <p>The parameters for the experiment are obtained from a
 configuration file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#tools.DEFAULT_CONFIG_FILENAME" title="tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a> is used.
-Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
-<li><p><strong>script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional.) – File path to store the script. If set to
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#tools.DEFAULT_SCRIPT_FILENAME" title="tools.DEFAULT_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SCRIPT_FILENAME</span></code></a> is used.
-Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional) – Path to the configuration file. If set to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_FILENAME" title="culebra.tools.DEFAULT_CONFIG_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_FILENAME</span></code></a>
+is used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional.) – File path to store the script. If set to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SCRIPT_FILENAME</span></code></a>
+is used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -202,14 +205,14 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="tools.Evaluation.reset">
-<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Evaluation.reset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.reset">
+<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Evaluation.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the results.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="tools.Evaluation.run">
-<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Evaluation.run" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation.run">
+<span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Evaluation.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the evaluation and save the results.</p>
 </dd></dl>
 
@@ -217,8 +220,8 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <section id="private-methods">
 <h2>Private methods<a class="headerlink" href="#private-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="tools.Evaluation._execute">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">_execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#tools.Evaluation._execute" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Evaluation._execute">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Evaluation.</span></span><span class="sig-name descname"><span class="pre">_execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Evaluation._execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the evaluation.</p>
 <p>This method must be overriden by subclasses to return a correct
 value.</p>
@@ -230,53 +233,6 @@ value.</p>
 
             <div class="clearer"></div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Evaluation</span></code> class</a><ul>
-<li><a class="reference internal" href="#class-attributes">Class attributes</a></li>
-<li><a class="reference internal" href="#private-class-attributes">Private class attributes</a></li>
-<li><a class="reference internal" href="#properties">Properties</a></li>
-<li><a class="reference internal" href="#class-methods">Class methods</a></li>
-<li><a class="reference internal" href="#methods">Methods</a></li>
-<li><a class="reference internal" href="#private-methods">Private methods</a></li>
-</ul>
-</li>
-</ul>
-
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="results.html"
-                          title="previous chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Results</span></code> class</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="experiment.html"
-                          title="next chapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Experiment</span></code> class</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/tools/evaluation.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-        </div>
       </div>
       <div class="clearer"></div>
     </div>
@@ -290,18 +246,18 @@ value.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="experiment.html" title="tools.Experiment class"
+          <a href="experiment.html" title="culebra.tools.Experiment class"
              >next</a> |</li>
         <li class="right" >
-          <a href="results.html" title="tools.Results class"
+          <a href="results_analyzer.html" title="culebra.tools.ResultsAnalyzer class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">tools.Evaluation</span></code> class</a></li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebbra.tools</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.Evaluation</span></code> class</a></li> 
       </ul>
     </div>
     <div class="footer">
-      &copy;2022, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2023, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="../_sources/tools/evaluation.rst.txt"

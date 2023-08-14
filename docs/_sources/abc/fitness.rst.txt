@@ -1,0 +1,50 @@
+..
+   This file is part of
+
+   Culebra is free software: you can redistribute it and/or modify it under the
+   terms of the GNU General Public License as published by the Free Software
+   Foundation, either version 3 of the License, or (at your option) any later
+   version.
+
+   Culebra is distributed in the hope that it will be useful, but WITHOUT ANY
+   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+   details.
+
+   You should have received a copy of the GNU General Public License along with
+    If not, see <http://www.gnu.org/licenses/>.
+
+   This work was supported by project PGC2018-098813-B-C31 (Spanish "Ministerio
+   de Ciencia, Innovación y Universidades"), and by the European Regional
+   Development Fund (ERDF).
+
+:py:class:`culebra.abc.Fitness` class
+=====================================
+
+.. autoclass:: culebra.abc.Fitness
+
+Class attributes
+----------------
+.. autoattribute:: culebra.abc.Fitness.weights
+.. autoattribute:: culebra.abc.Fitness.names
+.. autoattribute:: culebra.abc.Fitness.thresholds
+
+Properties
+----------
+.. autoproperty:: culebra.abc.Fitness.num_obj
+
+Methods
+-------
+.. automethod:: culebra.abc.Fitness.dominates
+
+Dunder methods
+--------------
+Intended to compare (lexicographically) two individuals according to their
+fitness.
+
+.. automethod:: culebra.abc.Fitness.__eq__
+.. automethod:: culebra.abc.Fitness.__ne__
+.. automethod:: culebra.abc.Fitness.__lt__
+.. automethod:: culebra.abc.Fitness.__gt__
+.. automethod:: culebra.abc.Fitness.__le__
+.. automethod:: culebra.abc.Fitness.__ge__
