@@ -150,10 +150,10 @@ DEFAULT_FEATURE_METRIC_FUNCTIONS = {
 """Default metrics calculated for the features in the set of solutions."""
 
 DEFAULT_BATCH_STATS_FUNCTIONS = {
-    _Labels.avg: DataFrame.mean,
-    _Labels.std: DataFrame.std,
-    _Labels.min: DataFrame.min,
-    _Labels.max: DataFrame.max
+    _Labels.avg: Series.mean,
+    _Labels.std: Series.std,
+    _Labels.min: Series.min,
+    _Labels.max: Series.max
 }
 """Default statistics calculated for the results gathered from all the
 experiments."""
@@ -685,8 +685,8 @@ class Experiment(Evaluation):
         # Column names for the dataframe
         column_names = index + list(self.stats_functions.keys())
 
-        # Create the solutions dataframe
-        df = DataFrame(columns=column_names)
+        # Final dataframe (not created yet)
+        df = None
 
         # For each species
         for species_index, hof in enumerate(self.best_solutions):
@@ -708,7 +708,11 @@ class Experiment(Evaluation):
             for name, func in self.stats_functions.items():
                 species_df[name] = func(fitness, axis=1)
 
-            df = concat([df, species_df], ignore_index=True)
+            df = (
+                species_df if df is None else concat(
+                    [df, species_df], ignore_index=True
+                )
+            )
 
         df.set_index(index, inplace=True)
         df.sort_index(inplace=True)
