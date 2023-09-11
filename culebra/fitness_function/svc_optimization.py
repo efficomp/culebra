@@ -100,7 +100,7 @@ class C(RBFSVCFitnessFunction):
         :return: The fitness of *sol*
         :rtype: :py:class:`tuple` of :py:class:`float`
         """
-        # Return the solution's size
+        # Return the value of C
         return (sol.values.C,)
 
 
