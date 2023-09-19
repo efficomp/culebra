@@ -56,6 +56,12 @@ implementations are provided:
       :py:class:`~culebra.solution.abc.Individual` to provide crossover and
       mutation operators to feature index-based solutions.
 
+Ant Colony Optimization is also supported by the
+:py:class:`~culebra.solution.feature_selection.Ant` class, which inherits from
+:py:class:`~culebra.solution.feature_selection.IntSolution` and
+:py:class:`culebra.solution.abc.Ant` to add all the path handling stuff to
+feature index-based solutions.
+
 Finally, this module also provides the
 :py:class:`~culebra.solution.feature_selection.Metrics` class, which supplies
 several metrics about the selected features finally obtained.
@@ -82,10 +88,13 @@ from culebra.checker import (
     check_int,
     check_float
 )
-from culebra.solution.abc import Individual as BaseIndividual
+from culebra.solution.abc import (
+    Individual as BaseIndividual,
+    Ant as BaseAnt
+)
 
 
-__author__ = 'Jesús González'
+__author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.2.1'
@@ -417,8 +426,8 @@ class Solution(BaseSolution):
         This property must be overriden by subclasses to return a correct
         value.
 
-        :getter: Return the indices of the selected features.
-
+        :getter: Return an ordered sequence with the indices of the selected
+            features.
         :setter: Set the new feature indices. An array-like object of
             feature indices is expected
         :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
@@ -526,7 +535,8 @@ class BinarySolution(Solution):
     def features(self) -> Sequence[int]:
         """Get and set the indices of the features selected by the solution.
 
-        :getter: Return the indices of the selected features
+        :getter: Return an ordered sequence with the indices of the selected
+            features.
         :setter: Set the new feature indices. An array-like object of
             feature indices is expected
         :type: :py:class:`numpy.ndarray`
@@ -629,7 +639,8 @@ class IntSolution(Solution):
     def features(self) -> Sequence[int]:
         """Get and set the indices of the features selected by the solution.
 
-        :getter: Return the indices of the selected features
+        :getter: Return an ordered sequence with the indices of the selected
+            features.
         :setter: Set the new feature indices. An array-like object of
             feature indices is expected
         :type: :py:class:`numpy.ndarray`
@@ -901,6 +912,87 @@ class IntVector(IntSolution, BaseIndividual):
         return (self,)
 
 
+class Ant(IntSolution, BaseAnt):
+    """Ant to apply ACO to Fs problems."""
+
+    def _setup(self) -> None:
+        """Set the default path for ants.
+
+        An empty path is set.
+        """
+        self._features = np.empty(shape=(0,), dtype=int)
+
+    @property
+    def path(self) -> Sequence[int]:
+        """Path traveled by the ant.
+
+        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        """
+        return self._features
+
+    def append(self, feature: int) -> None:
+        """Append a new feature to the ant's path.
+
+        :raises ValueError: If *feature* does not meet the species
+            constraints.
+        :raises ValueError: If *feature* is already in the path.
+        """
+        if feature in self.path:
+            raise ValueError(
+                f"Feature {feature} is already in the path"
+            )
+        self._features = np.append(self.path, (feature))
+
+        if not self.species.is_member(self):
+            raise ValueError(
+                f"Feature {feature} does not meet the species constraints"
+            )
+
+    @property
+    def features(self) -> Sequence[int]:
+        """Get and set the features path traveled by the ant.
+
+        :getter: Return an ordered sequence with the indices of the selected
+            features. Use
+            :py:attr:`~culebra.solution.feature_selection.Ant.path` to get the
+            path in the order the ant traveled it
+        :setter: Set a new path. An array-like object of feature indices is
+            expected
+        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :raises ValueError: If any feature in the path does not meet the
+            species constraints.
+        """
+        # Sort the array
+        the_features = copy(self.path)
+        the_features.sort()
+        return the_features
+
+    @features.setter
+    def features(self, path: Sequence[int]) -> None:
+        """Set a new traveled features path for the ant.
+
+        :param path: The new features path
+        :type path: Array-like object
+        :raises ValueError: If any feature in *path* does not meet the species
+            constraints.
+        :raises ValueError: If any feature in *path* is visited more than once.
+        """
+        # Get the path as an array
+        path = np.asarray(path, dtype=int)
+
+        if len(np.unique(path)) != len(path):
+            raise ValueError(
+                "The path provided contains repeated features"
+            )
+
+        self._features = path
+
+        if not self.species.is_member(self):
+            raise ValueError(
+                "The path provided does not meet the species constraints"
+            )
+
+
 class Metrics(Base):
     """Provide some metrics about the selected features finally obtained.
 
@@ -996,6 +1088,7 @@ __all__ = [
     'IntSolution',
     'BitVector',
     'IntVector',
+    'Ant',
     'Metrics',
     'DEFAULT_PROP',
     'MAX_PROP'

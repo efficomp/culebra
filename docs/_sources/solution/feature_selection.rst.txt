@@ -50,4 +50,5 @@ Attributes
     IntSolution <feature_selection/int_solution>
     BitVector <feature_selection/bit_vector>
     IntVector <feature_selection/int_vector>
+    Ant <feature_selection/ant>
     Metrics <feature_selection/metrics>

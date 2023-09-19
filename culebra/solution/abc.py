@@ -25,17 +25,22 @@ different metaheuristics. Currently, the following are defined:
         crossover and mutation operators to the
         :py:class:`~culebra.abc.Solution` class to support the implementation
         of evolutionary trainers.
+
+      * An :py:class:`~culebra.solution.abc.Ant` class, which adds the path
+        handling stuff to the :py:class:`~culebra.abc.Solution` class to
+        support the implementation of ant colony trainers.
+
 """
 
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Tuple, Sequence
 from abc import abstractmethod
 
 from culebra.abc import Solution
 
 
-__author__ = 'Jesús González'
+__author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.2.1'
@@ -88,7 +93,55 @@ class Individual(Solution):
         )
 
 
+class Ant(Solution):
+    """Abstract base class for ants.
+
+    Add the path handling stuff to the :py:class:`~culebra.abc.Solution` class.
+    """
+
+    @property
+    @abstractmethod
+    def path(self) -> Sequence[object]:
+        """Path traveled by the ant.
+
+        This property must be overriden by subclasses to return a correct
+        value.
+
+        :raises NotImplementedError: if has not been overriden
+        :type: :py:class:`~collections.abc.Sequence`
+        """
+        raise NotImplementedError(
+            "The path property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
+
+    @property
+    def current(self) -> object:
+        """Return the current node in the path.
+
+        :type: :py:class:`object`
+        """
+        return self.path[-1] if len(self.path) > 0 else None
+
+    @abstractmethod
+    def append(self, node: object) -> None:
+        """Append a new node to the ant's path.
+
+        This method must be overriden by subclasses to return a correct
+        value.
+
+        :param node: The node
+        :type node: :py:class:`object`
+        :raises NotImplementedError: if has not been overriden
+        """
+        raise NotImplementedError(
+            "The add method has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
+
+
 # Exported symbols for this module
 __all__ = [
-    'Individual'
+    'Individual',
+    'Ant'
 ]

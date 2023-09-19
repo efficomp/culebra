@@ -1,20 +1,16 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>culebra.tools.TestOutcome class &#8212; culebra</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=601dbdee" />
+    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="culebra.tools.ResultsComparison class" href="results_comparison.html" />
@@ -46,72 +42,72 @@
           <div class="body" role="main">
             
   <section id="culebra-tools-testoutcome-class">
-<h1><a class="reference internal" href="#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.TestOutcome</span></code></a> class<a class="headerlink" href="#culebra-tools-testoutcome-class" title="Permalink to this heading">¶</a></h1>
+<h1><a class="reference internal" href="#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.TestOutcome</span></code></a> class<a class="headerlink" href="#culebra-tools-testoutcome-class" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TestOutcome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.TestOutcome" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TestOutcome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.TestOutcome" title="Link to this definition">¶</a></dt>
 <dd><p>Create new instance of TestOutcome(test, data, column, alpha, batches, pvalue)</p>
 </dd></dl>
 
 <section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h2>
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.test">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">test</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.test" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">test</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.test" title="Link to this definition">¶</a></dt>
 <dd><p>Name of the test.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.data">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.data" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.data" title="Link to this definition">¶</a></dt>
 <dd><p>Key for the dataframe containing the data</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.column">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.column" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.column" title="Link to this definition">¶</a></dt>
 <dd><p>Column key in the dataframe</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.alpha">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.alpha" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.alpha" title="Link to this definition">¶</a></dt>
 <dd><p>Significance level.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.batches">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">batches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.batches" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">batches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.batches" title="Link to this definition">¶</a></dt>
 <dd><p>Labels of all the analyzed batches.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.pvalue">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">pvalue</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.pvalue" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">pvalue</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.pvalue" title="Link to this definition">¶</a></dt>
 <dd><p>p-value(s) returned by the test.</p>
 </dd></dl>
 
 </section>
 <section id="properties">
-<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.success">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">success</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.success" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">success</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.TestOutcome.success" title="Link to this definition">¶</a></dt>
 <dd><p>Return a boolean array showing where the null hypothesis is met.</p>
 </dd></dl>
 
 </section>
 <section id="dunder-methods">
-<h2>Dunder methods<a class="headerlink" href="#dunder-methods" title="Permalink to this heading">¶</a></h2>
+<h2>Dunder methods<a class="headerlink" href="#dunder-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.__str__">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#culebra.tools.TestOutcome.__str__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#culebra.tools.TestOutcome.__str__" title="Link to this definition">¶</a></dt>
 <dd><p>Pretty print of the success and p-values returned by a test.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.TestOutcome.__repr__">
-<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#culebra.tools.TestOutcome.__repr__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TestOutcome.</span></span><span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#culebra.tools.TestOutcome.__repr__" title="Link to this definition">¶</a></dt>
 <dd><p>Print all the input parameters and outputs returned by a test.</p>
 </dd></dl>
 

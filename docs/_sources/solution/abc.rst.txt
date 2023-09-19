@@ -28,3 +28,4 @@
     :hidden:
 
     Individual <abc/individual>
+    Ant <abc/ant>
