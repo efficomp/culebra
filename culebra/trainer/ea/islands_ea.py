@@ -18,8 +18,7 @@
 
 """Island-based evolutionary algorithms.
 
-Implementation of a distributed evolutionary algorithm where the population
-is divided into several islands.
+Implementation of several island-based approaches.
 """
 
 from __future__ import annotations

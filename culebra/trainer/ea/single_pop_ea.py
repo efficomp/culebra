@@ -16,7 +16,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Implementation of the simplest evolutionary algorithm."""
+"""Implementation of single population evolutionary algorithms."""
 
 from __future__ import annotations
 

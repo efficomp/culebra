@@ -16,9 +16,9 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Cooperative co-evolutionary algorithm.
+"""Cooperative co-evolutionary algorithms.
 
-Implementation of a distributed cooperative co-evolutionary algorithm.
+Sequential and parallel cooperative co-evolutionary algorithms.
 """
 
 from __future__ import annotations
