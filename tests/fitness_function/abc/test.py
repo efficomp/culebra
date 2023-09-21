@@ -25,16 +25,19 @@ import unittest
 import pickle
 from copy import copy, deepcopy
 
+from numpy import ndarray
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
-from culebra.abc import Fitness
+from culebra.abc import Fitness, Species
 from culebra.fitness_function import DEFAULT_CLASSIFIER
 from culebra.fitness_function.abc import (
     DatasetFitnessFunction,
     ClassificationFitnessFunction,
+    FeatureSelectionFitnessFunction,
     RBFSVCFitnessFunction
 )
+from culebra.solution.feature_selection import Species as FSSpecies
 from culebra.tools import Dataset
 
 
@@ -67,6 +70,23 @@ class MyDatasetFitnessFunction(DatasetFitnessFunction):
 
 
 class MyClassificationFitnessFunction(ClassificationFitnessFunction):
+    """Dummy implementation of a fitness function."""
+
+    class Fitness(Fitness):
+        """Fitness returned by this fitness function."""
+
+        weights = (1.0, 1.0)
+        names = ("obj1", "obj2")
+        thresholds = (0.001, 0.001)
+
+    def evaluate(self, sol, index, representatives):
+        """Evaluate one solution.
+
+        Dummy implementation of the evaluation function.
+        """
+
+
+class MyFeatureSelectionFitnessFunction(FeatureSelectionFitnessFunction):
     """Dummy implementation of a fitness function."""
 
     class Fitness(Fitness):
@@ -317,6 +337,42 @@ class ClassificationFitnessFunctionTester(unittest.TestCase):
         self.assertTrue(
             (func1.training_data.outputs == func2.training_data.outputs).all()
         )
+
+
+class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
+    """Test FeatureSelectionFitnessFunction."""
+
+    def test_distances_matrix(self):
+        """Test the distances_metrix method."""
+        func = MyFeatureSelectionFitnessFunction(dataset)
+
+        # Try an invalid species. Should fail
+        species = Species()
+        with self.assertRaises(TypeError):
+            func.distances_matrix(species)
+
+        # Try a valid species
+        num_feats = 10
+        min_feat = 2
+        max_feat = 8
+        species = FSSpecies(
+            num_feats=num_feats, min_feat=min_feat, max_feat=max_feat)
+        distances = func.distances_matrix(species)
+        self.assertIsInstance(distances, ndarray)
+        self.assertEqual(distances.shape, (num_feats, num_feats))
+        for row in range(num_feats):
+            for column in range(num_feats):
+                self.assertEqual(
+                    distances[row][column],
+                    0 if row == column else (
+                        float('inf') if (
+                            row < min_feat or
+                            row > max_feat or
+                            column < min_feat or
+                            column > max_feat
+                        ) else 1
+                    )
+                )
 
 
 class RBFSVCFitnessFunctionTester(unittest.TestCase):

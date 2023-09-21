@@ -26,6 +26,7 @@
 .. toctree::
     :hidden:
 
-    Dataset_fitness_function <abc/dataset_fitness_function>
-    Classification_fitness_function <abc/classification_fitness_function>
+    DatasetFitnessFunction <abc/dataset_fitness_function>
+    ClassificationFitnessFunction <abc/classification_fitness_function>
+    FeatureSelectionFitnessFunction <abc/feature_selection_fitness_function>
     RBFSVCFitnessFunction <abc/rbf_svc_fitness_function>

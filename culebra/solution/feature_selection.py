@@ -423,7 +423,7 @@ class Solution(BaseSolution):
     def features(self) -> Sequence[int]:
         """Get and set the indices of the features selected by the solution.
 
-        This property must be overriden by subclasses to return a correct
+        This property must be overridden by subclasses to return a correct
         value.
 
         :getter: Return an ordered sequence with the indices of the selected
@@ -432,7 +432,7 @@ class Solution(BaseSolution):
             feature indices is expected
         :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError("The features property has not been "
                                   "implemented in the "
@@ -443,11 +443,11 @@ class Solution(BaseSolution):
     def features(self, values: Sequence[int]) -> None:
         """Set the indices of the new features selected by the solution.
 
-        This property setter must be overriden by subclasses.
+        This property setter must be overridden by subclasses.
 
         :param values: The new feature indices
         :type values: :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError("The features property seter has not been "
                                   "implemented in the "
@@ -458,10 +458,10 @@ class Solution(BaseSolution):
     def num_feats(self) -> int:
         """Get the number of features selected by the solution.
 
-        This property must be overriden by subclasses to return a correct
+        This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :type: :py:class:`int`
         """
         raise NotImplementedError("The num_feats property has not been "
@@ -473,10 +473,10 @@ class Solution(BaseSolution):
     def min_feat(self) -> int | None:
         """Minimum feature index selected by the solution.
 
-        This property must be overriden by subclasses to return a correct
+        This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :type: :py:class:`int` or :py:data:`None` if no feature has been
             selected
         """
@@ -489,10 +489,10 @@ class Solution(BaseSolution):
     def max_feat(self) -> int | None:
         """Maximum feature index selected by the solution.
 
-        This property must be overriden by subclasses to return a correct
+        This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :type: :py:class:`int` or :py:data:`None` if no feature has been
             selected
         """
@@ -504,9 +504,9 @@ class Solution(BaseSolution):
     def _setup(self) -> None:
         """Init the features of this solution randomly.
 
-        This method must be overriden by subclasses.
+        This method must be overridden by subclasses.
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError("The _setup method has not been "
                                   "implemented in the "

@@ -49,4 +49,5 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.distances_matrix
 .. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.evaluate

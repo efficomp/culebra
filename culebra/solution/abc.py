@@ -60,12 +60,12 @@ class Individual(Solution):
     def crossover(self, other: Individual) -> Tuple[Individual, Individual]:
         """Cross this individual with another one.
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
 
         :param other: The other individual
         :type other: :py:class:`~culebra.solution.abc.Individual`
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :return: The two offspring
         :rtype: :py:class:`tuple`
         """
@@ -78,12 +78,12 @@ class Individual(Solution):
     def mutate(self, indpb: float) -> Tuple[Individual]:
         """Mutate the individual.
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
 
         :param indpb: Independent probability for each gene to be mutated.
         :type indpb: :py:class:`float`
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :return: The mutant
         :rtype: :py:class:`tuple`
         """
@@ -104,10 +104,10 @@ class Ant(Solution):
     def path(self) -> Sequence[object]:
         """Path traveled by the ant.
 
-        This property must be overriden by subclasses to return a correct
+        This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :type: :py:class:`~collections.abc.Sequence`
         """
         raise NotImplementedError(
@@ -127,12 +127,12 @@ class Ant(Solution):
     def append(self, node: object) -> None:
         """Append a new node to the ant's path.
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
 
         :param node: The node
         :type node: :py:class:`object`
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError(
             "The add method has not been implemented in the "

@@ -43,11 +43,11 @@ from sklearn.metrics import cohen_kappa_score
 
 from culebra.abc import Fitness
 from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.abc import ClassificationFitnessFunction
+from culebra.fitness_function.abc import FeatureSelectionFitnessFunction
 from culebra.solution.feature_selection import Solution
 
 
-class NumFeats(ClassificationFitnessFunction):
+class NumFeats(FeatureSelectionFitnessFunction):
     """Dummy single-objective fitness function for testing purposes.
 
     Return the number of selected features by a solution.
@@ -96,7 +96,7 @@ class NumFeats(ClassificationFitnessFunction):
         return (sol.num_feats,)
 
 
-class KappaIndex(ClassificationFitnessFunction):
+class KappaIndex(FeatureSelectionFitnessFunction):
     """Single-objective fitness function for classification problems.
 
     Calculate the Kohen's Kappa index.

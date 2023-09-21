@@ -26,6 +26,9 @@ fitness functions. The following classes are provided:
   * :py:class:`~culebra.fitness_function.abc.ClassificationFitnessFunction`:
     Lets defining classification-related fitness functions
 
+  * :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`:
+    Designed to support feature selection problems
+
   * :py:class:`~culebra.fitness_function.abc.RBFSVCFitnessFunction`:
     Is centered on the hyperparameters optimization of SVM-based classifiers
     with RBF kernels.
@@ -36,12 +39,14 @@ from __future__ import annotations
 from typing import Tuple, Optional
 from copy import deepcopy
 
+from numpy import ndarray, ones
 from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
 
 from culebra.abc import FitnessFunction
 from culebra.checker import check_float, check_instance
 from culebra.fitness_function import DEFAULT_CLASSIFIER
+from culebra.solution.feature_selection import Species
 from culebra.tools import Dataset
 
 
@@ -265,6 +270,49 @@ class ClassificationFitnessFunction(DatasetFitnessFunction):
         )
 
 
+class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
+    """Abstract base fitness function for feature selection problems."""
+
+    def distances_matrix(self, species: Species) -> ndarray:
+        """Get the distances matrix for ACO-based trainers.
+
+        :param species: Species constraining the problem solutions
+        :type species: :py:class:`culebra.solution.feature_selection.Species`
+        :raises TypeError: If *species* is not an instance of
+            :py:class:`culebra.solution.feature_selection.Species`
+        :return: The distances matrix
+        :rtype: :py:class:`~numpy.ndarray`
+        """
+        check_instance(species, "species", cls=Species)
+
+        num_feats = species.num_feats
+
+        # All the features should be considered
+        distances = ones((num_feats, num_feats))
+
+        # Ignore features with an index lower than min_feat
+        min_feat = species.min_feat
+        if min_feat > 0:
+            for feat in range(num_feats):
+                for ignored in range(min_feat):
+                    distances[feat][ignored] = float("inf")
+                    distances[ignored][feat] = float("inf")
+
+        # Ignore features with an index greater than max_feat
+        max_feat = species.max_feat
+        if max_feat < num_feats - 1:
+            for feat in range(num_feats):
+                for ignored in range(max_feat + 1, num_feats):
+                    distances[feat][ignored] = float("inf")
+                    distances[ignored][feat] = float("inf")
+
+        # The distance from a feature to itself is 0
+        for index in range(num_feats):
+            distances[index][index] = 0
+
+        return distances
+
+
 class RBFSVCFitnessFunction(ClassificationFitnessFunction):
     """Abstract base class fitness function for RBF SVC optimization."""
 
@@ -334,5 +382,6 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
 __all__ = [
     'DatasetFitnessFunction',
     'ClassificationFitnessFunction',
+    'FeatureSelectionFitnessFunction',
     'RBFSVCFitnessFunction'
 ]

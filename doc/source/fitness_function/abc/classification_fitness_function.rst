@@ -54,4 +54,5 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.abc.ClassificationFitnessFunction.distances_matrix
 .. automethod:: culebra.fitness_function.abc.ClassificationFitnessFunction.evaluate

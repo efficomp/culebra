@@ -403,6 +403,23 @@ class FitnessFunction(Base):
         return len(self.Fitness.weights)
 
     @abstractmethod
+    def distances_matrix(self, species: Species) -> np.ndarray:
+        """Get the distances matrix for ACO-based trainers.
+
+        This method should be overridden to return the distances matrix for
+        problems ACO approaches can solve.
+
+        :param species: Species constraining the problem solutions
+        :type species: :py:class:`~culebra.abc.Species`
+        :raises NotImplementedError: if has not been overridden
+        :return: The distances matrix
+        :rtype: :py:class:`~numpy.ndarray`
+        """
+        raise NotImplementedError(
+            "The evaluate method has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    @abstractmethod
     def evaluate(
         self,
         sol: Solution,
@@ -414,7 +431,7 @@ class FitnessFunction(Base):
         Parameters *representatives* and *index* are used only for cooperative
         evaluations
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
 
         :param sol: Solution to be evaluated.
@@ -428,7 +445,7 @@ class FitnessFunction(Base):
         :type representatives: A :py:class:`~collections.abc.Sequence`
             containing instances of :py:class:`~culebra.abc.Solution`,
             optional
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         :return: The fitness values for *sol*
         :rtype: :py:class:`tuple` of :py:class:`float`
         """
@@ -448,7 +465,7 @@ class Species(Base):
     def is_member(self, sol: Solution) -> bool:
         """Check if a solution meets the constraints imposed by the species.
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
 
         :param sol: The solution
@@ -1166,7 +1183,7 @@ class Trainer(Base):
 
         If subclasses use any more properties to keep their state, the
         :py:attr:`~culebra.abc.Trainer._state` getter and setter must be
-        overriden to take into account such properties.
+        overridden to take into account such properties.
 
         :getter: Return the state
         :setter: Set a new state
@@ -1303,13 +1320,13 @@ class Trainer(Base):
     def best_solutions(self) -> Sequence[HallOfFame]:
         """Get the best solutions found for each species.
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
 
         :return: A list containing :py:class:`~deap.tools.HallOfFame` of
             solutions. One hof for each species
         :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
-        :raises NotImplementedError: If has not been overriden
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The best_solutions method has not been implemented in the "
@@ -1442,7 +1459,7 @@ class Trainer(Base):
 
         If subclasses add any new property to keep their
         :py:attr:`~culebra.abc.Trainer._state`, this method should be
-        overriden to initialize the full state of the trainer.
+        overridden to initialize the full state of the trainer.
         """
         # Create a new logbook
         self._logbook = Logbook()
@@ -1494,7 +1511,7 @@ class Trainer(Base):
         If subclasses overwrite the :py:meth:`~culebra.abc.Trainer._new_state`
         method to add any new property to keep their
         :py:attr:`~culebra.abc.Trainer._state`, this method should also be
-        overriden to reset the full state of the trainer.
+        overridden to reset the full state of the trainer.
         """
         self._logbook = None
         self._num_evals = None
@@ -1527,7 +1544,7 @@ class Trainer(Base):
 
         If subclasses overwrite the
         :py:meth:`~culebra.abc.Trainer._init_internals` method to add any new
-        internal object, this method should also be overriden to reset all the
+        internal object, this method should also be overridden to reset all the
         internal objects of the trainer.
         """
         self._stats = None
@@ -1576,7 +1593,7 @@ class Trainer(Base):
         """Finish the search process.
 
         This method is called after the search has finished. It can be
-        overriden to perform any treatment of the solutions found.
+        overridden to perform any treatment of the solutions found.
         """
         self._search_finished = True
 
