@@ -68,7 +68,7 @@ class SimpleEA(SinglePopEA):
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
-        Overriden to create and initialize the Deap's
+        Overridden to create and initialize the Deap's
         :py:class:`~deap.base.Toolbox`.
         """
         super()._init_internals()
@@ -90,7 +90,7 @@ class SimpleEA(SinglePopEA):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overriden to reset the Deap's :py:class:`~deap.base.Toolbox`.
+        Overridden to reset the Deap's :py:class:`~deap.base.Toolbox`.
         """
         super()._reset_internals()
         self._toolbox = None
@@ -293,7 +293,7 @@ class ElitistEA(SimpleEA):
     def _state(self) -> Dict[str, Any]:
         """Get and set the state of this trainer.
 
-        Overriden to add the current elite to the trainer's state.
+        Overridden to add the current elite to the trainer's state.
 
         :getter: Return the state
         :setter: Set a new state
@@ -311,7 +311,7 @@ class ElitistEA(SimpleEA):
     def _state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
-        Overriden to add the current elite to the trainer's state.
+        Overridden to add the current elite to the trainer's state.
 
         :param state: The last loaded state
         :type state: :py:class:`dict`
@@ -325,7 +325,7 @@ class ElitistEA(SimpleEA):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overriden to initialize the elite.
+        Overridden to initialize the elite.
         """
         super()._new_state()
 
@@ -338,7 +338,7 @@ class ElitistEA(SimpleEA):
     def _reset_state(self) -> None:
         """Reset the trainer state.
 
-        Overriden to reset the elite.
+        Overridden to reset the elite.
         """
         super()._reset_state()
         self._elite = None
@@ -672,7 +672,7 @@ class NSGA(SimpleEA):
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
-        Overriden to support the NSGA-III reference points.
+        Overridden to support the NSGA-III reference points.
         """
         super()._init_internals()
 
@@ -682,7 +682,7 @@ class NSGA(SimpleEA):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overriden to reset the NSGA-III reference points.
+        Overridden to reset the NSGA-III reference points.
         """
         super()._reset_internals()
         self._nsga3_ref_points = None

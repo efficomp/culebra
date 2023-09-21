@@ -52,4 +52,5 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC.distances_matrix
 .. automethod:: culebra.fitness_function.svc_optimization.KappaC.evaluate

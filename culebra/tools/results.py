@@ -241,7 +241,7 @@ class Results(UserDict, Base):
                 data.to_excel(writer, sheet_name=key)
 
     def __setitem__(self, key: str, data: DataFrame) -> DataFrame:
-        """Overriden to verify the key and value.
+        """Overridden to verify the key and value.
 
         Assure that the key is a :py:class:`str` and the value is a
         :py:class:`~pandas.DataFrame`.

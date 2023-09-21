@@ -1052,7 +1052,7 @@ if the search has finished and also the states of the <a class="reference extern
 and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
 <p>If subclasses use any more properties to keep their state, the
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a> getter and setter must be
-overriden to take into account such properties.</p>
+overridden to take into account such properties.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the state</p>
@@ -1249,7 +1249,7 @@ and
 <a class="reference internal" href="abc/single_pop_ea.html#culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration" title="culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_postprocess_iteration()</span></code></a>
 methods of the
 <a class="reference internal" href="abc/heterogeneous_islands_ea.html#culebra.trainer.ea.abc.HeterogeneousIslandsEA.subpop_trainer_cls" title="culebra.trainer.ea.abc.HeterogeneousIslandsEA.subpop_trainer_cls"><code class="xref py py-attr docutils literal notranslate"><span class="pre">subpop_trainer_cls</span></code></a>
-class are dynamically overriden, in order to allow individuals exchange
+class are dynamically overridden, in order to allow individuals exchange
 between subpopulation trainers, if necessary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -1263,7 +1263,7 @@ not match the number of subpopulations.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._save_state">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_save_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._save_state" title="Link to this definition">¶</a></dt>
 <dd><p>Save the state at a new checkpoint.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._save_state" title="culebra.trainer.abc.SinglePopTrainer._save_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_save_state()</span></code></a> method
 of each subpopulation trainer.</p>
 <dl class="field-list simple">
@@ -1277,7 +1277,7 @@ of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._load_state">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_load_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._load_state" title="Link to this definition">¶</a></dt>
 <dd><p>Load the state of the last checkpoint.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._load_state" title="culebra.trainer.abc.SinglePopTrainer._load_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_load_state()</span></code></a> method
 of each subpopulation trainer.</p>
 <dl class="field-list simple">
@@ -1291,7 +1291,7 @@ of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._new_state">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_new_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._new_state" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a new trainer state.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._new_state" title="culebra.trainer.abc.SinglePopTrainer._new_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_new_state()</span></code></a> method
 of each subpopulation trainer.</p>
 </dd></dl>
@@ -1313,14 +1313,14 @@ initial state is generated with the
 <p>If subclasses overwrite the <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._new_state" title="culebra.abc.Trainer._new_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_new_state()</span></code></a>
 method to add any new property to keep their
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a>, this method should also be
-overriden to reset the full state of the trainer.</p>
+overridden to reset the full state of the trainer.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._init_internals">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_init_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._init_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the trainer internal data structures to start searching.</p>
-<p>Overriden to create the subpopulation trainers and communication
+<p>Overridden to create the subpopulation trainers and communication
 queues.</p>
 </dd></dl>
 
@@ -1328,7 +1328,7 @@ queues.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._reset_internals">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_reset_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._reset_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the internal structures of the trainer.</p>
-<p>Overriden to reset the subpopulation trainers and communication queues.</p>
+<p>Overridden to reset the subpopulation trainers and communication queues.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1364,7 +1364,7 @@ iteration is composed by the following steps:</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._finish_search">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_finish_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._finish_search" title="Link to this definition">¶</a></dt>
 <dd><p>Finish the search process.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._finish_search" title="culebra.trainer.abc.SinglePopTrainer._finish_search"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_finish_search()</span></code></a>
 method of each subpopulation trainer.</p>
 </dd></dl>
@@ -1373,7 +1373,7 @@ method of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._start_iteration">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_start_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._start_iteration" title="Link to this definition">¶</a></dt>
 <dd><p>Start an iteration.</p>
-<p>Prepare the metrics before each iteration is run. Overriden to call
+<p>Prepare the metrics before each iteration is run. Overridden to call
 also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._start_iteration" title="culebra.trainer.abc.SinglePopTrainer._start_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_start_iteration()</span></code></a>
 method of each subpopulation trainer.</p>
@@ -1383,7 +1383,7 @@ method of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._preprocess_iteration">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_preprocess_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._preprocess_iteration" title="Link to this definition">¶</a></dt>
 <dd><p>Preprocess the population of all the subtrainers.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._preprocess_iteration" title="culebra.trainer.abc.SinglePopTrainer._preprocess_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_preprocess_iteration()</span></code></a>
 method of each subpopulation trainer.</p>
 </dd></dl>
@@ -1392,7 +1392,7 @@ method of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._do_iteration">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_do_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._do_iteration" title="Link to this definition">¶</a></dt>
 <dd><p>Implement an iteration of the search process.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._do_iteration" title="culebra.trainer.abc.SinglePopTrainer._do_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_do_iteration()</span></code></a>
 method of each subpopulation trainer.</p>
 </dd></dl>
@@ -1401,7 +1401,7 @@ method of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._postprocess_iteration">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_postprocess_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._postprocess_iteration" title="Link to this definition">¶</a></dt>
 <dd><p>Postprocess the population of all the subtrainers.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._postprocess_iteration" title="culebra.trainer.abc.SinglePopTrainer._postprocess_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_postprocess_iteration()</span></code></a>
 method of each subpopulation trainer.</p>
 </dd></dl>
@@ -1410,7 +1410,7 @@ method of each subpopulation trainer.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._finish_iteration">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_finish_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._finish_iteration" title="Link to this definition">¶</a></dt>
 <dd><p>Finish an iteration.</p>
-<p>Close the metrics after each iteration is run. Overriden to call also
+<p>Close the metrics after each iteration is run. Overridden to call also
 the <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._finish_iteration" title="culebra.trainer.abc.SinglePopTrainer._finish_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_finish_iteration()</span></code></a>
 method of each subpopulation trainer and accumulate the current number
 of evaluations of all the subpopulations.</p>
@@ -1420,7 +1420,7 @@ of evaluations of all the subpopulations.</p>
 <dt class="sig sig-object py" id="culebra.trainer.ea.HeterogeneousSequentialIslandsEA._do_iteration_stats">
 <span class="sig-prename descclassname"><span class="pre">HeterogeneousSequentialIslandsEA.</span></span><span class="sig-name descname"><span class="pre">_do_iteration_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.HeterogeneousSequentialIslandsEA._do_iteration_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Perform the iteration stats.</p>
-<p>Overriden to call also the
+<p>Overridden to call also the
 <a class="reference internal" href="../abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._do_iteration_stats" title="culebra.trainer.abc.SinglePopTrainer._do_iteration_stats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_do_iteration_stats()</span></code></a>
 method of each subpopulation trainer.</p>
 </dd></dl>

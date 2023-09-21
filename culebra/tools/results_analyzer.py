@@ -1065,7 +1065,7 @@ class ResultsAnalyzer(UserDict, Base):
         return multiple_ranking
 
     def __setitem__(self, batch_key: str, batch_results: Results) -> Results:
-        """Overriden to verify the *batch_key* and *batch_results*.
+        """Overridden to verify the *batch_key* and *batch_results*.
 
         Assure that *batch_key* is a :py:class:`str` and *batch_results* is a
         :py:class:`~culebra.tools.Results`.

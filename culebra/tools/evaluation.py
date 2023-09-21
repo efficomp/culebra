@@ -450,7 +450,7 @@ for res, val in {var_name}.results.items():
     def _execute(self) -> None:
         """Execute the evaluation.
 
-        This method must be overriden by subclasses to return a correct
+        This method must be overridden by subclasses to return a correct
         value.
         """
         raise NotImplementedError(
@@ -547,7 +547,7 @@ class Experiment(Evaluation):
     def reset(self) -> None:
         """Reset the results.
 
-        Overriden to reset the best solutions and best representatives.
+        Overridden to reset the best solutions and best representatives.
         """
         super().reset()
         self._best_solutions = None

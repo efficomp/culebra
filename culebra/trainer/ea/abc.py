@@ -728,7 +728,7 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overriden to fill the population with evaluated random individuals.
+        Overridden to fill the population with evaluated random individuals.
         """
         # Call superclass to get an initial empty population
         super()._new_state()
@@ -1199,7 +1199,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
         :py:attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA.subpop_trainer_cls`
-        class are dynamically overriden, in order to allow individuals exchange
+        class are dynamically overridden, in order to allow individuals exchange
         between subpopulation trainers, if necessary
         """
 
@@ -2343,7 +2343,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
         :py:attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA.subpop_trainer_cls`
-        class are dynamically overriden, in order to allow individuals exchange
+        class are dynamically overridden, in order to allow individuals exchange
         between subpopulation trainers, if necessary
 
         :raises RuntimeError: If the length of any properties sequence does
@@ -2753,7 +2753,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
         :py:attr:`~culebra.trainer.ea.abc.CooperativeEA.subpop_trainer_cls`
-        class are dynamically overriden, in order to allow individuals exchange
+        class are dynamically overridden, in order to allow individuals exchange
         between subpopulation trainers, if necessary
 
         :raises RuntimeError: If the length of any properties sequence does

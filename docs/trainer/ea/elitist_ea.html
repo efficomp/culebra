@@ -709,7 +709,7 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 <dt class="sig sig-object py" id="culebra.trainer.ea.ElitistEA._state">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ElitistEA.</span></span><span class="sig-name descname"><span class="pre">_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.ea.ElitistEA._state" title="Link to this definition">¶</a></dt>
 <dd><p>Get and set the state of this trainer.</p>
-<p>Overriden to add the current elite to the trainer’s state.</p>
+<p>Overridden to add the current elite to the trainer’s state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the state</p>
@@ -873,7 +873,7 @@ the current value of
 <dt class="sig sig-object py" id="culebra.trainer.ea.ElitistEA._new_state">
 <span class="sig-prename descclassname"><span class="pre">ElitistEA.</span></span><span class="sig-name descname"><span class="pre">_new_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.ElitistEA._new_state" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a new trainer state.</p>
-<p>Overriden to initialize the elite.</p>
+<p>Overridden to initialize the elite.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -890,14 +890,14 @@ initial state is generated with the
 <dt class="sig sig-object py" id="culebra.trainer.ea.ElitistEA._reset_state">
 <span class="sig-prename descclassname"><span class="pre">ElitistEA.</span></span><span class="sig-name descname"><span class="pre">_reset_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.ElitistEA._reset_state" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the trainer state.</p>
-<p>Overriden to reset the elite.</p>
+<p>Overridden to reset the elite.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.ea.ElitistEA._init_internals">
 <span class="sig-prename descclassname"><span class="pre">ElitistEA.</span></span><span class="sig-name descname"><span class="pre">_init_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.ElitistEA._init_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the trainer internal data structures to start searching.</p>
-<p>Overriden to create and initialize the Deap’s
+<p>Overridden to create and initialize the Deap’s
 <a class="reference external" href="https://deap.readthedocs.io/en/master/api/base.html#deap.base.Toolbox" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Toolbox</span></code></a>.</p>
 </dd></dl>
 
@@ -905,7 +905,7 @@ initial state is generated with the
 <dt class="sig sig-object py" id="culebra.trainer.ea.ElitistEA._reset_internals">
 <span class="sig-prename descclassname"><span class="pre">ElitistEA.</span></span><span class="sig-name descname"><span class="pre">_reset_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.ElitistEA._reset_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the internal structures of the trainer.</p>
-<p>Overriden to reset the Deap’s <a class="reference external" href="https://deap.readthedocs.io/en/master/api/base.html#deap.base.Toolbox" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Toolbox</span></code></a>.</p>
+<p>Overridden to reset the Deap’s <a class="reference external" href="https://deap.readthedocs.io/en/master/api/base.html#deap.base.Toolbox" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Toolbox</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -942,7 +942,7 @@ iteration is composed by the following steps:</p>
 <span class="sig-prename descclassname"><span class="pre">ElitistEA.</span></span><span class="sig-name descname"><span class="pre">_finish_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.ElitistEA._finish_search" title="Link to this definition">¶</a></dt>
 <dd><p>Finish the search process.</p>
 <p>This method is called after the search has finished. It can be
-overriden to perform any treatment of the solutions found.</p>
+overridden to perform any treatment of the solutions found.</p>
 </dd></dl>
 
 <dl class="py method">

@@ -789,7 +789,7 @@ if the search has finished and also the states of the <a class="reference extern
 and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
 <p>If subclasses use any more properties to keep their state, the
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a> getter and setter must be
-overriden to take into account such properties.</p>
+overridden to take into account such properties.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the state</p>
@@ -1016,12 +1016,12 @@ and
 <a class="reference internal" href="single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer._postprocess_iteration" title="culebra.trainer.abc.SinglePopTrainer._postprocess_iteration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_postprocess_iteration()</span></code></a>
 methods of the
 <a class="reference internal" href="multi_pop_trainer.html#culebra.trainer.abc.MultiPopTrainer.subpop_trainer_cls" title="culebra.trainer.abc.MultiPopTrainer.subpop_trainer_cls"><code class="xref py py-attr docutils literal notranslate"><span class="pre">subpop_trainer_cls</span></code></a> class
-are dynamically overriden, in order to allow solutions exchange
+are dynamically overridden, in order to allow solutions exchange
 between subpopulation trainers, if necessary</p>
-<p>This method must be overriden by subclasses.</p>
+<p>This method must be overridden by subclasses.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><strong>NotImplementedError</strong></a> – if has not been overriden</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1052,7 +1052,7 @@ between subpopulation trainers, if necessary</p>
 <dt class="sig sig-object py" id="culebra.trainer.abc.CooperativeTrainer._new_state">
 <span class="sig-prename descclassname"><span class="pre">CooperativeTrainer.</span></span><span class="sig-name descname"><span class="pre">_new_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CooperativeTrainer._new_state" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a new trainer state.</p>
-<p>Overriden to set the logbook to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, since the final
+<p>Overridden to set the logbook to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, since the final
 logbook will be generated from the subpopulation trainers’ logbook,
 once the trainer has finished.</p>
 </dd></dl>
@@ -1074,14 +1074,14 @@ initial state is generated with the
 <p>If subclasses overwrite the <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._new_state" title="culebra.abc.Trainer._new_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_new_state()</span></code></a>
 method to add any new property to keep their
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a>, this method should also be
-overriden to reset the full state of the trainer.</p>
+overridden to reset the full state of the trainer.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.abc.CooperativeTrainer._init_internals">
 <span class="sig-prename descclassname"><span class="pre">CooperativeTrainer.</span></span><span class="sig-name descname"><span class="pre">_init_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CooperativeTrainer._init_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the trainer internal data structures to start searching.</p>
-<p>Overriden to create the subpopulation trainers and communication
+<p>Overridden to create the subpopulation trainers and communication
 queues.</p>
 </dd></dl>
 
@@ -1089,7 +1089,7 @@ queues.</p>
 <dt class="sig sig-object py" id="culebra.trainer.abc.CooperativeTrainer._reset_internals">
 <span class="sig-prename descclassname"><span class="pre">CooperativeTrainer.</span></span><span class="sig-name descname"><span class="pre">_reset_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CooperativeTrainer._reset_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the internal structures of the trainer.</p>
-<p>Overriden to reset the subpopulation trainers and communication queues.</p>
+<p>Overridden to reset the subpopulation trainers and communication queues.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1126,7 +1126,7 @@ iteration is composed by the following steps:</p>
 <span class="sig-prename descclassname"><span class="pre">CooperativeTrainer.</span></span><span class="sig-name descname"><span class="pre">_finish_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CooperativeTrainer._finish_search" title="Link to this definition">¶</a></dt>
 <dd><p>Finish the search process.</p>
 <p>This method is called after the search has finished. It can be
-overriden to perform any treatment of the solutions found.</p>
+overridden to perform any treatment of the solutions found.</p>
 </dd></dl>
 
 <dl class="py method">

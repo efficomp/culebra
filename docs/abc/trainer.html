@@ -416,7 +416,7 @@ if the search has finished and also the states of the <a class="reference extern
 and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
 <p>If subclasses use any more properties to keep their state, the
 <a class="reference internal" href="#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a> getter and setter must be
-overriden to take into account such properties.</p>
+overridden to take into account such properties.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the state</p>
@@ -477,7 +477,7 @@ or <a class="reference external" href="https://docs.python.org/3/library/constan
 <dt class="sig sig-object py" id="culebra.abc.Trainer.best_solutions">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Trainer.</span></span><span class="sig-name descname"><span class="pre">best_solutions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><span class="pre">HallOfFame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.abc.Trainer.best_solutions" title="Link to this definition">¶</a></dt>
 <dd><p>Get the best solutions found for each species.</p>
-<p>This method must be overriden by subclasses to return a correct
+<p>This method must be overridden by subclasses to return a correct
 value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -488,7 +488,7 @@ solutions. One hof for each species</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><strong>NotImplementedError</strong></a> – If has not been overriden</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><strong>NotImplementedError</strong></a> – If has not been overridden</p>
 </dd>
 </dl>
 </dd></dl>
@@ -586,7 +586,7 @@ the current value of
 <dd><p>Generate a new trainer state.</p>
 <p>If subclasses add any new property to keep their
 <a class="reference internal" href="#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a>, this method should be
-overriden to initialize the full state of the trainer.</p>
+overridden to initialize the full state of the trainer.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -606,7 +606,7 @@ initial state is generated with the
 <p>If subclasses overwrite the <a class="reference internal" href="#culebra.abc.Trainer._new_state" title="culebra.abc.Trainer._new_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_new_state()</span></code></a>
 method to add any new property to keep their
 <a class="reference internal" href="#culebra.abc.Trainer._state" title="culebra.abc.Trainer._state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_state</span></code></a>, this method should also be
-overriden to reset the full state of the trainer.</p>
+overridden to reset the full state of the trainer.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -626,7 +626,7 @@ this method.</p>
 <dd><p>Reset the internal structures of the trainer.</p>
 <p>If subclasses overwrite the
 <a class="reference internal" href="#culebra.abc.Trainer._init_internals" title="culebra.abc.Trainer._init_internals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_init_internals()</span></code></a> method to add any new
-internal object, this method should also be overriden to reset all the
+internal object, this method should also be overridden to reset all the
 internal objects of the trainer.</p>
 </dd></dl>
 
@@ -664,7 +664,7 @@ iteration is composed by the following steps:</p>
 <span class="sig-prename descclassname"><span class="pre">Trainer.</span></span><span class="sig-name descname"><span class="pre">_finish_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.abc.Trainer._finish_search" title="Link to this definition">¶</a></dt>
 <dd><p>Finish the search process.</p>
 <p>This method is called after the search has finished. It can be
-overriden to perform any treatment of the solutions found.</p>
+overridden to perform any treatment of the solutions found.</p>
 </dd></dl>
 
 <dl class="py method">

@@ -135,7 +135,7 @@ class MyTrainer(CooperativeTrainer):
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._postprocess_iteration`
         methods of the
         :py:attr:`~trainer.ea.MultiPop.subpop_trainer_cls` class
-        are dynamically overriden, in order to allow individuals exchange
+        are dynamically overridden, in order to allow individuals exchange
         between subpopulation trainers, if necessary
 
         :raises RuntimeError: If the length of any properties sequence does

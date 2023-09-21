@@ -18,21 +18,21 @@
    de Ciencia, Innovación y Universidades"), and by the European Regional
    Development Fund (ERDF).
 
-:py:class:`culebra.fitness_function.abc.RBFSVCFitnessFunction` class
-====================================================================
+:py:class:`culebra.fitness_function.abc.FeatureSelectionFitnessFunction` class
+==============================================================================
 
-.. autoclass:: culebra.fitness_function.abc.RBFSVCFitnessFunction
+.. autoclass:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction
 
 Class attributes
 ----------------
-.. class:: culebra.fitness_function.abc.RBFSVCFitnessFunction.Fitness
+.. class:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.Fitness
 
     Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.abc.RBFSVCFitnessFunction.evaluate`
+    :py:meth:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction.evaluate`
     method within a :py:class:`~culebra.abc.Solution`.
 
     This class must be implemented within all the
-    :py:class:`~culebra.fitness_function.abc.RBFSVCFitnessFunction`
+    :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`
     subclasses, as a subclass of the :py:class:`~culebra.abc.Fitness` class,
     to define its three class attributes (
     :py:attr:`~culebra.abc.Fitness.weights`,
@@ -42,17 +42,17 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.abc.RBFSVCFitnessFunction.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.set_fitness_thresholds
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.abc.RBFSVCFitnessFunction.num_obj
-.. autoproperty:: culebra.fitness_function.abc.RBFSVCFitnessFunction.training_data
-.. autoproperty:: culebra.fitness_function.abc.RBFSVCFitnessFunction.test_data
-.. autoproperty:: culebra.fitness_function.abc.RBFSVCFitnessFunction.test_prop
-.. autoproperty:: culebra.fitness_function.abc.RBFSVCFitnessFunction.classifier
+.. autoproperty:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.num_obj
+.. autoproperty:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.training_data
+.. autoproperty:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.test_data
+.. autoproperty:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.test_prop
+.. autoproperty:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.classifier
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.abc.RBFSVCFitnessFunction.distances_matrix
-.. automethod:: culebra.fitness_function.abc.RBFSVCFitnessFunction.evaluate
+.. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.distances_matrix
+.. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.evaluate

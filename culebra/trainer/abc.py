@@ -419,7 +419,7 @@ class SinglePopTrainer(SingleSpeciesTrainer):
     def _state(self) -> Dict[str, Any]:
         """Get and set the state of this trainer.
 
-        Overriden to add the current population to the trainer's state.
+        Overridden to add the current population to the trainer's state.
 
         :getter: Return the state
         :setter: Set a new state
@@ -437,7 +437,7 @@ class SinglePopTrainer(SingleSpeciesTrainer):
     def _state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
-        Overriden to add the current population to the trainer's state.
+        Overridden to add the current population to the trainer's state.
 
         :param state: The last loaded state
         :type state: :py:class:`dict`
@@ -451,7 +451,7 @@ class SinglePopTrainer(SingleSpeciesTrainer):
     def _reset_state(self) -> None:
         """Reset the trainer state.
 
-        Overriden to reset the initial population.
+        Overridden to reset the initial population.
         """
         super()._reset_state()
         self._pop = None
@@ -459,7 +459,7 @@ class SinglePopTrainer(SingleSpeciesTrainer):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overriden to generate an empty population.
+        Overridden to generate an empty population.
         """
         super()._new_state()
 
@@ -1045,7 +1045,7 @@ class MultiPopTrainer(Trainer):
     def receive_representatives(subpop_trainer) -> None:
         """Receive representative solutions.
 
-        This method must be overriden by subclasses.
+        This method must be overridden by subclasses.
 
         :param subpop_trainer: The subpopulation trainer receiving
             representatives
@@ -1060,7 +1060,7 @@ class MultiPopTrainer(Trainer):
     def send_representatives(subpop_trainer) -> None:
         """Send representatives.
 
-        This method must be overriden by subclasses.
+        This method must be overridden by subclasses.
 
         :param subpop_trainer: The sender subpopulation trainer
         :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
@@ -1087,12 +1087,12 @@ class MultiPopTrainer(Trainer):
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._postprocess_iteration`
         methods of the
         :py:attr:`~culebra.trainer.abc.MultiPopTrainer.subpop_trainer_cls` class
-        are dynamically overriden, in order to allow solutions exchange
+        are dynamically overridden, in order to allow solutions exchange
         between subpopulation trainers, if necessary
 
-        This method must be overriden by subclasses.
+        This method must be overridden by subclasses.
 
-        :raises NotImplementedError: if has not been overriden
+        :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError(
             "The _generate_subpop_trainers method has not been implemented "
@@ -1101,7 +1101,7 @@ class MultiPopTrainer(Trainer):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overriden to set the logbook to :py:data:`None`, since the final
+        Overridden to set the logbook to :py:data:`None`, since the final
         logbook will be generated from the subpopulation trainers' logbook,
         once the trainer has finished.
         """
@@ -1113,7 +1113,7 @@ class MultiPopTrainer(Trainer):
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
-        Overriden to create the subpopulation trainers and communication
+        Overridden to create the subpopulation trainers and communication
         queues.
         """
         super()._init_internals()
@@ -1133,7 +1133,7 @@ class MultiPopTrainer(Trainer):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overriden to reset the subpopulation trainers and communication queues.
+        Overridden to reset the subpopulation trainers and communication queues.
         """
         super()._reset_internals()
         self._subpop_trainers = None
@@ -1185,7 +1185,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._new_state` method
         of each subpopulation trainer.
         """
@@ -1198,7 +1198,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _load_state(self) -> None:
         """Load the state of the last checkpoint.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._load_state` method
         of each subpopulation trainer.
 
@@ -1214,7 +1214,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _save_state(self) -> None:
         """Save the state at a new checkpoint.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._save_state` method
         of each subpopulation trainer.
 
@@ -1230,7 +1230,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _start_iteration(self) -> None:
         """Start an iteration.
 
-        Prepare the metrics before each iteration is run. Overriden to call
+        Prepare the metrics before each iteration is run. Overridden to call
         also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._start_iteration`
         method of each subpopulation trainer.
@@ -1247,7 +1247,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _preprocess_iteration(self) -> None:
         """Preprocess the population of all the subtrainers.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._preprocess_iteration`
         method of each subpopulation trainer.
         """
@@ -1258,7 +1258,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._do_iteration`
         method of each subpopulation trainer.
         """
@@ -1269,7 +1269,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _do_iteration_stats(self) -> None:
         """Perform the iteration stats.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._do_iteration_stats`
         method of each subpopulation trainer.
         """
@@ -1280,7 +1280,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _postprocess_iteration(self) -> None:
         """Postprocess the population of all the subtrainers.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._postprocess_iteration`
         method of each subpopulation trainer.
         """
@@ -1291,7 +1291,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _finish_iteration(self) -> None:
         """Finish an iteration.
 
-        Close the metrics after each iteration is run. Overriden to call also
+        Close the metrics after each iteration is run. Overridden to call also
         the :py:meth:`~culebra.trainer.abc.SinglePopTrainer._finish_iteration`
         method of each subpopulation trainer and accumulate the current number
         of evaluations of all the subpopulations.
@@ -1310,7 +1310,7 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
     def _finish_search(self) -> None:
         """Finish the search process.
 
-        Overriden to call also the
+        Overridden to call also the
         :py:meth:`~culebra.trainer.abc.SinglePopTrainer._finish_search`
         method of each subpopulation trainer.
         """
@@ -1395,7 +1395,7 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overriden to set the overall runtime and number of evaluations to
+        Overridden to set the overall runtime and number of evaluations to
         :py:data:`None`, since their final values will be generated from the
         subpopulation trainers' state, once the trainer has finished.
         """
@@ -1412,7 +1412,7 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
-        Overriden to create a multiprocessing manager and proxies to
+        Overridden to create a multiprocessing manager and proxies to
         communicate with the processes running the subpopulation trainers.
         """
         super()._init_internals()
@@ -1426,7 +1426,7 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overriden to reset the multiprocessing manager and proxies.
+        Overridden to reset the multiprocessing manager and proxies.
         """
         super()._reset_internals()
         self._manager = None

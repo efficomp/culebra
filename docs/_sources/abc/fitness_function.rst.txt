@@ -49,4 +49,5 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.abc.FitnessFunction.distances_matrix
 .. automethod:: culebra.abc.FitnessFunction.evaluate
