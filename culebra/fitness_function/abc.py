@@ -306,9 +306,9 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
                     distances[feat][ignored] = float("inf")
                     distances[ignored][feat] = float("inf")
 
-        # The distance from a feature to itself is 0
-        for index in range(num_feats):
-            distances[index][index] = 0
+        # The distance from a feature to itself is also ignored
+        for index in range(min_feat, max_feat+1):
+            distances[index][index] = float("inf")
 
         return distances
 

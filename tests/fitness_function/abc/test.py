@@ -364,14 +364,13 @@ class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
             for column in range(num_feats):
                 self.assertEqual(
                     distances[row][column],
-                    0 if row == column else (
-                        float('inf') if (
-                            row < min_feat or
-                            row > max_feat or
-                            column < min_feat or
-                            column > max_feat
-                        ) else 1
-                    )
+                    float('inf') if (
+                        row == column or
+                        row < min_feat or
+                        row > max_feat or
+                        column < min_feat or
+                        column > max_feat
+                    ) else 1
                 )
 
 
