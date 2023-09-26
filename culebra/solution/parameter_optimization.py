@@ -82,7 +82,7 @@ VALID_PARAMETER_NAME_CHARS = ascii_letters + digits + '_'
 """Valid characters for paramter names."""
 
 DEFAULT_ETA = 5
-"""Default value for :math:`{\eta}` (eta), which controls the probability
+r"""Default value for :math:`{\eta}` (eta), which controls the probability
 distribution used in SBX and polynomial mutation.
 """
 
