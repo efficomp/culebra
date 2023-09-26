@@ -47,11 +47,12 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.num_obj
+.. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.num_nodes
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.training_data
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.test_data
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.test_prop
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.abc.DatasetFitnessFunction.distances_matrix
+.. automethod:: culebra.fitness_function.abc.DatasetFitnessFunction.distances
 .. automethod:: culebra.fitness_function.abc.DatasetFitnessFunction.evaluate

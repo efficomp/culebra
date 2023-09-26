@@ -45,6 +45,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.num_obj
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.num_nodes
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.training_data
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.test_data
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.test_prop
@@ -52,5 +53,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.svc_optimization.KappaC.distances_matrix
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC.distances
 .. automethod:: culebra.fitness_function.svc_optimization.KappaC.evaluate

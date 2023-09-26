@@ -42,6 +42,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.num_obj
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.num_nodes
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.training_data
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.test_data
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.test_prop
@@ -49,5 +50,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.svc_optimization.C.distances_matrix
+.. automethod:: culebra.fitness_function.svc_optimization.C.distances
 .. automethod:: culebra.fitness_function.svc_optimization.C.evaluate

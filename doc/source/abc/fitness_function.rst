@@ -46,8 +46,9 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.abc.FitnessFunction.num_obj
+.. autoproperty:: culebra.abc.FitnessFunction.num_nodes
 
 Methods
 -------
-.. automethod:: culebra.abc.FitnessFunction.distances_matrix
+.. automethod:: culebra.abc.FitnessFunction.distances
 .. automethod:: culebra.abc.FitnessFunction.evaluate

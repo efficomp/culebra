@@ -42,6 +42,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.num_obj
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.training_data
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.test_data
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaNumFeats.test_prop
@@ -49,5 +50,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.distances_matrix
+.. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.distances
 .. automethod:: culebra.fitness_function.feature_selection.KappaNumFeats.evaluate

@@ -273,14 +273,26 @@ class ClassificationFitnessFunction(DatasetFitnessFunction):
 class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
     """Abstract base fitness function for feature selection problems."""
 
-    def distances_matrix(self, species: Species) -> ndarray:
+    @property
+    def num_nodes(self) -> int:
+        """Return the number of nodes for ACO-base trainers.
+
+        :return: The number of features of training data
+        :rtype: :py:class:`int`
+        """
+        return self.training_data.num_feats
+
+    def distances(self, species: Species) -> ndarray:
         """Get the distances matrix for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`culebra.solution.feature_selection.Species`
         :raises TypeError: If *species* is not an instance of
             :py:class:`culebra.solution.feature_selection.Species`
-        :return: The distances matrix
+        :return: The distances matrix. Arcs between all selectable features
+            have a distance of 1, while arcs involving any non-selectable
+            feature have infinite distances. The diagonal is also filled with
+            infinite distances.
         :rtype: :py:class:`~numpy.ndarray`
         """
         check_instance(species, "species", cls=Species)

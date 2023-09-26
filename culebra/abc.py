@@ -402,22 +402,30 @@ class FitnessFunction(Base):
         """
         return len(self.Fitness.weights)
 
-    @abstractmethod
-    def distances_matrix(self, species: Species) -> np.ndarray:
+    @property
+    def num_nodes(self) -> int | None:
+        """Return the number of nodes for ACO-base trainers.
+
+        Subclasses able to generate a graph for the problem should override
+        this property to return its number of nodes. Otherwise,
+        :py:data:`None` is returned
+
+        :return: :py:data:`None`
+        """
+        return None
+
+    def distances(self, species: Species) -> np.ndarray | None:
         """Get the distances matrix for ACO-based trainers.
 
-        This method should be overridden to return the distances matrix for
-        problems ACO approaches can solve.
+        Subclasses able to generate a graph for the problem should override
+        this property to return its distances matrix. Otherwise,
+        :py:data:`None` is returned
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.abc.Species`
-        :raises NotImplementedError: if has not been overridden
-        :return: The distances matrix
-        :rtype: :py:class:`~numpy.ndarray`
+        :return: :py:data:`None`
         """
-        raise NotImplementedError(
-            "The evaluate method has not been implemented in the "
-            f"{self.__class__.__name__} class")
+        return None
 
     @abstractmethod
     def evaluate(

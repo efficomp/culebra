@@ -101,7 +101,7 @@ class Ant(Solution):
 
     @property
     @abstractmethod
-    def path(self) -> Sequence[object]:
+    def path(self) -> Sequence[int]:
         """Path traveled by the ant.
 
         This property must be overridden by subclasses to return a correct
@@ -116,22 +116,22 @@ class Ant(Solution):
         )
 
     @property
-    def current(self) -> object:
+    def current(self) -> int:
         """Return the current node in the path.
 
-        :type: :py:class:`object`
+        :type: :py:class:`int`
         """
         return self.path[-1] if len(self.path) > 0 else None
 
     @abstractmethod
-    def append(self, node: object) -> None:
+    def append(self, node: int) -> None:
         """Append a new node to the ant's path.
 
         This method must be overridden by subclasses to return a correct
         value.
 
         :param node: The node
-        :type node: :py:class:`object`
+        :type node: :py:class:`int`
         :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError(

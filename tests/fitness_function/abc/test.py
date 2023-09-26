@@ -342,14 +342,19 @@ class ClassificationFitnessFunctionTester(unittest.TestCase):
 class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
     """Test FeatureSelectionFitnessFunction."""
 
-    def test_distances_matrix(self):
-        """Test the distances_metrix method."""
+    def test_num_nodes(self):
+        """Test the num_nodes property."""
+        func = MyFeatureSelectionFitnessFunction(dataset)
+        self.assertEqual(func.num_nodes, dataset.num_feats)
+
+    def test_distances(self):
+        """Test the distances method."""
         func = MyFeatureSelectionFitnessFunction(dataset)
 
         # Try an invalid species. Should fail
         species = Species()
         with self.assertRaises(TypeError):
-            func.distances_matrix(species)
+            func.distances(species)
 
         # Try a valid species
         num_feats = 10
@@ -357,7 +362,7 @@ class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
         max_feat = 8
         species = FSSpecies(
             num_feats=num_feats, min_feat=min_feat, max_feat=max_feat)
-        distances = func.distances_matrix(species)
+        distances = func.distances(species)
         self.assertIsInstance(distances, ndarray)
         self.assertEqual(distances.shape, (num_feats, num_feats))
         for row in range(num_feats):
