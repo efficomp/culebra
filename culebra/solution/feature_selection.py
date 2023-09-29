@@ -172,7 +172,7 @@ class Species(BaseSpecies):
 
     @property
     def min_feat(self) -> int:
-        """Get the minimum feature index for this species..
+        """Get the minimum feature index for this species.
 
         :type: :py:class:`int`
         """
