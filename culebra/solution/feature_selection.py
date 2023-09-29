@@ -126,12 +126,12 @@ class Species(BaseSpecies):
             selection problem
         :type num_feats: :py:class:`int`
         :param min_feat: Smallest feature index considered in this species.
-            Must be in the interval [0, *num_feats*). If omitted, the minumum
+            Must be in the interval [0, *num_feats*). If omitted, the minimum
             value (0) will be used. Defaults to :py:data:`None`
         :type min_feat: :py:class:`int`, optional
         :param min_size: Minimum size of solutions (minimum number of
             features selected by solutions in the species). Must be in the
-            interval [0, *max_feat - min_feat + 1*]. If omitted, the minumum
+            interval [0, *max_feat - min_feat + 1*]. If omitted, the minimum
             value (0) will be used. Defaults to :py:data:`None`
         :type min_size: :py:class:`int`, optional
         :param max_feat: Largest feature index considered in this species.
@@ -299,12 +299,12 @@ class Species(BaseSpecies):
             selection problem
         :type num_feats: :py:class:`int`
         :param min_feat: Smallest feature index considered in this species.
-            Must be in the interval [0, *num_feats*). If omitted, the minumum
+            Must be in the interval [0, *num_feats*). If omitted, the minimum
             value (0) will be used. Defaults to :py:data:`None`
         :type min_feat: :py:class:`int`, optional
         :param min_size: Minimum size of solutions (minimum number of
             features selected by solutions in the species). Must be in the
-            interval [0, *max_feat - min_feat + 1*]. If omitted, the minumum
+            interval [0, *max_feat - min_feat + 1*]. If omitted, the minimum
             value (0) will be used. Defaults to :py:data:`None`
         :type min_size: :py:class:`int`, optional
         :param max_feat: Largest feature index considered in this species.
