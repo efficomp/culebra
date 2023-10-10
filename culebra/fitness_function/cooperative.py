@@ -40,6 +40,7 @@ from culebra.abc import Fitness, Solution
 from .feature_selection import KappaNumFeats
 from .svc_optimization import C
 
+
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2021, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'

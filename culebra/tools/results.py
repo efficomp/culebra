@@ -37,6 +37,7 @@ from culebra.checker import (
 
 from . import DEFAULT_SEP
 
+
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
@@ -44,6 +45,7 @@ __version__ = '0.2.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
+
 
 DEFAULT_RESULTS_BASE_FILENAME = "results"
 """Default base file name for results backups."""
@@ -69,7 +71,6 @@ class Results(UserDict, Base):
             :py:attr:`~culebra.tools.Results.default_base_filename` is used.
             Defaults to :py:data:`None`.
         :type base_filename: :py:class:`~str`, optional
-        :type: :py:class:`~base.FitnessFunction`
         :raises TypeError: If *base_filename* is not a valid file name
         """
         super().__init__()

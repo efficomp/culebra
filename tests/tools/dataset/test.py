@@ -461,7 +461,7 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(id(dataset1._outputs), id(dataset2._outputs))
 
     def test_deepcopy(self):
-        """Test the :py:meth:`~base.Base.__deepcopy__` method."""
+        """Test the :py:meth:`~culebra.abc.Base.__deepcopy__` method."""
         dataset1 = Dataset("numeric_1.dat", output_index=0)
         dataset2 = deepcopy(dataset1)
 
@@ -471,8 +471,8 @@ class DatasetTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~base.Base.__setstate__` and
-        :py:meth:`~base.Base.__reduce__` methods.
+        Test the :py:meth:`~culebra.abc.Base.__setstate__` and
+        :py:meth:`~culebra.abc.Base.__reduce__` methods.
         """
         dataset1 = Dataset("numeric_1.dat", output_index=0)
 

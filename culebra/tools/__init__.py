@@ -42,15 +42,6 @@ many times, culebra provides this features by means of the following classes:
     of a comperison of several batches results
 """
 
-__author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
-__license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
-__maintainer__ = 'Jesús González'
-__email__ = 'jesusgonzalez@ugr.es'
-__status__ = 'Development'
-
-
 from .dataset import Dataset, DEFAULT_SEP
 from .results import Results
 from .results_analyzer import (
@@ -73,6 +64,15 @@ from .evaluation import (
     DEFAULT_SCRIPT_FILENAME,
     DEFAULT_CONFIG_FILENAME
 )
+
+
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.2.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
 
 
 __all__ = [

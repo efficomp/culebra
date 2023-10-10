@@ -57,9 +57,9 @@ class MyFitness(Fitness):
 
 
 class SolutionTester(unittest.TestCase):
-    """Tester for the feature selector generator and breeding functions.
+    """Tester for the feature selector solutions.
 
-    Test extensively the generation and breeding operators of any subclass
+    Test extensively the generation of any subclass
     of :py:class:`~culebra.solution.feature_selection.Solution`
     """
 
@@ -77,7 +77,7 @@ class SolutionTester(unittest.TestCase):
 
     prop_values = DEFAULT_PROP_VALUES
     """List of proportions to generate the different
-    :py:class:`~base.Species`.
+    :py:class:`~culebra.solution.feature_selection.Species`.
 
     A :py:class:`~culebra.solution.feature_selection..Species` species will be
     generated combining each one of these proportions with each one of the

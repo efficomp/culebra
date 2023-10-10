@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import List
 
+
 __author__ = "Jesús González"
 __copyright__ = "Copyright 2023, EFFICOMP"
 __license__ = "GNU GPL-3.0-or-later"

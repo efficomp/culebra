@@ -62,7 +62,7 @@ class MyFitness(Fitness):
 
 
 class IndividualTester(unittest.TestCase):
-    """Tester for the feature selector generator and breeding functions.
+    """Tester for the feature selector individuals.
 
     Test extensively the generation and breeding operators for any subclass
     of :py:class:`~culebra.solution.feature_selection.Solution` and

@@ -31,6 +31,7 @@ __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
+
 DEFAULT_NUM_SUBPOPS = 1
 """Default number of subpopulations."""
 

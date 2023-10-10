@@ -416,7 +416,7 @@ class Solution(BaseSolution):
         :type species:
             :py:class:`~culebra.solution.parameter_optimization.Solution.species_cls`
         :param fitness: The solution's fitness class
-        :type fitness: :py:class:`~base.Fitness`
+        :type fitness: :py:class:`~culebra.abc.Fitness`
         :param values: Initial values
         :type values:
             :py:class:`~collections.abc.Sequence` of :py:class:`int` or
