@@ -139,6 +139,19 @@ class Ant(Solution):
             f"{self.__class__.__name__} class"
         )
 
+    def __str__(self) -> str:
+        """Return the ant as a string."""
+        return str(self.path)
+
+    def __repr__(self) -> str:
+        """Return the ant representation."""
+        cls_name = self.__class__.__name__
+        species_info = str(self.species)
+        fitness_info = self.fitness.values
+
+        return (f"{cls_name}(species={species_info}, fitness={fitness_info}, "
+                f"path={str(self)})")
+
 
 # Exported symbols for this module
 __all__ = [

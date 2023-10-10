@@ -35,6 +35,9 @@ selection problem. Currently:
     fitness functions designed to the cooperative solving of a feature
     selection problem while the classifier hyperparamters are also being
     optimized.
+
+    * The :py:mod:`~culebra.fitness_function.tsp` sub-module offers fitness
+      functions for the traveling salesman problem.
 """
 
 __author__ = 'Jesús González'
@@ -47,7 +50,7 @@ __status__ = 'Development'
 
 
 from .constants import DEFAULT_CLASSIFIER, DEFAULT_THRESHOLD
-from . import abc, feature_selection, svc_optimization, cooperative
+from . import abc, feature_selection, svc_optimization, cooperative, tsp
 
 
 __all__ = [
@@ -55,6 +58,7 @@ __all__ = [
     'feature_selection',
     'svc_optimization',
     'cooperative',
+    'tsp',
     'DEFAULT_CLASSIFIER',
     'DEFAULT_THRESHOLD'
 ]

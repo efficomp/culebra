@@ -106,9 +106,11 @@ class NumFeatsTester(unittest.TestCase):
         """Check if *func1* is a deepcopy of *func2*.
 
         :param func1: The first fitness function
-        :type func1: :py:class:`~base.FitnessFunction`
+        :type func1:
+            :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`
         :param func2: The second fitness function
-        :type func2: :py:class:`~base.FitnessFunction`
+        :type func2:
+            :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`
         """
         # Copies all the levels
         self.assertNotEqual(id(func1), id(func2))

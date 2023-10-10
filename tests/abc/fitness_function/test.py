@@ -23,7 +23,7 @@
 
 import unittest
 
-from culebra.abc import Fitness, FitnessFunction
+from culebra.abc import Species, Fitness, FitnessFunction
 
 
 class MyFitnessFunction(FitnessFunction):
@@ -92,6 +92,19 @@ class FitnessFunctionTester(unittest.TestCase):
         # Fitness function to be tested
         func = MyFitnessFunction()
         self.assertEqual(func.num_obj, len(MyFitnessFunction.Fitness.weights))
+
+    def test_num_nodes(self):
+        """Test the num_nodes property."""
+        # Fitness function to be tested
+        func = MyFitnessFunction()
+        self.assertEqual(func.num_nodes, None)
+
+    def test_heuristics(self):
+        """Test the heuristics method."""
+        # Fitness function to be tested
+
+        func = MyFitnessFunction()
+        self.assertEqual(func.heuristics(Species()), None)
 
 
 if __name__ == '__main__':

@@ -50,6 +50,15 @@ from culebra.solution.feature_selection import Species
 from culebra.tools import Dataset
 
 
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.2.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
+
+
 class DatasetFitnessFunction(FitnessFunction):
     """Abstract base fitness function for dataset evaluation problems."""
 
@@ -275,54 +284,55 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
 
     @property
     def num_nodes(self) -> int:
-        """Return the number of nodes for ACO-base trainers.
+        """Return the problem graph's number of nodes for ACO-based trainers.
 
-        :return: The number of features of training data
+        :return: The problem graph's number of nodes
         :rtype: :py:class:`int`
         """
         return self.training_data.num_feats
 
-    def distances(self, species: Species) -> ndarray:
-        """Get the distances matrix for ACO-based trainers.
+    def heuristics(self, species: Species) -> Tuple[ndarray, ...]:
+        """Get the heuristics matrix for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`culebra.solution.feature_selection.Species`
         :raises TypeError: If *species* is not an instance of
-            :py:class:`culebra.solution.feature_selection.Species`
-        :return: The distances matrix. Arcs between all selectable features
-            have a distance of 1, while arcs involving any non-selectable
-            feature have infinite distances. The diagonal is also filled with
-            infinite distances.
-        :rtype: :py:class:`~numpy.ndarray`
+            :py:class:`~culebra.solution.feature_selection.Species`
+
+        :return: A tuple with only one heuristics matrix. Arcs between
+            selectable features have a heuristic value of 1, while arcs
+            involving any non-selectable feature or arcs from a feature to
+            itself have a heuristic value of 0.
+        :rtype: :py:class:`tuple` of :py:class:`~numpy.ndarray`
         """
         check_instance(species, "species", cls=Species)
 
         num_feats = species.num_feats
 
         # All the features should be considered
-        distances = ones((num_feats, num_feats))
+        heuristics = ones((num_feats, num_feats))
 
         # Ignore features with an index lower than min_feat
         min_feat = species.min_feat
         if min_feat > 0:
             for feat in range(num_feats):
                 for ignored in range(min_feat):
-                    distances[feat][ignored] = float("inf")
-                    distances[ignored][feat] = float("inf")
+                    heuristics[feat][ignored] = 0
+                    heuristics[ignored][feat] = 0
 
         # Ignore features with an index greater than max_feat
         max_feat = species.max_feat
         if max_feat < num_feats - 1:
             for feat in range(num_feats):
                 for ignored in range(max_feat + 1, num_feats):
-                    distances[feat][ignored] = float("inf")
-                    distances[ignored][feat] = float("inf")
+                    heuristics[feat][ignored] = 0
+                    heuristics[ignored][feat] = 0
 
         # The distance from a feature to itself is also ignored
         for index in range(min_feat, max_feat+1):
-            distances[index][index] = float("inf")
+            heuristics[index][index] = 0
 
-        return distances
+        return (heuristics, )
 
 
 class RBFSVCFitnessFunction(ClassificationFitnessFunction):

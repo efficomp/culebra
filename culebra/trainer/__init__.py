@@ -22,19 +22,13 @@ This module is composed by:
 
   * The :py:mod:`~culebra.trainer.abc` module, which defines some abstract base
     classes to implement several types of trainers.
-  * The :py:class:`~culebra.trainer.ea` class, which implements several
+  * The :py:mod:`~culebra.trainer.ea` module, which implements several
     evolutionary algorithms-based trainers.
+  * The :py:mod:`~culebra.trainer.aco` module, which supports several ant
+    colony optimization approaches.
   * The :py:mod:`~culebra.trainer.topology` sub-module, which provides several
     tolpologies for distributed trainers.
 """
-
-__author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
-__license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
-__maintainer__ = 'Jesús González'
-__email__ = 'jesusgonzalez@ugr.es'
-__status__ = 'Development'
 
 
 from .constants import (
@@ -53,11 +47,22 @@ from .constants import (
 from . import topology
 from . import abc
 from . import ea
+from . import aco
+
+
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.2.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
 
 __all__ = [
     'topology',
     'abc',
     'ea',
+    'aco',
     'DEFAULT_NUM_SUBPOPS',
     'DEFAULT_REPRESENTATION_SIZE',
     'DEFAULT_REPRESENTATION_FREQ',

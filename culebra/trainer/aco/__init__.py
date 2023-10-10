@@ -16,39 +16,43 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Solution module.
+"""Implementation of some ant colony optimization trainers.
 
-This module provides several solution and species implementations for several
-problems. Currently, the following sub-modules are available:
+This module is composed by:
 
-  * :py:mod:`~culebra.solution.abc`: Abstract base classes needed for each type
-    of metaheuristic developed as a culebra's :py:class:`~culebra.abc.Trainer`
+  * The :py:mod:`~culebra.trainer.aco.abc` sub-module, where some abstract base
+    classes are defined to support the ACO trainers developed in this module
 
-  * :py:mod:`~culebra.solution.feature_selection`: Solutions and species
-    defined for feature-selection problems.
+  * Some popular single-colony ACO algorithms:
 
-  * :py:mod:`~culebra.solution.parameter_optimization`: Solutions and species
-    targeted for parameter optimization problems.
-
-    * :py:mod:`~culebra.solution.tsp`: Solutions and species for the traveling
-      salesman problem.
+      * The :py:class:`~culebra.trainer.aco.AntSystem` class, which implements
+        the Ant System algorithm
 """
 
-from . import abc, feature_selection, parameter_optimization, tsp
+from . import abc
+
+from .single_pop_aco import (
+    AntSystem,
+    DEFAULT_PHEROMONE_INFLUENCE,
+    DEFAULT_HEURISTIC_INFLUENCE,
+    DEFAULT_PHEROMONE_EVAPORATION_RATE
+)
 
 
-__author__ = 'Jesús González'
+__author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.2.1'
 __maintainer__ = 'Jesús González'
-__email__ = 'jesusgonzalez@ugr.es'
+__email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
 
+# Exported symbols for this module
 __all__ = [
     'abc',
-    'feature_selection',
-    'parameter_optimization',
-    'tsp'
+    'AntSystem',
+    'DEFAULT_PHEROMONE_INFLUENCE',
+    'DEFAULT_HEURISTIC_INFLUENCE',
+    'DEFAULT_PHEROMONE_EVAPORATION_RATE'
 ]

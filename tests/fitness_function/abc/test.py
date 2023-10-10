@@ -347,14 +347,14 @@ class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
         func = MyFeatureSelectionFitnessFunction(dataset)
         self.assertEqual(func.num_nodes, dataset.num_feats)
 
-    def test_distances(self):
-        """Test the distances method."""
+    def test_heuristics(self):
+        """Test the heuristics method."""
         func = MyFeatureSelectionFitnessFunction(dataset)
 
         # Try an invalid species. Should fail
         species = Species()
         with self.assertRaises(TypeError):
-            func.distances(species)
+            func.heuristics(species)
 
         # Try a valid species
         num_feats = 10
@@ -362,14 +362,14 @@ class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
         max_feat = 8
         species = FSSpecies(
             num_feats=num_feats, min_feat=min_feat, max_feat=max_feat)
-        distances = func.distances(species)
-        self.assertIsInstance(distances, ndarray)
-        self.assertEqual(distances.shape, (num_feats, num_feats))
+        (heuristics, ) = func.heuristics(species)
+        self.assertIsInstance(heuristics, ndarray)
+        self.assertEqual(heuristics.shape, (num_feats, num_feats))
         for row in range(num_feats):
             for column in range(num_feats):
                 self.assertEqual(
-                    distances[row][column],
-                    float('inf') if (
+                    heuristics[row][column],
+                    0 if (
                         row == column or
                         row < min_feat or
                         row > max_feat or

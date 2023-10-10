@@ -102,6 +102,7 @@ __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
+
 DEFAULT_PROP = 0.15
 """Default proportion for the generation of a species."""
 
@@ -514,18 +515,16 @@ class Solution(BaseSolution):
 
     def __str__(self) -> str:
         """Return the solution as a string."""
-        sorted_features = copy(self.features)
-
-        return sorted_features.__str__()
+        return str(self.features)
 
     def __repr__(self) -> str:
         """Return the solution representation."""
         cls_name = self.__class__.__name__
-        species_info = self.species.__str__()
+        species_info = str(self.species)
         fitness_info = self.fitness.values
 
         return (f"{cls_name}(species={species_info}, fitness={fitness_info}, "
-                f"features={self.__str__()})")
+                f"features={str(self)})")
 
 
 class BinarySolution(Solution):
@@ -663,8 +662,9 @@ class IntSolution(Solution):
         self._features = np.unique(np.asarray(values, dtype=int))
 
         if not self.species.is_member(self):
-            raise ValueError("The values provided do not meet the species "
-                             "constraints")
+            raise ValueError(
+                "The values provided do not meet the species constraints"
+            )
 
     @property
     def num_feats(self) -> int:

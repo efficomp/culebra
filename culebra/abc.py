@@ -230,6 +230,24 @@ class Fitness(DeapFitness, Base):
         """
         return len(self.weights)
 
+    @property
+    def pheromones_amount(self) -> Tuple[float, ...]:
+        """Return the amount of pheromone to be deposited.
+
+        This property is intended for ACO-based approaches. By default, the
+        reciprocal of an objective fitness will be used for minimization
+        objectives, while the objective's value will be used for maximization
+        problems. Fitness classes pretending a different behavior should
+        override this property.
+
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: :py:class:`tuple` of py:class`float`
+        """
+        return tuple(
+            1/self.values[i] if self.weights[i] < 0 else self.values[i]
+            for i in range(self.num_obj)
+        )
+
     def dominates(self, other: Fitness, which: slice = slice(None)) -> bool:
         """Check if this fitness dominates another one.
 
@@ -404,26 +422,29 @@ class FitnessFunction(Base):
 
     @property
     def num_nodes(self) -> int | None:
-        """Return the number of nodes for ACO-base trainers.
+        """Return the problem graph's number of nodes for ACO-based trainers.
 
-        Subclasses able to generate a graph for the problem should override
-        this property to return its number of nodes. Otherwise,
+        Subclasses solvable with ACO-based approaches should override this
+        property to return the problem graph's number of nodes. Otherwise,
         :py:data:`None` is returned
 
-        :return: :py:data:`None`
+        :return: The problem graph's number of nodes if an ACO-based approach
+            is applicable or :py:data:`None` otherwise
+        :rtype: :py:class:`int`
         """
         return None
 
-    def distances(self, species: Species) -> np.ndarray | None:
-        """Get the distances matrix for ACO-based trainers.
+    def heuristics(self, species: Species) -> Tuple[np.ndarray, ...] | None:
+        """Get the heuristics matrix(ces) for ACO-based trainers.
 
-        Subclasses able to generate a graph for the problem should override
-        this property to return its distances matrix. Otherwise,
-        :py:data:`None` is returned
+        Subclasses solvable with ACO-based approaches should override this
+        method. Otherwise, :py:data:`None` is returned
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.abc.Species`
-        :return: :py:data:`None`
+        :return: A tuple of heuristics matrices if an ACO-based approach is
+            applicable or :py:data:`None` otherwise
+        :rtype: :py:class:`tuple` of :py:class:`~numpy.ndarray`
         """
         return None
 
@@ -559,8 +580,12 @@ class Solution(Base):
         self._fitness = self.fitness.__class__()
 
     def __hash__(self) -> int:
-        """Return the hash number for this solution."""
-        return self.__str__().__hash__()
+        """Return the hash number for this solution.
+
+        The hash number is used for equality comparisons. Currently is
+        implemented as the hash of the solution's string representation.
+        """
+        return hash(str(self))
 
     def dominates(self, other: Solution) -> bool:
         """Dominate operator.
@@ -583,7 +608,7 @@ class Solution(Base):
             :py:data:`False` otherwise
         :rtype: :py:class:`bool`
         """
-        return self.__hash__() == other.__hash__()
+        return hash(self) == hash(other)
 
     def __ne__(self, other: Solution) -> bool:
         """Not equality test.

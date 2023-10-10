@@ -46,15 +46,16 @@ DEFAULT_TIMES = 1000
 
 
 class AntTester(unittest.TestCase):
-    """Test :py:class:`feature_selector.Individual.Ant`."""
+    """Test :py:class:`culebra.solution.feature_selection.Ant`."""
 
     num_feats_values = DEFAULT_NUM_FEATS_VALUES
     """List of different values for the number of features.
 
-    A :py:class:`~base.Species` will be generated combining each one
-    of these values for the number of features with each one of the different
-    proportions to test the feature selector implementation (see
-    :py:meth:`~feature_selector.Species.from_proportion`)."""
+    A :py:class:`~culebra.solution.feature_selection.Species` will be generated
+    combining each one of these values for the number of features with each one
+    of the different proportions to test the feature selector implementation
+    (see
+    :py:meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
 
     times = DEFAULT_TIMES
     """Times each function is executed."""
