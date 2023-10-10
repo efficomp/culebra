@@ -24,6 +24,8 @@
 import unittest
 from numbers import Real
 
+import numpy as np
+
 from culebra.checker import (
     check_bool,
     check_str,
@@ -35,7 +37,8 @@ from culebra.checker import (
     check_func,
     check_func_params,
     check_sequence,
-    check_filename
+    check_filename,
+    check_matrix
 )
 
 
@@ -272,6 +275,142 @@ class TypeCheckerTester(unittest.TestCase):
         # Try a valid extension
         valid_extension = ".ext"
         check_filename(valid_filename, "filename", ext=valid_extension)
+
+    def test_matrix(self):
+        """Test :py:func:`culebra.checker.check_matrix`."""
+        # Try incorrect dtypes. Should fail
+        invalid_dtype_values = [len, max]
+        for dtype in invalid_dtype_values:
+            with self.assertRaises(TypeError):
+                check_matrix(1, name="matrix", dtype=dtype)
+
+        # Try invalid matrix types. Should fail
+        invalid_matrix_dtypes = [
+            len,
+            [
+                [1, 2],
+                [3, max]
+            ]
+        ]
+        for matrix in invalid_matrix_dtypes:
+            with self.assertRaises(TypeError):
+                check_matrix(matrix, name="matrix", dtype='int')
+
+        # Try invalid matrix values. Should fail
+        invalid_matrix_values = [
+            'as',
+            [1, 'a'],
+            [
+                [1, 2],
+                [3, 'a']
+            ]
+        ]
+        for matrix in invalid_matrix_values:
+            with self.assertRaises(ValueError):
+                check_matrix(matrix, name="matrix", dtype='int')
+
+        # Try non homogeneous shapes. Should fail
+        invalid_matrix_shapes = [
+            [
+                [1, 2],
+                [3, 3, 4]
+            ],
+            [
+                [1, 2, 5],
+                [3]
+            ],
+            [
+                [1, 2, 5],
+                [2, 4, 3],
+                [3, 1]
+            ]
+        ]
+        for matrix in invalid_matrix_shapes:
+            with self.assertRaises(ValueError):
+                check_matrix(matrix, name="matrix", dtype='int')
+
+        # Try invalid dimensions. Should fail
+        invalid_matrix_shapes = [
+            [1, 2],
+            [
+                [
+                    [1, 2, 5],
+                    [3, 2, 4]
+                ],
+                [
+                    [1, 2, 5],
+                    [3, 2, 4]
+                ]
+            ]
+        ]
+        for matrix in invalid_matrix_shapes:
+            with self.assertRaises(ValueError):
+                check_matrix(matrix, name="matrix", dtype='int')
+
+        # Try a valid matrix
+        matrix1 = [
+            [0, 2, 3, 0],
+            [4, 0, 6, 1],
+            [7, 8, 0, 2]
+        ]
+        matrix2 = check_matrix(matrix1, name="matrix", dtype='float')
+        self.assertTrue(
+            np.all(
+                np.asarray(matrix1, dtype=float) == matrix2
+            )
+        )
+
+        # Try not square matrices. Should fail
+        invalid_square_matrix_values = [
+            [
+                [1, 2, 3],
+                [3, 3, 4]
+            ],
+            [
+                [1, 2],
+                [3, 0],
+                [4, 5],
+            ]
+        ]
+        for matrix in invalid_square_matrix_values:
+            with self.assertRaises(ValueError):
+                check_matrix(matrix, name="matrix", square=True)
+
+        # Check the limits: gt
+        with self.assertRaises(ValueError):
+            check_matrix(
+                [
+                    [1, 1],
+                    [1, 0]
+                ],
+                name="matrix", gt=0)
+
+        # Check the limits: ge
+        with self.assertRaises(ValueError):
+            check_matrix(
+                [
+                    [1, 0],
+                    [2, -1]
+                ],
+                name="matrix", ge=0)
+
+        # Check the limits: lt
+        with self.assertRaises(ValueError):
+            check_matrix(
+                [
+                    [-1, -1],
+                    [-1, 0]
+                ],
+                name="matrix", lt=0)
+
+        # Check the limits: le
+        with self.assertRaises(ValueError):
+            check_matrix(
+                [
+                    [0, 0],
+                    [2, -1]
+                ],
+                name="matrix", le=0)
 
 
 if __name__ == '__main__':
