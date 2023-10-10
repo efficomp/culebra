@@ -26,9 +26,12 @@ from typing import (
     Callable,
     List,
     Dict,
-    Sequence)
+    Sequence,
+    Type)
 from numbers import Integral, Real
 from os.path import normcase, normpath, splitext
+
+import numpy as np
 
 
 __author__ = "Jesús González"
@@ -139,7 +142,6 @@ def check_limits(
         raise ValueError(
             f"The {name} must be greater than or equal to {ge}: {value}"
         )
-
     if lt is not None and value >= lt:
         raise ValueError(
             f"The {name} must be less than {lt}: {value}"
@@ -419,6 +421,103 @@ def check_filename(
     return value
 
 
+def check_matrix(
+    values: Sequence[Sequence[object], ...],
+    name: str,
+    dtype: Optional[str | Type] = None,
+    square: Optional[bool] = False,
+    gt: Optional[float] = None,
+    ge: Optional[float] = None,
+    lt: Optional[float] = None,
+    le: Optional[float] = None,
+
+) -> str:
+    """Check if the given values define a correct two-dimensional matrix.
+
+    :param values: The values
+    :type value: Two-dimensional array-like object
+    :param name: The value name
+    :type name: :py:class:`str`
+    :param dtype: Data type. If provided, all *values* must be of this type,
+        optional
+    :type dtype: :py:class:`str` or :py:class:`type`
+    :param square: If :py:data:`True` the matris is required to be square.
+        Defaults to :py:data:`False`
+    :type square: :py:class:`bool`
+    :type gt: :py:class:`float`, optional
+    :param gt: Inferior limit. If provided, all *values*  must be greater than
+        *gt*
+    :type gt: :py:class:`float`, optional
+    :param ge: Inferior limit. If provided, all *values*  must be greater than
+        or equal to *ge*
+    :type ge: :py:class:`float`, optional
+    :param lt: Superior limit. If provided, all *values*  must be lower than
+        *lt*
+    :type lt: :py:class:`float`, optional
+    :param le: Superior limit. If provided, all *values*  must be lower than or
+        equal to *le*
+    :type le: :py:class:`float`, optional
+    :return: A valid float
+    :rtype: :py:class:`float`
+    :return: A valid matrix
+    :rtype: :py:class:`numpy.ndarray`
+
+    :raises TypeError: If *values* is not an array-like object
+    :raises ValueError: If *values* do not conform the provided *dtype*
+    :raises ValueError: If *values* has not an homogeneous shape
+    :raises ValueError: If *values* has not two dimensions
+    :raises ValueError: If *values* does not meet any imposed limit
+    """
+    try:
+        dtype = np.dtype(dtype)
+    except TypeError as err:
+        raise TypeError(
+            f"Incorrect dtype for {name}: {dtype}'"
+        ) from err
+
+    # Try to convert values in an array
+    try:
+        the_matrix = np.asarray(values, dtype=dtype)
+    except TypeError as err:
+        raise TypeError(
+            f"The {name} values are not '{dtype.name}'"
+        ) from err
+    except ValueError as err:
+        raise ValueError(
+            f"The {name} must have an homogeneous shape"
+            f" and can only contain '{dtype.name}' values"
+        ) from err
+
+    # Check the shape
+    shape = the_matrix.shape
+
+    if len(shape) != 2:
+        raise ValueError("The {name} must be two-dimensional")
+
+    if square is True and shape[0] != shape[1]:
+        raise ValueError("The {name} must be a square matrix")
+
+    # Check the limits
+    if gt is not None and np.any(the_matrix <= gt):
+        raise ValueError(
+            f"The {name} values must be greater than {gt}"
+        )
+    if ge is not None and np.any(the_matrix < ge):
+        raise ValueError(
+            f"The {name} values must be greater than or equal to {ge}"
+        )
+    if lt is not None and np.any(the_matrix >= lt):
+        raise ValueError(
+            f"The {name} values must be less than {lt}"
+        )
+    if le is not None and np.any(the_matrix > le):
+        raise ValueError(
+            f"The {name} values must be less than or equal to {le}"
+        )
+
+    return the_matrix
+
+
 __all__ = [
     'check_bool',
     'check_str',
@@ -430,5 +529,6 @@ __all__ = [
     'check_func',
     'check_func_params',
     'check_sequence',
-    'check_filename'
+    'check_filename',
+    'check_matrix'
 ]
