@@ -35,5 +35,6 @@ doc/build
 !**/experiment*
 **/run.py
 **/__pycache__
+**/people.sc.fsu.edu
 
 
