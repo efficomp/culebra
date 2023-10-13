@@ -19,12 +19,11 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.AntSystem`."""
+"""Unit test for :py:class:`culebra.trainer.aco.AntSystem`."""
 
 import unittest
 import math
 from itertools import repeat
-
 
 import numpy as np
 
@@ -45,7 +44,7 @@ feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.aco.AntSystem`."""
+    """Test :py:class:`culebra.trainer.aco.AntSystem`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -318,8 +317,8 @@ class TrainerTester(unittest.TestCase):
             np.all(trainer.pheromones[0] == pheromones_value)
         )
 
-    def test_deposit_pheromones(self):
-        """Test the _deposit_pheromones method."""
+    def test_deposit_pop_pheromones(self):
+        """Test the _deposit_pop_pheromones method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -345,10 +344,10 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Generate a new colony
-        trainer._generate_population()
+        trainer._generate_pop()
 
         # Evaporate pheromones
-        trainer._deposit_pheromones()
+        trainer._deposit_pop_pheromones(trainer.pop)
 
         # Get the ant
         ant = trainer.pop[0]

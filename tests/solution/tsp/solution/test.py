@@ -118,8 +118,18 @@ class SolutionTester(unittest.TestCase):
         """Test the __str__ dunder method."""
         num_nodes = 10
         species = Species(num_nodes)
-        sol = MySolution(species, MyFitness, [4, 1, 8])
-        self.assertEqual(str(sol), "[1 8 4]")
+        sol = MySolution(species, MyFitness, [3, 4, 1, 2])
+        self.assertEqual(str(sol), "[1 2 3 4]")
+
+        sol = MySolution(species, MyFitness, [4, 3, 2, 1])
+        self.assertEqual(str(sol), "[1 2 3 4]")
+
+        sol = MySolution(species, MyFitness, [])
+        self.assertEqual(str(sol), "[]")
+
+        sol = MySolution(species, MyFitness, [3])
+        self.assertEqual(str(sol), "[3]")
+
 
 # Tests the classes in this file
 if __name__ == '__main__':

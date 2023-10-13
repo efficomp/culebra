@@ -441,7 +441,7 @@ def check_matrix(
     :param dtype: Data type. If provided, all *values* must be of this type,
         optional
     :type dtype: :py:class:`str` or :py:class:`type`
-    :param square: If :py:data:`True` the matris is required to be square.
+    :param square: If :py:data:`True` the matrix is required to be square.
         Defaults to :py:data:`False`
     :type square: :py:class:`bool`
     :type gt: :py:class:`float`, optional

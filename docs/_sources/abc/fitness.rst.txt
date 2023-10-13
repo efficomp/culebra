@@ -32,6 +32,7 @@ Class attributes
 Properties
 ----------
 .. autoproperty:: culebra.abc.Fitness.num_obj
+.. autoproperty:: culebra.abc.Fitness.pheromones_amount
 
 Methods
 -------
@@ -42,6 +43,7 @@ Dunder methods
 Intended to compare (lexicographically) two individuals according to their
 fitness.
 
+.. automethod:: culebra.abc.Fitness.__hash__
 .. automethod:: culebra.abc.Fitness.__eq__
 .. automethod:: culebra.abc.Fitness.__ne__
 .. automethod:: culebra.abc.Fitness.__lt__

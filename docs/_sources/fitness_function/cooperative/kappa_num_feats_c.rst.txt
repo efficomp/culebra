@@ -53,5 +53,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.distances
+.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.heuristics
 .. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.evaluate

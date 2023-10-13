@@ -45,6 +45,7 @@ Dunder methods
 --------------
 Intended to compare (lexicographically) two Ants according to their fitness.
 
+.. automethod:: culebra.solution.abc.Ant.__hash__
 .. automethod:: culebra.solution.abc.Ant.__eq__
 .. automethod:: culebra.solution.abc.Ant.__ne__
 .. automethod:: culebra.solution.abc.Ant.__lt__

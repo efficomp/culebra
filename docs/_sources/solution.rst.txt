@@ -30,3 +30,4 @@
     abc <solution/abc>
     feature_selection <solution/feature_selection>
     parameter_optimization <solution/parameter_optimization>
+    tsp <solution/tsp>

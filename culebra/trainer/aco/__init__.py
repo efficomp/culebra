@@ -27,12 +27,15 @@ This module is composed by:
 
       * The :py:class:`~culebra.trainer.aco.AntSystem` class, which implements
         the Ant System algorithm
+      * The :py:class:`~culebra.trainer.aco.ElitistAntSystem` class, which
+        implements the Elitist Ant System algorithm
 """
 
 from . import abc
 
 from .single_pop_aco import (
     AntSystem,
+    ElitistAntSystem,
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
     DEFAULT_PHEROMONE_EVAPORATION_RATE
@@ -52,6 +55,7 @@ __status__ = 'Development'
 __all__ = [
     'abc',
     'AntSystem',
+    'ElitistAntSystem',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE'

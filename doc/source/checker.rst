@@ -37,3 +37,4 @@ Functions
 .. autofunction:: culebra.checker.check_func_params
 .. autofunction:: culebra.checker.check_sequence
 .. autofunction:: culebra.checker.check_filename
+.. autofunction:: culebra.checker.check_matrix

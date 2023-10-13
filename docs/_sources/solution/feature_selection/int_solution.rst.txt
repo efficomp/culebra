@@ -49,6 +49,7 @@ Private methods
 
 Dunder methods
 --------------
+.. automethod:: culebra.solution.feature_selection.IntSolution.__hash__
 .. automethod:: culebra.solution.feature_selection.IntSolution.__eq__
 .. automethod:: culebra.solution.feature_selection.IntSolution.__ne__
 .. automethod:: culebra.solution.feature_selection.IntSolution.__lt__

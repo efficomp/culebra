@@ -45,6 +45,7 @@ Dunder methods
 Intended to compare (lexicographically) two individuals according to their
 fitness.
 
+.. automethod:: culebra.solution.abc.Individual.__hash__
 .. automethod:: culebra.solution.abc.Individual.__eq__
 .. automethod:: culebra.solution.abc.Individual.__ne__
 .. automethod:: culebra.solution.abc.Individual.__lt__

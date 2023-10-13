@@ -13,8 +13,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="culebra.trainer.topology module" href="trainer/topology.html" />
-    <link rel="prev" title="culebra.fitness_function.cooperative.KappaNumFeatsC class" href="fitness_function/cooperative/kappa_num_feats_c.html" /> 
+    <link rel="next" title="culebra.trainer.abc module" href="trainer/abc.html" />
+    <link rel="prev" title="culebra.fitness_function.tsp.PathLength class" href="fitness_function/tsp/path_length.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,10 +26,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="trainer/topology.html" title="culebra.trainer.topology module"
+          <a href="trainer/abc.html" title="culebra.trainer.abc module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fitness_function/cooperative/kappa_num_feats_c.html" title="culebra.fitness_function.cooperative.KappaNumFeatsC class"
+          <a href="fitness_function/tsp/path_length.html" title="culebra.fitness_function.tsp.PathLength class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a></li> 
@@ -48,8 +48,10 @@
 <div><ul class="simple">
 <li><p>The <a class="reference internal" href="trainer/abc.html#module-culebra.trainer.abc" title="culebra.trainer.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module, which defines some abstract base
 classes to implement several types of trainers.</p></li>
-<li><p>The <a class="reference internal" href="trainer/ea.html#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-class docutils literal notranslate"><span class="pre">ea</span></code></a> class, which implements several
+<li><p>The <a class="reference internal" href="trainer/ea.html#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ea</span></code></a> module, which implements several
 evolutionary algorithms-based trainers.</p></li>
+<li><p>The <a class="reference internal" href="trainer/aco.html#module-culebra.trainer.aco" title="culebra.trainer.aco"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aco</span></code></a> module, which supports several ant
+colony optimization approaches.</p></li>
 <li><p>The <a class="reference internal" href="trainer/topology.html#module-culebra.trainer.topology" title="culebra.trainer.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">topology</span></code></a> sub-module, which provides several
 tolpologies for distributed trainers.</p></li>
 </ul>
@@ -145,10 +147,10 @@ sending.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="trainer/topology.html" title="culebra.trainer.topology module"
+          <a href="trainer/abc.html" title="culebra.trainer.abc module"
              >next</a> |</li>
         <li class="right" >
-          <a href="fitness_function/cooperative/kappa_num_feats_c.html" title="culebra.fitness_function.cooperative.KappaNumFeatsC class"
+          <a href="fitness_function/tsp/path_length.html" title="culebra.fitness_function.tsp.PathLength class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a></li> 
@@ -163,13 +165,20 @@ sending.</p>
     </div>
 
     <div class="footer">
-        This work was supported by project <i>New Computing Paradigms and
+        This work is supported by projects <i>New Computing Paradigms and
         Heterogeneous Parallel Architectures for High-Performance and Energy
         Efficiency of Classification and Optimization Tasks on Biomedical
         Engineering Applications</i>
         (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
-        with reference PGC2018-098813-B-C31, funded by the Spanish
-        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia,
+        Innovación y Universidades</a></i>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
       <div class="footer">
         <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
         <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>

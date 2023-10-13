@@ -55,7 +55,7 @@ to a species which constraints its parameter values.</p>
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.abc.Species.is_member">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Species.</span></span><span class="sig-name descname"><span class="pre">is_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.abc.Species.is_member" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Species.</span></span><span class="sig-name descname"><span class="pre">is_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.abc.Species.is_member" title="Link to this definition">¶</a></dt>
 <dd><p>Check if a solution meets the constraints imposed by the species.</p>
 <p>This method must be overridden by subclasses to return a correct
 value.</p>
@@ -64,11 +64,11 @@ value.</p>
 <dd class="field-odd"><p><strong>sol</strong> (<a class="reference internal" href="solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a>) – The solution</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the solution belongs to the species, or
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> otherwise</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the solution belongs to the species, or
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> otherwise</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -111,13 +111,20 @@ value.</p>
     </div>
 
     <div class="footer">
-        This work was supported by project <i>New Computing Paradigms and
+        This work is supported by projects <i>New Computing Paradigms and
         Heterogeneous Parallel Architectures for High-Performance and Energy
         Efficiency of Classification and Optimization Tasks on Biomedical
         Engineering Applications</i>
         (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
-        with reference PGC2018-098813-B-C31, funded by the Spanish
-        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia, Innovación y Universidades</a></i>, and by the <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European Regional Development Fund (ERDF)</a>.
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia,
+        Innovación y Universidades</a></i>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
       <div class="footer">
         <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
         <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>

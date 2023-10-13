@@ -101,6 +101,7 @@ Attributes
 .. toctree::
     :hidden:
 
-    topology <trainer/topology>
     abc <trainer/abc>
     ea <trainer/ea>
+    aco <trainer/aco>
+    topology <trainer/topology>

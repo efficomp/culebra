@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>culebra.trainer.aco module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=601dbdee" />
+    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="culebra.trainer.aco.abc module" href="aco/abc.html" />
+    <link rel="prev" title="culebra.trainer.ea.ParallelCooperativeEA class" href="ea/parallel_cooperative_ea.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="aco/abc.html" title="culebra.trainer.aco.abc module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ea/parallel_cooperative_ea.html" title="culebra.trainer.ea.ParallelCooperativeEA class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../trainer.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-culebra.trainer.aco">
+<span id="culebra-trainer-aco-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.aco" title="culebra.trainer.aco"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.aco" title="Link to this heading">¶</a></h1>
+<p>Implementation of some ant colony optimization trainers.</p>
+<p>This module is composed by:</p>
+<blockquote>
+<div><ul>
+<li><p>The <a class="reference internal" href="aco/abc.html#module-culebra.trainer.aco.abc" title="culebra.trainer.aco.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module, where some abstract base
+classes are defined to support the ACO trainers developed in this module</p></li>
+<li><p>Some popular single-colony ACO algorithms:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <a class="reference internal" href="aco/ant_system.html#culebra.trainer.aco.AntSystem" title="culebra.trainer.aco.AntSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">AntSystem</span></code></a> class, which implements
+the Ant System algorithm</p></li>
+<li><p>The <a class="reference internal" href="aco/elitist_ant_system.html#culebra.trainer.aco.ElitistAntSystem" title="culebra.trainer.aco.ElitistAntSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistAntSystem</span></code></a> class, which
+implements the Elitist Ant System algorithm</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE" title="Link to this definition">¶</a></dt>
+<dd><p>Default pheromone influence (<span class="math notranslate nohighlight">\({\alpha}\)</span>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_HEURISTIC_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">2.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE" title="Link to this definition">¶</a></dt>
+<dd><p>Default heuristic influence (<span class="math notranslate nohighlight">\({\beta}\)</span>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE">
+<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_EVAPORATION_RATE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE" title="Link to this definition">¶</a></dt>
+<dd><p>Default pheromone evaporation rate (<span class="math notranslate nohighlight">\({\rho}\)</span>).</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="aco/abc.html" title="culebra.trainer.aco.abc module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ea/parallel_cooperative_ea.html" title="culebra.trainer.ea.ParallelCooperativeEA class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2023, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../_sources/trainer/aco.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work is supported by projects <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia,
+        Innovación y Universidades</a></i>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

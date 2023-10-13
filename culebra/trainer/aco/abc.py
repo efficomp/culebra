@@ -102,7 +102,7 @@ class SinglePopACO(SinglePopTrainer):
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
         :param heuristics: Heuristics matrices. If omitted, the default
-            heuristics provided *fitness_function* are assumed. Defaults to
+            heuristics provided by *fitness_function* are assumed. Defaults to
             :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
             two-dimensional array-like objects, optional
@@ -236,8 +236,8 @@ class SinglePopACO(SinglePopTrainer):
 
         :getter: Return the heuristics matrices
         :setter: Set new heuristics matrices. If set to :py:data:`None`, the
-            default heuristics provided by the
-            :py:attr:`~culebra.trainer.aco.SinglePopACO.fitness_function`
+            default heuristics (provided by the
+            :py:attr:`~culebra.trainer.aco.abc.SinglePopACO.fitness_function`
             property) are assumed.
         :type: :py:class:`~collections.abc.Sequence`
             of :py:class:`~numpy.ndarray`
@@ -255,8 +255,8 @@ class SinglePopACO(SinglePopTrainer):
         """Set new heuristic matrices.
 
         :param values: New heuristics matrices. If set to :py:data:`None`, the
-            default heuristics provided by the
-            :py:attr:`~culebra.trainer.aco.SinglePopACO.fitness_function`
+            default heuristics (provided by the
+            :py:attr:`~culebra.trainer.aco.abc.SinglePopACO.fitness_function`
             property) are assumed.
         :type: :py:class:`~collections.abc.Sequence` of two-dimensional
             array-like objects
@@ -318,11 +318,11 @@ class SinglePopACO(SinglePopTrainer):
         The choice information is generated from both the pheromones and
         the heuristics, modified by other parameters (depending on the ACO
         approach) and is used to obtain the probalility of following the next
-        feasible arc in the node.
+        feasible arc for the node.
 
         If the search process has not begun, :py:data:`None` is returned.
 
-        :type: :py:class:`numpy.ndarray`
+        :type: :py:class:`~numpy.ndarray`
         """
         return self._choice_info
 
@@ -330,7 +330,7 @@ class SinglePopACO(SinglePopTrainer):
     def _state(self) -> Dict[str, Any]:
         """Get and set the state of this trainer.
 
-        Overridden to add the current pheromone matrix.
+        Overridden to add the current pheromones matrices.
 
         :getter: Return the state
         :setter: Set a new state
@@ -348,7 +348,8 @@ class SinglePopACO(SinglePopTrainer):
     def _state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
-        Overridden to add the current pheromone matrix to the trainer's state.
+        Overridden to add the current pheromones matrices to the trainer's
+        state.
 
         :param state: The last loaded state
         :type state: :py:class:`dict`
@@ -362,7 +363,7 @@ class SinglePopACO(SinglePopTrainer):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overridden to generate the initial pheromone matrix.
+        Overridden to generate the initial pheromones matrices.
         """
         super()._new_state()
         heuristics_shape = self._heuristics[0].shape
@@ -377,7 +378,7 @@ class SinglePopACO(SinglePopTrainer):
     def _reset_state(self) -> None:
         """Reset the trainer state.
 
-        Overridden to reset the pheromone matrix.
+        Overridden to reset the pheromones matrices.
         """
         super()._reset_state()
         self._pheromones = None
@@ -389,7 +390,7 @@ class SinglePopACO(SinglePopTrainer):
         The choice information is generated from both the pheromones and
         the heuristics, modified by other parameters (depending on the ACO
         approach) and is used to obtain the probalility of following the next
-        feasible arc in the node.
+        feasible arc for the node.
 
         This method should be overridden by subclasses.
         """
@@ -435,9 +436,8 @@ class SinglePopACO(SinglePopTrainer):
         The feasible neighborhood is composed of those nodes not visited yet
         by the ant and connected to its current node. Each of these nodes has
         a probability of being visited from the current node, which is
-        calculated from the pheromone and distance of each graph's arc.
-
-        This method should be overridden by subclasses.
+        calculated from the
+        :py:attr:`~culebra.trainer.aco.abc.SinglePopACO.choice_info` matrix.
 
         :param ant: The ant
         :type ant: :py:class:`~culebra.solution.abc.Ant`
@@ -445,7 +445,7 @@ class SinglePopACO(SinglePopTrainer):
 
         :return: An array with the probability of following each feasible node
             from the current node of *ant*
-        :rtype: :py:class:`numpy.ndarray`
+        :rtype: :py:class:`~numpy.ndarray`
         """
         if ant.current is None:
             raise ValueError("The ant has not a current node")
@@ -463,8 +463,11 @@ class SinglePopACO(SinglePopTrainer):
 
         The election is based on the feasible neighborhood probabilities of the
         ant's current node. If the ant's path is empty, the
-        :py:meth:`culebra.trainer.aco.SinglePopACO._initial_choice` method is
-        called.
+        :py:meth:`~culebra.trainer.aco.abc.SinglePopACO._initial_choice`
+        method is called.
+
+        :param ant: The ant
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
         :return: The index of the chosen node or :py:data:`None` if there
             isn't any feasible node
         :rtype: :py:class:`int` or :py:data:`None`
@@ -497,7 +500,7 @@ class SinglePopACO(SinglePopTrainer):
 
         return ant
 
-    def _generate_population(self) -> None:
+    def _generate_pop(self) -> None:
         """Fill the population with evaluated ants."""
         # Fill the population
         while len(self.pop) < self.pop_size:
@@ -524,14 +527,18 @@ class SinglePopACO(SinglePopTrainer):
             f"{self.__class__.__name__} class")
 
     def _update_pheromones(self) -> None:
-        """Update the pheromone trails."""
+        """Update the pheromone trails.
+
+        First, the pheromones are evaporated. Then ants deposit pheromones
+        according to their fitness.
+        """
         self._evaporate_pheromones()
         self._deposit_pheromones()
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
         # Create the ant colony and the ants' paths
-        self._generate_population()
+        self._generate_pop()
 
         # Update the pheromones
         self._update_pheromones()

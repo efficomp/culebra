@@ -46,6 +46,7 @@ Private methods
 
 Dunder methods
 --------------
+.. automethod:: culebra.solution.parameter_optimization.Solution.__hash__
 .. automethod:: culebra.solution.parameter_optimization.Solution.__eq__
 .. automethod:: culebra.solution.parameter_optimization.Solution.__ne__
 .. automethod:: culebra.solution.parameter_optimization.Solution.__lt__

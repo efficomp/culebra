@@ -241,7 +241,7 @@ class Fitness(DeapFitness, Base):
         override this property.
 
         :return: The amount of pheromone to be deposited for each objective
-        :rtype: :py:class:`tuple` of py:class`float`
+        :rtype: :py:class:`tuple` of py:class:`float`
         """
         return tuple(
             1/self.values[i] if self.weights[i] < 0 else self.values[i]

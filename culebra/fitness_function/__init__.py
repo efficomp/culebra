@@ -36,8 +36,8 @@ selection problem. Currently:
     selection problem while the classifier hyperparamters are also being
     optimized.
 
-    * The :py:mod:`~culebra.fitness_function.tsp` sub-module offers fitness
-      functions for the traveling salesman problem.
+  * The :py:mod:`~culebra.fitness_function.tsp` sub-module offers fitness
+    functions for the traveling salesman problem.
 """
 
 __author__ = 'Jesús González'

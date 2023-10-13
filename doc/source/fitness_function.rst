@@ -48,3 +48,4 @@ Attributes
     feature_selection <fitness_function/feature_selection>
     svc_optimization <fitness_function/svc_optimization>
     cooperative <fitness_function/cooperative>
+    tsp <fitness_function/tsp>

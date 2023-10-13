@@ -43,6 +43,7 @@ Dunder methods
 Intended to compare (lexicographically) two solutions according to their
 fitness.
 
+.. automethod:: culebra.abc.Solution.__hash__
 .. automethod:: culebra.abc.Solution.__eq__
 .. automethod:: culebra.abc.Solution.__ne__
 .. automethod:: culebra.abc.Solution.__lt__

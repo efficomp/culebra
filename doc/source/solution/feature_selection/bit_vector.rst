@@ -53,6 +53,7 @@ Private methods
 
 Dunder methods
 --------------
+.. automethod:: culebra.solution.feature_selection.BitVector.__hash__
 .. automethod:: culebra.solution.feature_selection.BitVector.__eq__
 .. automethod:: culebra.solution.feature_selection.BitVector.__ne__
 .. automethod:: culebra.solution.feature_selection.BitVector.__lt__

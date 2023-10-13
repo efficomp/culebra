@@ -295,7 +295,7 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
         """Get the heuristics matrix for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
-        :type species: :py:class:`culebra.solution.feature_selection.Species`
+        :type species: :py:class:`~culebra.solution.feature_selection.Species`
         :raises TypeError: If *species* is not an instance of
             :py:class:`~culebra.solution.feature_selection.Species`
 

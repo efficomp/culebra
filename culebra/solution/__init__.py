@@ -30,8 +30,8 @@ problems. Currently, the following sub-modules are available:
   * :py:mod:`~culebra.solution.parameter_optimization`: Solutions and species
     targeted for parameter optimization problems.
 
-    * :py:mod:`~culebra.solution.tsp`: Solutions and species for the traveling
-      salesman problem.
+  * :py:mod:`~culebra.solution.tsp`: Solutions and species for the traveling
+    salesman problem.
 """
 
 from . import abc, feature_selection, parameter_optimization, tsp

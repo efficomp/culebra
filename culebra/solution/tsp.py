@@ -269,10 +269,20 @@ class Solution(BaseSolution):
     def __str__(self) -> str:
         """Return the solution as a string.
 
+        A symmetric tsp problem is assumed. Thus, all rotations of paths
+        [0, 1, ..., *n*] and [*n*, ..., 1, 0] are considered the same path.
+
         The path is rolled to start with the node with smallest index.
         """
-        offset = np.argwhere(self.path == np.min(self.path)).flatten()[0]
-        return str(np.roll(self.path, -offset))
+        if len(self.path) > 0:
+            offset = np.argwhere(self.path == np.min(self.path)).flatten()[0]
+            the_path = np.roll(self.path, -offset)
+            if len(the_path) > 1 and the_path[-1] < the_path[1]:
+                the_path[1:] = np.flip(the_path[1:])
+        else:
+            the_path = self.path
+
+        return str(the_path)
 
     def __repr__(self) -> str:
         """Return the solution representation."""

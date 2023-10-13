@@ -95,7 +95,7 @@ class TrainerTester(unittest.TestCase):
                     valid_initial_pheromones
                 )
 
-        # Try invalid types for initial_pheromone. Should fail
+        # Try invalid types for initial_pheromones. Should fail
         invalid_initial_pheromones = (type, 1)
         for initial_pheromones in invalid_initial_pheromones:
             with self.assertRaises(TypeError):
@@ -374,7 +374,7 @@ class TrainerTester(unittest.TestCase):
         # Reset the state
         trainer._reset_state()
 
-        # Check the elite
+        # Check the pheromones
         self.assertEqual(trainer.pheromones, None)
 
     def test_calculate_choice_info(self):
@@ -532,8 +532,8 @@ class TrainerTester(unittest.TestCase):
             ant = trainer._generate_ant()
             self.assertEqual(len(ant.path), len(feasible_nodes))
 
-    def test_generate_popupation(self):
-        """Test the _generate_population_method."""
+    def test_generate_pop(self):
+        """Test the _generate_pop_method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -550,7 +550,7 @@ class TrainerTester(unittest.TestCase):
         # Generate the colony
         trainer._init_search()
         trainer._start_iteration()
-        trainer._generate_population()
+        trainer._generate_pop()
 
         # Check the colony
         self.assertEqual(len(trainer.pop), trainer.pop_size)

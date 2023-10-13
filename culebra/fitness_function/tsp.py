@@ -28,6 +28,7 @@ from __future__ import annotations
 from typing import Tuple, Optional
 from collections.abc import Sequence
 from copy import deepcopy
+import random
 
 import numpy as np
 
@@ -155,7 +156,8 @@ class PathLength(FitnessFunction):
     def distances(self) -> Sequence[Sequence[float, ...]]:
         """Return the distances matrix.
 
-        :rtype: :py:class:`Sequence[Sequence[int, ...]]`
+        :rtype: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~collections.abc.Sequence` of :py:class:`int`
         """
         return self._distances
 
@@ -168,11 +170,11 @@ class PathLength(FitnessFunction):
         """
         return self.distances.shape[0]
 
-    def heuristics(self, species: Species) -> Tuple[np.ndarray,]:
+    def heuristics(self, species: Species) -> Tuple[np.ndarray]:
         """Get the heuristics matrix for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
-        :type species: :py:class:`culebra.solution.tsp.Species`
+        :type species: :py:class:`~culebra.solution.tsp.Species`
         :raises TypeError: If *species* is not an instance of
             :py:class:`~culebra.solution.tsp.Species`
 
@@ -201,6 +203,47 @@ class PathLength(FitnessFunction):
 
         return (heuristics, )
 
+    def greedy_solution(self, species: Species) -> Solution:
+        """Return a greddy solution for the problem.
+
+        :param species: Species constraining the problem solutions
+        :type species: :py:class:`~culebra.solution.tsp.Species`
+        :raises TypeError: If *species* is not an instance of
+            :py:class:`~culebra.solution.tsp.Species`
+
+        :return: The greddy solution
+        :rtype: :py:class:`~culebra.solution.tsp.Solution`
+        """
+        # Maximum solution's length
+        max_len = species.num_nodes - len(species.banned_nodes)
+
+        # Current path
+        current_path = []
+
+        # If the path can be constructed ...
+        if max_len > 0:
+            heuristics = self.heuristics(species)[0]
+
+            # Start with a feasible node
+            current_node = random.randint(0, species.num_nodes-1)
+            while (current_node in species.banned_nodes):
+                current_node = random.randint(0, species.num_nodes-1)
+            current_path.append(current_node)
+
+            # Complete the greedy path
+            while len(current_path) < max_len:
+                current_heuristics = heuristics[current_node]
+                current_heuristics[current_path] = 0
+                current_node = np.argwhere(
+                    current_heuristics == np.max(current_heuristics)
+                ).flatten()[0]
+                current_path.append(current_node)
+
+        # Construct the solution form the greedy path
+        sol = Solution(species, self.Fitness, current_path)
+        sol.fitness.values = self.evaluate(sol)
+        return sol
+
     def evaluate(
         self,
         sol: Solution,
@@ -222,12 +265,13 @@ class PathLength(FitnessFunction):
         :return: The fitness of *sol*
         :rtype: :py:class:`tuple` of :py:class:`float`
         """
-        # Return the solution's size
+        # Return the solution's path length
         path_len = 0
-        org = sol.path[-1]
-        for dest in sol.path:
-            path_len += self.distances[org][dest]
-            org = dest
+        if (len(sol.path) > 0):
+            org = sol.path[-1]
+            for dest in sol.path:
+                path_len += self.distances[org][dest]
+                org = dest
 
         return (path_len,)
 

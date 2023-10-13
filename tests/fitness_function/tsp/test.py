@@ -279,6 +279,27 @@ class PathLengthTester(unittest.TestCase):
                         heuristics[org][node], 0.1
                     )
 
+    def test_greddy_solution(self):
+        """Test the greedy solution method."""
+        num_nodes = 10
+        path = np.random.permutation(num_nodes)
+        fitness_func = PathLength.fromPath(path)
+        banned_nodes = [0, num_nodes-1]
+        species = Species(num_nodes, banned_nodes=banned_nodes)
+
+        # Try feasible solutions
+        times = 1000
+        for _ in repeat(None, times):
+            sol = fitness_func.greedy_solution(species)
+            self.assertTrue(species.is_member(sol))
+            self.assertEqual(len(sol.path), num_nodes - len(banned_nodes))
+
+        # Try an unfeasible solution
+        banned_nodes = list(node for node in range(num_nodes))
+        species = Species(num_nodes, banned_nodes=banned_nodes)
+        sol = fitness_func.greedy_solution(species)
+        self.assertEqual(len(sol.path), 0)
+
     def test_evaluate(self):
         """Test the evaluate method."""
         # Try valid permutations
@@ -301,6 +322,14 @@ class PathLengthTester(unittest.TestCase):
                 self.assertGreaterEqual(
                     fitness_func.evaluate(sol), (num_nodes,)
                 )
+
+        # Try an unfeasible solution
+        banned_nodes = list(node for node in range(num_nodes))
+        species = Species(num_nodes, banned_nodes=banned_nodes)
+        sol = fitness_func.greedy_solution(species)
+        self.assertGreaterEqual(
+            fitness_func.evaluate(sol), (0,)
+        )
 
     def test_copy(self):
         """Test the __copy__ method."""

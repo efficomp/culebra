@@ -21,8 +21,6 @@
 
 """Usage example of the ant system algorithm."""
 
-import random
-
 import numpy as np
 from pandas import Series, DataFrame
 
@@ -30,39 +28,39 @@ from culebra.solution.tsp import Species, Ant
 from culebra.trainer.aco import AntSystem
 from culebra.fitness_function.tsp import PathLength
 
+
 # Load the GR17 distances matrix from TSPLIB
+# https://people.sc.fsu.edu/~jburkardt/datasets/tsp/tsp.html
+# The minimal tour has length 2085
+
 distances = np.loadtxt(
     "https://people.sc.fsu.edu/~jburkardt/datasets/tsp/gr17_d.txt"
 )
 
+# Problem graph's number od nodes
 num_nodes = distances.shape[0]
+
+# Species for the problem solutions
 species = Species(num_nodes)
+
+# Fitness function
 fitness_func = PathLength(distances)
 
-# Generate a greddy path
-heuristics = fitness_func.heuristics(species)[0]
-ant = Ant(species, fitness_func.Fitness)
-current_node = random.randint(0, num_nodes-1)
-ant.append(current_node)
+# Population size
+pop_size = num_nodes
 
-while len(ant.path) < num_nodes:
-    current_heuristics = heuristics[current_node]
-    current_heuristics[ant.path] = 0
-    current_node = np.argwhere(
-        current_heuristics == np.max(current_heuristics)
-    ).flatten()[0]
-    ant.append(current_node)
-ant.fitness.values = fitness_func.evaluate(ant)
+# Generate and evaluate a greedy solution for the problem
+greedy_solution = fitness_func.greedy_solution(species)
 
 # Trainer parameters
 params = {
     "solution_cls": Ant,
     "species": species,
     "fitness_function": fitness_func,
-    "initial_pheromones": ant.fitness.pheromones_amount,
+    "initial_pheromones": pop_size * greedy_solution.fitness.pheromones_amount,
     "pheromone_influence": 1,
     "heuristic_influence": 3,
-    "pop_size": num_nodes,
+    "pop_size": pop_size,
     "max_num_iters": 200,
     "checkpoint_enable": False
 }

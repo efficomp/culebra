@@ -243,7 +243,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 
-        # Set state attributes to dummy values
+        # Generate some individuals
         sol1 = FeatureSelectionIndividual(
             params["species"],
             params["fitness_function"].Fitness,
