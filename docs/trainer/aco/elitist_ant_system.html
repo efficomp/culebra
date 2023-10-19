@@ -14,7 +14,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="culebra.trainer.topology module" href="../topology.html" />
+    <link rel="next" title="culebra.trainer.aco.MMAS class" href="mmas.html" />
     <link rel="prev" title="culebra.trainer.aco.AntSystem class" href="ant_system.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -27,7 +27,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../topology.html" title="culebra.trainer.topology module"
+          <a href="mmas.html" title="culebra.trainer.aco.MMAS class"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="ant_system.html" title="culebra.trainer.aco.AntSystem class"
@@ -900,20 +900,19 @@ initial state is generated with the
 <span class="sig-prename descclassname"><span class="pre">ElitistAntSystem.</span></span><span class="sig-name descname"><span class="pre">_init_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.ElitistAntSystem._init_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the trainer internal data structures to start searching.</p>
 <p>Create all the internal objects, functions and data structures needed
-to run the search process. For the <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>
-class, only a <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Statistics" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Statistics</span></code></a> object is created.
-Subclasses which need more objects or data structures should override
-this method.</p>
+to run the search process. For the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePopACO</span></code> class, only choice_info
+matrix and the node list are a created. Subclasses which need more
+objects or data structures should override this method.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.ElitistAntSystem._reset_internals">
 <span class="sig-prename descclassname"><span class="pre">ElitistAntSystem.</span></span><span class="sig-name descname"><span class="pre">_reset_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.ElitistAntSystem._reset_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the internal structures of the trainer.</p>
-<p>If subclasses overwrite the
-<a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._init_internals" title="culebra.abc.Trainer._init_internals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_init_internals()</span></code></a> method to add any new
-internal object, this method should also be overridden to reset all the
-internal objects of the trainer.</p>
+<p>If subclasses overwrite the <code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePopACO</span></code>
+method to add any new internal object, this method should also be
+overridden to reset all the internal objects of the trainer.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1153,6 +1152,12 @@ ant’s path, arc (<em>j</em>, <em>i</em>) is also modified with the same increm
 according to their fitness.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.ElitistAntSystem._update_elite">
+<span class="sig-prename descclassname"><span class="pre">ElitistAntSystem.</span></span><span class="sig-name descname"><span class="pre">_update_elite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.ElitistAntSystem._update_elite" title="Link to this definition">¶</a></dt>
+<dd><p>Update the elite (best-so-far) ant.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -1172,7 +1177,7 @@ according to their fitness.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../topology.html" title="culebra.trainer.topology module"
+          <a href="mmas.html" title="culebra.trainer.aco.MMAS class"
              >next</a> |</li>
         <li class="right" >
           <a href="ant_system.html" title="culebra.trainer.aco.AntSystem class"
