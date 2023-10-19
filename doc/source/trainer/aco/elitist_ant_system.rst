@@ -108,3 +108,4 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pop_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_pheromones
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._update_elite

@@ -25,7 +25,10 @@ import numpy as np
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
-from culebra.trainer.aco import ElitistAntSystem
+from culebra.trainer.aco import (
+    ElitistAntSystem,
+    DEFAULT_PHEROMONE_EVAPORATION_RATE
+)
 from culebra.fitness_function.tsp import PathLength
 
 
@@ -36,7 +39,7 @@ distances = np.loadtxt(
     "https://people.sc.fsu.edu/~jburkardt/datasets/tsp/gr17_d.txt"
 )
 
-# Problem graph's number od nodes
+# Problem graph's number of nodes
 num_nodes = distances.shape[0]
 
 # Species for the problem solutions
@@ -51,12 +54,17 @@ pop_size = num_nodes
 # Generate and evaluate a greedy solution for the problem
 greedy_solution = fitness_func.greedy_solution(species)
 
+initial_pheromones = tuple(
+    2 * pop_size * pher / DEFAULT_PHEROMONE_EVAPORATION_RATE
+    for pher in greedy_solution.fitness.pheromones_amount
+)
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
     "species": species,
     "fitness_function": fitness_func,
-    "initial_pheromones": pop_size * greedy_solution.fitness.pheromones_amount,
+    "initial_pheromones": initial_pheromones,
     "pheromone_influence": 1,
     "heuristic_influence": 3,
     "pop_size": pop_size,

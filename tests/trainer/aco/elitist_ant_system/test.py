@@ -248,7 +248,7 @@ class TrainerTester(unittest.TestCase):
         trainer._generate_pop()
 
         # Update the elite
-        trainer._elite.update(trainer.pop)
+        trainer._update_elite()
 
         # Evaporate pheromones
         trainer._deposit_pheromones()

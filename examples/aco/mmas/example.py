@@ -25,14 +25,16 @@ import numpy as np
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
-from culebra.trainer.aco import AntSystem
+from culebra.trainer.aco import (
+    MMAS,
+    DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+)
 from culebra.fitness_function.tsp import PathLength
 
 
 # Load the GR17 distances matrix from TSPLIB
 # https://people.sc.fsu.edu/~jburkardt/datasets/tsp/tsp.html
 # The minimal tour has length 2085
-
 distances = np.loadtxt(
     "https://people.sc.fsu.edu/~jburkardt/datasets/tsp/gr17_d.txt"
 )
@@ -53,7 +55,8 @@ pop_size = num_nodes
 greedy_solution = fitness_func.greedy_solution(species)
 
 initial_pheromones = tuple(
-    pop_size * pher for pher in greedy_solution.fitness.pheromones_amount
+    pher/DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+    for pher in greedy_solution.fitness.pheromones_amount
 )
 
 # Trainer parameters
@@ -63,14 +66,14 @@ params = {
     "fitness_function": fitness_func,
     "initial_pheromones": initial_pheromones,
     "pheromone_influence": 1,
-    "heuristic_influence": 3,
+    "heuristic_influence": 2,
     "pop_size": pop_size,
-    "max_num_iters": 200,
+    "max_num_iters": 500,
     "checkpoint_enable": False
 }
 
 # Create the wrapper
-trainer = AntSystem(**params)
+trainer = MMAS(**params)
 
 # Train the wrapper
 print("Training ...")

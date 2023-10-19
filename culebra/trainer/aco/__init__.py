@@ -16,7 +16,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Implementation of some ant colony optimization trainers.
+r"""Implementation of some ant colony optimization trainers.
 
 This module is composed by:
 
@@ -29,6 +29,9 @@ This module is composed by:
         the Ant System algorithm
       * The :py:class:`~culebra.trainer.aco.ElitistAntSystem` class, which
         implements the Elitist Ant System algorithm
+      * The :py:class:`~culebra.trainer.aco.MMAS` class, which
+        implements the :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant
+        System algorithm
 """
 
 from . import abc
@@ -36,9 +39,13 @@ from . import abc
 from .single_pop_aco import (
     AntSystem,
     ElitistAntSystem,
+    MMAS,
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
-    DEFAULT_PHEROMONE_EVAPORATION_RATE
+    DEFAULT_PHEROMONE_EVAPORATION_RATE,
+    DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE,
+    DEFAULT_MMAS_ITER_BEST_USE_LIMIT,
+    DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
 )
 
 
@@ -56,7 +63,11 @@ __all__ = [
     'abc',
     'AntSystem',
     'ElitistAntSystem',
+    'MMAS',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
-    'DEFAULT_PHEROMONE_EVAPORATION_RATE'
+    'DEFAULT_PHEROMONE_EVAPORATION_RATE',
+    'DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE',
+    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
+    'DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ'
 ]

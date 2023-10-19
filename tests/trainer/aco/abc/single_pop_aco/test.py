@@ -281,11 +281,50 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.pop, None)
         self.assertEqual(trainer.current_iter, None)
         self.assertEqual(trainer.choice_info, None)
+        self.assertEqual(trainer._node_list, None)
+
+    def test_init_internals(self):
+        """Test the _init_internals method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+
+        self.assertEqual(trainer.choice_info, None)
         self.assertTrue(
             np.all(
                 trainer._node_list == np.arange(0, num_nodes, dtype=int)
             )
         )
+
+    def test_reset_internals(self):
+        """Test the _init_internals method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._reset_internals()
+
+        self.assertEqual(trainer.choice_info, None)
+        self.assertEqual(trainer._node_list, None)
 
     def test_state(self):
         """Test _state."""

@@ -155,13 +155,8 @@ class SinglePopACO(SinglePopTrainer):
             verbose=verbose,
             random_seed=random_seed
         )
-
         self.initial_pheromones = initial_pheromones
         self.heuristics = heuristics
-        self._choice_info = None
-        self._node_list = np.arange(
-            0, self.fitness_function.num_nodes, dtype=int
-        )
 
     @property
     def solution_cls(self) -> Type[Ant]:
@@ -382,6 +377,32 @@ class SinglePopACO(SinglePopTrainer):
         """
         super()._reset_state()
         self._pheromones = None
+
+    def _init_internals(self) -> None:
+        """Set up the trainer internal data structures to start searching.
+
+        Create all the internal objects, functions and data structures needed
+        to run the search process. For the
+        :py:class:`~culebra.aco.abc.SinglePopACO` class, only choice_info
+        matrix and the node list are a created. Subclasses which need more
+        objects or data structures should override this method.
+        """
+        super()._init_internals()
+        self._choice_info = None
+        self._node_list = np.arange(
+            0, self.fitness_function.num_nodes, dtype=int
+        )
+
+    def _reset_internals(self) -> None:
+        """Reset the internal structures of the trainer.
+
+        If subclasses overwrite the :py:class:`~culebra.aco.abc.SinglePopACO`
+        method to add any new internal object, this method should also be
+        overridden to reset all the internal objects of the trainer.
+        """
+        super()._reset_internals()
+        self._choice_info = None
+        self._node_list = None
 
     @abstractmethod
     def _calculate_choice_info(self) -> None:

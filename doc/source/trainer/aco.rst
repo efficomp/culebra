@@ -41,10 +41,34 @@ Attributes
 
     Default pheromone evaporation rate (:math:`{\rho}`).
 
+.. attribute:: DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+    :annotation: = 0.2
+
+    Default pheromone evaporation rate for the
+    :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS (:math:`{\rho}`).
+
+.. attribute:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
+    :annotation: = 250
+
+    Default limit for the number of iterations for the
+    :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS to give up using the
+    iteration-best ant to deposit pheromones. Iterations above this limit will
+    use only the global-best ant.
+
+.. attribute:: DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
+    :annotation: = 100
+
+    Default frequency to check if the
+    :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS has converged.
+
+
 ..
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
+    .. autodata:: DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+    .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
+    .. autodata:: DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
 
 
 .. toctree::
@@ -54,3 +78,4 @@ Attributes
 
     AntSystem <aco/ant_system>
     ElitistAntSystem <aco/elitist_ant_system>
+    MMAS <aco/mmas>
