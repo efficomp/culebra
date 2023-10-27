@@ -33,11 +33,11 @@ Properties
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.solution_cls
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.species
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.fitness_function
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_cls
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.max_num_iters
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.current_iter
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.custom_termination_func
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.num_subpops
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.num_subtrainers
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_size
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_freq
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_topology_func
@@ -55,15 +55,15 @@ Properties
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.index
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.container
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representatives
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subpop_trainer_params
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subpop_trainers
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_params
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer._state
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer._subpop_suffixes
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer._subtrainer_suffixes
 
 Static methods
 --------------
@@ -81,7 +81,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.abc.IslandsTrainer._generate_subpop_trainers
+.. automethod:: culebra.trainer.abc.IslandsTrainer._generate_subtrainers
 .. automethod:: culebra.trainer.abc.IslandsTrainer._save_state
 .. automethod:: culebra.trainer.abc.IslandsTrainer._load_state
 .. automethod:: culebra.trainer.abc.IslandsTrainer._new_state

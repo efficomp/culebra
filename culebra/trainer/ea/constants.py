@@ -24,11 +24,14 @@ from deap.tools import selTournament
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
+
+DEFAULT_POP_SIZE = 100
+"""Default population size."""
 
 DEFAULT_CROSSOVER_PROB = 0.9
 """Default crossover probability."""
@@ -48,6 +51,7 @@ DEFAULT_SELECTION_FUNC_PARAMS = {'tournsize': 2}
 
 # Exported symbols for this module
 __all__ = [
+    'DEFAULT_POP_SIZE',
     'DEFAULT_CROSSOVER_PROB',
     'DEFAULT_MUTATION_PROB',
     'DEFAULT_GENE_IND_MUTATION_PROB',

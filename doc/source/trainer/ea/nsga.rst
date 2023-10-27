@@ -94,5 +94,5 @@ Private methods
 .. automethod:: culebra.trainer.ea.NSGA._default_termination_func
 .. automethod:: culebra.trainer.ea.NSGA._termination_criterion
 .. automethod:: culebra.trainer.ea.NSGA._init_representatives
-.. automethod:: culebra.trainer.ea.NSGA._fill_initial_pop
+.. automethod:: culebra.trainer.ea.NSGA._generate_initial_pop
 .. automethod:: culebra.trainer.ea.NSGA._evaluate_pop

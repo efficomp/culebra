@@ -33,7 +33,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.solution_cls
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.species
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.max_num_iters
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.current_iter
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.custom_termination_func
@@ -45,7 +45,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.mutation_probs
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.gene_ind_mutation_probs
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.selection_funcs_params
-.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.num_subpops
+.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.num_subtrainers
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.representation_size
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.representation_freq
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.representation_topology_func
@@ -63,15 +63,15 @@ Properties
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.index
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.container
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.representatives
-.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subpop_trainer_params
-.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subpop_trainers
+.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._state
-.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._subpop_suffixes
+.. autoproperty:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._subtrainer_suffixes
 
 Static methods
 --------------
@@ -89,7 +89,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._generate_subpop_trainers
+.. automethod:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._save_state
 .. automethod:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._load_state
 .. automethod:: culebra.trainer.ea.HeterogeneousSequentialIslandsEA._new_state

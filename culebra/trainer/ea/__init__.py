@@ -64,6 +64,7 @@ This module is composed by:
 """
 
 from .constants import (
+    DEFAULT_POP_SIZE,
     DEFAULT_CROSSOVER_PROB,
     DEFAULT_MUTATION_PROB,
     DEFAULT_GENE_IND_MUTATION_PROB,
@@ -99,7 +100,7 @@ from .cooperative_ea import (
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -116,6 +117,7 @@ __all__ = [
     'HeterogeneousParallelIslandsEA',
     'SequentialCooperativeEA',
     'ParallelCooperativeEA',
+    'DEFAULT_POP_SIZE',
     'DEFAULT_CROSSOVER_PROB',
     'DEFAULT_MUTATION_PROB',
     'DEFAULT_GENE_IND_MUTATION_PROB',

@@ -61,15 +61,15 @@ test_fitness_function = KappaNumFeats(
 )
 
 # Number of islands
-num_subpops = cpu_count()
+num_subtrainers = cpu_count()
 
 # Parameters for the wrapper
 params = {
     "solution_cls": IntVector,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
-    "subpop_trainer_cls": NSGA,
-    "num_subpops": num_subpops,
+    "subtrainer_cls": NSGA,
+    "num_subtrainers": num_subtrainers,
     "representation_topology_func": ring_destinations,
     "representation_topology_func_params": {"offset": 2},
     "representation_selection_func": selTournament,
@@ -78,7 +78,7 @@ params = {
     "mutation_probs": 0.2,
     "gene_ind_mutation_probs": 0.5,
     "max_num_iters": 30,
-    "pop_sizes": tuple(50 + i*10 for i in range(num_subpops))
+    "pop_sizes": tuple(50 + i*10 for i in range(num_subtrainers))
 }
 
 # Create the wrapper

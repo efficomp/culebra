@@ -54,27 +54,19 @@ class for trainers for solutions of only a single species</p></li>
 class for trainers that find solutions for multiple species</p></li>
 </ul>
 </div></blockquote>
-<p>With respect to the number of populations being trained:</p>
+<p>Trainers can also be distributed. The
+<a class="reference internal" href="abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer" title="culebra.trainer.abc.DistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedTrainer</span></code></a> class provides a base
+support to distribute a trainer making use a several subtrainers. Two
+implementations of this class are also provided:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="abc/single_pop_trainer.html#culebra.trainer.abc.SinglePopTrainer" title="culebra.trainer.abc.SinglePopTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePopTrainer</span></code></a>: A base class for all
-the single population trainers</p></li>
-<li><p><a class="reference internal" href="abc/multi_pop_trainer.html#culebra.trainer.abc.MultiPopTrainer" title="culebra.trainer.abc.MultiPopTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPopTrainer</span></code></a>: A base class for all
-the multiple population trainers</p></li>
+<li><p><a class="reference internal" href="abc/sequential_distributed_trainer.html#culebra.trainer.abc.SequentialDistributedTrainer" title="culebra.trainer.abc.SequentialDistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialDistributedTrainer</span></code></a>: Abstract
+base class for sequential distributed trainers</p></li>
+<li><p><a class="reference internal" href="abc/parallel_distributed_trainer.html#culebra.trainer.abc.ParallelDistributedTrainer" title="culebra.trainer.abc.ParallelDistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelDistributedTrainer</span></code></a>: Abstract base
+class for parallel distributed trainers</p></li>
 </ul>
 </div></blockquote>
-<p>Regarding <a class="reference internal" href="abc/multi_pop_trainer.html#culebra.trainer.abc.MultiPopTrainer" title="culebra.trainer.abc.MultiPopTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPopTrainer</span></code></a> implementations,
-they can be executed sequentially or in parallel, with the aid of the following
-classes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/sequential_multi_pop_trainer.html#culebra.trainer.abc.SequentialMultiPopTrainer" title="culebra.trainer.abc.SequentialMultiPopTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialMultiPopTrainer</span></code></a>: Abstract base
-class for sequential multi-population trainers</p></li>
-<li><p><a class="reference internal" href="abc/parallel_multi_pop_trainer.html#culebra.trainer.abc.ParallelMultiPopTrainer" title="culebra.trainer.abc.ParallelMultiPopTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelMultiPopTrainer</span></code></a>: Abstract base
-class for parallel multi-population trainers</p></li>
-</ul>
-</div></blockquote>
-<p>Finally, different multi-population approaches are also provided:</p>
+<p>Finally, some usual distributed approaches are also provided:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer" title="culebra.trainer.abc.IslandsTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">IslandsTrainer</span></code></a>: Abstract base class for

@@ -46,14 +46,11 @@ species = Species(num_nodes)
 # Fitness function
 fitness_func = PathLength(distances)
 
-# Population size
-pop_size = num_nodes
-
 # Generate and evaluate a greedy solution for the problem
 greedy_solution = fitness_func.greedy_solution(species)
 
 initial_pheromones = tuple(
-    pop_size * pher for pher in greedy_solution.fitness.pheromones_amount
+    num_nodes * pher for pher in greedy_solution.fitness.pheromones_amount
 )
 
 # Trainer parameters
@@ -64,7 +61,6 @@ params = {
     "initial_pheromones": initial_pheromones,
     "pheromone_influence": 1,
     "heuristic_influence": 3,
-    "pop_size": pop_size,
     "max_num_iters": 200,
     "checkpoint_enable": False
 }
@@ -85,8 +81,8 @@ species = Series(dtype=object)
 ants = Series(dtype=object)
 path_len = Series(dtype=float)
 
-for index, pop_best in enumerate(best_ones):
-    for ant in pop_best:
+for index, col_best in enumerate(best_ones):
+    for ant in col_best:
         species.loc[len(species)] = index
         ants.loc[len(ants)] = ant
         path_len.loc[len(path_len)] = int(ant.fitness.getValues()[0])

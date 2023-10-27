@@ -178,6 +178,22 @@ class TrainerTester(unittest.TestCase):
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
+
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 

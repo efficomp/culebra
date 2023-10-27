@@ -87,7 +87,7 @@ params = {
         featureSelectionSpecies2
     ],
     "fitness_function": training_fitness_function,
-    "subpop_trainer_cls": ElitistEA,
+    "subtrainer_cls": ElitistEA,
     "representation_size": 2,
     "crossover_probs": 0.8,
     "mutation_probs": 0.2,

@@ -33,12 +33,11 @@ Properties
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.solution_classes
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.species
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.fitness_function
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_cls
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.max_num_iters
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.current_iter
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.custom_termination_func
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.num_subpops
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.pop_sizes
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.num_subtrainers
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_size
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_freq
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_topology_func
@@ -56,15 +55,15 @@ Properties
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.index
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.container
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representatives
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subpop_trainer_params
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subpop_trainers
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_params
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer._state
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer._subpop_suffixes
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer._subtrainer_suffixes
 
 Static methods
 --------------
@@ -73,7 +72,7 @@ Static methods
 
 Private static methods
 ----------------------
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_subpop_trainer_representatives
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_subtrainer_representatives
 
 Methods
 -------
@@ -86,7 +85,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._generate_subpop_trainers
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._generate_subtrainers
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._save_state
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._load_state
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._new_state

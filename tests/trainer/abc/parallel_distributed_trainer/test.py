@@ -19,12 +19,16 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.abc.ParallelMultiPopTrainer`."""
+"""Unit test for :py:class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
 
 import unittest
 from multiprocessing.managers import DictProxy
 
-from culebra.trainer.abc import SinglePopTrainer, ParallelMultiPopTrainer
+from culebra.trainer.abc import (
+    SingleSpeciesTrainer,
+    ParallelDistributedTrainer
+)
+from culebra.trainer.topology import ring_destinations
 from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
@@ -46,23 +50,21 @@ dataset.normalize()
 species = Species(num_feats=dataset.num_feats)
 
 
-class MySinglePopTrainerTrainer(SinglePopTrainer):
+class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
-        for _ in range(self.pop_size):
-            sol = Solution(self.species, self.fitness_function.Fitness)
-            self.evaluate(sol)
-            self._pop.append(sol)
+        self.sol = Solution(self.species, self.fitness_function.Fitness)
+        self.evaluate(self.sol)
 
 
-class MyMultiPopTrainerTrainer(ParallelMultiPopTrainer):
-    """Dummy implementation of a parallel multi-population trainer."""
+class MyDistributedTrainer(ParallelDistributedTrainer):
+    """Dummy implementation of a parallel distributed trainer."""
 
-    def _generate_subpop_trainers(self):
-        self._subpop_trainers = []
-        subpop_params = {
+    def _generate_subtrainers(self):
+        self._subtrainers = []
+        subtrainer_params = {
             "solution_cls": Solution,
             "species": species,
             "fitness_function": self.fitness_function,
@@ -77,107 +79,66 @@ class MyMultiPopTrainerTrainer(ParallelMultiPopTrainer):
         for (
             index,
             checkpoint_filename
-        ) in enumerate(self.subpop_trainer_checkpoint_filenames):
-            subpop_trainer = self.subpop_trainer_cls(**subpop_params)
-            subpop_trainer.checkpoint_filename = checkpoint_filename
+        ) in enumerate(self.subtrainer_checkpoint_filenames):
+            subtrainer = self.subtrainer_cls(**subtrainer_params)
+            subtrainer.checkpoint_filename = checkpoint_filename
 
-            subpop_trainer.index = index
-            subpop_trainer.container = self
+            subtrainer.index = index
+            subtrainer.container = self
+            self._subtrainers.append(subtrainer)
 
-            subpop_trainer.__class__._preprocess_iteration = (
-                self.receive_representatives
-            )
-            subpop_trainer.__class__._postprocess_iteration = (
-                self.send_representatives
-            )
-            self._subpop_trainers.append(subpop_trainer)
+    @property
+    def representation_topology_func(self):
+        """Get and set the representation topology function."""
+        return ring_destinations
 
-    @staticmethod
-    def receive_representatives(subpop_trainer) -> None:
-        """Receive representative solutions.
-
-        :param subpop_trainer: The subpopulation trainer receiving
-            representatives
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        """
-        # Receive all the solutions in the queue
-        queue = subpop_trainer.container._communication_queues[
-            subpop_trainer.index
-        ]
-        while not queue.empty():
-            subpop_trainer._pop.append(queue.get())
-
-    @staticmethod
-    def send_representatives(subpop_trainer) -> None:
-        """Send representatives.
-
-        :param subpop_trainer: The sender subpopulation trainer
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        """
-        container = subpop_trainer.container
-        # Check if sending should be performed
-        if subpop_trainer._current_iter % container.representation_freq == 0:
-            # Get the destinations according to the representation topology
-            destinations = container.representation_topology_func(
-                subpop_trainer.index,
-                container.num_subpops,
-                **container.representation_topology_func_params
-            )
-
-            # For each destination
-            for dest in destinations:
-                # Get the representatives
-                for _ in range(container.representation_size):
-                    # Select one representative each time
-                    (sol,) = container.representation_selection_func(
-                        subpop_trainer.pop,
-                        1,
-                        **container.representation_selection_func_params
-                    )
-                    container._communication_queues[dest].put(sol)
+    @property
+    def representation_topology_func_params(self):
+        """Get and set the representation topology function parameters."""
+        return {"offset": 3}
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.abc.ParallelMultiPopTrainer`."""
+    """Test :py:class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
 
     def test_init(self):
         """Test the constructor."""
         # Test default params
-        trainer = MyMultiPopTrainerTrainer(
+        trainer = MyDistributedTrainer(
             Fitness(dataset),
-            MySinglePopTrainerTrainer
+            MySingleSpeciesTrainer
         )
 
         self.assertEqual(trainer._manager, None)
-        self.assertEqual(trainer._subpop_state_proxies, None)
+        self.assertEqual(trainer._subtrainer_state_proxies, None)
 
     def test_num_evals(self):
         """Test the num_evals property."""
         # Parameters for the trainer
         fitness_func = Fitness(dataset)
-        num_subpops = 2
+        num_subtrainers = 2
         max_num_iters = 5
-        subpop_trainer_cls = MySinglePopTrainerTrainer
+        subtrainer_cls = MySingleSpeciesTrainer
         params = {
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
             "verbose": False,
             "checkpoint_enable": False
         }
 
         # Create the trainer
-        trainer = MyMultiPopTrainerTrainer(**params)
+        trainer = MyDistributedTrainer(**params)
 
         self.assertEqual(trainer._num_evals, None)
 
         trainer.train()
 
-        # Test _gather_subpops_state
+        # Test the number of evaluations
         global_num_evals = 0
-        for subpop_trainer in trainer.subpop_trainers:
-            global_num_evals += subpop_trainer.num_evals
+        for subtrainer in trainer.subtrainers:
+            global_num_evals += subtrainer.num_evals
 
         self.assertEqual(global_num_evals, trainer.num_evals)
 
@@ -185,30 +146,30 @@ class TrainerTester(unittest.TestCase):
         """Test the runtime property."""
         # Parameters for the trainer
         fitness_func = Fitness(dataset)
-        num_subpops = 2
+        num_subtrainers = 2
         max_num_iters = 5
-        subpop_trainer_cls = MySinglePopTrainerTrainer
+        subtrainer_cls = MySingleSpeciesTrainer
         params = {
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
             "verbose": False,
             "checkpoint_enable": False
         }
 
         # Create the trainer
-        trainer = MyMultiPopTrainerTrainer(**params)
+        trainer = MyDistributedTrainer(**params)
 
         self.assertEqual(trainer.runtime, None)
 
         trainer.train()
 
-        # Test _gather_subpops_state
+        # Test the runtime
         global_runtime = 0
-        for subpop_trainer in trainer.subpop_trainers:
-            if subpop_trainer.runtime > global_runtime:
-                global_runtime = subpop_trainer.runtime
+        for subtrainer in trainer.subtrainers:
+            if subtrainer.runtime > global_runtime:
+                global_runtime = subtrainer.runtime
 
         self.assertEqual(global_runtime, trainer.runtime)
 
@@ -216,18 +177,18 @@ class TrainerTester(unittest.TestCase):
         """Test _new_state."""
         # Create a default trainer
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        num_subpops = 2
+        subtrainer_cls = MySingleSpeciesTrainer
+        num_subtrainers = 2
         params = {
             "species": species,
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "verbose": False
         }
 
         # Test default params
-        trainer = MyMultiPopTrainerTrainer(**params)
+        trainer = MyDistributedTrainer(**params)
         trainer._init_internals()
         trainer._new_state()
 
@@ -238,101 +199,122 @@ class TrainerTester(unittest.TestCase):
         """Test _init_internals."""
         # Create a default trainer
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        num_subpops = 2
+        subtrainer_cls = MySingleSpeciesTrainer
+        num_subtrainers = 2
         params = {
             "species": species,
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "verbose": False
         }
 
         # Test default params
-        trainer = MyMultiPopTrainerTrainer(**params)
+        trainer = MyDistributedTrainer(**params)
         trainer._init_internals()
 
         # Test that the communication queues have been created
         self.assertIsInstance(trainer._communication_queues, list)
         self.assertEqual(
-            len(trainer._communication_queues), trainer.num_subpops
+            len(trainer._communication_queues), trainer.num_subtrainers
         )
 
-        for index1 in range(trainer.num_subpops):
-            for index2 in range(index1 + 1, trainer.num_subpops):
+        for index1 in range(trainer.num_subtrainers):
+            for index2 in range(index1 + 1, trainer.num_subtrainers):
                 self.assertNotEqual(
                     id(trainer._communication_queues[index1]),
                     id(trainer._communication_queues[index2])
                 )
 
         # Test that proxies have been created
-        self.assertIsInstance(trainer._subpop_state_proxies, list)
+        self.assertIsInstance(trainer._subtrainer_state_proxies, list)
         self.assertEqual(
-            len(trainer._subpop_state_proxies), trainer.num_subpops
+            len(trainer._subtrainer_state_proxies), trainer.num_subtrainers
         )
-        for proxy in trainer._subpop_state_proxies:
+        for proxy in trainer._subtrainer_state_proxies:
             self.assertIsInstance(proxy, DictProxy)
 
-        for index1 in range(trainer.num_subpops):
-            for index2 in range(index1 + 1, trainer.num_subpops):
+        for index1 in range(trainer.num_subtrainers):
+            for index2 in range(index1 + 1, trainer.num_subtrainers):
                 self.assertNotEqual(
-                    id(trainer._subpop_state_proxies[index1]),
-                    id(trainer._subpop_state_proxies[index2])
+                    id(trainer._subtrainer_state_proxies[index1]),
+                    id(trainer._subtrainer_state_proxies[index2])
                 )
 
     def test_reset_internals(self):
         """Test _reset_internals."""
         # Create a default trainer
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        num_subpops = 2
+        subtrainer_cls = MySingleSpeciesTrainer
+        num_subtrainers = 2
         params = {
             "species": species,
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "verbose": False
         }
 
         # Test default params
-        trainer = MyMultiPopTrainerTrainer(**params)
+        trainer = MyDistributedTrainer(**params)
         trainer._init_internals()
         trainer._reset_internals()
 
         # Check manager
         self.assertEqual(trainer._manager, None)
 
-        # Check the subpop_state_proxies
-        self.assertEqual(trainer._subpop_state_proxies, None)
+        # Check the subtrainer_state_proxies
+        self.assertEqual(trainer._subtrainer_state_proxies, None)
 
     def test_search(self):
         """Test _search."""
         # Create a default trainer
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        num_subpops = 2
+        subtrainer_cls = MySingleSpeciesTrainer
+        num_subtrainers = 2
         max_num_iters = 10
         params = {
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
             "checkpoint_enable": False,
             "verbose": False
         }
 
         # Test the search method
-        trainer = MyMultiPopTrainerTrainer(**params)
+        trainer = MyDistributedTrainer(**params)
         trainer._init_search()
 
         trainer._search()
 
         num_evals = 0
-        for subpop_trainer in trainer.subpop_trainers:
-            self.assertEqual(subpop_trainer._current_iter, max_num_iters)
-            num_evals += subpop_trainer.num_evals
+        for subtrainer in trainer.subtrainers:
+            self.assertEqual(subtrainer._current_iter, max_num_iters)
+            num_evals += subtrainer.num_evals
 
         self.assertEqual(trainer.num_evals, num_evals)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Create a default trainer
+        fitness_func = Fitness(dataset)
+        subtrainer_cls = MySingleSpeciesTrainer
+        num_subtrainers = 2
+        max_num_iters = 10
+        params = {
+            "fitness_function": fitness_func,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
+            "max_num_iters": max_num_iters,
+            "checkpoint_enable": False,
+            "verbose": False
+        }
+
+        trainer = MyDistributedTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

@@ -23,8 +23,8 @@
 
 import unittest
 
-from culebra import DEFAULT_POP_SIZE
 from culebra.trainer.ea import (
+    DEFAULT_POP_SIZE,
     DEFAULT_CROSSOVER_PROB,
     DEFAULT_MUTATION_PROB,
     DEFAULT_GENE_IND_MUTATION_PROB,
@@ -79,14 +79,14 @@ class TrainerTester(unittest.TestCase):
         valid_solution_cls = Individual
         valid_species = Species(dataset.num_feats)
         valid_fitness_func = Fitness(dataset)
-        valid_subpop_trainer_cls = MySinglePopEA
-        valid_num_subpops = 3
+        valid_subtrainer_cls = MySinglePopEA
+        valid_num_subtrainers = 3
 
         invalid_pop_size_types = (type, {}, 1.5)
         invalid_pop_size_values = (-1, 0)
         valid_pop_size = 13
         valid_pop_sizes = tuple(
-            valid_pop_size + i for i in range(valid_num_subpops)
+            valid_pop_size + i for i in range(valid_num_subtrainers)
         )
 
         invalid_funcs = (1, 1.5, {})
@@ -101,7 +101,7 @@ class TrainerTester(unittest.TestCase):
         invalid_prob_values = (-1, 2)
         valid_prob = 0.33
         valid_probs = tuple(
-            valid_prob + i * 0.1 for i in range(valid_num_subpops)
+            valid_prob + i * 0.1 for i in range(valid_num_subtrainers)
         )
 
         invalid_params = (1, 1.5, valid_solution_cls)
@@ -119,8 +119,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     pop_sizes=pop_size
                 )
 
@@ -131,8 +131,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     pop_sizes=pop_size
                 )
 
@@ -142,13 +142,13 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             pop_sizes=valid_pop_size
         )
 
         # Check the length of the sequence
-        self.assertEqual(len(trainer.pop_sizes), trainer.num_subpops)
+        self.assertEqual(len(trainer.pop_sizes), trainer.num_subtrainers)
 
         # Check that all the values match
         for island_pop_size in trainer.pop_sizes:
@@ -159,8 +159,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             pop_sizes=valid_pop_sizes
         )
         for pop_size1, pop_size2 in zip(trainer.pop_sizes, valid_pop_sizes):
@@ -173,8 +173,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     crossover_funcs=func
                 )
 
@@ -184,12 +184,12 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             crossover_funcs=valid_func
         )
         # Check the length of the sequence
-        self.assertEqual(len(trainer.crossover_funcs), trainer.num_subpops)
+        self.assertEqual(len(trainer.crossover_funcs), trainer.num_subtrainers)
 
         # Check that all the values match
         for island_crossover_func in trainer.crossover_funcs:
@@ -200,8 +200,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             crossover_funcs=valid_funcs
         )
         for crossover_func1, crossover_func2 in zip(
@@ -216,8 +216,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     mutation_funcs=func
                 )
 
@@ -227,12 +227,12 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             mutation_funcs=valid_func
         )
         # Check the length of the sequence
-        self.assertEqual(len(trainer.mutation_funcs), trainer.num_subpops)
+        self.assertEqual(len(trainer.mutation_funcs), trainer.num_subtrainers)
 
         # Check that all the values match
         for island_mutation_func in trainer.mutation_funcs:
@@ -243,8 +243,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             mutation_funcs=valid_funcs
         )
         for mutation_func1, mutation_func2 in zip(
@@ -259,8 +259,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     selection_funcs=func
                 )
 
@@ -270,12 +270,12 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             selection_funcs=valid_func
         )
         # Check the length of the sequence
-        self.assertEqual(len(trainer.selection_funcs), trainer.num_subpops)
+        self.assertEqual(len(trainer.selection_funcs), trainer.num_subtrainers)
 
         # Check that all the values match
         for island_selection_func in trainer.selection_funcs:
@@ -286,8 +286,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             selection_funcs=valid_funcs
         )
         for selection_func1, selection_func2 in zip(
@@ -302,8 +302,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     crossover_probs=prob
                 )
 
@@ -314,8 +314,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     crossover_probs=prob
                 )
 
@@ -325,12 +325,12 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             crossover_probs=valid_prob
         )
         # Check the length of the sequence
-        self.assertEqual(len(trainer.crossover_probs), trainer.num_subpops)
+        self.assertEqual(len(trainer.crossover_probs), trainer.num_subtrainers)
 
         # Check that all the values match
         for island_crossover_prob in trainer.crossover_probs:
@@ -341,8 +341,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             crossover_probs=valid_probs
         )
         for prob1, prob2 in zip(trainer.crossover_probs, valid_probs):
@@ -355,8 +355,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     mutation_probs=prob
                 )
 
@@ -367,8 +367,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     mutation_probs=prob
                 )
 
@@ -378,12 +378,12 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             mutation_probs=valid_prob
         )
         # Check the length of the sequence
-        self.assertEqual(len(trainer.mutation_probs), trainer.num_subpops)
+        self.assertEqual(len(trainer.mutation_probs), trainer.num_subtrainers)
 
         # Check that all the values match
         for island_mutation_prob in trainer.mutation_probs:
@@ -394,8 +394,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             mutation_probs=valid_probs
         )
         for prob1, prob2 in zip(trainer.mutation_probs, valid_probs):
@@ -408,8 +408,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     gene_ind_mutation_probs=prob
                 )
 
@@ -420,8 +420,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     gene_ind_mutation_probs=prob
                 )
 
@@ -431,13 +431,13 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             gene_ind_mutation_probs=valid_prob
         )
         # Check the length of the sequence
         self.assertEqual(
-            len(trainer.gene_ind_mutation_probs), trainer.num_subpops
+            len(trainer.gene_ind_mutation_probs), trainer.num_subtrainers
         )
 
         # Check that all the values match
@@ -449,8 +449,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             gene_ind_mutation_probs=valid_probs
         )
         for prob1, prob2 in zip(trainer.gene_ind_mutation_probs, valid_probs):
@@ -463,8 +463,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops,
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers,
                     selection_funcs_params=params
                 )
 
@@ -474,13 +474,13 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             selection_funcs_params=valid_params
         )
         # Check the length of the sequence
         self.assertEqual(
-            len(trainer.selection_funcs_params), trainer.num_subpops
+            len(trainer.selection_funcs_params), trainer.num_subtrainers
         )
 
         # Check that all the values match
@@ -492,8 +492,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops,
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers,
             selection_funcs_params=valid_funcs_params
         )
         for selection_func_params1, selection_func_params2 in zip(
@@ -506,8 +506,8 @@ class TrainerTester(unittest.TestCase):
             valid_solution_cls,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers
         )
 
         # Default values for not initialized subpopulations should be None
@@ -536,7 +536,7 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(selection_func_params, None)
 
         # Create the islands
-        trainer._generate_subpop_trainers()
+        trainer._generate_subtrainers()
 
         # Check the default values for all the subpopulations
         for pop_size in trainer.pop_sizes:
@@ -567,13 +567,13 @@ class TrainerTester(unittest.TestCase):
                 selection_func_params, DEFAULT_SELECTION_FUNC_PARAMS
             )
 
-    def test_generate_subpop_trainers(self):
-        """Test _generate_subpop_trainers."""
+    def test_generate_subtrainers(self):
+        """Test _generate_subtrainers."""
         solution_cls = Individual
         species = Species(dataset.num_feats)
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopEA
-        num_subpops = 2
+        subtrainer_cls = MySinglePopEA
+        num_subtrainers = 2
         pop_sizes = (13, 15)
         crossover_funcs = (
             solution_cls.crossover1p, solution_cls.crossover2p
@@ -593,8 +593,8 @@ class TrainerTester(unittest.TestCase):
             solution_cls,
             species,
             fitness_func,
-            subpop_trainer_cls,
-            num_subpops=num_subpops,
+            subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -606,25 +606,25 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Islands have not been created yet
-        self.assertEqual(trainer.subpop_trainers, None)
+        self.assertEqual(trainer.subtrainers, None)
 
         # Create the islands
-        trainer._generate_subpop_trainers()
+        trainer._generate_subtrainers()
 
         # Check the islands
-        self.assertIsInstance(trainer.subpop_trainers, list)
-        self.assertEqual(len(trainer.subpop_trainers), num_subpops)
+        self.assertIsInstance(trainer.subtrainers, list)
+        self.assertEqual(len(trainer.subtrainers), num_subtrainers)
 
-        for index1 in range(trainer.num_subpops):
-            for index2 in range(index1 + 1, trainer.num_subpops):
+        for index1 in range(trainer.num_subtrainers):
+            for index2 in range(index1 + 1, trainer.num_subtrainers):
                 self.assertNotEqual(
-                    id(trainer.subpop_trainers[index1]),
-                    id(trainer.subpop_trainers[index2])
+                    id(trainer.subtrainers[index1]),
+                    id(trainer.subtrainers[index2])
                 )
 
         # Check the islands common parameters
-        for island_trainer in trainer.subpop_trainers:
-            self.assertIsInstance(island_trainer, subpop_trainer_cls)
+        for island_trainer in trainer.subtrainers:
+            self.assertIsInstance(island_trainer, subtrainer_cls)
 
             self.assertEqual(
                 island_trainer.solution_cls, trainer.solution_cls
@@ -669,9 +669,9 @@ class TrainerTester(unittest.TestCase):
             island_gene_ind_mutation_prob,
             island_selection_func_params
         ) in zip(
-            trainer.subpop_trainers,
-            range(trainer.num_subpops),
-            trainer.subpop_trainer_checkpoint_filenames,
+            trainer.subtrainers,
+            range(trainer.num_subtrainers),
+            trainer.subtrainer_checkpoint_filenames,
             trainer.pop_sizes,
             trainer.crossover_funcs,
             trainer.mutation_funcs,
@@ -715,7 +715,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of pop_sizes and
         # try an incorrect number of crossover_funcs
@@ -724,7 +724,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of crossover_funcs and
         # try an incorrect number of mutation_funcs
@@ -733,7 +733,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of mutation_funcs and
         # try an incorrect number of selection_funcs
@@ -742,7 +742,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of selection_funcs and
         # try an incorrect number of crossover_probs
@@ -751,7 +751,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of crossover_probs and
         # try an incorrect number of mutation_probs
@@ -760,7 +760,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of mutation_probs and
         # try an incorrect number of gene_ind_mutation_probs
@@ -769,7 +769,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
 
         # Restore the number of gene_ind_mutation_probs and
         # try an incorrect number of selection_funcs_params
@@ -778,7 +778,48 @@ class TrainerTester(unittest.TestCase):
 
         # Create the islands. Should fail
         with self.assertRaises(RuntimeError):
-            trainer._generate_subpop_trainers()
+            trainer._generate_subtrainers()
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        solution_cls = Individual
+        species = Species(dataset.num_feats)
+        fitness_func = Fitness(dataset)
+        subtrainer_cls = MySinglePopEA
+        num_subtrainers = 2
+        pop_sizes = (13, 15)
+        crossover_funcs = (
+            solution_cls.crossover1p, solution_cls.crossover2p
+        )
+        mutation_funcs = (solution_cls.mutate,
+                          len)
+        selection_funcs = (isinstance, issubclass)
+        crossover_probs = (0.33, 0.44)
+        mutation_probs = (0.133, 0.144)
+        gene_ind_mutation_probs = (0.1133, 0.1144)
+        selection_funcs_params = (
+            {"parameter0": 12},
+            {"parameter1": 13},
+        )
+
+        trainer = MyIslandsEA(
+            solution_cls,
+            species,
+            fitness_func,
+            subtrainer_cls,
+            num_subtrainers=num_subtrainers,
+            pop_sizes=pop_sizes,
+            crossover_funcs=crossover_funcs,
+            mutation_funcs=mutation_funcs,
+            selection_funcs=selection_funcs,
+            crossover_probs=crossover_probs,
+            mutation_probs=mutation_probs,
+            gene_ind_mutation_probs=gene_ind_mutation_probs,
+            selection_funcs_params=selection_funcs_params
+        )
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

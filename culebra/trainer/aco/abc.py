@@ -23,8 +23,11 @@ Ant Colony Optimization based trainers.
 
 By the moment:
 
-  * :py:class:`~culebra.trainer.aco.abc.SinglePopACO`: A base class for all
-    the single population ACO-based trainers
+  * :py:class:`~culebra.trainer.aco.abc.SingleColACO`: A base class for all
+    the single colony ACO-based trainers
+  * :py:class:`~culebra.trainer.aco.abc.ElitistACO`: A base class for all
+    the elitist single colony ACO-based trainers
+
 """
 
 from __future__ import annotations
@@ -34,6 +37,7 @@ from typing import (
     Any,
     Sequence,
     Type,
+    List,
     Callable,
     Dict,
     Optional
@@ -42,27 +46,31 @@ from functools import partial
 
 import numpy as np
 
+from deap.tools import HallOfFame, ParetoFront
+
+
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import (
     check_subclass,
     check_sequence,
+    check_int,
     check_float,
     check_matrix
 )
 from culebra.solution.abc import Ant
-from culebra.trainer.abc import SinglePopTrainer
+from culebra.trainer.abc import SingleSpeciesTrainer
 
 
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
 
-class SinglePopACO(SinglePopTrainer):
+class SingleColACO(SingleSpeciesTrainer):
     """Base class for all the single colony ACO algorithms."""
 
     def __init__(
@@ -77,11 +85,11 @@ class SinglePopACO(SinglePopTrainer):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopACO],
+                [SingleColACO],
                 bool
             ]
         ] = None,
-        pop_size: Optional[int] = None,
+        col_size: Optional[int] = None,
         checkpoint_enable: Optional[bool] = None,
         checkpoint_freq: Optional[int] = None,
         checkpoint_filename: Optional[str] = None,
@@ -115,10 +123,11 @@ class SinglePopACO(SinglePopTrainer):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param pop_size: The population (colony) size. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_POP_SIZE`
+        :param col_size: The colony size. If set to :py:data:`None`,
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
             will be used. Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
+        :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
             be used. Defaults to :py:data:`None`
@@ -141,20 +150,22 @@ class SinglePopACO(SinglePopTrainer):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        SinglePopTrainer.__init__(
+        SingleSpeciesTrainer.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            pop_size=pop_size,
             checkpoint_enable=checkpoint_enable,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed
         )
+
+        # Get the parameters
+        self.col_size = col_size
         self.initial_pheromones = initial_pheromones
         self.heuristics = heuristics
 
@@ -232,7 +243,7 @@ class SinglePopACO(SinglePopTrainer):
         :getter: Return the heuristics matrices
         :setter: Set new heuristics matrices. If set to :py:data:`None`, the
             default heuristics (provided by the
-            :py:attr:`~culebra.trainer.aco.abc.SinglePopACO.fitness_function`
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`
             property) are assumed.
         :type: :py:class:`~collections.abc.Sequence`
             of :py:class:`~numpy.ndarray`
@@ -251,7 +262,7 @@ class SinglePopACO(SinglePopTrainer):
 
         :param values: New heuristics matrices. If set to :py:data:`None`, the
             default heuristics (provided by the
-            :py:attr:`~culebra.trainer.aco.abc.SinglePopACO.fitness_function`
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`
             property) are assumed.
         :type: :py:class:`~collections.abc.Sequence` of two-dimensional
             array-like objects
@@ -296,6 +307,53 @@ class SinglePopACO(SinglePopTrainer):
                     )
 
     @property
+    def col_size(self) -> int:
+        """Get and set the colony size.
+
+        :getter: Return the current colony size
+        :setter: Set a new value for the colony size. If set to
+            :py:data:`None`,
+            If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes` is chosen
+        :type: :py:class:`int`, greater than zero
+        :raises TypeError: If set to a value which is not an :py:class:`int`
+        :raises ValueError: If set to a value which is not greater than zero
+        """
+        return (
+            self.fitness_function.num_nodes
+            if self._col_size is None
+            else self._col_size
+        )
+
+    @col_size.setter
+    def col_size(self, size: int | None) -> None:
+        """Set the colony size.
+
+        :param size: The new colony size. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
+            is chosen
+        :type size: :py:class:`int`, greater than zero
+        :raises TypeError: If *size* is not an :py:class:`int`
+        :raises ValueError: If *size* is not an integer greater than zero
+        """
+        # Check the value
+        self._col_size = (
+            None if size is None else check_int(size, "colony size", gt=0)
+        )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def col(self) -> List[Ant] | None:
+        """Get the colony.
+
+        :type: :py:class:`list` of :py:class:`~culebra.abc.Solution`
+        """
+        return self._col
+
+    @property
     def pheromones(self) -> Sequence[np.ndarray, ...] | None:
         """Get the pheromones matrices.
 
@@ -332,7 +390,7 @@ class SinglePopACO(SinglePopTrainer):
         :type: :py:class:`dict`
         """
         # Get the state of the superclass
-        state = SinglePopTrainer._state.fget(self)
+        state = SingleSpeciesTrainer._state.fget(self)
 
         # Get the state of this class
         state["pheromones"] = self._pheromones
@@ -350,7 +408,7 @@ class SinglePopACO(SinglePopTrainer):
         :type state: :py:class:`dict`
         """
         # Set the state of the superclass
-        SinglePopTrainer._state.fset(self, state)
+        SingleSpeciesTrainer._state.fset(self, state)
 
         # Set the state of this class
         self._pheromones = state["pheromones"]
@@ -383,11 +441,12 @@ class SinglePopACO(SinglePopTrainer):
 
         Create all the internal objects, functions and data structures needed
         to run the search process. For the
-        :py:class:`~culebra.aco.abc.SinglePopACO` class, only choice_info
-        matrix and the node list are a created. Subclasses which need more
-        objects or data structures should override this method.
+        :py:class:`~culebra.aco.abc.SingleColACO` class, the colony, the
+        choice_info matrix and the node list are a created. Subclasses which
+        need more objects or data structures should override this method.
         """
         super()._init_internals()
+        self._col = []
         self._choice_info = None
         self._node_list = np.arange(
             0, self.fitness_function.num_nodes, dtype=int
@@ -396,11 +455,12 @@ class SinglePopACO(SinglePopTrainer):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        If subclasses overwrite the :py:class:`~culebra.aco.abc.SinglePopACO`
+        If subclasses overwrite the :py:class:`~culebra.aco.abc.SingleColACO`
         method to add any new internal object, this method should also be
         overridden to reset all the internal objects of the trainer.
         """
         super()._reset_internals()
+        self._col = None
         self._choice_info = None
         self._node_list = None
 
@@ -424,12 +484,12 @@ class SinglePopACO(SinglePopTrainer):
         """Start an iteration.
 
         Prepare the iteration metrics (number of evaluations, execution time)
-        before each iteration is run and create an empty ant population.
+        before each iteration is run and create an empty ant colony.
         Overridden to calculate the choice information before executing the
         next iteration.
         """
         super()._start_iteration()
-        self._pop = []
+        self._col = []
         self._calculate_choice_info()
 
     def _initial_choice(self) -> int | None:
@@ -458,7 +518,7 @@ class SinglePopACO(SinglePopTrainer):
         by the ant and connected to its current node. Each of these nodes has
         a probability of being visited from the current node, which is
         calculated from the
-        :py:attr:`~culebra.trainer.aco.abc.SinglePopACO.choice_info` matrix.
+        :py:attr:`~culebra.trainer.aco.abc.SingleColACO.choice_info` matrix.
 
         :param ant: The ant
         :type ant: :py:class:`~culebra.solution.abc.Ant`
@@ -484,7 +544,7 @@ class SinglePopACO(SinglePopTrainer):
 
         The election is based on the feasible neighborhood probabilities of the
         ant's current node. If the ant's path is empty, the
-        :py:meth:`~culebra.trainer.aco.abc.SinglePopACO._initial_choice`
+        :py:meth:`~culebra.trainer.aco.abc.SingleColACO._initial_choice`
         method is called.
 
         :param ant: The ant
@@ -521,11 +581,11 @@ class SinglePopACO(SinglePopTrainer):
 
         return ant
 
-    def _generate_pop(self) -> None:
-        """Fill the population with evaluated ants."""
-        # Fill the population
-        while len(self.pop) < self.pop_size:
-            self.pop.append(self._generate_ant())
+    def _generate_col(self) -> None:
+        """Fill the colony with evaluated ants."""
+        # Fill the colony
+        while len(self.col) < self.col_size:
+            self.col.append(self._generate_ant())
 
     @abstractmethod
     def _evaporate_pheromones(self) -> None:
@@ -559,7 +619,131 @@ class SinglePopACO(SinglePopTrainer):
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
         # Create the ant colony and the ants' paths
-        self._generate_pop()
+        self._generate_col()
+
+        # Update the pheromones
+        self._update_pheromones()
+
+    def _do_iteration_stats(self) -> None:
+        """Perform the iteration stats."""
+        record = self._stats.compile(self.col) if self._stats else {}
+        record["Iter"] = self._current_iter
+        record["NEvals"] = self._current_iter_evals
+        if self.container is not None:
+            record["Col"] = self.index
+        self._logbook.record(**record)
+        if self.verbose:
+            print(self._logbook.stream)
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        hof = ParetoFront()
+        if self.col is not None:
+            hof.update(self.col)
+        return [hof]
+
+
+class ElitistACO(SingleColACO):
+    """Base class for all the elitist single colony ACO algorithms."""
+
+    @property
+    def _state(self) -> Dict[str, Any]:
+        """Get and set the state of this trainer.
+
+        Overridden to add the current elite to the trainer's state.
+
+        :getter: Return the state
+        :setter: Set a new state
+        :type: :py:class:`dict`
+        """
+        # Get the state of the superclass
+        state = SingleColACO._state.fget(self)
+
+        # Get the state of this class
+        state["elite"] = self._elite
+
+        return state
+
+    @_state.setter
+    def _state(self, state: Dict[str, Any]) -> None:
+        """Set the state of this trainer.
+
+        Overridden to add the current elite to the trainer's state.
+
+        :param state: The last loaded state
+        :type state: :py:class:`dict`
+        """
+        # Set the state of the superclass
+        SingleColACO._state.fset(self, state)
+
+        # Set the state of this class
+        self._elite = state["elite"]
+
+    def _new_state(self) -> None:
+        """Generate a new trainer state.
+
+        Overridden to initialize the elite.
+        """
+        super()._new_state()
+
+        # Create the elite container
+        self._elite = ParetoFront()
+
+    def _reset_state(self) -> None:
+        """Reset the trainer state.
+
+        Overridden to reset the elite.
+        """
+        super()._reset_state()
+        self._elite = None
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        best_ones = self._elite if self._elite is not None else ParetoFront()
+        return [best_ones]
+
+    def _deposit_ant_weighted_pheromones(
+        self, ant: Ant, weight: float
+    ) -> None:
+        """Make an ant deposit weighted pheromones.
+
+        :param ant: The ant
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
+        :param weight: The weight
+        :type ant: :py:class:`float`
+        """
+        pheromones_amount = ant.fitness.pheromones_amount[0] * weight
+        org = ant.path[-1]
+        for dest in ant.path:
+            self._pheromones[0][org][dest] += pheromones_amount
+            self._pheromones[0][dest][org] += pheromones_amount
+            org = dest
+
+    def _update_elite(self) -> None:
+        """Update the elite (best-so-far) ant."""
+        self._elite.update(self.col)
+
+    def _do_iteration(self) -> None:
+        """Implement an iteration of the search process."""
+        # Create the ant colony and the ants' paths
+        self._generate_col()
+
+        # Update the elite
+        self._update_elite()
 
         # Update the pheromones
         self._update_pheromones()
@@ -567,5 +751,6 @@ class SinglePopACO(SinglePopTrainer):
 
 # Exported symbols for this module
 __all__ = [
-    'SinglePopACO'
+    'SingleColACO',
+    'ElitistACO'
 ]

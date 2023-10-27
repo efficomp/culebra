@@ -24,9 +24,13 @@
 import unittest
 import pickle
 from copy import copy, deepcopy
-from time import sleep
 
-from culebra.trainer.abc import SinglePopTrainer, IslandsTrainer
+from culebra.trainer import (
+    DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC,
+    DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+)
+from culebra.trainer.topology import full_connected_destinations
+from culebra.trainer.abc import SingleSpeciesTrainer, IslandsTrainer
 from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
@@ -49,15 +53,13 @@ dataset.normalize()
 species = Species(num_feats=dataset.num_feats)
 
 
-class MySinglePopTrainerTrainer(SinglePopTrainer):
+class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
-        for _ in range(self.pop_size):
-            sol = Solution(self.species, self.fitness_function.Fitness)
-            self.evaluate(sol)
-            self._pop.append(sol)
+        self.sol = Solution(self.species, self.fitness_function.Fitness)
+        self.evaluate(self.sol)
 
 
 class MyIslandsTrainer(IslandsTrainer):
@@ -65,7 +67,7 @@ class MyIslandsTrainer(IslandsTrainer):
 
     def _init_search(self):
         super()._init_search()
-        for island_trainer in self.subpop_trainers:
+        for island_trainer in self.subtrainers:
             island_trainer._init_search()
 
     def _start_iteration(self) -> None:
@@ -74,28 +76,28 @@ class MyIslandsTrainer(IslandsTrainer):
         Prepare the metrics before each iteration is run.
         """
         super()._start_iteration()
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
             # Fix the current iteration
-            subpop_trainer._current_iter = self._current_iter
+            subtrainer._current_iter = self._current_iter
             # Start the iteration
-            subpop_trainer._start_iteration()
+            subtrainer._start_iteration()
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._do_iteration()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._do_iteration()
 
     def _do_iteration_stats(self) -> None:
         """Perform the iteration stats."""
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._do_iteration_stats()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._do_iteration_stats()
 
-    def _generate_subpop_trainers(self):
-        self._subpop_trainers = []
-        subpop_params = {
+    def _generate_subtrainers(self):
+        self._subtrainers = []
+        subtrainer_params = {
             "solution_cls": Solution,
             "species": species,
             "fitness_function": self.fitness_function,
@@ -110,20 +112,14 @@ class MyIslandsTrainer(IslandsTrainer):
         for (
             index,
             checkpoint_filename
-        ) in enumerate(self.subpop_trainer_checkpoint_filenames):
-            subpop_trainer = self.subpop_trainer_cls(**subpop_params)
-            subpop_trainer.checkpoint_filename = checkpoint_filename
+        ) in enumerate(self.subtrainer_checkpoint_filenames):
+            subtrainer = self.subtrainer_cls(**subtrainer_params)
+            subtrainer.checkpoint_filename = checkpoint_filename
 
-            subpop_trainer.index = index
-            subpop_trainer.container = self
+            subtrainer.index = index
+            subtrainer.container = self
 
-            subpop_trainer.__class__._preprocess_iteration = (
-                self.receive_representatives
-            )
-            subpop_trainer.__class__._postprocess_iteration = (
-                self.send_representatives
-            )
-            self._subpop_trainers.append(subpop_trainer)
+            self._subtrainers.append(subtrainer)
 
 
 class TrainerTester(unittest.TestCase):
@@ -134,7 +130,7 @@ class TrainerTester(unittest.TestCase):
         valid_solution = Solution
         valid_species = Species(dataset.num_feats)
         valid_fitness_func = Fitness(dataset)
-        valid_subpop_trainer_cls = MySinglePopTrainerTrainer
+        valid_subtrainer_cls = MySingleSpeciesTrainer
 
         # Try invalid solution classes. Should fail
         invalid_solution_classes = (type, None, 'a', 1)
@@ -144,7 +140,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls
+                    valid_subtrainer_cls
                 )
 
         # Try invalid species. Should fail
@@ -155,160 +151,88 @@ class TrainerTester(unittest.TestCase):
                     valid_solution,
                     inv_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls
+                    valid_subtrainer_cls
                 )
 
-    def test_best_solutions(self):
-        """Test best_solutions."""
-        # Parameters for the trainer
-        solution_cls = Solution
-        fitness_func = Fitness(dataset)
-        num_subpops = 2
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        params = {
-            "solution_cls": solution_cls,
-            "species": species,
-            "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
-            "verbose": False,
-            "checkpoint_enable": False
-        }
+        # Try invalid representation topology function. Should fail
+        invalid_funcs = ('a', 1.5)
+        for func in invalid_funcs:
+            with self.assertRaises(TypeError):
+                MyIslandsTrainer(
+                    valid_fitness_func,
+                    valid_subtrainer_cls,
+                    representation_topology_func=func
+                )
 
-        # Create the trainer
-        trainer = MyIslandsTrainer(**params)
+        # Try invalid types for representation topology function parameters
+        # Should fail
+        invalid_params = ('a', type)
+        for params in invalid_params:
+            with self.assertRaises(TypeError):
+                MyIslandsTrainer(
+                    valid_fitness_func,
+                    valid_subtrainer_cls,
+                    representation_topology_func_params=params
+                )
 
-        # Try before the population has been created
-        best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
-        self.assertEqual(len(best_ones), 1)
-        self.assertEqual(len(best_ones[0]), 0)
+        # Try a valid representation topology function
+        valid_representation_topology_func = full_connected_destinations
+        trainer = MyIslandsTrainer(
+            valid_solution,
+            valid_species,
+            valid_fitness_func,
+            valid_subtrainer_cls,
+            representation_topology_func=valid_representation_topology_func
+        )
+        self.assertEqual(
+            trainer.representation_topology_func,
+            valid_representation_topology_func
+        )
 
-        # Generate the islands and perform one iteration
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
+        # Try valid representation topology function params
+        valid_params = {"offset": 2}
+        trainer = MyIslandsTrainer(
+            valid_solution,
+            valid_species,
+            valid_fitness_func,
+            valid_subtrainer_cls,
+            representation_topology_func_params=valid_params
+        )
+        self.assertEqual(
+            trainer.representation_topology_func_params,
+            valid_params
+        )
 
-        # Try again
-        best_ones = trainer.best_solutions()
+        # Test default params
+        trainer = MyIslandsTrainer(
+            valid_solution,
+            valid_species,
+            valid_fitness_func,
+            valid_subtrainer_cls,
+        )
 
-        # Test that a list with only one species is returned
-        self.assertIsInstance(best_ones, list)
-        self.assertEqual(len(best_ones), 1)
-        for sol in best_ones[0]:
-            self.assertIsInstance(sol, solution_cls)
-
-    def test_receive_representatives(self):
-        """Test receive_representatives."""
-        # Parameters for the trainer
-        solution_cls = Solution
-        fitness_func = Fitness(dataset)
-        num_subpops = 2
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        params = {
-            "solution_cls": solution_cls,
-            "species": species,
-            "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
-            "verbose": False,
-            "checkpoint_enable": False
-        }
-
-        # Create the trainer
-        trainer = MyIslandsTrainer(**params)
-
-        # Generate the islands and perform one iteration
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
-
-        for index in range(trainer.num_subpops):
-            trainer._communication_queues[index].put([index])
-
-        # Wait for the parallel queue processing
-        sleep(1)
-
-        # Call to receive representatives, assigned to
-        # island._preprocess_iteration
-        # at islands iteration time
-        for island_trainer in trainer.subpop_trainers:
-            island_trainer._preprocess_iteration()
-
-        # Check the received values
-        for index, island_trainer in enumerate(trainer.subpop_trainers):
-            self.assertEqual(island_trainer.pop[-1], index)
-
-    def test_send_representatives(self):
-        """Test send_representatives."""
-        # Parameters for the trainer
-        solution_cls = Solution
-        fitness_func = Fitness(dataset)
-        num_subpops = 2
-        subpop_trainer_cls = MySinglePopTrainerTrainer
-        params = {
-            "solution_cls": solution_cls,
-            "species": species,
-            "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
-            "verbose": False,
-            "checkpoint_enable": False
-        }
-
-        # Create the trainer
-        trainer = MyIslandsTrainer(**params)
-
-        # Generate the islands
-        trainer._init_search()
-        for island_trainer in trainer.subpop_trainers:
-            island_trainer._init_search()
-
-        trainer._start_iteration()
-        trainer._do_iteration()
-
-        # Set an iteration that should not provoke representatives sending
-        for island_trainer in trainer.subpop_trainers:
-            island_trainer._current_iter = trainer.representation_freq + 1
-
-            # Call to send representatives, assigned to
-            # island._postprocess_iteration at islands iteration time
-            island_trainer._postprocess_iteration()
-
-        # All the queues should be empty
-        for index in range(trainer.num_subpops):
-            self.assertTrue(trainer._communication_queues[index].empty())
-
-        # Set an iteration that should provoke representatives sending
-        for island_trainer in trainer.subpop_trainers:
-            island_trainer._current_iter = trainer.representation_freq
-
-            # Call to send representatives, assigned to
-            # island._postprocess_iteration at islands iteration time
-            island_trainer._postprocess_iteration()
-
-            # Wait for the parallel queue processing
-            sleep(1)
-
-        # All the queues shouldn't be empty
-        for index in range(trainer.num_subpops):
-            self.assertFalse(trainer._communication_queues[index].empty())
-            while not trainer._communication_queues[index].empty():
-                trainer._communication_queues[index].get()
+        self.assertEqual(
+            trainer.representation_topology_func,
+            DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
+        )
+        self.assertEqual(
+            trainer.representation_topology_func_params,
+            DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+        )
 
     def test_copy(self):
         """Test the __copy__ method."""
         # Parameters for the trainer
         solution_cls = Solution
         fitness_func = Fitness(dataset)
-        num_subpops = 2
-        subpop_trainer_cls = MySinglePopTrainerTrainer
+        num_subtrainers = 2
+        subtrainer_cls = MySingleSpeciesTrainer
         params = {
             "solution_cls": solution_cls,
             "species": species,
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "verbose": False,
             "checkpoint_enable": False
         }
@@ -335,14 +259,14 @@ class TrainerTester(unittest.TestCase):
         # Parameters for the trainer
         solution_cls = Solution
         fitness_func = Fitness(dataset)
-        num_subpops = 2
-        subpop_trainer_cls = MySinglePopTrainerTrainer
+        num_subtrainers = 2
+        subtrainer_cls = MySingleSpeciesTrainer
         params = {
             "solution_cls": solution_cls,
             "species": species,
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "verbose": False,
             "checkpoint_enable": False
         }
@@ -360,17 +284,16 @@ class TrainerTester(unittest.TestCase):
         Test the __setstate__ and __reduce__ methods.
         """
         # Set custom params
-        # Parameters for the trainer
         solution_cls = Solution
         fitness_func = Fitness(dataset)
-        num_subpops = 2
-        subpop_trainer_cls = MySinglePopTrainerTrainer
+        num_subtrainers = 2
+        subtrainer_cls = MySingleSpeciesTrainer
         params = {
             "solution_cls": solution_cls,
             "species": species,
             "fitness_function": fitness_func,
-            "subpop_trainer_cls": subpop_trainer_cls,
-            "num_subpops": num_subpops,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
             "verbose": False,
             "checkpoint_enable": False
         }
@@ -383,6 +306,29 @@ class TrainerTester(unittest.TestCase):
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        solution_cls = Solution
+        fitness_func = Fitness(dataset)
+        num_subtrainers = 2
+        subtrainer_cls = MySingleSpeciesTrainer
+        params = {
+            "solution_cls": solution_cls,
+            "species": species,
+            "fitness_function": fitness_func,
+            "subtrainer_cls": subtrainer_cls,
+            "num_subtrainers": num_subtrainers,
+            "verbose": False,
+            "checkpoint_enable": False
+        }
+
+        # Create the trainer
+        trainer = MyIslandsTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.

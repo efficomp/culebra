@@ -106,6 +106,12 @@ class FitnessFunctionTester(unittest.TestCase):
         func = MyFitnessFunction()
         self.assertEqual(func.heuristics(Species()), None)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        func = MyFitnessFunction()
+        self.assertIsInstance(repr(func), str)
+        self.assertIsInstance(str(func), str)
+
 
 if __name__ == '__main__':
     unittest.main()

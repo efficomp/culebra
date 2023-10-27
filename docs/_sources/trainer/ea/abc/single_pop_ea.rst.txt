@@ -91,5 +91,5 @@ Private methods
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._default_termination_func
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._termination_criterion
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._init_representatives
-.. automethod:: culebra.trainer.ea.abc.SinglePopEA._fill_initial_pop
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA._generate_initial_pop
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._evaluate_pop

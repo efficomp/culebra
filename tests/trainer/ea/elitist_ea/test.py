@@ -193,6 +193,20 @@ class TrainerTester(unittest.TestCase):
         pop_size_after = len(trainer.pop)
         self.assertEqual(pop_size_before, pop_size_after)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset),
+            "checkpoint_enable": False,
+            "verbose": False
+        }
+        trainer = ElitistEA(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
+
 
 if __name__ == '__main__':
     unittest.main()

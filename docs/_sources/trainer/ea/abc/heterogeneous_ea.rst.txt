@@ -31,7 +31,7 @@ Class attributes
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.max_num_iters
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.current_iter
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.custom_termination_func
@@ -43,7 +43,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.mutation_probs
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.gene_ind_mutation_probs
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.selection_funcs_params
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.num_subpops
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.num_subtrainers
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_size
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_freq
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_topology_func
@@ -61,15 +61,15 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.index
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.container
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representatives
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subpop_trainer_params
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subpop_trainers
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._state
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._subpop_suffixes
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._subtrainer_suffixes
 
 Static methods
 --------------
@@ -87,7 +87,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._generate_subpop_trainers
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._save_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._load_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._new_state

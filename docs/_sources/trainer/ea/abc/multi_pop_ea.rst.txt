@@ -31,11 +31,11 @@ Class attributes
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.max_num_iters
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.current_iter
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.custom_termination_func
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.num_subpops
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.num_subtrainers
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_size
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_freq
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_topology_func
@@ -53,15 +53,15 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.index
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.container
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representatives
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subpop_trainer_params
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subpop_trainers
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA._state
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA._subpop_suffixes
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA._subtrainer_suffixes
 
 Static methods
 --------------
@@ -79,7 +79,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._generate_subpop_trainers
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._save_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._load_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._new_state

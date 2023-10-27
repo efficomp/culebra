@@ -148,6 +148,15 @@ class IndividualTester(unittest.TestCase):
 
         print('Ok')
 
+    def test_2_repr(self):
+        """Test the repr and str dunder methods."""
+        print('Testing the __repr__ and __str__ dunder methods ...', end=' ')
+        species = Species([self.min_bound], [self.max_bound])
+        individual = Individual(species, MyFitness)
+        self.assertIsInstance(repr(individual), str)
+        self.assertIsInstance(str(individual), str)
+        print('Ok')
+
 
 # Tests the classes in this file
 if __name__ == '__main__':

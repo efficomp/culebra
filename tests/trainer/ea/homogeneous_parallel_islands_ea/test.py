@@ -27,8 +27,7 @@ from multiprocessing import cpu_count
 from culebra import (
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
-    DEFAULT_MAX_NUM_ITERS,
-    DEFAULT_POP_SIZE
+    DEFAULT_MAX_NUM_ITERS
 )
 from culebra.trainer import (
     DEFAULT_REPRESENTATION_SIZE,
@@ -39,6 +38,7 @@ from culebra.trainer import (
     DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
 )
 from culebra.trainer.ea import (
+    DEFAULT_POP_SIZE,
     NSGA,
     HomogeneousParallelIslandsEA as Trainer,
     DEFAULT_SELECTION_FUNC,
@@ -74,7 +74,7 @@ class TrainerTester(unittest.TestCase):
         solution_cls = Individual
         species = Species(dataset.num_feats)
         fitness_function = Fitness(dataset)
-        subpop_trainer_cls = NSGA
+        subtrainer_cls = NSGA
         max_num_iters = 25
         pop_size = 1234
         crossover_func = len
@@ -84,7 +84,7 @@ class TrainerTester(unittest.TestCase):
         mutation_prob = 0.123
         gene_ind_mutation_prob = 0.027
         selection_func_params = {"parameter1": 65}
-        num_subpops = 7
+        num_subtrainers = 7
         representation_size = 3
         representation_freq = 27
         representation_topology_func = max
@@ -103,7 +103,7 @@ class TrainerTester(unittest.TestCase):
             solution_cls,
             species,
             fitness_function,
-            subpop_trainer_cls,
+            subtrainer_cls,
             max_num_iters=max_num_iters,
             pop_size=pop_size,
             crossover_func=crossover_func,
@@ -113,7 +113,7 @@ class TrainerTester(unittest.TestCase):
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
             selection_func_params=selection_func_params,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
             representation_topology_func=representation_topology_func,
@@ -135,7 +135,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.solution_cls, solution_cls)
         self.assertEqual(trainer.species, species)
         self.assertEqual(trainer.fitness_function, fitness_function)
-        self.assertEqual(trainer.subpop_trainer_cls, subpop_trainer_cls)
+        self.assertEqual(trainer.subtrainer_cls, subtrainer_cls)
         self.assertEqual(trainer.max_num_iters, max_num_iters)
         self.assertEqual(trainer.pop_size, pop_size)
         self.assertEqual(trainer.crossover_func, crossover_func)
@@ -147,7 +147,7 @@ class TrainerTester(unittest.TestCase):
             trainer.gene_ind_mutation_prob, gene_ind_mutation_prob
         )
         self.assertEqual(trainer.selection_func_params, selection_func_params)
-        self.assertEqual(trainer.num_subpops, num_subpops)
+        self.assertEqual(trainer.num_subtrainers, num_subtrainers)
         self.assertEqual(trainer.representation_size, representation_size)
         self.assertEqual(trainer.representation_freq, representation_freq)
         self.assertEqual(
@@ -171,7 +171,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.verbose, verbose)
         self.assertEqual(trainer.random_seed, random_seed)
         self.assertEqual(
-            trainer.subpop_trainer_params["nsga3_reference_points_p"],
+            trainer.subtrainer_params["nsga3_reference_points_p"],
             nsga3_reference_points_p)
 
         # Test default params
@@ -179,13 +179,13 @@ class TrainerTester(unittest.TestCase):
             solution_cls,
             species,
             fitness_function,
-            subpop_trainer_cls,
+            subtrainer_cls,
         )
 
         self.assertEqual(trainer.solution_cls, solution_cls)
         self.assertEqual(trainer.species, species)
         self.assertEqual(trainer.fitness_function, fitness_function)
-        self.assertEqual(trainer.subpop_trainer_cls, subpop_trainer_cls)
+        self.assertEqual(trainer.subtrainer_cls, subtrainer_cls)
 
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
@@ -202,7 +202,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             trainer.selection_func_params, DEFAULT_SELECTION_FUNC_PARAMS
         )
-        self.assertEqual(trainer.num_subpops, cpu_count())
+        self.assertEqual(trainer.num_subtrainers, cpu_count())
         self.assertEqual(
             trainer.representation_size, DEFAULT_REPRESENTATION_SIZE
         )
@@ -234,7 +234,73 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(trainer.verbose, __debug__)
         self.assertEqual(trainer.random_seed, None)
-        self.assertEqual(trainer.subpop_trainer_params, {})
+        self.assertEqual(trainer.subtrainer_params, {})
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        solution_cls = Individual
+        species = Species(dataset.num_feats)
+        fitness_function = Fitness(dataset)
+        subtrainer_cls = NSGA
+        max_num_iters = 25
+        pop_size = 1234
+        crossover_func = len
+        mutation_func = isinstance
+        selection_func = issubclass
+        crossover_prob = 0.36
+        mutation_prob = 0.123
+        gene_ind_mutation_prob = 0.027
+        selection_func_params = {"parameter1": 65}
+        num_subtrainers = 7
+        representation_size = 3
+        representation_freq = 27
+        representation_topology_func = max
+        representation_topology_func_params = {"parameter2": 45}
+        representation_selection_func = min
+        representation_selection_func_params = {"parameter3": 15}
+        checkpoint_enable = False
+        checkpoint_freq = 17
+        checkpoint_filename = "my_check_file.gz"
+        verbose = False
+        random_seed = 149
+        nsga3_reference_points_p = 18
+
+        # Test custom params
+        trainer = Trainer(
+            solution_cls,
+            species,
+            fitness_function,
+            subtrainer_cls,
+            max_num_iters=max_num_iters,
+            pop_size=pop_size,
+            crossover_func=crossover_func,
+            mutation_func=mutation_func,
+            selection_func=selection_func,
+            crossover_prob=crossover_prob,
+            mutation_prob=mutation_prob,
+            gene_ind_mutation_prob=gene_ind_mutation_prob,
+            selection_func_params=selection_func_params,
+            num_subtrainers=num_subtrainers,
+            representation_size=representation_size,
+            representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
+            representation_selection_func=representation_selection_func,
+            representation_selection_func_params=(
+                representation_selection_func_params
+            ),
+            checkpoint_enable=checkpoint_enable,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_filename=checkpoint_filename,
+            verbose=verbose,
+            random_seed=random_seed,
+            nsga3_reference_points_p=nsga3_reference_points_p
+        )
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

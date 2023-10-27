@@ -22,10 +22,14 @@
 """Unit test for :py:class:`culebra.trainer.ea.abc.SinglePopEA`."""
 
 import unittest
+import os
+import pickle
+from copy import copy, deepcopy
 from functools import partialmethod
 
-from culebra import DEFAULT_MAX_NUM_ITERS, DEFAULT_POP_SIZE
+from culebra import DEFAULT_MAX_NUM_ITERS
 from culebra.trainer.ea import (
+    DEFAULT_POP_SIZE,
     DEFAULT_CROSSOVER_PROB,
     DEFAULT_MUTATION_PROB,
     DEFAULT_GENE_IND_MUTATION_PROB,
@@ -134,34 +138,34 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test __init__`."""
-        valid_solution_cls = FeatureSelectionIndividual
+        valid_individual_cls = FeatureSelectionIndividual
         valid_species = FeatureSelectionSpecies(dataset.num_feats)
         valid_fitness_func = NumFeats(dataset)
 
         # Try invalid individual classes. Should fail
         invalid_individual_classes = (type, None, 1, FeatureSelectionSolution)
-        for solution_cls in invalid_individual_classes:
+        for individual_cls in invalid_individual_classes:
             with self.assertRaises(TypeError):
-                MyTrainer(solution_cls, valid_species, valid_fitness_func)
+                MyTrainer(individual_cls, valid_species, valid_fitness_func)
 
         # Try invalid species. Should fail
         invalid_species = (type, None, 'a', 1)
         for species in invalid_species:
             with self.assertRaises(TypeError):
-                MyTrainer(valid_solution_cls, species, valid_fitness_func)
+                MyTrainer(valid_individual_cls, species, valid_fitness_func)
 
         # Try fitness functions. Should fail
         invalid_fitness_funcs = (type, None, 'a', 1)
         for func in invalid_fitness_funcs:
             with self.assertRaises(TypeError):
-                MyTrainer(valid_solution_cls, valid_species, func)
+                MyTrainer(valid_individual_cls, valid_species, func)
 
         # Try invalid types for max_num_iters. Should fail
         invalid_max_num_iters = (type, 'a', 1.5)
         for max_num_iters in invalid_max_num_iters:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     max_num_iters=max_num_iters
@@ -172,7 +176,7 @@ class TrainerTester(unittest.TestCase):
         for max_num_iters in invalid_max_num_iters:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     max_num_iters=max_num_iters
@@ -183,7 +187,7 @@ class TrainerTester(unittest.TestCase):
         for pop_size in invalid_pop_size:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     pop_size=pop_size
@@ -194,7 +198,7 @@ class TrainerTester(unittest.TestCase):
         for pop_size in invalid_pop_size:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     pop_size=pop_size
@@ -205,7 +209,7 @@ class TrainerTester(unittest.TestCase):
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     crossover_func=func
@@ -215,7 +219,7 @@ class TrainerTester(unittest.TestCase):
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     mutation_func=func
@@ -225,7 +229,7 @@ class TrainerTester(unittest.TestCase):
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     selection_func=func
@@ -236,7 +240,7 @@ class TrainerTester(unittest.TestCase):
         for prob in invalid_probs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     crossover_prob=prob
@@ -246,7 +250,7 @@ class TrainerTester(unittest.TestCase):
         for prob in invalid_probs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     mutation_prob=prob
@@ -256,7 +260,7 @@ class TrainerTester(unittest.TestCase):
         for prob in invalid_probs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     gene_ind_mutation_prob=prob
@@ -267,7 +271,7 @@ class TrainerTester(unittest.TestCase):
         for prob in invalid_probs:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     crossover_prob=prob
@@ -277,7 +281,7 @@ class TrainerTester(unittest.TestCase):
         for prob in invalid_probs:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     mutation_prob=prob
@@ -287,7 +291,7 @@ class TrainerTester(unittest.TestCase):
         for prob in invalid_probs:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     gene_ind_mutation_prob=prob
@@ -298,7 +302,7 @@ class TrainerTester(unittest.TestCase):
         for params in invalid_params:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_solution_cls,
+                    valid_individual_cls,
                     valid_species,
                     valid_fitness_func,
                     selection_func_params=params
@@ -306,9 +310,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = MyTrainer(
-            valid_solution_cls, valid_species, valid_fitness_func
+            valid_individual_cls, valid_species, valid_fitness_func
         )
-        self.assertEqual(trainer.solution_cls, valid_solution_cls)
+        self.assertEqual(trainer.solution_cls, valid_individual_cls)
         self.assertEqual(trainer.species, valid_species)
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
@@ -325,10 +329,75 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.pop, None)
         self.assertEqual(trainer._current_iter, None)
 
+    def test_checkpoining(self):
+        """Test checkpointing."""
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset)
+        }
+
+        # Construct a parameterized trainer
+        trainer1 = MyTrainer(**params)
+
+        # Set state attributes to dummy values
+        trainer1._pop = [
+            FeatureSelectionIndividual(
+                params["species"],
+                params["fitness_function"].Fitness
+            )
+        ]
+
+        trainer1._current_iter = 10
+
+        # Create another trainer
+        trainer2 = MyTrainer(**params)
+
+        # Check that state attributes in trainer1 are not default values
+        self.assertNotEqual(trainer1.pop, None)
+        self.assertNotEqual(trainer1._current_iter, None)
+
+        # Check that state attributes in trainer2 are defaults
+        self.assertEqual(trainer2.pop, None)
+        self.assertEqual(trainer2._current_iter, None)
+
+        # Save the state of trainer1
+        trainer1._save_state()
+
+        # Load the state of trainer1 into trainer2
+        trainer2._load_state()
+
+        # Check that the state attributes of trainer2 are equal to those of
+        # trainer1
+        self.assertEqual(trainer1._current_iter, trainer2._current_iter)
+        self.assertEqual(len(trainer1.pop), len(trainer2.pop))
+
+        # Remove the checkpoint file
+        os.remove(trainer1.checkpoint_filename)
+
+    def test_reset_state(self):
+        """Test the _reset_state method."""
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "pop_size": 2,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+
+        # Reset the state
+        trainer._reset_state()
+
+        # Check the population
+        self.assertEqual(trainer.pop, None)
+
     def test_new_state(self):
         """Test _new_state`.
 
-        Also test _fill_initial_pop`.
+        Also test _generate_initial_pop`.
         """
         params = {
             "solution_cls": FeatureSelectionIndividual,
@@ -345,7 +414,8 @@ class TrainerTester(unittest.TestCase):
         trainer._init_internals()
         trainer._new_state()
 
-        # Check the pop size
+        # Check the pop
+        self.assertIsInstance(trainer.pop, list)
         self.assertEqual(len(trainer.pop), trainer.pop_size)
 
         # Check the individuals in the population
@@ -402,6 +472,206 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             trainer._current_iter_evals,
             trainer.pop_size * len(trainer._representatives)
+        )
+
+    def test_best_solutions(self):
+        """Test the best_solutions method."""
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "pop_size": 2,
+            "checkpoint_enable": False,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+
+        # Try before the population has been created
+        best_ones = trainer.best_solutions()
+        self.assertIsInstance(best_ones, list)
+        self.assertEqual(len(best_ones), 1)
+        self.assertEqual(len(best_ones[0]), 0)
+
+        # Generate some individuals
+        sol1 = FeatureSelectionIndividual(
+            params["species"],
+            params["fitness_function"].Fitness,
+            (1, 2)
+        )
+
+        sol2 = FeatureSelectionIndividual(
+            params["species"],
+            params["fitness_function"].Fitness,
+            (1, 2, 3)
+        )
+
+        sol3 = FeatureSelectionIndividual(
+            params["species"],
+            params["fitness_function"].Fitness,
+            (0, 2, 3)
+        )
+        # Init the search
+        trainer._init_search()
+
+        # Try a population with different fitnesses
+        trainer._pop = [sol1, sol2, sol3]
+
+        for sol in trainer.pop:
+            trainer.evaluate(sol)
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has only one solution
+        self.assertEqual(len(best_ones[0]), 1)
+
+        # Check that the solution in hof is sol1
+        self.assertTrue(sol1 in best_ones[0])
+
+        # Try a population with repeated solutions
+        trainer._pop = [sol2, sol3]
+
+        for sol in trainer.pop:
+            trainer.evaluate(sol)
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has two solutions
+        self.assertEqual(len(best_ones[0]), 2)
+
+        # Check that sol2 and sol3 are the solutions in hof
+        self.assertTrue(sol2 in best_ones[0])
+        self.assertTrue(sol3 in best_ones[0])
+
+    def test_copy(self):
+        """Test the __copy__ method."""
+        # Set custom params
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "pop_size": 2,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer1 = MyTrainer(**params)
+        trainer2 = copy(trainer1)
+
+        # Copy only copies the first level (trainer1 != trainerl2)
+        self.assertNotEqual(id(trainer1), id(trainer2))
+
+        # The objects attributes are shared
+        self.assertEqual(
+            id(trainer1.fitness_function),
+            id(trainer2.fitness_function)
+        )
+        self.assertEqual(
+            id(trainer1.species),
+            id(trainer2.species)
+        )
+
+    def test_deepcopy(self):
+        """Test the __deepcopy__ method."""
+        # Set custom params
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "pop_size": 2,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer1 = MyTrainer(**params)
+        trainer2 = deepcopy(trainer1)
+
+        # Check the copy
+        self._check_deepcopy(trainer1, trainer2)
+
+    def test_serialization(self):
+        """Serialization test.
+
+        Test the __setstate__ and __reduce__ methods.
+        """
+        # Set custom params
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "pop_size": 2,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer1 = MyTrainer(**params)
+
+        data = pickle.dumps(trainer1)
+        trainer2 = pickle.loads(data)
+
+        # Check the serialization
+        self._check_deepcopy(trainer1, trainer2)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Create a default trainer
+        params = {
+            "solution_cls": FeatureSelectionIndividual,
+            "species": FeatureSelectionSpecies(dataset.num_feats),
+            "fitness_function": NumFeats(dataset),
+            "pop_size": 2,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
+
+    def _check_deepcopy(self, trainer1, trainer2):
+        """Check if *trainer1* is a deepcopy of *trainer2*.
+
+        :param trainer1: The first trainer
+        :type trainer1: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param trainer2: The second trainer
+        :type trainer2: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        """
+        # Copies all the levels
+        self.assertNotEqual(id(trainer1), id(trainer2))
+        self.assertNotEqual(
+            id(trainer1.fitness_function),
+            id(trainer2.fitness_function)
+        )
+        self.assertNotEqual(
+            id(trainer1.fitness_function.training_data),
+            id(trainer2.fitness_function.training_data)
+        )
+
+        self.assertTrue(
+            (
+                trainer1.fitness_function.training_data.inputs ==
+                trainer2.fitness_function.training_data.inputs
+            ).all()
+        )
+
+        self.assertTrue(
+            (
+                trainer1.fitness_function.training_data.outputs ==
+                trainer2.fitness_function.training_data.outputs
+            ).all()
+        )
+
+        self.assertNotEqual(id(trainer1.species), id(trainer2.species))
+        self.assertEqual(
+            id(trainer1.species.num_feats), id(trainer2.species.num_feats)
         )
 
 

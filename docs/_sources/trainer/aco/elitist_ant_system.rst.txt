@@ -46,7 +46,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.max_num_iters
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.current_iter
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pop_size
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.col_size
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_enable
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_filename
@@ -58,7 +58,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.index
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.container
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.representatives
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pop
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.col
 
 
 Private properties
@@ -103,9 +103,9 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._next_choice
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_ant
-.. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_pop
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_col
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._evaporate_pheromones
-.. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pop_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_elite
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_ant_weighted_pheromones

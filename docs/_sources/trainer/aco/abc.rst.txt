@@ -27,4 +27,5 @@
 .. toctree::
     :hidden:
 
-    SinglePopACO <abc/single_pop_aco>
+    SingleColACO <abc/single_col_aco>
+    ElitistACO <abc/elitist_aco>

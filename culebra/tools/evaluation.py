@@ -52,7 +52,7 @@ from culebra.tools import Results
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -630,7 +630,7 @@ class Experiment(Evaluation):
         self.results[result_key] = df
 
     def _add_fitness(self, result_key: str) -> None:
-        """Add the training fitness values to the solutions found.
+        """Add the fitness values to the solutions found.
 
         :param result_key: Result key.
         :type result_key: :py:class:`str`
@@ -638,8 +638,15 @@ class Experiment(Evaluation):
         # Objective names
         obj_names = list(self.best_solutions[0][0].fitness.names)
 
+        # Number of species
+        num_species = len(self.best_solutions)
+
         # Index for the dataframe
-        index = [_Labels.species, _Labels.solution]
+        index = (
+            [_Labels.species, _Labels.solution]
+            if num_species > 1
+            else [_Labels.solution]
+        )
 
         # Column names for the dataframe
         column_names = index + obj_names
@@ -652,8 +659,13 @@ class Experiment(Evaluation):
             # For each solution of the species
             for sol in hof:
                 # Create a row for the dataframe
+                row_index = (
+                    (species_index, sol)
+                    if num_species > 1
+                    else (sol, )
+                )
                 row = Series(
-                    (species_index, sol) + sol.fitness.values,
+                    row_index + sol.fitness.values,
                     index=column_names
                 )
 
@@ -679,8 +691,15 @@ class Experiment(Evaluation):
         # Number of objectives
         n_obj = self.best_solutions[0][0].fitness.num_obj
 
+        # Number of species
+        num_species = len(self.best_solutions)
+
         # Index for the dataframe
-        index = [_Labels.species, _Labels.fitness]
+        index = (
+            [_Labels.species, _Labels.fitness]
+            if num_species > 1
+            else [_Labels.fitness]
+        )
 
         # Column names for the dataframe
         column_names = index + list(self.stats_functions.keys())
@@ -703,7 +722,9 @@ class Experiment(Evaluation):
             # Perform the stats
             species_df = DataFrame(columns=column_names)
 
-            species_df[_Labels.species] = [species_index] * n_obj
+            if num_species > 1:
+                species_df[_Labels.species] = [species_index] * n_obj
+
             species_df[_Labels.fitness] = obj_names
             for name, func in self.stats_functions.items():
                 species_df[name] = func(fitness, axis=1)
@@ -768,7 +789,7 @@ class Experiment(Evaluation):
             # If the species codes features
             hof_species = hof[0].species
             if isinstance(hof_species, FSSpecies):
-                # Feature selection individuals detected
+                # Feature selection solutions detected
                 there_are_features = True
                 features_hof.update(hof)
 
@@ -1147,9 +1168,6 @@ class Batch(Evaluation):
 
         # Column names for the dataframe
         column_names = index + list(self.stats_functions.keys())
-
-        # Create a dataframe
-        df = DataFrame(columns=column_names)
 
         # Get the objective names
         obj_names = input_data.columns

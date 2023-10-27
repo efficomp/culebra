@@ -40,7 +40,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.MMAS.heuristic_influence
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_evaporation_rate
-.. autoproperty:: culebra.trainer.aco.MMAS.elite_weight
 .. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit
 .. autoproperty:: culebra.trainer.aco.MMAS.convergence_check_freq
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromones
@@ -48,7 +47,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.max_num_iters
 .. autoproperty:: culebra.trainer.aco.MMAS.current_iter
 .. autoproperty:: culebra.trainer.aco.MMAS.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.MMAS.pop_size
+.. autoproperty:: culebra.trainer.aco.MMAS.col_size
 .. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_enable
 .. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_filename
@@ -60,7 +59,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.index
 .. autoproperty:: culebra.trainer.aco.MMAS.container
 .. autoproperty:: culebra.trainer.aco.MMAS.representatives
-.. autoproperty:: culebra.trainer.aco.MMAS.pop
+.. autoproperty:: culebra.trainer.aco.MMAS.col
 
 
 Private properties
@@ -106,10 +105,10 @@ Private methods
 .. automethod:: culebra.trainer.aco.MMAS._next_choice
 .. automethod:: culebra.trainer.aco.MMAS._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.MMAS._generate_ant
-.. automethod:: culebra.trainer.aco.MMAS._generate_pop
+.. automethod:: culebra.trainer.aco.MMAS._generate_col
 .. automethod:: culebra.trainer.aco.MMAS._evaporate_pheromones
-.. automethod:: culebra.trainer.aco.MMAS._deposit_pop_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._deposit_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._update_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._update_elite
+.. automethod:: culebra.trainer.aco.MMAS._deposit_ant_weighted_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._has_converged

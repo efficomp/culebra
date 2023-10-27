@@ -24,9 +24,9 @@
 import unittest
 
 import numpy as np
-from deap.tools import HallOfFame, ParetoFront
+from deap.tools import ParetoFront
 
-from culebra.trainer.aco import ElitistAntSystem
+from culebra.trainer.aco import ElitistAntSystem, DEFAULT_ELITE_WEIGHT
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
 
@@ -59,7 +59,7 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Try invalid values for elite_weight. Should fail
-        invalid_elite_weight_values = (-1, 0)
+        invalid_elite_weight_values = (-0.5, 1.5)
         for elite_weight in invalid_elite_weight_values:
             with self.assertRaises(ValueError):
                 ElitistAntSystem(
@@ -71,7 +71,7 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Try a valid value for elite_weight
-        valid_elite_weight_values = (1, 2, 5.6)
+        valid_elite_weight_values = (0.0, 0.5, 1.0)
         for elite_weight in valid_elite_weight_values:
             trainer = ElitistAntSystem(
                 ant_cls,
@@ -89,7 +89,7 @@ class TrainerTester(unittest.TestCase):
             fitness_func,
             initial_pheromones
         )
-        self.assertEqual(trainer.elite_weight, num_nodes)
+        self.assertEqual(trainer.elite_weight, DEFAULT_ELITE_WEIGHT)
 
     def test_state(self):
         """Test _state."""
@@ -150,7 +150,7 @@ class TrainerTester(unittest.TestCase):
         trainer._new_state()
 
         # Check the pheromones matrix
-        self.assertIsInstance(trainer._elite, HallOfFame)
+        self.assertIsInstance(trainer._elite, ParetoFront)
         self.assertEqual(len(trainer._elite), 0)
 
     def test_reset_state(self):
@@ -193,7 +193,7 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = ElitistAntSystem(**params)
 
-        # Try before any population has been created
+        # Try before any colony has been created
         best_ones = trainer.best_solutions()
         self.assertIsInstance(best_ones, list)
         self.assertEqual(len(best_ones), 1)
@@ -218,10 +218,32 @@ class TrainerTester(unittest.TestCase):
 
     def test_deposit_pheromones(self):
         """Test the _deposit_pheromones method."""
+
+        def assert_path_pheromones_increment(trainer, ant, weight):
+            """Check the pheromones in all the arcs of a path.
+
+            All the arcs should have the same are ammount of pheromones.
+            """
+            pheromones_value = (
+                trainer.initial_pheromones[0] +
+                ant.fitness.pheromones_amount[0] * weight
+            )
+            org = ant.path[-1]
+            for dest in ant.path:
+                self.assertAlmostEqual(
+                    trainer.pheromones[0][org][dest],
+                    pheromones_value
+                )
+                self.assertAlmostEqual(
+                    trainer.pheromones[0][dest][org],
+                    pheromones_value
+                )
+                org = dest
+
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
-        elite_weight = 4
+        elite_weight = 0.8
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -229,7 +251,7 @@ class TrainerTester(unittest.TestCase):
             "initial_pheromones": initial_pheromones,
             "pheromone_influence": 2,
             "heuristic_influence": 3,
-            "pop_size": 1,
+            "col_size": 1,
             "elite_weight": elite_weight
         }
 
@@ -244,31 +266,29 @@ class TrainerTester(unittest.TestCase):
             np.all(trainer.pheromones[0] == pheromones_value)
         )
 
-        # Generate a new colony
-        trainer._generate_pop()
-
-        # Update the elite
-        trainer._update_elite()
-
-        # Evaporate pheromones
+        # Try with an empty elite
+        # Only the iteration-best ant should deposit pheromones
+        trainer._generate_col()
+        ant = trainer.col[0]
         trainer._deposit_pheromones()
+        assert_path_pheromones_increment(
+            trainer,
+            ant,
+            1 - trainer.elite_weight
+        )
 
-        # Get the ant
-        ant = trainer.pop[0]
-        pheromones_increment = ant.fitness.pheromones_amount[0]
-        pheromones_value += pheromones_increment * (elite_weight + 1)
-
-        org = ant.path[-1]
-        for dest in ant.path:
-            self.assertAlmostEqual(
-                trainer.pheromones[0][org][dest],
-                pheromones_value
-            )
-            self.assertAlmostEqual(
-                trainer.pheromones[0][dest][org],
-                pheromones_value
-            )
-            org = dest
+        # Update the elite and try with an empty colony
+        # Only the elite ant should deposit pheromones
+        trainer._init_search()
+        trainer._start_iteration()
+        trainer._elite.update([ant])
+        trainer._col = []
+        trainer._deposit_pheromones()
+        assert_path_pheromones_increment(
+            trainer,
+            ant,
+            trainer.elite_weight
+        )
 
     def test_do_iteration(self):
         """Test the _do_iteration method."""
@@ -296,7 +316,27 @@ class TrainerTester(unittest.TestCase):
         trainer._do_iteration()
 
         # The elite should not be empty
-        self.assertEqual(len(trainer._elite), 1)
+        self.assertGreaterEqual(len(trainer._elite), 1)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones,
+            "pheromone_influence": 2,
+            "heuristic_influence": 3
+        }
+
+        # Create the trainer
+        trainer = ElitistAntSystem(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

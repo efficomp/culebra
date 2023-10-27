@@ -56,7 +56,7 @@ of NSGA-III."""
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -167,7 +167,7 @@ class ElitistEA(SimpleEA):
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
         :param pop_size: The populaion size. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :py:data:`None`
         :type pop_size: :py:class:`int`, greater than zero, optional
         :param crossover_func: The crossover function. If set to
@@ -423,7 +423,7 @@ class NSGA(SimpleEA):
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
         :param pop_size: The population size. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` is used for
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
             NSGA-II or the number of reference points is chosen for NSGA-III.
             Defaults to :py:data:`None`
         :type pop_size: :py:class:`int`, greater than zero, optional
@@ -524,7 +524,7 @@ class NSGA(SimpleEA):
         :getter: Return the current population size
         :setter: Set a new value for the population size. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` is used for
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
             NSGA-II or the number of reference points is chosen for NSGA-III
         :type: :py:class:`int`
         :raises TypeError: If set to a value which is not an :py:class:`int`

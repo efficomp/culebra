@@ -191,6 +191,14 @@ class AntTester(unittest.TestCase):
                 self.assertTrue((ant1.path == ant2.path).all())
                 self.assertTrue((ant1.path == ant3.path).all())
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        num_feats = 10
+        species = Species(num_feats)
+        ant = Ant(species, Fitness)
+        self.assertIsInstance(repr(ant), str)
+        self.assertIsInstance(str(ant), str)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -23,13 +23,13 @@ from __future__ import annotations
 from typing import List
 
 
-__author__ = "Jesús González"
-__copyright__ = "Copyright 2023, EFFICOMP"
-__license__ = "GNU GPL-3.0-or-later"
-__version__ = "0.2.1"
-__maintainer__ = "Jesús González"
-__email__ = "jesusgonzalez@ugr.es"
-__status__ = "Development"
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.3.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
 
 
 DEFAULT_RING_OFFSET = 1
@@ -38,38 +38,38 @@ DEFAULT_RING_OFFSET = 1
 
 def ring_destinations(
     origin: int,
-    num_subpops: int,
+    num_subtrainers: int,
     offset: int = DEFAULT_RING_OFFSET
 ) -> List[int]:
     """Return the destinations reachable from *origin*.
 
     :param origin: The index of the origin subpopulation trainer
     :type origin: :py:class:`int`
-    :param num_subpops: The number of subpopulations
-    :type num_subpops: :py:class:`int`
+    :param num_subtrainers: The number of subpopulations
+    :type num_subtrainers: :py:class:`int`
     :param offset: Offset applied to *origin*, defaults to
         :py:attr:`~culebra.trainer.topology.DEFAULT_RING_OFFSET`
     :type offset: :py:class:`int`, optional
     :return: The direct destinations from *origin*
     :rtype: :py:class:`list` of subpopulation trainer indexes
     """
-    return [(origin + offset) % num_subpops]
+    return [(origin + offset) % num_subtrainers]
 
 
 def full_connected_destinations(
     origin: int,
-    num_subpops: int
+    num_subtrainers: int
 ) -> List[int]:
     """Return the destinations reachable from *origin*.
 
     :param origin: The index of the origin subpopulation trainer
     :type origin: :py:class:`int`
-    :param num_subpops: The number of subpopulations
-    :type num_subpops: :py:class:`int`
+    :param num_subtrainers: The number of subpopulations
+    :type num_subtrainers: :py:class:`int`
     :return: The direct destinations from *origin*
     :rtype: :py:class:`list` of subpopulation trainer indexes
     """
-    destinations = list(range(num_subpops))
+    destinations = list(range(num_subtrainers))
     destinations.remove(origin)
     return destinations
 

@@ -223,6 +223,12 @@ class SolutionTester(unittest.TestCase):
         self.assertNotEqual(id(sol1.fitness), id(sol2.fitness))
         self.assertEqual(sol1.fitness, sol2.fitness)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        sol = MySolution(MySpecies(), MyFitness)
+        self.assertIsInstance(repr(sol), str)
+        self.assertIsInstance(str(sol), str)
+
 
 if __name__ == '__main__':
     unittest.main()

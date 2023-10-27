@@ -63,7 +63,7 @@ optional) – Custom termination criterion. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the default termination criterion is used.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>pop_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, greater than zero, optional) – The population size. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../../index.html#culebra.DEFAULT_POP_SIZE" title="culebra.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a> is used for
+<a class="reference internal" href="../ea.html#culebra.trainer.ea.DEFAULT_POP_SIZE" title="culebra.trainer.ea.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a> is used for
 NSGA-II or the number of reference points is chosen for NSGA-III.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>crossover_func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – The crossover function. If set to
@@ -130,7 +130,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <h2>Class attributes<a class="headerlink" href="#class-attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.trainer.ea.NSGA.stats_names">
-<span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">stats_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Iter',</span> <span class="pre">'Pop',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#culebra.trainer.ea.NSGA.stats_names" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">stats_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Iter',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#culebra.trainer.ea.NSGA.stats_names" title="Link to this definition">¶</a></dt>
 <dd><p>Statistics calculated each iteration.</p>
 </dd></dl>
 
@@ -290,7 +290,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <dt class="field-even">Setter<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set a new value for the population size. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../../index.html#culebra.DEFAULT_POP_SIZE" title="culebra.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a> is used for
+<a class="reference internal" href="../ea.html#culebra.trainer.ea.DEFAULT_POP_SIZE" title="culebra.trainer.ea.DEFAULT_POP_SIZE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_POP_SIZE</span></code></a> is used for
 NSGA-II or the number of reference points is chosen for NSGA-III</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -732,7 +732,7 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.trainer.ea.NSGA.pop">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">pop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.ea.NSGA.pop" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">pop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../solution/abc/individual.html#culebra.solution.abc.Individual" title="culebra.solution.abc.Individual"><span class="pre">Individual</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.ea.NSGA.pop" title="Link to this definition">¶</a></dt>
 <dd><p>Get the population.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -994,7 +994,7 @@ before each iteration is run.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.ea.NSGA._preprocess_iteration">
 <span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">_preprocess_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.NSGA._preprocess_iteration" title="Link to this definition">¶</a></dt>
-<dd><p>Preprocess the population(s).</p>
+<dd><p>Preprocess before doing the iteration.</p>
 <p>Subclasses should override this method to make any preprocessment
 before performing an iteration.</p>
 </dd></dl>
@@ -1009,7 +1009,7 @@ before performing an iteration.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.ea.NSGA._postprocess_iteration">
 <span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">_postprocess_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.NSGA._postprocess_iteration" title="Link to this definition">¶</a></dt>
-<dd><p>Postprocess the population(s).</p>
+<dd><p>Postprocess after doing the iteration.</p>
 <p>Subclasses should override this method to make any postprocessment
 after performing an iteration.</p>
 </dd></dl>
@@ -1060,10 +1060,10 @@ species initialized.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.ea.NSGA._fill_initial_pop">
-<span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">_fill_initial_pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.NSGA._fill_initial_pop" title="Link to this definition">¶</a></dt>
-<dd><p>Fill the initial population.</p>
-<p>The population is filed with random generated individuals.</p>
+<dt class="sig sig-object py" id="culebra.trainer.ea.NSGA._generate_initial_pop">
+<span class="sig-prename descclassname"><span class="pre">NSGA.</span></span><span class="sig-name descname"><span class="pre">_generate_initial_pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.NSGA._generate_initial_pop" title="Link to this definition">¶</a></dt>
+<dd><p>Generate the initial population.</p>
+<p>The population is filled with random generated individuals.</p>
 </dd></dl>
 
 <dl class="py method">

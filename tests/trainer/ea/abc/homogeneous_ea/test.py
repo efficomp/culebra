@@ -254,6 +254,24 @@ class TrainerTester(unittest.TestCase):
             trainer.selection_func_params, DEFAULT_SELECTION_FUNC_PARAMS)
         self.assertEqual(trainer._current_iter, None)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        solution_cls = FeatureSelectionIndividual
+        species = FeatureSelectionSpecies(dataset.num_feats)
+        fitness_func = NumFeats(dataset)
+        params = {
+            "solution_cls": solution_cls,
+            "species": species,
+            "fitness_function": fitness_func
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
+
 
 if __name__ == '__main__':
     unittest.main()

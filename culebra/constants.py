@@ -19,35 +19,14 @@
 """Constants of the module."""
 
 
-import numpy as np
-
-
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
-
-DEFAULT_STATS_NAMES = ('Iter', 'Pop', 'NEvals')
-"""Default statistics calculated for each iteration of the
-:py:class:`~culebra.abc.Trainer`.
-"""
-
-DEFAULT_OBJECTIVE_STATS = {
-    "Avg": np.mean,
-    "Std": np.std,
-    "Min": np.min,
-    "Max": np.max,
-}
-"""Default statistics calculated for each objective within a
-:py:class:`~culebra.abc.Trainer`.
-"""
-
-DEFAULT_POP_SIZE = 100
-"""Default population size."""
 
 DEFAULT_MAX_NUM_ITERS = 100
 """Default maximum number of iterations."""
@@ -71,9 +50,6 @@ distributed approaches.
 
 
 __all__ = [
-    'DEFAULT_STATS_NAMES',
-    'DEFAULT_OBJECTIVE_STATS',
-    'DEFAULT_POP_SIZE',
     'DEFAULT_MAX_NUM_ITERS',
     'DEFAULT_CHECKPOINT_ENABLE',
     'DEFAULT_CHECKPOINT_FREQ',

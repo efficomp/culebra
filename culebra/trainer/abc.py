@@ -27,23 +27,17 @@ Regarding the number of species that are simultaneously being trained:
   * :py:class:`~culebra.trainer.abc.MultiSpeciesTrainer`: Provides a base
     class for trainers that find solutions for multiple species
 
-With respect to the number of populations being trained:
+Trainers can also be distributed. The
+:py:class:`~culebra.trainer.abc.DistributedTrainer` class provides a base
+support to distribute a trainer making use a several subtrainers. Two
+implementations of this class are also provided:
 
-  * :py:class:`~culebra.trainer.abc.SinglePopTrainer`: A base class for all
-    the single population trainers
-  * :py:class:`~culebra.trainer.abc.MultiPopTrainer`: A base class for all
-    the multiple population trainers
+  * :py:class:`~culebra.trainer.abc.SequentialDistributedTrainer`: Abstract
+    base class for sequential distributed trainers
+  * :py:class:`~culebra.trainer.abc.ParallelDistributedTrainer`: Abstract base
+    class for parallel distributed trainers
 
-Regarding :py:class:`~culebra.trainer.abc.MultiPopTrainer` implementations,
-they can be executed sequentially or in parallel, with the aid of the following
-classes:
-
-  * :py:class:`~culebra.trainer.abc.SequentialMultiPopTrainer`: Abstract base
-    class for sequential multi-population trainers
-  * :py:class:`~culebra.trainer.abc.ParallelMultiPopTrainer`: Abstract base
-    class for parallel multi-population trainers
-
-Finally, different multi-population approaches are also provided:
+Finally, some usual distributed approaches are also provided:
 
   * :py:class:`~culebra.trainer.abc.IslandsTrainer`: Abstract base class for
     island-based approaches
@@ -65,7 +59,6 @@ from typing import (
     Sequence)
 from copy import deepcopy
 from functools import partial
-from itertools import repeat
 from multiprocessing import (
     cpu_count,
     Queue,
@@ -75,7 +68,6 @@ from os import path
 
 from deap.tools import Logbook, HallOfFame, ParetoFront
 
-from culebra import DEFAULT_POP_SIZE
 from culebra.abc import (
     Solution,
     Species,
@@ -91,28 +83,32 @@ from culebra.checker import (
     check_sequence
 )
 
+from .topology import full_connected_destinations
 from .constants import (
-    DEFAULT_NUM_SUBPOPS,
+    DEFAULT_NUM_SUBTRAINERS,
     DEFAULT_REPRESENTATION_SIZE,
     DEFAULT_REPRESENTATION_FREQ,
-    DEFAULT_REPRESENTATION_TOPOLOGY_FUNC,
-    DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS,
     DEFAULT_REPRESENTATION_SELECTION_FUNC,
     DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS,
     DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC,
     DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS,
-    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC,
-    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 )
 
 
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
+
+
+COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC = full_connected_destinations
+"""Default topology function for the cooperative model."""
+
+COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS = {}
+"""Parameters for the default topology function in the cooperative model."""
 
 
 class SingleSpeciesTrainer(Trainer):
@@ -280,228 +276,22 @@ class SingleSpeciesTrainer(Trainer):
                 self.__dict__)
 
 
-class SinglePopTrainer(SingleSpeciesTrainer):
-    """Base class for all the single population trainers."""
-
-    def __init__(
-        self,
-        solution_cls: Type[Solution],
-        species: Species,
-        fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [SinglePopTrainer],
-                bool]
-        ] = None,
-        pop_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
-    ) -> None:
-        """Create a new trainer.
-
-        :param solution_cls: The solution class
-        :type solution_cls: A :py:class:`~culebra.abc.Solution` subclass
-        :param species: The species for all the solutions
-        :type species: :py:class:`~culebra.abc.Species`
-        :param fitness_function: The training fitness function
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
-        :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`,
-            :py:meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param pop_size: The populaion size. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE`
-            will be used. Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
-        :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
-        :raises TypeError: If any argument is not of the appropriate type
-        :raises ValueError: If any argument has an incorrect value
-        """
-        # Init the superclass
-        super().__init__(
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            checkpoint_enable=checkpoint_enable,
-            checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
-            random_seed=random_seed
-        )
-
-        # Get the parameters
-        self.pop_size = pop_size
-
-    @property
-    def pop_size(self) -> int:
-        """Get and set the population size.
-
-        :getter: Return the current population size
-        :setter: Set a new value for the population size. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an :py:class:`int`
-        :raises ValueError: If set to a value which is not greater than zero
-        """
-        return DEFAULT_POP_SIZE if self._pop_size is None else self._pop_size
-
-    @pop_size.setter
-    def pop_size(self, size: int | None) -> None:
-        """Set the population size.
-
-        :param size: The new population size. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` is chosen
-        :type size: :py:class:`int`, greater than zero. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` is used
-        :raises TypeError: If *size* is not an :py:class:`int`
-        :raises ValueError: If *size* is not an integer greater than zero
-        """
-        # Check the value
-        self._pop_size = (
-            None if size is None else check_int(size, "population size", gt=0)
-        )
-
-        # Reset the algorithm
-        self.reset()
-
-    @property
-    def pop(self) -> List[Solution] | None:
-        """Get the population.
-
-        :type: :py:class:`list` of :py:class:`~culebra.abc.Solution`
-        """
-        return self._pop
-
-    def _do_iteration_stats(self) -> None:
-        """Perform the iteration stats."""
-        # Perform some stats
-        record = self._stats.compile(self.pop) if self._stats else {}
-        self._logbook.record(
-            Iter=self._current_iter,
-            Pop=self.index,
-            NEvals=self._current_iter_evals,
-            **record)
-        if self.verbose:
-            print(self._logbook.stream)
-
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
-
-        Overridden to add the current population to the trainer's state.
-
-        :getter: Return the state
-        :setter: Set a new state
-        :type: :py:class:`dict`
-        """
-        # Get the state of the superclass
-        state = Trainer._state.fget(self)
-
-        # Get the state of this class
-        state["pop"] = self.pop
-
-        return state
-
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
-        """Set the state of this trainer.
-
-        Overridden to add the current population to the trainer's state.
-
-        :param state: The last loaded state
-        :type state: :py:class:`dict`
-        """
-        # Set the state of the superclass
-        Trainer._state.fset(self, state)
-
-        # Set the state of this class
-        self._pop = state["pop"]
-
-    def _reset_state(self) -> None:
-        """Reset the trainer state.
-
-        Overridden to reset the initial population.
-        """
-        super()._reset_state()
-        self._pop = None
-
-    def _new_state(self) -> None:
-        """Generate a new trainer state.
-
-        Overridden to generate an empty population.
-        """
-        super()._new_state()
-
-        self._pop = []
-
-    def best_solutions(self) -> Sequence[HallOfFame]:
-        """Get the best solutions found for each species.
-
-        Return the best single solution found for each species
-
-        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
-            solutions. One hof for each species
-        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
-        """
-        hof = ParetoFront()
-        if self.pop is not None:
-            hof.update(self.pop)
-        return [hof]
-
-
-class MultiPopTrainer(Trainer):
-    """Base class for all the multiple population trainers."""
+class DistributedTrainer(Trainer):
+    """Base class for all the distributed trainers."""
 
     def __init__(
         self,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopTrainer],
+        subtrainer_cls: Type[SingleSpeciesTrainer],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopTrainer],
+                [SingleSpeciesTrainer],
                 bool]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
         representation_selection_func: Optional[
             Callable[[List[Solution], Any], Solution]
         ] = None,
@@ -513,16 +303,16 @@ class MultiPopTrainer(Trainer):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
-            the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
-            :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param subtrainer_cls: Single-species trainer class to handle
+            the subtrainers.
+        :type subtrainer_cls: Any subclass of
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -533,13 +323,13 @@ class MultiPopTrainer(Trainer):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param num_subpops: The number of subpopulations. If set to
+        :param num_subtrainers: The number of subtrainers. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` will be
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
             used. Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative solutions that
-            will be sent to the other subpopulations. If set to
+            will be sent to the other subtrainers. If set to
             :py:data:`None`,
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
             be used. Defaults to :py:data:`None`
@@ -549,19 +339,8 @@ class MultiPopTrainer(Trainer):
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
             be used. Defaults to :py:data:`None`
         :type representation_freq: :py:class:`int`, optional
-        :param representation_topology_func: Topology function for
-            representatives sending. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func:
-            :py:class:`~collections.abc.Callable`, optional
-        :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func_params: :py:class:`dict`, optional
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation. If set to :py:data:`None`,
+            representatives from each subtrainer. If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
             will be used. Defaults to :py:data:`None`
         :type representation_selection_func:
@@ -591,9 +370,9 @@ class MultiPopTrainer(Trainer):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subtrainers
             trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -610,85 +389,82 @@ class MultiPopTrainer(Trainer):
         )
 
         # Get the parameters
-        self.subpop_trainer_cls = subpop_trainer_cls
-        self.num_subpops = num_subpops
+        self.subtrainer_cls = subtrainer_cls
+        self.num_subtrainers = num_subtrainers
         self.representation_size = representation_size
         self.representation_freq = representation_freq
-        self.representation_topology_func = representation_topology_func
-        self.representation_topology_func_params = (
-            representation_topology_func_params
-        )
         self.representation_selection_func = representation_selection_func
         self.representation_selection_func_params = (
             representation_selection_func_params
         )
-        self.subpop_trainer_params = subpop_trainer_params
+        self.subtrainer_params = subtrainer_params
 
     @property
-    def subpop_trainer_cls(self) -> Type[SinglePopTrainer]:
-        """Get and set the trainer class to handle the subpopulations.
+    def subtrainer_cls(self) -> Type[SingleSpeciesTrainer]:
+        """Get and set the trainer class to handle the subtrainers.
 
-        Each subpopulation will be handled by a single-population trainer.
+        Each subtrainer will be handled by a single-species trainer.
 
         :getter: Return the trainer class
         :setter: Set new trainer class
-        :type: A :py:class:`~culebra.trainer.abc.SinglePopTrainer` subclass
+        :type: A :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer` subclass
         :raises TypeError: If set to a value which is not a
-            :py:class:`~culebra.trainer.abc.SinglePopTrainer` subclass
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer` subclass
         """
-        return self._subpop_trainer_cls
+        return self._subtrainer_cls
 
-    @subpop_trainer_cls.setter
-    def subpop_trainer_cls(self, cls: Type[SinglePopTrainer]) -> None:
-        """Set a new trainer class to handle the subpopulations.
+    @subtrainer_cls.setter
+    def subtrainer_cls(self, cls: Type[SingleSpeciesTrainer]) -> None:
+        """Set a new trainer class to handle the subtrainers.
 
-        Each subpopulation will be handled by a single-population trainer.
+        Each subtrainer will be handled by a single-species trainer.
 
         :param cls: The new class
-        :type cls: A :py:class:`~culebra.trainer.abc.SinglePopTrainer` subclass
+        :type cls: A :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+            subclass
         :raises TypeError: If *cls* is not a
-            :py:class:`~culebra.trainer.abc.SinglePopTrainer` subclass
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer` subclass
         """
         # Check cls
-        self._subpop_trainer_cls = check_subclass(
-            cls, "trainer class for subpopulations", SinglePopTrainer
+        self._subtrainer_cls = check_subclass(
+            cls, "trainer class for subtrainers", SingleSpeciesTrainer
         )
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def num_subpops(self) -> int:
-        """Get and set the number of subpopulations.
+    def num_subtrainers(self) -> int:
+        """Get and set the number of subtrainers.
 
-        :getter: Return the current number of subpopulations
-        :setter: Set a new value for the number of subpopulations. If set to
+        :getter: Return the current number of subtrainers
+        :setter: Set a new value for the number of subtrainers. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` is chosen
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` is chosen
         :type: :py:class:`int`
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not a positive number
         """
         return (
-            DEFAULT_NUM_SUBPOPS if self._num_subpops is None
-            else self._num_subpops
+            DEFAULT_NUM_SUBTRAINERS if self._num_subtrainers is None
+            else self._num_subtrainers
         )
 
-    @num_subpops.setter
-    def num_subpops(self, value: int | None) -> None:
-        """Set the number of subpopulations.
+    @num_subtrainers.setter
+    def num_subtrainers(self, value: int | None) -> None:
+        """Set the number of subtrainers.
 
-        :param value: The new number of subpopulations. If set to
+        :param value: The new number of subtrainers. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` is chosen
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` is chosen
         :type value: An integer value
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
         # Check the value
-        self._num_subpops = (
+        self._num_subtrainers = (
             None if value is None else check_int(
-                value, "number of subpopulations", gt=0
+                value, "number of subtrainers", gt=0
             )
         )
 
@@ -700,7 +476,7 @@ class MultiPopTrainer(Trainer):
         """Get and set the representation size.
 
         The representation size is the number of representatives sent to the
-        other subpopulations
+        other subtrainers
 
         :getter: Return the current representation size
         :setter: Set the new representation size. If set to :py:data:`None`,
@@ -775,87 +551,36 @@ class MultiPopTrainer(Trainer):
         self.reset()
 
     @property
+    @abstractmethod
     def representation_topology_func(
         self
     ) -> Callable[[int, int, Any], List[int]]:
-        """Get and set the representation topology function.
+        """Get the representation topology function.
 
-        :getter: Return the representation topology function
-        :setter: Set new representation topology function. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC`
-            is chosen
+        This property must be overridden by subclasses to return a correct
+        value.
+
         :type: :py:class:`~collections.abc.Callable`
-        :raises TypeError: If set to a value which is not callable
         """
-        return (
-            DEFAULT_REPRESENTATION_TOPOLOGY_FUNC
-            if self._representation_topology_func is None
-            else self._representation_topology_func
+        raise NotImplementedError(
+            "The representation_topology_func property has not been "
+            f"implemented in the {self.__class__.__name__} class"
         )
-
-    @representation_topology_func.setter
-    def representation_topology_func(
-        self,
-        func: Callable[[int, int, Any], List[int]] | None
-    ) -> None:
-        """Set new representation topology function.
-
-        :param func: The new function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC`
-            is chosen
-        :type func: :py:class:`~collections.abc.Callable`
-        :raises TypeError: If *func* is not a callable
-        """
-        # Check func
-        self._representation_topology_func = (
-            None if func is None else check_func(
-                func, "representation topology function"
-            )
-        )
-
-        # Reset the algorithm
-        self.reset()
 
     @property
+    @abstractmethod
     def representation_topology_func_params(self) -> Dict[str, Any]:
-        """Get and set the parameters of the representation topology function.
+        """Get the parameters of the representation topology function.
 
-        :getter: Return the current parameters for the representation topology
-            function
-        :setter: Set new parameters. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            is chosen
+        This property must be overridden by subclasses to return a correct
+        value.
+
         :type: :py:class:`dict`
-        :raises TypeError: If set to a value which is not a :py:class:`dict`
         """
-        return (
-            DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-            if self._representation_topology_func_params is None
-            else self._representation_topology_func_params
+        raise NotImplementedError(
+            "The representation_topology_func_params property has not been "
+            f"implemented in the {self.__class__.__name__} class"
         )
-
-    @representation_topology_func_params.setter
-    def representation_topology_func_params(
-        self, params: Dict[str, Any] | None
-    ) -> None:
-        """Set the parameters for the representation topology function.
-
-        :param params: The new parameters. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            is chosen
-        :type params: :py:class:`dict`
-        :raises TypeError: If *params* is not a :py:class:`dict`
-        """
-        # Check params
-        self._representation_topology_func_params = (
-            None if params is None else check_func_params(
-                params, "representation topology function parameters"
-            )
-        )
-
-        # Reset the algorithm
-        self.reset()
 
     @property
     def representation_selection_func(
@@ -864,7 +589,7 @@ class MultiPopTrainer(Trainer):
         """Get and set the representation selection policy function.
 
         The representation selection policy func chooses which solutions are
-        selected as representatives of each subpopulation.
+        selected as representatives of each subtrainer.
 
         :getter: Return the representation selection policy function
         :setter: Set new representation selection policy function. If set to
@@ -956,16 +681,16 @@ class MultiPopTrainer(Trainer):
 
         if self._logbook is not None:
             the_logbook = self._logbook
-        elif self.subpop_trainers is not None:
+        elif self.subtrainers is not None:
             # Create the logbook
             the_logbook = Logbook()
             # Init the logbook
             the_logbook.header = list(self.stats_names) + \
                 (self._stats.fields if self._stats else [])
 
-            for subpop_trainer in self.subpop_trainers:
-                if subpop_trainer.logbook is not None:
-                    the_logbook.extend(subpop_trainer.logbook)
+            for subtrainer in self.subtrainers:
+                if subtrainer.logbook is not None:
+                    the_logbook.extend(subtrainer.logbook)
 
             if self._search_finished:
                 self._logbook = the_logbook
@@ -973,183 +698,185 @@ class MultiPopTrainer(Trainer):
         return the_logbook
 
     @property
-    def subpop_trainer_params(self) -> Dict[str, Any]:
-        """Get and set the custom parameters of the subpopulation trainers.
+    def subtrainer_params(self) -> Dict[str, Any]:
+        """Get and set the custom parameters of the subtrainers.
 
-        :getter: Return the current parameters for the subpopulation trainers
+        :getter: Return the current parameters for the subtrainers
         :setter: Set new parameters
         :type: :py:class:`dict`
         :raises TypeError: If set to a value which is not a :py:class:`dict`
         """
-        return self._subpop_trainer_params
+        return self._subtrainer_params
 
-    @subpop_trainer_params.setter
-    def subpop_trainer_params(self, params: Dict[str, Any]) -> None:
-        """Set the parameters for the subpopulation trainers.
+    @subtrainer_params.setter
+    def subtrainer_params(self, params: Dict[str, Any]) -> None:
+        """Set the parameters for the subtrainers.
 
         :param params: The new parameters
         :type params: A :py:class:`dict`
         :raises TypeError: If *params* is not a :py:class:`dict`
         """
         # Check that params is a valid dict
-        self._subpop_trainer_params = check_func_params(
-            params, "subpopulation trainers parameters"
+        self._subtrainer_params = check_func_params(
+            params, "subtrainers parameters"
         )
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def subpop_trainer_checkpoint_filenames(
+    def subtrainer_checkpoint_filenames(
         self
     ) -> Generator[str, None, None]:
-        """Checkpoint file name of all the subpopulation trainers."""
+        """Checkpoint file name of all the subtrainers."""
         base_name = path.splitext(self.checkpoint_filename)[0]
         extension = path.splitext(self.checkpoint_filename)[1]
 
-        # Generator for the subpop trainer checkpoint file names
+        # Generator for the subtrainer checkpoint file names
         return (
             base_name + f"_{suffix}" + extension
-            for suffix in self._subpop_suffixes
+            for suffix in self._subtrainer_suffixes
         )
 
     @property
-    def subpop_trainers(self) -> List[SinglePopTrainer] | None:
-        """Return the subpopulation trainers.
+    def subtrainers(self) -> List[SingleSpeciesTrainer] | None:
+        """Return the subtrainers.
 
-        One single-population trainer for each subpopulation
+        One single-species trainer for each subtrainer
 
         :type: :py:class:`list` of
-            :py:class:`~culebra.trainer.abc.SinglePopTrainer` trainers
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer` trainers
         """
-        return self._subpop_trainers
+        return self._subtrainers
 
     @property
-    def _subpop_suffixes(self) -> Generator[str, None, None]:
-        """Return the suffixes for the different subpopulations.
+    def _subtrainer_suffixes(self) -> Generator[str, None, None]:
+        """Return the suffixes for the different subtrainers.
 
-        Can be used to generate the subpopulations' names, checkpoint files,
+        Can be used to generate the subtrainers' names, checkpoint files,
         etc.
 
         :return: A generator of the suffixes
         :rtype: A generator of :py:class:`str`
         """
-        # Suffix length for subpopulations checkpoint files
-        suffix_len = len(str(self.num_subpops-1))
+        # Suffix length for subtrainers checkpoint files
+        suffix_len = len(str(self.num_subtrainers-1))
 
-        # Generator for the subpopulations checkpoint files
-        return (f"{i:0{suffix_len}d}" for i in range(self.num_subpops))
+        # Generator for the subtrainers checkpoint files
+        return (f"{i:0{suffix_len}d}" for i in range(self.num_subtrainers))
 
     @staticmethod
     @abstractmethod
-    def receive_representatives(subpop_trainer) -> None:
+    def receive_representatives(subtrainer) -> None:
         """Receive representative solutions.
 
         This method must be overridden by subclasses.
 
-        :param subpop_trainer: The subpopulation trainer receiving
-            representatives
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param subtrainer: The subtrainer receiving representatives
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         """
         raise NotImplementedError(
             "The receive_representatives method has not been implemented in "
-            f"the {subpop_trainer.container.__class__.__name__} class")
+            f"the {subtrainer.container.__class__.__name__} class")
 
     @staticmethod
     @abstractmethod
-    def send_representatives(subpop_trainer) -> None:
+    def send_representatives(subtrainer) -> None:
         """Send representatives.
 
         This method must be overridden by subclasses.
 
-        :param subpop_trainer: The sender subpopulation trainer
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param subtrainer: The sender subtrainer
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         """
         raise NotImplementedError(
             "The send_representatives method has not been implemented in "
-            f"the {subpop_trainer.container.__class__.__name__} class")
+            f"the {subtrainer.container.__class__.__name__} class")
 
     @abstractmethod
-    def _generate_subpop_trainers(self) -> None:
-        """Generate the subpopulation trainers.
+    def _generate_subtrainers(self) -> None:
+        """Generate the subtrainers.
 
-        Also assign an :py:attr:`~culebra.trainer.abc.SinglePopTrainer.index`
-        and a :py:attr:`~culebra.trainer.abc.SinglePopTrainer.container` to
-        each subpopulation :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        trainer, change the subpopulation trainers'
-        :py:attr:`~culebra.trainer.abc.SinglePopTrainer.checkpoint_filename`
+        Also assign an
+        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.index`
+        and a :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.container` to
+        each subtrainer :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        trainer, change the subtrainers'
+        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_filename`
         according to the container checkpointing file name and each
-        subpopulation index.
+        subtrainer index.
 
         Finally, the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._preprocess_iteration`
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration`
         and
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._postprocess_iteration`
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration`
         methods of the
-        :py:attr:`~culebra.trainer.abc.MultiPopTrainer.subpop_trainer_cls` class
-        are dynamically overridden, in order to allow solutions exchange
-        between subpopulation trainers, if necessary
+        :py:attr:`~culebra.trainer.abc.DistributedTrainer.subtrainer_cls`
+        class are dynamically overridden, in order to allow solutions exchange
+        between subtrainers, if necessary
 
         This method must be overridden by subclasses.
 
         :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError(
-            "The _generate_subpop_trainers method has not been implemented "
+            "The _generate_subtrainers method has not been implemented "
             f"in the {self.__class__.__name__} class")
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
         Overridden to set the logbook to :py:data:`None`, since the final
-        logbook will be generated from the subpopulation trainers' logbook,
+        logbook will be generated from the subtrainers' logbook,
         once the trainer has finished.
         """
         super()._new_state()
 
-        # The logbook will be generated from the subpopulation trainers
+        # The logbook will be generated from the subtrainers
         self._logbook = None
 
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
-        Overridden to create the subpopulation trainers and communication
+        Overridden to create the subtrainers and communication
         queues.
         """
         super()._init_internals()
 
-        # Generate the subpopulation trainers
-        self._generate_subpop_trainers()
+        # Generate the subtrainers
+        self._generate_subtrainers()
 
-        # Set up the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._init_internals()
+        # Set up the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._init_internals()
 
         # Init the communication queues
         self._communication_queues = []
-        for _ in range(self.num_subpops):
+        for _ in range(self.num_subtrainers):
             self._communication_queues.append(Queue())
 
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overridden to reset the subpopulation trainers and communication queues.
+        Overridden to reset the subtrainers and communication queues.
         """
         super()._reset_internals()
-        self._subpop_trainers = None
+        self._subtrainers = None
         self._communication_queues = None
 
-    def __copy__(self) -> MultiPopTrainer:
+    def __copy__(self) -> DistributedTrainer:
         """Shallow copy the trainer."""
         cls = self.__class__
         result = cls(
             self.fitness_function,
-            self.subpop_trainer_cls
+            self.subtrainer_cls
         )
         result.__dict__.update(self.__dict__)
         return result
 
-    def __deepcopy__(self, memo: dict) -> MultiPopTrainer:
+    def __deepcopy__(self, memo: dict) -> DistributedTrainer:
         """Deepcopy the trainer.
 
         :param memo: Trainer attributes
@@ -1160,7 +887,7 @@ class MultiPopTrainer(Trainer):
         cls = self.__class__
         result = cls(
             self.fitness_function,
-            self.subpop_trainer_cls
+            self.subtrainer_cls
         )
         result.__dict__.update(deepcopy(self.__dict__, memo))
         return result
@@ -1174,135 +901,136 @@ class MultiPopTrainer(Trainer):
         return (self.__class__,
                 (
                     self.fitness_function,
-                    self.subpop_trainer_cls
+                    self.subtrainer_cls
                 ),
                 self.__dict__)
 
 
-class SequentialMultiPopTrainer(MultiPopTrainer):
-    """Abstract base class for sequential multi-population trainers."""
+class SequentialDistributedTrainer(DistributedTrainer):
+    """Abstract base class for sequential distributed trainers."""
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._new_state` method
-        of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._new_state` method
+        of each subtrainer.
         """
         super()._new_state()
 
-        # Generate the state of all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._new_state()
+        # Generate the state of all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._new_state()
 
     def _load_state(self) -> None:
         """Load the state of the last checkpoint.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._load_state` method
-        of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._load_state` method
+        of each subtrainer.
 
         :raises Exception: If the checkpoint file can't be loaded
         """
         # Load the state of this trainer
         super()._load_state()
 
-        # Load the subpopulation trainers' state
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._load_state()
+        # Load the subtrainers' state
+        for subtrainer in self.subtrainers:
+            subtrainer._load_state()
 
     def _save_state(self) -> None:
         """Save the state at a new checkpoint.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._save_state` method
-        of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._save_state` method
+        of each subtrainer.
 
         :raises Exception: If the checkpoint file can't be written
         """
         # Save the state of this trainer
         super()._save_state()
 
-        # Save the state of all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._save_state()
+        # Save the state of all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._save_state()
 
     def _start_iteration(self) -> None:
         """Start an iteration.
 
         Prepare the metrics before each iteration is run. Overridden to call
         also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._start_iteration`
-        method of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._start_iteration`
+        method of each subtrainer.
 
         """
         super()._start_iteration()
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
             # Fix the current iteration
-            subpop_trainer._current_iter = self._current_iter
+            subtrainer._current_iter = self._current_iter
             # Start the iteration
-            subpop_trainer._start_iteration()
+            subtrainer._start_iteration()
 
     def _preprocess_iteration(self) -> None:
-        """Preprocess the population of all the subtrainers.
+        """Preprocess the iteration of all the subtrainers.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._preprocess_iteration`
-        method of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration`
+        method of each subtrainer.
         """
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._preprocess_iteration()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._preprocess_iteration()
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._do_iteration`
-        method of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._do_iteration`
+        method of each subtrainer.
         """
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._do_iteration()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._do_iteration()
 
     def _do_iteration_stats(self) -> None:
         """Perform the iteration stats.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._do_iteration_stats`
-        method of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._do_iteration_stats`
+        method of each subtrainer.
         """
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._do_iteration_stats()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._do_iteration_stats()
 
     def _postprocess_iteration(self) -> None:
-        """Postprocess the population of all the subtrainers.
+        """Postprocess the iteration of all the subtrainers.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._postprocess_iteration`
-        method of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration`
+        method of each subtrainer.
         """
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._postprocess_iteration()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._postprocess_iteration()
 
     def _finish_iteration(self) -> None:
         """Finish an iteration.
 
         Close the metrics after each iteration is run. Overridden to call also
-        the :py:meth:`~culebra.trainer.abc.SinglePopTrainer._finish_iteration`
-        method of each subpopulation trainer and accumulate the current number
-        of evaluations of all the subpopulations.
+        the
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._finish_iteration`
+        method of each subtrainer and accumulate the current number
+        of evaluations of all the subtrainers.
         """
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
 
-            # Finish the iteration of all the subpopulation trainers
-            subpop_trainer._finish_iteration()
+            # Finish the iteration of all the subtrainers
+            subtrainer._finish_iteration()
             # Get the number of evaluations
-            self._current_iter_evals += subpop_trainer._current_iter_evals
+            self._current_iter_evals += subtrainer._current_iter_evals
 
         # Finish the iteration
         super()._finish_iteration()
@@ -1311,34 +1039,34 @@ class SequentialMultiPopTrainer(MultiPopTrainer):
         """Finish the search process.
 
         Overridden to call also the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._finish_search`
-        method of each subpopulation trainer.
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._finish_search`
+        method of each subtrainer.
         """
-        for subpop_trainer in self.subpop_trainers:
+        for subtrainer in self.subtrainers:
             # Fix the current iteration
-            subpop_trainer._current_iter = self._current_iter
+            subtrainer._current_iter = self._current_iter
 
         # Finish the iteration
         super()._finish_search()
 
 
-class ParallelMultiPopTrainer(MultiPopTrainer):
-    """Abstract base class for parallel multi-population trainers."""
+class ParallelDistributedTrainer(DistributedTrainer):
+    """Abstract base class for parallel distributed trainers."""
 
-    @MultiPopTrainer.num_subpops.getter
-    def num_subpops(self) -> int:
-        """Get and set the number of subpopulations.
+    @DistributedTrainer.num_subtrainers.getter
+    def num_subtrainers(self) -> int:
+        """Get and set the number of subtrainers.
 
-        :getter: Return the current number of subpopulations
-        :setter: Set a new value for the number of subpopulations. If set to
+        :getter: Return the current number of subtrainers
+        :setter: Set a new value for the number of subtrainers. If set to
             :py:data:`None`, the number of CPU cores is chosen
         :type: :py:class:`int`
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not a positive number
         """
         return (
-            cpu_count() if self._num_subpops is None
-            else self._num_subpops
+            cpu_count() if self._num_subtrainers is None
+            else self._num_subtrainers
         )
 
     @property
@@ -1354,11 +1082,11 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
 
         if self._num_evals is not None:
             n_evals = self._num_evals
-        elif self.subpop_trainers is not None:
+        elif self.subtrainers is not None:
             n_evals = 0
-            for subpop_trainer in self.subpop_trainers:
-                if subpop_trainer.num_evals is not None:
-                    n_evals += subpop_trainer.num_evals
+            for subtrainer in self.subtrainers:
+                if subtrainer.num_evals is not None:
+                    n_evals += subtrainer.num_evals
 
             if self._search_finished:
                 self._num_evals = n_evals
@@ -1378,14 +1106,14 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
 
         if self._runtime is not None:
             the_runtime = self._runtime
-        elif self.subpop_trainers is not None:
+        elif self.subtrainers is not None:
             the_runtime = 0
-            for subpop_trainer in self.subpop_trainers:
+            for subtrainer in self.subtrainers:
                 if (
-                        subpop_trainer.runtime is not None
-                        and subpop_trainer.runtime > the_runtime
+                        subtrainer.runtime is not None
+                        and subtrainer.runtime > the_runtime
                 ):
-                    the_runtime = subpop_trainer.runtime
+                    the_runtime = subtrainer.runtime
 
             if self._search_finished:
                 self._runtime = the_runtime
@@ -1397,31 +1125,31 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
 
         Overridden to set the overall runtime and number of evaluations to
         :py:data:`None`, since their final values will be generated from the
-        subpopulation trainers' state, once the trainer has finished.
+        subtrainers' state, once the trainer has finished.
         """
         super()._new_state()
 
         # The runtime and number of evaluations will be generated
-        # from the subpopulation trainers
+        # from the subtrainers
         self._runtime = None
         self._num_evals = None
 
-        # Each subpopultion handles its own current iteration
+        # Each subtrainer handles its own current iteration
         self._current_iter = None
 
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
         Overridden to create a multiprocessing manager and proxies to
-        communicate with the processes running the subpopulation trainers.
+        communicate with the processes running the subtrainers.
         """
         super()._init_internals()
 
-        # Initialize the manager to receive the subpopulation trainers' state
+        # Initialize the manager to receive the subtrainers' state
         self._manager = Manager()
-        self._subpop_state_proxies = []
-        for _ in range(self.num_subpops):
-            self._subpop_state_proxies.append(self._manager.dict())
+        self._subtrainer_state_proxies = []
+        for _ in range(self.num_subtrainers):
+            self._subtrainer_state_proxies.append(self._manager.dict())
 
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
@@ -1430,44 +1158,44 @@ class ParallelMultiPopTrainer(MultiPopTrainer):
         """
         super()._reset_internals()
         self._manager = None
-        self._subpop_state_proxies = None
+        self._subtrainer_state_proxies = None
 
     def _search(self) -> None:
         """Apply the search algorithm.
 
-        Each subpopulation trainer runs in a different process.
+        Each subtrainer runs in a different process.
         """
         # Run all the iterations
-        for subpop_trainer, state_proxy, suffix in zip(
-                self.subpop_trainers,
-                self._subpop_state_proxies,
-                self._subpop_suffixes):
-            subpop_trainer.process = Process(
-                target=subpop_trainer.train,
+        for subtrainer, state_proxy, suffix in zip(
+                self.subtrainers,
+                self._subtrainer_state_proxies,
+                self._subtrainer_suffixes):
+            subtrainer.process = Process(
+                target=subtrainer.train,
                 kwargs={"state_proxy": state_proxy},
-                name=f"subpop_{suffix}",
+                name=f"subtrainer_{suffix}",
                 daemon=True
             )
-            subpop_trainer.process.start()
+            subtrainer.process.start()
 
-        for subpop_trainer, state_proxy in zip(
-                self.subpop_trainers, self._subpop_state_proxies):
-            subpop_trainer.process.join()
-            subpop_trainer._state = state_proxy
+        for subtrainer, state_proxy in zip(
+                self.subtrainers, self._subtrainer_state_proxies):
+            subtrainer.process.join()
+            subtrainer._state = state_proxy
 
 
 # Change the docstring of the ParallelMultiPop constructor to indicate that
-# the default number of subpopulations is the number of CPU cores for parallel
-# multi-population approaches
-ParallelMultiPopTrainer.__init__.__doc__ = (
-    ParallelMultiPopTrainer.__init__.__doc__.replace(
-        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS`',
+# the default number of subtrainers is the number of CPU cores for parallel
+# distributed approaches
+ParallelDistributedTrainer.__init__.__doc__ = (
+    ParallelDistributedTrainer.__init__.__doc__.replace(
+        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
         'the number of CPU cores'
     )
 )
 
 
-class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
+class IslandsTrainer(SingleSpeciesTrainer, DistributedTrainer):
     """Abstract island-based trainer."""
 
     def __init__(
@@ -1475,13 +1203,13 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
         solution_cls: Type[Solution],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopTrainer],
+        subtrainer_cls: Type[SingleSpeciesTrainer],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopTrainer], bool]
+                [SingleSpeciesTrainer], bool]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -1501,7 +1229,7 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
@@ -1511,10 +1239,10 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
         :type species: :py:class:`~culebra.abc.Species`
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
-            the subpopulations (islands).
-        :type subpop_trainer_cls: Any subclass of
-            :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param subtrainer_cls: Single-species trainer class to handle
+            the subtrainers (islands).
+        :type subtrainer_cls: Any subclass of
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -1525,13 +1253,13 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param num_subpops: The number of subpopulations (islands). If set to
+        :param num_subtrainers: The number of subtrainers (islands). If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` will be
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
             used. Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative solutions that
-            will be sent to the other subpopulations. If set to
+            will be sent to the other subtrainers. If set to
             :py:data:`None`,
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
             be used. Defaults to :py:data:`None`
@@ -1558,7 +1286,7 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             will be used. Defaults to :py:data:`None`
         :type representation_topology_func_params: :py:class:`dict`, optional
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation (island). If set to
+            representatives from each subtrainer (island). If set to
             :py:data:`None`,
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
             will be used. Defaults to :py:data:`None`
@@ -1589,9 +1317,9 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subtrainers
             (islands) trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -1602,19 +1330,15 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             fitness_function=fitness_function
         )
 
-        MultiPopTrainer.__init__(
+        DistributedTrainer.__init__(
             self,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -1624,10 +1348,14 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
+        )
+        self.representation_topology_func = representation_topology_func
+        self.representation_topology_func_params = (
+            representation_topology_func_params
         )
 
-    @MultiPopTrainer.representation_topology_func.getter
+    @property
     def representation_topology_func(
         self
     ) -> Callable[[int, int, Any], List[int]]:
@@ -1647,7 +1375,30 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             else self._representation_topology_func
         )
 
-    @MultiPopTrainer.representation_topology_func_params.getter
+    @representation_topology_func.setter
+    def representation_topology_func(
+        self,
+        func: Callable[[int, int, Any], List[int]] | None
+    ) -> None:
+        """Set new representation topology function.
+
+        :param func: The new function. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
+            is chosen
+        :type func: :py:class:`~collections.abc.Callable`
+        :raises TypeError: If *func* is not a callable
+        """
+        # Check func
+        self._representation_topology_func = (
+            None if func is None else check_func(
+                func, "representation topology function"
+            )
+        )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
     def representation_topology_func_params(self) -> Dict[str, Any]:
         """Get and set the parameters of the representation topology function.
 
@@ -1665,71 +1416,27 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             else self._representation_topology_func_params
         )
 
-    def best_solutions(self) -> Sequence[HallOfFame]:
-        """Get the best solutions found for each species.
+    @representation_topology_func_params.setter
+    def representation_topology_func_params(
+        self, params: Dict[str, Any] | None
+    ) -> None:
+        """Set the parameters for the representation topology function.
 
-        Return the best single solution found for each species
-
-        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
-            solutions. One hof for each species
-        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        :param params: The new parameters. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
+            is chosen
+        :type params: :py:class:`dict`
+        :raises TypeError: If *params* is not a :py:class:`dict`
         """
-        hof = None
-        # If the search hasn't been initialized an empty HoF is returned
-        if self.subpop_trainers is None:
-            hof = ParetoFront()
-        else:
-            for subpop_trainer in self.subpop_trainers:
-                if hof is None:
-                    hof = subpop_trainer.best_solutions()[0]
-                else:
-                    if subpop_trainer.pop is not None:
-                        hof.update(subpop_trainer.pop)
-
-        return [hof]
-
-    @staticmethod
-    def receive_representatives(subpop_trainer) -> None:
-        """Receive representative solutions.
-
-        :param subpop_trainer: The subpopulation trainer receiving
-            representatives
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        """
-        container = subpop_trainer.container
-
-        # Receive all the solutions in the queue
-        queue = container._communication_queues[subpop_trainer.index]
-        while not queue.empty():
-            subpop_trainer._pop.extend(queue.get())
-
-    @staticmethod
-    def send_representatives(subpop_trainer) -> None:
-        """Send representatives.
-
-        :param subpop_trainer: The sender subpopulation trainer
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        """
-        container = subpop_trainer.container
-
-        # Check if sending should be performed
-        if subpop_trainer._current_iter % container.representation_freq == 0:
-            # Get the destinations according to the representation topology
-            destinations = container.representation_topology_func(
-                subpop_trainer.index,
-                container.num_subpops,
-                **container.representation_topology_func_params
+        # Check params
+        self._representation_topology_func_params = (
+            None if params is None else check_func_params(
+                params, "representation topology function parameters"
             )
+        )
 
-            # For each destination
-            for dest in destinations:
-                # Get the representatives
-                sols = container.representation_selection_func(
-                    subpop_trainer.pop,
-                    container.representation_size,
-                    **container.representation_selection_func_params
-                )
-                container._communication_queues[dest].put(sols)
+        # Reset the algorithm
+        self.reset()
 
     def __copy__(self) -> IslandsTrainer:
         """Shallow copy the trainer."""
@@ -1738,7 +1445,7 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             self.solution_cls,
             self.species,
             self.fitness_function,
-            self.subpop_trainer_cls
+            self.subtrainer_cls
         )
         result.__dict__.update(self.__dict__)
         return result
@@ -1756,7 +1463,7 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
             self.solution_cls,
             self.species,
             self.fitness_function,
-            self.subpop_trainer_cls
+            self.subtrainer_cls
         )
         result.__dict__.update(deepcopy(self.__dict__, memo))
         return result
@@ -1772,7 +1479,7 @@ class IslandsTrainer(SingleSpeciesTrainer, MultiPopTrainer):
                     self.solution_cls,
                     self.species,
                     self.fitness_function,
-                    self.subpop_trainer_cls
+                    self.subtrainer_cls
                 ),
                 self.__dict__)
 
@@ -1891,7 +1598,7 @@ class MultiSpeciesTrainer(Trainer):
 
     @property
     def species(self) -> Sequence[Species]:
-        """Get and set the species for each subpopulation.
+        """Get and set the species for each subtrainer.
 
         :getter: Return the current species
         :setter: Set the new species
@@ -1960,7 +1667,7 @@ class MultiSpeciesTrainer(Trainer):
                 self.__dict__)
 
 
-class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
+class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
     """Abstract cooperative trainer model."""
 
     def __init__(
@@ -1968,24 +1675,17 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         solution_classes: Sequence[Type[Solution]],
         species: Sequence[Species],
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopTrainer],
+        subtrainer_cls: Type[SingleSpeciesTrainer],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopTrainer],
+                [SingleSpeciesTrainer],
                 bool
             ]
         ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
         representation_selection_func: Optional[
             Callable[[List[Solution], Any], Solution]
         ] = None,
@@ -1997,11 +1697,11 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
-        Each species is evolved in a different subpopulation.
+        Each species is evolved in a different subtrainer.
 
         :param solution_classes: The individual class for each species.
         :type solution_classes: :py:class:`~collections.abc.Sequence` of
@@ -2011,10 +1711,10 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             :py:class:`~culebra.abc.Species`
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
-            the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
-            :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param subtrainer_cls: Single-species trainer class to handle
+            the subtrainers.
+        :type subtrainer_cls: Any subclass of
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -2025,22 +1725,13 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param pop_sizes: The population size for each subpopulation (species).
-            If only a single value is provided, the same size will be used for
-            all the subpopulations. Different sizes can be provided in a
-            :py:class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
-            Defaults to :py:data:`None`
-        :type pop_sizes: :py:class:`int` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`int`, optional
-        :param num_subpops: The number of subpopulations (species). If set to
+        :param num_subtrainers: The number of subtrainers (species). If set to
             :py:data:`None`, the number of species  evolved by the trainer is
             will be used, otherwise it must match the number of species.
             Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative individuals that
-            will be sent to the other subpopulations. If set to
+            will be sent to the other subtrainers. If set to
             :py:data:`None`,
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
             be used. Defaults to :py:data:`None`
@@ -2050,19 +1741,8 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
             be used. Defaults to :py:data:`None`
         :type representation_freq: :py:class:`int`, optional
-        :param representation_topology_func: Topology function for
-            representatives sending. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func:
-            :py:class:`~collections.abc.Callable`, optional
-        :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func_params: :py:class:`dict`, optional
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation (species). If set to
+            representatives from each subtrainer (species). If set to
             :py:data:`None`,
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
             will be used. Defaults to :py:data:`None`
@@ -2093,9 +1773,9 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subtrainers
             (species) trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -2106,19 +1786,15 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             fitness_function=fitness_function
         )
 
-        MultiPopTrainer.__init__(
+        DistributedTrainer.__init__(
             self,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -2128,11 +1804,26 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
-        # Get the rest of parameters
-        self.pop_sizes = pop_sizes
+    @property
+    def representation_topology_func(
+        self
+    ) -> Callable[[int, int, Any], List[int]]:
+        """Get the representation topology function.
+
+        :type: :py:class:`~collections.abc.Callable`
+        """
+        return COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
+
+    @property
+    def representation_topology_func_params(self) -> Dict[str, Any]:
+        """Get the parameters of the representation topology function.
+
+        :type: :py:class:`dict`
+        """
+        return COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 
     @property
     def representatives(self) -> Sequence[Sequence[Solution | None]] | None:
@@ -2143,25 +1834,30 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         # If the representatives have been gathered before
         if self._representatives is not None:
             the_representatives = self._representatives
-        elif self.subpop_trainers is not None:
+        elif self.subtrainers is not None:
             # Create the container for the representatives
             the_representatives = [
-                [None] * self.num_subpops
+                [None] * self.num_subtrainers
                 for _ in range(self.representation_size)
             ]
             for (
-                    subpop_index,
-                    subpop_trainer
-                    ) in enumerate(self.subpop_trainers):
+                    subtrainer_index,
+                    subtrainer
+                    ) in enumerate(self.subtrainers):
+
+                if subtrainer.representatives is None:
+                    the_representatives = None
+                    break
+
                 for (context_index,
                      _
-                     ) in enumerate(subpop_trainer.representatives):
+                     ) in enumerate(subtrainer.representatives):
                     the_representatives[
                         context_index][
-                            subpop_index - 1
-                    ] = subpop_trainer.representatives[
+                            subtrainer_index - 1
+                    ] = subtrainer.representatives[
                             context_index][
-                                subpop_index - 1
+                                subtrainer_index - 1
                     ]
 
             if self._search_finished is True:
@@ -2170,11 +1866,11 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         return the_representatives
 
     @property
-    def num_subpops(self) -> int:
-        """Get and set the number of subpopulations.
+    def num_subtrainers(self) -> int:
+        """Get and set the number of subtrainers.
 
-        :getter: Return the current number of subpopulations
-        :setter: Set a new value for the number of subpopulations. If set to
+        :getter: Return the current number of subtrainers
+        :setter: Set a new value for the number of subtrainers. If set to
             :py:data:`None`, the number of species  evolved by the trainer is
             chosen, otherwise *it must match the number of species*
         :type: :py:class:`int`
@@ -2183,15 +1879,15 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             of species
         """
         return (
-            len(self.species) if self._num_subpops is None
-            else self._num_subpops
+            len(self.species) if self._num_subtrainers is None
+            else self._num_subtrainers
         )
 
-    @num_subpops.setter
-    def num_subpops(self, value: int | None) -> None:
-        """Set the number of subpopulations.
+    @num_subtrainers.setter
+    def num_subtrainers(self, value: int | None) -> None:
+        """Set the number of subtrainers.
 
-        :param value: The new number of subpopulations. If set to
+        :param value: The new number of subtrainers. If set to
             :py:data:`None`, the number of species  evolved by the trainer is
             chosen, otherwise *it must match the number of species*
         :type value: :py:class:`int`
@@ -2201,179 +1897,11 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         # Check the value
         if value is not None and value != len(self.species):
             raise ValueError(
-                "The number of subpopulations must match the number of "
+                "The number of subtrainers must match the number of "
                 f"species: {self.species}"
             )
 
-        self._num_subpops = value
-
-        # Reset the algorithm
-        self.reset()
-
-    @property
-    def representation_topology_func(
-        self
-    ) -> Callable[[int, int, Any], List[int]]:
-        """Get and set the representation topology function.
-
-        :getter: Return the representation topology function
-        :setter: Set new representation topology function. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-            is chosen, otherwise it must match
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-        :type: :py:class:`~collections.abc.Callable`
-        :raises TypeError: If set to a value which is not callable
-        :raises ValueError: If set to a value different of
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-        """
-        return (
-            DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
-            if self._representation_topology_func is None
-            else self._representation_topology_func
-        )
-
-    @representation_topology_func.setter
-    def representation_topology_func(
-        self,
-        func: Callable[[int, int, Any], List[int]] | None
-    ) -> None:
-        """Set new representation topology function.
-
-        :param func: The new function. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-            is chosen, otherwise it must match
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-        :type func: :py:class:`~collections.abc.Callable`
-        :raises TypeError: If *func* is not a callable
-        :raises ValueError: If *func* is different of
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-        """
-        # Check func
-        if (
-            func is not None and
-            func != DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
-        ):
-            raise ValueError(
-                "The representation topology function must be "
-                f"{DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC.__name__}"
-            )
-
-        self._representation_topology_func = func
-
-        # Reset the algorithm
-        self.reset()
-
-    @property
-    def representation_topology_func_params(self) -> Dict[str, Any]:
-        """Get and set the parameters of the representation topology function.
-
-        :getter: Return the current parameters for the representation topology
-            function
-        :setter: Set new parameters. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            is chosen, otherwise it must match
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-        :type: :py:class:`dict`
-        :raises TypeError: If set to a value which is not a :py:class:`dict`
-        :raises ValueError: If set to a value different of
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-        """
-        return (
-            DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-            if self._representation_topology_func_params is None
-            else self._representation_topology_func_params
-        )
-
-    @representation_topology_func_params.setter
-    def representation_topology_func_params(
-        self, params: Dict[str, Any] | None
-    ) -> None:
-        """Set the parameters for the representation topology function.
-
-        :param params: The new parameters. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            is chosen, otherwise it must match
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-        :type params: :py:class:`dict`
-        :raises TypeError: If *params* is not a :py:class:`dict`
-        :raises ValueError: If *params* is different of
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-        """
-        # Check params
-        if (
-            params is not None and
-            params != DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-        ):
-            raise ValueError(
-                "The representation topology function parameters must be "
-                f"{DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS}"
-            )
-
-        self._representation_topology_func_params = params
-
-        # Reset the algorithm
-        self.reset()
-
-    @property
-    def pop_sizes(self) -> Sequence[int | None]:
-        """Get and set the population size for each subpopulation.
-
-        :getter: Return the current size of each subpopulation
-        :setter: Set a new size for each subpopulation. If only a single value
-            is provided, the same size will be used for all the subpopulations.
-            Different sizes can be provided in a
-            :py:class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` is chosen
-        :type: :py:class:`int` or :py:class:`~collections.abc.Sequence`
-            of :py:class:`int`
-        :raises TypeError: If set to a value which is not an :py:class:`int`
-            or a :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises ValueError: If any population size is not greater than zero
-        """
-        if self.subpop_trainers is not None:
-            the_pop_sizes = [
-                subpop_trainer.pop_size
-                for subpop_trainer in self.subpop_trainers
-            ]
-        elif isinstance(self._pop_sizes, Sequence):
-            the_pop_sizes = self._pop_sizes
-        else:
-            the_pop_sizes = list(repeat(self._pop_sizes, self.num_subpops))
-
-        return the_pop_sizes
-
-    @pop_sizes.setter
-    def pop_sizes(self, sizes: int | Sequence[int] | None) -> None:
-        """Set the population size for each subpopulation.
-
-        :param sizes: The new population sizes. If only a single value
-            is provided, the same size will be used for all the subpopulations.
-            Different sizes can be provided in a
-            :py:class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :py:data:`None`,
-        :py:attr:`~culebra.DEFAULT_POP_SIZE` is chosen
-        :type: :py:class:`int` or :py:class:`~collections.abc.Sequence`
-            of :py:class:`int`
-        :raises TypeError: If *sizes* is not an :py:class:`int`
-            or a :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises ValueError: If any value in *size* is not greater than zero
-        """
-        # If None is provided ...
-        if sizes is None:
-            self._pop_sizes = None
-        # If a sequence is provided ...
-        elif isinstance(sizes, Sequence):
-            self._pop_sizes = check_sequence(
-                sizes,
-                "population sizes",
-                item_checker=partial(check_int, gt=0)
-            )
-        # If a scalar value is provided ...
-        else:
-            self._pop_sizes = check_int(sizes, "population size", gt=0)
+        self._num_subtrainers = value
 
         # Reset the algorithm
         self.reset()
@@ -2389,13 +1917,13 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         hofs = []
         # If the search hasn't been initialized a list of empty hofs is
         # returned, one hof per species
-        if self.subpop_trainers is None:
-            for _ in range(self.num_subpops):
+        if self.subtrainers is None:
+            for _ in range(self.num_subtrainers):
                 hofs.append(ParetoFront())
         # Else, the best solutions of each species are returned
         else:
-            for subpop_trainer in self.subpop_trainers:
-                hofs.append(subpop_trainer.best_solutions()[0])
+            for subtrainer in self.subtrainers:
+                hofs.append(subtrainer.best_solutions()[0])
 
         return hofs
 
@@ -2415,7 +1943,7 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         else:
             # Create the container for the representatives
             the_representatives = [
-                [None] * self.num_subpops
+                [None] * self.num_subtrainers
                 for _ in range(self.representation_size)
             ]
 
@@ -2437,90 +1965,25 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
         return the_representatives
 
     @staticmethod
-    def receive_representatives(subpop_trainer) -> None:
-        """Receive representative individuals.
-
-        :param subpop_trainer: The subpopulation trainer receiving
-            representatives
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        """
-        container = subpop_trainer.container
-
-        # Receive all the individuals in the queue
-        queue = container._communication_queues[subpop_trainer.index]
-
-        anything_received = False
-        while not queue.empty():
-            msg = queue.get()
-            sender_index = msg[0]
-            representatives = msg[1]
-            for ind_index, ind in enumerate(representatives):
-                subpop_trainer.representatives[ind_index][sender_index] = ind
-
-            anything_received = True
-
-        # If any new representatives have arrived, the fitness of all the
-        # individuals in the population must be invalidated and individuals
-        # must be re-evaluated
-        if anything_received:
-            # Re-evaluate all the individuals
-            for sol in subpop_trainer.pop:
-                subpop_trainer.evaluate(sol)
-
-    @staticmethod
-    def send_representatives(subpop_trainer) -> None:
-        """Send representatives.
-
-        :param subpop_trainer: The sender subpopulation trainer
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        """
-        container = subpop_trainer.container
-
-        # Check if sending should be performed
-        if subpop_trainer._current_iter % container.representation_freq == 0:
-            # Get the destinations according to the representation topology
-            destinations = container.representation_topology_func(
-                subpop_trainer.index,
-                container.num_subpops,
-                **container.representation_topology_func_params
-            )
-
-            # For each destination
-            for dest in destinations:
-                # Get the representatives
-                inds = container.representation_selection_func(
-                    subpop_trainer.pop,
-                    container.representation_size,
-                    **container.representation_selection_func_params
-                )
-
-                # Send the following msg:
-                # (index of sender subpop, representatives)
-                container._communication_queues[dest].put(
-                    (subpop_trainer.index, inds)
-                )
-
-    @staticmethod
-    def _init_subpop_trainer_representatives(
-        subpop_trainer,
+    def _init_subtrainer_representatives(
+        subtrainer,
         solution_classes,
         species,
         representation_size
     ):
-        """Init the representatives of the other species for a given
-        subpopulation trainer.
+        """Init the representatives of the other species for a subtrainer.
 
         This method is used to override dynamically the
         :py:meth:`~culebra.abc.Trainer._init_representatives` of all the
-        subpopulation trainers, when they are generated with the
-        :py:meth:`~culebra.trainer.abc.CooperativeTrainer._generate_subpop_trainers`
+        subtrainers, when they are generated with the
+        :py:meth:`~culebra.trainer.abc.CooperativeTrainer._generate_subtrainers`
         method, to let them initialize the list of representative individuals
         of the other species
 
-        :param subpop_trainer: The subpopulation trainer. The representatives
-            from the remaining subpopulation trainers will be initialized for
-            this subpopulation trainer
-        :type subpop_trainer: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :param subtrainer: The subtrainer. The representatives from the
+            remaining subtrainers will be initialized for this subtrainer
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         :param solution_classes: The individual class for each species.
         :type solution_classes: :py:class:`~collections.abc.Sequence`
             of :py:class:`~culebra.abc.Solution` subclasses
@@ -2531,14 +1994,14 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             generated for each species
         :type representation_size: :py:class:`int`
         """
-        subpop_trainer._representatives = []
+        subtrainer._representatives = []
 
         for _ in range(representation_size):
-            subpop_trainer._representatives.append(
+            subtrainer._representatives.append(
                 [
                     ind_cls(
-                        spe, subpop_trainer.fitness_function.Fitness
-                    ) if i != subpop_trainer.index else None
+                        spe, subtrainer.fitness_function.Fitness
+                    ) if i != subtrainer.index else None
                     for i, (ind_cls, spe) in enumerate(
                         zip(solution_classes, species)
                     )
@@ -2552,7 +2015,7 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             self.solution_classes,
             self.species,
             self.fitness_function,
-            self.subpop_trainer_cls
+            self.subtrainer_cls
         )
         result.__dict__.update(self.__dict__)
         return result
@@ -2570,7 +2033,7 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
             self.solution_classes,
             self.species,
             self.fitness_function,
-            self.subpop_trainer_cls
+            self.subtrainer_cls
         )
         result.__dict__.update(deepcopy(self.__dict__, memo))
         return result
@@ -2586,7 +2049,7 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
                     self.solution_classes,
                     self.species,
                     self.fitness_function,
-                    self.subpop_trainer_cls
+                    self.subtrainer_cls
                 ),
                 self.__dict__)
 
@@ -2594,10 +2057,9 @@ class CooperativeTrainer(MultiSpeciesTrainer, MultiPopTrainer):
 # Exported symbols for this module
 __all__ = [
     'SingleSpeciesTrainer',
-    'SinglePopTrainer',
-    'MultiPopTrainer',
-    'SequentialMultiPopTrainer',
-    'ParallelMultiPopTrainer',
+    'DistributedTrainer',
+    'SequentialDistributedTrainer',
+    'ParallelDistributedTrainer',
     'IslandsTrainer',
     'MultiSpeciesTrainer',
     'CooperativeTrainer'

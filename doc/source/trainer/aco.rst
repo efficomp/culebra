@@ -37,15 +37,15 @@ Attributes
     Default heuristic influence (:math:`{\beta}`).
 
 .. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
-    :annotation: = 0.5
+    :annotation: = 0.1
 
     Default pheromone evaporation rate (:math:`{\rho}`).
 
-.. attribute:: DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
-    :annotation: = 0.2
+.. attribute:: DEFAULT_ELITE_WEIGHT
+    :annotation: = 0.3
 
-    Default pheromone evaporation rate for the
-    :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS (:math:`{\rho}`).
+    Default weight for the elite ant (best-so-far ant) respect to the
+    iteration-best ant.
 
 .. attribute:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
     :annotation: = 250
@@ -66,7 +66,7 @@ Attributes
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
-    .. autodata:: DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+    .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
     .. autodata:: DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
 

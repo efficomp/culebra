@@ -55,21 +55,21 @@ class TrainerTester(unittest.TestCase):
         # Test default params
         params = {
             "solution_classes": [
-                FeatureSelectionIndividual,
-                ClassifierOptimizationIndividual
+                ClassifierOptimizationIndividual,
+                FeatureSelectionIndividual
             ],
             "species": [
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats),
                 # Species to optimize a SVM-based classifier
                 ClassifierOptimizationSpecies(
                     lower_bounds=[0, 0],
                     upper_bounds=[100000, 100000],
                     names=["C", "gamma"]
-                )
+                ),
+                # Species for the feature selection problem
+                FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": Fitness(dataset),
-            "subpop_trainer_cls": ElitistEA
+            "subtrainer_cls": ElitistEA
         }
 
         # Create the trainer
@@ -78,8 +78,43 @@ class TrainerTester(unittest.TestCase):
         # Check current_iter
         self.assertEqual(trainer._current_iter, None)
 
-        # Check num_subpops
-        self.assertEqual(trainer.num_subpops, len(trainer.species))
+        # Check num_subtrainers
+        self.assertEqual(trainer.num_subtrainers, len(trainer.species))
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        params = {
+            "solution_classes": [
+                ClassifierOptimizationIndividual,
+                FeatureSelectionIndividual
+            ],
+            "species": [
+                # Species to optimize a SVM-based classifier
+                ClassifierOptimizationSpecies(
+                    lower_bounds=[0, 0],
+                    upper_bounds=[100000, 100000],
+                    names=["C", "gamma"]
+                ),
+                # Species for the feature selection problem
+                FeatureSelectionSpecies(dataset.num_feats)
+            ],
+            "fitness_function": Fitness(dataset),
+            "subtrainer_cls": ElitistEA,
+            "pop_sizes": 10,
+            "representation_size": 2,
+            "verbose": False,
+            "checkpoint_enable": False
+        }
+
+        # Create the trainer
+        trainer = ParallelCooperativeEA(**params)
+        trainer._init_search()
+        for subtrainer in trainer.subtrainers:
+            subtrainer._init_search()
+        print(trainer.representatives)
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

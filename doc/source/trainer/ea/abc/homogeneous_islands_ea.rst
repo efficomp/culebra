@@ -33,7 +33,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.solution_cls
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.species
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.max_num_iters
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.current_iter
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.custom_termination_func
@@ -45,7 +45,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.mutation_prob
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.gene_ind_mutation_prob
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.selection_func_params
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.num_subpops
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.num_subtrainers
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.representation_size
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.representation_freq
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.representation_topology_func
@@ -63,15 +63,15 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.index
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.container
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.representatives
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subpop_trainer_params
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subpop_trainers
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._state
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._subpop_suffixes
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._subtrainer_suffixes
 
 Static methods
 --------------
@@ -89,7 +89,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA._generate_subpop_trainers
+.. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA._save_state
 .. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA._load_state
 .. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA._new_state

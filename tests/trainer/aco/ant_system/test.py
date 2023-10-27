@@ -317,8 +317,8 @@ class TrainerTester(unittest.TestCase):
             np.all(trainer.pheromones[0] == pheromones_value)
         )
 
-    def test_deposit_pop_pheromones(self):
-        """Test the _deposit_pop_pheromones method."""
+    def test_deposit_pheromones(self):
+        """Test the _deposit_pheromones method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -329,7 +329,7 @@ class TrainerTester(unittest.TestCase):
             "initial_pheromones": initial_pheromones,
             "pheromone_influence": 2,
             "heuristic_influence": 3,
-            "pop_size": 1
+            "col_size": 1
         }
 
         # Create the trainer
@@ -344,13 +344,13 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Generate a new colony
-        trainer._generate_pop()
+        trainer._generate_col()
 
         # Evaporate pheromones
-        trainer._deposit_pop_pheromones(trainer.pop)
+        trainer._deposit_pheromones()
 
         # Get the ant
-        ant = trainer.pop[0]
+        ant = trainer.col[0]
         pheromones_increment = ant.fitness.pheromones_amount[0]
         pheromones_value += pheromones_increment
 
@@ -365,6 +365,27 @@ class TrainerTester(unittest.TestCase):
                 pheromones_value
             )
             org = dest
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones,
+            "pheromone_influence": 2,
+            "heuristic_influence": 3,
+            "col_size": 1
+        }
+
+        # Create the trainer
+        trainer = AntSystem(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

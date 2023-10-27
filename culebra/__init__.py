@@ -51,9 +51,6 @@ Culebra is structured in the following modules:
 """
 
 from .constants import (
-    DEFAULT_STATS_NAMES,
-    DEFAULT_OBJECTIVE_STATS,
-    DEFAULT_POP_SIZE,
     DEFAULT_MAX_NUM_ITERS,
     DEFAULT_CHECKPOINT_ENABLE,
     DEFAULT_CHECKPOINT_FREQ,
@@ -74,7 +71,7 @@ from . import (
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -87,9 +84,6 @@ __all__ = [
     'fitness_function',
     'trainer',
     'tools',
-    'DEFAULT_STATS_NAMES',
-    'DEFAULT_OBJECTIVE_STATS',
-    'DEFAULT_POP_SIZE',
     'DEFAULT_MAX_NUM_ITERS',
     'DEFAULT_CHECKPOINT_ENABLE',
     'DEFAULT_CHECKPOINT_FREQ',

@@ -217,7 +217,19 @@ class IndividualTester(unittest.TestCase):
                         self.__check_correctness(mutant)
         print('Ok')
 
-    def test_3_runtime(self):
+    def test_3_repr(self):
+        """Test the repr and str dunder methods."""
+        print('Testing the',
+              self.individual_cls.__name__,
+              '__repr__ and __str__ dunder methods ...', end=' ')
+        num_feats = 10
+        species = Species(num_feats)
+        individual = self.individual_cls(species, MyFitness)
+        self.assertIsInstance(repr(individual), str)
+        self.assertIsInstance(str(individual), str)
+        print('Ok')
+
+    def test_4_runtime(self):
         """Runtime of the constructor and breeding operators."""
         dataframe = DataFrame()
         dataframe['constructor'] = self.__constructor_scalability()

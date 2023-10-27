@@ -239,6 +239,12 @@ class DatasetFitnessFunctionTester(unittest.TestCase):
         # Check the serialization
         self._check_deepcopy(func1, func2)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        func = MyDatasetFitnessFunction(Dataset())
+        self.assertIsInstance(repr(func), str)
+        self.assertIsInstance(str(func), str)
+
     def _check_deepcopy(self, func1, func2):
         """Check if *func1* is a deepcopy of *func2*.
 
@@ -317,6 +323,12 @@ class ClassificationFitnessFunctionTester(unittest.TestCase):
         # Check the serialization
         self._check_deepcopy(func1, func2)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        func = MyClassificationFitnessFunction(Dataset())
+        self.assertIsInstance(repr(func), str)
+        self.assertIsInstance(str(func), str)
+
     def _check_deepcopy(self, func1, func2):
         """Check if *func1* is a deepcopy of *func2*.
 
@@ -378,6 +390,12 @@ class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
                     ) else 1
                 )
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        func = MyFeatureSelectionFitnessFunction(Dataset())
+        self.assertIsInstance(repr(func), str)
+        self.assertIsInstance(str(func), str)
+
 
 class RBFSVCFitnessFunctionTester(unittest.TestCase):
     """Test RBFSVCFitnessFunction."""
@@ -404,6 +422,12 @@ class RBFSVCFitnessFunctionTester(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             func.classifier = SVC(kernel='linear')
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        func = MyRBFSVCFitnessFunction(Dataset())
+        self.assertIsInstance(repr(func), str)
+        self.assertIsInstance(str(func), str)
 
 
 if __name__ == '__main__':

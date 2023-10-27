@@ -112,6 +112,12 @@ class KappaNumFeatsCTester(unittest.TestCase):
         with self.assertRaises(AttributeError):
             fitness_func.evaluate(hyperparams_sol, 1, representatives)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        fitness_func = KappaNumFeatsC(dataset)
+        self.assertIsInstance(repr(fitness_func), str)
+        self.assertIsInstance(str(fitness_func), str)
+
 
 if __name__ == '__main__':
     unittest.main()

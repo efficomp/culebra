@@ -90,7 +90,7 @@ will be used. Defaults to <a class="reference external" href="https://docs.pytho
 <h2>Class attributes<a class="headerlink" href="#class-attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.trainer.abc.SingleSpeciesTrainer.stats_names">
-<span class="sig-prename descclassname"><span class="pre">SingleSpeciesTrainer.</span></span><span class="sig-name descname"><span class="pre">stats_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Iter',</span> <span class="pre">'Pop',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#culebra.trainer.abc.SingleSpeciesTrainer.stats_names" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">SingleSpeciesTrainer.</span></span><span class="sig-name descname"><span class="pre">stats_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('Iter',</span> <span class="pre">'NEvals')</span></em><a class="headerlink" href="#culebra.trainer.abc.SingleSpeciesTrainer.stats_names" title="Link to this definition">¶</a></dt>
 <dd><p>Statistics calculated each iteration.</p>
 </dd></dl>
 
@@ -722,7 +722,7 @@ before each iteration is run.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration">
 <span class="sig-prename descclassname"><span class="pre">SingleSpeciesTrainer.</span></span><span class="sig-name descname"><span class="pre">_preprocess_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration" title="Link to this definition">¶</a></dt>
-<dd><p>Preprocess the population(s).</p>
+<dd><p>Preprocess before doing the iteration.</p>
 <p>Subclasses should override this method to make any preprocessment
 before performing an iteration.</p>
 </dd></dl>
@@ -738,7 +738,7 @@ implement the desired behavior.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration">
 <span class="sig-prename descclassname"><span class="pre">SingleSpeciesTrainer.</span></span><span class="sig-name descname"><span class="pre">_postprocess_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration" title="Link to this definition">¶</a></dt>
-<dd><p>Postprocess the population(s).</p>
+<dd><p>Postprocess after doing the iteration.</p>
 <p>Subclasses should override this method to make any postprocessment
 after performing an iteration.</p>
 </dd></dl>

@@ -23,16 +23,13 @@
 
 import unittest
 import pickle
-from time import sleep
 from copy import copy, deepcopy
 from functools import partialmethod
 
-from culebra import DEFAULT_POP_SIZE
-from culebra.trainer import (
-    DEFAULT_REPRESENTATION_TOPOLOGY_FUNC,
-    DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-)
-from culebra.trainer.abc import SinglePopTrainer, CooperativeTrainer
+from deap.tools import ParetoFront
+
+from culebra.trainer.abc import SingleSpeciesTrainer, CooperativeTrainer
+from culebra.trainer.topology import full_connected_destinations
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BinarySolution as FeatureSelectionSolution
@@ -56,41 +53,44 @@ dataset = Dataset(DATASET_PATH, output_index=-1)
 dataset.normalize()
 
 
-class MySinglePopTrainerTrainer(SinglePopTrainer):
+class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
-        for _ in range(self.pop_size):
-            sol = self.solution_cls(
-                self.species, self.fitness_function.Fitness
-            )
-            self.evaluate(sol)
-            self._pop.append(sol)
+        self.sol = self.solution_cls(
+            self.species, self.fitness_function.Fitness
+        )
+        self.evaluate(self.sol)
+
+    def best_solutions(self):
+        """Get the best solutions found for each species."""
+        hof = ParetoFront()
+        hof.update([self.sol])
+        return [hof]
 
 
 class MyTrainer(CooperativeTrainer):
     """Dummy implementation of a cooperative co-evolutionary algorithm."""
 
-    _subpop_properties_mapping = {
+    _subtrainer_properties_mapping = {
         "solution_classes": "solution_cls",
-        "species": "species",
-        "pop_sizes": "pop_size"
+        "species": "species"
     }
     """Map the container names of properties sequences to the different
-    subpop property names."""
+    subtrainer property names."""
 
     def _new_state(self) -> None:
         """Generate a new trainer state."""
         super()._new_state()
 
-        # Generate the state of all subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._new_state()
+        # Generate the state of all subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._new_state()
 
     def _init_search(self):
         super()._init_search()
-        for island_trainer in self.subpop_trainers:
+        for island_trainer in self.subtrainers:
             island_trainer._init_search()
 
     def _start_iteration(self) -> None:
@@ -99,83 +99,84 @@ class MyTrainer(CooperativeTrainer):
         Prepare the metrics before each iteration is run.
         """
         super()._start_iteration()
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
             # Fix the current iteration
-            subpop_trainer._current_iter = self._current_iter
+            subtrainer._current_iter = self._current_iter
             # Start the iteration
-            subpop_trainer._start_iteration()
+            subtrainer._start_iteration()
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._do_iteration()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._do_iteration()
 
     def _do_iteration_stats(self) -> None:
         """Perform the iteration stats."""
-        # For all the subpopulation trainers
-        for subpop_trainer in self.subpop_trainers:
-            subpop_trainer._do_iteration_stats()
+        # For all the subtrainers
+        for subtrainer in self.subtrainers:
+            subtrainer._do_iteration_stats()
 
-    def _generate_subpop_trainers(self) -> None:
-        """Generate the subpopulation trainers.
+    def _generate_subtrainers(self) -> None:
+        """Generate the subtrainers.
 
-        Also assign an :py:attr:`~culebra.trainer.abc.SinglePopTrainer.index`
-        and a :py:attr:`~culebra.trainer.abc.SinglePopTrainer.container` to
-        each subpopulation :py:class:`~culebra.trainer.abc.SinglePopTrainer`
-        trainer, change the subpopulation trainers'
-        :py:attr:`~culebra.trainer.abc.SinglePopTrainer.checkpoint_filename`
+        Also assign an
+        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.index` and a
+        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.container` to each
+        subtrainer :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        trainer, change the subtrainers'
+        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_filename`
         according to the container checkpointing file name and each
-        subpopulation index.
+        subtrainer index.
 
         Finally, the
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._preprocess_iteration`
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration`
         and
-        :py:meth:`~culebra.trainer.abc.SinglePopTrainer._postprocess_iteration`
+        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration`
         methods of the
-        :py:attr:`~trainer.ea.MultiPop.subpop_trainer_cls` class
+        :py:attr:`~culebra.trainer.abc.DistributedTrainer.subtrainer_cls` class
         are dynamically overridden, in order to allow individuals exchange
-        between subpopulation trainers, if necessary
+        between subtrainers, if necessary
 
         :raises RuntimeError: If the length of any properties sequence does
-            not match the number of subpopulations.
+            not match the number of subtrainers.
         """
 
-        def subpop_trainers_properties():
-            """Obtain the properties of each subpopulation.
+        def subtrainers_properties():
+            """Obtain the properties of each subtrainer.
 
             :raises RuntimeError: If the length of any properties sequence
-                does not match the number of subpopulations.
+                does not match the number of subtrainers.
 
-            :return: The properties of each subpopulation.
+            :return: The properties of each subtrainer.
             :rtype: :py:class:`list`
             """
             # Get the common attributes from the container trainer
-            cls = self.subpop_trainer_cls
+            cls = self.subtrainer_cls
             common_properties = {
                 key: getattr(self, key)
                 for key in cls.__init__.__code__.co_varnames
                 if hasattr(self, key) and getattr(self, key) is not None
             }
 
-            # Append subpopulation trainer custom atributes
-            common_properties.update(self.subpop_trainer_params)
+            # Append subtrainer custom atributes
+            common_properties.update(self.subtrainer_params)
 
-            # List with the common properties. Equal for all the subpopulations
+            # List with the common properties. Equal for all the subtrainers
             properties = []
-            for _ in range(self.num_subpops):
-                subpop_properties = {}
+            for _ in range(self.num_subtrainers):
+                subtrainer_properties = {}
                 for key, value in common_properties.items():
-                    subpop_properties[key] = value
-                properties.append(subpop_properties)
+                    subtrainer_properties[key] = value
+                properties.append(subtrainer_properties)
 
-            # Particular properties for each subpop
+            # Particular properties for each subtrainer
             cls = self.__class__
             for (
                     property_sequence_name,
-                    subpop_property_name
-            ) in self._subpop_properties_mapping.items():
+                    subtrainer_property_name
+            ) in self._subtrainer_properties_mapping.items():
 
                 # Values of the sequence
                 property_sequence_values = getattr(
@@ -183,52 +184,52 @@ class MyTrainer(CooperativeTrainer):
                 ).fget(self)
 
                 # Check the properties' length
-                if len(property_sequence_values) != self.num_subpops:
+                if len(property_sequence_values) != self.num_subtrainers:
                     raise RuntimeError(
                         f"The length of {property_sequence_name} does not "
-                        "match the number of subpopulations"
+                        "match the number of subtrainers"
                     )
                 for (
-                        subpop_properties, subpop_property_value
+                        subtrainer_properties, subtrainer_property_value
                 ) in zip(properties, property_sequence_values):
-                    subpop_properties[
-                        subpop_property_name] = subpop_property_value
+                    subtrainer_properties[
+                        subtrainer_property_name] = subtrainer_property_value
 
             return properties
 
-        # Get the subpopulations properties
-        properties = subpop_trainers_properties()
+        # Get the subtrainers properties
+        properties = subtrainers_properties()
 
-        # Generate the subpopulations
-        self._subpop_trainers = []
+        # Generate the subtrainers
+        self._subtrainers = []
 
         for (
             index, (
                 checkpoint_filename,
-                subpop_properties
+                subtrainer_properties
             )
         ) in enumerate(
-            zip(self.subpop_trainer_checkpoint_filenames, properties)
+            zip(self.subtrainer_checkpoint_filenames, properties)
         ):
-            subpop_trainer = self.subpop_trainer_cls(**subpop_properties)
-            subpop_trainer.checkpoint_filename = checkpoint_filename
-            subpop_trainer.index = index
-            subpop_trainer.container = self
-            subpop_trainer.__class__._preprocess_iteration = (
+            subtrainer = self.subtrainer_cls(**subtrainer_properties)
+            subtrainer.checkpoint_filename = checkpoint_filename
+            subtrainer.index = index
+            subtrainer.container = self
+            subtrainer.__class__._preprocess_iteration = (
                 self.receive_representatives
             )
-            subpop_trainer.__class__._postprocess_iteration = (
+            subtrainer.__class__._postprocess_iteration = (
                 self.send_representatives
             )
 
-            subpop_trainer.__class__._init_representatives = partialmethod(
-                self._init_subpop_trainer_representatives,
+            subtrainer.__class__._init_representatives = partialmethod(
+                self._init_subtrainer_representatives,
                 solution_classes=self.solution_classes,
                 species=self.species,
                 representation_size=self.representation_size
             )
 
-            self._subpop_trainers.append(subpop_trainer)
+            self._subtrainers.append(subtrainer)
 
 
 class TrainerTester(unittest.TestCase):
@@ -263,10 +264,8 @@ class TrainerTester(unittest.TestCase):
         )
 
         valid_fitness_func = FitnessFunc(dataset)
-        valid_subpop_trainer_cls = MySinglePopTrainerTrainer
-        valid_num_subpops = 2
-        invalid_funcs = (1, 1.5, {})
-        valid_func = len
+        valid_subtrainer_cls = MySingleSpeciesTrainer
+        valid_num_subtrainers = 2
 
         # Try invalid types for the individual classes. Should fail
         for solution_cls in invalid_solution_class_types:
@@ -275,8 +274,8 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers
                 )
 
         # Try invalid values for the individual classes. Should fail
@@ -286,17 +285,17 @@ class TrainerTester(unittest.TestCase):
                     solution_classes,
                     valid_species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers
                 )
 
-        # Try different values of solution_cls for each subpopulation
+        # Try different values of solution_cls for each subtrainer
         trainer = MyTrainer(
             valid_solution_classes,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers
         )
         for cls1, cls2 in zip(
             trainer.solution_classes, valid_solution_classes
@@ -310,8 +309,8 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_classes,
                     species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers
                 )
 
         # Try invalid values for the species. Should fail
@@ -321,99 +320,67 @@ class TrainerTester(unittest.TestCase):
                     valid_solution_classes,
                     species,
                     valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    num_subpops=valid_num_subpops
+                    valid_subtrainer_cls,
+                    num_subtrainers=valid_num_subtrainers
                 )
 
-        # Try different values of species for each subpopulation
+        # Try different values of species for each subtrainer
         trainer = MyTrainer(
             valid_solution_classes,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls,
-            num_subpops=valid_num_subpops
+            valid_subtrainer_cls,
+            num_subtrainers=valid_num_subtrainers
         )
         for species1, species2 in zip(
             trainer.species, valid_species
         ):
             self.assertEqual(species1, species2)
 
-        # Check the default value for num_subpops
+        # Check the default value for num_subtrainers
         trainer = MyTrainer(
             valid_solution_classes,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls
+            valid_subtrainer_cls
         )
-        self.assertEqual(trainer.num_subpops, len(valid_species))
+        self.assertEqual(trainer.num_subtrainers, len(valid_species))
 
-        # Check a value for num_subpops different from the number os species
-        # It should fail
+        # Check a value for num_subtrainers different from the number of
+        # species. It should fail
         with self.assertRaises(ValueError):
             MyTrainer(
                 valid_solution_classes,
                 valid_species,
                 valid_fitness_func,
-                valid_subpop_trainer_cls,
-                num_subpops=18
+                valid_subtrainer_cls,
+                num_subtrainers=18
             )
-
-        # Try invalid representation topology functions. Should fail
-        for func in invalid_funcs:
-            with self.assertRaises(ValueError):
-                trainer = MyTrainer(
-                    valid_solution_classes,
-                    valid_species,
-                    valid_fitness_func,
-                    valid_subpop_trainer_cls,
-                    representation_topology_func=func
-                )
-
-        # Try the only valid value
-        trainer = MyTrainer(
-            valid_solution_classes,
-            valid_species,
-            valid_fitness_func,
-            valid_subpop_trainer_cls,
-            representation_topology_func=(
-                DEFAULT_REPRESENTATION_TOPOLOGY_FUNC
-            )
-        )
-
-        # Try invalid representation topology function parameters. Should fail
-        with self.assertRaises(ValueError):
-            trainer = MyTrainer(
-                valid_solution_classes,
-                valid_species,
-                valid_fitness_func,
-                valid_subpop_trainer_cls,
-                representation_topology_func_params=valid_func
-            )
-
-        # Try the only valid value
-        trainer = MyTrainer(
-            valid_solution_classes,
-            valid_species,
-            valid_fitness_func,
-            valid_subpop_trainer_cls,
-            representation_topology_func_params=(
-                DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-            )
-        )
 
         # Test default params
         trainer = MyTrainer(
             valid_solution_classes,
             valid_species,
             valid_fitness_func,
-            valid_subpop_trainer_cls
+            valid_subtrainer_cls
         )
 
-        # Create the subpopulations
-        trainer._generate_subpop_trainers()
+        self.assertEqual(
+            trainer.representation_topology_func,
+            full_connected_destinations
+        )
+        self.assertEqual(
+            trainer.representation_topology_func_params,
+            {}
+        )
 
-        for pop_size in trainer.pop_sizes:
-            self.assertEqual(pop_size, DEFAULT_POP_SIZE)
+        # Create the subtrainers
+        trainer._generate_subtrainers()
+
+        for solution_cls, subtrainer in zip(
+            trainer.solution_classes, trainer.subtrainers
+        ):
+            self.assertEqual(solution_cls, subtrainer.solution_cls)
 
     def test_representatives(self):
         """Test the representatives property."""
@@ -433,9 +400,8 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(dataset),
-            "pop_sizes": 10,
             "representation_size": 2,
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
+            "subtrainer_cls": MySingleSpeciesTrainer,
             "verbose": False,
             "checkpoint_enable": False
         }
@@ -451,16 +417,16 @@ class TrainerTester(unittest.TestCase):
 
         # Check the representatives
         for (
-                subpop_index,
-                subpop_trainer
-                ) in enumerate(trainer.subpop_trainers):
+                subtrainer_index,
+                subtrainer
+                ) in enumerate(trainer.subtrainers):
             for (
                 context_index, _
-            ) in enumerate(subpop_trainer.representatives):
+            ) in enumerate(subtrainer.representatives):
                 self.assertEqual(
-                    the_representatives[context_index][subpop_index - 1],
-                    subpop_trainer.representatives[
-                        context_index][subpop_index - 1]
+                    the_representatives[context_index][subtrainer_index - 1],
+                    subtrainer.representatives[
+                        context_index][subtrainer_index - 1]
                 )
 
     def test_best_solutions(self):
@@ -482,8 +448,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
+            "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
             "checkpoint_enable": False
@@ -492,14 +457,14 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = MyTrainer(**params)
 
-        # Try before the population has been created
+        # Try before the subtrainers have been created
         best_ones = trainer.best_solutions()
         self.assertIsInstance(best_ones, list)
-        self.assertEqual(len(best_ones), trainer.num_subpops)
+        self.assertEqual(len(best_ones), trainer.num_subtrainers)
         for best in best_ones:
             self.assertEqual(len(best), 0)
 
-        # Generate the subpopulations
+        # Generate the subtrainers
         trainer._init_search()
         trainer._start_iteration()
         trainer._do_iteration()
@@ -509,7 +474,7 @@ class TrainerTester(unittest.TestCase):
 
         # Test that a list with hof per species returned
         self.assertIsInstance(best_ones, list)
-        self.assertEqual(len(best_ones), trainer.num_subpops)
+        self.assertEqual(len(best_ones), trainer.num_subtrainers)
         for hof, ind_cls in zip(best_ones, trainer.solution_classes):
             for ind in hof:
                 self.assertIsInstance(ind, ind_cls)
@@ -533,8 +498,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
+            "subtrainer_cls": MySingleSpeciesTrainer,
             "max_num_iters": 2,
             "representation_size": 2,
             "verbose": False,
@@ -544,7 +508,7 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = MyTrainer(**params)
 
-        # Try before the population has been created
+        # Try before the subtrainers have been created
         the_representatives = trainer.best_representatives()
 
         # The representatives should be None
@@ -563,141 +527,9 @@ class TrainerTester(unittest.TestCase):
         )
         for context in the_representatives:
             self.assertIsInstance(context, list)
-            self.assertEqual(len(context), trainer.num_subpops)
+            self.assertEqual(len(context), trainer.num_subtrainers)
             for ind, species in zip(context, trainer.species):
                 self.assertTrue(species.is_member(ind))
-
-    def test_send_representatives(self):
-        """Test send_representatives."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
-            "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Generate the subpopulations
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
-
-        # Set an iteration that should not provoke representatives sending
-        for subpop_trainer in trainer.subpop_trainers:
-            subpop_trainer._current_iter = trainer.representation_freq + 1
-
-            # Call to send representatives, assigned to
-            # subpop._postprocess_iteration at subpopulations iteration
-            # time
-            subpop_trainer._postprocess_iteration()
-
-        # All the queues should be empty
-        for index in range(trainer.num_subpops):
-            self.assertTrue(trainer._communication_queues[index].empty())
-
-        # Set an iteration that should provoke representatives sending
-        for subpop_trainer in trainer.subpop_trainers:
-            subpop_trainer._current_iter = trainer.representation_freq
-
-            # Call to send representatives, assigned to
-            # subpop._postprocess_iteration at subpopulations iteration
-            # time
-            subpop_trainer._postprocess_iteration()
-
-            # Wait for the parallel queue processing
-            sleep(1)
-
-        # All the queues shouldn't be empty
-        for index in range(trainer.num_subpops):
-            self.assertFalse(trainer._communication_queues[index].empty())
-            while not trainer._communication_queues[index].empty():
-                trainer._communication_queues[index].get()
-
-    def test_receive_representatives(self):
-        """Test receive_representatives."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
-            "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Generate the subpopulations
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
-
-        sender_index = 0
-        the_representatives = trainer.subpop_trainers[
-            sender_index].pop[
-            :trainer.representation_size]
-
-        for index in range(trainer.num_subpops):
-            if index != sender_index:
-                trainer._communication_queues[index].put(
-                    (sender_index, the_representatives)
-                )
-
-        # Wait for the parallel queue processing
-        sleep(1)
-
-        # Call to receive representatives, assigned to
-        # subpop._preprocess_iteration
-        # at subpopulations iteration time
-        for subpop_trainer in trainer.subpop_trainers:
-            subpop_trainer._preprocess_iteration()
-
-        # Check the received values
-        for recv_index, subpop_trainer in enumerate(trainer.subpop_trainers):
-            if recv_index != sender_index:
-                for ind_index, ind in enumerate(the_representatives):
-                    self.assertEqual(
-                        subpop_trainer.representatives[
-                            ind_index][sender_index], ind
-                    )
-
-                # Check that all the individuals have been reevaluated
-                for ind in subpop_trainer.pop:
-                    self.assertTrue(ind.fitness.valid)
 
     def test_copy(self):
         """Test the __copy__ method."""
@@ -718,8 +550,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
+            "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
             "checkpoint_enable": False
@@ -761,8 +592,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
+            "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
             "checkpoint_enable": False
@@ -797,8 +627,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(dataset),
-            "subpop_trainer_cls": MySinglePopTrainerTrainer,
-            "pop_sizes": 10,
+            "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
             "checkpoint_enable": False
@@ -811,6 +640,37 @@ class TrainerTester(unittest.TestCase):
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Parameters for the trainer
+        params = {
+            "solution_classes": [
+                ClassifierOptimizationSolution,
+                FeatureSelectionSolution
+            ],
+            "species": [
+                # Species to optimize a SVM-based classifier
+                ClassifierOptimizationSpecies(
+                    lower_bounds=[0, 0],
+                    upper_bounds=[100000, 100000],
+                    names=["C", "gamma"]
+                ),
+                # Species for the feature selection problem
+                FeatureSelectionSpecies(dataset.num_feats)
+            ],
+            "fitness_function": FitnessFunc(dataset),
+            "subtrainer_cls": MySingleSpeciesTrainer,
+            "representation_size": 2,
+            "verbose": False,
+            "checkpoint_enable": False
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.

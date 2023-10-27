@@ -19,15 +19,15 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.abc.SinglePopACO`."""
+"""Unit test for :py:class:`culebra.trainer.ea.abc.SingleColACO`."""
 
 import unittest
 from itertools import repeat
 
 import numpy as np
 
-from culebra import DEFAULT_MAX_NUM_ITERS, DEFAULT_POP_SIZE
-from culebra.trainer.aco.abc import SinglePopACO
+from culebra import DEFAULT_MAX_NUM_ITERS
+from culebra.trainer.aco.abc import SingleColACO
 from culebra.solution.tsp import Species, Solution, Ant
 from culebra.fitness_function.tsp import PathLength
 
@@ -38,7 +38,7 @@ banned_nodes = [0, num_nodes-1]
 feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
 
 
-class MyTrainer(SinglePopACO):
+class MyTrainer(SingleColACO):
     """Dummy implementation of a trainer method."""
 
     def _calculate_choice_info(self) -> None:
@@ -53,7 +53,7 @@ class MyTrainer(SinglePopACO):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.abc.SinglePopACO`."""
+    """Test :py:class:`culebra.trainer.ea.abc.SingleColACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -202,40 +202,40 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(max_num_iters, trainer.max_num_iters)
 
-        # Try invalid types for pop_size. Should fail
-        invalid_pop_size = (type, 'a', 1.5)
-        for pop_size in invalid_pop_size:
+        # Try invalid types for col_size. Should fail
+        invalid_col_size = (type, 'a', 1.5)
+        for col_size in invalid_col_size:
             with self.assertRaises(TypeError):
                 MyTrainer(
                     valid_ant_cls,
                     valid_species,
                     valid_fitness_func,
                     valid_initial_pheromones,
-                    pop_size=pop_size
+                    col_size=col_size
                 )
 
-        # Try invalid values for pop_size. Should fail
-        invalid_pop_size = (-1, 0)
-        for pop_size in invalid_pop_size:
+        # Try invalid values for col_size. Should fail
+        invalid_col_size = (-1, 0)
+        for col_size in invalid_col_size:
             with self.assertRaises(ValueError):
                 MyTrainer(
                     valid_ant_cls,
                     valid_species,
                     valid_fitness_func,
                     valid_initial_pheromones,
-                    pop_size=pop_size
+                    col_size=col_size
                 )
 
-        # Try a valid value for pop_size
-        pop_size = 233
+        # Try a valid value for col_size
+        col_size = 233
         trainer = MyTrainer(
             valid_ant_cls,
             valid_species,
             valid_fitness_func,
             valid_initial_pheromones,
-            pop_size=pop_size
+            col_size=col_size
         )
-        self.assertEqual(pop_size, trainer.pop_size)
+        self.assertEqual(col_size, trainer.col_size)
 
         # Test default params
         trainer = MyTrainer(
@@ -277,52 +277,13 @@ class TrainerTester(unittest.TestCase):
                     )
 
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
-        self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
-        self.assertEqual(trainer.pop, None)
-        self.assertEqual(trainer.current_iter, None)
-        self.assertEqual(trainer.choice_info, None)
-        self.assertEqual(trainer._node_list, None)
-
-    def test_init_internals(self):
-        """Test the _init_internals method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-
-        self.assertEqual(trainer.choice_info, None)
-        self.assertTrue(
-            np.all(
-                trainer._node_list == np.arange(0, num_nodes, dtype=int)
-            )
+        self.assertEqual(
+            trainer.col_size,
+            trainer.fitness_function.num_nodes
         )
-
-    def test_reset_internals(self):
-        """Test the _init_internals method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._reset_internals()
-
+        self.assertEqual(trainer.current_iter, None)
+        self.assertEqual(trainer.col, None)
+        self.assertEqual(trainer.pheromones, None)
         self.assertEqual(trainer.choice_info, None)
         self.assertEqual(trainer._node_list, None)
 
@@ -415,6 +376,51 @@ class TrainerTester(unittest.TestCase):
 
         # Check the pheromones
         self.assertEqual(trainer.pheromones, None)
+
+    def test_init_internals(self):
+        """Test the _init_internals method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+
+        self.assertEqual(trainer.col, [])
+        self.assertEqual(trainer.choice_info, None)
+        self.assertTrue(
+            np.all(
+                trainer._node_list == np.arange(0, num_nodes, dtype=int)
+            )
+        )
+
+    def test_reset_internals(self):
+        """Test the _init_internals method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._reset_internals()
+
+        self.assertEqual(trainer.col, None)
+        self.assertEqual(trainer.choice_info, None)
+        self.assertEqual(trainer._node_list, None)
 
     def test_calculate_choice_info(self):
         """Test the _calculate_choice_info method."""
@@ -571,8 +577,8 @@ class TrainerTester(unittest.TestCase):
             ant = trainer._generate_ant()
             self.assertEqual(len(ant.path), len(feasible_nodes))
 
-    def test_generate_pop(self):
-        """Test the _generate_pop_method."""
+    def test_generate_col(self):
+        """Test the _generate_col_method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -589,12 +595,102 @@ class TrainerTester(unittest.TestCase):
         # Generate the colony
         trainer._init_search()
         trainer._start_iteration()
-        trainer._generate_pop()
+        trainer._generate_col()
 
         # Check the colony
-        self.assertEqual(len(trainer.pop), trainer.pop_size)
-        for ant in trainer.pop:
+        self.assertEqual(len(trainer.col), trainer.col_size)
+        for ant in trainer.col:
             self.assertIsInstance(ant, Ant)
+
+    def test_best_solutions(self):
+        """Test the best_solutions method."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+
+        # Try before the colony has been created
+        best_ones = trainer.best_solutions()
+        self.assertIsInstance(best_ones, list)
+        self.assertEqual(len(best_ones), 1)
+        self.assertEqual(len(best_ones[0]), 0)
+
+        # Generate some ants
+        ant1 = Ant(
+            species,
+            fitness_func.Fitness,
+            path=optimum_path
+        )
+        worse_path = np.concatenate(
+            (optimum_path[:5], optimum_path[-1:], optimum_path[5:-2])
+        )
+        ant2 = Ant(
+            species,
+            fitness_func.Fitness,
+            path=worse_path
+        )
+
+        # Init the search
+        trainer._init_search()
+
+        # Try a colony with different fitnesses
+        trainer._col = [ant1, ant2]
+
+        for ant in trainer.col:
+            trainer.evaluate(ant)
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has only one solution
+        self.assertEqual(len(best_ones[0]), 1)
+
+        # Check that the solution in hof is ant1
+        self.assertTrue(ant1 in best_ones[0])
+
+        # Set the same fitness for both solutions
+        for sol in trainer.col:
+            sol.fitness.values = (18,)
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has two solutions
+        self.assertEqual(len(best_ones[0]), 2)
+
+        # Check that ant1 and ant2 are the solutions in hof
+        self.assertTrue(ant1 in best_ones[0])
+        self.assertTrue(ant2 in best_ones[0])
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

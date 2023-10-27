@@ -28,7 +28,6 @@ import numpy as np
 
 from culebra.trainer.aco import (
     MMAS,
-    DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT,
     DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
 )
@@ -48,45 +47,6 @@ class TrainerTester(unittest.TestCase):
         ant_cls = Ant
         species = Species(num_nodes)
         initial_pheromones = [1]
-
-        # Try invalid types for pheromone_evaporation_rate. Should fail
-        invalid_pheromone_evaporation_rate = (type, 'a')
-        for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
-            with self.assertRaises(TypeError):
-                MMAS(
-                    ant_cls,
-                    species,
-                    fitness_func,
-                    initial_pheromones,
-                    pheromone_evaporation_rate=pheromone_evaporation_rate
-                )
-
-        # Try invalid values for pheromone_evaporation_rate. Should fail
-        invalid_pheromone_evaporation_rate = (-1, 0, 1.5)
-        for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
-            with self.assertRaises(ValueError):
-                MMAS(
-                    ant_cls,
-                    species,
-                    fitness_func,
-                    initial_pheromones,
-                    pheromone_evaporation_rate=pheromone_evaporation_rate
-                )
-
-        # Try valid values for pheromone_evaporation_rate
-        valid_pheromone_evaporation_rate = (0.5, 1)
-        for pheromone_evaporation_rate in valid_pheromone_evaporation_rate:
-            trainer = MMAS(
-                ant_cls,
-                species,
-                fitness_func,
-                initial_pheromones,
-                pheromone_evaporation_rate=pheromone_evaporation_rate
-            )
-            self.assertEqual(
-                pheromone_evaporation_rate,
-                trainer.pheromone_evaporation_rate
-            )
 
         # Try invalid types for iter_best_use_limit. Should fail
         invalid_iter_best_use_limit = (type, 'a', 1.5)
@@ -174,11 +134,6 @@ class TrainerTester(unittest.TestCase):
             initial_pheromones
         )
         self.assertEqual(
-            trainer.pheromone_evaporation_rate,
-            DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
-        )
-        self.assertEqual(trainer.elite_weight, 1)
-        self.assertEqual(
             trainer.iter_best_use_limit,
             DEFAULT_MMAS_ITER_BEST_USE_LIMIT
         )
@@ -193,39 +148,6 @@ class TrainerTester(unittest.TestCase):
             trainer._global_best_freq,
             DEFAULT_MMAS_ITER_BEST_USE_LIMIT
         )
-
-    def test_elite_weight(self):
-        """Test the elite_weight property."""
-        # Trainer parameters
-        species = Species(num_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MMAS(**params)
-
-        # Try invalid types for elite_weight. Should fail
-        invalid_elite_weight_types = (type, 'a')
-        for elite_weight in invalid_elite_weight_types:
-            with self.assertRaises(TypeError):
-                trainer.elite_weight = elite_weight
-
-        # Try invalid values for elite_weight. Should fail
-        invalid_elite_weight_values = (-1, 0, 3.5, 8)
-        for elite_weight in invalid_elite_weight_values:
-            with self.assertRaises(ValueError):
-                trainer.elite_weight = elite_weight
-
-        # Try a valid value for elite_weight
-        valid_elite_weight_values = (1, None)
-        for elite_weight in valid_elite_weight_values:
-            trainer.elite_weight = elite_weight
-            self.assertEqual(trainer.elite_weight, 1.0)
 
     def test_global_best_freq(self):
         """Test the _global_best_freq property."""
@@ -314,7 +236,7 @@ class TrainerTester(unittest.TestCase):
             "species": species,
             "fitness_function": fitness_func,
             "initial_pheromones": initial_pheromones,
-            "pop_size": 1
+            "col_size": 1
         }
 
         # Create the trainer
@@ -329,9 +251,9 @@ class TrainerTester(unittest.TestCase):
 
         # In the first iteration the iteration-best ant should deposit
         # pheromones
-        trainer._generate_pop()
+        trainer._generate_col()
         trainer._deposit_pheromones()
-        assert_path_pheromones_increment(trainer, trainer.pop[0])
+        assert_path_pheromones_increment(trainer, trainer.col[0])
 
         # In iterations above MMAS.iter_best_use_limit only the global-best
         # ant should deposit the pheromones
@@ -399,7 +321,7 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(trainer._last_elite_iter, None)
 
-        trainer._generate_pop()
+        trainer._generate_col()
         trainer._current_iter = 25
 
         # Update the elite
@@ -496,6 +418,24 @@ class TrainerTester(unittest.TestCase):
         self.assertTrue(
             np.all(trainer.pheromones[0] == trainer._max_pheromone)
         )
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [10]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MMAS(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

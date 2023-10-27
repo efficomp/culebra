@@ -67,9 +67,12 @@ from typing import (
 from functools import partial, partialmethod
 from itertools import repeat
 
+from deap.tools import HallOfFame, ParetoFront
+
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import (
     check_subclass,
+    check_int,
     check_float,
     check_func,
     check_func_params,
@@ -78,13 +81,13 @@ from culebra.checker import (
 from culebra.solution.abc import Individual
 from culebra.trainer.abc import (
     SingleSpeciesTrainer,
-    SinglePopTrainer,
-    MultiPopTrainer,
+    DistributedTrainer,
     IslandsTrainer,
     CooperativeTrainer
 )
 
 from .constants import (
+    DEFAULT_POP_SIZE,
     DEFAULT_CROSSOVER_PROB,
     DEFAULT_MUTATION_PROB,
     DEFAULT_GENE_IND_MUTATION_PROB,
@@ -95,10 +98,16 @@ from .constants import (
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
+
+
+DISTRIBUTED_EA_STATS_NAMES = ('Iter', 'Pop', 'NEvals')
+"""Statistics calculated for each iteration of the
+:py:class:`~culebra.trainer.ea.abc.SinglePopEA`.
+"""
 
 
 class HomogeneousEA(SingleSpeciesTrainer):
@@ -112,7 +121,7 @@ class HomogeneousEA(SingleSpeciesTrainer):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [HomogeneousEA],
                 bool
             ]
         ] = None,
@@ -136,7 +145,7 @@ class HomogeneousEA(SingleSpeciesTrainer):
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None
     ) -> None:
-        """Create a new single-population evolutionary trainer.
+        """Create a new homogeneous evolutionary trainer.
 
         :param solution_cls: The individual class
         :type solution_cls: An :py:class:`~culebra.solution.abc.Individual`
@@ -156,7 +165,7 @@ class HomogeneousEA(SingleSpeciesTrainer):
             optional
         :param pop_size: The populaion size. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :py:data:`None`
         :type pop_size: :py:class:`int`, greater than zero, optional
         :param crossover_func: The crossover function. If set to
@@ -239,9 +248,6 @@ class HomogeneousEA(SingleSpeciesTrainer):
         self.gene_ind_mutation_prob = gene_ind_mutation_prob
         self.selection_func_params = selection_func_params
 
-    # Copy the culebra.trainer.abc.SinglePopTrainer.pop_size property
-    pop_size = SinglePopTrainer.pop_size
-
     @property
     def solution_cls(self) -> Type[Individual]:
         """Get and set the individual class.
@@ -266,6 +272,38 @@ class HomogeneousEA(SingleSpeciesTrainer):
         # Check cls
         self._solution_cls = check_subclass(
             cls, "solution class", Individual
+        )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def pop_size(self) -> int:
+        """Get and set the population size.
+
+        :getter: Return the current population size
+        :setter: Set a new value for the population size. If set to
+            :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :type: :py:class:`int`, greater than zero
+        :raises TypeError: If set to a value which is not an :py:class:`int`
+        :raises ValueError: If set to a value which is not greater than zero
+        """
+        return DEFAULT_POP_SIZE if self._pop_size is None else self._pop_size
+
+    @pop_size.setter
+    def pop_size(self, size: int | None) -> None:
+        """Set the population size.
+
+        :param size: The new population size. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :type size: :py:class:`int`, greater than zero
+        :raises TypeError: If *size* is not an :py:class:`int`
+        :raises ValueError: If *size* is not an integer greater than zero
+        """
+        # Check the value
+        self._pop_size = (
+            None if size is None else check_int(size, "population size", gt=0)
         )
 
         # Reset the algorithm
@@ -556,7 +594,7 @@ class HomogeneousEA(SingleSpeciesTrainer):
         self.reset()
 
 
-class SinglePopEA(SinglePopTrainer, HomogeneousEA):
+class SinglePopEA(HomogeneousEA):
     """Base class for all the single population evolutionary algorithms."""
 
     def __init__(
@@ -610,7 +648,7 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
         :param pop_size: The populaion size. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE`
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE`
             will be used. Defaults to :py:data:`None`
         :type pop_size: :py:class:`int`, greater than zero, optional
         :param crossover_func: The crossover function. If set to
@@ -669,17 +707,7 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclasses
-        SinglePopTrainer.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            pop_size=pop_size
-        )
-
-        HomogeneousEA.__init__(
-            self,
+        super().__init__(
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
@@ -700,6 +728,14 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
             random_seed=random_seed
         )
 
+    @property
+    def pop(self) -> List[Individual] | None:
+        """Get the population.
+
+        :type: :py:class:`list` of :py:class:`~culebra.abc.Solution`
+        """
+        return self._pop
+
     def _evaluate_pop(self, pop: List[Individual]) -> None:
         """Evaluate the individuals of *pop* that have an invalid fitness.
 
@@ -713,17 +749,51 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
         for ind in invalid_inds:
             self.evaluate(ind)
 
-    def _fill_initial_pop(self) -> None:
-        """Fill the initial population.
+    def _generate_initial_pop(self) -> None:
+        """Generate the initial population.
 
-        The population is filed with random generated individuals.
+        The population is filled with random generated individuals.
         """
+        self._pop = []
         for _ in repeat(None, self.pop_size):
             self.pop.append(
                 self.solution_cls(
                     species=self.species,
                     fitness_cls=self.fitness_function.Fitness)
             )
+
+    @property
+    def _state(self) -> Dict[str, Any]:
+        """Get and set the state of this trainer.
+
+        Overridden to add the current population to the trainer's state.
+
+        :getter: Return the state
+        :setter: Set a new state
+        :type: :py:class:`dict`
+        """
+        # Get the state of the superclass
+        state = HomogeneousEA._state.fget(self)
+
+        # Get the state of this class
+        state["pop"] = self.pop
+
+        return state
+
+    @_state.setter
+    def _state(self, state: Dict[str, Any]) -> None:
+        """Set the state of this trainer.
+
+        Overridden to add the current population to the trainer's state.
+
+        :param state: The last loaded state
+        :type state: :py:class:`dict`
+        """
+        # Set the state of the superclass
+        HomogeneousEA._state.fset(self, state)
+
+        # Set the state of this class
+        self._pop = state["pop"]
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
@@ -733,8 +803,8 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
         # Call superclass to get an initial empty population
         super()._new_state()
 
-        # Fill the initial population
-        self._fill_initial_pop()
+        # Generate the initial population
+        self._generate_initial_pop()
 
         # Not really in the state,
         # but needed to evaluate the initial population
@@ -749,12 +819,49 @@ class SinglePopEA(SinglePopTrainer, HomogeneousEA):
         self._do_iteration_stats()
         self._current_iter += 1
 
+    def _reset_state(self) -> None:
+        """Reset the trainer state.
 
-class MultiPopEA(MultiPopTrainer):
+        Overridden to reset the initial population.
+        """
+        super()._reset_state()
+        self._pop = None
+
+    def _do_iteration_stats(self) -> None:
+        """Perform the iteration stats."""
+        # Perform some stats
+        record = self._stats.compile(self.pop) if self._stats else {}
+        record["Iter"] = self._current_iter
+        record["NEvals"] = self._current_iter_evals
+        if self.container is not None:
+            record["Pop"] = self.index
+        self._logbook.record(**record)
+        if self.verbose:
+            print(self._logbook.stream)
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        hof = ParetoFront()
+        if self.pop is not None:
+            hof.update(self.pop)
+        return [hof]
+
+
+class MultiPopEA(DistributedTrainer):
     """Base class for all the multiple population evolutionary algorithms."""
 
+    stats_names = DISTRIBUTED_EA_STATS_NAMES
+    """Statistics calculated each iteration."""
+
     @property
-    def subpop_trainer_cls(self) -> Type[SinglePopEA]:
+    def subtrainer_cls(self) -> Type[SinglePopEA]:
         """Get and set the trainer class to handle the subpopulations.
 
         Each subpopulation will be handled by a single-population evolutionary
@@ -766,10 +873,10 @@ class MultiPopEA(MultiPopTrainer):
         :raises TypeError: If set to a value which is not a
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA` subclass
         """
-        return self._subpop_trainer_cls
+        return self._subtrainer_cls
 
-    @subpop_trainer_cls.setter
-    def subpop_trainer_cls(self, cls: Type[SinglePopEA]) -> None:
+    @subtrainer_cls.setter
+    def subtrainer_cls(self, cls: Type[SinglePopEA]) -> None:
         """Set a new trainer class to handle the subpopulations.
 
         Each subpopulation will be handled by a single-population evolutionary
@@ -781,7 +888,7 @@ class MultiPopEA(MultiPopTrainer):
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA` subclass
         """
         # Check cls
-        self._subpop_trainer_cls = check_subclass(
+        self._subtrainer_cls = check_subclass(
             cls, "trainer class for subpopulations", SinglePopEA
         )
 
@@ -790,10 +897,10 @@ class MultiPopEA(MultiPopTrainer):
 
 
 # Change the docstring of the MultiPopEA constructor to indicate that the
-# subpop_trainer_cls must be a subclass of SinglePopEA
+# subtrainer_cls must be a subclass of SinglePopEA
 MultiPopEA.__init__.__doc__ = (
     MultiPopEA.__init__.__doc__.replace(
-        ':py:class:`~culebra.trainer.abc.SinglePopTrainer`',
+        ':py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`',
         ':py:class:`~culebra.trainer.ea.abc.SinglePopEA`'
     )
 )
@@ -807,13 +914,13 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopTrainer],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopTrainer], bool]
+                [SinglePopEA], bool]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -833,7 +940,7 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
@@ -844,9 +951,9 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
         :type species: :py:class:`~culebra.abc.Species`
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
+        :param subtrainer_cls: Single-species trainer class to handle
             the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
+        :type subtrainer_cls: Any subclass of
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
@@ -857,11 +964,11 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param num_subpops: The number of subpopulations. If set to
+        :param num_subtrainers: The number of subpopulations. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` will be
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
             used. Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative individuals that
             will be sent to the other subpopulations. If set to
             :py:data:`None`,
@@ -921,9 +1028,9 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subpopulations
             trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -932,10 +1039,10 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
             representation_topology_func=representation_topology_func,
@@ -951,11 +1058,79 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # Copy the culebra.trainer.ea.abc.HomogeneousEA.solution_cls property
     solution_cls = HomogeneousEA.solution_cls
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        hof = None
+        # If the search hasn't been initialized an empty HoF is returned
+        if self.subtrainers is None:
+            hof = ParetoFront()
+        else:
+            for subtrainer in self.subtrainers:
+                if hof is None:
+                    hof = subtrainer.best_solutions()[0]
+                else:
+                    if subtrainer.pop is not None:
+                        hof.update(subtrainer.pop)
+
+        return [hof]
+
+    @staticmethod
+    def receive_representatives(subtrainer) -> None:
+        """Receive representative solutions.
+
+        :param subtrainer: The subtrainer receiving
+            representatives
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        """
+        container = subtrainer.container
+
+        # Receive all the solutions in the queue
+        queue = container._communication_queues[subtrainer.index]
+        while not queue.empty():
+            subtrainer._pop.extend(queue.get())
+
+    @staticmethod
+    def send_representatives(subtrainer) -> None:
+        """Send representatives.
+
+        :param subtrainer: The sender subtrainer
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        """
+        container = subtrainer.container
+
+        # Check if sending should be performed
+        if subtrainer._current_iter % container.representation_freq == 0:
+            # Get the destinations according to the representation topology
+            destinations = container.representation_topology_func(
+                subtrainer.index,
+                container.num_subtrainers,
+                **container.representation_topology_func_params
+            )
+
+            # For each destination
+            for dest in destinations:
+                # Get the representatives
+                sols = container.representation_selection_func(
+                    subtrainer.pop,
+                    container.representation_size,
+                    **container.representation_selection_func_params
+                )
+                container._communication_queues[dest].put(sols)
 
 
 class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
@@ -966,7 +1141,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -987,7 +1162,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         mutation_prob: Optional[float] = None,
         gene_ind_mutation_prob: Optional[float] = None,
         selection_func_params: Optional[Dict[str, Any]] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -1007,7 +1182,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
@@ -1018,9 +1193,9 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :type species: :py:class:`~culebra.abc.Species`
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
+        :param subtrainer_cls: Single-species trainer class to handle
             the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
+        :type subtrainer_cls: Any subclass of
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
@@ -1033,7 +1208,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             optional
         :param pop_size: The populaion size. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :py:data:`None`
         :type pop_size: :py:class:`int`, greater than zero, optional
         :param crossover_func: The crossover function. If set to
@@ -1071,11 +1246,11 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             :py:attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
             will be used. Defaults to :py:data:`None`
         :type selection_func_params: :py:class:`dict`, optional
-        :param num_subpops: The number of subpopulations. If set to
+        :param num_subtrainers: The number of subpopulations. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` will be
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
             used. Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative individuals that
             will be sent to the other subpopulations. If set to
             :py:data:`None`,
@@ -1135,9 +1310,9 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subpopulations
             trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -1160,10 +1335,10 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
             representation_topology_func=representation_topology_func,
@@ -1179,10 +1354,10 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
-    def _generate_subpop_trainers(self) -> None:
+    def _generate_subtrainers(self) -> None:
         """Generate the subpopulation trainers.
 
         Also assign an :py:attr:`~culebra.trainer.ea.abc.SinglePopEA.index`
@@ -1198,15 +1373,15 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         and
         :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
-        :py:attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA.subpop_trainer_cls`
-        class are dynamically overridden, in order to allow individuals exchange
-        between subpopulation trainers, if necessary
+        :py:attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_cls`
+        class are dynamically overridden, in order to allow individuals
+        exchange between subpopulation trainers, if necessary
         """
 
-        def subpop_trainers_properties() -> Dict[str, Any]:
+        def subtrainers_properties() -> Dict[str, Any]:
             """Return the subpopulation trainers' properties."""
             # Get the attributes from the container trainer
-            cls = self.subpop_trainer_cls
+            cls = self.subtrainer_cls
             properties = {
                 key: getattr(self, key)
                 for key in cls.__init__.__code__.co_varnames
@@ -1214,31 +1389,31 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             }
 
             # Append subpopulation trainer custom atributes
-            properties.update(self.subpop_trainer_params)
+            properties.update(self.subtrainer_params)
 
             return properties
 
         # Get the subpopulations properties
-        properties = subpop_trainers_properties()
+        properties = subtrainers_properties()
 
         # Generate the subpopulations
-        self._subpop_trainers = []
+        self._subtrainers = []
 
         for (
             index,
             checkpoint_filename
-        ) in enumerate(self.subpop_trainer_checkpoint_filenames):
-            subpop_trainer = self.subpop_trainer_cls(**properties)
-            subpop_trainer.checkpoint_filename = checkpoint_filename
-            subpop_trainer.index = index
-            subpop_trainer.container = self
-            subpop_trainer.__class__._preprocess_iteration = (
+        ) in enumerate(self.subtrainer_checkpoint_filenames):
+            subtrainer = self.subtrainer_cls(**properties)
+            subtrainer.checkpoint_filename = checkpoint_filename
+            subtrainer.index = index
+            subtrainer.container = self
+            subtrainer.__class__._preprocess_iteration = (
                 self.receive_representatives
             )
-            subpop_trainer.__class__._postprocess_iteration = (
+            subtrainer.__class__._postprocess_iteration = (
                 self.send_representatives
             )
-            self._subpop_trainers.append(subpop_trainer)
+            self._subtrainers.append(subtrainer)
 
 
 class HeterogeneousEA(MultiPopEA):
@@ -1247,7 +1422,7 @@ class HeterogeneousEA(MultiPopEA):
     def __init__(
         self,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -1296,15 +1471,9 @@ class HeterogeneousEA(MultiPopEA):
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
         representation_selection_func: Optional[
             Callable[[List[Individual], Any], Individual]
         ] = None,
@@ -1316,15 +1485,15 @@ class HeterogeneousEA(MultiPopEA):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
+        :param subtrainer_cls: Single-species trainer class to handle
             the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
+        :type subtrainer_cls: Any subclass of
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
@@ -1340,7 +1509,7 @@ class HeterogeneousEA(MultiPopEA):
             all the subpopulations. Different sizes can be provided in a
             :py:class:`~collections.abc.Sequence`. All the sizes must be
             greater then zero. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :py:data:`None`
         :type pop_sizes: :py:class:`int` or
             :py:class:`~collections.abc.Sequence` of :py:class:`int`, optional
@@ -1414,11 +1583,11 @@ class HeterogeneousEA(MultiPopEA):
             will be used. Defaults to :py:data:`None`
         :type selection_funcs_params: :py:class:`dict` or
             :py:class:`~collections.abc.Sequence` of :py:class:`dict`, optional
-        :param num_subpops: The number of subpopulations. If set to
+        :param num_subtrainers: The number of subpopulations. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` will be
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
             used. Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative individuals that
             will be sent to the other subpopulations. If set to
             :py:data:`None`,
@@ -1435,17 +1604,6 @@ class HeterogeneousEA(MultiPopEA):
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
             be used. Defaults to :py:data:`None`
         :type representation_freq: :py:class:`int`, optional
-        :param representation_topology_func: Topology function for
-            representatives sending. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func:
-            :py:class:`~collections.abc.Callable`, optional
-        :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func_params: :py:class:`dict`, optional
         :param representation_selection_func: Policy function to choose the
             representatives from each subpopulation. If set to
             :py:data:`None`,
@@ -1478,24 +1636,20 @@ class HeterogeneousEA(MultiPopEA):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subpopulations
             trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
         super().__init__(
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -1505,7 +1659,7 @@ class HeterogeneousEA(MultiPopEA):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
         # Get the parameters
@@ -1518,9 +1672,67 @@ class HeterogeneousEA(MultiPopEA):
         self.gene_ind_mutation_probs = gene_ind_mutation_probs
         self.selection_funcs_params = selection_funcs_params
 
-    # Copy the :py:class:`culebra.trainer.HeterogeneousIslandsEA`
-    # properties
-    pop_sizes = CooperativeTrainer.pop_sizes
+    @property
+    def pop_sizes(self) -> Sequence[int | None]:
+        """Get and set the population size for each subtrainer.
+
+        :getter: Return the current size of each subtrainer
+        :setter: Set a new size for each subtrainer. If only a single value
+            is provided, the same size will be used for all the subtrainers.
+            Different sizes can be provided in a
+            :py:class:`~collections.abc.Sequence`. All the sizes must be
+            greater then zero. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :type: :py:class:`int` or :py:class:`~collections.abc.Sequence`
+            of :py:class:`int`
+        :raises TypeError: If set to a value which is not an :py:class:`int`
+            or a :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :raises ValueError: If any population size is not greater than zero
+        """
+        if self.subtrainers is not None:
+            the_pop_sizes = [
+                subtrainer.pop_size
+                for subtrainer in self.subtrainers
+            ]
+        elif isinstance(self._pop_sizes, Sequence):
+            the_pop_sizes = self._pop_sizes
+        else:
+            the_pop_sizes = list(repeat(self._pop_sizes, self.num_subtrainers))
+
+        return the_pop_sizes
+
+    @pop_sizes.setter
+    def pop_sizes(self, sizes: int | Sequence[int] | None) -> None:
+        """Set the population size for each subtrainer.
+
+        :param sizes: The new population sizes. If only a single value
+            is provided, the same size will be used for all the subtrainers.
+            Different sizes can be provided in a
+            :py:class:`~collections.abc.Sequence`. All the sizes must be
+            greater then zero. If set to :py:data:`None`,
+        :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :type: :py:class:`int` or :py:class:`~collections.abc.Sequence`
+            of :py:class:`int`
+        :raises TypeError: If *sizes* is not an :py:class:`int`
+            or a :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :raises ValueError: If any value in *size* is not greater than zero
+        """
+        # If None is provided ...
+        if sizes is None:
+            self._pop_sizes = None
+        # If a sequence is provided ...
+        elif isinstance(sizes, Sequence):
+            self._pop_sizes = check_sequence(
+                sizes,
+                "population sizes",
+                item_checker=partial(check_int, gt=0)
+            )
+        # If a scalar value is provided ...
+        else:
+            self._pop_sizes = check_int(sizes, "population size", gt=0)
+
+        # Reset the algorithm
+        self.reset()
 
     @property
     def crossover_funcs(self) -> Sequence[
@@ -1544,15 +1756,17 @@ class HeterogeneousEA(MultiPopEA):
             :py:class:`~collections.abc.Sequence` of
             :py:class:`~collections.abc.Callable`
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_funcs = [
-                subpop_trainer.crossover_func
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.crossover_func
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._crossover_funcs, Sequence):
             the_funcs = self._crossover_funcs
         else:
-            the_funcs = list(repeat(self._crossover_funcs, self.num_subpops))
+            the_funcs = list(
+                repeat(self._crossover_funcs, self.num_subtrainers)
+            )
 
         return the_funcs
 
@@ -1620,15 +1834,17 @@ class HeterogeneousEA(MultiPopEA):
             :py:class:`~collections.abc.Sequence` of
             :py:class:`~collections.abc.Callable`
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_funcs = [
-                subpop_trainer.mutation_func
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.mutation_func
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._mutation_funcs, Sequence):
             the_funcs = self._mutation_funcs
         else:
-            the_funcs = list(repeat(self._mutation_funcs, self.num_subpops))
+            the_funcs = list(
+                repeat(self._mutation_funcs, self.num_subtrainers)
+            )
 
         return the_funcs
 
@@ -1693,15 +1909,17 @@ class HeterogeneousEA(MultiPopEA):
             :py:class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If any probability is not in (0, 1)
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_probs = [
-                subpop_trainer.crossover_prob
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.crossover_prob
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._crossover_probs, Sequence):
             the_probs = self._crossover_probs
         else:
-            the_probs = list(repeat(self._crossover_probs, self.num_subpops))
+            the_probs = list(
+                repeat(self._crossover_probs, self.num_subtrainers)
+            )
 
         return the_probs
 
@@ -1756,15 +1974,17 @@ class HeterogeneousEA(MultiPopEA):
             :py:class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If probabilities are not in (0, 1)
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_probs = [
-                subpop_trainer.mutation_prob
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.mutation_prob
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._mutation_probs, Sequence):
             the_probs = self._mutation_probs
         else:
-            the_probs = list(repeat(self._mutation_probs, self.num_subpops))
+            the_probs = list(
+                repeat(self._mutation_probs, self.num_subtrainers)
+            )
 
         return the_probs
 
@@ -1821,16 +2041,16 @@ class HeterogeneousEA(MultiPopEA):
             :py:class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If probabilities are not in (0, 1)
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_probs = [
-                subpop_trainer.gene_ind_mutation_prob
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.gene_ind_mutation_prob
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._gene_ind_mutation_probs, Sequence):
             the_probs = self._gene_ind_mutation_probs
         else:
             the_probs = list(
-                repeat(self._gene_ind_mutation_probs, self.num_subpops)
+                repeat(self._gene_ind_mutation_probs, self.num_subtrainers)
             )
 
         return the_probs
@@ -1893,15 +2113,17 @@ class HeterogeneousEA(MultiPopEA):
             :py:class:`~collections.abc.Sequence` of
             :py:class:`~collections.abc.Callable`
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_funcs = [
-                subpop_trainer.selection_func
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.selection_func
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._selection_funcs, Sequence):
             the_funcs = self._selection_funcs
         else:
-            the_funcs = list(repeat(self._selection_funcs, self.num_subpops))
+            the_funcs = list(
+                repeat(self._selection_funcs, self.num_subtrainers)
+            )
 
         return the_funcs
 
@@ -1970,16 +2192,16 @@ class HeterogeneousEA(MultiPopEA):
         :raises ValueError: If any element of the sequence is not a
             :py:class:`dict`
         """
-        if self.subpop_trainers is not None:
+        if self.subtrainers is not None:
             the_params = [
-                subpop_trainer.selection_func_params
-                for subpop_trainer in self.subpop_trainers
+                subtrainer.selection_func_params
+                for subtrainer in self.subtrainers
             ]
         elif isinstance(self._selection_funcs_params, Sequence):
             the_params = self._selection_funcs_params
         else:
             the_params = list(
-                repeat(self._selection_funcs_params, self.num_subpops)
+                repeat(self._selection_funcs_params, self.num_subtrainers)
             )
 
         return the_params
@@ -2044,7 +2266,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -2093,7 +2315,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -2113,7 +2335,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
@@ -2124,9 +2346,9 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         :type species: :py:class:`~culebra.abc.Species`
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
+        :param subtrainer_cls: Single-species trainer class to handle
             the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
+        :type subtrainer_cls: Any subclass of
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
@@ -2142,7 +2364,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             all the subpopulations. Different sizes can be provided in a
             :py:class:`~collections.abc.Sequence`. All the sizes must be
             greater then zero. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :py:data:`None`
         :type pop_sizes: :py:class:`int` or
             :py:class:`~collections.abc.Sequence` of :py:class:`int`, optional
@@ -2216,11 +2438,11 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             will be used. Defaults to :py:data:`None`
         :type selection_funcs_params: :py:class:`dict` or
             :py:class:`~collections.abc.Sequence` of :py:class:`dict`, optional
-        :param num_subpops: The number of subpopulations. If set to
+        :param num_subtrainers: The number of subpopulations. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS` will be
+            :py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
             used. Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative individuals that
             will be sent to the other subpopulations. If set to
             :py:data:`None`,
@@ -2280,16 +2502,16 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subpopulations
             trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
         HeterogeneousEA.__init__(
             self,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -2304,10 +2526,10 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
             representation_topology_func=representation_topology_func,
@@ -2323,10 +2545,10 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
-    def _generate_subpop_trainers(self) -> None:
+    def _generate_subtrainers(self) -> None:
         """Generate the subpopulation trainers.
 
         Also assign an :py:attr:`~culebra.trainer.ea.abc.SinglePopEA.index`
@@ -2342,15 +2564,15 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         and
         :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
-        :py:attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA.subpop_trainer_cls`
-        class are dynamically overridden, in order to allow individuals exchange
-        between subpopulation trainers, if necessary
+        :py:attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA.subtrainer_cls`
+        class are dynamically overridden, in order to allow individuals
+        exchange between subpopulation trainers, if necessary
 
         :raises RuntimeError: If the length of any properties sequence does
             not match the number of subpopulations.
         """
 
-        def subpop_trainers_properties() -> List[Dict[str, Any]]:
+        def subtrainers_properties() -> List[Dict[str, Any]]:
             """Obtain the properties of each subpopulation trainer.
 
             :raises RuntimeError: If the length of any properties sequence
@@ -2360,7 +2582,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             :rtype: :py:class:`list`
             """
             # Get the common attributes from the container trainer
-            cls = self.subpop_trainer_cls
+            cls = self.subtrainer_cls
             common_properties = {
                 key: getattr(self, key)
                 for key in cls.__init__.__code__.co_varnames
@@ -2368,11 +2590,11 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             }
 
             # Append subpopulation trainer custom atributes
-            common_properties.update(self.subpop_trainer_params)
+            common_properties.update(self.subtrainer_params)
 
             # List with the common properties. Equal for all the subpopulations
             properties = []
-            for _ in range(self.num_subpops):
+            for _ in range(self.num_subtrainers):
                 subpop_properties = {}
                 for key, value in common_properties.items():
                     subpop_properties[key] = value
@@ -2391,7 +2613,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
                 ).fget(self)
 
                 # Check the properties' length
-                if len(property_sequence_values) != self.num_subpops:
+                if len(property_sequence_values) != self.num_subtrainers:
                     raise RuntimeError(
                         f"The length of {property_sequence_name} does not "
                         "match the number of subpopulations"
@@ -2405,10 +2627,10 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             return properties
 
         # Get the subpopulations properties
-        properties = subpop_trainers_properties()
+        properties = subtrainers_properties()
 
         # Generate the subpopulations
-        self._subpop_trainers = []
+        self._subtrainers = []
 
         for (
             index, (
@@ -2416,19 +2638,19 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
                 subpop_properties
             )
         ) in enumerate(
-            zip(self.subpop_trainer_checkpoint_filenames, properties)
+            zip(self.subtrainer_checkpoint_filenames, properties)
         ):
-            subpop_trainer = self.subpop_trainer_cls(**subpop_properties)
-            subpop_trainer.checkpoint_filename = checkpoint_filename
-            subpop_trainer.index = index
-            subpop_trainer.container = self
-            subpop_trainer.__class__._preprocess_iteration = (
+            subtrainer = self.subtrainer_cls(**subpop_properties)
+            subtrainer.checkpoint_filename = checkpoint_filename
+            subtrainer.index = index
+            subtrainer.container = self
+            subtrainer.__class__._preprocess_iteration = (
                 self.receive_representatives
             )
-            subpop_trainer.__class__._postprocess_iteration = (
+            subtrainer.__class__._postprocess_iteration = (
                 self.send_representatives
             )
-            self._subpop_trainers.append(subpop_trainer)
+            self._subtrainers.append(subtrainer)
 
 
 class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
@@ -2454,7 +2676,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         solution_classes: Sequence[Type[Individual]],
         species: Sequence[Species],
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -2504,15 +2726,9 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
         representation_selection_func: Optional[
             Callable[[List[Individual], Any], Individual]
         ] = None,
@@ -2524,7 +2740,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
 
@@ -2538,9 +2754,9 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             :py:class:`~culebra.abc.Species`
         :param fitness_function: The training fitness function
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param subpop_trainer_cls: Single-population trainer class to handle
+        :param subtrainer_cls: Single-species trainer class to handle
             the subpopulations.
-        :type subpop_trainer_cls: Any subclass of
+        :type subtrainer_cls: Any subclass of
             :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
@@ -2556,7 +2772,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             all the subpopulations. Different sizes can be provided in a
             :py:class:`~collections.abc.Sequence`. All the sizes must be
             greater then zero. If set to :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_POP_SIZE` will be used.
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :py:data:`None`
         :type pop_sizes: :py:class:`int` or
             :py:class:`~collections.abc.Sequence` of :py:class:`int`, optional
@@ -2631,11 +2847,11 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             will be used. Defaults to :py:data:`None`
         :type selection_funcs_params: :py:class:`dict` or
             :py:class:`~collections.abc.Sequence` of :py:class:`dict`, optional
-        :param num_subpops: The number of subpopulations (species). If set to
-            :py:data:`None`, the number of species  evolved by the trainer is
-            will be used, otherwise it must match the number of species.
+        :param num_subtrainers: The number of subpopulations (species). If set
+            to :py:data:`None`, the number of species  evolved by the trainer
+            is will be used, otherwise it must match the number of species.
             Defaults to :py:data:`None`
-        :type num_subpops: :py:class:`int`, optional
+        :type num_subtrainers: :py:class:`int`, optional
         :param representation_size: Number of representative individuals that
             will be sent to the other subpopulations. If set to
             :py:data:`None`,
@@ -2647,17 +2863,6 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             :py:attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
             be used. Defaults to :py:data:`None`
         :type representation_freq: :py:class:`int`, optional
-        :param representation_topology_func: Topology function for
-            representatives sending. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func:
-            :py:class:`~collections.abc.Callable`, optional
-        :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            will be used. Defaults to :py:data:`None`
-        :type representation_topology_func_params: :py:class:`dict`, optional
         :param representation_selection_func: Policy function to choose the
             representatives from each subpopulation (species). If set to
             :py:data:`None`,
@@ -2690,9 +2895,9 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         :type verbose: :py:class:`bool`, optional
         :param random_seed: The seed, defaults to :py:data:`None`
         :type random_seed: :py:class:`int`, optional
-        :param subpop_trainer_params: Custom parameters for the subpopulations
+        :param subtrainer_params: Custom parameters for the subpopulations
             (species) trainer
-        :type subpop_trainer_params: keyworded variable-length argument list
+        :type subtrainer_params: keyworded variable-length argument list
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -2701,12 +2906,12 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             solution_classes=solution_classes,
             species=species,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
         )
         HeterogeneousEA.__init__(
             self,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
+            subtrainer_cls=subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             pop_sizes=pop_sizes,
@@ -2717,13 +2922,9 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             mutation_probs=mutation_probs,
             gene_ind_mutation_probs=gene_ind_mutation_probs,
             selection_funcs_params=selection_funcs_params,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -2733,10 +2934,10 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
-    def _generate_subpop_trainers(self) -> None:
+    def _generate_subtrainers(self) -> None:
         """Generate the subpopulation trainers.
 
         Also assign an :py:attr:`~culebra.trainer.ea.abc.SinglePopEA.index`
@@ -2752,15 +2953,15 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         and
         :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
-        :py:attr:`~culebra.trainer.ea.abc.CooperativeEA.subpop_trainer_cls`
-        class are dynamically overridden, in order to allow individuals exchange
-        between subpopulation trainers, if necessary
+        :py:attr:`~culebra.trainer.ea.abc.CooperativeEA.subtrainer_cls`
+        class are dynamically overridden, in order to allow individuals
+        exchange between subpopulation trainers, if necessary
 
         :raises RuntimeError: If the length of any properties sequence does
             not match the number of subpopulations.
         """
 
-        def subpop_trainers_properties() -> List[Dict[str, Any]]:
+        def subtrainers_properties() -> List[Dict[str, Any]]:
             """Obtain the properties of each subpopulation.
 
             :raises RuntimeError: If the length of any properties sequence
@@ -2770,7 +2971,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             :rtype: :py:class:`list`
             """
             # Get the common attributes from the container trainer
-            cls = self.subpop_trainer_cls
+            cls = self.subtrainer_cls
             common_properties = {
                 key: getattr(self, key)
                 for key in cls.__init__.__code__.co_varnames
@@ -2778,11 +2979,11 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             }
 
             # Append subpopulation trainer custom atributes
-            common_properties.update(self.subpop_trainer_params)
+            common_properties.update(self.subtrainer_params)
 
             # List with the common properties. Equal for all the subpopulations
             properties = []
-            for _ in range(self.num_subpops):
+            for _ in range(self.num_subtrainers):
                 subpop_properties = {}
                 for key, value in common_properties.items():
                     subpop_properties[key] = value
@@ -2801,7 +3002,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
                 ).fget(self)
 
                 # Check the properties' length
-                if len(property_sequence_values) != self.num_subpops:
+                if len(property_sequence_values) != self.num_subtrainers:
                     raise RuntimeError(
                         f"The length of {property_sequence_name} does not "
                         "match the number of subpopulations"
@@ -2815,10 +3016,10 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             return properties
 
         # Get the subpopulations properties
-        properties = subpop_trainers_properties()
+        properties = subtrainers_properties()
 
         # Generate the subpopulations
-        self._subpop_trainers = []
+        self._subtrainers = []
 
         for (
             index, (
@@ -2826,27 +3027,93 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
                 subpop_properties
             )
         ) in enumerate(
-            zip(self.subpop_trainer_checkpoint_filenames, properties)
+            zip(self.subtrainer_checkpoint_filenames, properties)
         ):
-            subpop_trainer = self.subpop_trainer_cls(**subpop_properties)
-            subpop_trainer.checkpoint_filename = checkpoint_filename
-            subpop_trainer.index = index
-            subpop_trainer.container = self
-            subpop_trainer.__class__._preprocess_iteration = (
+            subtrainer = self.subtrainer_cls(**subpop_properties)
+            subtrainer.checkpoint_filename = checkpoint_filename
+            subtrainer.index = index
+            subtrainer.container = self
+            subtrainer.__class__._preprocess_iteration = (
                 self.receive_representatives
             )
-            subpop_trainer.__class__._postprocess_iteration = (
+            subtrainer.__class__._postprocess_iteration = (
                 self.send_representatives
             )
 
-            subpop_trainer.__class__._init_representatives = partialmethod(
-                self._init_subpop_trainer_representatives,
+            subtrainer.__class__._init_representatives = partialmethod(
+                self._init_subtrainer_representatives,
                 solution_classes=self.solution_classes,
                 species=self.species,
                 representation_size=self.representation_size
             )
 
-            self._subpop_trainers.append(subpop_trainer)
+            self._subtrainers.append(subtrainer)
+
+    @staticmethod
+    def receive_representatives(subtrainer) -> None:
+        """Receive representative individuals.
+
+        :param subtrainer: The subtrainer receiving
+            representatives
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        """
+        container = subtrainer.container
+
+        # Receive all the individuals in the queue
+        queue = container._communication_queues[subtrainer.index]
+
+        anything_received = False
+        while not queue.empty():
+            msg = queue.get()
+            sender_index = msg[0]
+            representatives = msg[1]
+            for ind_index, ind in enumerate(representatives):
+                subtrainer.representatives[ind_index][sender_index] = ind
+
+            anything_received = True
+
+        # If any new representatives have arrived, the fitness of all the
+        # individuals in the population must be invalidated and individuals
+        # must be re-evaluated
+        if anything_received:
+            # Re-evaluate all the individuals
+            for sol in subtrainer.pop:
+                subtrainer.evaluate(sol)
+
+    @staticmethod
+    def send_representatives(subtrainer) -> None:
+        """Send representatives.
+
+        :param subtrainer: The sender subtrainer
+        :type subtrainer:
+            :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        """
+        container = subtrainer.container
+
+        # Check if sending should be performed
+        if subtrainer._current_iter % container.representation_freq == 0:
+            # Get the destinations according to the representation topology
+            destinations = container.representation_topology_func(
+                subtrainer.index,
+                container.num_subtrainers,
+                **container.representation_topology_func_params
+            )
+
+            # For each destination
+            for dest in destinations:
+                # Get the representatives
+                inds = container.representation_selection_func(
+                    subtrainer.pop,
+                    container.representation_size,
+                    **container.representation_selection_func_params
+                )
+
+                # Send the following msg:
+                # (index of sender subpop, representatives)
+                container._communication_queues[dest].put(
+                    (subtrainer.index, inds)
+                )
 
 
 # Exported symbols for this module

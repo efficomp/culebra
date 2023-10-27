@@ -27,23 +27,6 @@ Welcome to culebra's documentation!
 
 Attributes:
 -----------
-.. attribute:: DEFAULT_STATS_NAMES
-    :annotation: = ('Iter', 'Pop', 'NEvals')
-
-    Default statistics calculated for each iteration of the
-    :py:class:`~culebra.abc.Trainer`
-
-.. attribute:: DEFAULT_OBJECTIVE_STATS
-    :annotation: = {'Avg': <function numpy.mean>, 'Max': <function numpy.max>, 'Min': <function numpy.min>, 'Std': <function numpy.std>}
-
-    Default statistics calculated for each objective within a
-    :py:class:`~culebra.abc.Trainer`.
-
-.. attribute:: DEFAULT_POP_SIZE
-    :annotation: = 100
-
-    Default population size.
-
 .. attribute:: DEFAULT_MAX_NUM_ITERS
     :annotation: = 100
 
@@ -76,9 +59,6 @@ Attributes:
     distributed approaches.
 
 ..
-    .. autodata:: DEFAULT_STATS_NAMES
-    .. autodata:: DEFAULT_OBJECTIVE_STATS
-    .. autodata:: DEFAULT_POP_SIZE
     .. autodata:: DEFAULT_MAX_NUM_ITERS
     .. autodata:: DEFAULT_CHECKPOINT_ENABLE
     .. autodata:: DEFAULT_CHECKPOINT_FREQ

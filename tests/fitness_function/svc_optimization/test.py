@@ -69,6 +69,12 @@ class CTester(unittest.TestCase):
         # Check the fitness function
         self.assertEqual(sol.fitness.values[0], sol.values.C)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        fitness_func = self.FitnessFunc(dataset)
+        self.assertIsInstance(repr(fitness_func), str)
+        self.assertIsInstance(str(fitness_func), str)
+
 
 class KappaIndexTester(unittest.TestCase):
     """Test KappaIndex."""
@@ -87,6 +93,8 @@ class KappaIndexTester(unittest.TestCase):
         sol.fitness.values = func.evaluate(sol)
         self.assertGreaterEqual(sol.fitness.values[0], -1)
         self.assertLessEqual(sol.fitness.values[0], 1)
+
+    test_repr = CTester.test_repr
 
 
 class KappaCTester(unittest.TestCase):
@@ -111,6 +119,8 @@ class KappaCTester(unittest.TestCase):
 
         # Check the number of features
         self.assertEqual(sol.fitness.values[1], sol.values.C)
+
+    test_repr = CTester.test_repr
 
 
 if __name__ == '__main__':

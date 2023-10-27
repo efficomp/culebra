@@ -70,7 +70,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": Fitness(dataset),
-            "subpop_trainer_cls": ElitistEA
+            "subtrainer_cls": ElitistEA
         }
 
         # Create the trainer
@@ -98,7 +98,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": Fitness(dataset),
-            "subpop_trainer_cls": ElitistEA,
+            "subtrainer_cls": ElitistEA,
             "pop_sizes": pop_size,
             "representation_size": 2,
             "verbose": False,
@@ -118,8 +118,8 @@ class TrainerTester(unittest.TestCase):
 
         # Test that current_iter is 0 and that all the subpopulations trainers
         # have been initializated
-        for index in range(trainer.num_subpops):
-            self.assertEqual(len(trainer.subpop_trainers[index].pop), pop_size)
+        for index in range(trainer.num_subtrainers):
+            self.assertEqual(len(trainer.subtrainers[index].pop), pop_size)
 
     def test_checkpoining(self):
         """Test checkpointing."""
@@ -140,7 +140,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": Fitness(dataset),
-            "subpop_trainer_cls": ElitistEA,
+            "subtrainer_cls": ElitistEA,
             "pop_sizes": 10,
             "representation_size": 2,
             "verbose": False
@@ -163,7 +163,7 @@ class TrainerTester(unittest.TestCase):
         trainer2 = SequentialCooperativeEA(**params)
 
         # Trainer2 has no subpopulation trainers yet
-        self.assertEqual(trainer2.subpop_trainers, None)
+        self.assertEqual(trainer2.subtrainers, None)
 
         # Load the state of trainer1 into trainer2
         trainer2._init_search()
@@ -173,16 +173,16 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer1.runtime, trainer2.runtime)
         self.assertEqual(trainer1._current_iter, trainer2._current_iter)
         for (
-            subpop_trainer1,
-            subpop_trainer2
-        ) in zip(trainer1.subpop_trainers, trainer2.subpop_trainers):
+            subtrainer1,
+            subtrainer2
+        ) in zip(trainer1.subtrainers, trainer2.subtrainers):
             self.assertEqual(
-                len(subpop_trainer1.pop), len(subpop_trainer2.pop)
+                len(subtrainer1.pop), len(subtrainer2.pop)
             )
 
         # Remove the checkpoint files
         os.remove(trainer1.checkpoint_filename)
-        for file in trainer1.subpop_trainer_checkpoint_filenames:
+        for file in trainer1.subtrainer_checkpoint_filenames:
             os.remove(file)
 
     def test_representatives_exchange(self):
@@ -203,7 +203,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": Fitness(dataset),
-            "subpop_trainer_cls": ElitistEA,
+            "subtrainer_cls": ElitistEA,
             "pop_sizes": 10,
             "representation_size": 2,
             "verbose": False,
@@ -216,8 +216,8 @@ class TrainerTester(unittest.TestCase):
         trainer._start_iteration()
 
         # Check that all the individuals are evaluated
-        for subpop_trainer in trainer.subpop_trainers:
-            for ind in subpop_trainer.pop:
+        for subtrainer in trainer.subtrainers:
+            for ind in subtrainer.pop:
                 self.assertTrue(ind.fitness.valid)
 
         # All the queues should be empty
@@ -225,9 +225,9 @@ class TrainerTester(unittest.TestCase):
             self.assertTrue(queue.empty())
 
         # Delete initial representatives
-        for subpop_trainer in trainer.subpop_trainers:
-            subpop_trainer._representatives = [
-                [None] * trainer.num_subpops
+        for subtrainer in trainer.subtrainers:
+            subtrainer._representatives = [
+                [None] * trainer.num_subtrainers
             ] * trainer.representation_size
 
         # Send representatives
@@ -251,9 +251,9 @@ class TrainerTester(unittest.TestCase):
         # Check the received representatives
         for (
             subpop_index,
-            subpop_trainer
-        ) in enumerate(trainer.subpop_trainers):
-            for representatives in subpop_trainer._representatives:
+            subtrainer
+        ) in enumerate(trainer.subtrainers):
+            for representatives in subtrainer._representatives:
                 for ind_index, ind in enumerate(representatives):
                     if ind_index == subpop_index:
                         self.assertEqual(ind, None)
@@ -278,7 +278,7 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": Fitness(dataset),
-            "subpop_trainer_cls": ElitistEA,
+            "subtrainer_cls": ElitistEA,
             "max_num_iters": 2,
             "pop_sizes": 10,
             "representation_size": 2,
@@ -296,11 +296,44 @@ class TrainerTester(unittest.TestCase):
         max_num_iters = params["max_num_iters"]
         self.assertEqual(trainer._current_iter, max_num_iters)
         num_evals = 0
-        for subpop_trainer in trainer.subpop_trainers:
-            self.assertEqual(subpop_trainer._current_iter, max_num_iters)
-            num_evals += subpop_trainer.num_evals
+        for subtrainer in trainer.subtrainers:
+            self.assertEqual(subtrainer._current_iter, max_num_iters)
+            num_evals += subtrainer.num_evals
 
         self.assertEqual(trainer.num_evals, num_evals)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        params = {
+            "solution_classes": [
+                ClassifierOptimizationIndividual,
+                FeatureSelectionIndividual
+            ],
+            "species": [
+                # Species to optimize a SVM-based classifier
+                ClassifierOptimizationSpecies(
+                    lower_bounds=[0, 0],
+                    upper_bounds=[100000, 100000],
+                    names=["C", "gamma"]
+                ),
+                # Species for the feature selection problem
+                FeatureSelectionSpecies(dataset.num_feats)
+            ],
+            "fitness_function": Fitness(dataset),
+            "subtrainer_cls": ElitistEA,
+            "max_num_iters": 2,
+            "pop_sizes": 10,
+            "representation_size": 2,
+            "verbose": False,
+            "checkpoint_enable": False
+        }
+
+        # Create the trainer
+        trainer = SequentialCooperativeEA(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

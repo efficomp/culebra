@@ -36,14 +36,14 @@ This module is composed by:
 
 from . import abc
 
-from .single_pop_aco import (
+from .single_col_aco import (
     AntSystem,
     ElitistAntSystem,
     MMAS,
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
-    DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE,
+    DEFAULT_ELITE_WEIGHT,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT,
     DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
 )
@@ -52,7 +52,7 @@ from .single_pop_aco import (
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
@@ -67,7 +67,7 @@ __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
-    'DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE',
+    'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
     'DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ'
 ]

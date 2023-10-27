@@ -123,6 +123,12 @@ class NumFeatsTester(unittest.TestCase):
             (func1.training_data.outputs == func2.training_data.outputs).all()
         )
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        fitness_func = self.FitnessFunc(dataset)
+        self.assertIsInstance(repr(fitness_func), str)
+        self.assertIsInstance(str(fitness_func), str)
+
 
 class KappaIndexTester(unittest.TestCase):
     """Test KappaIndex."""
@@ -148,6 +154,12 @@ class KappaIndexTester(unittest.TestCase):
     test_copy = NumFeatsTester.test_copy
     test_deepcopy = NumFeatsTester.test_deepcopy
     test_serialization = NumFeatsTester.test_serialization
+    _check_deepcopy = NumFeatsTester._check_deepcopy
+
+    test_copy = NumFeatsTester.test_copy
+    test_deepcopy = NumFeatsTester.test_deepcopy
+    test_serialization = NumFeatsTester.test_serialization
+    test_repr = NumFeatsTester.test_repr
     _check_deepcopy = NumFeatsTester._check_deepcopy
 
 
@@ -180,6 +192,7 @@ class KappaNumFeatsTester(unittest.TestCase):
     test_copy = NumFeatsTester.test_copy
     test_deepcopy = NumFeatsTester.test_deepcopy
     test_serialization = NumFeatsTester.test_serialization
+    test_repr = NumFeatsTester.test_repr
     _check_deepcopy = NumFeatsTester._check_deepcopy
 
 

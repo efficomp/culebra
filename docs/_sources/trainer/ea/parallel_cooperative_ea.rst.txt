@@ -33,7 +33,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.solution_classes
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.species
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subpop_trainer_cls
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.max_num_iters
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.current_iter
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.custom_termination_func
@@ -45,7 +45,7 @@ Properties
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.mutation_probs
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.gene_ind_mutation_probs
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.selection_funcs_params
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.num_subpops
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.num_subtrainers
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_size
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_freq
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_topology_func
@@ -63,15 +63,15 @@ Properties
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.index
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.container
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representatives
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subpop_trainer_params
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subpop_trainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subpop_trainers
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainers
 
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA._state
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA._subpop_suffixes
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA._subtrainer_suffixes
 
 Static methods
 --------------
@@ -80,7 +80,7 @@ Static methods
 
 Private static methods
 ----------------------
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_subpop_trainer_representatives
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_subtrainer_representatives
 
 Methods
 -------
@@ -93,7 +93,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._generate_subpop_trainers
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._save_state
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._load_state
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._new_state

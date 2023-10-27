@@ -27,32 +27,22 @@
 Attributes
 ----------
 
-.. attribute:: DEFAULT_NUM_SUBPOPS
+.. attribute:: DEFAULT_NUM_SUBTRAINERS
     :annotation: = 1
 
-    Default number of subpopulations.
+    Default number of subtrainers.
 
 .. attribute:: DEFAULT_REPRESENTATION_SIZE
     :annotation: = 5
 
     Default value for the number of representatives sent to the other
-    subpopulations.
+    subtrainers.
 
 .. attribute:: DEFAULT_REPRESENTATION_FREQ
     :annotation: = 10
 
     Default value for the number of generations between representatives
     sending.
-
-.. attribute:: DEFAULT_REPRESENTATION_TOPOLOGY_FUNC
-    :annotation: = <function full_connected_destinations>
-
-    Default topology function for representatives sending.
-
-.. attribute:: DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-    :annotation: = {}
-
-    Default parameters to obtain the destinations with the topology function.
 
 .. attribute:: DEFAULT_REPRESENTATION_SELECTION_FUNC
     :annotation: = <function selTournament>
@@ -74,29 +64,15 @@ Attributes
 
     Parameters for the default topology function in the islands model.
 
-.. attribute:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
-    :annotation: = <full_connected_destinationss>
-
-    Default topology function for the cooperative model.
-
-.. attribute:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-    :annotation: = {}
-
-    Parameters for the default topology function in the cooperative model.
-
 
 ..
-    .. autodata:: DEFAULT_NUM_SUBPOPS
+    .. autodata:: DEFAULT_NUM_SUBTRAINERS
     .. autodata:: DEFAULT_REPRESENTATION_SIZE
     .. autodata:: DEFAULT_REPRESENTATION_FREQ
-    .. autodata:: DEFAULT_REPRESENTATION_TOPOLOGY_FUNC
-    .. autodata:: DEFAULT_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
     .. autodata:: DEFAULT_REPRESENTATION_SELECTION_FUNC
     .. autodata:: DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
     .. autodata:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
     .. autodata:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-    .. autodata:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
-    .. autodata:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 
 .. toctree::
     :hidden:

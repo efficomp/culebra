@@ -88,6 +88,14 @@ class AntTester(unittest.TestCase):
             self.assertEqual(index + 1, len(ant.path))
             self.assertEqual(node, ant.current)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        num_nodes = 10
+        species = Species(num_nodes)
+        ant = Ant(species, MyFitness)
+        self.assertIsInstance(repr(ant), str)
+        self.assertIsInstance(str(ant), str)
+
 
 if __name__ == '__main__':
     unittest.main()

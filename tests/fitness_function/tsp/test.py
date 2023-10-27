@@ -383,6 +383,14 @@ class PathLengthTester(unittest.TestCase):
 
         self.assertTrue((func1.distances == func2.distances).all())
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        num_nodes = 5
+        path = np.random.permutation(num_nodes)
+        fitness_func = PathLength.fromPath(path)
+        self.assertIsInstance(repr(fitness_func), str)
+        self.assertIsInstance(str(fitness_func), str)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -37,7 +37,7 @@ from deap.tools import ParetoFront, HallOfFame
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import check_float, check_int
 from culebra.solution.abc import Ant
-from culebra.trainer.aco.abc import SinglePopACO
+from culebra.trainer.aco.abc import SingleColACO, ElitistACO
 
 
 DEFAULT_PHEROMONE_INFLUENCE = 1.0
@@ -46,12 +46,12 @@ r"""Default pheromone influence (:math:`{\alpha}`)."""
 DEFAULT_HEURISTIC_INFLUENCE = 2.0
 r"""Default heuristic influence (:math:`{\beta}`)."""
 
-DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.5
+DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.1
 r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
 
-DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE = 0.2
-r"""Default pheromone evaporation rate for the
-:math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS (:math:`{\rho}`)."""
+DEFAULT_ELITE_WEIGHT = 0.3
+"""Default weight for the elite ant (best-so-far ant) respect to the
+iteration-best ant."""
 
 DEFAULT_MMAS_ITER_BEST_USE_LIMIT = 250
 r"""Default limit for the number of iterations for the
@@ -66,13 +66,13 @@ r"""Default frequency to check if the
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
 
-class AntSystem(SinglePopACO):
+class AntSystem(SingleColACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -90,11 +90,11 @@ class AntSystem(SinglePopACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopACO],
+                [SingleColACO],
                 bool
             ]
         ] = None,
-        pop_size: Optional[int] = None,
+        col_size: Optional[int] = None,
         checkpoint_enable: Optional[bool] = None,
         checkpoint_freq: Optional[int] = None,
         checkpoint_filename: Optional[str] = None,
@@ -154,10 +154,10 @@ class AntSystem(SinglePopACO):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param pop_size: The population (colony) size. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_POP_SIZE`
+        :param col_size: The colony size. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
             will be used. Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
+        :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
             be used. Defaults to :py:data:`None`
@@ -180,7 +180,7 @@ class AntSystem(SinglePopACO):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        SinglePopACO.__init__(
+        SingleColACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -189,7 +189,7 @@ class AntSystem(SinglePopACO):
             heuristics=heuristics,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            pop_size=pop_size,
+            col_size=col_size,
             checkpoint_enable=checkpoint_enable,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
@@ -215,7 +215,7 @@ class AntSystem(SinglePopACO):
         :raises ValueError: If any value is negative or zero
         :raises ValueError: If the sequence is empty
         """
-        return SinglePopACO.initial_pheromones.fget(self)
+        return SingleColACO.initial_pheromones.fget(self)
 
     @initial_pheromones.setter
     def initial_pheromones(self, values: Sequence[float, ...]) -> None:
@@ -231,7 +231,7 @@ class AntSystem(SinglePopACO):
         :raises ValueError: If any element in *values* is negative or zero
         :raises ValueError: If *values* is empty
         """
-        SinglePopACO.initial_pheromones.fset(self, values)
+        SingleColACO.initial_pheromones.fset(self, values)
         self._initial_pheromones = [self._initial_pheromones[0]]
 
     @property
@@ -253,7 +253,7 @@ class AntSystem(SinglePopACO):
         :raises ValueError: If the matrix has a wrong shape or contain any
             negative value.
         """
-        return SinglePopACO.heuristics.fget(self)
+        return SingleColACO.heuristics.fget(self)
 
     @heuristics.setter
     def heuristics(
@@ -284,7 +284,7 @@ class AntSystem(SinglePopACO):
         :raises ValueError: If any element in *values* has not two dimensions
         :raises ValueError: If any element in *values* has negative values
         """
-        SinglePopACO.heuristics.fset(self, values)
+        SingleColACO.heuristics.fset(self, values)
         self._heuristics = [self._heuristics[0]]
 
     @property
@@ -410,39 +410,22 @@ class AntSystem(SinglePopACO):
         """Evaporate pheromones."""
         self._pheromones[0] *= (1 - self.pheromone_evaporation_rate)
 
-    def _deposit_pop_pheromones(
-        self, pop: Sequence[Ant], weight: float = 1
-    ) -> None:
-        """Make all ants in the population deposit their pheromones.
-
-        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also modified with the same increment
-
-        :param pop: A population
-        :type pop: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.solution.abc.Ant`
-        :param weight: Multiplicative weight for the pheromones deposited by
-            each ant belonging to the population. Defaults to 1
-        :type weight: :py:class:`float`, optional
-        """
-        for ant in pop:
-            pheromones_amount = ant.fitness.pheromones_amount[0] * weight
-            org = ant.path[-1]
-            for dest in ant.path:
-                self._pheromones[0][org][dest] += pheromones_amount
-                self._pheromones[0][dest][org] += pheromones_amount
-                org = dest
-
     def _deposit_pheromones(self) -> None:
         """Deposit pheromones.
 
         A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
         ant's path, arc (*j*, *i*) is also modified with the same increment
         """
-        self._deposit_pop_pheromones(self.pop)
+        for ant in self.col:
+            pheromones_amount = ant.fitness.pheromones_amount[0]
+            org = ant.path[-1]
+            for dest in ant.path:
+                self._pheromones[0][org][dest] += pheromones_amount
+                self._pheromones[0][dest][org] += pheromones_amount
+                org = dest
 
 
-class ElitistAntSystem(AntSystem):
+class ElitistAntSystem(AntSystem, ElitistACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -461,11 +444,11 @@ class ElitistAntSystem(AntSystem):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopACO],
+                [SingleColACO],
                 bool
             ]
         ] = None,
-        pop_size: Optional[int] = None,
+        col_size: Optional[int] = None,
         checkpoint_enable: Optional[bool] = None,
         checkpoint_freq: Optional[int] = None,
         checkpoint_filename: Optional[str] = None,
@@ -516,10 +499,12 @@ class ElitistAntSystem(AntSystem):
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
             will be used. Defaults to :py:data:`None`
         :type pheromone_evaporation_rate: :py:class:`float`, optional
-        :param elite_weight: Weight given to the elite ant (best-so-far ant).
-            If set to :py:data:`None`, the problem graph's number of nodes
-            will be used. Defaults to :py:data:`None`
-        :type elite_weight: :py:class:`float`, optional
+        :param elite_weight: Weight for the elite ant (best-so-far ant)
+            respect to the iteration-best ant.
+            If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` will be used.
+            Defaults to :py:data:`None`
+        :type elite_weight: :py:class:`float` in [0, 1], optional
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -529,10 +514,10 @@ class ElitistAntSystem(AntSystem):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param pop_size: The population (colony) size. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_POP_SIZE`
+        :param col_size: The colony size. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
             will be used. Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
+        :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
             be used. Defaults to :py:data:`None`
@@ -567,7 +552,7 @@ class ElitistAntSystem(AntSystem):
             pheromone_evaporation_rate=pheromone_evaporation_rate,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            pop_size=pop_size,
+            col_size=col_size,
             checkpoint_enable=checkpoint_enable,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
@@ -581,14 +566,14 @@ class ElitistAntSystem(AntSystem):
         """Get and set the elite weigth.
 
         :getter: Return the current elite weigth
-        :setter: Set the new elite weigth. If set to :py:data:`None`, the
-            problem graph's number of nodes is chosen
+        :setter: Set the new elite weigth.  If set to :py:data:`None`,
+         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
         :type: :py:class:`float`
         :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value which is not positive
+        :raises ValueError: If set to a value outside [0, 1]
         """
         return (
-            self.fitness_function.num_nodes
+            DEFAULT_ELITE_WEIGHT
             if self._elite_weight is None
             else self._elite_weight)
 
@@ -596,84 +581,21 @@ class ElitistAntSystem(AntSystem):
     def elite_weight(self, weight: float | None) -> None:
         """Set a new elite weigth.
 
-        :param weight: The new weight. If set to :py:data:`None`, the
-            problem graph's number of nodes is chosen
+        :param weight: The new weight. If set to :py:data:`None`,
+         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
         :type weight: :py:class:`float`
         :raises TypeError: If *weight* is not a real number
-        :raises ValueError: If *weight* is not positive
+        :raises ValueError: If *weight* is outside [0, 1]
         """
         # Check prob
         self._elite_weight = (
             None if weight is None else check_float(
-                weight, "elite weigth", gt=0
+                weight, "elite weigth", ge=0, le=1
             )
         )
 
         # Reset the algorithm
         self.reset()
-
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
-
-        Overridden to add the current elite to the trainer's state.
-
-        :getter: Return the state
-        :setter: Set a new state
-        :type: :py:class:`dict`
-        """
-        # Get the state of the superclass
-        state = AntSystem._state.fget(self)
-
-        # Get the state of this class
-        state["elite"] = self._elite
-
-        return state
-
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
-        """Set the state of this trainer.
-
-        Overridden to add the current elite to the trainer's state.
-
-        :param state: The last loaded state
-        :type state: :py:class:`dict`
-        """
-        # Set the state of the superclass
-        AntSystem._state.fset(self, state)
-
-        # Set the state of this class
-        self._elite = state["elite"]
-
-    def _new_state(self) -> None:
-        """Generate a new trainer state.
-
-        Overridden to initialize the elite.
-        """
-        super()._new_state()
-
-        # Create the elite container
-        self._elite = HallOfFame(maxsize=1)
-
-    def _reset_state(self) -> None:
-        """Reset the trainer state.
-
-        Overridden to reset the elite.
-        """
-        super()._reset_state()
-        self._elite = None
-
-    def best_solutions(self) -> Sequence[HallOfFame]:
-        """Get the best solutions found for each species.
-
-        Return the best single solution found for each species
-
-        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
-            solutions. One hof for each species
-        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
-        """
-        best_ones = self._elite if self._elite is not None else ParetoFront()
-        return [best_ones]
 
     def _deposit_pheromones(self) -> None:
         """Deposit pheromones.
@@ -681,32 +603,24 @@ class ElitistAntSystem(AntSystem):
         A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
         ant's path, arc (*j*, *i*) is also modified with the same increment
         """
-        # Pheromones deposited by the current colony ants
-        self._deposit_pop_pheromones(self.pop)
+        # Iteration-best ants
+        iter_best = ParetoFront()
+        iter_best.update(self.col)
+        for ant in iter_best:
+            self._deposit_ant_weighted_pheromones(
+                ant,
+                (1 - self.elite_weight) / len(iter_best)
+            )
 
-        # Pheromones deposited by the elite (best-so-far) ant
-        self._deposit_pop_pheromones(
-            self._elite,
-            weight=self.elite_weight
-        )
-
-    def _update_elite(self) -> None:
-        """Update the elite (best-so-far) ant."""
-        self._elite.update(self.pop)
-
-    def _do_iteration(self) -> None:
-        """Implement an iteration of the search process."""
-        # Create the ant colony and the ants' paths
-        self._generate_pop()
-
-        # Update the elite
-        self._update_elite()
-
-        # Update the pheromones
-        self._update_pheromones()
+        # Elite ants
+        for ant in self._elite:
+            self._deposit_ant_weighted_pheromones(
+                ant,
+                self.elite_weight / len(self._elite)
+            )
 
 
-class MMAS(ElitistAntSystem):
+class MMAS(AntSystem, ElitistACO):
     r""":math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant System algorithm."""
 
     def __init__(
@@ -726,11 +640,11 @@ class MMAS(ElitistAntSystem):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopACO],
+                [SingleColACO],
                 bool
             ]
         ] = None,
-        pop_size: Optional[int] = None,
+        col_size: Optional[int] = None,
         checkpoint_enable: Optional[bool] = None,
         checkpoint_freq: Optional[int] = None,
         checkpoint_filename: Optional[str] = None,
@@ -778,7 +692,7 @@ class MMAS(ElitistAntSystem):
         :type heuristic_influence: :py:class:`float`, optional
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE`
+            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
             will be used. Defaults to :py:data:`None`
         :type pheromone_evaporation_rate: :py:class:`float`, optional
         :param iter_best_use_limit: Limit for the number of iterations to give
@@ -802,10 +716,10 @@ class MMAS(ElitistAntSystem):
             Defaults to :py:data:`None`
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
-        :param pop_size: The population (colony) size. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_POP_SIZE`
+        :param col_size: The colony size. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
             will be used. Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
+        :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
             be used. Defaults to :py:data:`None`
@@ -828,7 +742,7 @@ class MMAS(ElitistAntSystem):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        ElitistAntSystem.__init__(
+        AntSystem.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -838,10 +752,9 @@ class MMAS(ElitistAntSystem):
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             pheromone_evaporation_rate=pheromone_evaporation_rate,
-            elite_weight=None,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            pop_size=pop_size,
+            col_size=col_size,
             checkpoint_enable=checkpoint_enable,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
@@ -850,44 +763,6 @@ class MMAS(ElitistAntSystem):
         )
         self.iter_best_use_limit = iter_best_use_limit
         self.convergence_check_freq = convergence_check_freq
-
-    @property
-    def pheromone_evaporation_rate(self) -> float:
-        r"""Get and set the pheromone evaporation rate (:math:`{\rho}`).
-
-        :getter: Return the pheromone evaporation rate
-        :setter: Set a value for the pheromone evaporation rate. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE`
-            is chosen
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a float
-        :raises ValueError: If set to value outside (0, 1]
-        """
-        return (
-            DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
-            if self._pheromone_evaporation_rate is None
-            else self._pheromone_evaporation_rate
-        )
-
-    @pheromone_evaporation_rate.setter
-    def pheromone_evaporation_rate(self, value: float | None) -> None:
-        r"""Set a value for the pheromone evaporation rate (:math:`{\rho}`).
-
-        :param value: New value for the pheromone evaporation rate. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE`
-            is chosen
-        :type value: :py:class:`float`
-        :raises TypeError: If *value* is not a floating point number
-        :raises ValueError: If *value* is outside (0, 1]
-        """
-        # Check the value
-        self._pheromone_evaporation_rate = (
-            None if value is None else check_float(
-                value, "pheromone evaporation rate", gt=0, le=1
-            )
-        )
 
     @property
     def iter_best_use_limit(self) -> int:
@@ -970,46 +845,6 @@ class MMAS(ElitistAntSystem):
         )
 
     @property
-    def elite_weight(self) -> float:
-        """Get and set the elite weigth.
-
-        :getter: Return the current elite weigth
-        :setter: Set the new elite weigth. If set to :py:data:`None`, a value
-            of 1 is assumed.
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value which is not 1
-        """
-        return (
-            1.0
-            if self._elite_weight is None
-            else self._elite_weight
-        )
-
-    @elite_weight.setter
-    def elite_weight(self, weight: float | None) -> None:
-        """Set a new elite weigth.
-
-        :param weight: The new weight. If set to :py:data:`None`, a value
-            of 1 is assumed.
-        :type weight: :py:class:`float`
-        :raises TypeError: If *weight* is not a real number
-        :raises ValueError: If *weight* is not 1
-        """
-        # Check prob
-        self._elite_weight = (
-            None if weight is None else check_float(
-                weight, "elite weigth"
-            )
-        )
-
-        if self._elite_weight is not None and self._elite_weight != 1:
-            raise ValueError("The elite weight must be 1")
-
-        # Reset the algorithm
-        self.reset()
-
-    @property
     def _global_best_freq(self):
         """Use frequency of the global-best solution to deposit pheromones.
 
@@ -1038,7 +873,7 @@ class MMAS(ElitistAntSystem):
         :type: :py:class:`dict`
         """
         # Get the state of the superclass
-        state = ElitistAntSystem._state.fget(self)
+        state = ElitistACO._state.fget(self)
 
         # Get the state of this class
         state["max_pheromone"] = self._max_pheromone
@@ -1058,7 +893,7 @@ class MMAS(ElitistAntSystem):
         :type state: :py:class:`dict`
         """
         # Set the state of the superclass
-        ElitistAntSystem._state.fset(self, state)
+        ElitistACO._state.fset(self, state)
 
         # Set the state of this class
         self._max_pheromone = state["max_pheromone"]
@@ -1103,12 +938,20 @@ class MMAS(ElitistAntSystem):
         """
         if (self._current_iter + 1) % self._global_best_freq == 0:
             # Use the global-best ant
-            self._deposit_pop_pheromones(self._elite)
+            for ant in self._elite:
+                self._deposit_ant_weighted_pheromones(
+                    ant,
+                    1 / len(self._elite)
+                )
         else:
             # Use the iteration-best ant
-            iter_best = HallOfFame(maxsize=1)
-            iter_best.update(self.pop)
-            self._deposit_pop_pheromones(iter_best)
+            iter_best = ParetoFront()
+            iter_best.update(self.col)
+            for ant in iter_best:
+                self._deposit_ant_weighted_pheromones(
+                    ant,
+                    1 / len(iter_best)
+                )
 
     def _update_pheromones(self) -> None:
         """Update the pheromone trails.
@@ -1199,7 +1042,7 @@ __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
-    'DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE',
+    'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
     'DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ'
 ]

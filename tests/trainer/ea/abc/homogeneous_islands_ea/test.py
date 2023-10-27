@@ -23,8 +23,9 @@
 
 import unittest
 
-from culebra import DEFAULT_MAX_NUM_ITERS, DEFAULT_POP_SIZE
+from culebra import DEFAULT_MAX_NUM_ITERS
 from culebra.trainer.ea import (
+    DEFAULT_POP_SIZE,
     DEFAULT_SELECTION_FUNC,
     DEFAULT_CROSSOVER_PROB,
     DEFAULT_MUTATION_PROB,
@@ -79,7 +80,7 @@ class TrainerTester(unittest.TestCase):
         solution_cls = Individual
         species = Species(dataset.num_feats)
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopEA
+        subtrainer_cls = MySinglePopEA
 
         # Try invalid types for pop_size. Should fail
         invalid_pop_size = (type, 'a', 1.5)
@@ -89,7 +90,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     pop_size=pop_size
                 )
 
@@ -101,7 +102,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     pop_size=pop_size
                 )
 
@@ -113,7 +114,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     crossover_func=func
                 )
 
@@ -124,7 +125,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     mutation_func=func
                 )
 
@@ -135,7 +136,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     selection_func=func
                 )
 
@@ -147,7 +148,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     crossover_prob=prob
                 )
 
@@ -158,7 +159,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     mutation_prob=prob
                 )
 
@@ -169,7 +170,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     gene_ind_mutation_prob=prob
                 )
 
@@ -181,7 +182,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     crossover_prob=prob
                 )
 
@@ -192,7 +193,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     mutation_prob=prob
                 )
 
@@ -203,7 +204,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     gene_ind_mutation_prob=prob
                 )
 
@@ -215,7 +216,7 @@ class TrainerTester(unittest.TestCase):
                     solution_cls,
                     species,
                     fitness_func,
-                    subpop_trainer_cls,
+                    subtrainer_cls,
                     selection_func_params=params
                 )
 
@@ -224,7 +225,7 @@ class TrainerTester(unittest.TestCase):
             solution_cls,
             species,
             fitness_func,
-            subpop_trainer_cls
+            subtrainer_cls
         )
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
@@ -242,42 +243,42 @@ class TrainerTester(unittest.TestCase):
             trainer.selection_func_params, DEFAULT_SELECTION_FUNC_PARAMS
         )
 
-    def test_generate_subpop_trainers(self):
-        """Test _generate_subpop_trainers."""
+    def test_generate_subtrainers(self):
+        """Test _generate_subtrainers."""
         solution_cls = Individual
         species = Species(dataset.num_feats)
         fitness_func = Fitness(dataset)
-        subpop_trainer_cls = MySinglePopEA
-        num_subpops = 2
+        subtrainer_cls = MySinglePopEA
+        num_subtrainers = 2
 
         trainer = MyIslandsEA(
             solution_cls,
             species,
             fitness_func,
-            subpop_trainer_cls,
-            num_subpops=num_subpops
+            subtrainer_cls,
+            num_subtrainers=num_subtrainers
         )
 
         # Islands have not been created yet
-        self.assertEqual(trainer.subpop_trainers, None)
+        self.assertEqual(trainer.subtrainers, None)
 
         # Create the islands
-        trainer._generate_subpop_trainers()
+        trainer._generate_subtrainers()
 
         # Check the islands
-        self.assertIsInstance(trainer.subpop_trainers, list)
-        self.assertEqual(len(trainer.subpop_trainers), num_subpops)
+        self.assertIsInstance(trainer.subtrainers, list)
+        self.assertEqual(len(trainer.subtrainers), num_subtrainers)
 
-        for index1 in range(trainer.num_subpops):
-            for index2 in range(index1 + 1, trainer.num_subpops):
+        for index1 in range(trainer.num_subtrainers):
+            for index2 in range(index1 + 1, trainer.num_subtrainers):
                 self.assertNotEqual(
-                    id(trainer.subpop_trainers[index1]),
-                    id(trainer.subpop_trainers[index2])
+                    id(trainer.subtrainers[index1]),
+                    id(trainer.subtrainers[index2])
                 )
 
         # Check the islands parameters
-        for island_trainer in trainer.subpop_trainers:
-            self.assertIsInstance(island_trainer, subpop_trainer_cls)
+        for island_trainer in trainer.subtrainers:
+            self.assertIsInstance(island_trainer, subtrainer_cls)
 
             self.assertEqual(
                 island_trainer.solution_cls,
@@ -347,8 +348,8 @@ class TrainerTester(unittest.TestCase):
             )
         ) in enumerate(
             zip(
-                trainer.subpop_trainers,
-                trainer.subpop_trainer_checkpoint_filenames
+                trainer.subtrainers,
+                trainer.subtrainer_checkpoint_filenames
             )
         ):
             self.assertEqual(island_trainer.index, island_index)
@@ -356,6 +357,25 @@ class TrainerTester(unittest.TestCase):
                 island_trainer.checkpoint_filename,
                 island_trainer_checkpoint_filename
             )
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        solution_cls = Individual
+        species = Species(dataset.num_feats)
+        fitness_func = Fitness(dataset)
+        subtrainer_cls = MySinglePopEA
+        num_subtrainers = 2
+
+        trainer = MyIslandsEA(
+            solution_cls,
+            species,
+            fitness_func,
+            subtrainer_cls,
+            num_subtrainers=num_subtrainers
+        )
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

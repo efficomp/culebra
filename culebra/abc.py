@@ -52,8 +52,6 @@ from deap.base import Fitness as DeapFitness
 from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
-    DEFAULT_STATS_NAMES,
-    DEFAULT_OBJECTIVE_STATS,
     DEFAULT_MAX_NUM_ITERS,
     DEFAULT_CHECKPOINT_ENABLE,
     DEFAULT_CHECKPOINT_FREQ,
@@ -72,13 +70,29 @@ from culebra.checker import (
 )
 
 
-__author__ = "Jesús González"
-__copyright__ = "Copyright 2023, EFFICOMP"
-__license__ = "GNU GPL-3.0-or-later"
-__version__ = "0.2.1"
-__maintainer__ = "Jesús González"
-__email__ = "jesusgonzalez@ugr.es"
-__status__ = "Development"
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.3.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
+
+
+TRAINER_STATS_NAMES = ('Iter', 'NEvals')
+"""Statistics calculated for each iteration of the
+:py:class:`~culebra.abc.Trainer`.
+"""
+
+TRAINER_OBJECTIVE_STATS = {
+    "Avg": np.mean,
+    "Std": np.std,
+    "Min": np.min,
+    "Max": np.max,
+}
+"""Statistics calculated for each objective within a
+:py:class:`~culebra.abc.Trainer`.
+"""
 
 
 class Base:
@@ -139,7 +153,7 @@ class Base:
             value = getattr(self, prop)
             value_str = (
                 value.__module__ + "." + value.__name__
-                if isinstance(value, type) else value.__str__()
+                if isinstance(value, type) else repr(value)
             )
             msg += sep + prop + ": " + value_str
             sep = ", "
@@ -195,7 +209,7 @@ class Fitness(DeapFitness, Base):
         super().__init__(values)
 
         if self.names is None:
-            suffix_len = len((self.num_obj-1).__str__())
+            suffix_len = len(str(self.num_obj-1))
 
             self.__class__.names = tuple(
                 f"obj_{i:0{suffix_len}d}" for i in range(self.num_obj)
@@ -359,6 +373,14 @@ class Fitness(DeapFitness, Base):
         :type other: :py:class:`~culebra.abc.Fitness`
         """
         return not self.__eq__(other)
+
+    def __repr__(self) -> str:
+        """Return the object representation."""
+        return Base.__repr__(self)
+
+    def __str__(self) -> str:
+        """Return the object as a string."""
+        return DeapFitness.__str__(self)
 
 
 class FitnessFunction(Base):
@@ -700,10 +722,10 @@ class Solution(Base):
 class Trainer(Base):
     """Base class for all the training algorithms."""
 
-    stats_names = DEFAULT_STATS_NAMES
+    stats_names = TRAINER_STATS_NAMES
     """Statistics calculated each iteration."""
 
-    objective_stats = DEFAULT_OBJECTIVE_STATS
+    objective_stats = TRAINER_OBJECTIVE_STATS
     """Statistics calculated for each objective."""
 
     def __init__(
@@ -1498,8 +1520,14 @@ class Trainer(Base):
         self._logbook = Logbook()
 
         # Init the logbook
-        self._logbook.header = list(self.stats_names) + \
-            (self._stats.fields if self._stats else [])
+        self._logbook.header = (
+            list(
+                self.stats_names
+                if self.container is None
+                else self.container.stats_names
+            ) +
+            self._stats.fields if self._stats else []
+        )
 
         # Init the current iteration
         self._current_iter = 0
@@ -1644,7 +1672,7 @@ class Trainer(Base):
         self._current_iter_start_time = perf_counter()
 
     def _preprocess_iteration(self) -> None:
-        """Preprocess the population(s).
+        """Preprocess before doing the iteration.
 
         Subclasses should override this method to make any preprocessment
         before performing an iteration.
@@ -1659,7 +1687,7 @@ class Trainer(Base):
         """
 
     def _postprocess_iteration(self) -> None:
-        """Postprocess the population(s).
+        """Postprocess after doing the iteration.
 
         Subclasses should override this method to make any postprocessment
         after performing an iteration.

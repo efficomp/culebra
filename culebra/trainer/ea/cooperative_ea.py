@@ -40,22 +40,22 @@ from culebra.abc import (
 )
 from culebra.solution.abc import Individual
 from culebra.trainer.abc import (
-    SequentialMultiPopTrainer,
-    ParallelMultiPopTrainer
+    SequentialDistributedTrainer,
+    ParallelDistributedTrainer
 )
 from culebra.trainer.ea.abc import SinglePopEA, CooperativeEA
 
 
-__author__ = "Jesús González"
-__copyright__ = "Copyright 2023, EFFICOMP"
-__license__ = "GNU GPL-3.0-or-later"
-__version__ = "0.2.1"
-__maintainer__ = "Jesús González"
-__email__ = "jesusgonzalez@ugr.es"
-__status__ = "Development"
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.3.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
 
 
-class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
+class SequentialCooperativeEA(CooperativeEA, SequentialDistributedTrainer):
     """Sequential implementation of the cooperative evolutionary trainer."""
 
     def __init__(
@@ -63,7 +63,7 @@ class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
         solution_classes: Type[Individual] | Sequence[Type[Individual]],
         species: Species | Sequence[Species],
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -113,7 +113,7 @@ class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -133,7 +133,7 @@ class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """."""
         CooperativeEA.__init__(
@@ -141,8 +141,8 @@ class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
             solution_classes=solution_classes,
             species=species,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
-            num_subpops=num_subpops,
+            subtrainer_cls=subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -153,19 +153,15 @@ class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
             selection_funcs_params=selection_funcs_params,
         )
 
-        SequentialMultiPopTrainer.__init__(
+        SequentialDistributedTrainer.__init__(
             self,
             fitness_function,
-            subpop_trainer_cls,
+            subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -175,14 +171,14 @@ class SequentialCooperativeEA(CooperativeEA, SequentialMultiPopTrainer):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # __init__ shares the documentation with CooperativeEA.__init__
     __init__.__doc__ = CooperativeEA.__init__.__doc__
 
 
-class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
+class ParallelCooperativeEA(CooperativeEA, ParallelDistributedTrainer):
     """Parallel implementation of the cooperative evolutionary trainer."""
 
     def __init__(
@@ -190,7 +186,7 @@ class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
         solution_classes: Type[Individual] | Sequence[Type[Individual]],
         species: Species | Sequence[Species],
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -240,7 +236,7 @@ class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -260,7 +256,7 @@ class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """."""
         CooperativeEA.__init__(
@@ -268,8 +264,8 @@ class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
             solution_classes=solution_classes,
             species=species,
             fitness_function=fitness_function,
-            subpop_trainer_cls=subpop_trainer_cls,
-            num_subpops=num_subpops,
+            subtrainer_cls=subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -280,19 +276,15 @@ class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
             selection_funcs_params=selection_funcs_params,
         )
 
-        ParallelMultiPopTrainer.__init__(
+        ParallelDistributedTrainer.__init__(
             self,
             fitness_function,
-            subpop_trainer_cls,
+            subtrainer_cls,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
+            num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -302,7 +294,7 @@ class ParallelCooperativeEA(CooperativeEA, ParallelMultiPopTrainer):
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # __init__ shares the documentation with CooperativeEA.__init__

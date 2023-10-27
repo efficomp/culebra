@@ -30,10 +30,9 @@
     SingleSpeciesTrainer <abc/single_species_trainer>
     MultiSpeciesTrainer <abc/multi_species_trainer>
 
-    SinglePopTrainer <abc/single_pop_trainer>
-    MultiPopTrainer <abc/multi_pop_trainer>
-    SequentialMultiPopTrainer <abc/sequential_multi_pop_trainer>
-    SequentialMultiPopTrainer <abc/parallel_multi_pop_trainer>
+    DistributedTrainer <abc/distributed_trainer>
+    SequentialDistributedTrainer <abc/sequential_distributed_trainer>
+    SequentialDistributedTrainer <abc/parallel_distributed_trainer>
 
     IslandsTrainer <abc/islands_trainer>
     CooperativeTrainer <abc/cooperative_trainer>

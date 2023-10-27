@@ -896,6 +896,23 @@ class TrainerTester(unittest.TestCase):
             )
         )
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        params = {
+            "fitness_function": MyFitnessFunction(),
+            "checkpoint_enable": False,
+            "checkpoint_freq": 25,
+            "checkpoint_filename": "my_check.gz",
+            "random_seed": 18,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
+
 
 if __name__ == '__main__':
     unittest.main()

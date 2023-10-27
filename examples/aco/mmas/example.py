@@ -27,7 +27,7 @@ from pandas import Series, DataFrame
 from culebra.solution.tsp import Species, Ant
 from culebra.trainer.aco import (
     MMAS,
-    DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+    DEFAULT_PHEROMONE_EVAPORATION_RATE
 )
 from culebra.fitness_function.tsp import PathLength
 
@@ -48,14 +48,11 @@ species = Species(num_nodes)
 # Fitness function
 fitness_func = PathLength(distances)
 
-# Population size
-pop_size = num_nodes
-
 # Generate and evaluate a greedy solution for the problem
 greedy_solution = fitness_func.greedy_solution(species)
 
 initial_pheromones = tuple(
-    pher/DEFAULT_MMAS_PHEROMONE_EVAPORATION_RATE
+    pher / DEFAULT_PHEROMONE_EVAPORATION_RATE
     for pher in greedy_solution.fitness.pheromones_amount
 )
 
@@ -67,7 +64,6 @@ params = {
     "initial_pheromones": initial_pheromones,
     "pheromone_influence": 1,
     "heuristic_influence": 2,
-    "pop_size": pop_size,
     "max_num_iters": 500,
     "checkpoint_enable": False
 }
@@ -88,8 +84,8 @@ species = Series(dtype=object)
 ants = Series(dtype=object)
 path_len = Series(dtype=float)
 
-for index, pop_best in enumerate(best_ones):
-    for ant in pop_best:
+for index, col_best in enumerate(best_ones):
+    for ant in col_best:
         species.loc[len(species)] = index
         ants.loc[len(ants)] = ant
         path_len.loc[len(path_len)] = int(ant.fitness.getValues()[0])

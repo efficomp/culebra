@@ -26,6 +26,11 @@
 Attributes
 ----------
 
+.. attribute:: DEFAULT_POP_SIZE
+    :annotation: = 100
+
+    Default population size.
+
 .. attribute:: DEFAULT_CROSSOVER_PROB
     :annotation: = 0.9
 
@@ -72,6 +77,7 @@ Attributes
     Default number of divisions along each objective for the reference points of NSGA-III.
 
 ..
+    .. autodata:: DEFAULT_POP_SIZE
     .. autodata:: DEFAULT_CROSSOVER_PROB
     .. autodata:: DEFAULT_MUTATION_PROB
     .. autodata:: DEFAULT_GENE_IND_MUTATION_PROB

@@ -223,6 +223,12 @@ class SpeciesTester(unittest.TestCase):
         # Check the serialization
         self._check_deepcopy(species1, species2)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        species = Species(18)
+        self.assertIsInstance(repr(species), str)
+        self.assertIsInstance(str(species), str)
+
     def _check_deepcopy(self, species1, species2):
         """Check if *species1* is a deepcopy of *species2*.
 

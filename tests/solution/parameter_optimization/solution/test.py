@@ -244,6 +244,15 @@ class SolutionTester(unittest.TestCase):
 
         print('Ok')
 
+    def test_5_repr(self):
+        """Test the repr and str dunder methods."""
+        print('Testing the __repr__ and __str__ dunder methods ...', end=' ')
+        species = Species([self.min_bound], [self.max_bound])
+        solution = Solution(species, MyFitness)
+        self.assertIsInstance(repr(solution), str)
+        self.assertIsInstance(str(solution), str)
+        print('Ok')
+
 
 # Tests the classes in this file
 if __name__ == '__main__':

@@ -221,9 +221,11 @@ class SolutionTester(unittest.TestCase):
 
         print('Ok')
 
-    def test5_serialization(self):
+    def test_5_serialization(self):
         """Serialization test."""
-        print('Testing serialization ...', end=' ')
+        print('Testing the',
+              self.solution_cls.__name__,
+              'serialization ...', end=' ')
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:
             # And for each proportion ...
@@ -251,9 +253,11 @@ class SolutionTester(unittest.TestCase):
                         sol1.species.max_size, sol2.species.max_size)
         print('Ok')
 
-    def test6_copy(self):
+    def test_6_copy(self):
         """Copy test."""
-        print('Testing copy and deepcopy ...', end=' ')
+        print('Testing the',
+              self.solution_cls.__name__,
+              'copy and deepcopy ...', end=' ')
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:
             # And for each proportion ...
@@ -293,6 +297,18 @@ class SolutionTester(unittest.TestCase):
                         sol1.species.min_size, sol3.species.min_size)
                     self.assertEqual(
                         sol1.species.max_size, sol3.species.max_size)
+        print('Ok')
+
+    def test_7_repr(self):
+        """Test the repr and str dunder methods."""
+        print('Testing the',
+              self.solution_cls.__name__,
+              '__repr__ and __str__ dunder methods ...', end=' ')
+        num_feats = 10
+        species = Species(num_feats)
+        solution = self.solution_cls(species, MyFitness)
+        self.assertIsInstance(repr(solution), str)
+        self.assertIsInstance(str(solution), str)
         print('Ok')
 
     @staticmethod

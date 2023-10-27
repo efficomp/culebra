@@ -304,6 +304,13 @@ class FitnessTester(unittest.TestCase):
         # Check the copy
         self._check_deepcopy(fitness1, fitness2)
 
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        values = (1.0, 2.0)
+        fitness1 = MyFitness(values)
+        self.assertIsInstance(repr(fitness1), str)
+        self.assertIsInstance(str(fitness1), str)
+
     def _check_deepcopy(self, fitness1, fitness2):
         """Check if *fitness1* is a deepcopy of *fitness2*.
 

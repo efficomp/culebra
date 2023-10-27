@@ -114,6 +114,13 @@ class SolutionTester(unittest.TestCase):
         sol3 = copy.deepcopy(sol1)
         self.assertTrue(np.all(sol1.path == sol3.path))
 
+    def test_7_repr(self):
+        """Test the __repr__ dunder method."""
+        num_feats = 10
+        species = Species(num_feats)
+        solution = MySolution(species, MyFitness)
+        self.assertIsInstance(repr(solution), str)
+
     def test_str(self):
         """Test the __str__ dunder method."""
         num_nodes = 10

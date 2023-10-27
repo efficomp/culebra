@@ -27,8 +27,8 @@ from copy import copy, deepcopy
 
 from deap.tools import selNSGA3
 
-from culebra import DEFAULT_POP_SIZE
 from culebra.trainer.ea import (
+    DEFAULT_POP_SIZE,
     NSGA,
     DEFAULT_NSGA_SELECTION_FUNC,
     DEFAULT_NSGA_SELECTION_FUNC_PARAMS,
@@ -371,6 +371,23 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             id(trainer1.species.num_feats), id(trainer2.species.num_feats)
         )
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        params = {
+            "solution_cls": Individual,
+            "species": Species(dataset.num_feats),
+            "fitness_function": Fitness(dataset),
+            "checkpoint_enable": False,
+            "verbose": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = NSGA(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':

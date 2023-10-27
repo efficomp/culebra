@@ -37,8 +37,8 @@ from typing import (
 from culebra.abc import Species, FitnessFunction
 from culebra.solution.abc import Individual
 from culebra.trainer.abc import (
-    SequentialMultiPopTrainer,
-    ParallelMultiPopTrainer
+    SequentialDistributedTrainer,
+    ParallelDistributedTrainer
 )
 from culebra.trainer.ea.abc import (
     HomogeneousIslandsEA,
@@ -47,18 +47,18 @@ from culebra.trainer.ea.abc import (
 )
 
 
-__author__ = "Jesús González"
-__copyright__ = "Copyright 2023, EFFICOMP"
-__license__ = "GNU GPL-3.0-or-later"
-__version__ = "0.2.1"
-__maintainer__ = "Jesús González"
-__email__ = "jesusgonzalez@ugr.es"
-__status__ = "Development"
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.3.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
 
 
 class HomogeneousSequentialIslandsEA(
     HomogeneousIslandsEA,
-    SequentialMultiPopTrainer
+    SequentialDistributedTrainer
 ):
     """Sequential island-based model with homogeneous islands."""
 
@@ -67,7 +67,7 @@ class HomogeneousSequentialIslandsEA(
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -88,7 +88,7 @@ class HomogeneousSequentialIslandsEA(
         mutation_prob: Optional[float] = None,
         gene_ind_mutation_prob: Optional[float] = None,
         selection_func_params: Optional[Dict[str, Any]] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -108,7 +108,7 @@ class HomogeneousSequentialIslandsEA(
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """."""
         HomogeneousIslandsEA.__init__(
@@ -116,7 +116,7 @@ class HomogeneousSequentialIslandsEA(
             solution_cls,
             species,
             fitness_function,
-            subpop_trainer_cls,
+            subtrainer_cls,
             pop_size=pop_size,
             crossover_func=crossover_func,
             mutation_func=mutation_func,
@@ -124,22 +124,22 @@ class HomogeneousSequentialIslandsEA(
             crossover_prob=crossover_prob,
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
-            selection_func_params=selection_func_params
-        )
-
-        SequentialMultiPopTrainer.__init__(
-            self,
-            fitness_function,
-            subpop_trainer_cls,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
-            representation_size=representation_size,
-            representation_freq=representation_freq,
+            selection_func_params=selection_func_params,
             representation_topology_func=representation_topology_func,
             representation_topology_func_params=(
                 representation_topology_func_params
-            ),
+            )
+        )
+
+        SequentialDistributedTrainer.__init__(
+            self,
+            fitness_function,
+            subtrainer_cls,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            num_subtrainers=num_subtrainers,
+            representation_size=representation_size,
+            representation_freq=representation_freq,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -149,7 +149,7 @@ class HomogeneousSequentialIslandsEA(
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # __init__ shares the documentation with HomogeneousIslandsEA.__init__
@@ -158,7 +158,7 @@ class HomogeneousSequentialIslandsEA(
 
 class HomogeneousParallelIslandsEA(
         HomogeneousIslandsEA,
-        ParallelMultiPopTrainer
+        ParallelDistributedTrainer
 ):
     """Parallel island-based model with homogeneous islands."""
 
@@ -167,7 +167,7 @@ class HomogeneousParallelIslandsEA(
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -188,7 +188,7 @@ class HomogeneousParallelIslandsEA(
         mutation_prob: Optional[float] = None,
         gene_ind_mutation_prob: Optional[float] = None,
         selection_func_params: Optional[Dict[str, Any]] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -208,7 +208,7 @@ class HomogeneousParallelIslandsEA(
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """."""
         # Call both constructors
@@ -217,7 +217,7 @@ class HomogeneousParallelIslandsEA(
             solution_cls,
             species,
             fitness_function,
-            subpop_trainer_cls,
+            subtrainer_cls,
             pop_size=pop_size,
             crossover_func=crossover_func,
             mutation_func=mutation_func,
@@ -225,22 +225,22 @@ class HomogeneousParallelIslandsEA(
             crossover_prob=crossover_prob,
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
-            selection_func_params=selection_func_params
-        )
-
-        ParallelMultiPopTrainer.__init__(
-            self,
-            fitness_function,
-            subpop_trainer_cls,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
-            representation_size=representation_size,
-            representation_freq=representation_freq,
+            selection_func_params=selection_func_params,
             representation_topology_func=representation_topology_func,
             representation_topology_func_params=(
                 representation_topology_func_params
-            ),
+            )
+        )
+
+        ParallelDistributedTrainer.__init__(
+            self,
+            fitness_function,
+            subtrainer_cls,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            num_subtrainers=num_subtrainers,
+            representation_size=representation_size,
+            representation_freq=representation_freq,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -250,21 +250,21 @@ class HomogeneousParallelIslandsEA(
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # Change the docstring of the constructor to indicate that the default
     # number of subpopulations is the number of CPU cores for parallel
     # multi-population approaches
     __init__.__doc__ = HomogeneousIslandsEA.__init__.__doc__.replace(
-        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS`',
+        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
         'the number of CPU cores'
     )
 
 
 class HeterogeneousSequentialIslandsEA(
     HeterogeneousIslandsEA,
-    SequentialMultiPopTrainer
+    SequentialDistributedTrainer
 ):
     """Sequential island-based model with heterogeneous islands."""
 
@@ -273,7 +273,7 @@ class HeterogeneousSequentialIslandsEA(
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -322,7 +322,7 @@ class HeterogeneousSequentialIslandsEA(
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -342,7 +342,7 @@ class HeterogeneousSequentialIslandsEA(
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """."""
         # Call both constructors
@@ -351,8 +351,8 @@ class HeterogeneousSequentialIslandsEA(
             solution_cls,
             species,
             fitness_function,
-            subpop_trainer_cls,
-            num_subpops=num_subpops,
+            subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -360,22 +360,22 @@ class HeterogeneousSequentialIslandsEA(
             crossover_probs=crossover_probs,
             mutation_probs=mutation_probs,
             gene_ind_mutation_probs=gene_ind_mutation_probs,
-            selection_funcs_params=selection_funcs_params
-        )
-
-        SequentialMultiPopTrainer.__init__(
-            self,
-            fitness_function,
-            subpop_trainer_cls,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
-            representation_size=representation_size,
-            representation_freq=representation_freq,
+            selection_funcs_params=selection_funcs_params,
             representation_topology_func=representation_topology_func,
             representation_topology_func_params=(
                 representation_topology_func_params
-            ),
+            )
+        )
+
+        SequentialDistributedTrainer.__init__(
+            self,
+            fitness_function,
+            subtrainer_cls,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            num_subtrainers=num_subtrainers,
+            representation_size=representation_size,
+            representation_freq=representation_freq,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -385,7 +385,7 @@ class HeterogeneousSequentialIslandsEA(
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # __init__ shares the documentation with HeterogeneousIslandsEA.__init__
@@ -394,7 +394,7 @@ class HeterogeneousSequentialIslandsEA(
 
 class HeterogeneousParallelIslandsEA(
     HeterogeneousIslandsEA,
-    ParallelMultiPopTrainer
+    ParallelDistributedTrainer
 ):
     """Parallel island-based model with heterogeneous islands."""
 
@@ -403,7 +403,7 @@ class HeterogeneousParallelIslandsEA(
         solution_cls: Type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subpop_trainer_cls: Type[SinglePopEA],
+        subtrainer_cls: Type[SinglePopEA],
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -452,7 +452,7 @@ class HeterogeneousParallelIslandsEA(
         selection_funcs_params: Optional[
             Dict[str, Any] | Sequence[Dict[str, Any]]
         ] = None,
-        num_subpops: Optional[int] = None,
+        num_subtrainers: Optional[int] = None,
         representation_size: Optional[int] = None,
         representation_freq: Optional[int] = None,
         representation_topology_func: Optional[
@@ -472,7 +472,7 @@ class HeterogeneousParallelIslandsEA(
         checkpoint_filename: Optional[str] = None,
         verbose: Optional[bool] = None,
         random_seed: Optional[int] = None,
-        **subpop_trainer_params: Any
+        **subtrainer_params: Any
     ) -> None:
         """."""
         # Call both constructors
@@ -481,8 +481,8 @@ class HeterogeneousParallelIslandsEA(
             solution_cls,
             species,
             fitness_function,
-            subpop_trainer_cls,
-            num_subpops=num_subpops,
+            subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -490,22 +490,22 @@ class HeterogeneousParallelIslandsEA(
             crossover_probs=crossover_probs,
             mutation_probs=mutation_probs,
             gene_ind_mutation_probs=gene_ind_mutation_probs,
-            selection_funcs_params=selection_funcs_params
-        )
-
-        ParallelMultiPopTrainer.__init__(
-            self,
-            fitness_function,
-            subpop_trainer_cls,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            num_subpops=num_subpops,
-            representation_size=representation_size,
-            representation_freq=representation_freq,
+            selection_funcs_params=selection_funcs_params,
             representation_topology_func=representation_topology_func,
             representation_topology_func_params=(
                 representation_topology_func_params
-            ),
+            )
+        )
+
+        ParallelDistributedTrainer.__init__(
+            self,
+            fitness_function,
+            subtrainer_cls,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            num_subtrainers=num_subtrainers,
+            representation_size=representation_size,
+            representation_freq=representation_freq,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
@@ -515,14 +515,14 @@ class HeterogeneousParallelIslandsEA(
             checkpoint_filename=checkpoint_filename,
             verbose=verbose,
             random_seed=random_seed,
-            **subpop_trainer_params
+            **subtrainer_params
         )
 
     # Change the docstring of the constructor to indicate that the default
     # number of subpopulations is the number of CPU cores for parallel
     # multi-population approaches
     __init__.__doc__ = HeterogeneousIslandsEA.__init__.__doc__.replace(
-        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBPOPS`',
+        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
         'the number of CPU cores'
     )
 

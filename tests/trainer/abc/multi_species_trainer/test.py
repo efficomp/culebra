@@ -110,7 +110,7 @@ class TrainerTester(unittest.TestCase):
                     valid_fitness_func
                 )
 
-        # Try different values of solution_cls for each subpopulation
+        # Try different values of solution_cls for each subtrainer
         trainer = MyTrainer(
             valid_solution_classes,
             valid_species,
@@ -139,7 +139,7 @@ class TrainerTester(unittest.TestCase):
                     valid_fitness_func
                 )
 
-        # Try different values of species for each subpopulation
+        # Try different values of species for each subtrainer
         trainer = MyTrainer(
             valid_solution_classes,
             valid_species,
@@ -253,6 +253,35 @@ class TrainerTester(unittest.TestCase):
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Set custom params
+        params = {
+            "solution_classes": [
+                ClassifierOptimizationSolution,
+                FeatureSelectionSolution
+            ],
+            "species": [
+                # Species to optimize a SVM-based classifier
+                ClassifierOptimizationSpecies(
+                    lower_bounds=[0, 0],
+                    upper_bounds=[100000, 100000],
+                    names=["C", "gamma"]
+                ),
+                # Species for the feature selection problem
+                FeatureSelectionSpecies(dataset.num_feats)
+            ],
+            "fitness_function": FitnessFunc(dataset),
+            "verbose": False,
+            "checkpoint_enable": False
+        }
+
+        # Construct a parameterized trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.
