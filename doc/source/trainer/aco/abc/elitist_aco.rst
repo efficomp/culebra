@@ -37,6 +37,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.heuristics
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.pheromones
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.choice_info
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.convergence_check_freq
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.current_iter
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.custom_termination_func
@@ -99,5 +100,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_pheromones
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_elite
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._deposit_ant_weighted_pheromones
+.. automethod:: culebra.trainer.aco.abc.ElitistACO._has_converged
+.. automethod:: culebra.trainer.aco.abc.ElitistACO._reset_pheromones
 
 

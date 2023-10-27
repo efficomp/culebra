@@ -37,11 +37,11 @@ Properties
 .. autoproperty:: culebra.trainer.aco.AntSystem.fitness_function
 .. autoproperty:: culebra.trainer.aco.AntSystem.initial_pheromones
 .. autoproperty:: culebra.trainer.aco.AntSystem.heuristics
+.. autoproperty:: culebra.trainer.aco.AntSystem.pheromones
+.. autoproperty:: culebra.trainer.aco.AntSystem.choice_info
 .. autoproperty:: culebra.trainer.aco.AntSystem.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.AntSystem.heuristic_influence
 .. autoproperty:: culebra.trainer.aco.AntSystem.pheromone_evaporation_rate
-.. autoproperty:: culebra.trainer.aco.AntSystem.pheromones
-.. autoproperty:: culebra.trainer.aco.AntSystem.choice_info
 .. autoproperty:: culebra.trainer.aco.AntSystem.max_num_iters
 .. autoproperty:: culebra.trainer.aco.AntSystem.current_iter
 .. autoproperty:: culebra.trainer.aco.AntSystem.custom_termination_func

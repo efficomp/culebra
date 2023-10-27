@@ -37,13 +37,13 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.fitness_function
 .. autoproperty:: culebra.trainer.aco.MMAS.initial_pheromones
 .. autoproperty:: culebra.trainer.aco.MMAS.heuristics
+.. autoproperty:: culebra.trainer.aco.MMAS.pheromones
+.. autoproperty:: culebra.trainer.aco.MMAS.choice_info
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.MMAS.heuristic_influence
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_evaporation_rate
-.. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit
 .. autoproperty:: culebra.trainer.aco.MMAS.convergence_check_freq
-.. autoproperty:: culebra.trainer.aco.MMAS.pheromones
-.. autoproperty:: culebra.trainer.aco.MMAS.choice_info
+.. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit
 .. autoproperty:: culebra.trainer.aco.MMAS.max_num_iters
 .. autoproperty:: culebra.trainer.aco.MMAS.current_iter
 .. autoproperty:: culebra.trainer.aco.MMAS.custom_termination_func
@@ -112,3 +112,4 @@ Private methods
 .. automethod:: culebra.trainer.aco.MMAS._update_elite
 .. automethod:: culebra.trainer.aco.MMAS._deposit_ant_weighted_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._has_converged
+.. automethod:: culebra.trainer.aco.MMAS._reset_pheromones

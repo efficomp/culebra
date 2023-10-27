@@ -29,7 +29,7 @@ import numpy as np
 from culebra.trainer.aco import (
     MMAS,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT,
-    DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
+    DEFAULT_CONVERGENCE_CHECK_FREQ
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
@@ -139,7 +139,7 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(
             trainer.convergence_check_freq,
-            DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
+            DEFAULT_CONVERGENCE_CHECK_FREQ
         )
 
         self.assertEqual(trainer._max_pheromone, None)
@@ -358,6 +358,9 @@ class TrainerTester(unittest.TestCase):
         trainer = MMAS(**params)
         trainer._init_search()
         trainer._start_iteration()
+        trainer._do_iteration()
+
+        trainer._current_iter = trainer.convergence_check_freq
 
         # Check convergence
         self.assertFalse(trainer._has_converged())
@@ -379,8 +382,13 @@ class TrainerTester(unittest.TestCase):
         trainer.pheromones[0][0][2] = trainer._max_pheromone
         self.assertFalse(trainer._has_converged())
 
-    def test_do_iteration(self):
-        """Test the _do_iteration method."""
+        trainer._current_iter = 1
+        # Deposit the maximum pheremone amount over more than two arcs
+        trainer.pheromones[0][0][2] = trainer._min_pheromone
+        self.assertFalse(trainer._has_converged())
+
+    def test_reset_pheromones(self):
+        """Test the reset_pheromones method."""
         # Trainer parameters
         species = Species(num_nodes)
         initial_pheromones = [10]
@@ -395,29 +403,25 @@ class TrainerTester(unittest.TestCase):
         trainer = MMAS(**params)
         trainer._init_search()
 
-        # Try a usual iteration. Pheromones should not be reseted
-        trainer._start_iteration()
-        trainer._do_iteration()
-        trainer._do_iteration()
-        self.assertFalse(
-            np.all(trainer.pheromones[0] == trainer._max_pheromone)
-        )
+        # Simulate convergence
+        heuristics_shape = trainer._heuristics[0].shape
+        trainer._pheromones = [
+            np.zeros(
+                heuristics_shape,
+                dtype=float
+            ) for initial_pheromone in initial_pheromones
+        ]
 
-        # Check an iteration when convergence should be checked
-        trainer._current_iter = trainer.convergence_check_freq
-        trainer._last_elite_iter = trainer._current_iter - 2
-        trainer._do_iteration()
-        self.assertFalse(
-            np.all(trainer.pheromones[0] == trainer._max_pheromone)
-        )
+        # Check the pheromones
+        for pher in trainer.pheromones:
+            self.assertTrue(np.all(pher == 0))
 
-        # Check if pheromones are reseted
-        trainer._current_iter = trainer.convergence_check_freq
-        trainer._last_elite_iter = trainer.convergence_check_freq / 2
-        trainer._do_iteration()
-        self.assertTrue(
-            np.all(trainer.pheromones[0] == trainer._max_pheromone)
-        )
+        # Reset the pheromones
+        trainer._reset_pheromones()
+
+        # Check the pheromones
+        for pher in trainer.pheromones:
+            self.assertTrue(np.all(pher == trainer._max_pheromone))
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

@@ -94,7 +94,7 @@ above this limit will use only the global-best ant. If set to
 will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>convergence_check_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Convergence assessment frequency. If
 set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../aco.html#culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ" title="culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ</span></code></a>
+<a class="reference internal" href="../aco.html#culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ" title="culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONVERGENCE_CHECK_FREQ</span></code></a>
 will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>max_num_iters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Maximum number of iterations. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../index.html#culebra.DEFAULT_MAX_NUM_ITERS" title="culebra.DEFAULT_MAX_NUM_ITERS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MAX_NUM_ITERS</span></code></a> will
@@ -104,7 +104,8 @@ optional) – Custom termination criterion. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the default termination criterion is used.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>col_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, greater than zero, optional) – The colony size. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="abc/single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.fitness_function" title="culebra.trainer.aco.abc.SingleColACO.fitness_function"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fitness_function</span></code></a>.:py:attr:<cite>~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes</cite>
+<em>fitness_function</em>’s
+<a class="reference internal" href="../../abc/fitness_function.html#culebra.abc.FitnessFunction.num_nodes" title="culebra.abc.FitnessFunction.num_nodes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_nodes</span></code></a>
 will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>checkpoint_enable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Enable/disable checkpoining. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../index.html#culebra.DEFAULT_CHECKPOINT_ENABLE" title="culebra.DEFAULT_CHECKPOINT_ENABLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CHECKPOINT_ENABLE</span></code></a> will
@@ -268,6 +269,35 @@ negative value.</p></li>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.pheromones">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">pheromones</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Get the pheromones matrices.</p>
+<p>If the search process has not begun, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
+of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.choice_info">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">choice_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.choice_info" title="Link to this definition">¶</a></dt>
+<dd><p>Get the choice information for all the graph’s arcs.</p>
+<p>The choice information is generated from both the pheromones and
+the heuristics, modified by other parameters (depending on the ACO
+approach) and is used to obtain the probalility of following the next
+feasible arc for the node.</p>
+<p>If the search process has not begun, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.pheromone_influence">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">pheromone_influence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.pheromone_influence" title="Link to this definition">¶</a></dt>
 <dd><p>Get and set the relative influence of pheromones (<span class="math notranslate nohighlight">\({\alpha}\)</span>).</p>
@@ -346,6 +376,32 @@ is chosen</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.convergence_check_freq">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">convergence_check_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.convergence_check_freq" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set the convergence assessment frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the convergence assessment frequency</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a value for the convergence assessment frequency. If set
+to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="../aco.html#culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ" title="culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONVERGENCE_CHECK_FREQ</span></code></a>
+is chosen</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If set to a value which is not an int</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If set to a non-positive value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.iter_best_use_limit">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">iter_best_use_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.iter_best_use_limit" title="Link to this definition">¶</a></dt>
 <dd><p>Get and set the iteration-best use limit.</p>
@@ -368,61 +424,6 @@ is chosen</p>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If set to a value which is not an int</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If set to a non-positive value</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.convergence_check_freq">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">convergence_check_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.convergence_check_freq" title="Link to this definition">¶</a></dt>
-<dd><p>Get and set the convergence assessment frequency.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Getter<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Return the convergence assessment frequency</p>
-</dd>
-<dt class="field-even">Setter<span class="colon">:</span></dt>
-<dd class="field-even"><p>Set a value for the convergence assessment frequency. If set
-to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../aco.html#culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ" title="culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ</span></code></a>
-is chosen</p>
-</dd>
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If set to a value which is not an int</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If set to a non-positive value</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.pheromones">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">pheromones</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Get the pheromones matrices.</p>
-<p>If the search process has not begun, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
-of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS.choice_info">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">choice_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.MMAS.choice_info" title="Link to this definition">¶</a></dt>
-<dd><p>Get the choice information for all the graph’s arcs.</p>
-<p>The choice information is generated from both the pheromones and
-the heuristics, modified by other parameters (depending on the ACO
-approach) and is used to obtain the probalility of following the next
-feasible arc for the node.</p>
-<p>If the search process has not begun, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1228,6 +1229,12 @@ modified accordingly.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._reset_pheromones">
+<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_reset_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._reset_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the pheromones matrices.</p>
 </dd></dl>
 
 </section>

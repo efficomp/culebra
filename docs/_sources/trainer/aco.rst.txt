@@ -26,6 +26,11 @@
 Attributes
 ----------
 
+.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
+    :annotation: = 100
+
+    Default frequency to check if an elitist ACO has converged.
+
 .. attribute:: DEFAULT_PHEROMONE_INFLUENCE
     :annotation: = 1.0
 
@@ -55,20 +60,14 @@ Attributes
     iteration-best ant to deposit pheromones. Iterations above this limit will
     use only the global-best ant.
 
-.. attribute:: DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
-    :annotation: = 100
-
-    Default frequency to check if the
-    :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS has converged.
-
 
 ..
+    .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
     .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
-    .. autodata:: DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
 
 
 .. toctree::

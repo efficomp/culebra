@@ -34,6 +34,10 @@ This module is composed by:
         System algorithm
 """
 
+from .constants import (
+    DEFAULT_CONVERGENCE_CHECK_FREQ
+)
+
 from . import abc
 
 from .single_col_aco import (
@@ -44,8 +48,7 @@ from .single_col_aco import (
     DEFAULT_HEURISTIC_INFLUENCE,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
     DEFAULT_ELITE_WEIGHT,
-    DEFAULT_MMAS_ITER_BEST_USE_LIMIT,
-    DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
+    DEFAULT_MMAS_ITER_BEST_USE_LIMIT
 )
 
 
@@ -64,10 +67,10 @@ __all__ = [
     'AntSystem',
     'ElitistAntSystem',
     'MMAS',
+    'DEFAULT_CONVERGENCE_CHECK_FREQ',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_ELITE_WEIGHT',
-    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
-    'DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ'
+    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
 ]

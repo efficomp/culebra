@@ -19,15 +19,17 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.abc.SingleColACO`."""
+"""Unit test for :py:class:`culebra.trainer.ea.abc.ElitistACO`."""
 
 import unittest
-from itertools import repeat
 
 import numpy as np
 
+from deap.tools import ParetoFront
+
 from culebra import DEFAULT_MAX_NUM_ITERS
-from culebra.trainer.aco.abc import SingleColACO
+from culebra.trainer.aco import DEFAULT_CONVERGENCE_CHECK_FREQ
+from culebra.trainer.aco.abc import ElitistACO
 from culebra.solution.tsp import Species, Solution, Ant
 from culebra.fitness_function.tsp import PathLength
 
@@ -38,7 +40,7 @@ banned_nodes = [0, num_nodes-1]
 feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
 
 
-class MyTrainer(SingleColACO):
+class MyTrainer(ElitistACO):
     """Dummy implementation of a trainer method."""
 
     def _calculate_choice_info(self) -> None:
@@ -167,6 +169,45 @@ class TrainerTester(unittest.TestCase):
         for h1, h2 in zip(trainer.heuristics, heuristics):
             self.assertTrue(np.all(h1 == h2))
 
+        # Try invalid types for convergence_check_freq. Should fail
+        invalid_convergence_check_freq = (type, 'a', 1.5)
+        for convergence_check_freq in invalid_convergence_check_freq:
+            with self.assertRaises(TypeError):
+                MyTrainer(
+                    valid_ant_cls,
+                    valid_species,
+                    valid_fitness_func,
+                    valid_initial_pheromones,
+                    convergence_check_freq=convergence_check_freq
+                )
+
+        # Try invalid values for convergence_check_freq. Should fail
+        invalid_convergence_check_freq = (-1, 0)
+        for convergence_check_freq in invalid_convergence_check_freq:
+            with self.assertRaises(ValueError):
+                MyTrainer(
+                    valid_ant_cls,
+                    valid_species,
+                    valid_fitness_func,
+                    valid_initial_pheromones,
+                    convergence_check_freq=convergence_check_freq
+                )
+
+        # Try valid values for convergence_check_freq
+        valid_convergence_check_freq = (1, 10)
+        for convergence_check_freq in valid_convergence_check_freq:
+            trainer = MyTrainer(
+                valid_ant_cls,
+                valid_species,
+                valid_fitness_func,
+                valid_initial_pheromones,
+                convergence_check_freq=convergence_check_freq
+            )
+            self.assertEqual(
+                convergence_check_freq,
+                trainer.convergence_check_freq
+            )
+
         # Try invalid types for max_num_iters. Should fail
         invalid_max_num_iters = (type, 'a', 1.5)
         for max_num_iters in invalid_max_num_iters:
@@ -276,6 +317,11 @@ class TrainerTester(unittest.TestCase):
                         the_heuristics[org][node], 0.1
                     )
 
+        self.assertEqual(
+            trainer.convergence_check_freq,
+            DEFAULT_CONVERGENCE_CHECK_FREQ
+        )
+
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(
             trainer.col_size,
@@ -301,17 +347,21 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._start_iteration()
 
         # Save the trainer's state
         state = trainer._state
 
         # Check the state
         self.assertEqual(state["num_evals"], trainer.num_evals)
-        self.assertEqual(state["pheromones"], trainer.pheromones)
+        self.assertEqual(state["elite"], trainer._elite)
 
+        elite = ParetoFront()
+        elite.update([trainer._generate_ant()])
         # Change the state
         state["num_evals"] = 100
-        state["pheromones"] = [np.full((num_nodes, num_nodes), 8, dtype=float)]
+        state["elite"] = elite
 
         # Set the new state
         trainer._state = state
@@ -319,7 +369,7 @@ class TrainerTester(unittest.TestCase):
         # Test if the new values have been set
         self.assertEqual(state["num_evals"], trainer.num_evals)
         self.assertTrue(
-            np.all(state["pheromones"] == trainer.pheromones)
+            np.all(state["elite"] == trainer._elite)
         )
 
     def test_new_state(self):
@@ -342,15 +392,8 @@ class TrainerTester(unittest.TestCase):
         trainer._new_state()
 
         # Check the pheromones matrix
-        self.assertIsInstance(trainer.pheromones, list)
-        for (
-            initial_pheromone,
-            pheromones_matrix
-        ) in zip(
-            trainer.initial_pheromones,
-            trainer.pheromones
-        ):
-            self.assertTrue(np.all(pheromones_matrix == initial_pheromone))
+        self.assertIsInstance(trainer._elite, ParetoFront)
+        self.assertEqual(len(trainer._elite), 0)
 
     def test_reset_state(self):
         """Test _reset_state."""
@@ -374,239 +417,14 @@ class TrainerTester(unittest.TestCase):
         # Reset the state
         trainer._reset_state()
 
-        # Check the pheromones
-        self.assertEqual(trainer.pheromones, None)
-
-    def test_init_internals(self):
-        """Test the _init_internals method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-
-        self.assertEqual(trainer.col, [])
-        self.assertEqual(trainer.choice_info, None)
-        self.assertTrue(
-            np.all(
-                trainer._node_list == np.arange(0, num_nodes, dtype=int)
-            )
-        )
-
-    def test_reset_internals(self):
-        """Test the _init_internals method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._reset_internals()
-
-        self.assertEqual(trainer.col, None)
-        self.assertEqual(trainer.choice_info, None)
-        self.assertEqual(trainer._node_list, None)
-
-    def test_calculate_choice_info(self):
-        """Test the _calculate_choice_info method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Try to get the choice info before the search initialization
-        choice_info = trainer.choice_info
-        self.assertEqual(choice_info, None)
-
-        # Try to get the choice_info after initializing the search
-        trainer._init_search()
-        trainer._start_iteration()
-        choice_info = trainer.choice_info
-
-        # Check the probabilities for banned nodes. Should be 0
-        for node in banned_nodes:
-            self.assertAlmostEqual(np.sum(choice_info[node]), 0)
-
-        for node in feasible_nodes:
-            self.assertAlmostEqual(
-                np.sum(choice_info[node]),
-                np.sum(
-                    trainer.pheromones[0][node] * trainer.heuristics[0][node]
-                )
-            )
-
-    def test_initial_choice(self):
-        """Test the _initial_choice method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-
-        # Try to generate valid first nodes
-        times = 1000
-        for _ in repeat(None, times):
-            self.assertTrue(trainer._initial_choice() in feasible_nodes)
-
-        # Try when all nodes are unfeasible
-        trainer.heuristics = [np.zeros((num_nodes, num_nodes))]
-        trainer._start_iteration()
-        self.assertEqual(trainer._initial_choice(), None)
-
-    def test_feasible_neighborhood_probs(self):
-        """Test the _feasible_neighborhood_probs method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-
-        # Try with an ant with an empty path. Should fail
-        ant = Ant(
-            species,
-            fitness_func.Fitness
-        )
-        with self.assertRaises(ValueError):
-            trainer._feasible_neighborhood_probs(ant)
-
-        # Choose a first node for the ant
-        ant.append(trainer._initial_choice())
-
-        # Check the choice probabilities of the ant's current node neighborhood
-        node_list = np.arange(0, num_nodes, dtype=int)
-        probs = trainer._feasible_neighborhood_probs(ant)
-        while np.sum(probs) > 0:
-            self.assertAlmostEqual(np.sum(probs), 1)
-            next_node = np.random.choice(node_list, p=probs)
-            ant.append(next_node)
-            probs = trainer._feasible_neighborhood_probs(ant)
-
-    def test_next_choice(self):
-        """Test the _next_choice method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-
-        # Try to generate valid first nodes
-        times = 1000
-        for _ in repeat(None, times):
-            trainer._start_iteration()
-            ant = Ant(
-                species,
-                fitness_func.Fitness
-            )
-            choice = trainer._next_choice(ant)
-
-            while choice is not None:
-                ant.append(choice)
-                choice = trainer._next_choice(ant)
-
-            self.assertEqual(len(ant.path), len(feasible_nodes))
-
-    def test_generate_ant(self):
-        """Test the _generate_ant method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-
-        # Try to generate valid ants
-        times = 1000
-        for _ in repeat(None, times):
-            trainer._start_iteration()
-            ant = trainer._generate_ant()
-            self.assertEqual(len(ant.path), len(feasible_nodes))
-
-    def test_generate_col(self):
-        """Test the _generate_col_method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Generate the colony
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._generate_col()
-
-        # Check the colony
-        self.assertEqual(len(trainer.col), trainer.col_size)
-        for ant in trainer.col:
-            self.assertIsInstance(ant, Ant)
+        # Check the elite
+        self.assertEqual(trainer._elite, None)
 
     def test_best_solutions(self):
         """Test the best_solutions method."""
         # Trainer parameters
-        species = Species(num_nodes)
-        initial_pheromones = [2]
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2, 3]
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -617,35 +435,17 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = MyTrainer(**params)
 
-        # Try before the colony has been created
+        # Try before any colony has been created
         best_ones = trainer.best_solutions()
         self.assertIsInstance(best_ones, list)
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 
-        # Generate some ants
-        ant1 = Ant(
-            species,
-            fitness_func.Fitness,
-            path=optimum_path
-        )
-        worse_path = np.concatenate(
-            (optimum_path[:5], optimum_path[-1:], optimum_path[5:-2])
-        )
-        ant2 = Ant(
-            species,
-            fitness_func.Fitness,
-            path=worse_path
-        )
-
-        # Init the search
+        # Update the elite
         trainer._init_search()
-
-        # Try a colony with different fitnesses
-        trainer._col = [ant1, ant2]
-
-        for ant in trainer.col:
-            trainer.evaluate(ant)
+        trainer._start_iteration()
+        ant = trainer._generate_ant()
+        trainer._elite.update([ant])
 
         best_ones = trainer.best_solutions()
 
@@ -655,29 +455,186 @@ class TrainerTester(unittest.TestCase):
         # Check that the hof has only one solution
         self.assertEqual(len(best_ones[0]), 1)
 
-        # Check that the solution in hof is ant1
-        self.assertTrue(ant1 in best_ones[0])
+        # Check that the solution in hof is sol1
+        self.assertTrue(ant in best_ones[0])
 
-        # Set the same fitness for both solutions
-        for sol in trainer.col:
-            sol.fitness.values = (18,)
+    def test_deposit_ant_weighted_pheromones(self):
+        """Test the _deposit_pheromones method."""
 
-        best_ones = trainer.best_solutions()
+        def assert_path_pheromones_increment(trainer, ant, weight):
+            """Check the pheromones in all the arcs of a path.
 
-        # Check that best_ones contains only one species
-        self.assertEqual(len(best_ones), 1)
+            All the arcs should have the same are ammount of pheromones.
+            """
+            pheromones_value = (
+                trainer.initial_pheromones[0] +
+                ant.fitness.pheromones_amount[0] * weight
+            )
+            org = ant.path[-1]
+            for dest in ant.path:
+                self.assertAlmostEqual(
+                    trainer.pheromones[0][org][dest],
+                    pheromones_value
+                )
+                self.assertAlmostEqual(
+                    trainer.pheromones[0][dest][org],
+                    pheromones_value
+                )
+                org = dest
 
-        # Check that the hof has two solutions
-        self.assertEqual(len(best_ones[0]), 2)
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones,
+            "col_size": 1
+        }
 
-        # Check that ant1 and ant2 are the solutions in hof
-        self.assertTrue(ant1 in best_ones[0])
-        self.assertTrue(ant2 in best_ones[0])
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Check the initial pheromones
+        pheromones_value = trainer.initial_pheromones[0]
+        self.assertTrue(
+            np.all(trainer.pheromones[0] == pheromones_value)
+        )
+
+        # Try with an empty elite
+        # Only the iteration-best ant should deposit pheromones
+        trainer._generate_col()
+        ant = trainer.col[0]
+        weight = 3
+        trainer._deposit_ant_weighted_pheromones(ant, weight)
+        assert_path_pheromones_increment(trainer, ant, weight)
+
+    def test_has_converged(self):
+        """Test the _has_converged method."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [10]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Check convergence
+        self.assertFalse(trainer._has_converged())
+
+        # Simulate convergence with all the nodes banned
+        trainer.pheromones[0] = np.full((num_nodes, num_nodes), 0)
+        self.assertTrue(trainer._has_converged())
+
+        # Deposit the maximum pheremone amount over one arc only
+        trainer.pheromones[0][0][0] = initial_pheromones[0]
+        self.assertFalse(trainer._has_converged())
+
+        # Deposit the maximum pheremone amount over two arcs
+        trainer.pheromones[0][0][1] = initial_pheromones[0]
+        self.assertTrue(trainer._has_converged())
+
+        # Deposit the maximum pheremone amount over more than two arcs
+        trainer.pheromones[0][0][2] = initial_pheromones[0]
+        self.assertFalse(trainer._has_converged())
+
+    def test_reset_pheromones(self):
+        """Test the reset_pheromones method."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [10]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+
+        # Simulate convergence
+        heuristics_shape = trainer._heuristics[0].shape
+        trainer._pheromones = [
+            np.zeros(
+                heuristics_shape,
+                dtype=float
+            ) for initial_pheromone in initial_pheromones
+        ]
+
+        # Check the pheromones
+        for pher in trainer.pheromones:
+            self.assertTrue(np.all(pher == 0))
+
+        # Reset the pheromones
+        trainer._reset_pheromones()
+
+        # Check the pheromones
+        for pher in trainer.pheromones:
+            self.assertTrue(np.all(pher == initial_pheromones[0]))
+
+    def test_do_iteration(self):
+        """Test the _do_iteration method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromones = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # The elite should be empty
+        self.assertEqual(len(trainer._elite), 0)
+
+        # Generate a new colony
+        trainer._do_iteration()
+
+        # The elite should not be empty
+        self.assertGreaterEqual(len(trainer._elite), 1)
+
+        # Simulate convergence
+        trainer._current_iter = trainer.convergence_check_freq
+        heuristics_shape = trainer._heuristics[0].shape
+        trainer._pheromones = [
+            np.zeros(
+                heuristics_shape,
+                dtype=float
+            ) for initial_pheromone in initial_pheromones
+        ]
+
+        # Check the pheromones
+        for pher in trainer.pheromones:
+            self.assertTrue(np.all(pher == 0))
+
+        # Do an interation
+        trainer._do_iteration()
+
+        # Check if the pheromones have been reset
+        for pher in trainer.pheromones:
+            self.assertTrue(np.all(pher == initial_pheromones[0]))
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Trainer parameters
-        species = Species(num_nodes)
+        species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
         params = {
             "solution_cls": Ant,

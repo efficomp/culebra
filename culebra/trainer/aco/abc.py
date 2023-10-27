@@ -60,6 +60,8 @@ from culebra.checker import (
 from culebra.solution.abc import Ant
 from culebra.trainer.abc import SingleSpeciesTrainer
 
+from .constants import DEFAULT_CONVERGENCE_CHECK_FREQ
+
 
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
@@ -149,7 +151,7 @@ class SingleColACO(SingleSpeciesTrainer):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclasses
+        # Init the superclass
         SingleSpeciesTrainer.__init__(
             self,
             solution_cls=solution_cls,
@@ -271,7 +273,7 @@ class SingleColACO(SingleSpeciesTrainer):
 
         :raises TypeError: If any element in *values* is not an array-like
             object
-        :raises ValueError: If any element in *values* has any not floatç
+        :raises ValueError: If any element in *values* has any not float
             element
         :raises ValueError: If any element in *values* has not an homogeneous
             shape
@@ -331,8 +333,8 @@ class SingleColACO(SingleSpeciesTrainer):
         """Set the colony size.
 
         :param size: The new colony size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
-            is chosen
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes` is chosen
         :type size: :py:class:`int`, greater than zero
         :raises TypeError: If *size* is not an :py:class:`int`
         :raises ValueError: If *size* is not an integer greater than zero
@@ -653,11 +655,153 @@ class SingleColACO(SingleSpeciesTrainer):
 class ElitistACO(SingleColACO):
     """Base class for all the elitist single colony ACO algorithms."""
 
+    def __init__(
+        self,
+        solution_cls: Type[Ant],
+        species: Species,
+        fitness_function: FitnessFunction,
+        initial_pheromones: Sequence[float, ...],
+        heuristics: Optional[
+            Sequence[Sequence[Sequence[float], ...], ...]
+        ] = None,
+        convergence_check_freq: Optional[int] = None,
+        max_num_iters: Optional[int] = None,
+        custom_termination_func: Optional[
+            Callable[
+                [SingleColACO],
+                bool
+            ]
+        ] = None,
+        col_size: Optional[int] = None,
+        checkpoint_enable: Optional[bool] = None,
+        checkpoint_freq: Optional[int] = None,
+        checkpoint_filename: Optional[str] = None,
+        verbose: Optional[bool] = None,
+        random_seed: Optional[int] = None
+    ) -> None:
+        """Create a new single-colony ACO trainer.
+
+        :param solution_cls: The ant class
+        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
+            subclass
+        :param species: The species for all the ants
+        :type species: :py:class:`~culebra.abc.Species`
+        :param fitness_function: The training fitness function
+        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :param initial_pheromones: Initial amount of pheromone for the paths
+            of each pheromones matrix
+        :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param heuristics: Heuristics matrices. If omitted, the default
+            heuristics provided by *fitness_function* are assumed. Defaults to
+            :py:data:`None`
+        :type heuristics: :py:class:`~collections.abc.Sequence` of
+            two-dimensional array-like objects, optional
+        :param convergence_check_freq: Convergence assessment frequency. If
+            set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            will be used. Defaults to :py:data:`None`
+        :type convergence_check_freq: :py:class:`int`, optional
+        :param max_num_iters: Maximum number of iterations. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :py:data:`None`
+        :type max_num_iters: :py:class:`int`, optional
+        :param custom_termination_func: Custom termination criterion. If set to
+            :py:data:`None`, the default termination criterion is used.
+            Defaults to :py:data:`None`
+        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
+            optional
+        :param col_size: The colony size. If set to :py:data:`None`,
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
+            will be used. Defaults to :py:data:`None`
+        :type col_size: :py:class:`int`, greater than zero, optional
+        :param checkpoint_enable: Enable/disable checkpoining. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_enable: :py:class:`bool`, optional
+        :param checkpoint_freq: The checkpoint frequency. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_freq: :py:class:`int`, optional
+        :param checkpoint_filename: The checkpoint file path. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :py:data:`None`
+        :type checkpoint_filename: :py:class:`str`, optional
+        :param verbose: The verbosity. If set to
+            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
+            :py:data:`None`
+        :type verbose: :py:class:`bool`, optional
+        :param random_seed: The seed, defaults to :py:data:`None`
+        :type random_seed: :py:class:`int`, optional
+        :raises TypeError: If any argument is not of the appropriate type
+        :raises ValueError: If any argument has an incorrect value
+        """
+        # Init the superclasses
+        SingleColACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones,
+            heuristics=heuristics,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            col_size=col_size,
+            checkpoint_enable=checkpoint_enable,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_filename=checkpoint_filename,
+            verbose=verbose,
+            random_seed=random_seed
+        )
+
+        # Get the parameters
+        self.convergence_check_freq = convergence_check_freq
+
+    @property
+    def convergence_check_freq(self) -> int:
+        """Get and set the convergence assessment frequency.
+
+        :getter: Return the convergence assessment frequency
+        :setter: Set a value for the convergence assessment frequency. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            is chosen
+        :type: :py:class:`int`
+        :raises TypeError: If set to a value which is not an int
+        :raises ValueError: If set to a non-positive value
+        """
+        return (
+            DEFAULT_CONVERGENCE_CHECK_FREQ
+            if self._convergence_check_freq is None
+            else self._convergence_check_freq
+        )
+
+    @convergence_check_freq.setter
+    def convergence_check_freq(self, value: int | None) -> None:
+        """Set a value for the convergence assessment frequency.
+
+        :param value: New value for the convergence assessment frequency. If
+            set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            is chosen
+        :type value: :py:class:`int`
+        :raises TypeError: If *value* is not an integer number
+        :raises ValueError: If *value* is non-positive
+        """
+        # Check the value
+        self._convergence_check_freq = (
+            None if value is None else check_int(
+                value, "convergence assessment frequency", gt=0
+            )
+        )
+
     @property
     def _state(self) -> Dict[str, Any]:
         """Get and set the state of this trainer.
 
-        Overridden to add the current elite to the trainer's state.
+        Overridden to add the current elite and the last iteration number
+        when the elite was updated to the trainer's state.
 
         :getter: Return the state
         :setter: Set a new state
@@ -737,6 +881,38 @@ class ElitistACO(SingleColACO):
         """Update the elite (best-so-far) ant."""
         self._elite.update(self.col)
 
+    def _has_converged(self) -> None:
+        """Detect if the trainer has converged.
+
+        :return: :py:data:`True` if the trainer has converged
+        :rtype: :py:class:`bool`
+        """
+        convergence = True
+
+        for pher in self.pheromones:
+            for row in range(len(pher)):
+                min_pher_count = np.isclose(pher[row], 0).sum()
+
+                if (
+                    min_pher_count != self.species.num_nodes and
+                    min_pher_count != self.species.num_nodes - 2
+                ):
+                    convergence = False
+                    break
+
+        return convergence
+
+    def _reset_pheromones(self) -> None:
+        """Reset the pheromones matrices."""
+        heuristics_shape = self._heuristics[0].shape
+        self._pheromones = [
+            np.full(
+                heuristics_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromones
+        ]
+
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
         # Create the ant colony and the ants' paths
@@ -748,9 +924,288 @@ class ElitistACO(SingleColACO):
         # Update the pheromones
         self._update_pheromones()
 
+        # Reset pheromones if convergence is reached
+        if (
+            self._current_iter % self.convergence_check_freq == 0 and
+            self._has_converged()
+        ):
+            self._reset_pheromones()
+
+
+class PACO(SingleColACO):
+    """Base class for all the population-based single colony ACO algorithms."""
+
+    def __init__(
+        self,
+        solution_cls: Type[Ant],
+        species: Species,
+        fitness_function: FitnessFunction,
+        initial_pheromones: Sequence[float, ...],
+        max_pheromones: Sequence[float, ...],
+        heuristics: Optional[
+            Sequence[Sequence[Sequence[float], ...], ...]
+        ] = None,
+        max_num_iters: Optional[int] = None,
+        custom_termination_func: Optional[
+            Callable[
+                [SingleColACO],
+                bool
+            ]
+        ] = None,
+        col_size: Optional[int] = None,
+        pop_size: Optional[int] = None,
+        checkpoint_enable: Optional[bool] = None,
+        checkpoint_freq: Optional[int] = None,
+        checkpoint_filename: Optional[str] = None,
+        verbose: Optional[bool] = None,
+        random_seed: Optional[int] = None
+    ) -> None:
+        """Create a new single-colony ACO trainer.
+
+        :param solution_cls: The ant class
+        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
+            subclass
+        :param species: The species for all the ants
+        :type species: :py:class:`~culebra.abc.Species`
+        :param fitness_function: The training fitness function
+        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :param initial_pheromones: Initial amount of pheromone for the paths
+            of each pheromones matrix
+        :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param max_pheromones: Maximum amount of pheromone for the paths
+            of each pheromones matrix
+        :type max_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param heuristics: Heuristics matrices. If omitted, the default
+            heuristics provided by *fitness_function* are assumed. Defaults to
+            :py:data:`None`
+        :type heuristics: :py:class:`~collections.abc.Sequence` of
+            two-dimensional array-like objects, optional
+        :param max_num_iters: Maximum number of iterations. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :py:data:`None`
+        :type max_num_iters: :py:class:`int`, optional
+        :param custom_termination_func: Custom termination criterion. If set to
+            :py:data:`None`, the default termination criterion is used.
+            Defaults to :py:data:`None`
+        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
+            optional
+        :param col_size: The colony size. If set to :py:data:`None`,
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
+            will be used. Defaults to :py:data:`None`
+        :type col_size: :py:class:`int`, greater than zero, optional
+        :param pop_size: The population size. If set to :py:data:`None`,
+            *col_size* will be used. Defaults to :py:data:`None`
+        :type pop_size: :py:class:`int`, greater than zero, optional
+        :param checkpoint_enable: Enable/disable checkpoining. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_enable: :py:class:`bool`, optional
+        :param checkpoint_freq: The checkpoint frequency. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_freq: :py:class:`int`, optional
+        :param checkpoint_filename: The checkpoint file path. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :py:data:`None`
+        :type checkpoint_filename: :py:class:`str`, optional
+        :param verbose: The verbosity. If set to
+            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
+            :py:data:`None`
+        :type verbose: :py:class:`bool`, optional
+        :param random_seed: The seed, defaults to :py:data:`None`
+        :type random_seed: :py:class:`int`, optional
+        :raises TypeError: If any argument is not of the appropriate type
+        :raises ValueError: If any argument has an incorrect value
+        """
+        # Init the superclasses
+        SingleColACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones,
+            heuristics=heuristics,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            col_size=col_size,
+            checkpoint_enable=checkpoint_enable,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_filename=checkpoint_filename,
+            verbose=verbose,
+            random_seed=random_seed
+        )
+
+        # Get the parameters
+        self.max_pheromones = max_pheromones
+        self.pop_size = pop_size
+
+    @property
+    def max_pheromones(self) -> Sequence[float, ...]:
+        """Get and set the maximum value for each pheromones matrix.
+
+        :getter: Return the maximum value for each pheromones matrix.
+        :setter: Set a new maximum value for each pheromones matrix.
+        :type: :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :raises TypeError: If any value is not a float
+        :raises ValueError: If any value is negative or zero
+        :raises ValueError: If any value is lower than or equal to its
+            corresponding initial pheromone value
+        :raises ValueError: If the sequence is empty
+        """
+        return self._max_pheromones
+
+    @max_pheromones.setter
+    def max_pheromones(self, values: Sequence[float, ...]) -> None:
+        """Set the initial value for each pheromones matrix.
+
+        :param values: New initial value for each pheromones matrix.
+        :type values: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :raises TypeError: If any element in *values* is not a float value
+        :raises ValueError: If any element in *values* is negative or zero
+        :raises ValueError: If any element in *values* is lower than or
+            equal to its corresponding initial pheromone value
+        :raises ValueError: If *values* is empty
+        """
+        # Check the values
+        self._max_pheromones = check_sequence(
+            values,
+            "maximum pheromones",
+            item_checker=partial(check_float, gt=0)
+        )
+
+        # Check the minimum size
+        if len(self._max_pheromones) == 0:
+            raise ValueError("The maximum pheromones sequence is empty")
+
+        # Check that each max value is not lower than its corresponding
+        # initial pheromone value
+        for (
+            val, max_val
+        ) in zip(
+            self._initial_pheromones, self._max_pheromones
+        ):
+            if val >= max_val:
+                raise ValueError(
+                    "Each maximum pheromones value must be higher than "
+                    "its corresponding initial pheromones value"
+                )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def pop_size(self) -> int:
+        """Get and set the population size.
+
+        :getter: Return the current population size
+        :setter: Set a new value for the population size. If set to
+            :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.col_size` is chosen
+        :type: :py:class:`int`, greater than zero
+        :raises TypeError: If set to a value which is not an :py:class:`int`
+        :raises ValueError: If set to a value which is not greater than zero
+        """
+        return self.col_size if self._pop_size is None else self._pop_size
+
+    @pop_size.setter
+    def pop_size(self, size: int | None) -> None:
+        """Set the population size.
+
+        :param size: The new population size. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.col_size` is chosen
+        :type size: :py:class:`int`, greater than zero
+        :raises TypeError: If *size* is not an :py:class:`int`
+        :raises ValueError: If *size* is not an integer greater than zero
+        """
+        # Check the value
+        self._pop_size = (
+            None if size is None else check_int(size, "population size", gt=0)
+        )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def pop(self) -> List[Ant] | None:
+        """Get the population.
+
+        :type: :py:class:`list` of :py:class:`~culebra.abc.Solution`
+        """
+        return self._pop
+
+    @property
+    def _state(self) -> Dict[str, Any]:
+        """Get and set the state of this trainer.
+
+        Overridden to add the current population to the trainer's state.
+
+        :getter: Return the state
+        :setter: Set a new state
+        :type: :py:class:`dict`
+        """
+        # Get the state of the superclass
+        state = SingleColACO._state.fget(self)
+
+        # Get the state of this class
+        state["pop"] = self._pop
+
+        return state
+
+    @_state.setter
+    def _state(self, state: Dict[str, Any]) -> None:
+        """Set the state of this trainer.
+
+        Overridden to add the current population to the trainer's state.
+
+        :param state: The last loaded state
+        :type state: :py:class:`dict`
+        """
+        # Set the state of the superclass
+        SingleColACO._state.fset(self, state)
+
+        # Set the state of this class
+        self._pop = state["pop"]
+
+    def _new_state(self) -> None:
+        """Generate a new trainer state.
+
+        Overridden to initialize the elite.
+        """
+        super()._new_state()
+
+        # Create an empty population
+        self._pop = []
+
+    def _reset_state(self) -> None:
+        """Reset the trainer state.
+
+        Overridden to reset the elite.
+        """
+        super()._reset_state()
+        self._pop = None
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        hof = ParetoFront()
+        if self.pop is not None:
+            hof.update(self.pop)
+        return [hof]
+
 
 # Exported symbols for this module
 __all__ = [
     'SingleColACO',
-    'ElitistACO'
+    'ElitistACO',
+    'PACO'
 ]

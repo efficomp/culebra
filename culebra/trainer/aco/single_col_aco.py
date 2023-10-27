@@ -32,12 +32,21 @@ from math import ceil
 
 import numpy as np
 
-from deap.tools import ParetoFront, HallOfFame
+from deap.tools import ParetoFront
 
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import check_float, check_int
 from culebra.solution.abc import Ant
 from culebra.trainer.aco.abc import SingleColACO, ElitistACO
+
+
+__author__ = 'Jesús González & Alberto Ortega'
+__copyright__ = 'Copyright 2023, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.3.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
+__status__ = 'Development'
 
 
 DEFAULT_PHEROMONE_INFLUENCE = 1.0
@@ -58,18 +67,6 @@ r"""Default limit for the number of iterations for the
 :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS to give up using the
 iteration-best ant to deposit pheromones. Iterations above this limit will use
 only the global-best ant."""
-
-DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ = 100
-r"""Default frequency to check if the
-:math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS has converged."""
-
-__author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2023, EFFICOMP'
-__license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
-__maintainer__ = 'Jesús González'
-__email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
-__status__ = 'Development'
 
 
 class AntSystem(SingleColACO):
@@ -155,7 +152,8 @@ class AntSystem(SingleColACO):
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
         :param col_size: The colony size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
             will be used. Defaults to :py:data:`None`
         :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
@@ -179,7 +177,7 @@ class AntSystem(SingleColACO):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclasses
+        # Init the superclass
         SingleColACO.__init__(
             self,
             solution_cls=solution_cls,
@@ -440,6 +438,7 @@ class ElitistAntSystem(AntSystem, ElitistACO):
         pheromone_influence: Optional[float] = None,
         heuristic_influence: Optional[float] = None,
         pheromone_evaporation_rate: Optional[float] = None,
+        convergence_check_freq: Optional[int] = None,
         elite_weight: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
@@ -499,6 +498,11 @@ class ElitistAntSystem(AntSystem, ElitistACO):
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
             will be used. Defaults to :py:data:`None`
         :type pheromone_evaporation_rate: :py:class:`float`, optional
+        :param convergence_check_freq: Convergence assessment frequency. If
+            set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            will be used. Defaults to :py:data:`None`
+        :type convergence_check_freq: :py:class:`int`, optional
         :param elite_weight: Weight for the elite ant (best-so-far ant)
             respect to the iteration-best ant.
             If set to :py:data:`None`,
@@ -515,7 +519,8 @@ class ElitistAntSystem(AntSystem, ElitistACO):
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
         :param col_size: The colony size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
             will be used. Defaults to :py:data:`None`
         :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
@@ -539,17 +544,25 @@ class ElitistAntSystem(AntSystem, ElitistACO):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclasses
+        # Init the superclass
         AntSystem.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
-            heuristics=heuristics,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
-            pheromone_evaporation_rate=pheromone_evaporation_rate,
+            pheromone_evaporation_rate=pheromone_evaporation_rate
+        )
+        ElitistACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones,
+            heuristics=heuristics,
+            convergence_check_freq=convergence_check_freq,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -559,6 +572,7 @@ class ElitistAntSystem(AntSystem, ElitistACO):
             verbose=verbose,
             random_seed=random_seed
         )
+
         self.elite_weight = elite_weight
 
     @property
@@ -704,7 +718,7 @@ class MMAS(AntSystem, ElitistACO):
         :type iter_best_use_limit: :py:class:`int`, optional
         :param convergence_check_freq: Convergence assessment frequency. If
             set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ`
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
             will be used. Defaults to :py:data:`None`
         :type convergence_check_freq: :py:class:`int`, optional
         :param max_num_iters: Maximum number of iterations. If set to
@@ -717,7 +731,8 @@ class MMAS(AntSystem, ElitistACO):
         :type custom_termination_func: :py:class:`~collections.abc.Callable`,
             optional
         :param col_size: The colony size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`.:py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function.num_nodes`
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
             will be used. Defaults to :py:data:`None`
         :type col_size: :py:class:`int`, greater than zero, optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
@@ -748,10 +763,18 @@ class MMAS(AntSystem, ElitistACO):
             species=species,
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
-            heuristics=heuristics,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
-            pheromone_evaporation_rate=pheromone_evaporation_rate,
+            pheromone_evaporation_rate=pheromone_evaporation_rate
+        )
+        ElitistACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones,
+            heuristics=heuristics,
+            convergence_check_freq=convergence_check_freq,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -803,44 +826,6 @@ class MMAS(AntSystem, ElitistACO):
         self._iter_best_use_limit = (
             None if value is None else check_int(
                 value, "iteration-best use limit", gt=0
-            )
-        )
-
-    @property
-    def convergence_check_freq(self) -> int:
-        """Get and set the convergence assessment frequency.
-
-        :getter: Return the convergence assessment frequency
-        :setter: Set a value for the convergence assessment frequency. If set
-            to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ`
-            is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an int
-        :raises ValueError: If set to a non-positive value
-        """
-        return (
-            DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ
-            if self._convergence_check_freq is None
-            else self._convergence_check_freq
-        )
-
-    @convergence_check_freq.setter
-    def convergence_check_freq(self, value: int | None) -> None:
-        """Set a value for the convergence assessment frequency.
-
-        :param value: New value for the convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ`
-            is chosen
-        :type value: :py:class:`int`
-        :raises TypeError: If *value* is not an integer number
-        :raises ValueError: If *value* is non-positive
-        """
-        # Check the value
-        self._convergence_check_freq = (
-            None if value is None else check_int(
-                value, "convergence assessment frequency", gt=0
             )
         )
 
@@ -1000,6 +985,7 @@ class MMAS(AntSystem, ElitistACO):
         :rtype: :py:class:`bool`
         """
         convergence = True
+        # Check the pheromones matrix
         for row in range(len(self.pheromones[0])):
             max_pher_count = np.isclose(
                 self.pheromones[0][row], self._max_pheromone
@@ -1015,23 +1001,23 @@ class MMAS(AntSystem, ElitistACO):
                 convergence = False
                 break
 
-        return convergence
-
-    def _do_iteration(self) -> None:
-        """Implement an iteration of the search process."""
-        super()._do_iteration()
-
-        # Reset the pheromones matrix if the trainer has converged
+        # Check the last time the elite improved
         if (
-            self._current_iter % self.convergence_check_freq == 0 and
-            self._current_iter - self._last_elite_iter >=
+            convergence and
+            self._current_iter - self._last_elite_iter <
             self.convergence_check_freq / 2
         ):
-            self._pheromones[0] = np.full(
-                self._pheromones[0].shape,
-                self._max_pheromone,
-                dtype=float
-            )
+            convergence = False
+
+        return convergence
+
+    def _reset_pheromones(self) -> None:
+        """Reset the pheromones matrices."""
+        self._pheromones[0] = np.full(
+            self._pheromones[0].shape,
+            self._max_pheromone,
+            dtype=float
+        )
 
 
 # Exported symbols for this module
@@ -1043,6 +1029,5 @@ __all__ = [
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_ELITE_WEIGHT',
-    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
-    'DEFAULT_MMAS_CONVERGENCE_CHECK_FREQ'
+    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
 ]
