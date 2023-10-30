@@ -94,7 +94,8 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.SingleColACO._evaporate_pheromones
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._deposit_pheromones
+.. automethod:: culebra.trainer.aco.abc.SingleColACO._increase_pheromones
+.. automethod:: culebra.trainer.aco.abc.SingleColACO._decrease_pheromones
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._update_pheromones
 

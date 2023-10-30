@@ -104,8 +104,10 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_ant
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_col
-.. automethod:: culebra.trainer.aco.ElitistAntSystem._evaporate_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pheromones
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._reset_pheromones
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._increase_pheromones
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._decrease_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_elite
-.. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_ant_weighted_pheromones
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._has_converged

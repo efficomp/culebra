@@ -404,23 +404,17 @@ class AntSystem(SingleColACO):
             np.power(self.heuristics[0], self.heuristic_influence)
         )
 
-    def _evaporate_pheromones(self) -> None:
-        """Evaporate pheromones."""
+    def _decrease_pheromones(self) -> None:
+        """Decrease the amount of pheromones."""
         self._pheromones[0] *= (1 - self.pheromone_evaporation_rate)
 
-    def _deposit_pheromones(self) -> None:
-        """Deposit pheromones.
+    def _increase_pheromones(self) -> None:
+        """Increase the amount of pheromones.
 
         A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also modified with the same increment
+        ant's path, arc (*j*, *i*) is also incremented the by same amount.
         """
-        for ant in self.col:
-            pheromones_amount = ant.fitness.pheromones_amount[0]
-            org = ant.path[-1]
-            for dest in ant.path:
-                self._pheromones[0][org][dest] += pheromones_amount
-                self._pheromones[0][dest][org] += pheromones_amount
-                org = dest
+        self._deposit_pheromones(self.col)
 
 
 class ElitistAntSystem(AntSystem, ElitistACO):
@@ -611,25 +605,25 @@ class ElitistAntSystem(AntSystem, ElitistACO):
         # Reset the algorithm
         self.reset()
 
-    def _deposit_pheromones(self) -> None:
-        """Deposit pheromones.
+    def _increase_pheromones(self) -> None:
+        """Increase the amount of pheromones.
 
         A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also modified with the same increment
+        ant's path, arc (*j*, *i*) is also incremented the by same amount.
         """
         # Iteration-best ants
         iter_best = ParetoFront()
         iter_best.update(self.col)
-        for ant in iter_best:
-            self._deposit_ant_weighted_pheromones(
-                ant,
+        if len(iter_best) > 0:
+            self._deposit_pheromones(
+                iter_best,
                 (1 - self.elite_weight) / len(iter_best)
             )
 
         # Elite ants
-        for ant in self._elite:
-            self._deposit_ant_weighted_pheromones(
-                ant,
+        if len(self._elite) > 0:
+            self._deposit_pheromones(
+                self._elite,
                 self.elite_weight / len(self._elite)
             )
 
@@ -911,32 +905,26 @@ class MMAS(AntSystem, ElitistACO):
         self._min_pheromone = None
         self._last_elite_iter = None
 
-    def _deposit_pheromones(self) -> None:
-        """Deposit pheromones.
+    def _increase_pheromones(self) -> None:
+        """Increase the amount of pheromones.
 
         Overridden to choose between the iteration-best and global-best ant
         depending on the :py:attr:`~culebra.trainer.aco.MMAS._global_best_freq`
         frequency.
 
         A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also modified with the same increment
+        ant's path, arc (*j*, *i*) is also incremented the by same amount.
         """
         if (self._current_iter + 1) % self._global_best_freq == 0:
             # Use the global-best ant
-            for ant in self._elite:
-                self._deposit_ant_weighted_pheromones(
-                    ant,
-                    1 / len(self._elite)
-                )
+            if len(self._elite) > 0:
+                self._deposit_pheromones(self._elite, 1 / len(self._elite))
         else:
             # Use the iteration-best ant
             iter_best = ParetoFront()
             iter_best.update(self.col)
-            for ant in iter_best:
-                self._deposit_ant_weighted_pheromones(
-                    ant,
-                    1 / len(iter_best)
-                )
+            if len(iter_best) > 0:
+                self._deposit_pheromones(iter_best, 1 / len(iter_best))
 
     def _update_pheromones(self) -> None:
         """Update the pheromone trails.

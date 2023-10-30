@@ -216,8 +216,8 @@ class TrainerTester(unittest.TestCase):
         # Check that the solution in hof is sol1
         self.assertTrue(ant in best_ones[0])
 
-    def test_deposit_pheromones(self):
-        """Test the _deposit_pheromones method."""
+    def test_increase_pheromones(self):
+        """Test the _increase_pheromones method."""
 
         def assert_path_pheromones_increment(trainer, ant, weight):
             """Check the pheromones in all the arcs of a path.
@@ -270,7 +270,7 @@ class TrainerTester(unittest.TestCase):
         # Only the iteration-best ant should deposit pheromones
         trainer._generate_col()
         ant = trainer.col[0]
-        trainer._deposit_pheromones()
+        trainer._increase_pheromones()
         assert_path_pheromones_increment(
             trainer,
             ant,
@@ -283,7 +283,7 @@ class TrainerTester(unittest.TestCase):
         trainer._start_iteration()
         trainer._elite.update([ant])
         trainer._col = []
-        trainer._deposit_pheromones()
+        trainer._increase_pheromones()
         assert_path_pheromones_increment(
             trainer,
             ant,

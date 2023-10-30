@@ -47,11 +47,11 @@ class MyTrainer(ElitistACO):
         """Calculate a dummy choice info matrix."""
         self._choice_info = self.pheromones[0] * self.heuristics[0]
 
-    def _evaporate_pheromones(self) -> None:
-        """Evaporate pheromones."""
+    def _decrease_pheromones(self) -> None:
+        """Decrease the amount of pheromones."""
 
-    def _deposit_pheromones(self) -> None:
-        """Deposit pheromones."""
+    def _increase_pheromones(self) -> None:
+        """Increase the amount of pheromones."""
 
 
 class TrainerTester(unittest.TestCase):
@@ -458,7 +458,7 @@ class TrainerTester(unittest.TestCase):
         # Check that the solution in hof is sol1
         self.assertTrue(ant in best_ones[0])
 
-    def test_deposit_ant_weighted_pheromones(self):
+    def test_deposit_pheromones(self):
         """Test the _deposit_pheromones method."""
 
         def assert_path_pheromones_increment(trainer, ant, weight):
@@ -507,10 +507,9 @@ class TrainerTester(unittest.TestCase):
         # Try with an empty elite
         # Only the iteration-best ant should deposit pheromones
         trainer._generate_col()
-        ant = trainer.col[0]
         weight = 3
-        trainer._deposit_ant_weighted_pheromones(ant, weight)
-        assert_path_pheromones_increment(trainer, ant, weight)
+        trainer._deposit_pheromones(trainer.col, weight)
+        assert_path_pheromones_increment(trainer, trainer.col[0], weight)
 
     def test_has_converged(self):
         """Test the _has_converged method."""

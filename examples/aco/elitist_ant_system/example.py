@@ -64,7 +64,7 @@ params = {
     "initial_pheromones": initial_pheromones,
     "pheromone_influence": 1,
     "heuristic_influence": 3,
-    "max_num_iters": 1000,
+    "max_num_iters": 500,
     "checkpoint_enable": False
 }
 

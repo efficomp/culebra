@@ -103,6 +103,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.AntSystem._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.AntSystem._generate_ant
 .. automethod:: culebra.trainer.aco.AntSystem._generate_col
-.. automethod:: culebra.trainer.aco.AntSystem._evaporate_pheromones
 .. automethod:: culebra.trainer.aco.AntSystem._deposit_pheromones
+.. automethod:: culebra.trainer.aco.AntSystem._increase_pheromones
+.. automethod:: culebra.trainer.aco.AntSystem._decrease_pheromones
 .. automethod:: culebra.trainer.aco.AntSystem._update_pheromones

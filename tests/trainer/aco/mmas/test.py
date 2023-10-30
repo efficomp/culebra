@@ -204,8 +204,8 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._min_pheromone, None)
         self.assertEqual(trainer._last_elite_iter, None)
 
-    def test_deposit_pheromones(self):
-        """Test the _deposit_pheromones method."""
+    def test_increase_pheromones(self):
+        """Test the _increase_pheromones method."""
 
         def assert_path_pheromones_increment(trainer, ant):
             """Check the pheromones in all the arcs of a path.
@@ -252,7 +252,7 @@ class TrainerTester(unittest.TestCase):
         # In the first iteration the iteration-best ant should deposit
         # pheromones
         trainer._generate_col()
-        trainer._deposit_pheromones()
+        trainer._increase_pheromones()
         assert_path_pheromones_increment(trainer, trainer.col[0])
 
         # In iterations above MMAS.iter_best_use_limit only the global-best
@@ -265,7 +265,7 @@ class TrainerTester(unittest.TestCase):
         optimum_ant = Ant(species, fitness_func.Fitness, optimum_path)
         trainer.evaluate(optimum_ant)
         trainer._elite.update([optimum_ant])
-        trainer._deposit_pheromones()
+        trainer._increase_pheromones()
         assert_path_pheromones_increment(trainer, trainer._elite[0])
 
     def test_update_pheromones(self):

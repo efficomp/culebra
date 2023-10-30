@@ -1170,20 +1170,43 @@ from the current node of <em>ant</em></p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._evaporate_pheromones">
-<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_evaporate_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._evaporate_pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Evaporate pheromones.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._deposit_pheromones">
+<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_deposit_pheromones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._deposit_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Make some ants deposit weighted pheromones.</p>
+<p>A symmetric problem is assumed. Thus if (<em>i</em>, <em>j</em>) is an arc in an
+ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ants</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
+<a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ant</span></code></a>) – The ants</p></li>
+<li><p><strong>weight</strong> – Weight for the pheromones. Defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._deposit_pheromones">
-<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_deposit_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._deposit_pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Deposit pheromones.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._reset_pheromones">
+<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_reset_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._reset_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the pheromones matrices.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._increase_pheromones">
+<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_increase_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._increase_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Increase the amount of pheromones.</p>
 <p>Overridden to choose between the iteration-best and global-best ant
 depending on the <a class="reference internal" href="#culebra.trainer.aco.MMAS._global_best_freq" title="culebra.trainer.aco.MMAS._global_best_freq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_global_best_freq</span></code></a>
 frequency.</p>
 <p>A symmetric problem is assumed. Thus if (<em>i</em>, <em>j</em>) is an arc in an
-ant’s path, arc (<em>j</em>, <em>i</em>) is also modified with the same increment</p>
+ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amount.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._decrease_pheromones">
+<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_decrease_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._decrease_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Decrease the amount of pheromones.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1204,20 +1227,6 @@ modified accordingly.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._deposit_ant_weighted_pheromones">
-<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_deposit_ant_weighted_pheromones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._deposit_ant_weighted_pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Make an ant deposit weighted pheromones.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The ant</p></li>
-<li><p><strong>weight</strong> – The weight</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._has_converged">
 <span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_has_converged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._has_converged" title="Link to this definition">¶</a></dt>
 <dd><p>Detect if the trainer has converged.</p>
@@ -1229,12 +1238,6 @@ modified accordingly.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._reset_pheromones">
-<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_reset_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._reset_pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Reset the pheromones matrices.</p>
 </dd></dl>
 
 </section>

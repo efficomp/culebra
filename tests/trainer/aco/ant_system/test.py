@@ -279,8 +279,8 @@ class TrainerTester(unittest.TestCase):
             ant = trainer._generate_ant()
             self.assertEqual(len(ant.path), len(feasible_nodes))
 
-    def test_evaporate_pheromones(self):
-        """Test the _evaporate_pheromones method."""
+    def test_decrease_pheromones(self):
+        """Test the _decrease_pheromones method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -305,7 +305,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Evaporate pheromones
-        trainer._evaporate_pheromones()
+        trainer._decrease_pheromones()
 
         # Check again
         pheromones_value = (
@@ -317,8 +317,8 @@ class TrainerTester(unittest.TestCase):
             np.all(trainer.pheromones[0] == pheromones_value)
         )
 
-    def test_deposit_pheromones(self):
-        """Test the _deposit_pheromones method."""
+    def test_increase_pheromones(self):
+        """Test the _increase_pheromones method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -347,7 +347,7 @@ class TrainerTester(unittest.TestCase):
         trainer._generate_col()
 
         # Evaporate pheromones
-        trainer._deposit_pheromones()
+        trainer._increase_pheromones()
 
         # Get the ant
         ant = trainer.col[0]

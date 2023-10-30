@@ -589,24 +589,46 @@ class SingleColACO(SingleSpeciesTrainer):
         while len(self.col) < self.col_size:
             self.col.append(self._generate_ant())
 
+    def _deposit_pheromones(
+        self, ants: Sequence[Ant], weight: Optional[float] = 1
+    ) -> None:
+        """Make some ants deposit weighted pheromones.
+
+        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
+        ant's path, arc (*j*, *i*) is also incremented the by same amount.
+
+        :param ants: The ants
+        :type ants: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.solution.abc.Ant`
+        :param weight: Weight for the pheromones. Defaults to 1
+        :type ant: :py:class:`float`, optional
+        """
+        for ant in ants:
+            pheromones_amount = ant.fitness.pheromones_amount[0] * weight
+            org = ant.path[-1]
+            for dest in ant.path:
+                self._pheromones[0][org][dest] += pheromones_amount
+                self._pheromones[0][dest][org] += pheromones_amount
+                org = dest
+
     @abstractmethod
-    def _evaporate_pheromones(self) -> None:
-        """Evaporate pheromones.
+    def _increase_pheromones(self) -> None:
+        """Increase the amount of pheromones.
 
         This method should be overridden by subclasses.
         """
         raise NotImplementedError(
-            "The _evaporate_pheromones method has not been implemented in the "
+            "The _increase_pheromones method has not been implemented in the "
             f"{self.__class__.__name__} class")
 
     @abstractmethod
-    def _deposit_pheromones(self) -> None:
-        """Deposit pheromones.
+    def _decrease_pheromones(self) -> None:
+        """Decrease the amount of pheromones.
 
         This method should be overridden by subclasses.
         """
         raise NotImplementedError(
-            "The _deposit_pheromones method has not been implemented in the "
+            "The _decrease_pheromones method has not been implemented in the "
             f"{self.__class__.__name__} class")
 
     def _update_pheromones(self) -> None:
@@ -615,8 +637,8 @@ class SingleColACO(SingleSpeciesTrainer):
         First, the pheromones are evaporated. Then ants deposit pheromones
         according to their fitness.
         """
-        self._evaporate_pheromones()
-        self._deposit_pheromones()
+        self._decrease_pheromones()
+        self._increase_pheromones()
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
@@ -859,23 +881,6 @@ class ElitistACO(SingleColACO):
         """
         best_ones = self._elite if self._elite is not None else ParetoFront()
         return [best_ones]
-
-    def _deposit_ant_weighted_pheromones(
-        self, ant: Ant, weight: float
-    ) -> None:
-        """Make an ant deposit weighted pheromones.
-
-        :param ant: The ant
-        :type ant: :py:class:`~culebra.solution.abc.Ant`
-        :param weight: The weight
-        :type ant: :py:class:`float`
-        """
-        pheromones_amount = ant.fitness.pheromones_amount[0] * weight
-        org = ant.path[-1]
-        for dest in ant.path:
-            self._pheromones[0][org][dest] += pheromones_amount
-            self._pheromones[0][dest][org] += pheromones_amount
-            org = dest
 
     def _update_elite(self) -> None:
         """Update the elite (best-so-far) ant."""

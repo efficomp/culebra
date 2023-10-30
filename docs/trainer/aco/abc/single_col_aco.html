@@ -987,16 +987,33 @@ from the current node of <em>ant</em></p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleColACO._evaporate_pheromones">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SingleColACO.</span></span><span class="sig-name descname"><span class="pre">_evaporate_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleColACO._evaporate_pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Evaporate pheromones.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleColACO._deposit_pheromones">
+<span class="sig-prename descclassname"><span class="pre">SingleColACO.</span></span><span class="sig-name descname"><span class="pre">_deposit_pheromones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleColACO._deposit_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Make some ants deposit weighted pheromones.</p>
+<p>A symmetric problem is assumed. Thus if (<em>i</em>, <em>j</em>) is an arc in an
+ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ants</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
+<a class="reference internal" href="../../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ant</span></code></a>) – The ants</p></li>
+<li><p><strong>weight</strong> – Weight for the pheromones. Defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleColACO._increase_pheromones">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SingleColACO.</span></span><span class="sig-name descname"><span class="pre">_increase_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleColACO._increase_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Increase the amount of pheromones.</p>
 <p>This method should be overridden by subclasses.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleColACO._deposit_pheromones">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SingleColACO.</span></span><span class="sig-name descname"><span class="pre">_deposit_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleColACO._deposit_pheromones" title="Link to this definition">¶</a></dt>
-<dd><p>Deposit pheromones.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleColACO._decrease_pheromones">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SingleColACO.</span></span><span class="sig-name descname"><span class="pre">_decrease_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleColACO._decrease_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Decrease the amount of pheromones.</p>
 <p>This method should be overridden by subclasses.</p>
 </dd></dl>
 

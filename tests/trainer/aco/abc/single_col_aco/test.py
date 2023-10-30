@@ -45,11 +45,11 @@ class MyTrainer(SingleColACO):
         """Calculate a dummy choice info matrix."""
         self._choice_info = self.pheromones[0] * self.heuristics[0]
 
-    def _evaporate_pheromones(self) -> None:
-        """Evaporate pheromones."""
+    def _decrease_pheromones(self) -> None:
+        """Decrease the amount of pheromones."""
 
-    def _deposit_pheromones(self) -> None:
-        """Deposit pheromones."""
+    def _increase_pheromones(self) -> None:
+        """Increase the amount of pheromones."""
 
 
 class TrainerTester(unittest.TestCase):
