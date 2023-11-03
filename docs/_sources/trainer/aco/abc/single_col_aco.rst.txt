@@ -35,6 +35,8 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.fitness_function
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.initial_pheromones
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.heuristics
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.pheromones_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.heuristics_influence
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.pheromones
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.max_num_iters

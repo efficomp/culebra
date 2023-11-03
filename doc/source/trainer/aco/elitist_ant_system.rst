@@ -37,8 +37,8 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.fitness_function
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.initial_pheromones
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.heuristics
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromones_influence
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.heuristics_influence
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.elite_weight
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromones

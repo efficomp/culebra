@@ -28,4 +28,5 @@
     :hidden:
 
     SingleColACO <abc/single_col_aco>
+    SingleObjACO <abc/single_obj_aco>
     ElitistACO <abc/elitist_aco>

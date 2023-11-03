@@ -37,7 +37,11 @@ from deap.tools import ParetoFront
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import check_float, check_int
 from culebra.solution.abc import Ant
-from culebra.trainer.aco.abc import SingleColACO, ElitistACO
+from culebra.trainer.aco import (
+    DEFAULT_PHEROMONE_INFLUENCE,
+    DEFAULT_HEURISTIC_INFLUENCE
+)
+from culebra.trainer.aco.abc import SingleObjACO, ElitistACO, PACO
 
 
 __author__ = 'Jesús González & Alberto Ortega'
@@ -48,12 +52,6 @@ __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
-
-DEFAULT_PHEROMONE_INFLUENCE = 1.0
-r"""Default pheromone influence (:math:`{\alpha}`)."""
-
-DEFAULT_HEURISTIC_INFLUENCE = 2.0
-r"""Default heuristic influence (:math:`{\beta}`)."""
 
 DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.1
 r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
@@ -69,7 +67,7 @@ iteration-best ant to deposit pheromones. Iterations above this limit will use
 only the global-best ant."""
 
 
-class AntSystem(SingleColACO):
+class AntSystem(SingleObjACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -81,13 +79,13 @@ class AntSystem(SingleColACO):
         heuristics: Optional[
             Sequence[Sequence[Sequence[float], ...], ...]
         ] = None,
-        pheromone_influence: Optional[float] = None,
-        heuristic_influence: Optional[float] = None,
+        pheromones_influence: Optional[Sequence[float, ...]] = None,
+        heuristics_influence: Optional[Sequence[float, ...]] = None,
         pheromone_evaporation_rate: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleColACO],
+                [SingleObjACO],
                 bool
             ]
         ] = None,
@@ -111,32 +109,26 @@ class AntSystem(SingleColACO):
             function is taken into account.
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
         :param initial_pheromones: Initial amount of pheromone for the paths
-            of each pheromones matrix. Since the original Ant System algorithm
-            was proposed to solve single-objective problems, only one
-            pheromones matrix is used. Thus, only the first value in the
-            sequence is taken into account.
+            of the pheromones matrix. Sequences must have only 1 value
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
-        :param heuristics: Heuristics matrices. Since the original Ant System
-            algorithm was proposed to solve single-objective problems, only one
-            heuristics matrix is used. Thus, only the first value in the
-            sequence is taken into account. If omitted, the default heuristics
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
+        :param heuristics: Heuristics matrices. Sequences must have only one
+            value. If omitted, the default heuristics provided by
+            *fitness_function* are assumed. Defaults to :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
             two-dimensional array-like objects, optional
-        :param pheromone_influence: Relative influence of pheromones
-            (:math:`{\alpha}`) for the choice of an arc. If set to
-            :py:data:`None`,
+        :param pheromones_influence: Relative influence of pheromones
+            (:math:`{\alpha}`). Sequences must have only 1 value. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
             be used. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float`, optional
-        :param heuristic_influence: Relative influence of heuristics
-            (:math:`{\beta}`) for the choice of an arc. If set to
-            :py:data:`None`,
+        :type pheromones_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param heuristics_influence: Relative influence of heuristics
+            (:math:`{\beta}`). Sequences must have only 1 value. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used. Defaults to :py:data:`None`
-        :type heuristic_influence: :py:class:`float`, optional
+        :type heuristics_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
@@ -178,13 +170,15 @@ class AntSystem(SingleColACO):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclass
-        SingleColACO.__init__(
+        SingleObjACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
             heuristics=heuristics,
+            pheromones_influence=pheromones_influence,
+            heuristics_influence=heuristics_influence,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -194,170 +188,7 @@ class AntSystem(SingleColACO):
             verbose=verbose,
             random_seed=random_seed
         )
-        self.pheromone_influence = pheromone_influence
-        self.heuristic_influence = heuristic_influence
         self.pheromone_evaporation_rate = pheromone_evaporation_rate
-
-    @property
-    def initial_pheromones(self) -> Sequence[float, ...]:
-        """Get and set the initial value for the pheromones matrix.
-
-        Since the original Ant System algorithm was proposed to solve
-        single-objective problems, only one pheromones matrix is used. Thus,
-        only the first value in the sequence is taken into account.
-
-        :getter: Return the initial value for the pheromones matrix.
-        :setter: Set a new initial value for the pheromones matricx.
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`float`
-        :raises TypeError: If any value is not a float
-        :raises ValueError: If any value is negative or zero
-        :raises ValueError: If the sequence is empty
-        """
-        return SingleColACO.initial_pheromones.fget(self)
-
-    @initial_pheromones.setter
-    def initial_pheromones(self, values: Sequence[float, ...]) -> None:
-        """Set the initial value for the pheromones matrix.
-
-        Since the original Ant System algorithm was proposed to solve
-        single-objective problems, only one pheromones matrix is used. Thus,
-        only the first element in *values* is taken into account.
-
-        :type values: :py:class:`~collections.abc.Sequence` of
-            :py:class:`float`
-        :raises TypeError: If any element in *values* is not a float value
-        :raises ValueError: If any element in *values* is negative or zero
-        :raises ValueError: If *values* is empty
-        """
-        SingleColACO.initial_pheromones.fset(self, values)
-        self._initial_pheromones = [self._initial_pheromones[0]]
-
-    @property
-    def heuristics(self) -> Sequence[np.ndarray, ...]:
-        """Get and set the heuristic matrix.
-
-        Since the original Ant System algorithm was proposed to solve
-        single-objective problems, only one heuristics matrix is used. Thus,
-        only the first value in the sequence is taken into account.
-
-        :getter: Return the heuristics matrices
-        :setter: Set new heuristics matrices. If set to :py:data:`None`, the
-            default heuristics (provided by the
-            :py:attr:`~culebra.trainer.aco.AntSystem.fitness_function`
-            property) are assumed.
-        :type: :py:class:`~collections.abc.Sequence`
-            of :py:class:`~numpy.ndarray`
-        :raises TypeError: If any value is not an array
-        :raises ValueError: If the matrix has a wrong shape or contain any
-            negative value.
-        """
-        return SingleColACO.heuristics.fget(self)
-
-    @heuristics.setter
-    def heuristics(
-        self,
-        values: Sequence[Sequence[Sequence[float], ...], ...] | None
-    ) -> None:
-        """Set new heuristic matrices.
-
-        Since the original Ant System algorithm was proposed to solve
-        single-objective problems, only one heuristics matrix is used. Thus,
-        only the first element in *values* is taken into account.
-
-        :param values: New heuristics matrices. If set to :py:data:`None`, the
-            default heuristics (provided by the
-            :py:attr:`~culebra.trainer.aco.AntSystem.fitness_function`
-            property) are assumed.
-        :type: :py:class:`~collections.abc.Sequence` of two-dimensional
-            array-like objects
-        :raises TypeError: If *values* is not a
-            :py:class:`~collections.abc.Sequence`
-
-        :raises TypeError: If any element in *values* is not an array-like
-            object
-        :raises ValueError: If any element in *values* has any not floatç
-            element
-        :raises ValueError: If any element in *values* has not an homogeneous
-            shape
-        :raises ValueError: If any element in *values* has not two dimensions
-        :raises ValueError: If any element in *values* has negative values
-        """
-        SingleColACO.heuristics.fset(self, values)
-        self._heuristics = [self._heuristics[0]]
-
-    @property
-    def pheromone_influence(self) -> float:
-        r"""Get and set the relative influence of pheromones (:math:`{\alpha}`).
-
-        :getter: Return the relative influence of pheromones
-        :setter: Set a value for the relative influence of pheromones. If set
-            to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` is
-            chosen
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a float
-        :raises ValueError: If set to a negative value
-        """
-        return (
-            DEFAULT_PHEROMONE_INFLUENCE if self._pheromone_influence is None
-            else self._pheromone_influence
-        )
-
-    @pheromone_influence.setter
-    def pheromone_influence(self, value: float | None) -> None:
-        r"""Set a value for relative influence of pheromones (:math:`{\alpha}`).
-
-        :param value: New value for relative influence of pheromones. If set
-            to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` is
-            chosen
-        :type value: :py:class:`float`
-        :raises TypeError: If *value* is not a floating point number
-        :raises ValueError: If *value* is negative
-        """
-        # Check the value
-        self._pheromone_influence = (
-            None if value is None else check_float(
-                value, "pheromone influence", ge=0
-            )
-        )
-
-    @property
-    def heuristic_influence(self) -> float:
-        r"""Get and set the relative influence of heuristics (:math:`{\beta}`).
-
-        :getter: Return the relative influence of heuristics
-        :setter: Set a value for the relative influence of heuristics. If set
-            to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` is
-            chosen
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a float
-        :raises ValueError: If set to a negative value
-        """
-        return (
-            DEFAULT_HEURISTIC_INFLUENCE if self._heuristic_influence is None
-            else self._heuristic_influence
-        )
-
-    @heuristic_influence.setter
-    def heuristic_influence(self, value: float | None) -> None:
-        r"""Set a value for relative influence of heuristics (:math:`{\beta}`).
-
-        :param value: New value for relative influence of heuristics. If set
-            to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` is
-            chosen
-        :type value: :py:class:`float`
-        :raises TypeError: If *value* is not a floating point number
-        :raises ValueError: If *value* is negative
-        """
-        # Check the value
-        self._heuristic_influence = (
-            None if value is None else check_float(
-                value, "heuristic influence", ge=0
-            )
-        )
 
     @property
     def pheromone_evaporation_rate(self) -> float:
@@ -397,13 +228,6 @@ class AntSystem(SingleColACO):
             )
         )
 
-    def _calculate_choice_info(self) -> None:
-        """Calculate the choice info matrix."""
-        self._choice_info = (
-            np.power(self.pheromones[0], self.pheromone_influence) *
-            np.power(self.heuristics[0], self.heuristic_influence)
-        )
-
     def _decrease_pheromones(self) -> None:
         """Decrease the amount of pheromones."""
         self._pheromones[0] *= (1 - self.pheromone_evaporation_rate)
@@ -429,15 +253,15 @@ class ElitistAntSystem(AntSystem, ElitistACO):
         heuristics: Optional[
             Sequence[Sequence[Sequence[float], ...], ...]
         ] = None,
-        pheromone_influence: Optional[float] = None,
-        heuristic_influence: Optional[float] = None,
+        pheromones_influence: Optional[Sequence[float, ...]] = None,
+        heuristics_influence: Optional[Sequence[float, ...]] = None,
         pheromone_evaporation_rate: Optional[float] = None,
         convergence_check_freq: Optional[int] = None,
         elite_weight: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleColACO],
+                [ElitistAntSystem],
                 bool
             ]
         ] = None,
@@ -461,32 +285,26 @@ class ElitistAntSystem(AntSystem, ElitistACO):
             function is taken into account.
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
         :param initial_pheromones: Initial amount of pheromone for the paths
-            of each pheromones matrix. Since the original Ant System algorithm
-            was proposed to solve single-objective problems, only one
-            pheromones matrix is used. Thus, only the first value in the
-            sequence is taken into account.
+            of the pheromones matrix. Sequences must have only 1 value
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
-        :param heuristics: Heuristics matrices. Since the original Ant System
-            algorithm was proposed to solve single-objective problems, only one
-            heuristics matrix is used. Thus, only the first value in the
-            sequence is taken into account. If omitted, the default heuristics
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
+        :param heuristics: Heuristics matrices. Sequences must have only one
+            value. If omitted, the default heuristics provided by
+            *fitness_function* are assumed. Defaults to :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
             two-dimensional array-like objects, optional
-        :param pheromone_influence: Relative influence of pheromones
-            (:math:`{\alpha}`) for the choice of an arc. If set to
-            :py:data:`None`,
+        :param pheromones_influence: Relative influence of pheromones
+            (:math:`{\alpha}`). Sequences must have only 1 value. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
             be used. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float`, optional
-        :param heuristic_influence: Relative influence of heuristics
-            (:math:`{\beta}`) for the choice of an arc. If set to
-            :py:data:`None`,
+        :type pheromones_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param heuristics_influence: Relative influence of heuristics
+            (:math:`{\beta}`). Sequences must have only 1 value. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used. Defaults to :py:data:`None`
-        :type heuristic_influence: :py:class:`float`, optional
+        :type heuristics_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
@@ -538,15 +356,13 @@ class ElitistAntSystem(AntSystem, ElitistACO):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclass
+        # Init the superclasses
         AntSystem.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
-            pheromone_influence=pheromone_influence,
-            heuristic_influence=heuristic_influence,
             pheromone_evaporation_rate=pheromone_evaporation_rate
         )
         ElitistACO.__init__(
@@ -556,6 +372,8 @@ class ElitistAntSystem(AntSystem, ElitistACO):
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
             heuristics=heuristics,
+            pheromones_influence=pheromones_influence,
+            heuristics_influence=heuristics_influence,
             convergence_check_freq=convergence_check_freq,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
@@ -602,7 +420,7 @@ class ElitistAntSystem(AntSystem, ElitistACO):
             )
         )
 
-        # Reset the algorithm
+        # Reset the trainer
         self.reset()
 
     def _increase_pheromones(self) -> None:
@@ -640,15 +458,15 @@ class MMAS(AntSystem, ElitistACO):
         heuristics: Optional[
             Sequence[Sequence[Sequence[float], ...], ...]
         ] = None,
-        pheromone_influence: Optional[float] = None,
-        heuristic_influence: Optional[float] = None,
+        pheromones_influence: Optional[Sequence[float, ...]] = None,
+        heuristics_influence: Optional[Sequence[float, ...]] = None,
         pheromone_evaporation_rate: Optional[float] = None,
         iter_best_use_limit: Optional[int] = None,
         convergence_check_freq: Optional[int] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleColACO],
+                [MMAS],
                 bool
             ]
         ] = None,
@@ -672,32 +490,26 @@ class MMAS(AntSystem, ElitistACO):
             function is taken into account.
         :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
         :param initial_pheromones: Initial amount of pheromone for the paths
-            of each pheromones matrix. Since the original Ant System algorithm
-            was proposed to solve single-objective problems, only one
-            pheromones matrix is used. Thus, only the first value in the
-            sequence is taken into account.
+            of the pheromones matrix. Sequences must have only 1 value
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
-        :param heuristics: Heuristics matrices. Since the original Ant System
-            algorithm was proposed to solve single-objective problems, only one
-            heuristics matrix is used. Thus, only the first value in the
-            sequence is taken into account. If omitted, the default heuristics
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
+        :param heuristics: Heuristics matrices. Sequences must have only one
+            value. If omitted, the default heuristics provided by
+            *fitness_function* are assumed. Defaults to :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
             two-dimensional array-like objects, optional
-        :param pheromone_influence: Relative influence of pheromones
-            (:math:`{\alpha}`) for the choice of an arc. If set to
-            :py:data:`None`,
+        :param pheromones_influence: Relative influence of pheromones
+            (:math:`{\alpha}`). Sequences must have only 1 value. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
             be used. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float`, optional
-        :param heuristic_influence: Relative influence of heuristics
-            (:math:`{\beta}`) for the choice of an arc. If set to
-            :py:data:`None`,
+        :type pheromones_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param heuristics_influence: Relative influence of heuristics
+            (:math:`{\beta}`). Sequences must have only 1 value. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used. Defaults to :py:data:`None`
-        :type heuristic_influence: :py:class:`float`, optional
+        :type heuristics_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
@@ -750,15 +562,13 @@ class MMAS(AntSystem, ElitistACO):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclasses
+        # Init the superclass
         AntSystem.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
-            pheromone_influence=pheromone_influence,
-            heuristic_influence=heuristic_influence,
             pheromone_evaporation_rate=pheromone_evaporation_rate
         )
         ElitistACO.__init__(
@@ -768,6 +578,8 @@ class MMAS(AntSystem, ElitistACO):
             fitness_function=fitness_function,
             initial_pheromones=initial_pheromones,
             heuristics=heuristics,
+            pheromones_influence=pheromones_influence,
+            heuristics_influence=heuristics_influence,
             convergence_check_freq=convergence_check_freq,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
@@ -955,7 +767,7 @@ class MMAS(AntSystem, ElitistACO):
         current_elite = self._elite[0]
 
         # If a better solution has been found
-        if last_elite is None or current_elite > last_elite:
+        if last_elite is None or current_elite.dominates(last_elite):
             self._max_pheromone = (
                 current_elite.fitness.pheromones_amount[0] /
                 self.pheromone_evaporation_rate)
@@ -1008,11 +820,76 @@ class MMAS(AntSystem, ElitistACO):
         )
 
 
+class AgeBasedPACO(PACO):
+    """Population-based ACO with an age-based population update stretegy."""
+
+    def _init_internals(self) -> None:
+        """Set up the trainer internal data structures to start searching.
+
+        Create all the internal objects, functions and data structures needed
+        to run the search process. For the
+        :py:class:`~culebra.aco.AgeBasedPACO` class, the youngest ant index is
+        created. Subclasses which need more objects or data structures should
+        override this method.
+        """
+        super()._init_internals()
+        self._youngest_index = None
+
+    def _reset_internals(self) -> None:
+        """Reset the internal structures of the trainer.
+
+        If subclasses overwrite the :py:class:`~culebra.aco.abc.SingleColACO`
+        method to add any new internal object, this method should also be
+        overridden to reset all the internal objects of the trainer.
+        """
+        super()._reset_internals()
+        self._youngest_index = None
+
+    def _update_pop(self) -> None:
+        """Update the population.
+
+        The population may be updated with the current iteration's colony,
+        depending on the updation criterion implemented. Ants entering and
+        leaving the population are placed, respectively, in the
+        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_ingoing` and
+        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_outgoing` lists, to be
+        taken into account in the pheromones updation process.
+        """
+        # Ingoing ants
+        self._pop_ingoing = ParetoFront()
+        self._pop_ingoing.update(self.col)
+
+        # Outgoing ants
+        self._pop_outgoing = []
+
+        # Remaining room in the population
+        remaining_room_in_pop = self.pop_size - len(self.pop)
+
+        # For all the ants in the ingoing list
+        for ant in self._pop_ingoing:
+            # If there is still room in the population, just append it
+            if remaining_room_in_pop > 0:
+                self._pop.append(ant)
+                remaining_room_in_pop -= 1
+
+                # If the population is full, start with ants replacement
+                if remaining_room_in_pop == 0:
+                    self._youngest_index = 0
+            # The eldest ant is replaced
+            else:
+                self._pop_outgoing.append(self.pop[self._youngest_index])
+                self.pop[self._youngest_index] = ant
+                self._youngest_index = (
+                    (self._youngest_index + 1) % self.pop_size
+                )
+
+
 # Exported symbols for this module
 __all__ = [
     'AntSystem',
     'ElitistAntSystem',
     'MMAS',
+    'AgeBasedPACO',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',

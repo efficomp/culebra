@@ -22,15 +22,12 @@
 """Unit test for :py:class:`culebra.trainer.aco.AntSystem`."""
 
 import unittest
-import math
 from itertools import repeat
 
 import numpy as np
 
 from culebra.trainer.aco import (
     AntSystem,
-    DEFAULT_PHEROMONE_INFLUENCE,
-    DEFAULT_HEURISTIC_INFLUENCE,
     DEFAULT_PHEROMONE_EVAPORATION_RATE
 )
 from culebra.solution.tsp import Species, Ant
@@ -51,76 +48,6 @@ class TrainerTester(unittest.TestCase):
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [1]
-
-        # Try invalid types for pheromone_influence. Should fail
-        invalid_pheromone_influence = (type, 'a')
-        for pheromone_influence in invalid_pheromone_influence:
-            with self.assertRaises(TypeError):
-                AntSystem(
-                    ant_cls,
-                    species,
-                    fitness_func,
-                    initial_pheromones,
-                    pheromone_influence=pheromone_influence
-                )
-
-        # Try invalid values for pheromone_influence. Should fail
-        invalid_pheromone_influence = -1
-        with self.assertRaises(ValueError):
-            AntSystem(
-                ant_cls,
-                species,
-                fitness_func,
-                initial_pheromones,
-                pheromone_influence=invalid_pheromone_influence
-            )
-
-        # Try a valid value for pheromone_influence
-        valid_pheromone_influence = (0, 0.5, 1, 2)
-        for pheromone_influence in valid_pheromone_influence:
-            trainer = AntSystem(
-                ant_cls,
-                species,
-                fitness_func,
-                initial_pheromones,
-                pheromone_influence=pheromone_influence
-            )
-            self.assertEqual(pheromone_influence, trainer.pheromone_influence)
-
-        # Try invalid types for heuristic_influence. Should fail
-        invalid_heuristic_influence = (type, 'a')
-        for heuristic_influence in invalid_heuristic_influence:
-            with self.assertRaises(TypeError):
-                AntSystem(
-                    ant_cls,
-                    species,
-                    fitness_func,
-                    initial_pheromones,
-                    heuristic_influence=heuristic_influence
-                )
-
-        # Try invalid values for heuristic_influence. Should fail
-        invalid_heuristic_influence = -1
-        with self.assertRaises(ValueError):
-            AntSystem(
-                ant_cls,
-                species,
-                fitness_func,
-                initial_pheromones,
-                heuristic_influence=invalid_heuristic_influence
-            )
-
-        # Try a valid value for heuristic_influence
-        valid_heuristic_influence = (0, 0.5, 1, 2)
-        for heuristic_influence in valid_heuristic_influence:
-            trainer = AntSystem(
-                ant_cls,
-                species,
-                fitness_func,
-                initial_pheromones,
-                heuristic_influence=heuristic_influence
-            )
-            self.assertEqual(heuristic_influence, trainer.heuristic_influence)
 
         # Try invalid types for pheromone_evaporation_rate. Should fail
         invalid_pheromone_evaporation_rate = (type, 'a')
@@ -169,103 +96,18 @@ class TrainerTester(unittest.TestCase):
             initial_pheromones
         )
         self.assertEqual(
-            trainer.pheromone_influence,
-            DEFAULT_PHEROMONE_INFLUENCE
-        )
-        self.assertEqual(
-            trainer.heuristic_influence,
-            DEFAULT_HEURISTIC_INFLUENCE
-        )
-        self.assertEqual(
             trainer.pheromone_evaporation_rate,
             DEFAULT_PHEROMONE_EVAPORATION_RATE
         )
 
-        # Test the initial_pheromones property
-        initial_pheromones = [1, 2, 3]
-        trainer.initial_pheromones = initial_pheromones
-        self.assertEqual(
-            trainer.initial_pheromones,
-            initial_pheromones[0:1]
-            )
-
-        # Test the heuristics property
-        heuristics = [
-            [
-                [1., 2.],
-                [3., 4.]
-            ],
-            [
-                [5., 6.],
-                [7., 8.]
-            ],
-        ]
-        trainer.heuristics = heuristics
-        self.assertEqual(len(trainer.heuristics), 1)
-        self.assertTrue(
-            np.all(trainer.heuristics[0] == np.asarray(heuristics[0]))
-        )
-
-    def test_calculate_choice_info(self):
-        """Test the _calculate_choice_info method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3,
-
-        }
-
-        # Create the trainer
-        trainer = AntSystem(**params)
-
-        # Try to get the choice info before the search initialization
-        choice_info = trainer.choice_info
-        self.assertEqual(choice_info, None)
-
-        # Try to get the choice_info after initializing the search
-        trainer._init_search()
-        trainer._start_iteration()
-        choice_info = trainer.choice_info
-
-        # Check the probabilities for banned nodes. Should be 0
-        for node in banned_nodes:
-            self.assertAlmostEqual(np.sum(choice_info[node]), 0)
-
-        for org in feasible_nodes:
-            for dest in feasible_nodes:
-                if org == dest:
-                    self.assertAlmostEqual(choice_info[org][dest], 0)
-                else:
-                    self.assertAlmostEqual(
-                        choice_info[org][dest],
-                        math.pow(
-                            trainer.pheromones[0][org][dest],
-                            trainer.pheromone_influence
-                        ) * math.pow(
-                            trainer.heuristics[0][org][dest],
-                            trainer.heuristic_influence
-                        )
-                    )
-
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
         params = {
             "solution_cls": Ant,
-            "species": species,
+            "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3,
-
+            "initial_pheromones": [2]
         }
 
         # Create the trainer
@@ -282,16 +124,12 @@ class TrainerTester(unittest.TestCase):
     def test_decrease_pheromones(self):
         """Test the _decrease_pheromones method."""
         # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        # Trainer parameters
         params = {
             "solution_cls": Ant,
-            "species": species,
+            "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3,
-
+            "initial_pheromones": [2]
         }
 
         # Create the trainer
@@ -320,15 +158,11 @@ class TrainerTester(unittest.TestCase):
     def test_increase_pheromones(self):
         """Test the _increase_pheromones method."""
         # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
         params = {
             "solution_cls": Ant,
-            "species": species,
+            "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3,
+            "initial_pheromones": [2],
             "col_size": 1
         }
 
@@ -375,10 +209,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3,
-            "col_size": 1
+            "initial_pheromones": initial_pheromones
         }
 
         # Create the trainer

@@ -59,8 +59,6 @@ params = {
     "species": species,
     "fitness_function": fitness_func,
     "initial_pheromones": initial_pheromones,
-    "pheromone_influence": 1,
-    "heuristic_influence": 3,
     "max_num_iters": 200,
     "checkpoint_enable": False
 }

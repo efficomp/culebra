@@ -35,6 +35,8 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.fitness_function
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.initial_pheromones
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.heuristics
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.pheromones_influence
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.heuristics_influence
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.pheromones
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.convergence_check_freq

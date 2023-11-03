@@ -28,6 +28,12 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
+DEFAULT_PHEROMONE_INFLUENCE = 1.0
+r"""Default pheromone influence (:math:`{\alpha}`)."""
+
+DEFAULT_HEURISTIC_INFLUENCE = 2.0
+r"""Default heuristic influence (:math:`{\beta}`)."""
+
 DEFAULT_CONVERGENCE_CHECK_FREQ = 100
 """Default frequency to check if an elitist ACO has converged."""
 

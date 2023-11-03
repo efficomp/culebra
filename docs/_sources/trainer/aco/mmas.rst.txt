@@ -39,8 +39,8 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.heuristics
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromones
 .. autoproperty:: culebra.trainer.aco.MMAS.choice_info
-.. autoproperty:: culebra.trainer.aco.MMAS.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.MMAS.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.MMAS.pheromones_influence
+.. autoproperty:: culebra.trainer.aco.MMAS.heuristics_influence
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.MMAS.convergence_check_freq
 .. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit

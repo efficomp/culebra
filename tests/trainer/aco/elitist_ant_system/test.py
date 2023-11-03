@@ -134,7 +134,7 @@ class TrainerTester(unittest.TestCase):
         """Test _new_state."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2, 3]
+        initial_pheromones = [2.5]
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -182,7 +182,7 @@ class TrainerTester(unittest.TestCase):
         """Test the best_solutions method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2, 3]
+        initial_pheromones = [3.7]
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -249,8 +249,6 @@ class TrainerTester(unittest.TestCase):
             "species": species,
             "fitness_function": fitness_func,
             "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3,
             "col_size": 1,
             "elite_weight": elite_weight
         }
@@ -299,9 +297,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3
+            "initial_pheromones": initial_pheromones
         }
 
         # Create the trainer
@@ -327,9 +323,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromone_influence": 2,
-            "heuristic_influence": 3
+            "initial_pheromones": initial_pheromones
         }
 
         # Create the trainer

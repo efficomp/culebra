@@ -26,11 +26,6 @@
 Attributes
 ----------
 
-.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
-    :annotation: = 100
-
-    Default frequency to check if an elitist ACO has converged.
-
 .. attribute:: DEFAULT_PHEROMONE_INFLUENCE
     :annotation: = 1.0
 
@@ -40,6 +35,11 @@ Attributes
     :annotation: = 2.0
 
     Default heuristic influence (:math:`{\beta}`).
+
+.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
+    :annotation: = 100
+
+    Default frequency to check if an elitist ACO has converged.
 
 .. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
     :annotation: = 0.1
@@ -62,9 +62,9 @@ Attributes
 
 
 ..
-    .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
+    .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
     .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
