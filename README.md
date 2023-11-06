@@ -29,7 +29,7 @@ The `examples` subfolder contains several examples that show the basic usage of 
 
 ## Funding
 
-This work was supported by project *New Computing Paradigms and Heterogeneous Parallel Architectures for High-Performance and Energy Efficiency of Classification and Optimization Tasks on Biomedical Engineering Applications* ([HPEE-COBE](https://efficomp.ugr.es/research/projects/hpee-cobe/)), with reference PGC2018-098813-B-C31, funded by the Spanish [*Ministerio de Ciencia, Innovación y Universidades*](https://www.ciencia.gob.es/), and by the [European Regional Development Fund (ERDF)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
+This work is supported by projects *New Computing Paradigms and Heterogeneous Parallel Architectures for High-Performance and Energy Efficiency of Classification and Optimization Tasks on Biomedical Engineering Applications* ([HPEE-COBE](https://efficomp.ugr.es/research/projects/hpee-cobe/)), with reference PGC2018-098813-B-C31, and *Advanced Methods of Biomedical Data Analysis and Brain Modeling Optimized for High-Performance and Energy-Efficient Computing* ([HPEEC-BIOBRAIN](https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/)), with reference PID2022-137461NB-C31, both funded by the Spanish [*Ministerio de Ciencia, Innovación y Universidades*](https://www.ciencia.gob.es/), and by the [European Regional Development Fund (ERDF)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
 
 <div style="text-align: right">
   <a href="https://www.ciencia.gob.es/">
