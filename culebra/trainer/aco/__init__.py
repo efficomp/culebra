@@ -23,7 +23,7 @@ This module is composed by:
   * The :py:mod:`~culebra.trainer.aco.abc` sub-module, where some abstract base
     classes are defined to support the ACO trainers developed in this module
 
-  * Some popular single-colony ACO algorithms:
+  * Some popular single-objective ACO algorithms:
 
       * The :py:class:`~culebra.trainer.aco.AntSystem` class, which implements
         the Ant System algorithm
@@ -32,6 +32,11 @@ This module is composed by:
       * The :py:class:`~culebra.trainer.aco.MMAS` class, which
         implements the :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant
         System algorithm
+      * The :py:class:`~culebra.trainer.aco.SingleObjAgeBasedPACO` class, which
+        implements a PACO approach with an age-based population update strategy
+      * The :py:class:`~culebra.trainer.aco.SingleObjQualityBasedPACO` class,
+        which implements a PACO approach with a quality-based population
+        update strategy
 """
 
 from .constants import (
@@ -46,7 +51,8 @@ from .single_col_aco import (
     AntSystem,
     ElitistAntSystem,
     MMAS,
-    AgeBasedPACO,
+    SingleObjAgeBasedPACO,
+    SingleObjQualityBasedPACO,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
     DEFAULT_ELITE_WEIGHT,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT
@@ -68,7 +74,8 @@ __all__ = [
     'AntSystem',
     'ElitistAntSystem',
     'MMAS',
-    'AgeBasedPACO',
+    'SingleObjAgeBasedPACO',
+    'SingleObjQualityBasedPACO',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',

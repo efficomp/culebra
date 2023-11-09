@@ -29,10 +29,11 @@ from typing import (
     Any
 )
 from math import ceil
+import bisect
 
 import numpy as np
 
-from deap.tools import ParetoFront
+from deap.tools import ParetoFront, selBest
 
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import check_float, check_int
@@ -41,7 +42,12 @@ from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE
 )
-from culebra.trainer.aco.abc import SingleObjACO, ElitistACO, PACO
+from culebra.trainer.aco.abc import (
+    SingleObjACO,
+    ElitistACO,
+    AgeBasedPACO,
+    QualityBasedPACO
+)
 
 
 __author__ = 'Jesús González & Alberto Ortega'
@@ -112,7 +118,7 @@ class AntSystem(SingleObjACO):
             of the pheromones matrix. Sequences must have only 1 value
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
-        :param heuristics: Heuristics matrices. Sequences must have only one
+        :param heuristics: Heuristics matrices. Sequences must have only 1
             value. If omitted, the default heuristics provided by
             *fitness_function* are assumed. Defaults to :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
@@ -288,7 +294,7 @@ class ElitistAntSystem(AntSystem, ElitistACO):
             of the pheromones matrix. Sequences must have only 1 value
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
-        :param heuristics: Heuristics matrices. Sequences must have only one
+        :param heuristics: Heuristics matrices. Sequences must have only 1
             value. If omitted, the default heuristics provided by
             *fitness_function* are assumed. Defaults to :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
@@ -493,7 +499,7 @@ class MMAS(AntSystem, ElitistACO):
             of the pheromones matrix. Sequences must have only 1 value
         :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
             :py:class:`float`
-        :param heuristics: Heuristics matrices. Sequences must have only one
+        :param heuristics: Heuristics matrices. Sequences must have only 1
             value. If omitted, the default heuristics provided by
             *fitness_function* are assumed. Defaults to :py:data:`None`
         :type heuristics: :py:class:`~collections.abc.Sequence` of
@@ -820,68 +826,312 @@ class MMAS(AntSystem, ElitistACO):
         )
 
 
-class AgeBasedPACO(PACO):
-    """Population-based ACO with an age-based population update stretegy."""
+class SingleObjAgeBasedPACO(SingleObjACO, AgeBasedPACO):
+    """Single-objective PACO with an age-based population update strategy."""
 
-    def _init_internals(self) -> None:
-        """Set up the trainer internal data structures to start searching.
+    def __init__(
+        self,
+        solution_cls: Type[Ant],
+        species: Species,
+        fitness_function: FitnessFunction,
+        initial_pheromones: Sequence[float, ...],
+        max_pheromones: Sequence[float, ...],
+        heuristics: Optional[
+            Sequence[Sequence[Sequence[float], ...], ...]
+        ] = None,
+        pheromones_influence: Optional[Sequence[float, ...]] = None,
+        heuristics_influence: Optional[Sequence[float, ...]] = None,
+        max_num_iters: Optional[int] = None,
+        custom_termination_func: Optional[
+            Callable[
+                [AgeBasedPACO],
+                bool
+            ]
+        ] = None,
+        col_size: Optional[int] = None,
+        pop_size: Optional[int] = None,
+        checkpoint_enable: Optional[bool] = None,
+        checkpoint_freq: Optional[int] = None,
+        checkpoint_filename: Optional[str] = None,
+        verbose: Optional[bool] = None,
+        random_seed: Optional[int] = None
+    ) -> None:
+        r"""Create a new single-colony ACO trainer.
 
-        Create all the internal objects, functions and data structures needed
-        to run the search process. For the
-        :py:class:`~culebra.aco.AgeBasedPACO` class, the youngest ant index is
-        created. Subclasses which need more objects or data structures should
-        override this method.
+        :param solution_cls: The ant class
+        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
+            subclass
+        :param species: The species for all the ants
+        :type species: :py:class:`~culebra.abc.Species`
+        :param fitness_function: The training fitness function
+        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :param initial_pheromones: Initial amount of pheromone for the paths
+            of the pheromones matrix. Sequences must have only 1 value
+        :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param max_pheromones: Maximum amount of pheromone for the paths
+            of each pheromones matrix. Sequences must have only 1 value
+        :type max_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param heuristics: Heuristics matrices. Sequences must have only 1
+            value. If omitted, the default heuristics provided by
+            *fitness_function* are assumed. Defaults to :py:data:`None`
+        :type heuristics: :py:class:`~collections.abc.Sequence` of
+            two-dimensional array-like objects, optional
+        :param pheromones_influence: Relative influence of pheromones
+            (:math:`{\alpha}`). Sequences must have only 1 value. If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
+            be used. Defaults to :py:data:`None`
+        :type pheromones_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param heuristics_influence: Relative influence of heuristics
+            (:math:`{\beta}`). Sequences must have only 1 value. If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
+            be used. Defaults to :py:data:`None`
+        :type heuristics_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param max_num_iters: Maximum number of iterations. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :py:data:`None`
+        :type max_num_iters: :py:class:`int`, optional
+        :param custom_termination_func: Custom termination criterion. If set to
+            :py:data:`None`, the default termination criterion is used.
+            Defaults to :py:data:`None`
+        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
+            optional
+        :param col_size: The colony size. If set to :py:data:`None`,
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
+            will be used. Defaults to :py:data:`None`
+        :type col_size: :py:class:`int`, greater than zero, optional
+        :param pop_size: The population size. If set to :py:data:`None`,
+            *col_size* will be used. Defaults to :py:data:`None`
+        :type pop_size: :py:class:`int`, greater than zero, optional
+        :param checkpoint_enable: Enable/disable checkpoining. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_enable: :py:class:`bool`, optional
+        :param checkpoint_freq: The checkpoint frequency. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_freq: :py:class:`int`, optional
+        :param checkpoint_filename: The checkpoint file path. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :py:data:`None`
+        :type checkpoint_filename: :py:class:`str`, optional
+        :param verbose: The verbosity. If set to
+            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
+            :py:data:`None`
+        :type verbose: :py:class:`bool`, optional
+        :param random_seed: The seed, defaults to :py:data:`None`
+        :type random_seed: :py:class:`int`, optional
+        :raises TypeError: If any argument is not of the appropriate type
+        :raises ValueError: If any argument has an incorrect value
         """
-        super()._init_internals()
-        self._youngest_index = None
+        # Init the superclasses
+        SingleObjACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones
+        )
 
-    def _reset_internals(self) -> None:
-        """Reset the internal structures of the trainer.
+        AgeBasedPACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones,
+            max_pheromones=max_pheromones,
+            heuristics=heuristics,
+            pheromones_influence=pheromones_influence,
+            heuristics_influence=heuristics_influence,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            col_size=col_size,
+            pop_size=pop_size,
+            checkpoint_enable=checkpoint_enable,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_filename=checkpoint_filename,
+            verbose=verbose,
+            random_seed=random_seed
+        )
 
-        If subclasses overwrite the :py:class:`~culebra.aco.abc.SingleColACO`
-        method to add any new internal object, this method should also be
-        overridden to reset all the internal objects of the trainer.
+
+class SingleObjQualityBasedPACO(SingleObjACO, QualityBasedPACO):
+    """Single-objective PACO with a quality-based population update strategy."""
+
+    def __init__(
+        self,
+        solution_cls: Type[Ant],
+        species: Species,
+        fitness_function: FitnessFunction,
+        initial_pheromones: Sequence[float, ...],
+        max_pheromones: Sequence[float, ...],
+        heuristics: Optional[
+            Sequence[Sequence[Sequence[float], ...], ...]
+        ] = None,
+        pheromones_influence: Optional[Sequence[float, ...]] = None,
+        heuristics_influence: Optional[Sequence[float, ...]] = None,
+        max_num_iters: Optional[int] = None,
+        custom_termination_func: Optional[
+            Callable[
+                [AgeBasedPACO],
+                bool
+            ]
+        ] = None,
+        col_size: Optional[int] = None,
+        pop_size: Optional[int] = None,
+        checkpoint_enable: Optional[bool] = None,
+        checkpoint_freq: Optional[int] = None,
+        checkpoint_filename: Optional[str] = None,
+        verbose: Optional[bool] = None,
+        random_seed: Optional[int] = None
+    ) -> None:
+        r"""Create a new single-colony ACO trainer.
+
+        :param solution_cls: The ant class
+        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
+            subclass
+        :param species: The species for all the ants
+        :type species: :py:class:`~culebra.abc.Species`
+        :param fitness_function: The training fitness function
+        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :param initial_pheromones: Initial amount of pheromone for the paths
+            of the pheromones matrix. Sequences must have only 1 value
+        :type initial_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param max_pheromones: Maximum amount of pheromone for the paths
+            of each pheromones matrix. Sequences must have only 1 value
+        :type max_pheromones: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`
+        :param heuristics: Heuristics matrices. Sequences must have only 1
+            value. If omitted, the default heuristics provided by
+            *fitness_function* are assumed. Defaults to :py:data:`None`
+        :type heuristics: :py:class:`~collections.abc.Sequence` of
+            two-dimensional array-like objects, optional
+        :param pheromones_influence: Relative influence of pheromones
+            (:math:`{\alpha}`). Sequences must have only 1 value. If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
+            be used. Defaults to :py:data:`None`
+        :type pheromones_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param heuristics_influence: Relative influence of heuristics
+            (:math:`{\beta}`). Sequences must have only 1 value. If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
+            be used. Defaults to :py:data:`None`
+        :type heuristics_influence: :py:class:`~collections.abc.Sequence` of
+            :py:class:`float`, optional
+        :param max_num_iters: Maximum number of iterations. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :py:data:`None`
+        :type max_num_iters: :py:class:`int`, optional
+        :param custom_termination_func: Custom termination criterion. If set to
+            :py:data:`None`, the default termination criterion is used.
+            Defaults to :py:data:`None`
+        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
+            optional
+        :param col_size: The colony size. If set to :py:data:`None`,
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
+            will be used. Defaults to :py:data:`None`
+        :type col_size: :py:class:`int`, greater than zero, optional
+        :param pop_size: The population size. If set to :py:data:`None`,
+            *col_size* will be used. Defaults to :py:data:`None`
+        :type pop_size: :py:class:`int`, greater than zero, optional
+        :param checkpoint_enable: Enable/disable checkpoining. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_enable: :py:class:`bool`, optional
+        :param checkpoint_freq: The checkpoint frequency. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_freq: :py:class:`int`, optional
+        :param checkpoint_filename: The checkpoint file path. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :py:data:`None`
+        :type checkpoint_filename: :py:class:`str`, optional
+        :param verbose: The verbosity. If set to
+            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
+            :py:data:`None`
+        :type verbose: :py:class:`bool`, optional
+        :param random_seed: The seed, defaults to :py:data:`None`
+        :type random_seed: :py:class:`int`, optional
+        :raises TypeError: If any argument is not of the appropriate type
+        :raises ValueError: If any argument has an incorrect value
         """
-        super()._reset_internals()
-        self._youngest_index = None
+        # Init the superclasses
+        SingleObjACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones
+        )
+
+        QualityBasedPACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones,
+            max_pheromones=max_pheromones,
+            heuristics=heuristics,
+            pheromones_influence=pheromones_influence,
+            heuristics_influence=heuristics_influence,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            col_size=col_size,
+            pop_size=pop_size,
+            checkpoint_enable=checkpoint_enable,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_filename=checkpoint_filename,
+            verbose=verbose,
+            random_seed=random_seed
+        )
 
     def _update_pop(self) -> None:
         """Update the population.
 
-        The population may be updated with the current iteration's colony,
-        depending on the updation criterion implemented. Ants entering and
-        leaving the population are placed, respectively, in the
-        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_ingoing` and
-        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_outgoing` lists, to be
-        taken into account in the pheromones updation process.
-        """
-        # Ingoing ants
-        self._pop_ingoing = ParetoFront()
-        self._pop_ingoing.update(self.col)
+        The population now keeps the best ants found ever. The best ant in the
+        current colony will enter the population (and also the *_pop_ingoing*
+        list) only if is better than the worst ant in the population, which
+        will be put in the *_pop_outgoing* list).
 
-        # Outgoing ants
+        These lists will be used later within
+        the
+        :py:meth:`~culebra.trainer.aco.SingleObjQualityBasedPACO._increase_pheromones`
+        and
+        :py:meth:`~culebra.trainer.aco.SingleObjQualityBasedPACO._decrease_pheromones`
+        methods, respectively.
+        """
+        # Best ant in current colony
+        [best_in_col] = selBest(self.col, 1)
+        self._pop_ingoing = []
         self._pop_outgoing = []
 
-        # Remaining room in the population
-        remaining_room_in_pop = self.pop_size - len(self.pop)
+        # If the best ant in the current colony
+        # is better than the worst ant in the population
+        if (
+            len(self.pop) < self.pop_size or
+            best_in_col.fitness > self.pop[-1].fitness
+        ):
+            # The best ant in the current colony will enter the population
+            self._pop_ingoing.append(best_in_col)
 
-        # For all the ants in the ingoing list
-        for ant in self._pop_ingoing:
-            # If there is still room in the population, just append it
-            if remaining_room_in_pop > 0:
-                self._pop.append(ant)
-                remaining_room_in_pop -= 1
+            # If there isn't room in the population,
+            # the worst ant in the population must go out
+            if len(self.pop) == self.pop_size:
+                self._pop_outgoing.append(self.pop[-1])
+                self.pop.pop()
 
-                # If the population is full, start with ants replacement
-                if remaining_room_in_pop == 0:
-                    self._youngest_index = 0
-            # The eldest ant is replaced
-            else:
-                self._pop_outgoing.append(self.pop[self._youngest_index])
-                self.pop[self._youngest_index] = ant
-                self._youngest_index = (
-                    (self._youngest_index + 1) % self.pop_size
-                )
+            # Insert the best ant keeping the population sorted
+            bisect.insort(
+                self.pop,
+                best_in_col,
+                key=lambda x: x.fitness.wvalues[0] * -1
+            )
 
 
 # Exported symbols for this module
@@ -889,7 +1139,8 @@ __all__ = [
     'AntSystem',
     'ElitistAntSystem',
     'MMAS',
-    'AgeBasedPACO',
+    'SingleObjAgeBasedPACO',
+    'SingleObjQualityBasedPACO',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',

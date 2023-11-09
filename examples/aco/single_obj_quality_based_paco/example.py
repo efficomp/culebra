@@ -19,16 +19,13 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Usage example of the MMAS algorithm."""
+"""Usage example of the quality-based PACO trainer."""
 
 import numpy as np
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
-from culebra.trainer.aco import (
-    MMAS,
-    DEFAULT_PHEROMONE_EVAPORATION_RATE
-)
+from culebra.trainer.aco import SingleObjQualityBasedPACO
 from culebra.fitness_function.tsp import PathLength
 
 
@@ -52,7 +49,11 @@ fitness_func = PathLength(distances)
 greedy_solution = fitness_func.greedy_solution(species)
 
 initial_pheromones = tuple(
-    pher / DEFAULT_PHEROMONE_EVAPORATION_RATE
+    1 / num_nodes
+    for pher in greedy_solution.fitness.pheromones_amount
+)
+max_pheromones = tuple(
+    5
     for pher in greedy_solution.fitness.pheromones_amount
 )
 
@@ -62,12 +63,15 @@ params = {
     "species": species,
     "fitness_function": fitness_func,
     "initial_pheromones": initial_pheromones,
-    "max_num_iters": 500,
+    "max_pheromones": max_pheromones,
+    "col_size": 15,
+    "pop_size": 15,
+    "max_num_iters": 200,
     "checkpoint_enable": False
 }
 
 # Create the wrapper
-trainer = MMAS(**params)
+trainer = SingleObjQualityBasedPACO(**params)
 
 # Train the wrapper
 print("Training ...")

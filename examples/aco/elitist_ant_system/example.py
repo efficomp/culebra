@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Usage example of the ant system algorithm."""
+"""Usage example of the elitist ant system algorithm."""
 
 import numpy as np
 from pandas import Series, DataFrame

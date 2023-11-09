@@ -78,3 +78,5 @@ Attributes
     AntSystem <aco/ant_system>
     ElitistAntSystem <aco/elitist_ant_system>
     MMAS <aco/mmas>
+    SingleObjAgeBasedPACO <aco/single_obj_age_based_paco>
+    SingleObjQualityBasedPACO <aco/single_obj_quality_based_paco>

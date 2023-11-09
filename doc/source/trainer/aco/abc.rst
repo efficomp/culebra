@@ -30,3 +30,6 @@
     SingleColACO <abc/single_col_aco>
     SingleObjACO <abc/single_obj_aco>
     ElitistACO <abc/elitist_aco>
+    PACO <abc/paco>
+    AgeBasedPACO <abc/age_based_paco>
+    QualityBasedPACO <abc/quality_based_paco>

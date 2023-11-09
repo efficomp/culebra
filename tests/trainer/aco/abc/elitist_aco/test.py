@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.abc.ElitistACO`."""
+"""Unit test for :py:class:`culebra.trainer.aco.abc.ElitistACO`."""
 
 import unittest
 
@@ -77,7 +77,7 @@ feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.abc.SingleColACO`."""
+    """Test :py:class:`culebra.trainer.aco.abc.ElitistACO`."""
 
     def test_init(self):
         """Test __init__`."""

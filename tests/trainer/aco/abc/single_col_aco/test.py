@@ -19,7 +19,7 @@
 # de Ciencia, Innovación y Universidades"), and by the European Regional
 # Development Fund (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.abc.SingleColACO`."""
+"""Unit test for :py:class:`culebra.trainer.aco.abc.SingleColACO`."""
 
 import unittest
 from itertools import repeat
@@ -80,7 +80,7 @@ feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.abc.SingleColACO`."""
+    """Test :py:class:`culebra.trainer.aco.abc.SingleColACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -794,7 +794,7 @@ class TrainerTester(unittest.TestCase):
                 np.all(trainer.pheromones[pher_index] == init_pher_val)
             )
 
-        # Try with an empty elite
+        # Try with the current colony
         # Only the iteration-best ant should deposit pheromones
         trainer._generate_col()
         weight = 3

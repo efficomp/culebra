@@ -29,7 +29,14 @@ By the moment:
     the single objective ACO-based trainers
   * :py:class:`~culebra.trainer.aco.abc.ElitistACO`: A base class for all
     the elitist single colony ACO-based trainers
-
+  * :py:class:`~culebra.trainer.aco.abc.PACO`: A base class for all
+    the population-based single colony ACO-based trainers
+  * :py:class:`~culebra.trainer.aco.abc.AgeBasedPACO`: A base class for all
+    the population-based single colony ACO-based trainers with an age-based
+    population update strategy
+  * :py:class:`~culebra.trainer.aco.abc.QualityBasedPACO`: A base class for all
+    the population-based single colony ACO-based trainers with a quality-based
+    population update strategy
 """
 
 from __future__ import annotations
@@ -45,10 +52,11 @@ from typing import (
     Optional
 )
 from functools import partial
+from random import randrange, sample
 
 import numpy as np
 
-from deap.tools import HallOfFame, ParetoFront
+from deap.tools import HallOfFame, ParetoFront, sortNondominated
 
 
 from culebra.abc import Species, FitnessFunction
@@ -652,7 +660,9 @@ class SingleColACO(SingleSpeciesTrainer):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        If subclasses overwrite the :py:class:`~culebra.aco.abc.SingleColACO`
+        Overridden to reset the colony, the choice_info matrix and the node
+        list. If subclasses overwrite the
+        :py:meth:`~culebra.aco.abc.SingleColACO._init_internals`
         method to add any new internal object, this method should also be
         overridden to reset all the internal objects of the trainer.
         """
@@ -796,7 +806,7 @@ class SingleColACO(SingleSpeciesTrainer):
         :type ants: :py:class:`~collections.abc.Sequence` of
             :py:class:`~culebra.solution.abc.Ant`
         :param weight: Weight for the pheromones. Defaults to 1
-        :type ant: :py:class:`float`, optional
+        :type weight: :py:class:`float`, optional
         """
         for ant in ants:
             for pher_index, pher_amount in enumerate(
@@ -960,7 +970,7 @@ class ElitistACO(SingleColACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleColACO],
+                [ElitistACO],
                 bool
             ]
         ] = None,
@@ -1224,6 +1234,7 @@ class ElitistACO(SingleColACO):
 
         # Reset pheromones if convergence is reached
         if (
+            self._current_iter > 0 and
             self._current_iter % self.convergence_check_freq == 0 and
             self._has_converged()
         ):
@@ -1248,7 +1259,7 @@ class PACO(SingleColACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleColACO],
+                [PACO],
                 bool
             ]
         ] = None,
@@ -1417,11 +1428,7 @@ class PACO(SingleColACO):
         )
 
         # Check the length
-        max_pher_len = len(self._max_pheromones)
-        if (
-            max_pher_len != 1 and
-            max_pher_len != self.fitness_function.num_obj
-        ):
+        if len(self._max_pheromones) != len(self.initial_pheromones):
             raise ValueError("Incorrect number of maximum pheromones")
 
         # Check that each max value is not lower than its corresponding
@@ -1516,7 +1523,7 @@ class PACO(SingleColACO):
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        Overridden to initialize the elite.
+        Overridden to initialize the population.
         """
         super()._new_state()
 
@@ -1526,7 +1533,7 @@ class PACO(SingleColACO):
     def _reset_state(self) -> None:
         """Reset the trainer state.
 
-        Overridden to reset the elite.
+        Overridden to reset the population.
         """
         super()._reset_state()
         self._pop = None
@@ -1536,9 +1543,10 @@ class PACO(SingleColACO):
 
         Create all the internal objects, functions and data structures needed
         to run the search process. For the
-        :py:class:`~culebra.aco.abc.PACO` class, the ingoing and outgoing
-        lists of ants for the population are created. Subclasses which need
-        more objects or data structures should override this method.
+        :py:class:`~culebra.trainer.aco.abc.PACO` class, the *_pop_ingoing* and
+        *_pop_outgoing* lists of ants for the population are created.
+        Subclasses which need more objects or data structures should override
+        this method.
         """
         super()._init_internals()
         self._pop_ingoing = []
@@ -1547,7 +1555,9 @@ class PACO(SingleColACO):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        If subclasses overwrite the :py:class:`~culebra.aco.abc.SingleColACO`
+        Overridden to reset the *_pop_ingoing* and *_pop_outgoing* lists of
+        ants for the population. If subclasses overwrite the
+        :py:meth:`~culebra.trainer.aco.abc.PACO._init_internals`
         method to add any new internal object, this method should also be
         overridden to reset all the internal objects of the trainer.
         """
@@ -1576,9 +1586,8 @@ class PACO(SingleColACO):
         The population may be updated with the current iteration's colony,
         depending on the updation criterion implemented. Ants entering and
         leaving the population are placed, respectively, in the
-        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_ingoing` and
-        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_outgoing` lists, to be
-        taken into account in the pheromones updation process.
+        *_pop_ingoing* and *_pop_outgoing* lists, to be taken into account in
+        the pheromones updation process.
 
         This method should be overridden by subclasses.
         """
@@ -1611,7 +1620,7 @@ class PACO(SingleColACO):
             :py:class:`~culebra.solution.abc.Ant`
         :param weight: Weight for the pheromones. Negative weights remove
             pheromones. Defaults to 1
-        :type ant: :py:class:`float`, optional
+        :type weight: :py:class:`float`, optional
         """
         for ant in ants:
             for pher_index, (init_pher, max_pher) in enumerate(
@@ -1629,21 +1638,153 @@ class PACO(SingleColACO):
     def _increase_pheromones(self) -> None:
         """Increase the amount of pheromones.
 
-        All the ants in the
-        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_ingoing` list increment
-        pheromones on their paths.
+        All the ants in the *_pop_ingoing* list increment pheromones on their
+        paths.
         """
         self._deposit_pheromones(self._pop_ingoing)
 
     def _decrease_pheromones(self) -> None:
         """Decrease the amount of pheromones.
 
-        All the ants in the
-        :py:attr:`~culebra.trainer.aco.abc.PACO._pop_outgoing` list decrement
-        pheromones on their paths.
+        All the ants in the *_pop_outgoing* list decrement pheromones on their
+        paths.
         """
         # Use a negative weight to remove pheromones
         self._deposit_pheromones(self._pop_outgoing, weight=-1)
+
+
+class AgeBasedPACO(PACO):
+    """Base class for PACO with an age-based population update strategy."""
+
+    def _init_internals(self) -> None:
+        """Set up the trainer internal data structures to start searching.
+
+        Create all the internal objects, functions and data structures needed
+        to run the search process. For the
+        :py:class:`~culebra.trainer.aco.abc.AgeBasedPACO` class, the youngest
+        ant index is created. Subclasses which need more objects or data
+        structures should override this method.
+        """
+        super()._init_internals()
+        self._youngest_index = None
+
+    def _reset_internals(self) -> None:
+        """Reset the internal structures of the trainer.
+
+        Overridden to reset the youngest ant index. If subclasses overwrite the
+        :py:meth:`~culebra.trainer.aco.abc.AgeBasedPACO._init_internals`
+        method to add any new internal object, this method should also be
+        overridden to reset all the internal objects of the trainer.
+        """
+        super()._reset_internals()
+        self._youngest_index = None
+
+    def _update_pop(self) -> None:
+        """Update the population.
+
+        The population is updated with the current iteration's colony. The best
+        ants in the current colony, which are put in the *_pop_ingoing* list,
+        will replace the eldest ants in the population, put in the
+        *_pop_outgoing* list.
+
+        These lists will be used later within the
+        :py:meth:`~culebra.trainer.aco.abc.AgeBasedPACO._increase_pheromones`
+        and
+        :py:meth:`~culebra.trainer.aco.abc.AgeBasedPACO._decrease_pheromones`
+        methods, respectively.
+        """
+        # Ingoing ants
+        self._pop_ingoing = ParetoFront()
+        self._pop_ingoing.update(self.col)
+
+        # Outgoing ants
+        self._pop_outgoing = []
+
+        # Remaining room in the population
+        remaining_room_in_pop = self.pop_size - len(self.pop)
+
+        # For all the ants in the ingoing list
+        for ant in self._pop_ingoing:
+            # If there is still room in the population, just append it
+            if remaining_room_in_pop > 0:
+                self._pop.append(ant)
+                remaining_room_in_pop -= 1
+
+                # If the population is full, start with ants replacement
+                if remaining_room_in_pop == 0:
+                    self._youngest_index = 0
+            # The eldest ant is replaced
+            else:
+                self._pop_outgoing.append(self.pop[self._youngest_index])
+                self.pop[self._youngest_index] = ant
+                self._youngest_index = (
+                    (self._youngest_index + 1) % self.pop_size
+                )
+
+
+class QualityBasedPACO(PACO):
+    """Base class for PACO with a quality-based population update strategy."""
+
+    def _update_pop(self) -> None:
+        """Update the population.
+
+        The population now keeps the best ants found ever (non-dominated ants).
+        The best ants in the current colony may enter the population (and also
+        the *_pop_ingoing* list) and may also replace any ant (which will be
+        appended to the *_pop_outgoing* list).
+
+        Besides, if the number of non-dominated ants exceeds the population
+        size, some ants will be randomly removed (and appended to the
+        *_pop_outgoing* list).
+
+        The *_pop_ingoing* and *_pop_outgoing* lists will be used later within
+        the
+        :py:meth:`~culebra.trainer.aco.abc.QualityBasedPACO._increase_pheromones`
+        and
+        :py:meth:`~culebra.trainer.aco.abc.QualityBasedPACO._decrease_pheromones`
+        methods, respectively.
+        """
+        # Best ants in current colony
+        best_in_col = ParetoFront()
+        best_in_col.update(self.col)
+
+        # Split the best ants into nondominated fronts
+        nondominated_fronts = sortNondominated(
+            self.pop + list(best_in_col),
+            len(self.pop) + len(best_in_col)
+        )
+
+        # Keep the best ants for the next population
+        new_pop = []
+        remaining_room_in_pop = self.pop_size
+        for front in nondominated_fronts:
+            if len(front) <= remaining_room_in_pop:
+                new_pop.extend(front)
+                remaining_room_in_pop -= len(front)
+            else:
+                new_pop.extend(sample(front, remaining_room_in_pop))
+
+        # Obtain the ingoing ants
+        self._pop_ingoing = []
+        for col_best_ant in best_in_col:
+            for new_pop_ant in new_pop:
+                if id(col_best_ant) == id(new_pop_ant):
+                    self._pop_ingoing.append(col_best_ant)
+                    break
+
+        # Obtain the outgoing ants
+        self._pop_outgoing = []
+        for old_pop_ant in self.pop:
+            remains = False
+            for new_pop_ant in new_pop:
+                if id(old_pop_ant) == id(new_pop_ant):
+                    remains = True
+                    break
+            if not remains:
+                self._pop_outgoing.append(old_pop_ant)
+
+        # Update the population
+        self._pop = new_pop
 
 
 # Exported symbols for this module
@@ -1651,5 +1792,7 @@ __all__ = [
     'SingleColACO',
     'SingleObjACO',
     'ElitistACO',
-    'PACO'
+    'PACO',
+    'AgeBasedPACO',
+    'QualityBasedPACO'
 ]
