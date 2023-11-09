@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # Culebra. If not, see <http://www.gnu.org/licenses/>.
 #
-# This work was supported by project PGC2018-098813-B-C31 (Spanish "Ministerio
-# de Ciencia, Innovación y Universidades"), and by the European Regional
-# Development Fund (ERDF).
+# This work is supported by projects PGC2018-098813-B-C31 and
+# PID2022-137461NB-C31, both funded by the Spanish "Ministerio de Ciencia,
+# Innovación y Universidades" and by the European Regional Development Fund
+# (ERDF).
 
 """Unit test for :py:class:`culebra.trainer.aco.AntSystem`."""
 

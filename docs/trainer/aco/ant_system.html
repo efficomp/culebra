@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="culebra.trainer.aco.ElitistAntSystem class" href="elitist_ant_system.html" />
-    <link rel="prev" title="culebra.trainer.aco.abc.ElitistACO class" href="abc/elitist_aco.html" /> 
+    <link rel="prev" title="culebra.trainer.aco.abc.QualityBasedPACO class" href="abc/quality_based_paco.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,7 +30,7 @@
           <a href="elitist_ant_system.html" title="culebra.trainer.aco.ElitistAntSystem class"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="abc/elitist_aco.html" title="culebra.trainer.aco.abc.ElitistACO class"
+          <a href="abc/quality_based_paco.html" title="culebra.trainer.aco.abc.QualityBasedPACO class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
@@ -63,7 +63,7 @@ function is taken into account.</p></li>
 <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Initial amount of pheromone for the paths
 of the pheromones matrix. Sequences must have only 1 value</p></li>
 <li><p><strong>heuristics</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
-two-dimensional array-like objects, optional) – Heuristics matrices. Sequences must have only one
+two-dimensional array-like objects, optional) – Heuristics matrices. Sequences must have only 1
 value. If omitted, the default heuristics provided by
 <em>fitness_function</em> are assumed. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>pheromones_influence</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
@@ -897,7 +897,9 @@ need more objects or data structures should override this method.</p>
 <dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem._reset_internals">
 <span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">_reset_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem._reset_internals" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the internal structures of the trainer.</p>
-<p>If subclasses overwrite the <code class="xref py py-class docutils literal notranslate"><span class="pre">SingleColACO</span></code>
+<p>Overridden to reset the colony, the choice_info matrix and the node
+list. If subclasses overwrite the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_init_internals()</span></code>
 method to add any new internal object, this method should also be
 overridden to reset all the internal objects of the trainer.</p>
 </dd></dl>
@@ -1110,7 +1112,7 @@ ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amoun
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ants</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
 <a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ant</span></code></a>) – The ants</p></li>
-<li><p><strong>weight</strong> – Weight for the pheromones. Defaults to 1</p></li>
+<li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Weight for the pheromones. Defaults to 1</p></li>
 </ul>
 </dd>
 </dl>
@@ -1160,7 +1162,7 @@ according to their fitness.</p>
           <a href="elitist_ant_system.html" title="culebra.trainer.aco.ElitistAntSystem class"
              >next</a> |</li>
         <li class="right" >
-          <a href="abc/elitist_aco.html" title="culebra.trainer.aco.abc.ElitistACO class"
+          <a href="abc/quality_based_paco.html" title="culebra.trainer.aco.abc.QualityBasedPACO class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
