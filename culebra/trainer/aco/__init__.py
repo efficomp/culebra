@@ -43,19 +43,19 @@ This module is composed by:
 from .constants import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
-    DEFAULT_CONVERGENCE_CHECK_FREQ
+    DEFAULT_CONVERGENCE_CHECK_FREQ,
+    DEFAULT_ELITE_WEIGHT
 )
 
 from . import abc
 
-from .single_col_aco import (
+from .single_obj_aco import (
     AntSystem,
     ElitistAntSystem,
     MMAS,
     SingleObjAgeBasedPACO,
     SingleObjQualityBasedPACO,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
-    DEFAULT_ELITE_WEIGHT,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT
 )
 
@@ -80,7 +80,7 @@ __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
-    'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_ELITE_WEIGHT',
+    'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
 ]

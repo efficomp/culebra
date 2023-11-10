@@ -26,13 +26,11 @@
 
 Class attributes
 ----------------
-
 .. autoattribute:: culebra.trainer.aco.ElitistAntSystem.stats_names
 .. autoattribute:: culebra.trainer.aco.ElitistAntSystem.objective_stats
 
 Properties
 ----------
-
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.solution_cls
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.species
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.fitness_function
@@ -61,15 +59,12 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.representatives
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.col
 
-
 Private properties
 ------------------
-
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem._state
 
 Methods
 -------
-
 .. automethod:: culebra.trainer.aco.ElitistAntSystem.reset
 .. automethod:: culebra.trainer.aco.ElitistAntSystem.evaluate
 .. automethod:: culebra.trainer.aco.ElitistAntSystem.best_solutions
@@ -79,7 +74,6 @@ Methods
 
 Private methods
 ---------------
-
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._save_state
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._load_state
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._new_state
@@ -106,6 +100,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_ant
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_col
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pheromones
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._should_reset_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._reset_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._increase_pheromones
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._decrease_pheromones

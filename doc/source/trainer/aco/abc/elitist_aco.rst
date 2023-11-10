@@ -99,11 +99,10 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._deposit_pheromones
+.. automethod:: culebra.trainer.aco.abc.ElitistACO._should_reset_pheromones
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._reset_pheromones
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._increase_pheromones
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._decrease_pheromones
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_pheromones
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_elite
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._has_converged
-
-

@@ -108,6 +108,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.MMAS._generate_ant
 .. automethod:: culebra.trainer.aco.MMAS._generate_col
 .. automethod:: culebra.trainer.aco.MMAS._deposit_pheromones
+.. automethod:: culebra.trainer.aco.MMAS._should_reset_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._reset_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._increase_pheromones
 .. automethod:: culebra.trainer.aco.MMAS._decrease_pheromones
