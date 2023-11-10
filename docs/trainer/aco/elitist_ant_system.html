@@ -731,8 +731,7 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 <dt class="sig sig-object py" id="culebra.trainer.aco.ElitistAntSystem._state">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ElitistAntSystem.</span></span><span class="sig-name descname"><span class="pre">_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.aco.ElitistAntSystem._state" title="Link to this definition">¶</a></dt>
 <dd><p>Get and set the state of this trainer.</p>
-<p>Overridden to add the current elite and the last iteration number
-when the elite was updated to the trainer’s state.</p>
+<p>Overridden to add the current elite to the trainer’s state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Getter<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Return the state</p>
@@ -1150,6 +1149,12 @@ ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amoun
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.ElitistAntSystem._should_reset_pheromones">
+<span class="sig-prename descclassname"><span class="pre">ElitistAntSystem.</span></span><span class="sig-name descname"><span class="pre">_should_reset_pheromones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.ElitistAntSystem._should_reset_pheromones" title="Link to this definition">¶</a></dt>
+<dd><p>Return <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if pheromones should be reset.</p>
 </dd></dl>
 
 <dl class="py method">
