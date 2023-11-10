@@ -19,5 +19,4 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-pip install -r requirements.txt
-
+pip install -r requirements.txt --upgrade
