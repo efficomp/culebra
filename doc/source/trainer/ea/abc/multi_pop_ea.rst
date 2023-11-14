@@ -61,7 +61,6 @@ Properties
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA._state
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA._subtrainer_suffixes
 
 Static methods
@@ -81,6 +80,8 @@ Methods
 Private methods
 ---------------
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._generate_subtrainers
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._get_state
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._set_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._save_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._load_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._new_state

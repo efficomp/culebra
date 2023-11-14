@@ -60,12 +60,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.AntSystem.representatives
 .. autoproperty:: culebra.trainer.aco.AntSystem.col
 
-
-Private properties
-------------------
-
-.. autoproperty:: culebra.trainer.aco.AntSystem._state
-
 Methods
 -------
 
@@ -79,6 +73,8 @@ Methods
 Private methods
 ---------------
 
+.. automethod:: culebra.trainer.aco.AntSystem._get_state
+.. automethod:: culebra.trainer.aco.AntSystem._set_state
 .. automethod:: culebra.trainer.aco.AntSystem._save_state
 .. automethod:: culebra.trainer.aco.AntSystem._load_state
 .. automethod:: culebra.trainer.aco.AntSystem._new_state

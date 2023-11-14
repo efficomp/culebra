@@ -60,10 +60,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.SingleObjQualityBasedPACO.col
 .. autoproperty:: culebra.trainer.aco.SingleObjQualityBasedPACO.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.SingleObjQualityBasedPACO._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO.reset
@@ -75,6 +71,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._get_state
+.. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._set_state
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._save_state
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._load_state
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._new_state

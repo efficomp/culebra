@@ -71,7 +71,6 @@ Properties
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._state
 .. autoproperty:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._subtrainer_suffixes
 
 Static methods
@@ -91,6 +90,8 @@ Methods
 Private methods
 ---------------
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._generate_subtrainers
+.. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._get_state
+.. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._set_state
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._save_state
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._load_state
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA._new_state

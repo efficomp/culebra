@@ -66,7 +66,6 @@ Properties
 Private properties
 ------------------
 
-.. autoproperty:: culebra.trainer.aco.MMAS._state
 .. autoproperty:: culebra.trainer.aco.MMAS._global_best_freq
 
 Methods
@@ -82,6 +81,8 @@ Methods
 Private methods
 ---------------
 
+.. automethod:: culebra.trainer.aco.MMAS._get_state
+.. automethod:: culebra.trainer.aco.MMAS._set_state
 .. automethod:: culebra.trainer.aco.MMAS._save_state
 .. automethod:: culebra.trainer.aco.MMAS._load_state
 .. automethod:: culebra.trainer.aco.MMAS._new_state

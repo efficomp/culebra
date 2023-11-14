@@ -95,7 +95,7 @@ class TrainerTester(unittest.TestCase):
                 trainer.elite_size = size
 
     def test_state(self):
-        """Test _state."""
+        """Test the get_state and _set_state methods."""
         # Trainer parameters
         params = {
             "solution_cls": Individual,
@@ -109,7 +109,7 @@ class TrainerTester(unittest.TestCase):
         trainer = ElitistEA(**params)
 
         # Save the trainer's state
-        state = trainer._state
+        state = trainer._get_state()
 
         # Check the state
         self.assertEqual(state["num_evals"], trainer._num_evals)
@@ -120,7 +120,7 @@ class TrainerTester(unittest.TestCase):
         state["elite"] = 200
 
         # Set the new state
-        trainer._state = state
+        trainer._set_state(state)
 
         # Test if the new values have been set
         self.assertEqual(state["num_evals"], trainer._num_evals)

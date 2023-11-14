@@ -260,7 +260,7 @@ class Fitness(DeapFitness, Base):
         """
         return tuple(
             1/self.values[i] if self.weights[i] < 0 else self.values[i]
-            for i in range(self.num_obj)
+            for i in range(len(self.wvalues))
         )
 
     def dominates(self, other: Fitness, which: slice = slice(None)) -> bool:
@@ -1223,9 +1223,8 @@ class Trainer(Base):
         """
         return self._representatives
 
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
 
         Default state is a dictionary composed of the values of the
         :py:attr:`~culebra.abc.Trainer.logbook`,
@@ -1238,11 +1237,10 @@ class Trainer(Base):
         and :py:mod:`numpy.random` modules.
 
         If subclasses use any more properties to keep their state, the
-        :py:attr:`~culebra.abc.Trainer._state` getter and setter must be
+        :py:meth:`~culebra.abc.Trainer._get_state` and
+        :py:meth:`~culebra.abc.Trainer._set_state` methods must be
         overridden to take into account such properties.
 
-        :getter: Return the state
-        :setter: Set a new state
         :type: :py:class:`dict`
         """
         # Fill in the dictionary with the trainer state
@@ -1255,9 +1253,13 @@ class Trainer(Base):
                     rnd_state=random.getstate(),
                     np_rnd_state=np.random.get_state())
 
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
+
+        If subclasses use any more properties to keep their state, the
+        :py:meth:`~culebra.abc.Trainer._get_state` and
+        :py:meth:`~culebra.abc.Trainer._set_state` methods must be
+        overridden to take into account such properties.
 
         :param state: The last loaded state
         :type state: :py:class:`dict`
@@ -1425,7 +1427,7 @@ class Trainer(Base):
 
         # Copy the ouput state (if needed)
         if state_proxy is not None:
-            state = self._state
+            state = self._get_state()
             for key in state:
                 # state_proxy[key] = deepcopy(state[key])
                 state_proxy[key] = state[key]
@@ -1500,7 +1502,7 @@ class Trainer(Base):
         :raises Exception: If the checkpoint file can't be written
         """
         # Save the state
-        to_pickle(self._state, self.checkpoint_filename)
+        to_pickle(self._get_state(), self.checkpoint_filename)
 
     def _load_state(self) -> None:
         """Load the state of the last checkpoint.
@@ -1508,14 +1510,13 @@ class Trainer(Base):
         :raises Exception: If the checkpoint file can't be loaded
         """
         # Load the state
-        self._state = read_pickle(self.checkpoint_filename)
+        self._set_state(read_pickle(self.checkpoint_filename))
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
-        If subclasses add any new property to keep their
-        :py:attr:`~culebra.abc.Trainer._state`, this method should be
-        overridden to initialize the full state of the trainer.
+        If subclasses add any new  property to keep their state, this method
+        should be overridden to initialize the full state of the trainer.
         """
         # Create a new logbook
         self._logbook = Logbook()
@@ -1571,9 +1572,8 @@ class Trainer(Base):
         """Reset the trainer state.
 
         If subclasses overwrite the :py:meth:`~culebra.abc.Trainer._new_state`
-        method to add any new property to keep their
-        :py:attr:`~culebra.abc.Trainer._state`, this method should also be
-        overridden to reset the full state of the trainer.
+        method to add any new property to keep their state, this method should
+        also be overridden to reset the full state of the trainer.
         """
         self._logbook = None
         self._num_evals = None

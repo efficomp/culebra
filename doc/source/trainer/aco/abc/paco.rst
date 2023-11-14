@@ -60,10 +60,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.PACO.col
 .. autoproperty:: culebra.trainer.aco.abc.PACO.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.abc.PACO._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.aco.abc.PACO.reset
@@ -75,6 +71,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.abc.PACO._get_state
+.. automethod:: culebra.trainer.aco.abc.PACO._set_state
 .. automethod:: culebra.trainer.aco.abc.PACO._save_state
 .. automethod:: culebra.trainer.aco.abc.PACO._load_state
 .. automethod:: culebra.trainer.aco.abc.PACO._new_state

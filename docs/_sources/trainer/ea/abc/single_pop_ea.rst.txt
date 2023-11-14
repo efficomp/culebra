@@ -58,10 +58,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.representatives
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.reset
@@ -73,6 +69,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA._get_state
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA._set_state
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._save_state
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._load_state
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._new_state

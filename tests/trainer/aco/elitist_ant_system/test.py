@@ -93,7 +93,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.elite_weight, DEFAULT_ELITE_WEIGHT)
 
     def test_state(self):
-        """Test _state."""
+        """Test the get_state and _set_state methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -110,23 +110,28 @@ class TrainerTester(unittest.TestCase):
         trainer._start_iteration()
 
         # Save the trainer's state
-        state = trainer._state
+        state = trainer._get_state()
 
         # Check the state
         self.assertEqual(state["num_evals"], trainer.num_evals)
+        self.assertEqual(state["pheromones"], trainer.pheromones)
         self.assertEqual(state["elite"], trainer._elite)
 
+        # Change the state
         elite = ParetoFront()
         elite.update([trainer._generate_ant()])
-        # Change the state
         state["num_evals"] = 100
+        state["pheromones"] = [np.full((num_nodes, num_nodes), 8, dtype=float)]
         state["elite"] = elite
 
         # Set the new state
-        trainer._state = state
+        trainer._set_state(state)
 
         # Test if the new values have been set
         self.assertEqual(state["num_evals"], trainer.num_evals)
+        self.assertTrue(
+            np.all(state["pheromones"] == trainer.pheromones)
+        )
         self.assertTrue(
             np.all(state["elite"] == trainer._elite)
         )
@@ -150,7 +155,18 @@ class TrainerTester(unittest.TestCase):
         trainer._init_internals()
         trainer._new_state()
 
-        # Check the pheromones matrix
+        # Check the pheromones matrices
+        self.assertIsInstance(trainer.pheromones, list)
+        for (
+            initial_pheromone,
+            pheromones_matrix
+        ) in zip(
+            trainer.initial_pheromones,
+            trainer.pheromones
+        ):
+            self.assertTrue(np.all(pheromones_matrix == initial_pheromone))
+
+        # Check the elite
         self.assertIsInstance(trainer._elite, ParetoFront)
         self.assertEqual(len(trainer._elite), 0)
 
@@ -175,6 +191,9 @@ class TrainerTester(unittest.TestCase):
 
         # Reset the state
         trainer._reset_state()
+
+        # Check the pheromones
+        self.assertEqual(trainer.pheromones, None)
 
         # Check the elite
         self.assertEqual(trainer._elite, None)

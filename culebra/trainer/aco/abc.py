@@ -59,7 +59,6 @@ from functools import partial
 from random import sample
 
 import numpy as np
-
 from deap.tools import HallOfFame, ParetoFront, sortNondominated
 
 
@@ -564,15 +563,23 @@ class SingleColACO(SingleSpeciesTrainer):
         return self._col
 
     @property
+    @abstractmethod
     def pheromones(self) -> Sequence[np.ndarray, ...] | None:
         """Get the pheromones matrices.
 
         If the search process has not begun, :py:data:`None` is returned.
 
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :raises NotImplementedError: if has not been overridden
         :type: :py:class:`~collections.abc.Sequence`
             of :py:class:`~numpy.ndarray`
         """
-        return self._pheromones
+        raise NotImplementedError(
+            "The pheromones property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     @property
     def choice_info(self) -> np.ndarray | None:
@@ -588,63 +595,6 @@ class SingleColACO(SingleSpeciesTrainer):
         :type: :py:class:`~numpy.ndarray`
         """
         return self._choice_info
-
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
-
-        Overridden to add the current pheromones matrices.
-
-        :getter: Return the state
-        :setter: Set a new state
-        :type: :py:class:`dict`
-        """
-        # Get the state of the superclass
-        state = SingleSpeciesTrainer._state.fget(self)
-
-        # Get the state of this class
-        state["pheromones"] = self._pheromones
-
-        return state
-
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
-        """Set the state of this trainer.
-
-        Overridden to add the current pheromones matrices to the trainer's
-        state.
-
-        :param state: The last loaded state
-        :type state: :py:class:`dict`
-        """
-        # Set the state of the superclass
-        SingleSpeciesTrainer._state.fset(self, state)
-
-        # Set the state of this class
-        self._pheromones = state["pheromones"]
-
-    def _new_state(self) -> None:
-        """Generate a new trainer state.
-
-        Overridden to generate the initial pheromones matrices.
-        """
-        super()._new_state()
-        heuristics_shape = self._heuristics[0].shape
-        self._pheromones = [
-            np.full(
-                heuristics_shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromones
-        ]
-
-    def _reset_state(self) -> None:
-        """Reset the trainer state.
-
-        Overridden to reset the pheromones matrices.
-        """
-        super()._reset_state()
-        self._pheromones = None
 
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
@@ -957,6 +907,79 @@ class SingleObjACO(SingleColACO):
         )
 
 
+class PheromoneBasedACO(SingleColACO):
+    """Base class for al the ACO approaches guided by pheromones matrices.
+
+    This kind of ACO approach relies on the pheromones matrices to guide the
+    search, modified by the colony's ants at each iteration. Thus, the
+    pheromones matrices must be part of the trainer's state.
+    """
+
+    @property
+    def pheromones(self) -> Sequence[np.ndarray, ...] | None:
+        """Get the pheromones matrices.
+
+        If the search process has not begun, :py:data:`None` is returned.
+
+        :type: :py:class:`~collections.abc.Sequence`
+            of :py:class:`~numpy.ndarray`
+        """
+        return self._pheromones
+
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
+
+        Overridden to add the current pheromones matrices.
+
+        :type: :py:class:`dict`
+        """
+        # Get the state of the superclass
+        state = super()._get_state()
+
+        # Get the state of this class
+        state["pheromones"] = self._pheromones
+
+        return state
+
+    def _set_state(self, state: Dict[str, Any]) -> None:
+        """Set the state of this trainer.
+
+        Overridden to add the current pheromones matrices to the trainer's
+        state.
+
+        :param state: The last loaded state
+        :type state: :py:class:`dict`
+        """
+        # Set the state of the superclass
+        super()._set_state(state)
+
+        # Set the state of this class
+        self._pheromones = state["pheromones"]
+
+    def _new_state(self) -> None:
+        """Generate a new trainer state.
+
+        Overridden to generate the initial pheromones matrices.
+        """
+        super()._new_state()
+        heuristics_shape = self._heuristics[0].shape
+        self._pheromones = [
+            np.full(
+                heuristics_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromones
+        ]
+
+    def _reset_state(self) -> None:
+        """Reset the trainer state.
+
+        Overridden to reset the pheromones matrices.
+        """
+        super()._reset_state()
+        self._pheromones = None
+
+
 class ElitistACO(SingleColACO):
     """Base class for all the elitist single colony ACO algorithms."""
 
@@ -1126,26 +1149,22 @@ class ElitistACO(SingleColACO):
             )
         )
 
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
 
         Overridden to add the current elite to the trainer's state.
 
-        :getter: Return the state
-        :setter: Set a new state
         :type: :py:class:`dict`
         """
         # Get the state of the superclass
-        state = SingleColACO._state.fget(self)
+        state = super()._get_state()
 
         # Get the state of this class
         state["elite"] = self._elite
 
         return state
 
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the current elite to the trainer's state.
@@ -1154,7 +1173,7 @@ class ElitistACO(SingleColACO):
         :type state: :py:class:`dict`
         """
         # Set the state of the superclass
-        SingleColACO._state.fset(self, state)
+        super()._set_state(state)
 
         # Set the state of this class
         self._elite = state["elite"]
@@ -1271,7 +1290,7 @@ class WeightedElitistACO(ElitistACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [ElitistACO],
+                [WeightedElitistACO],
                 bool
             ]
         ] = None,
@@ -1428,7 +1447,13 @@ class WeightedElitistACO(ElitistACO):
 
 
 class PACO(SingleColACO):
-    """Base class for all the population-based single colony ACO algorithms."""
+    """Base class for all the population-based single colony ACO algorithms.
+
+    This kind of ACO approach relies on a population of ants that generate the
+    pheromones matrices. Thus, the pheromones matrices are now an internal data
+    structure of the algorithm, with the population being part of the trainer's
+    state.
+    """
 
     def __init__(
         self,
@@ -1674,25 +1699,32 @@ class PACO(SingleColACO):
         return self._pop
 
     @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
+    def pheromones(self) -> Sequence[np.ndarray, ...] | None:
+        """Get the pheromones matrices.
+
+        If the search process has not begun, :py:data:`None` is returned.
+
+        :type: :py:class:`~collections.abc.Sequence`
+            of :py:class:`~numpy.ndarray`
+        """
+        return self._pheromones
+
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
 
         Overridden to add the current population to the trainer's state.
 
-        :getter: Return the state
-        :setter: Set a new state
         :type: :py:class:`dict`
         """
         # Get the state of the superclass
-        state = SingleColACO._state.fget(self)
+        state = super()._get_state()
 
         # Get the state of this class
         state["pop"] = self._pop
 
         return state
 
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the current population to the trainer's state.
@@ -1701,7 +1733,7 @@ class PACO(SingleColACO):
         :type state: :py:class:`dict`
         """
         # Set the state of the superclass
-        SingleColACO._state.fset(self, state)
+        super()._set_state(state)
 
         # Set the state of this class
         self._pop = state["pop"]
@@ -1729,25 +1761,34 @@ class PACO(SingleColACO):
 
         Create all the internal objects, functions and data structures needed
         to run the search process. For the
-        :py:class:`~culebra.trainer.aco.abc.PACO` class, the *_pop_ingoing* and
-        *_pop_outgoing* lists of ants for the population are created.
-        Subclasses which need more objects or data structures should override
-        this method.
+        :py:class:`~culebra.trainer.aco.abc.PACO` class, the pheromones
+        matrices and the *_pop_ingoing* and *_pop_outgoing* lists of ants for
+        the population are created. Subclasses which need more objects or data
+        structures should override this method.
         """
         super()._init_internals()
+        heuristics_shape = self._heuristics[0].shape
+        self._pheromones = [
+            np.full(
+                heuristics_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromones
+        ]
         self._pop_ingoing = []
         self._pop_outgoing = []
 
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overridden to reset the *_pop_ingoing* and *_pop_outgoing* lists of
-        ants for the population. If subclasses overwrite the
-        :py:meth:`~culebra.trainer.aco.abc.PACO._init_internals`
+        Overridden to reset the pheromones matrices and the *_pop_ingoing* and
+        *_pop_outgoing* lists of ants for the population. If subclasses
+        overwrite the :py:meth:`~culebra.trainer.aco.abc.PACO._init_internals`
         method to add any new internal object, this method should also be
         overridden to reset all the internal objects of the trainer.
         """
         super()._reset_internals()
+        self._pheromones = None
         self._pop_ingoing = None
         self._pop_outgoing = None
 

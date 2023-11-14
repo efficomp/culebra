@@ -58,10 +58,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.SimpleEA.representatives
 .. autoproperty:: culebra.trainer.ea.SimpleEA.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.ea.SimpleEA._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.ea.SimpleEA.reset
@@ -73,6 +69,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.SimpleEA._get_state
+.. automethod:: culebra.trainer.ea.SimpleEA._set_state
 .. automethod:: culebra.trainer.ea.SimpleEA._save_state
 .. automethod:: culebra.trainer.ea.SimpleEA._load_state
 .. automethod:: culebra.trainer.ea.SimpleEA._new_state

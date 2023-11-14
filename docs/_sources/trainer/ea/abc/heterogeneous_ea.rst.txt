@@ -69,7 +69,6 @@ Properties
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._state
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._subtrainer_suffixes
 
 Static methods
@@ -89,6 +88,8 @@ Methods
 Private methods
 ---------------
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._generate_subtrainers
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._get_state
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._set_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._save_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._load_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._new_state

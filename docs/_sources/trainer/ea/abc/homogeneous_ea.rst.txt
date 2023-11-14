@@ -57,10 +57,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.container
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.representatives
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA.reset
@@ -72,6 +68,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.abc.HomogeneousEA._get_state
+.. automethod:: culebra.trainer.ea.abc.HomogeneousEA._set_state
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA._save_state
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA._load_state
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA._new_state

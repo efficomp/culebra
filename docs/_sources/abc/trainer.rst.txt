@@ -47,9 +47,6 @@ Properties
 .. autoproperty:: culebra.abc.Trainer.container
 .. autoproperty:: culebra.abc.Trainer.representatives
 
-Private properties
-------------------
-.. autoproperty:: culebra.abc.Trainer._state
 
 Methods
 -------
@@ -62,6 +59,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.abc.Trainer._get_state
+.. automethod:: culebra.abc.Trainer._set_state
 .. automethod:: culebra.abc.Trainer._save_state
 .. automethod:: culebra.abc.Trainer._load_state
 .. automethod:: culebra.abc.Trainer._new_state

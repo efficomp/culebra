@@ -61,10 +61,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.NSGA.representatives
 .. autoproperty:: culebra.trainer.ea.NSGA.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.ea.NSGA._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.ea.NSGA.reset
@@ -76,6 +72,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.NSGA._get_state
+.. automethod:: culebra.trainer.ea.NSGA._set_state
 .. automethod:: culebra.trainer.ea.NSGA._save_state
 .. automethod:: culebra.trainer.ea.NSGA._load_state
 .. automethod:: culebra.trainer.ea.NSGA._new_state

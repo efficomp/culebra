@@ -59,10 +59,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.representatives
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.col
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.aco.ElitistAntSystem.reset
@@ -74,6 +70,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._get_state
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._set_state
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._save_state
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._load_state
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._new_state

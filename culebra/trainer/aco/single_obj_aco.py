@@ -44,6 +44,7 @@ from culebra.trainer.aco import (
     DEFAULT_HEURISTIC_INFLUENCE
 )
 from culebra.trainer.aco.abc import (
+    PheromoneBasedACO,
     SingleObjACO,
     ElitistACO,
     WeightedElitistACO,
@@ -71,7 +72,7 @@ iteration-best ant to deposit pheromones. Iterations above this limit will use
 only the global-best ant."""
 
 
-class AntSystem(SingleObjACO):
+class AntSystem(PheromoneBasedACO, SingleObjACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -89,7 +90,7 @@ class AntSystem(SingleObjACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleObjACO],
+                [AntSystem],
                 bool
             ]
         ] = None,
@@ -173,7 +174,14 @@ class AntSystem(SingleObjACO):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclass
+        # Init the superclasses
+        PheromoneBasedACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromones=initial_pheromones
+        )
         SingleObjACO.__init__(
             self,
             solution_cls=solution_cls,
@@ -619,19 +627,16 @@ class MMAS(AntSystem, ElitistACO):
 
         return freq
 
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
 
         Overridden to add the pheromones limits and the last iteration number
         when the elite was updated to the trainer's state.
 
-        :getter: Return the state
-        :setter: Set a new state
         :type: :py:class:`dict`
         """
         # Get the state of the superclass
-        state = ElitistACO._state.fget(self)
+        state = super()._get_state()
 
         # Get the state of this class
         state["max_pheromone"] = self._max_pheromone
@@ -640,8 +645,7 @@ class MMAS(AntSystem, ElitistACO):
 
         return state
 
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the pheromones limits and the last iteration number
@@ -651,7 +655,7 @@ class MMAS(AntSystem, ElitistACO):
         :type state: :py:class:`dict`
         """
         # Set the state of the superclass
-        ElitistACO._state.fset(self, state)
+        super()._set_state(state)
 
         # Set the state of this class
         self._max_pheromone = state["max_pheromone"]
@@ -805,7 +809,7 @@ class SingleObjAgeBasedPACO(SingleObjACO, AgeBasedPACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [AgeBasedPACO],
+                [SingleObjAgeBasedPACO],
                 bool
             ]
         ] = None,
@@ -938,7 +942,7 @@ class SingleObjQualityBasedPACO(SingleObjACO, QualityBasedPACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [AgeBasedPACO],
+                [SingleObjQualityBasedPACO],
                 bool
             ]
         ] = None,
@@ -1105,6 +1109,5 @@ __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
-    'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
 ]

@@ -113,7 +113,6 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
         for subtrainer in trainer.subtrainers:
             subtrainer._init_search()
-        print(trainer.representatives)
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

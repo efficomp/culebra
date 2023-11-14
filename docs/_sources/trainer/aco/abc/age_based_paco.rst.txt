@@ -60,10 +60,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.col
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO.reset
@@ -75,6 +71,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._get_state
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._set_state
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._save_state
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._load_state
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._new_state

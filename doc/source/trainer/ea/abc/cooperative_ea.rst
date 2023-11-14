@@ -71,7 +71,6 @@ Properties
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.ea.abc.CooperativeEA._state
 .. autoproperty:: culebra.trainer.ea.abc.CooperativeEA._subtrainer_suffixes
 
 Static methods
@@ -95,6 +94,8 @@ Methods
 Private methods
 ---------------
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._generate_subtrainers
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA._get_state
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA._set_state
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._save_state
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._load_state
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._new_state

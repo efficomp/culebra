@@ -58,10 +58,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.representatives
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.col
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.aco.abc.ElitistACO.reset
@@ -73,6 +69,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.abc.ElitistACO._get_state
+.. automethod:: culebra.trainer.aco.abc.ElitistACO._set_state
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._save_state
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._load_state
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._new_state

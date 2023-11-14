@@ -168,7 +168,7 @@ class TrainerTester(unittest.TestCase):
         )
 
     def test_state(self):
-        """Test _state."""
+        """Test the get_state and _set_state methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -187,7 +187,7 @@ class TrainerTester(unittest.TestCase):
         trainer._start_iteration()
 
         # Save the trainer's state
-        state = trainer._state
+        state = trainer._get_state()
 
         # Check the state
         self.assertIsInstance(state["pop"], list)
@@ -197,7 +197,7 @@ class TrainerTester(unittest.TestCase):
         state["pop"].append(trainer._generate_ant())
 
         # Set the new state
-        trainer._state = state
+        trainer._set_state(state)
 
         # Test if the population has been updated
         self.assertEqual(len(trainer.pop), 1)
@@ -273,6 +273,17 @@ class TrainerTester(unittest.TestCase):
         # Create new internal structures
         trainer._init_internals()
 
+        # Check the pheromones matrices
+        self.assertIsInstance(trainer.pheromones, list)
+        for (
+            initial_pheromone,
+            pheromones_matrix
+        ) in zip(
+            trainer.initial_pheromones,
+            trainer.pheromones
+        ):
+            self.assertTrue(np.all(pheromones_matrix == initial_pheromone))
+
         # Check the internal structures
         self.assertIsInstance(trainer._pop_ingoing, list)
         self.assertIsInstance(trainer._pop_outgoing, list)
@@ -302,6 +313,7 @@ class TrainerTester(unittest.TestCase):
         trainer._reset_internals()
 
         # Check the internal strucures
+        self.assertEqual(trainer.pheromones, None)
         self.assertEqual(trainer._pop_ingoing, None)
         self.assertEqual(trainer._pop_outgoing, None)
 

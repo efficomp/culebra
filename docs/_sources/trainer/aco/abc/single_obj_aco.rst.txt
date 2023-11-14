@@ -57,10 +57,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjACO.representatives
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjACO.col
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.abc.SingleObjACO._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO.reset
@@ -72,6 +68,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.abc.SingleObjACO._get_state
+.. automethod:: culebra.trainer.aco.abc.SingleObjACO._set_state
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._save_state
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._load_state
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._new_state

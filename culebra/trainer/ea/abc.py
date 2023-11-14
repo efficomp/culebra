@@ -763,9 +763,8 @@ class SinglePopEA(HomogeneousEA):
                     fitness_cls=self.fitness_function.Fitness)
             )
 
-    @property
-    def _state(self) -> Dict[str, Any]:
-        """Get and set the state of this trainer.
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
 
         Overridden to add the current population to the trainer's state.
 
@@ -774,15 +773,14 @@ class SinglePopEA(HomogeneousEA):
         :type: :py:class:`dict`
         """
         # Get the state of the superclass
-        state = HomogeneousEA._state.fget(self)
+        state = super()._get_state()
 
         # Get the state of this class
         state["pop"] = self.pop
 
         return state
 
-    @_state.setter
-    def _state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: Dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the current population to the trainer's state.
@@ -791,7 +789,7 @@ class SinglePopEA(HomogeneousEA):
         :type state: :py:class:`dict`
         """
         # Set the state of the superclass
-        HomogeneousEA._state.fset(self, state)
+        super()._set_state(state)
 
         # Set the state of this class
         self._pop = state["pop"]

@@ -49,10 +49,6 @@ Properties
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.container
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.representatives
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer.reset
@@ -64,6 +60,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.abc.SingleSpeciesTrainer._get_state
+.. automethod:: culebra.trainer.abc.SingleSpeciesTrainer._set_state
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer._save_state
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer._load_state
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer._new_state

@@ -42,15 +42,55 @@ from culebra.fitness_function.tsp import PathLength
 class MyTrainer(SingleColACO):
     """Dummy implementation of a trainer method."""
 
-    def _calculate_choice_info(self) -> None:
+    def _calculate_choice_info(self):
         """Calculate a dummy choice info matrix."""
         self._choice_info = self.pheromones[0] * self.heuristics[0]
 
-    def _decrease_pheromones(self) -> None:
+    def _decrease_pheromones(self):
         """Decrease the amount of pheromones."""
 
-    def _increase_pheromones(self) -> None:
+    def _increase_pheromones(self):
         """Increase the amount of pheromones."""
+
+    @property
+    def pheromones(self):
+        """Get the pheromones matrices."""
+        return self._pheromones
+
+    def _get_state(self):
+        """Return the state of this trainer."""
+        # Get the state of the superclass
+        state = super()._get_state()
+
+        # Get the state of this class
+        state["pheromones"] = self._pheromones
+
+        return state
+
+    def _set_state(self, state):
+        """Set the state of this trainer."""
+        # Set the state of the superclass
+        super()._set_state(state)
+
+        # Set the state of this class
+        self._pheromones = state["pheromones"]
+
+    def _new_state(self):
+        """Generate a new trainer state."""
+        super()._new_state()
+        heuristics_shape = self._heuristics[0].shape
+        self._pheromones = [
+            np.full(
+                heuristics_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromones
+        ]
+
+    def _reset_state(self):
+        """Reset the trainer state."""
+        super()._reset_state()
+        self._pheromones = None
 
 
 class MyFitnessFunc(PathLength):
@@ -432,7 +472,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._node_list, None)
 
     def test_state(self):
-        """Test _state."""
+        """Test the get_state and _set_state methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromones = [2]
@@ -447,7 +487,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyTrainer(**params)
 
         # Save the trainer's state
-        state = trainer._state
+        state = trainer._get_state()
 
         # Check the state
         self.assertEqual(state["num_evals"], trainer.num_evals)
@@ -458,7 +498,7 @@ class TrainerTester(unittest.TestCase):
         state["pheromones"] = [np.full((num_nodes, num_nodes), 8, dtype=float)]
 
         # Set the new state
-        trainer._state = state
+        trainer._set_state(state)
 
         # Test if the new values have been set
         self.assertEqual(state["num_evals"], trainer.num_evals)
@@ -485,7 +525,7 @@ class TrainerTester(unittest.TestCase):
         trainer._init_internals()
         trainer._new_state()
 
-        # Check the pheromones matrix
+        # Check the pheromones matrices
         self.assertIsInstance(trainer.pheromones, list)
         for (
             initial_pheromone,

@@ -26,6 +26,7 @@ import unittest
 from math import ceil
 
 import numpy as np
+from deap.tools import ParetoFront
 
 from culebra.trainer.aco import (
     MMAS,
@@ -173,10 +174,10 @@ class TrainerTester(unittest.TestCase):
             )
 
     def test_state(self):
-        """Test the trainer state."""
+        """Test the get_state and _set_state methods."""
         # Trainer parameters
         species = Species(num_nodes)
-        initial_pheromones = [2]
+        initial_pheromones = [10]
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -184,25 +185,131 @@ class TrainerTester(unittest.TestCase):
             "initial_pheromones": initial_pheromones
         }
 
-        # Check the limits before initialization
+        # Create the trainer
         trainer = MMAS(**params)
+
+        # Check before initialization
+        # Save the trainer's state
+        state = trainer._get_state()
+        self.assertEqual(state["num_evals"], None)
+        self.assertEqual(state["pheromones"], None)
+        self.assertEqual(state["elite"], None)
+        self.assertEqual(state["max_pheromone"], None)
+        self.assertEqual(state["min_pheromone"], None)
+        self.assertEqual(state["last_elite_iter"], None)
+
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Save the trainer's state
+        state = trainer._get_state()
+
+        # Check the state
+        self.assertEqual(state["num_evals"], trainer.num_evals)
+        self.assertEqual(state["pheromones"], trainer.pheromones)
+        self.assertEqual(state["elite"], trainer._elite)
+        self.assertEqual(state["max_pheromone"], trainer._max_pheromone)
+        self.assertEqual(state["min_pheromone"], trainer._min_pheromone)
+        self.assertEqual(state["last_elite_iter"], trainer._last_elite_iter)
+
+        # Change the state
+        elite = ParetoFront()
+        elite.update([trainer._generate_ant()])
+        state["num_evals"] = 100
+        state["pheromones"] = [np.full((num_nodes, num_nodes), 8, dtype=float)]
+        state["elite"] = elite
+        state["max_pheromone"] = -1
+        state["min_pheromone"] = -2
+        state["last_elite_iter"] = -3
+
+        # Set the new state
+        trainer._set_state(state)
+
+        # Test if the new values have been set
+        self.assertEqual(state["num_evals"], trainer.num_evals)
+        self.assertTrue(
+            np.all(state["pheromones"] == trainer.pheromones)
+        )
+        self.assertTrue(
+            np.all(state["elite"] == trainer._elite)
+        )
+        self.assertEqual(state["max_pheromone"], trainer._max_pheromone)
+        self.assertEqual(state["min_pheromone"], trainer._min_pheromone)
+        self.assertEqual(state["last_elite_iter"], trainer._last_elite_iter)
+
+    def test_reset_state(self):
+        """Test _reset_state."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [10]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MMAS(**params)
+
+        # Create a new state
+        trainer._init_internals()
+        trainer._new_state()
+
+        # Reset the state
+        trainer._reset_state()
+
+        # Check the pheromones
+        self.assertEqual(trainer.pheromones, None)
+
+        # Check the elite
+        self.assertEqual(trainer._elite, None)
         self.assertEqual(trainer._max_pheromone, None)
         self.assertEqual(trainer._min_pheromone, None)
         self.assertEqual(trainer._last_elite_iter, None)
 
-        # Check the limits after initialization
-        trainer._init_search()
-        self.assertEqual(trainer._max_pheromone, initial_pheromones[0])
+    def test_new_state(self):
+        """Test _new_state."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromones = [10]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromones": initial_pheromones
+        }
+
+        # Create the trainer
+        trainer = MMAS(**params)
+
+        # Create a new state
+        trainer._init_internals()
+        trainer._new_state()
+
+        # Check the pheromones matrices
+        self.assertIsInstance(trainer.pheromones, list)
+        for (
+            initial_pheromone,
+            pheromones_matrix
+        ) in zip(
+            trainer.initial_pheromones,
+            trainer.pheromones
+        ):
+            self.assertTrue(np.all(pheromones_matrix == initial_pheromone))
+
+        # Check the elite
+        self.assertIsInstance(trainer._elite, ParetoFront)
+        self.assertEqual(len(trainer._elite), 0)
+        self.assertEqual(trainer._max_pheromone, trainer.initial_pheromones[0])
+
         self.assertEqual(
             trainer._min_pheromone,
-            trainer._max_pheromone / (2 * fitness_func.num_nodes)
+            (
+                trainer._max_pheromone /
+                (2 * trainer.fitness_function.num_nodes)
+            )
         )
-        self.assertEqual(trainer._last_elite_iter, None)
-
-        # Check after reset
-        trainer.reset()
-        self.assertEqual(trainer._max_pheromone, None)
-        self.assertEqual(trainer._min_pheromone, None)
         self.assertEqual(trainer._last_elite_iter, None)
 
     def test_increase_pheromones(self):

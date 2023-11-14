@@ -59,10 +59,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.ElitistEA.representatives
 .. autoproperty:: culebra.trainer.ea.ElitistEA.pop
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.ea.ElitistEA._state
-
 Methods
 -------
 .. automethod:: culebra.trainer.ea.ElitistEA.reset
@@ -74,6 +70,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.ElitistEA._get_state
+.. automethod:: culebra.trainer.ea.ElitistEA._set_state
 .. automethod:: culebra.trainer.ea.ElitistEA._save_state
 .. automethod:: culebra.trainer.ea.ElitistEA._load_state
 .. automethod:: culebra.trainer.ea.ElitistEA._new_state

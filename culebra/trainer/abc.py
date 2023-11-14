@@ -1182,7 +1182,7 @@ class ParallelDistributedTrainer(DistributedTrainer):
         for subtrainer, state_proxy in zip(
                 self.subtrainers, self._subtrainer_state_proxies):
             subtrainer.process.join()
-            subtrainer._state = state_proxy
+            subtrainer._set_state(state_proxy)
 
 
 # Change the docstring of the ParallelMultiPop constructor to indicate that

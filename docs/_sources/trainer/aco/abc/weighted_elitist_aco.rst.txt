@@ -59,9 +59,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.WeightedElitistACO.representatives
 .. autoproperty:: culebra.trainer.aco.abc.WeightedElitistACO.col
 
-Private properties
-------------------
-.. autoproperty:: culebra.trainer.aco.abc.WeightedElitistACO._state
 
 Methods
 -------
@@ -74,6 +71,8 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.aco.abc.WeightedElitistACO._get_state
+.. automethod:: culebra.trainer.aco.abc.WeightedElitistACO._set_state
 .. automethod:: culebra.trainer.aco.abc.WeightedElitistACO._save_state
 .. automethod:: culebra.trainer.aco.abc.WeightedElitistACO._load_state
 .. automethod:: culebra.trainer.aco.abc.WeightedElitistACO._new_state

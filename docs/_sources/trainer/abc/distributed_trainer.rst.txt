@@ -61,7 +61,6 @@ Properties
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.abc.DistributedTrainer._state
 .. autoproperty:: culebra.trainer.abc.DistributedTrainer._subtrainer_suffixes
 
 Static methods
@@ -81,6 +80,8 @@ Methods
 Private methods
 ---------------
 .. automethod:: culebra.trainer.abc.DistributedTrainer._generate_subtrainers
+.. automethod:: culebra.trainer.abc.DistributedTrainer._get_state
+.. automethod:: culebra.trainer.abc.DistributedTrainer._set_state
 .. automethod:: culebra.trainer.abc.DistributedTrainer._save_state
 .. automethod:: culebra.trainer.abc.DistributedTrainer._load_state
 .. automethod:: culebra.trainer.abc.DistributedTrainer._new_state
