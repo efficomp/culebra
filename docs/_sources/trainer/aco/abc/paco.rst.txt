@@ -34,12 +34,12 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.PACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.PACO.species
 .. autoproperty:: culebra.trainer.aco.abc.PACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.abc.PACO.initial_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.PACO.max_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.PACO.heuristics
-.. autoproperty:: culebra.trainer.aco.abc.PACO.pheromones_influence
-.. autoproperty:: culebra.trainer.aco.abc.PACO.heuristics_influence
-.. autoproperty:: culebra.trainer.aco.abc.PACO.pheromones
+.. autoproperty:: culebra.trainer.aco.abc.PACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.PACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.PACO.heuristic
+.. autoproperty:: culebra.trainer.aco.abc.PACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.PACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.PACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.PACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.PACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.PACO.current_iter
@@ -98,9 +98,9 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.PACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.PACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.PACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.PACO._deposit_pheromones
-.. automethod:: culebra.trainer.aco.abc.PACO._increase_pheromones
-.. automethod:: culebra.trainer.aco.abc.PACO._decrease_pheromones
-.. automethod:: culebra.trainer.aco.abc.PACO._update_pheromones
+.. automethod:: culebra.trainer.aco.abc.PACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.PACO._increase_pheromone
+.. automethod:: culebra.trainer.aco.abc.PACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.PACO._update_pheromone
 .. automethod:: culebra.trainer.aco.abc.PACO._update_pop
 

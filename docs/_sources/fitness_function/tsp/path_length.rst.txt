@@ -49,6 +49,6 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.tsp.PathLength.heuristics
+.. automethod:: culebra.fitness_function.tsp.PathLength.heuristic
 .. automethod:: culebra.fitness_function.tsp.PathLength.greedy_solution
 .. automethod:: culebra.fitness_function.tsp.PathLength.evaluate

@@ -34,12 +34,12 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.species
 .. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.initial_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.max_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.heuristics
-.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.pheromones_influence
-.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.heuristics_influence
-.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.pheromones
+.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.heuristic
+.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.QualityBasedPACO.current_iter
@@ -98,9 +98,9 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._deposit_pheromones
-.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._increase_pheromones
-.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._decrease_pheromones
-.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._update_pheromones
+.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._increase_pheromone
+.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._update_pop
 

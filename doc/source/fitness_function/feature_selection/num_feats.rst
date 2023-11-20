@@ -51,5 +51,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.heuristics
+.. automethod:: culebra.fitness_function.feature_selection.NumFeats.heuristic
 .. automethod:: culebra.fitness_function.feature_selection.NumFeats.evaluate

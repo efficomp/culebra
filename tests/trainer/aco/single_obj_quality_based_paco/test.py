@@ -58,8 +58,8 @@ class TrainerTester(unittest.TestCase):
     def test_update_pop(self):
         """Test the _update_pop method."""
         species = Species(num_nodes)
-        initial_pheromones = [2]
-        max_pheromones = [3]
+        initial_pheromone = 2
+        max_pheromone = 3
 
         minimization_params = {
             "solution_cls": Ant,
@@ -67,8 +67,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyMinimizationFitnessFunc.fromPath(
                 optimum_path
             ),
-            "initial_pheromones": initial_pheromones,
-            "max_pheromones": max_pheromones,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
             "col_size": 1,
             "pop_size": 2
         }
@@ -122,8 +122,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyMaximizationFitnessFunc.fromPath(
                 optimum_path
             ),
-            "initial_pheromones": initial_pheromones,
-            "max_pheromones": max_pheromones,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
             "col_size": 1,
             "pop_size": 2
         }
@@ -170,8 +170,6 @@ class TrainerTester(unittest.TestCase):
         for ant in maximization_trainer.pop:
             self.assertNotEqual(ant.fitness.values, initial_fit_values)
             self.assertTrue(ant.fitness.values in fit_better_values)
-
-
 
 
 if __name__ == '__main__':

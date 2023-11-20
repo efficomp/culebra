@@ -58,7 +58,7 @@ Attributes
 
     Default limit for the number of iterations for the
     :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS to give up using the
-    iteration-best ant to deposit pheromones. Iterations above this limit will
+    iteration-best ant to deposit pheromone. Iterations above this limit will
     use only the global-best ant.
 
 

@@ -248,16 +248,16 @@ class PathLengthTester(unittest.TestCase):
             fitness_func = PathLength.fromPath(path)
             self.assertEqual(fitness_func.num_nodes, num_nodes)
 
-    def test_heuristics(self):
-        """Test the heuristics method."""
+    def test_heuristic(self):
+        """Test the heuristic method."""
         num_nodes = 10
         path = np.random.permutation(num_nodes)
         fitness_func = PathLength.fromPath(path)
         banned_nodes = [0, num_nodes-1]
         species = Species(num_nodes, banned_nodes=banned_nodes)
-        (heuristics, ) = fitness_func.heuristics(species)
+        (heuristic, ) = fitness_func.heuristic(species)
 
-        # Check the heuristics
+        # Check the heuristic
         for org_idx, org in enumerate(path):
             dest_1 = path[org_idx - 1]
             dest_2 = path[(org_idx + 1) % num_nodes]
@@ -269,15 +269,15 @@ class PathLengthTester(unittest.TestCase):
                     node == org
                 ):
                     self.assertEqual(
-                        heuristics[org][node], 0
+                        heuristic[org][node], 0
                     )
                 elif node == dest_1 or node == dest_2:
                     self.assertEqual(
-                        heuristics[org][node], 1
+                        heuristic[org][node], 1
                     )
                 else:
                     self.assertEqual(
-                        heuristics[org][node], 0.1
+                        heuristic[org][node], 0.1
                     )
 
     def test_greddy_solution(self):

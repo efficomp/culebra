@@ -48,7 +48,7 @@ class TrainerTester(unittest.TestCase):
         """Test __init__`."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
+        initial_pheromone = 1
 
         # Try invalid types for pheromone_evaporation_rate. Should fail
         invalid_pheromone_evaporation_rate = (type, 'a')
@@ -58,7 +58,7 @@ class TrainerTester(unittest.TestCase):
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
+                    initial_pheromone,
                     pheromone_evaporation_rate=pheromone_evaporation_rate
                 )
 
@@ -70,7 +70,7 @@ class TrainerTester(unittest.TestCase):
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
+                    initial_pheromone,
                     pheromone_evaporation_rate=pheromone_evaporation_rate
                 )
 
@@ -81,7 +81,7 @@ class TrainerTester(unittest.TestCase):
                 ant_cls,
                 species,
                 fitness_func,
-                initial_pheromones,
+                initial_pheromone,
                 pheromone_evaporation_rate=pheromone_evaporation_rate
             )
             self.assertEqual(
@@ -94,7 +94,7 @@ class TrainerTester(unittest.TestCase):
             ant_cls,
             species,
             fitness_func,
-            initial_pheromones
+            initial_pheromone
         )
         self.assertEqual(
             trainer.pheromone_evaporation_rate,
@@ -108,7 +108,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": [2]
+            "initial_pheromone": 2
         }
 
         # Create the trainer
@@ -122,48 +122,48 @@ class TrainerTester(unittest.TestCase):
             ant = trainer._generate_ant()
             self.assertEqual(len(ant.path), len(feasible_nodes))
 
-    def test_decrease_pheromones(self):
-        """Test the _decrease_pheromones method."""
+    def test_decrease_pheromone(self):
+        """Test the _decrease_pheromone method."""
         # Trainer parameters
         # Trainer parameters
         params = {
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": [2]
+            "initial_pheromone": 2
         }
 
         # Create the trainer
         trainer = AntSystem(**params)
         trainer._init_search()
 
-        # Check the initial pheromones
-        pheromones_value = trainer.initial_pheromones[0]
+        # Check the initial pheromone
+        pheromone_value = trainer.initial_pheromone[0]
         self.assertTrue(
-            np.all(trainer.pheromones[0] == pheromones_value)
+            np.all(trainer.pheromone[0] == pheromone_value)
         )
 
-        # Evaporate pheromones
-        trainer._decrease_pheromones()
+        # Evaporate pheromone
+        trainer._decrease_pheromone()
 
         # Check again
-        pheromones_value = (
-            trainer.initial_pheromones[0] * (
+        pheromone_value = (
+            trainer.initial_pheromone[0] * (
                 1 - trainer.pheromone_evaporation_rate
             )
         )
         self.assertTrue(
-            np.all(trainer.pheromones[0] == pheromones_value)
+            np.all(trainer.pheromone[0] == pheromone_value)
         )
 
-    def test_increase_pheromones(self):
-        """Test the _increase_pheromones method."""
+    def test_increase_pheromone(self):
+        """Test the _increase_pheromone method."""
         # Trainer parameters
         params = {
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": [2],
+            "initial_pheromone": 2,
             "col_size": 1
         }
 
@@ -172,32 +172,32 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
         trainer._start_iteration()
 
-        # Check the initial pheromones
-        pheromones_value = trainer.initial_pheromones[0]
+        # Check the initial pheromone
+        pheromone_value = trainer.initial_pheromone[0]
         self.assertTrue(
-            np.all(trainer.pheromones[0] == pheromones_value)
+            np.all(trainer.pheromone[0] == pheromone_value)
         )
 
         # Generate a new colony
         trainer._generate_col()
 
-        # Evaporate pheromones
-        trainer._increase_pheromones()
+        # Evaporate pheromone
+        trainer._increase_pheromone()
 
         # Get the ant
         ant = trainer.col[0]
-        pheromones_increment = ant.fitness.pheromones_amount[0]
-        pheromones_value += pheromones_increment
+        pheromone_increment = ant.fitness.pheromone_amount[0]
+        pheromone_value += pheromone_increment
 
         org = ant.path[-1]
         for dest in ant.path:
             self.assertEqual(
-                trainer.pheromones[0][org][dest],
-                pheromones_value
+                trainer.pheromone[0][org][dest],
+                pheromone_value
             )
             self.assertEqual(
-                trainer.pheromones[0][dest][org],
-                pheromones_value
+                trainer.pheromone[0][dest][org],
+                pheromone_value
             )
             org = dest
 
@@ -205,12 +205,12 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer

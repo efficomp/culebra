@@ -100,12 +100,12 @@ class FitnessFunctionTester(unittest.TestCase):
         func = MyFitnessFunction()
         self.assertEqual(func.num_nodes, None)
 
-    def test_heuristics(self):
-        """Test the heuristics method."""
+    def test_heuristic(self):
+        """Test the heuristic method."""
         # Fitness function to be tested
 
         func = MyFitnessFunction()
-        self.assertEqual(func.heuristics(Species()), None)
+        self.assertEqual(func.heuristic(Species()), None)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

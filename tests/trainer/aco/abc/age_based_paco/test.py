@@ -27,18 +27,26 @@ import unittest
 import numpy as np
 
 from culebra.abc import Fitness
-from culebra.trainer.aco.abc import AgeBasedPACO
+from culebra.trainer.aco.abc import (
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
+    AgeBasedPACO
+)
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function import DEFAULT_THRESHOLD
 from culebra.fitness_function.tsp import PathLength
 
 
-class MyTrainer(AgeBasedPACO):
+class MyTrainer(
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
+    AgeBasedPACO
+):
     """Dummy implementation of a trainer method."""
 
     def _calculate_choice_info(self) -> None:
         """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromones[0] * self.heuristics[0]
+        self._choice_info = self.pheromone[0] * self.heuristic[0]
 
 
 class MyFitnessFunc(PathLength):
@@ -51,10 +59,10 @@ class MyFitnessFunc(PathLength):
         names = ("Len", "Other")
         thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
 
-    def heuristics(self, species):
-        """Define a dummy heuristics."""
-        (the_heuristics, ) = super().heuristics(species)
-        return (the_heuristics, the_heuristics * 2)
+    def heuristic(self, species):
+        """Define a dummy heuristic."""
+        (the_heuristic, ) = super().heuristic(species)
+        return (the_heuristic, the_heuristic * 2)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Define a dummy evaluation."""
@@ -75,14 +83,14 @@ class TrainerTester(unittest.TestCase):
         """Test _init_internals."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        max_pheromones = [3]
+        initial_pheromone = 2
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "max_pheromones": max_pheromones
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone
         }
 
         # Create the trainer
@@ -99,14 +107,14 @@ class TrainerTester(unittest.TestCase):
     def test_update_pop(self):
         """Test the _update_pop method."""
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        max_pheromones = [3]
+        initial_pheromone = 2
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "max_pheromones": max_pheromones,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
             "col_size": 1,
             "pop_size": 2
         }
@@ -161,14 +169,14 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        max_pheromones = [3]
+        initial_pheromone = 2
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "max_pheromones": max_pheromones
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone
         }
 
         # Create the trainer

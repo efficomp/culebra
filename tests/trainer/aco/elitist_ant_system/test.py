@@ -45,7 +45,7 @@ class TrainerTester(unittest.TestCase):
         """Test __init__`."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
+        initial_pheromone = 1
 
         # Try invalid types for elite_weight. Should fail
         invalid_elite_weight_types = (type, 'a')
@@ -55,7 +55,7 @@ class TrainerTester(unittest.TestCase):
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
+                    initial_pheromone,
                     elite_weight=elite_weight
                 )
 
@@ -67,7 +67,7 @@ class TrainerTester(unittest.TestCase):
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
+                    initial_pheromone,
                     elite_weight=elite_weight
                 )
 
@@ -78,7 +78,7 @@ class TrainerTester(unittest.TestCase):
                 ant_cls,
                 species,
                 fitness_func,
-                initial_pheromones,
+                initial_pheromone,
                 elite_weight=elite_weight
             )
             self.assertEqual(elite_weight, trainer.elite_weight)
@@ -88,7 +88,7 @@ class TrainerTester(unittest.TestCase):
             ant_cls,
             species,
             fitness_func,
-            initial_pheromones
+            initial_pheromone
         )
         self.assertEqual(trainer.elite_weight, DEFAULT_ELITE_WEIGHT)
 
@@ -96,12 +96,12 @@ class TrainerTester(unittest.TestCase):
         """Test the get_state and _set_state methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -114,14 +114,14 @@ class TrainerTester(unittest.TestCase):
 
         # Check the state
         self.assertEqual(state["num_evals"], trainer.num_evals)
-        self.assertEqual(state["pheromones"], trainer.pheromones)
+        self.assertEqual(state["pheromone"], trainer.pheromone)
         self.assertEqual(state["elite"], trainer._elite)
 
         # Change the state
         elite = ParetoFront()
         elite.update([trainer._generate_ant()])
         state["num_evals"] = 100
-        state["pheromones"] = [np.full((num_nodes, num_nodes), 8, dtype=float)]
+        state["pheromone"] = [np.full((num_nodes, num_nodes), 8, dtype=float)]
         state["elite"] = elite
 
         # Set the new state
@@ -130,7 +130,7 @@ class TrainerTester(unittest.TestCase):
         # Test if the new values have been set
         self.assertEqual(state["num_evals"], trainer.num_evals)
         self.assertTrue(
-            np.all(state["pheromones"] == trainer.pheromones)
+            np.all(state["pheromone"] == trainer.pheromone)
         )
         self.assertTrue(
             np.all(state["elite"] == trainer._elite)
@@ -140,12 +140,12 @@ class TrainerTester(unittest.TestCase):
         """Test _new_state."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2.5]
+        initial_pheromone = 2.5
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -155,16 +155,16 @@ class TrainerTester(unittest.TestCase):
         trainer._init_internals()
         trainer._new_state()
 
-        # Check the pheromones matrices
-        self.assertIsInstance(trainer.pheromones, list)
+        # Check the pheromone matrices
+        self.assertIsInstance(trainer.pheromone, list)
         for (
             initial_pheromone,
-            pheromones_matrix
+            pheromone_matrix
         ) in zip(
-            trainer.initial_pheromones,
-            trainer.pheromones
+            trainer.initial_pheromone,
+            trainer.pheromone
         ):
-            self.assertTrue(np.all(pheromones_matrix == initial_pheromone))
+            self.assertTrue(np.all(pheromone_matrix == initial_pheromone))
 
         # Check the elite
         self.assertIsInstance(trainer._elite, ParetoFront)
@@ -174,12 +174,12 @@ class TrainerTester(unittest.TestCase):
         """Test _reset_state."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = (2, )
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -192,8 +192,8 @@ class TrainerTester(unittest.TestCase):
         # Reset the state
         trainer._reset_state()
 
-        # Check the pheromones
-        self.assertEqual(trainer.pheromones, None)
+        # Check the pheromone
+        self.assertEqual(trainer.pheromone, None)
 
         # Check the elite
         self.assertEqual(trainer._elite, None)
@@ -202,12 +202,12 @@ class TrainerTester(unittest.TestCase):
         """Test the best_solutions method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [3.7]
+        initial_pheromone = 3.7
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -236,39 +236,39 @@ class TrainerTester(unittest.TestCase):
         # Check that the solution in hof is sol1
         self.assertTrue(ant in best_ones[0])
 
-    def test_increase_pheromones(self):
-        """Test the _increase_pheromones method."""
+    def test_increase_pheromone(self):
+        """Test the _increase_pheromone method."""
 
-        def assert_path_pheromones_increment(trainer, ant, weight):
-            """Check the pheromones in all the arcs of a path.
+        def assert_path_pheromone_increment(trainer, ant, weight):
+            """Check the pheromone in all the arcs of a path.
 
-            All the arcs should have the same are ammount of pheromones.
+            All the arcs should have the same are ammount of pheromone.
             """
-            pheromones_value = (
-                trainer.initial_pheromones[0] +
-                ant.fitness.pheromones_amount[0] * weight
+            pheromone_value = (
+                trainer.initial_pheromone[0] +
+                ant.fitness.pheromone_amount[0] * weight
             )
             org = ant.path[-1]
             for dest in ant.path:
                 self.assertAlmostEqual(
-                    trainer.pheromones[0][org][dest],
-                    pheromones_value
+                    trainer.pheromone[0][org][dest],
+                    pheromone_value
                 )
                 self.assertAlmostEqual(
-                    trainer.pheromones[0][dest][org],
-                    pheromones_value
+                    trainer.pheromone[0][dest][org],
+                    pheromone_value
                 )
                 org = dest
 
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         elite_weight = 0.8
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
+            "initial_pheromone": initial_pheromone,
             "col_size": 1,
             "elite_weight": elite_weight
         }
@@ -278,31 +278,31 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
         trainer._start_iteration()
 
-        # Check the initial pheromones
-        pheromones_value = trainer.initial_pheromones[0]
+        # Check the initial pheromone
+        pheromone_value = trainer.initial_pheromone[0]
         self.assertTrue(
-            np.all(trainer.pheromones[0] == pheromones_value)
+            np.all(trainer.pheromone[0] == pheromone_value)
         )
 
         # Try with an empty elite
-        # Only the iteration-best ant should deposit pheromones
+        # Only the iteration-best ant should deposit pheromone
         trainer._generate_col()
         ant = trainer.col[0]
-        trainer._increase_pheromones()
-        assert_path_pheromones_increment(
+        trainer._increase_pheromone()
+        assert_path_pheromone_increment(
             trainer,
             ant,
             1 - trainer.elite_weight
         )
 
         # Update the elite and try with an empty colony
-        # Only the elite ant should deposit pheromones
+        # Only the elite ant should deposit pheromone
         trainer._init_search()
         trainer._start_iteration()
         trainer._elite.update([ant])
         trainer._col = []
-        trainer._increase_pheromones()
-        assert_path_pheromones_increment(
+        trainer._increase_pheromone()
+        assert_path_pheromone_increment(
             trainer,
             ant,
             trainer.elite_weight
@@ -312,12 +312,12 @@ class TrainerTester(unittest.TestCase):
         """Test the _do_iteration method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -338,12 +338,12 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer

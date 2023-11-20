@@ -34,11 +34,11 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.species
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.initial_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.heuristics
-.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.pheromones_influence
-.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.heuristics_influence
-.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.pheromones
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.heuristic
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleColACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.SingleColACO.current_iter
@@ -95,8 +95,8 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.SingleColACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.SingleColACO._deposit_pheromones
-.. automethod:: culebra.trainer.aco.abc.SingleColACO._increase_pheromones
-.. automethod:: culebra.trainer.aco.abc.SingleColACO._decrease_pheromones
-.. automethod:: culebra.trainer.aco.abc.SingleColACO._update_pheromones
+.. automethod:: culebra.trainer.aco.abc.SingleColACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleColACO._increase_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleColACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleColACO._update_pheromone
 

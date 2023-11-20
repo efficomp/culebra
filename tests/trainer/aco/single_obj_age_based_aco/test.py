@@ -46,11 +46,11 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromones": [1],
-            "max_pheromones": [3],
-            "heuristics": [np.ones((num_nodes, num_nodes))],
-            "pheromones_influence": [2],
-            "heuristics_influence": [5],
+            "initial_pheromone": 1,
+            "max_pheromone": 3,
+            "heuristic": np.ones((num_nodes, num_nodes)),
+            "pheromone_influence": 2,
+            "heuristic_influence": 5,
             "max_num_iters": 123,
             "custom_termination_func": max,
             "col_size": 6,
@@ -70,15 +70,15 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.species, params["species"])
         self.assertEqual(trainer.fitness_function, params["fitness_function"])
         self.assertEqual(
-            trainer.initial_pheromones, params["initial_pheromones"]
+            trainer.initial_pheromone[0], params["initial_pheromone"]
         )
-        self.assertEqual(trainer.max_pheromones, params["max_pheromones"])
-        self.assertEqual(trainer.heuristics, params["heuristics"])
+        self.assertEqual(trainer.max_pheromone[0], params["max_pheromone"])
+        self.assertTrue(np.all(trainer.heuristic[0] == params["heuristic"]))
         self.assertEqual(
-            trainer.pheromones_influence, params["pheromones_influence"]
+            trainer.pheromone_influence[0], params["pheromone_influence"]
         )
         self.assertEqual(
-            trainer.heuristics_influence, params["heuristics_influence"]
+            trainer.heuristic_influence[0], params["heuristic_influence"]
         )
         self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(

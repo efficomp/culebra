@@ -292,15 +292,15 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
         """
         return self.training_data.num_feats
 
-    def heuristics(self, species: Species) -> Tuple[ndarray, ...]:
-        """Get the heuristics matrix for ACO-based trainers.
+    def heuristic(self, species: Species) -> Tuple[ndarray, ...]:
+        """Get the heuristic matrix for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.solution.feature_selection.Species`
         :raises TypeError: If *species* is not an instance of
             :py:class:`~culebra.solution.feature_selection.Species`
 
-        :return: A tuple with only one heuristics matrix. Arcs between
+        :return: A tuple with only one heuristic matrix. Arcs between
             selectable features have a heuristic value of 1, while arcs
             involving any non-selectable feature or arcs from a feature to
             itself have a heuristic value of 0.
@@ -311,29 +311,29 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
         num_feats = species.num_feats
 
         # All the features should be considered
-        heuristics = ones((num_feats, num_feats))
+        heuristic = ones((num_feats, num_feats))
 
         # Ignore features with an index lower than min_feat
         min_feat = species.min_feat
         if min_feat > 0:
             for feat in range(num_feats):
                 for ignored in range(min_feat):
-                    heuristics[feat][ignored] = 0
-                    heuristics[ignored][feat] = 0
+                    heuristic[feat][ignored] = 0
+                    heuristic[ignored][feat] = 0
 
         # Ignore features with an index greater than max_feat
         max_feat = species.max_feat
         if max_feat < num_feats - 1:
             for feat in range(num_feats):
                 for ignored in range(max_feat + 1, num_feats):
-                    heuristics[feat][ignored] = 0
-                    heuristics[ignored][feat] = 0
+                    heuristic[feat][ignored] = 0
+                    heuristic[ignored][feat] = 0
 
         # The distance from a feature to itself is also ignored
         for index in range(min_feat, max_feat+1):
-            heuristics[index][index] = 0
+            heuristic[index][index] = 0
 
-        return (heuristics, )
+        return (heuristic, )
 
 
 class RBFSVCFitnessFunction(ClassificationFitnessFunction):

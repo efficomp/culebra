@@ -27,9 +27,67 @@ import unittest
 import numpy as np
 
 from culebra.trainer.aco import DEFAULT_ELITE_WEIGHT
-from culebra.trainer.aco.abc import WeightedElitistACO
+from culebra.trainer.aco.abc import SingleObjACO, WeightedElitistACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
+
+
+class MyTrainer(
+    SingleObjACO,
+    WeightedElitistACO
+):
+    """Dummy implementation of a trainer method."""
+
+    def _calculate_choice_info(self) -> None:
+        """Calculate a dummy choice info matrix."""
+        self._choice_info = self.pheromone[0] * self.heuristic[0]
+
+    def _decrease_pheromone(self) -> None:
+        """Decrease the amount of pheromone."""
+
+    def _increase_pheromone(self) -> None:
+        """Increase the amount of pheromone."""
+
+    @property
+    def pheromone(self):
+        """Get the pheromone matrices."""
+        return self._pheromone
+
+    def _get_state(self):
+        """Return the state of this trainer."""
+        # Get the state of the superclass
+        state = super()._get_state()
+
+        # Get the state of this class
+        state["pheromone"] = self._pheromone
+
+        return state
+
+    def _set_state(self, state):
+        """Set the state of this trainer."""
+        # Set the state of the superclass
+        super()._set_state(state)
+
+        # Set the state of this class
+        self._pheromone = state["pheromone"]
+
+    def _new_state(self):
+        """Generate a new trainer state."""
+        super()._new_state()
+        heuristic_shape = self._heuristic[0].shape
+        self._pheromone = [
+            np.full(
+                heuristic_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromone
+        ]
+
+    def _reset_state(self):
+        """Reset the trainer state."""
+        super()._reset_state()
+        self._pheromone = None
+
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
@@ -45,17 +103,17 @@ class TrainerTester(unittest.TestCase):
         """Test __init__`."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
+        initial_pheromone = 1
 
         # Try invalid types for elite_weight. Should fail
         invalid_elite_weight_types = (type, 'a')
         for elite_weight in invalid_elite_weight_types:
             with self.assertRaises(TypeError):
-                WeightedElitistACO(
+                MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
+                    initial_pheromone,
                     elite_weight=elite_weight
                 )
 
@@ -63,32 +121,32 @@ class TrainerTester(unittest.TestCase):
         invalid_elite_weight_values = (-0.5, 1.5)
         for elite_weight in invalid_elite_weight_values:
             with self.assertRaises(ValueError):
-                WeightedElitistACO(
+                MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
+                    initial_pheromone,
                     elite_weight=elite_weight
                 )
 
         # Try a valid value for elite_weight
         valid_elite_weight_values = (0.0, 0.5, 1.0)
         for elite_weight in valid_elite_weight_values:
-            trainer = WeightedElitistACO(
+            trainer = MyTrainer(
                 ant_cls,
                 species,
                 fitness_func,
-                initial_pheromones,
+                initial_pheromone,
                 elite_weight=elite_weight
             )
             self.assertEqual(elite_weight, trainer.elite_weight)
 
         # Test default params
-        trainer = WeightedElitistACO(
+        trainer = MyTrainer(
             ant_cls,
             species,
             fitness_func,
-            initial_pheromones
+            initial_pheromone
         )
         self.assertEqual(trainer.elite_weight, DEFAULT_ELITE_WEIGHT)
 

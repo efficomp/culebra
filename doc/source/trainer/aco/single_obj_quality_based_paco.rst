@@ -34,12 +34,12 @@ Properties
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.species
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.initial_pheromones
-.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.max_pheromones
-.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.heuristics
-.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.pheromones_influence
-.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.heuristics_influence
-.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.pheromones
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.heuristic
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.pheromone
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.choice_info
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.current_iter
@@ -98,9 +98,9 @@ Private methods
 .. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._generate_col
-.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._deposit_pheromones
-.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._increase_pheromones
-.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._decrease_pheromones
-.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._update_pheromones
+.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._increase_pheromone
+.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.SingleObjAgeBasedPACO._update_pop
 

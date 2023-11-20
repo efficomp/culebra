@@ -33,7 +33,7 @@ Class attributes
 Properties
 ----------
 .. autoproperty:: culebra.abc.Fitness.num_obj
-.. autoproperty:: culebra.abc.Fitness.pheromones_amount
+.. autoproperty:: culebra.abc.Fitness.pheromone_amount
 
 Methods
 -------

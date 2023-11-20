@@ -171,15 +171,15 @@ class PathLength(FitnessFunction):
         """
         return self.distances.shape[0]
 
-    def heuristics(self, species: Species) -> Tuple[np.ndarray]:
-        """Get the heuristics matrix for ACO-based trainers.
+    def heuristic(self, species: Species) -> Tuple[np.ndarray]:
+        """Get the heuristic matrix for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.solution.tsp.Species`
         :raises TypeError: If *species* is not an instance of
             :py:class:`~culebra.solution.tsp.Species`
 
-        :return: A tuple with only one heuristics matrix. Arcs involving any
+        :return: A tuple with only one heuristic matrix. Arcs involving any
             banned node or arcs from a node to itself have a heuristic value
             of 0. For the rest of arcs, the reciprocal of their nodes distance
             is used as heuristic
@@ -189,7 +189,7 @@ class PathLength(FitnessFunction):
 
         # All the distances should be considered
         with np.errstate(divide='ignore'):
-            heuristics = np.where(
+            heuristic = np.where(
                 self.distances != 0.,
                 1 / self.distances,
                 0.
@@ -197,12 +197,12 @@ class PathLength(FitnessFunction):
 
         # Ignore banned nodes and arcs from a node to itself
         for node in range(species.num_nodes):
-            heuristics[node][node] = 0
+            heuristic[node][node] = 0
             for ignored in species.banned_nodes:
-                heuristics[node][ignored] = 0
-                heuristics[ignored][node] = 0
+                heuristic[node][ignored] = 0
+                heuristic[ignored][node] = 0
 
-        return (heuristics, )
+        return (heuristic, )
 
     def greedy_solution(self, species: Species) -> Solution:
         """Return a greddy solution for the problem.
@@ -223,7 +223,7 @@ class PathLength(FitnessFunction):
 
         # If the path can be constructed ...
         if max_len > 0:
-            heuristics = self.heuristics(species)[0]
+            heuristic = self.heuristic(species)[0]
 
             # Start with a feasible node
             current_node = random.randint(0, species.num_nodes-1)
@@ -233,10 +233,10 @@ class PathLength(FitnessFunction):
 
             # Complete the greedy path
             while len(current_path) < max_len:
-                current_heuristics = heuristics[current_node]
-                current_heuristics[current_path] = 0
+                current_heuristic = heuristic[current_node]
+                current_heuristic[current_path] = 0
                 current_node = np.argwhere(
-                    current_heuristics == np.max(current_heuristics)
+                    current_heuristic == np.max(current_heuristic)
                 ).flatten()[0]
                 current_path.append(current_node)
 

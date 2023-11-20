@@ -37,16 +37,16 @@ from culebra.fitness_function.tsp import PathLength
 class MyTrainer(SingleObjACO):
     """Dummy implementation of a trainer method."""
 
-    def _decrease_pheromones(self) -> None:
-        """Decrease the amount of pheromones."""
+    def _decrease_pheromone(self) -> None:
+        """Decrease the amount of pheromone."""
 
-    def _increase_pheromones(self) -> None:
-        """Increase the amount of pheromones."""
+    def _increase_pheromone(self) -> None:
+        """Increase the amount of pheromone."""
 
     @property
-    def pheromones(self):
-        """Get the pheromones matrices."""
-        return self._pheromones
+    def pheromone(self):
+        """Get the pheromone matrices."""
+        return self._pheromone
 
     def _get_state(self):
         """Return the state of this trainer."""
@@ -54,7 +54,7 @@ class MyTrainer(SingleObjACO):
         state = super()._get_state()
 
         # Get the state of this class
-        state["pheromones"] = self._pheromones
+        state["pheromone"] = self._pheromone
 
         return state
 
@@ -64,24 +64,24 @@ class MyTrainer(SingleObjACO):
         super()._set_state(state)
 
         # Set the state of this class
-        self._pheromones = state["pheromones"]
+        self._pheromone = state["pheromone"]
 
     def _new_state(self):
         """Generate a new trainer state."""
         super()._new_state()
-        heuristics_shape = self._heuristics[0].shape
-        self._pheromones = [
+        heuristic_shape = self._heuristic[0].shape
+        self._pheromone = [
             np.full(
-                heuristics_shape,
+                heuristic_shape,
                 initial_pheromone,
                 dtype=float
-            ) for initial_pheromone in self.initial_pheromones
+            ) for initial_pheromone in self.initial_pheromone
         ]
 
     def _reset_state(self):
         """Reset the trainer state."""
         super()._reset_state()
-        self._pheromones = None
+        self._pheromone = None
 
 
 class MyFitnessFunc(PathLength):
@@ -94,10 +94,10 @@ class MyFitnessFunc(PathLength):
         names = ("Len", "Other")
         thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
 
-    def heuristics(self, species):
-        """Define a dummy heuristics."""
-        (the_heuristics, ) = super().heuristics(species)
-        return (the_heuristics, the_heuristics * 2)
+    def heuristic(self, species):
+        """Define a dummy heuristic."""
+        (the_heuristic, ) = super().heuristic(species)
+        return (the_heuristic, the_heuristic * 2)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Define a dummy evaluation."""
@@ -118,7 +118,7 @@ class TrainerTester(unittest.TestCase):
         """Test the fitness_function property`."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
+        initial_pheromone = 1
 
         # Try invalid types for fitness function. Should fail
         invalid_fitness_functions = (type, 'a')
@@ -128,7 +128,7 @@ class TrainerTester(unittest.TestCase):
                     ant_cls,
                     species,
                     invalid_fitness_func,
-                    initial_pheromones
+                    initial_pheromone
                 )
 
         # Try invalid values for fitness function. Should fail
@@ -138,216 +138,272 @@ class TrainerTester(unittest.TestCase):
                 ant_cls,
                 species,
                 invalid_fitness_func,
-                initial_pheromones
+                initial_pheromone
             )
 
-    def test_initial_pheromones(self):
-        """Test the initial_pheromones property`."""
+    def test_initial_pheromone(self):
+        """Test the initial_pheromone property."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
+        initial_pheromone = 1
 
-        # Try invalid types for initial_pheromones. Should fail
-        invalid_initial_pheromones = (type, 1)
-        for initial_pheromones in invalid_initial_pheromones:
+        # Try invalid types for initial_pheromone. Should fail
+        invalid_initial_pheromone = (type, None, max)
+        for initial_pheromone in invalid_initial_pheromone:
             with self.assertRaises(TypeError):
                 MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones
+                    initial_pheromone
                 )
 
-        # Try invalid values for initial_pheromones. Should fail
-        invalid_initial_pheromones = [
-            (-1, ), (max, ), (0, ), (1, 2), (1, 2, 3)
-        ]
-        for initial_pheromones in invalid_initial_pheromones:
+        # Try invalid values for initial_pheromone. Should fail
+        invalid_initial_pheromone = [
+            (-1, ), (max, ), (0, ), (), (1, 2, 3), ('a'), -1, 0, 'a'
+            ]
+        for initial_pheromone in invalid_initial_pheromone:
             with self.assertRaises(ValueError):
                 MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones
+                    initial_pheromone
                 )
 
-        # Try valid values for initial_pheromones
-        initial_pheromones = ([2], [3])
-        for initial_pher in initial_pheromones:
-            trainer = MyTrainer(
-                ant_cls,
-                species,
-                fitness_func,
-                initial_pher
-            )
-            self.assertEqual(trainer.initial_pheromones, initial_pher)
-
-    def test_heuristics(self):
-        """Test the heuristics property`."""
-        ant_cls = Ant
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
-
-        # Try invalid types for heuristics. Should fail
-        invalid_heuristics = (type, 1)
-        for heuristics in invalid_heuristics:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    ant_cls,
-                    species,
-                    fitness_func,
-                    initial_pheromones,
-                    heuristics=heuristics
-                )
-
-        # Try invalid values for heuristics. Should fail
-        invalid_heuristics = (
-            # Empty
-            (),
-            # Wrong shape
-            (np.ones(shape=(num_nodes, num_nodes + 1), dtype=float), ),
-            # Negative values
-            (np.ones(shape=(num_nodes, num_nodes), dtype=float) * -1, ),
-            # Different shapes
-            (
-                np.ones(shape=(num_nodes, num_nodes), dtype=float),
-                np.ones(shape=(num_nodes+1, num_nodes+1), dtype=float),
-            ),
-            # Empty matrix
-            (np.ones(shape=(0, 0), dtype=float), ),
-            # Wrong number of matrices
-            (np.ones(shape=(num_nodes, num_nodes), dtype=float), ) * 2,
-            (np.ones(shape=(num_nodes, num_nodes), dtype=float), ) * 3,
-        )
-        for heuristics in invalid_heuristics:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    ant_cls,
-                    species,
-                    fitness_func,
-                    initial_pheromones,
-                    heuristics=heuristics
-                )
-
-        # Try a valid value for heuristics
-        heuristics = (
-            np.ones(shape=(num_nodes, num_nodes), dtype=float),
-        )
+        # Try valid values for initial_pheromone
+        initial_pheromone = 3
         trainer = MyTrainer(
             ant_cls,
             species,
             fitness_func,
-            initial_pheromones,
-            heuristics=heuristics
+            initial_pheromone
         )
-        for h1, h2 in zip(trainer.heuristics, heuristics):
-            self.assertTrue(np.all(h1 == h2))
+        self.assertEqual(trainer.initial_pheromone, [initial_pheromone])
 
-    def test_pheromones_influence(self):
-        """Test the pheromones_influence property`."""
+        initial_pheromone = [2]
+        trainer = MyTrainer(
+            ant_cls,
+            species,
+            fitness_func,
+            initial_pheromone
+        )
+        self.assertEqual(trainer.initial_pheromone, initial_pheromone)
+
+    def test_heuristic(self):
+        """Test the heuristic property."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
-
-        # Try invalid types for pheromones_influence. Should fail
-        invalid_pheromones_influence = (type, 1)
-        for pheromones_influence in invalid_pheromones_influence:
+        initial_pheromone = 1
+        # Try invalid types for heuristic. Should fail
+        invalid_heuristic = (type, 1)
+        for heuristic in invalid_heuristic:
             with self.assertRaises(TypeError):
                 MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
-                    pheromones_influence=pheromones_influence
+                    initial_pheromone,
+                    heuristic=heuristic
                 )
 
-        # Try invalid values for pheromones_influence. Should fail
-        invalid_pheromones_influence = [(-1, ), (max, ), (), (1, 2, 3)]
-        for pheromones_influence in invalid_pheromones_influence:
+        # Try invalid values for heuristic. Should fail
+        invalid_heuristic = (
+            # Empty
+            (),
+            # Wrong shape
+            (np.ones(shape=(num_nodes, num_nodes + 1), dtype=float), ),
+            np.ones(shape=(num_nodes, num_nodes + 1), dtype=float),
+            [[1, 2, 3], [4, 5, 6]],
+            ([[1, 2, 3], [4, 5, 6]], ),
+            [[1, 2], [3, 4], [5, 6]],
+            ([[1, 2], [3, 4], [5, 6]], ),
+            # Negative values
+            [np.ones(shape=(num_nodes, num_nodes), dtype=float) * -1],
+            np.ones(shape=(num_nodes, num_nodes), dtype=float) * -1,
+            # Empty matrix
+            (np.ones(shape=(0, 0), dtype=float), ),
+            np.ones(shape=(0, 0), dtype=float),
+            # Wrong number of matrices
+            (np.ones(shape=(num_nodes, num_nodes), dtype=float), ) * 3,
+        )
+        for heuristic in invalid_heuristic:
             with self.assertRaises(ValueError):
                 MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
-                    pheromones_influence=pheromones_influence
+                    initial_pheromone,
+                    heuristic=heuristic
                 )
 
-        # Try valid values for pheromones_influence
-        valid_pheromones_influence = ([2], [0])
-        for pheromones_influence in valid_pheromones_influence:
+        # Try single two-dimensional array-like objects
+        valid_heuristic = (
+            np.full(shape=(num_nodes, num_nodes), fill_value=4, dtype=float),
+            [[1, 2], [3, 4]]
+        )
+        for heuristic in valid_heuristic:
             trainer = MyTrainer(
                 ant_cls,
                 species,
                 fitness_func,
-                initial_pheromones,
-                pheromones_influence=pheromones_influence
+                initial_pheromone,
+                heuristic=heuristic
             )
-            self.assertIsInstance(trainer.pheromones_influence, list)
-            self.assertEqual(
-                trainer.pheromones_influence, pheromones_influence
-            )
+            for heur in trainer.heuristic:
+                self.assertTrue(np.all(heur == np.asarray(heuristic)))
 
-    def test_heuristics_influence(self):
-        """Test the heuristics_influence property`."""
+        # Try sequences of single two-dimensional array-like objects
+        valid_heuristic = (
+            [np.ones(shape=(num_nodes, num_nodes), dtype=float)],
+            [[[1, 2], [3, 4]]],
+            ([[1, 2], [3, 4]], )
+        )
+        for heuristic in valid_heuristic:
+            trainer = MyTrainer(
+                ant_cls,
+                species,
+                fitness_func,
+                initial_pheromone,
+                heuristic=heuristic
+            )
+            for heur in trainer.heuristic:
+                self.assertTrue(np.all(heur == np.asarray(heuristic[0])))
+
+    def test_pheromone_influence(self):
+        """Test the pheromone_influence property."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [1]
+        initial_pheromone = 1
 
-        # Try invalid types for heuristics_influence. Should fail
-        invalid_heuristics_influence = (type, 1)
-        for heuristics_influence in invalid_heuristics_influence:
+        # Try invalid types for pheromone_influence. Should fail
+        invalid_pheromone_influence = (type, max)
+        for pheromone_influence in invalid_pheromone_influence:
             with self.assertRaises(TypeError):
                 MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
-                    heuristics_influence=heuristics_influence
+                    initial_pheromone,
+                    pheromone_influence=pheromone_influence
                 )
 
-        # Try invalid values for heuristics_influence. Should fail
-        invalid_heuristics_influence = [
-            (-1, ), (max, ), (), (1, 2), (1, 2, 3)
-        ]
-        for heuristics_influence in invalid_heuristics_influence:
+        # Try invalid values for pheromone_influence. Should fail
+        invalid_pheromone_influence = [
+            (-1, ), (max, ), (), (1, 2, 3), ('a'), -1, 'a'
+            ]
+        for pheromone_influence in invalid_pheromone_influence:
             with self.assertRaises(ValueError):
                 MyTrainer(
                     ant_cls,
                     species,
                     fitness_func,
-                    initial_pheromones,
-                    heuristics_influence=heuristics_influence
+                    initial_pheromone,
+                    pheromone_influence=pheromone_influence
                 )
 
-        # Try valid values for heuristics_influence
-        valid_heuristics_influence = ([3], [0])
-        for heuristics_influence in valid_heuristics_influence:
+        # Try valid values for pheromone_influence
+        valid_pheromone_influence = [3, 0]
+        for pheromone_influence in valid_pheromone_influence:
             trainer = MyTrainer(
                 ant_cls,
                 species,
                 fitness_func,
-                initial_pheromones,
-                heuristics_influence=heuristics_influence
+                initial_pheromone,
+                pheromone_influence=pheromone_influence
             )
-            self.assertIsInstance(trainer.heuristics_influence, list)
             self.assertEqual(
-                trainer.heuristics_influence, heuristics_influence
+                trainer.pheromone_influence, [pheromone_influence]
+            )
+
+        valid_pheromone_influence = [(0,), [2]]
+        for pheromone_influence in valid_pheromone_influence:
+            trainer = MyTrainer(
+                ant_cls,
+                species,
+                fitness_func,
+                initial_pheromone,
+                pheromone_influence=pheromone_influence
+            )
+            self.assertEqual(
+                trainer.pheromone_influence,
+                list(pheromone_influence)
+            )
+
+    def test_heuristic_influence(self):
+        """Test the heuristic_influence property."""
+        ant_cls = Ant
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromone = 1
+
+        # Try invalid types for heuristic_influence. Should fail
+        invalid_heuristic_influence = (type, max)
+        for heuristic_influence in invalid_heuristic_influence:
+            with self.assertRaises(TypeError):
+                MyTrainer(
+                    ant_cls,
+                    species,
+                    fitness_func,
+                    initial_pheromone,
+                    heuristic_influence=heuristic_influence
+                )
+
+        # Try invalid values for heuristic_influence. Should fail
+        invalid_heuristic_influence = [
+            (-1, ), (max, ), (), (1, 2, 3), ('a'), -1, 'a'
+            ]
+        for heuristic_influence in invalid_heuristic_influence:
+            with self.assertRaises(ValueError):
+                MyTrainer(
+                    ant_cls,
+                    species,
+                    fitness_func,
+                    initial_pheromone,
+                    heuristic_influence=heuristic_influence
+                )
+
+        # Try valid values for heuristic_influence
+        valid_heuristic_influence = [3, 0]
+        for heuristic_influence in valid_heuristic_influence:
+            trainer = MyTrainer(
+                ant_cls,
+                species,
+                fitness_func,
+                initial_pheromone,
+                heuristic_influence=heuristic_influence
+            )
+            self.assertEqual(
+                trainer.heuristic_influence, [heuristic_influence]
+            )
+
+        valid_heuristic_influence = [(0,), [2]]
+        for heuristic_influence in valid_heuristic_influence:
+            trainer = MyTrainer(
+                ant_cls,
+                species,
+                fitness_func,
+                initial_pheromone,
+                heuristic_influence=heuristic_influence
+            )
+            self.assertEqual(
+                trainer.heuristic_influence,
+                list(heuristic_influence)
             )
 
     def test_calculate_choice_info(self):
         """Test the _calculate_choice_info method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
-        pheromones_influence = [2]
-        heuristics_influence = [3]
+        initial_pheromone = 2
+        pheromone_influence = 2
+        heuristic_influence = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones,
-            "pheromones_influence": pheromones_influence,
-            "heuristics_influence": heuristics_influence
+            "initial_pheromone": initial_pheromone,
+            "pheromone_influence": pheromone_influence,
+            "heuristic_influence": heuristic_influence
 
         }
 
@@ -375,11 +431,11 @@ class TrainerTester(unittest.TestCase):
                     self.assertAlmostEqual(
                         choice_info[org][dest],
                         math.pow(
-                            trainer.pheromones[0][org][dest],
-                            trainer.pheromones_influence[0]
+                            trainer.pheromone[0][org][dest],
+                            trainer.pheromone_influence[0]
                         ) * math.pow(
-                            trainer.heuristics[0][org][dest],
-                            trainer.heuristics_influence[0]
+                            trainer.heuristic[0][org][dest],
+                            trainer.heuristic_influence[0]
                         )
                     )
 

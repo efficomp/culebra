@@ -246,7 +246,7 @@ class Fitness(DeapFitness, Base):
         return len(self.weights)
 
     @property
-    def pheromones_amount(self) -> Tuple[float, ...]:
+    def pheromone_amount(self) -> Tuple[float, ...]:
         """Return the amount of pheromone to be deposited.
 
         This property is intended for ACO-based approaches. By default, the
@@ -457,15 +457,15 @@ class FitnessFunction(Base):
         """
         return None
 
-    def heuristics(self, species: Species) -> Tuple[np.ndarray, ...] | None:
-        """Get the heuristics matrix(ces) for ACO-based trainers.
+    def heuristic(self, species: Species) -> Tuple[np.ndarray, ...] | None:
+        """Get the heuristic matrix(ces) for ACO-based trainers.
 
         Subclasses solvable with ACO-based approaches should override this
         method. Otherwise, :py:data:`None` is returned
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.abc.Species`
-        :return: A tuple of heuristics matrices if an ACO-based approach is
+        :return: A tuple of heuristic matrices if an ACO-based approach is
             applicable or :py:data:`None` otherwise
         :rtype: :py:class:`tuple` of :py:class:`~numpy.ndarray`
         """

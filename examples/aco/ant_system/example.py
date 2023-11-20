@@ -50,8 +50,8 @@ fitness_func = PathLength(distances)
 # Generate and evaluate a greedy solution for the problem
 greedy_solution = fitness_func.greedy_solution(species)
 
-initial_pheromones = tuple(
-    num_nodes * pher for pher in greedy_solution.fitness.pheromones_amount
+initial_pheromone = tuple(
+    num_nodes * pher for pher in greedy_solution.fitness.pheromone_amount
 )
 
 # Trainer parameters
@@ -59,7 +59,7 @@ params = {
     "solution_cls": Ant,
     "species": species,
     "fitness_function": fitness_func,
-    "initial_pheromones": initial_pheromones,
+    "initial_pheromone": initial_pheromone,
     "max_num_iters": 200,
     "checkpoint_enable": False
 }

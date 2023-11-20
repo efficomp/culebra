@@ -54,5 +54,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.svc_optimization.KappaC.heuristics
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC.heuristic
 .. automethod:: culebra.fitness_function.svc_optimization.KappaC.evaluate

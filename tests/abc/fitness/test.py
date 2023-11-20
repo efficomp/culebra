@@ -103,13 +103,13 @@ class FitnessTester(unittest.TestCase):
         fitness = MyFitness()
         self.assertEqual(fitness.num_obj, 2)
 
-    def test_pheromones_amount(self):
-        """Test the pheromones_amount property."""
+    def test_pheromone_amount(self):
+        """Test the pheromone_amount property."""
         # Construct a fitness
         fitness = MyFitness(values=(2, 3))
 
         # The fitness values and context should have been deleted
-        self.assertEqual(fitness.pheromones_amount, (2, 1/3))
+        self.assertEqual(fitness.pheromone_amount, (2, 1/3))
 
     def test_dominates(self):
         """Test the :py:meth:`~culebra.abc.Fitness.dominates` method."""

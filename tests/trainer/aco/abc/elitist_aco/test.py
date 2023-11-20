@@ -30,64 +30,14 @@ from deap.tools import ParetoFront
 
 from culebra.abc import Fitness
 from culebra.trainer.aco import DEFAULT_CONVERGENCE_CHECK_FREQ
-from culebra.trainer.aco.abc import ElitistACO
+from culebra.trainer.aco.abc import (
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
+    ElitistACO
+)
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function import DEFAULT_THRESHOLD
 from culebra.fitness_function.tsp import PathLength
-
-
-class MyTrainer(ElitistACO):
-    """Dummy implementation of a trainer method."""
-
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromones[0] * self.heuristics[0]
-
-    def _decrease_pheromones(self) -> None:
-        """Decrease the amount of pheromones."""
-
-    def _increase_pheromones(self) -> None:
-        """Increase the amount of pheromones."""
-
-    @property
-    def pheromones(self):
-        """Get the pheromones matrices."""
-        return self._pheromones
-
-    def _get_state(self):
-        """Return the state of this trainer."""
-        # Get the state of the superclass
-        state = super()._get_state()
-
-        # Get the state of this class
-        state["pheromones"] = self._pheromones
-
-        return state
-
-    def _set_state(self, state):
-        """Set the state of this trainer."""
-        # Set the state of the superclass
-        super()._set_state(state)
-
-        # Set the state of this class
-        self._pheromones = state["pheromones"]
-
-    def _new_state(self):
-        """Generate a new trainer state."""
-        super()._new_state()
-        heuristics_shape = self._heuristics[0].shape
-        self._pheromones = [
-            np.full(
-                heuristics_shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromones
-        ]
-
-    def _reset_state(self):
-        """Reset the trainer state."""
-        super()._reset_state()
-        self._pheromones = None
 
 
 class MyFitnessFunc(PathLength):
@@ -100,14 +50,72 @@ class MyFitnessFunc(PathLength):
         names = ("Len", "Other")
         thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
 
-    def heuristics(self, species):
-        """Define a dummy heuristics."""
-        (the_heuristics, ) = super().heuristics(species)
-        return (the_heuristics, the_heuristics * 2)
+    def heuristic(self, species):
+        """Define a dummy heuristic."""
+        (the_heuristic, ) = super().heuristic(species)
+        return (the_heuristic, the_heuristic * 2)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Define a dummy evaluation."""
         return super().evaluate(sol) + (3,)
+
+
+class MyTrainer(
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
+    ElitistACO
+):
+    """Dummy implementation of a trainer method."""
+
+    def _calculate_choice_info(self) -> None:
+        """Calculate a dummy choice info matrix."""
+        self._choice_info = self.pheromone[0] * self.heuristic[0]
+
+    def _decrease_pheromone(self) -> None:
+        """Decrease the amount of pheromone."""
+
+    def _increase_pheromone(self) -> None:
+        """Increase the amount of pheromone."""
+
+    @property
+    def pheromone(self):
+        """Get the pheromone matrices."""
+        return self._pheromone
+
+    def _get_state(self):
+        """Return the state of this trainer."""
+        # Get the state of the superclass
+        state = super()._get_state()
+
+        # Get the state of this class
+        state["pheromone"] = self._pheromone
+
+        return state
+
+    def _set_state(self, state):
+        """Set the state of this trainer."""
+        # Set the state of the superclass
+        super()._set_state(state)
+
+        # Set the state of this class
+        self._pheromone = state["pheromone"]
+
+    def _new_state(self):
+        """Generate a new trainer state."""
+        super()._new_state()
+        heuristic_shape = self._heuristic[0].shape
+        self._pheromone = [
+            np.full(
+                heuristic_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromone
+        ]
+
+    def _reset_state(self):
+        """Reset the trainer state."""
+        super()._reset_state()
+        self._pheromone = None
 
 
 num_nodes = 25
@@ -125,7 +133,7 @@ class TrainerTester(unittest.TestCase):
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
         valid_fitness_func = fitness_func
-        valid_initial_pheromones = [1]
+        valid_initial_pheromone = 1
 
         # Try invalid types for convergence_check_freq. Should fail
         invalid_convergence_check_freq = (type, 'a', 1.5)
@@ -135,7 +143,7 @@ class TrainerTester(unittest.TestCase):
                     valid_ant_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_initial_pheromones,
+                    valid_initial_pheromone,
                     convergence_check_freq=convergence_check_freq
                 )
 
@@ -147,7 +155,7 @@ class TrainerTester(unittest.TestCase):
                     valid_ant_cls,
                     valid_species,
                     valid_fitness_func,
-                    valid_initial_pheromones,
+                    valid_initial_pheromone,
                     convergence_check_freq=convergence_check_freq
                 )
 
@@ -158,7 +166,7 @@ class TrainerTester(unittest.TestCase):
                 valid_ant_cls,
                 valid_species,
                 valid_fitness_func,
-                valid_initial_pheromones,
+                valid_initial_pheromone,
                 convergence_check_freq=convergence_check_freq
             )
             self.assertEqual(
@@ -171,7 +179,7 @@ class TrainerTester(unittest.TestCase):
             valid_ant_cls,
             valid_species,
             valid_fitness_func,
-            valid_initial_pheromones
+            valid_initial_pheromone
         )
 
         self.assertEqual(
@@ -183,12 +191,12 @@ class TrainerTester(unittest.TestCase):
         """Test the get_state and _set_state methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -222,12 +230,12 @@ class TrainerTester(unittest.TestCase):
         """Test _new_state."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2, 3]
+        initial_pheromone = [2, 3]
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -245,12 +253,12 @@ class TrainerTester(unittest.TestCase):
         """Test _reset_state."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = (2, )
+        initial_pheromone = (2, 4)
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -270,12 +278,12 @@ class TrainerTester(unittest.TestCase):
         """Test the best_solutions method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2, 3]
+        initial_pheromone = [2, 3]
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -308,12 +316,12 @@ class TrainerTester(unittest.TestCase):
         """Test the _has_converged method."""
         # Trainer parameters
         species = Species(num_nodes)
-        initial_pheromones = [10]
+        initial_pheromone = 10
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -325,31 +333,35 @@ class TrainerTester(unittest.TestCase):
         self.assertFalse(trainer._has_converged())
 
         # Simulate convergence with all the nodes banned
-        trainer.pheromones[0] = np.full((num_nodes, num_nodes), 0)
+        for i in range(trainer.num_pheromone_matrices):
+            trainer.pheromone[i] = np.full((num_nodes, num_nodes), 0)
         self.assertTrue(trainer._has_converged())
 
         # Deposit the maximum pheremone amount over one arc only
-        trainer.pheromones[0][0][0] = initial_pheromones[0]
+        for pher in trainer.pheromone:
+            pher[0][0] = initial_pheromone
         self.assertFalse(trainer._has_converged())
 
         # Deposit the maximum pheremone amount over two arcs
-        trainer.pheromones[0][0][1] = initial_pheromones[0]
+        for pher in trainer.pheromone:
+            pher[0][1] = initial_pheromone
         self.assertTrue(trainer._has_converged())
 
         # Deposit the maximum pheremone amount over more than two arcs
-        trainer.pheromones[0][0][2] = initial_pheromones[0]
+        for pher in trainer.pheromone:
+            pher[0][2] = initial_pheromone
         self.assertFalse(trainer._has_converged())
 
-    def test_reset_pheromones(self):
-        """Test the reset_pheromones method."""
+    def test_reset_pheromone(self):
+        """Test the reset_pheromone method."""
         # Trainer parameters
         species = Species(num_nodes)
-        initial_pheromones = [10]
+        initial_pheromone = 10
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -357,35 +369,35 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
 
         # Simulate convergence
-        heuristics_shape = trainer._heuristics[0].shape
-        trainer._pheromones = [
+        heuristic_shape = trainer._heuristic[0].shape
+        trainer._pheromone = [
             np.zeros(
-                heuristics_shape,
+                heuristic_shape,
                 dtype=float
-            ) for initial_pheromone in initial_pheromones
-        ]
+            )
+        ] * trainer.num_pheromone_matrices
 
-        # Check the pheromones
-        for pher in trainer.pheromones:
+        # Check the pheromone
+        for pher in trainer.pheromone:
             self.assertTrue(np.all(pher == 0))
 
-        # Reset the pheromones
-        trainer._reset_pheromones()
+        # Reset the pheromone
+        trainer._reset_pheromone()
 
-        # Check the pheromones
-        for pher in trainer.pheromones:
-            self.assertTrue(np.all(pher == initial_pheromones[0]))
+        # Check the pheromone
+        for pher in trainer.pheromone:
+            self.assertTrue(np.all(pher == initial_pheromone))
 
     def test_do_iteration(self):
         """Test the _do_iteration method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
@@ -404,35 +416,35 @@ class TrainerTester(unittest.TestCase):
 
         # Simulate convergence
         trainer._current_iter = trainer.convergence_check_freq
-        heuristics_shape = trainer._heuristics[0].shape
-        trainer._pheromones = [
+        heuristic_shape = trainer._heuristic[0].shape
+        trainer._pheromone = [
             np.zeros(
-                heuristics_shape,
+                heuristic_shape,
                 dtype=float
-            ) for initial_pheromone in initial_pheromones
-        ]
+            )
+        ] * trainer.num_pheromone_matrices
 
-        # Check the pheromones
-        for pher in trainer.pheromones:
+        # Check the pheromone
+        for pher in trainer.pheromone:
             self.assertTrue(np.all(pher == 0))
 
         # Do an interation
         trainer._do_iteration()
 
-        # Check if the pheromones have been reset
-        for pher in trainer.pheromones:
-            self.assertTrue(np.all(pher == initial_pheromones[0]))
+        # Check if the pheromone have been reset
+        for pher in trainer.pheromone:
+            self.assertTrue(np.all(pher == initial_pheromone))
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromones = [2]
+        initial_pheromone = [2, 5]
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromones": initial_pheromones
+            "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer

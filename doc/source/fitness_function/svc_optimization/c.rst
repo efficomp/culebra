@@ -51,5 +51,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.svc_optimization.C.heuristics
+.. automethod:: culebra.fitness_function.svc_optimization.C.heuristic
 .. automethod:: culebra.fitness_function.svc_optimization.C.evaluate

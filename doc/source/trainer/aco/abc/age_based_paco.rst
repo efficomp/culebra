@@ -34,12 +34,12 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.species
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.initial_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.max_pheromones
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.heuristics
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.pheromones_influence
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.heuristics_influence
-.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.pheromones
+.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.heuristic
+.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.AgeBasedPACO.current_iter
@@ -98,9 +98,9 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._deposit_pheromones
-.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._increase_pheromones
-.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._decrease_pheromones
-.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._update_pheromones
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._increase_pheromone
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._update_pop
 
