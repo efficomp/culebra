@@ -27,11 +27,9 @@ import math
 
 import numpy as np
 
-from culebra.abc import Fitness
 from culebra.trainer.aco.abc import SingleObjACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
 
 
 class MyTrainer(SingleObjACO):
@@ -84,31 +82,15 @@ class MyTrainer(SingleObjACO):
         self._pheromone = None
 
 
-class MyFitnessFunc(PathLength):
-    """Dummy fitness function with two objectives."""
-
-    class Fitness(Fitness):
-        """Fitness class."""
-
-        weights = (-1.0, 1.0)
-        names = ("Len", "Other")
-        thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
-
-    def heuristic(self, species):
-        """Define a dummy heuristic."""
-        (the_heuristic, ) = super().heuristic(species)
-        return (the_heuristic, the_heuristic * 2)
-
-    def evaluate(self, sol, index=None, representatives=None):
-        """Define a dummy evaluation."""
-        return super().evaluate(sol) + (3,)
-
-
 num_nodes = 25
-optimum_path = np.random.permutation(num_nodes)
-fitness_func = PathLength.fromPath(optimum_path)
+optimum_paths = [
+    np.random.permutation(num_nodes),
+    np.random.permutation(num_nodes)
+]
+fitness_func_single = SinglePathLength.fromPath(optimum_paths[0])
+fitness_func_multi = DoublePathLength.fromPath(*optimum_paths)
 banned_nodes = [0, num_nodes-1]
-feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
+feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
@@ -132,7 +114,7 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Try invalid values for fitness function. Should fail
-        invalid_fitness_func = MyFitnessFunc.fromPath(optimum_path)
+        invalid_fitness_func = fitness_func_multi
         with self.assertRaises(ValueError):
             MyTrainer(
                 ant_cls,
@@ -154,7 +136,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone
                 )
 
@@ -167,7 +149,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone
                 )
 
@@ -176,7 +158,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_single,
             initial_pheromone
         )
         self.assertEqual(trainer.initial_pheromone, [initial_pheromone])
@@ -185,7 +167,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_single,
             initial_pheromone
         )
         self.assertEqual(trainer.initial_pheromone, initial_pheromone)
@@ -202,7 +184,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic=heuristic
                 )
@@ -232,7 +214,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic=heuristic
                 )
@@ -246,7 +228,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -263,7 +245,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -283,7 +265,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     pheromone_influence=pheromone_influence
                 )
@@ -297,7 +279,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     pheromone_influence=pheromone_influence
                 )
@@ -308,7 +290,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 pheromone_influence=pheromone_influence
             )
@@ -321,7 +303,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 pheromone_influence=pheromone_influence
             )
@@ -343,7 +325,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic_influence=heuristic_influence
                 )
@@ -357,7 +339,7 @@ class TrainerTester(unittest.TestCase):
                 MyTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic_influence=heuristic_influence
                 )
@@ -368,7 +350,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic_influence=heuristic_influence
             )
@@ -381,7 +363,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic_influence=heuristic_influence
             )
@@ -400,7 +382,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone,
             "pheromone_influence": pheromone_influence,
             "heuristic_influence": heuristic_influence

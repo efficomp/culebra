@@ -22,29 +22,24 @@
 
 """Usage example of the quality-based PACO trainer."""
 
-import numpy as np
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
 from culebra.trainer.aco import SingleObjQualityBasedPACO
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import SinglePathLength
 
 
 # Load the GR17 distances matrix from TSPLIB
-# https://people.sc.fsu.edu/~jburkardt/datasets/tsp/tsp.html
 # The minimal tour has length 2085
-distances = np.loadtxt(
-    "https://people.sc.fsu.edu/~jburkardt/datasets/tsp/gr17_d.txt"
+fitness_func = SinglePathLength.fromTSPLib(
+    "https://raw.githubusercontent.com/mastqe/tsplib/master/gr17.tsp"
 )
 
 # Problem graph's number of nodes
-num_nodes = distances.shape[0]
+num_nodes = fitness_func.num_nodes
 
 # Species for the problem solutions
 species = Species(num_nodes)
-
-# Fitness function
-fitness_func = PathLength(distances)
 
 # Generate and evaluate a greedy solution for the problem
 greedy_solution = fitness_func.greedy_solution(species)

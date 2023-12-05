@@ -36,6 +36,13 @@ from culebra.fitness_function.tsp import PathLength
 class MyMinimizationFitnessFunc(PathLength):
     """Dummy fitness function with two objectives."""
 
+    class Fitness(Fitness):
+        """Fitness class."""
+
+        weights = (-1.0, )
+        names = ("Min", )
+        thresholds = (DEFAULT_THRESHOLD, )
+
 
 class MyMaximizationFitnessFunc(PathLength):
     """Dummy fitness function with two objectives."""
@@ -44,7 +51,7 @@ class MyMaximizationFitnessFunc(PathLength):
         """Fitness class."""
 
         weights = (1.0, )
-        names = ("Other", )
+        names = ("Max", )
         thresholds = (DEFAULT_THRESHOLD, )
 
 

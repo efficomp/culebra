@@ -26,7 +26,6 @@ import unittest
 
 import numpy as np
 
-from culebra.abc import Fitness
 from culebra.trainer.aco.abc import (
     PheromoneBasedACO,
     SinglePheromoneMatrixACO,
@@ -35,8 +34,7 @@ from culebra.trainer.aco.abc import (
     MultipleHeuristicMatricesACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
 
 
 class MyTrainer(PheromoneBasedACO):
@@ -67,32 +65,15 @@ class MyMultiplePheromoneTrainer(
     """Dummy implementation a trainer with multiple pheromone matrices."""
 
 
-class MyFitnessFunc(PathLength):
-    """Dummy fitness function with two objectives."""
-
-    class Fitness(Fitness):
-        """Fitness class."""
-
-        weights = (-1.0, 1.0)
-        names = ("Len", "Other")
-        thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
-
-    def heuristic(self, species):
-        """Define a dummy heuristic."""
-        (the_heuristic, ) = super().heuristic(species)
-        return (the_heuristic, the_heuristic * 2)
-
-    def evaluate(self, sol, index=None, representatives=None):
-        """Define a dummy evaluation."""
-        return super().evaluate(sol) + (3,)
-
-
 num_nodes = 25
-optimum_path = np.random.permutation(num_nodes)
-single_obj_fitness_func = PathLength.fromPath(optimum_path)
-multiple_obj_fitness_func = MyFitnessFunc.fromPath(optimum_path)
+optimum_paths = [
+    np.random.permutation(num_nodes),
+    np.random.permutation(num_nodes)
+]
+single_obj_fitness_func = SinglePathLength.fromPath(optimum_paths[0])
+multiple_obj_fitness_func = DoublePathLength.fromPath(*optimum_paths)
 banned_nodes = [0, num_nodes-1]
-feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
+feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):

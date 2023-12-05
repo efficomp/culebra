@@ -28,15 +28,13 @@ from itertools import repeat
 import numpy as np
 
 from culebra import DEFAULT_MAX_NUM_ITERS
-from culebra.abc import Fitness
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE
 )
 from culebra.trainer.aco.abc import SingleColACO
 from culebra.solution.tsp import Species, Solution, Ant
-from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
 
 
 class MySingleObjTrainer(SingleColACO):
@@ -117,26 +115,15 @@ class MyMultiObjTrainer(MySingleObjTrainer):
         return self.fitness_function.num_obj
 
 
-class MyFitnessFunc(PathLength):
-    """Dummy fitness function with two objectives."""
-
-    class Fitness(Fitness):
-        """Fitness class."""
-
-        weights = (-1.0, 1.0)
-        names = ("Len", "Other")
-        thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
-
-    def evaluate(self, sol, index=None, representatives=None):
-        """Define a dummy evaluation."""
-        return super().evaluate(sol) + (3,)
-
-
 num_nodes = 25
-optimum_path = np.random.permutation(num_nodes)
-fitness_func = MyFitnessFunc.fromPath(optimum_path)
+optimum_paths = [
+    np.random.permutation(num_nodes),
+    np.random.permutation(num_nodes)
+]
+fitness_func_single = SinglePathLength.fromPath(optimum_paths[0])
+fitness_func_multi = DoublePathLength.fromPath(*optimum_paths)
 banned_nodes = [0, num_nodes-1]
-feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
+feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
@@ -146,7 +133,8 @@ class TrainerTester(unittest.TestCase):
         """Test __init__."""
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
-        valid_fitness_func = fitness_func
+        valid_fitness_func_single = fitness_func_single
+        valid_fitness_func_multi = fitness_func_multi
         valid_initial_pheromone = 1
 
         # Try invalid ant classes. Should fail
@@ -156,7 +144,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     solution_cls,
                     valid_species,
-                    valid_fitness_func,
+                    valid_fitness_func_single,
                     valid_initial_pheromone
                 )
 
@@ -167,7 +155,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     valid_ant_cls,
                     species,
-                    valid_fitness_func,
+                    valid_fitness_func_multi,
                     valid_initial_pheromone
                 )
 
@@ -186,13 +174,13 @@ class TrainerTester(unittest.TestCase):
         singleObjTrainer = MySingleObjTrainer(
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
+            valid_fitness_func_single,
             valid_initial_pheromone
         )
         multiObjTrainer = MyMultiObjTrainer(
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
+            valid_fitness_func_multi,
             valid_initial_pheromone
         )
 
@@ -202,15 +190,21 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(singleObjTrainer.species, valid_species)
         self.assertEqual(multiObjTrainer.species, valid_species)
 
-        self.assertEqual(singleObjTrainer.fitness_function, valid_fitness_func)
-        self.assertEqual(multiObjTrainer.fitness_function, valid_fitness_func)
+        self.assertEqual(
+            singleObjTrainer.fitness_function,
+            valid_fitness_func_single
+        )
+        self.assertEqual(
+            multiObjTrainer.fitness_function,
+            valid_fitness_func_multi
+        )
 
         self.assertEqual(
             singleObjTrainer.initial_pheromone, [valid_initial_pheromone]
         )
         self.assertEqual(
             multiObjTrainer.initial_pheromone,
-            [valid_initial_pheromone] * valid_fitness_func.num_obj
+            [valid_initial_pheromone] * valid_fitness_func_multi.num_obj
         )
 
         self.assertIsInstance(singleObjTrainer.heuristic, list)
@@ -219,7 +213,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(singleObjTrainer.heuristic), 1)
         self.assertEqual(
             len(multiObjTrainer.heuristic),
-            valid_fitness_func.num_obj
+            valid_fitness_func_multi.num_obj
         )
 
         for matrix in singleObjTrainer.heuristic:
@@ -228,7 +222,11 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(matrix.shape, (num_nodes, num_nodes))
 
         # Check the heuristic
-        for heuristic in (
+        for (
+            optimum_path,
+            heuristic
+        ) in zip(
+            optimum_paths[:1] + optimum_paths,
             singleObjTrainer.heuristic + multiObjTrainer.heuristic
         ):
             for org_idx, org in enumerate(optimum_path):
@@ -263,7 +261,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(singleObjTrainer.pheromone_influence), 1)
         self.assertEqual(
             len(multiObjTrainer.pheromone_influence),
-            valid_fitness_func.num_obj
+            valid_fitness_func_multi.num_obj
         )
 
         for pher_infl in (
@@ -279,15 +277,16 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(singleObjTrainer.heuristic_influence), 1)
         self.assertEqual(
             len(multiObjTrainer.heuristic_influence),
-            valid_fitness_func.num_obj
+            valid_fitness_func_multi.num_obj
         )
 
-        for pher_infl in (
+        for heur_infl in (
             singleObjTrainer.heuristic_influence +
             multiObjTrainer.heuristic_influence
         ):
-            self.assertEqual(pher_infl, DEFAULT_HEURISTIC_INFLUENCE)
+            self.assertEqual(heur_infl, DEFAULT_HEURISTIC_INFLUENCE)
 
+        # Check the default parameters
         self.assertEqual(singleObjTrainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(
             singleObjTrainer.col_size,
@@ -312,7 +311,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone
                 )
 
@@ -325,7 +324,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone
                 )
 
@@ -334,7 +333,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MySingleObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_single,
             initial_pheromone
         )
         self.assertEqual(trainer.initial_pheromone, [initial_pheromone])
@@ -343,7 +342,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MySingleObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_single,
             initial_pheromone
         )
         self.assertEqual(trainer.initial_pheromone, initial_pheromone)
@@ -361,7 +360,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone
                 )
 
@@ -374,7 +373,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone
                 )
 
@@ -383,7 +382,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyMultiObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_multi,
             initial_pheromone
         )
         self.assertEqual(
@@ -395,7 +394,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyMultiObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_multi,
             initial_pheromone
         )
         self.assertEqual(
@@ -407,7 +406,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyMultiObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_multi,
             initial_pheromone
         )
         self.assertEqual(
@@ -425,7 +424,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic=heuristic
                 )
@@ -455,7 +454,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic=heuristic
                 )
@@ -469,7 +468,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MySingleObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -486,7 +485,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MySingleObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -505,7 +504,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     heuristic=heuristic
                 )
@@ -541,7 +540,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     heuristic=heuristic
                 )
@@ -555,7 +554,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -572,7 +571,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -594,7 +593,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 heuristic=heuristic
             )
@@ -614,7 +613,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     pheromone_influence=pheromone_influence
                 )
@@ -628,7 +627,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     pheromone_influence=pheromone_influence
                 )
@@ -639,7 +638,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MySingleObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 pheromone_influence=pheromone_influence
             )
@@ -652,7 +651,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MySingleObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 pheromone_influence=pheromone_influence
             )
@@ -674,7 +673,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     pheromone_influence=pheromone_influence
                 )
@@ -688,7 +687,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     pheromone_influence=pheromone_influence
                 )
@@ -699,7 +698,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 pheromone_influence=pheromone_influence
             )
@@ -713,7 +712,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 pheromone_influence=pheromone_influence
             )
@@ -726,7 +725,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyMultiObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_multi,
             initial_pheromone,
             pheromone_influence=pheromone_influence
         )
@@ -746,7 +745,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic_influence=heuristic_influence
                 )
@@ -760,7 +759,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     heuristic_influence=heuristic_influence
                 )
@@ -771,7 +770,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MySingleObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic_influence=heuristic_influence
             )
@@ -784,7 +783,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MySingleObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_single,
                 initial_pheromone,
                 heuristic_influence=heuristic_influence
             )
@@ -806,7 +805,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     heuristic_influence=heuristic_influence
                 )
@@ -820,7 +819,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     heuristic_influence=heuristic_influence
                 )
@@ -831,7 +830,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 heuristic_influence=heuristic_influence
             )
@@ -845,7 +844,7 @@ class TrainerTester(unittest.TestCase):
             trainer = MyMultiObjTrainer(
                 ant_cls,
                 species,
-                fitness_func,
+                fitness_func_multi,
                 initial_pheromone,
                 heuristic_influence=heuristic_influence
             )
@@ -858,7 +857,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyMultiObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_multi,
             initial_pheromone,
             heuristic_influence=heuristic_influence
         )
@@ -878,7 +877,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     max_num_iters=max_num_iters
                 )
@@ -890,7 +889,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     max_num_iters=max_num_iters
                 )
@@ -900,7 +899,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MySingleObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_single,
             initial_pheromone,
             max_num_iters=max_num_iters
         )
@@ -919,7 +918,7 @@ class TrainerTester(unittest.TestCase):
                 MySingleObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_single,
                     initial_pheromone,
                     col_size=col_size
                 )
@@ -931,7 +930,7 @@ class TrainerTester(unittest.TestCase):
                 MyMultiObjTrainer(
                     ant_cls,
                     species,
-                    fitness_func,
+                    fitness_func_multi,
                     initial_pheromone,
                     col_size=col_size
                 )
@@ -941,7 +940,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MySingleObjTrainer(
             ant_cls,
             species,
-            fitness_func,
+            fitness_func_single,
             initial_pheromone,
             col_size=col_size
         )
@@ -955,7 +954,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
@@ -990,7 +989,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1020,7 +1019,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1045,7 +1044,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1069,7 +1068,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1090,7 +1089,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1126,7 +1125,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1153,7 +1152,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1165,7 +1164,7 @@ class TrainerTester(unittest.TestCase):
         # Try with an ant with an empty path. Should fail
         ant = Ant(
             species,
-            fitness_func.Fitness
+            fitness_func_multi.Fitness
         )
         with self.assertRaises(ValueError):
             trainer._feasible_neighborhood_probs(ant)
@@ -1190,7 +1189,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1204,7 +1203,7 @@ class TrainerTester(unittest.TestCase):
             trainer._start_iteration()
             ant = Ant(
                 species,
-                fitness_func.Fitness
+                fitness_func_multi.Fitness
             )
             choice = trainer._next_choice(ant)
 
@@ -1222,7 +1221,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1245,7 +1244,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1295,7 +1294,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone,
             "col_size": 1
         }
@@ -1326,7 +1325,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
@@ -1342,15 +1341,18 @@ class TrainerTester(unittest.TestCase):
         # Generate some ants
         ant1 = Ant(
             species,
-            fitness_func.Fitness,
-            path=optimum_path
+            fitness_func_single.Fitness,
+            path=optimum_paths[0]
         )
         worse_path = np.concatenate(
-            (optimum_path[:5], optimum_path[-1:], optimum_path[5:-2])
+            (
+                optimum_paths[0][:5],
+                optimum_paths[0][-1:],
+                optimum_paths[0][5:-2])
         )
         ant2 = Ant(
             species,
-            fitness_func.Fitness,
+            fitness_func_single.Fitness,
             path=worse_path
         )
 
@@ -1376,7 +1378,7 @@ class TrainerTester(unittest.TestCase):
 
         # Set the same fitness for both solutions
         for sol in trainer.col:
-            sol.fitness.values = (18, 13)
+            sol.fitness.values = (18, )
 
         best_ones = trainer.best_solutions()
 
@@ -1398,7 +1400,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
+            "fitness_function": fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 

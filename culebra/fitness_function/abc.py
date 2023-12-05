@@ -37,17 +37,18 @@ fitness functions. The following classes are provided:
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Tuple, Optional
 from copy import deepcopy
 
-from numpy import ndarray, ones
+import numpy as np
 from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
 
 from culebra.abc import FitnessFunction
 from culebra.checker import check_float, check_instance
 from culebra.fitness_function import DEFAULT_CLASSIFIER
-from culebra.solution.feature_selection import Species
+from culebra.solution.feature_selection import Species as FSSpecies
 from culebra.tools import Dataset
 
 
@@ -292,8 +293,8 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
         """
         return self.training_data.num_feats
 
-    def heuristic(self, species: Species) -> Tuple[ndarray, ...]:
-        """Get the heuristic matrix for ACO-based trainers.
+    def heuristic(self, species: FSSpecies) -> Sequence[np.ndarray, ...]:
+        """Get the heuristic matrices for ACO-based trainers.
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.solution.feature_selection.Species`
@@ -304,14 +305,15 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
             selectable features have a heuristic value of 1, while arcs
             involving any non-selectable feature or arcs from a feature to
             itself have a heuristic value of 0.
-        :rtype: :py:class:`tuple` of :py:class:`~numpy.ndarray`
+        :rtype: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~numpy.ndarray`
         """
-        check_instance(species, "species", cls=Species)
+        check_instance(species, "species", cls=FSSpecies)
 
         num_feats = species.num_feats
 
         # All the features should be considered
-        heuristic = ones((num_feats, num_feats))
+        heuristic = np.ones((num_feats, num_feats))
 
         # Ignore features with an index lower than min_feat
         min_feat = species.min_feat

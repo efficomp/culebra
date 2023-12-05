@@ -26,12 +26,14 @@ import unittest
 import pickle
 from copy import copy, deepcopy
 
-from numpy import ndarray
+import numpy as np
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
 from culebra.abc import Fitness, Species
 from culebra.fitness_function import DEFAULT_CLASSIFIER
+
 from culebra.fitness_function.abc import (
     DatasetFitnessFunction,
     ClassificationFitnessFunction,
@@ -376,7 +378,7 @@ class FeatureSelectionFitnessFunctionTester(unittest.TestCase):
         species = FSSpecies(
             num_feats=num_feats, min_feat=min_feat, max_feat=max_feat)
         (heuristic, ) = func.heuristic(species)
-        self.assertIsInstance(heuristic, ndarray)
+        self.assertIsInstance(heuristic, np.ndarray)
         self.assertEqual(heuristic.shape, (num_feats, num_feats))
         for row in range(num_feats):
             for column in range(num_feats):

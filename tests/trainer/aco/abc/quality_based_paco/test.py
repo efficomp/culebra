@@ -26,15 +26,13 @@ import unittest
 
 import numpy as np
 
-from culebra.abc import Fitness
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
     QualityBasedPACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import DoublePathLength
 
 
 class MyTrainer(
@@ -49,31 +47,14 @@ class MyTrainer(
         self._choice_info = self.pheromone[0] * self.heuristic[0]
 
 
-class MyFitnessFunc(PathLength):
-    """Dummy fitness function with two objectives."""
-
-    class Fitness(Fitness):
-        """Fitness class."""
-
-        weights = (-1.0, 1.0)
-        names = ("Len", "Other")
-        thresholds = (DEFAULT_THRESHOLD, DEFAULT_THRESHOLD)
-
-    def heuristic(self, species):
-        """Define a dummy heuristic."""
-        (the_heuristic, ) = super().heuristic(species)
-        return (the_heuristic, the_heuristic * 2)
-
-    def evaluate(self, sol, index=None, representatives=None):
-        """Define a dummy evaluation."""
-        return super().evaluate(sol) + (3,)
-
-
 num_nodes = 25
-optimum_path = np.random.permutation(num_nodes)
-fitness_func = MyFitnessFunc.fromPath(optimum_path)
+optimum_paths = [
+    np.random.permutation(num_nodes),
+    np.random.permutation(num_nodes)
+]
+fitness_func = DoublePathLength.fromPath(*optimum_paths)
 banned_nodes = [0, num_nodes-1]
-feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
+feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
@@ -103,7 +84,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(trainer.pop), 0)
 
         # Try several colonies with the same fitness
-        initial_fit_values = (1.0, 2.0)
+        initial_fit_values = (3.0, 3.0)
         for col_index in range(5):
             # Generate the colony
             trainer._start_iteration()
@@ -116,7 +97,7 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(ant.fitness.values, initial_fit_values)
 
         # Try a colony with a better ant
-        fit_better_values = ((0.0, 2.0), (1.0, 3.0))
+        fit_better_values = ((1.0, 3.0), (3.0, 2.0))
         for fit_values in fit_better_values:
             trainer._start_iteration()
             trainer._generate_col()

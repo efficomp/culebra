@@ -32,13 +32,14 @@ from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_EVAPORATION_RATE
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import SinglePathLength
+
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = PathLength.fromPath(optimum_path)
+fitness_func = SinglePathLength.fromPath(optimum_path)
 banned_nodes = [0, num_nodes-1]
-feasible_nodes = np.setdiff1d(optimum_path, banned_nodes)
+feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):

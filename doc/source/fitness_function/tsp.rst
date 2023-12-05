@@ -28,3 +28,5 @@
     :hidden:
 
     PathLength <tsp/path_length>
+    SinglePathLength <tsp/single_path_length>
+    DoublePathLength <tsp/double_path_length>
