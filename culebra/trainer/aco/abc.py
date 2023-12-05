@@ -388,13 +388,20 @@ class SingleColACO(SingleSpeciesTrainer):
             property) are assumed.
         :type: :py:class:`~collections.abc.Sequence`
             of :py:class:`~numpy.ndarray`
-        :raises TypeError: If any value is not an array
-        :raises ValueError: If any matrix has a wrong shape or contain any
-            negative value.
-        :raises ValueError: If a sequence of matrices with a length different
-            from
+        :raises TypeError: If neither an array-like object nor a
+            :py:class:`~collections.abc.Sequence` of array-like objects is
+            provided
+        :raises ValueError: If any element in any array-like object is not a
+            float number
+        :raises ValueError: If any array-like object has not an homogeneous
+            shape
+        :raises ValueError: If any array-like object has not two dimensions
+        :raises ValueError: If any array-like object is not square
+        :raises ValueError: If any element in any array-like object is negative
+        :raises ValueError: If a sequence is provided and it length is
+            different from
             :py:attr:`~culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices`
-            is provided
+        :raises ValueError: If the array-like objects have different shapes
         """
         return self._heuristic
 
@@ -413,24 +420,23 @@ class SingleColACO(SingleSpeciesTrainer):
             heuristic matrices. If set to :py:data:`None`, the
             default heuristic (provided by the
             :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`
-            property) are assumed.
+            property) are assumed
         :type: A two-dimensional array-like object or a
             :py:class:`~collections.abc.Sequence` of two-dimensional
             array-like objects
-        :raises TypeError: If *values* neither a two-dimensional array-like
-            object nor a :py:class:`~collections.abc.Sequence` of
-            two-dimensional array-like objects
-        :raises ValueError: If any element in any two-dimensional array-like
-            object is not a float number
-        :raises ValueError: If any any two-dimensional array-like
-            object has not an homogeneous shape
-        :raises ValueError: If any array-like object in *values* has not two
-            dimensions
-        :raises ValueError: If any element in any two-dimensional array-like
-            object is negative
+        :raises TypeError: If *values* is neither an array-like object nor a
+            :py:class:`~collections.abc.Sequence` of array-like objects
+        :raises ValueError: If any element in any array-like object is not a
+            float number
+        :raises ValueError: If any array-like object has not an homogeneous
+            shape
+        :raises ValueError: If any array-like object has not two dimensions
+        :raises ValueError: If any array-like object is not square
+        :raises ValueError: If any element in any array-like object is negative
         :raises ValueError: If *values* is a sequence and it length is
             different from
             :py:attr:`~culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices`
+        :raises ValueError: If the array-like objects have different shapes
         """
         if values is None:
             values = self.fitness_function.heuristic(self.species)
@@ -488,7 +494,6 @@ class SingleColACO(SingleSpeciesTrainer):
                         )
 
         # Check the shape
-        the_shape = self._heuristic[0].shape
         if self._heuristic[0].shape[0] == 0:
             raise ValueError("A heuristic matrix can not be empty")
 

@@ -59,6 +59,10 @@ from .single_obj_aco import (
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT
 )
 
+from .multi_obj_aco import (
+    PACO_MO
+)
+
 
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2023, EFFICOMP'
@@ -77,6 +81,7 @@ __all__ = [
     'MMAS',
     'SingleObjAgeBasedPACO',
     'SingleObjQualityBasedPACO',
+    'PACO_MO',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
