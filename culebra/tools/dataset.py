@@ -22,7 +22,8 @@
 from __future__ import annotations
 
 from copy import copy
-from typing import Optional, Tuple
+from os import PathLike
+from typing import Optional, Tuple, Union, TextIO
 
 import numpy as np
 from pandas import Series, DataFrame, read_csv, to_numeric
@@ -36,6 +37,9 @@ from sklearn.preprocessing import RobustScaler
 
 from culebra.abc import Base
 from culebra.checker import check_str, check_int, check_float
+
+FilePath = Union[str, "PathLike[str]"]
+Url = str
 
 
 __author__ = 'Jesús González'
@@ -66,7 +70,7 @@ class Dataset(Base):
 
     def __init__(
         self,
-        *files: str,
+        *files: FilePath | Url | TextIO,
         output_index: Optional[int] = None,
         sep: str = DEFAULT_SEP
     ) -> None:
@@ -88,8 +92,8 @@ class Dataset(Base):
             the input columns and the second one containing the output column.
             Otherwise, only one file will be used to access to the whole
             dataset (input and output columns)
-        :type files: Sequence of :py:class:`str`, path object or
-            file-like objects, optional
+        :type files: Sequence of path-like objects, urls or file-like objects,
+            optional
         :param output_index: If the dataset is provided with only one file,
             this parameter indicates which column in the file does contain the
             output values. Otherwise this parameter must be set to
@@ -172,14 +176,14 @@ class Dataset(Base):
 
     @classmethod
     def load_train_test(
-            cls,
-            *files: str,
-            test_prop: Optional[float] = None,
-            output_index: Optional[int] = None,
-            sep: str = DEFAULT_SEP,
-            normalize: bool = False,
-            random_feats: Optional[int] = None,
-            random_seed: Optional[int] = None,
+        cls,
+        *files: FilePath | Url | TextIO,
+        test_prop: Optional[float] = None,
+        output_index: Optional[int] = None,
+        sep: str = DEFAULT_SEP,
+        normalize: bool = False,
+        random_feats: Optional[int] = None,
+        random_seed: Optional[int] = None,
     ) -> Tuple[Dataset, Dataset]:
         """Load the training and test data.
 
@@ -201,8 +205,7 @@ class Dataset(Base):
             :py:data:`None`,
             two consecutive files are required for each dataset, otherwise,
             each file contains a whole dataset (input and output columns).
-        :type files: Sequence of :py:class:`str`, path object or
-            file-like objects
+        :type files: Sequence of path-like objects, urls or file-like objects
         :param test_prop: Proportion of the first dataset used as test data.
             The remaining samples will be used as training data.
         :type test_prop: :py:class:`float`, optional
@@ -556,7 +559,7 @@ class Dataset(Base):
 
     @staticmethod
     def __load_mixed_dataset(
-            file: str,
+            file: FilePath | Url | TextIO,
             output_index: int,
             sep: str = DEFAULT_SEP) -> Tuple[DataFrame, Series]:
         """Load a mixed data set.
@@ -564,7 +567,7 @@ class Dataset(Base):
         Inputs and output are in the same file.
 
         :param file: Name of the file containing the input and output data
-        :type file: :py:class:`str`
+        :type file: Path-like object, url or file-like object
         :param output_index: Index of the column containing the outuput data
         :type output_index: :py:class:`int`
         :param sep: Separator between columns, defaults to
@@ -603,7 +606,7 @@ class Dataset(Base):
 
     @staticmethod
     def __load_split_dataset(
-            *files: str,
+            *files: FilePath | Url | TextIO,
             sep: str = DEFAULT_SEP
     ) -> Tuple[DataFrame, Series]:
         """Load a separated data set.
@@ -613,7 +616,7 @@ class Dataset(Base):
 
         :param files: Tuple of files containing the dataset. The first file
             contains the input columns and the second one the output column
-        :type files: :py:class:`tuple` of :py:class:`str`
+        :type files: Sequence of path-like objects, urls or file-like objects
         :param sep: Separator between columns, defaults to
             :py:attr:`~culebra.tools.DEFAULT_SEP`
         :type sep: :py:class:`str`, optional
