@@ -44,11 +44,15 @@
   <section id="module-culebra.fitness_function.tsp">
 <span id="culebra-fitness-function-tsp-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.tsp" title="culebra.fitness_function.tsp"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.tsp" title="Link to this heading">¶</a></h1>
 <p>Traveling salesman problem related fitness functions.</p>
-<p>This sub-module fitness functions to solve tsp problems. Currently:</p>
+<p>This sub-module provides fitness functions to solve TSP problems. Currently:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="tsp/path_length.html#culebra.fitness_function.tsp.PathLength" title="culebra.fitness_function.tsp.PathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathLength</span></code></a>: Single-objective
-function that minimizes the length of a path.</p></li>
+<li><p><a class="reference internal" href="tsp/path_length.html#culebra.fitness_function.tsp.PathLength" title="culebra.fitness_function.tsp.PathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathLength</span></code></a>: Abstract base class
+for TSP problem fitness functions.</p></li>
+<li><p><a class="reference internal" href="tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength" title="culebra.fitness_function.tsp.SinglePathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePathLength</span></code></a>: Single
+objective fitness function for TSP problems.</p></li>
+<li><p><a class="reference internal" href="tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength" title="culebra.fitness_function.tsp.DoublePathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">DoublePathLength</span></code></a>: Bi-objective
+fitness function for TSP problems.</p></li>
 </ul>
 </div></blockquote>
 <div class="toctree-wrapper compound">

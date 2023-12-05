@@ -32,20 +32,25 @@ Class attributes
     :py:meth:`~culebra.fitness_function.tsp.PathLength.evaluate` method
     within a :py:class:`~culebra.solution.tsp.Solution`.
 
-    .. autoattribute:: culebra.fitness_function.tsp.PathLength.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.tsp.PathLength.Fitness.names
-    .. autoattribute:: culebra.fitness_function.tsp.PathLength.Fitness.thresholds
+    This class must be implemented within all the
+    :py:class:`~culebra.fitness_function.tsp.PathLength` subclasses, as a
+    subclass of the :py:class:`~culebra.abc.Fitness` class, to define its three
+    class attributes (:py:attr:`~culebra.abc.Fitness.weights`,
+    :py:attr:`~culebra.abc.Fitness.names`, and
+    :py:attr:`~culebra.abc.Fitness.thresholds`) according to the fitness
+    function.
 
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.tsp.PathLength.fromPath
 .. automethod:: culebra.fitness_function.tsp.PathLength.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.tsp.PathLength.fromPath
+.. automethod:: culebra.fitness_function.tsp.PathLength.fromTSPLib
 
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_obj
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_nodes
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.distances
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.distance
 
 Methods
 -------

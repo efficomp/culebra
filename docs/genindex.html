@@ -3426,7 +3426,11 @@
         <li><a href="fitness_function/tsp.html#module-culebra.fitness_function.tsp">module</a>
 </li>
       </ul></li>
+      <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.Fitness">culebra.fitness_function.tsp.DoublePathLength.Fitness (built-in class)</a>
+</li>
       <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.Fitness">culebra.fitness_function.tsp.PathLength.Fitness (built-in class)</a>
+</li>
+      <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.Fitness">culebra.fitness_function.tsp.SinglePathLength.Fitness (built-in class)</a>
 </li>
       <li>
     culebra.solution
@@ -3761,12 +3765,12 @@
 </li>
       <li><a href="tools.html#culebra.tools.DEFAULT_P_ADJUST">DEFAULT_P_ADJUST (in module culebra.tools)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="solution/parameter_optimization.html#culebra.solution.parameter_optimization.DEFAULT_PARAMETER_NAME">DEFAULT_PARAMETER_NAME (in module culebra.solution.parameter_optimization)</a>
 </li>
       <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE">DEFAULT_PHEROMONE_EVAPORATION_RATE (in module culebra.trainer.aco)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE">DEFAULT_PHEROMONE_INFLUENCE (in module culebra.trainer.aco)</a>
 </li>
       <li><a href="trainer/ea.html#culebra.trainer.ea.DEFAULT_POP_SIZE">DEFAULT_POP_SIZE (in module culebra.trainer.ea)</a>
@@ -3813,8 +3817,14 @@
         <li><a href="abc/solution.html#culebra.abc.Solution.delete_fitness">(Solution method)</a>, <a href="solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution.delete_fitness">[1]</a>, <a href="solution/tsp/solution.html#culebra.solution.tsp.Solution.delete_fitness">[2]</a>
 </li>
       </ul></li>
-      <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.distances">distances (PathLength property)</a>
+      <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.distance">distance (DoublePathLength property)</a>
+
+      <ul>
+        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.distance">(PathLength property)</a>
 </li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.distance">(SinglePathLength property)</a>
+</li>
+      </ul></li>
       <li><a href="trainer/abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer">DistributedTrainer (class in culebra.trainer.abc)</a>
 </li>
       <li><a href="solution/abc/ant.html#culebra.solution.abc.Ant.dominates">dominates() (Ant method)</a>, <a href="solution/feature_selection/ant.html#culebra.solution.feature_selection.Ant.dominates">[1]</a>, <a href="solution/tsp/ant.html#culebra.solution.tsp.Ant.dominates">[2]</a>
@@ -3835,6 +3845,8 @@
         <li><a href="abc/solution.html#culebra.abc.Solution.dominates">(Solution method)</a>, <a href="solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution.dominates">[1]</a>, <a href="solution/tsp/solution.html#culebra.solution.tsp.Solution.dominates">[2]</a>
 </li>
       </ul></li>
+      <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength">DoublePathLength (class in culebra.fitness_function.tsp)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -3873,6 +3885,8 @@
         <li><a href="fitness_function/abc/dataset_fitness_function.html#culebra.fitness_function.abc.DatasetFitnessFunction.evaluate">(DatasetFitnessFunction method)</a>
 </li>
         <li><a href="trainer/abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer.evaluate">(DistributedTrainer method)</a>
+</li>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.evaluate">(DoublePathLength method)</a>
 </li>
         <li><a href="trainer/aco/abc/elitist_aco.html#culebra.trainer.aco.abc.ElitistACO.evaluate">(ElitistACO method)</a>
 </li>
@@ -3953,6 +3967,8 @@
         <li><a href="trainer/aco/single_obj_quality_based_paco.html#culebra.trainer.aco.SingleObjAgeBasedPACO.evaluate">(SingleObjAgeBasedPACO method)</a>
 </li>
         <li><a href="trainer/aco/single_obj_age_based_paco.html#culebra.trainer.aco.SingleObjQualityBasedPACO.evaluate">(SingleObjQualityBasedPACO method)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.evaluate">(SinglePathLength method)</a>
 </li>
         <li><a href="trainer/aco/abc/single_pheromone_matrix_aco.html#culebra.trainer.aco.abc.SinglePheromoneMatrixACO.evaluate">(SinglePheromoneMatrixACO method)</a>
 </li>
@@ -4125,8 +4141,22 @@
 </li>
       <li><a href="solution/feature_selection/species.html#culebra.solution.feature_selection.Species.from_proportion">from_proportion() (Species class method)</a>
 </li>
-      <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.fromPath">fromPath() (PathLength class method)</a>
+      <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.fromPath">fromPath() (DoublePathLength class method)</a>
+
+      <ul>
+        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.fromPath">(PathLength class method)</a>
 </li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.fromPath">(SinglePathLength class method)</a>
+</li>
+      </ul></li>
+      <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.fromTSPLib">fromTSPLib() (DoublePathLength class method)</a>
+
+      <ul>
+        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.fromTSPLib">(PathLength class method)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.fromTSPLib">(SinglePathLength class method)</a>
+</li>
+      </ul></li>
       <li><a href="trainer/topology.html#culebra.trainer.topology.full_connected_destinations">full_connected_destinations() (in module culebra.trainer.topology)</a>
 </li>
   </ul></td>
@@ -4187,8 +4217,14 @@
       </ul></li>
       <li><a href="tools/results_comparison.html#culebra.tools.ResultsComparison.global_comparison">global_comparison (ResultsComparison attribute)</a>
 </li>
-      <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.greedy_solution">greedy_solution() (PathLength method)</a>
+      <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.greedy_solution">greedy_solution() (DoublePathLength method)</a>
+
+      <ul>
+        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.greedy_solution">(PathLength method)</a>
 </li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.greedy_solution">(SinglePathLength method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -4244,6 +4280,8 @@
 </li>
         <li><a href="fitness_function/abc/dataset_fitness_function.html#culebra.fitness_function.abc.DatasetFitnessFunction.heuristic">(DatasetFitnessFunction method)</a>
 </li>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.heuristic">(DoublePathLength method)</a>
+</li>
         <li><a href="fitness_function/abc/feature_selection_fitness_function.html#culebra.fitness_function.abc.FeatureSelectionFitnessFunction.heuristic">(FeatureSelectionFitnessFunction method)</a>
 </li>
         <li><a href="abc/fitness_function.html#culebra.abc.FitnessFunction.heuristic">(FitnessFunction method)</a>
@@ -4261,6 +4299,8 @@
         <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.heuristic">(PathLength method)</a>
 </li>
         <li><a href="fitness_function/abc/rbf_svc_fitness_function.html#culebra.fitness_function.abc.RBFSVCFitnessFunction.heuristic">(RBFSVCFitnessFunction method)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.heuristic">(SinglePathLength method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -4887,7 +4927,9 @@
 </li>
         <li><a href="fitness_function/svc_optimization/kappa_index.html#culebra.fitness_function.svc_optimization.KappaIndex.culebra.fitness_function.svc_optimization.KappaIndex.Fitness.Fitness.names">(culebra.fitness_function.svc_optimization.KappaIndex.Fitness.Fitness attribute)</a>
 </li>
-        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.culebra.fitness_function.tsp.PathLength.Fitness.Fitness.names">(culebra.fitness_function.tsp.PathLength.Fitness.Fitness attribute)</a>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.culebra.fitness_function.tsp.DoublePathLength.Fitness.Fitness.names">(culebra.fitness_function.tsp.DoublePathLength.Fitness.Fitness attribute)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.culebra.fitness_function.tsp.SinglePathLength.Fitness.Fitness.names">(culebra.fitness_function.tsp.SinglePathLength.Fitness.Fitness attribute)</a>
 </li>
         <li><a href="abc/fitness.html#culebra.abc.Fitness.names">(Fitness attribute)</a>
 </li>
@@ -5025,6 +5067,8 @@
 </li>
         <li><a href="fitness_function/abc/dataset_fitness_function.html#culebra.fitness_function.abc.DatasetFitnessFunction.num_nodes">(DatasetFitnessFunction property)</a>
 </li>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.num_nodes">(DoublePathLength property)</a>
+</li>
         <li><a href="fitness_function/abc/feature_selection_fitness_function.html#culebra.fitness_function.abc.FeatureSelectionFitnessFunction.num_nodes">(FeatureSelectionFitnessFunction property)</a>
 </li>
         <li><a href="abc/fitness_function.html#culebra.abc.FitnessFunction.num_nodes">(FitnessFunction property)</a>
@@ -5043,6 +5087,8 @@
 </li>
         <li><a href="fitness_function/abc/rbf_svc_fitness_function.html#culebra.fitness_function.abc.RBFSVCFitnessFunction.num_nodes">(RBFSVCFitnessFunction property)</a>
 </li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.num_nodes">(SinglePathLength property)</a>
+</li>
         <li><a href="solution/tsp/species.html#culebra.solution.tsp.Species.num_nodes">(Species property)</a>
 </li>
       </ul></li>
@@ -5052,6 +5098,8 @@
         <li><a href="fitness_function/abc/classification_fitness_function.html#culebra.fitness_function.abc.ClassificationFitnessFunction.num_obj">(ClassificationFitnessFunction property)</a>
 </li>
         <li><a href="fitness_function/abc/dataset_fitness_function.html#culebra.fitness_function.abc.DatasetFitnessFunction.num_obj">(DatasetFitnessFunction property)</a>
+</li>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.num_obj">(DoublePathLength property)</a>
 </li>
         <li><a href="fitness_function/abc/feature_selection_fitness_function.html#culebra.fitness_function.abc.FeatureSelectionFitnessFunction.num_obj">(FeatureSelectionFitnessFunction property)</a>
 </li>
@@ -5072,6 +5120,8 @@
         <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.num_obj">(PathLength property)</a>
 </li>
         <li><a href="fitness_function/abc/rbf_svc_fitness_function.html#culebra.fitness_function.abc.RBFSVCFitnessFunction.num_obj">(RBFSVCFitnessFunction property)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.num_obj">(SinglePathLength property)</a>
 </li>
       </ul></li>
       <li><a href="solution/parameter_optimization/species.html#culebra.solution.parameter_optimization.Species.num_params">num_params (Species property)</a>
@@ -6159,6 +6209,8 @@
 </li>
         <li><a href="fitness_function/abc/dataset_fitness_function.html#culebra.fitness_function.abc.DatasetFitnessFunction.set_fitness_thresholds">(DatasetFitnessFunction class method)</a>
 </li>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.set_fitness_thresholds">(DoublePathLength class method)</a>
+</li>
         <li><a href="fitness_function/abc/feature_selection_fitness_function.html#culebra.fitness_function.abc.FeatureSelectionFitnessFunction.set_fitness_thresholds">(FeatureSelectionFitnessFunction class method)</a>
 </li>
         <li><a href="abc/fitness_function.html#culebra.abc.FitnessFunction.set_fitness_thresholds">(FitnessFunction class method)</a>
@@ -6177,6 +6229,8 @@
 </li>
         <li><a href="fitness_function/abc/rbf_svc_fitness_function.html#culebra.fitness_function.abc.RBFSVCFitnessFunction.set_fitness_thresholds">(RBFSVCFitnessFunction class method)</a>
 </li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.set_fitness_thresholds">(SinglePathLength class method)</a>
+</li>
       </ul></li>
       <li><a href="trainer/ea/simple_ea.html#culebra.trainer.ea.SimpleEA">SimpleEA (class in culebra.trainer.ea)</a>
 </li>
@@ -6189,6 +6243,8 @@
       <li><a href="trainer/aco/single_obj_quality_based_paco.html#culebra.trainer.aco.SingleObjAgeBasedPACO">SingleObjAgeBasedPACO (class in culebra.trainer.aco)</a>
 </li>
       <li><a href="trainer/aco/single_obj_age_based_paco.html#culebra.trainer.aco.SingleObjQualityBasedPACO">SingleObjQualityBasedPACO (class in culebra.trainer.aco)</a>
+</li>
+      <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength">SinglePathLength (class in culebra.fitness_function.tsp)</a>
 </li>
       <li><a href="trainer/aco/abc/single_pheromone_matrix_aco.html#culebra.trainer.aco.abc.SinglePheromoneMatrixACO">SinglePheromoneMatrixACO (class in culebra.trainer.aco.abc)</a>
 </li>
@@ -6801,7 +6857,9 @@
 </li>
         <li><a href="fitness_function/svc_optimization/kappa_index.html#culebra.fitness_function.svc_optimization.KappaIndex.culebra.fitness_function.svc_optimization.KappaIndex.Fitness.Fitness.thresholds">(culebra.fitness_function.svc_optimization.KappaIndex.Fitness.Fitness attribute)</a>
 </li>
-        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.culebra.fitness_function.tsp.PathLength.Fitness.Fitness.thresholds">(culebra.fitness_function.tsp.PathLength.Fitness.Fitness attribute)</a>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.culebra.fitness_function.tsp.DoublePathLength.Fitness.Fitness.thresholds">(culebra.fitness_function.tsp.DoublePathLength.Fitness.Fitness attribute)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.culebra.fitness_function.tsp.SinglePathLength.Fitness.Fitness.thresholds">(culebra.fitness_function.tsp.SinglePathLength.Fitness.Fitness attribute)</a>
 </li>
         <li><a href="abc/fitness.html#culebra.abc.Fitness.thresholds">(Fitness attribute)</a>
 </li>
@@ -7053,7 +7111,9 @@
 </li>
         <li><a href="fitness_function/svc_optimization/kappa_index.html#culebra.fitness_function.svc_optimization.KappaIndex.culebra.fitness_function.svc_optimization.KappaIndex.Fitness.Fitness.weights">(culebra.fitness_function.svc_optimization.KappaIndex.Fitness.Fitness attribute)</a>
 </li>
-        <li><a href="fitness_function/tsp/path_length.html#culebra.fitness_function.tsp.PathLength.culebra.fitness_function.tsp.PathLength.Fitness.Fitness.weights">(culebra.fitness_function.tsp.PathLength.Fitness.Fitness attribute)</a>
+        <li><a href="fitness_function/tsp/double_path_length.html#culebra.fitness_function.tsp.DoublePathLength.culebra.fitness_function.tsp.DoublePathLength.Fitness.Fitness.weights">(culebra.fitness_function.tsp.DoublePathLength.Fitness.Fitness attribute)</a>
+</li>
+        <li><a href="fitness_function/tsp/single_path_length.html#culebra.fitness_function.tsp.SinglePathLength.culebra.fitness_function.tsp.SinglePathLength.Fitness.Fitness.weights">(culebra.fitness_function.tsp.SinglePathLength.Fitness.Fitness attribute)</a>
 </li>
         <li><a href="abc/fitness.html#culebra.abc.Fitness.weights">(Fitness attribute)</a>
 </li>
