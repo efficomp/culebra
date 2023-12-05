@@ -349,7 +349,7 @@ def check_sequence(
     :raises ValueError: If any item fails the *item_checker* function
     """
     # Check that seq is a sequence
-    if not isinstance(seq, Sequence):
+    if not (isinstance(seq, Sequence) or isinstance(seq, np.ndarray)):
         raise TypeError(f"The {name} must be in a sequence: {seq}")
 
     # Check the length
@@ -493,10 +493,10 @@ def check_matrix(
     shape = the_matrix.shape
 
     if len(shape) != 2:
-        raise ValueError("The {name} must be two-dimensional")
+        raise ValueError(f"The {name} must be two-dimensional")
 
     if square is True and shape[0] != shape[1]:
-        raise ValueError("The {name} must be a square matrix")
+        raise ValueError(f"The {name} must be a square matrix")
 
     # Check the limits
     if gt is not None and np.any(the_matrix <= gt):

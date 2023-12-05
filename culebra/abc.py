@@ -457,17 +457,18 @@ class FitnessFunction(Base):
         """
         return None
 
-    def heuristic(self, species: Species) -> Tuple[np.ndarray, ...] | None:
-        """Get the heuristic matrix(ces) for ACO-based trainers.
+    def heuristic(self, species: Species) -> Sequence[np.ndarray, ...] | None:
+        """Get the heuristic matrices for ACO-based trainers.
 
         Subclasses solvable with ACO-based approaches should override this
         method. Otherwise, :py:data:`None` is returned
 
         :param species: Species constraining the problem solutions
         :type species: :py:class:`~culebra.abc.Species`
-        :return: A tuple of heuristic matrices if an ACO-based approach is
+        :return: A sequence of heuristic matrices if an ACO-based approach is
             applicable or :py:data:`None` otherwise
-        :rtype: :py:class:`tuple` of :py:class:`~numpy.ndarray`
+        :rtype: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~numpy.ndarray`
         """
         return None
 
