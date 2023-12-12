@@ -35,10 +35,10 @@
     MultiplePheromoneMatricesACO <abc/multiple_pheromone_matrices_aco>
     MultipleHeuristicMatricesACO <abc/multiple_heuristic_matrices_aco>
 
-    
     SingleObjACO <abc/single_obj_aco>
+    PheromoneBasedACO <abc/pheromone_based_aco>
     ElitistACO <abc/elitist_aco>
-    WeightedElitistACO <abc/weighted_elitist_aco>
+    ReseteablePheromoneBasedACO <abc/reseteable_pheromone_based_aco>
     PACO <abc/paco>
     AgeBasedPACO <abc/age_based_paco>
     QualityBasedPACO <abc/quality_based_paco>

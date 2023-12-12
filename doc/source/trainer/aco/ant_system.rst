@@ -26,13 +26,13 @@
 
 Class attributes
 ----------------
-
 .. autoattribute:: culebra.trainer.aco.AntSystem.stats_names
 .. autoattribute:: culebra.trainer.aco.AntSystem.objective_stats
 
 Properties
 ----------
-
+.. autoproperty:: culebra.trainer.aco.AntSystem.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.AntSystem.num_heuristic_matrices
 .. autoproperty:: culebra.trainer.aco.AntSystem.solution_cls
 .. autoproperty:: culebra.trainer.aco.AntSystem.species
 .. autoproperty:: culebra.trainer.aco.AntSystem.fitness_function

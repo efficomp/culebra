@@ -28,7 +28,6 @@ import numpy as np
 
 from deap.tools import ParetoFront
 
-from culebra.trainer.aco import DEFAULT_CONVERGENCE_CHECK_FREQ
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
@@ -108,65 +107,6 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 class TrainerTester(unittest.TestCase):
     """Test :py:class:`culebra.trainer.aco.abc.ElitistACO`."""
-
-    def test_init(self):
-        """Test __init__`."""
-        valid_ant_cls = Ant
-        valid_species = Species(num_nodes, banned_nodes)
-        valid_fitness_func = fitness_func
-        valid_initial_pheromone = 1
-
-        # Try invalid types for convergence_check_freq. Should fail
-        invalid_convergence_check_freq = (type, 'a', 1.5)
-        for convergence_check_freq in invalid_convergence_check_freq:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    valid_ant_cls,
-                    valid_species,
-                    valid_fitness_func,
-                    valid_initial_pheromone,
-                    convergence_check_freq=convergence_check_freq
-                )
-
-        # Try invalid values for convergence_check_freq. Should fail
-        invalid_convergence_check_freq = (-1, 0)
-        for convergence_check_freq in invalid_convergence_check_freq:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    valid_ant_cls,
-                    valid_species,
-                    valid_fitness_func,
-                    valid_initial_pheromone,
-                    convergence_check_freq=convergence_check_freq
-                )
-
-        # Try valid values for convergence_check_freq
-        valid_convergence_check_freq = (1, 10)
-        for convergence_check_freq in valid_convergence_check_freq:
-            trainer = MyTrainer(
-                valid_ant_cls,
-                valid_species,
-                valid_fitness_func,
-                valid_initial_pheromone,
-                convergence_check_freq=convergence_check_freq
-            )
-            self.assertEqual(
-                convergence_check_freq,
-                trainer.convergence_check_freq
-            )
-
-        # Test default params
-        trainer = MyTrainer(
-            valid_ant_cls,
-            valid_species,
-            valid_fitness_func,
-            valid_initial_pheromone
-        )
-
-        self.assertEqual(
-            trainer.convergence_check_freq,
-            DEFAULT_CONVERGENCE_CHECK_FREQ
-        )
 
     def test_state(self):
         """Test the get_state and _set_state methods."""
@@ -292,129 +232,6 @@ class TrainerTester(unittest.TestCase):
 
         # Check that the solution in hof is sol1
         self.assertTrue(ant in best_ones[0])
-
-    def test_has_converged(self):
-        """Test the _has_converged method."""
-        # Trainer parameters
-        species = Species(num_nodes)
-        initial_pheromone = 10
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-
-        # Check convergence
-        self.assertFalse(trainer._has_converged())
-
-        # Simulate convergence with all the nodes banned
-        for i in range(trainer.num_pheromone_matrices):
-            trainer.pheromone[i] = np.full((num_nodes, num_nodes), 0)
-        self.assertTrue(trainer._has_converged())
-
-        # Deposit the maximum pheremone amount over one arc only
-        for pher in trainer.pheromone:
-            pher[0][0] = initial_pheromone
-        self.assertFalse(trainer._has_converged())
-
-        # Deposit the maximum pheremone amount over two arcs
-        for pher in trainer.pheromone:
-            pher[0][1] = initial_pheromone
-        self.assertTrue(trainer._has_converged())
-
-        # Deposit the maximum pheremone amount over more than two arcs
-        for pher in trainer.pheromone:
-            pher[0][2] = initial_pheromone
-        self.assertFalse(trainer._has_converged())
-
-    def test_reset_pheromone(self):
-        """Test the reset_pheromone method."""
-        # Trainer parameters
-        species = Species(num_nodes)
-        initial_pheromone = 10
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-
-        # Simulate convergence
-        heuristic_shape = trainer._heuristic[0].shape
-        trainer._pheromone = [
-            np.zeros(
-                heuristic_shape,
-                dtype=float
-            )
-        ] * trainer.num_pheromone_matrices
-
-        # Check the pheromone
-        for pher in trainer.pheromone:
-            self.assertTrue(np.all(pher == 0))
-
-        # Reset the pheromone
-        trainer._reset_pheromone()
-
-        # Check the pheromone
-        for pher in trainer.pheromone:
-            self.assertTrue(np.all(pher == initial_pheromone))
-
-    def test_do_iteration(self):
-        """Test the _do_iteration method."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-
-        # The elite should be empty
-        self.assertEqual(len(trainer._elite), 0)
-
-        # Generate a new colony
-        trainer._do_iteration()
-
-        # The elite should not be empty
-        self.assertGreaterEqual(len(trainer._elite), 1)
-
-        # Simulate convergence
-        trainer._current_iter = trainer.convergence_check_freq
-        heuristic_shape = trainer._heuristic[0].shape
-        trainer._pheromone = [
-            np.zeros(
-                heuristic_shape,
-                dtype=float
-            )
-        ] * trainer.num_pheromone_matrices
-
-        # Check the pheromone
-        for pher in trainer.pheromone:
-            self.assertTrue(np.all(pher == 0))
-
-        # Do an interation
-        trainer._do_iteration()
-
-        # Check if the pheromone have been reset
-        for pher in trainer.pheromone:
-            self.assertTrue(np.all(pher == initial_pheromone))
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

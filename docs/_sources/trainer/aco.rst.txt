@@ -42,16 +42,16 @@ Attributes
 
     Default frequency to check if an elitist ACO has converged.
 
+.. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
+    :annotation: = 0.1
+
+    Default pheromone evaporation rate (:math:`{\rho}`).
+
 .. attribute:: DEFAULT_ELITE_WEIGHT
     :annotation: = 0.3
 
     Default weight for the elite ant (best-so-far ant) respect to the
     iteration-best ant.
-
-.. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
-    :annotation: = 0.1
-
-    Default pheromone evaporation rate (:math:`{\rho}`).
 
 .. attribute:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
     :annotation: = 250
@@ -66,8 +66,8 @@ Attributes
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
     .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
-    .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
+    .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
 
 

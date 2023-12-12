@@ -31,6 +31,8 @@ Class attributes
 
 Properties
 ----------
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.num_heuristic_matrices
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.solution_cls
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.species
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.fitness_function

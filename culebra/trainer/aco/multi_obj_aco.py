@@ -27,6 +27,9 @@ from typing import (
     Optional,
     Sequence
 )
+from random import randrange
+
+import numpy as np
 
 from culebra.abc import Species, FitnessFunction
 from culebra.solution.abc import Ant
@@ -230,6 +233,100 @@ class PACO_MO(
             random_seed=random_seed
         )
 
+    def _update_pop(self) -> None:
+        """Generate a new sub-population for the current iteration.
+
+        The new sub-population is generated from the elite super-population.
+        The *_pop_ingoing* and *_pop_outgoing* lists are not used since the
+        sub-population is regenerated in each iteration.
+        """
+
+        def obj_dist(ant1: Ant, ant2: Ant) -> float:
+            """Return the distance between two ants in teh objective space.
+
+            :param ant1: The first ant
+            :type ant1: :py:class:`~culebra.solution.abc.Ant`
+            :param ant2: The second ant
+            :type ant2: :py:class:`~culebra.solution.abc.Ant`
+            :return: The distance in the objective space
+            :rtype: :py:class:`float`
+            """
+            dist = 0
+            for val1, val2 in zip(ant1.fitness.values, ant2.fitness.values):
+                dist += abs(val1 - val2)
+
+            return dist
+
+        # Number of elite ants
+        elite_size = len(self._elite)
+
+        # A new sub-population is generated each iteration
+        self._pop = []
+
+        # If the number of elite ants is too small...
+        if elite_size < self.pop_size:
+            # Use all the elite ants
+            for ant in self._elite:
+                self._pop.append(ant)
+        else:
+            # Candidate ants for the new sub-population
+            candidate_ants = []
+            for ant in self._elite:
+                candidate_ants.append(ant)
+
+            # Remaining room in he sub-population
+            remaining_room_in_subpop = self.pop_size
+
+            # Select one elite ant randomly to generate the new sub-population
+            subpop_generator_ant_index = randrange(elite_size)
+            subpop_generator_ant = candidate_ants[subpop_generator_ant_index]
+
+            # Append it to the new sub-population
+            self._pop.append(subpop_generator_ant)
+            del candidate_ants[subpop_generator_ant_index]
+            remaining_room_in_subpop -= 1
+
+            # While the subpop is not complete
+            while remaining_room_in_subpop > 0:
+                # Look for the nearest ant
+                nearest_ant_index = None
+                nearest_ant_dist = None
+                for index, ant in enumerate(candidate_ants):
+                    # Init the nearest ant distance and index
+                    if nearest_ant_index is None:
+                        nearest_ant_index = index
+                        nearest_ant_dist = obj_dist(ant, subpop_generator_ant)
+                    # Update the nearest ant distance and index
+                    else:
+                        ant_dist = obj_dist(ant, subpop_generator_ant)
+                        if ant_dist < nearest_ant_dist:
+                            nearest_ant_index = index
+                            nearest_ant_dist = ant_dist
+
+                # Append the nearest ant to subpop_generator_ant
+                self._pop.append(candidate_ants[nearest_ant_index])
+                del candidate_ants[nearest_ant_index]
+                remaining_room_in_subpop -= 1
+
+    def _update_pheromone(self) -> None:
+        """Update the pheromone trails.
+
+        The pheromone trails are updated according to the current
+        sub-population.
+        """
+        # Init the heuristic matrices
+        heuristic_shape = self._heuristic[0].shape
+        self._pheromone = [
+            np.full(
+                heuristic_shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromone
+        ]
+
+        # Update the pheromone matrices with the current sub-population
+        self._deposit_pheromone(self.pop)
+
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
         # Create a new population from the elite
@@ -237,14 +334,16 @@ class PACO_MO(
         # mirar la interacción con los internals ...
         self._update_pop()
 
-        # Create the ant colony and the ants' paths
+        # Generate the pheromone matrix according to the new sub-population
+        self._update_pheromone()
+
+        # Create the ant colony and the ants' paths from the current
+        # pheromone matrix
         self._generate_col()
 
         # Update the elite
         self._update_elite()
 
-        # Update the pheromone
-        self._update_pheromone()
 
 
 

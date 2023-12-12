@@ -38,15 +38,10 @@ r"""Default heuristic influence (:math:`{\beta}`)."""
 DEFAULT_CONVERGENCE_CHECK_FREQ = 100
 """Default frequency to check if an elitist ACO has converged."""
 
-DEFAULT_ELITE_WEIGHT = 0.3
-"""Default weight for the elite ants (best-so-far ants) respect to the
-iteration-best ant."""
-
 
 # Exported symbols for this module
 __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
-    'DEFAULT_CONVERGENCE_CHECK_FREQ',
-    'DEFAULT_ELITE_WEIGHT'
+    'DEFAULT_CONVERGENCE_CHECK_FREQ'
 ]

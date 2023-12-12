@@ -31,6 +31,8 @@ Class attributes
 
 Properties
 ----------
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.num_heuristic_matrices
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.species
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.fitness_function
@@ -40,7 +42,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.heuristic_influence
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.choice_info
-.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.convergence_check_freq
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.current_iter
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.custom_termination_func
@@ -97,10 +98,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._deposit_pheromone
-.. automethod:: culebra.trainer.aco.abc.ElitistACO._should_reset_pheromone
-.. automethod:: culebra.trainer.aco.abc.ElitistACO._reset_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._decrease_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_elite
-.. automethod:: culebra.trainer.aco.abc.ElitistACO._has_converged

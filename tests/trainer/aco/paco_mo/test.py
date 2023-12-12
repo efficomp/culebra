@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.SingleObjAgeBasedPACO`."""
+"""Unit test for :py:class:`culebra.trainer.aco.PACO_MO`."""
 
 import unittest
 
@@ -41,10 +41,10 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.SingleObjAgeBasedPACO`."""
+    """Test :py:class:`culebra.trainer.aco.PACO_MO`."""
 
     def test_init(self):
-        """Test __init__`."""
+        """Test __init__."""
         params = {
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
@@ -102,6 +102,54 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(trainer.verbose, params["verbose"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
+
+    def test_num_pheromone_matrices(self):
+        """Test the num_pheromone_matrices property."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        self.assertEqual(
+            trainer.num_pheromone_matrices, fitness_func.num_obj
+        )
+
+    def test_num_heuristic_matrices(self):
+        """Test the num_heuristic_matrices property."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        self.assertEqual(
+            trainer.num_heuristic_matrices, fitness_func.num_obj
+        )
+
+    def test_init_internals(self):
+        """Test the _init_internals method."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+        trainer._init_internals()
 
 
 if __name__ == '__main__':

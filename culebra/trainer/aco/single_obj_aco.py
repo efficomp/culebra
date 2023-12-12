@@ -39,15 +39,10 @@ from deap.tools import ParetoFront, selBest
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import check_float, check_int
 from culebra.solution.abc import Ant
-from culebra.trainer.aco import (
-    DEFAULT_PHEROMONE_INFLUENCE,
-    DEFAULT_HEURISTIC_INFLUENCE
-)
 from culebra.trainer.aco.abc import (
     PheromoneBasedACO,
     SingleObjACO,
-    ElitistACO,
-    WeightedElitistACO,
+    ReseteablePheromoneBasedACO,
     AgeBasedPACO,
     QualityBasedPACO
 )
@@ -64,6 +59,10 @@ __status__ = 'Development'
 
 DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.1
 r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
+
+DEFAULT_ELITE_WEIGHT = 0.3
+"""Default weight for the elite ants (best-so-far ants) respect to the
+iteration-best ant."""
 
 DEFAULT_MMAS_ITER_BEST_USE_LIMIT = 250
 r"""Default limit for the number of iterations for the
@@ -274,7 +273,7 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
         self._deposit_pheromone(self.col)
 
 
-class ElitistAntSystem(AntSystem, WeightedElitistACO):
+class ElitistAntSystem(AntSystem, ReseteablePheromoneBasedACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -419,7 +418,7 @@ class ElitistAntSystem(AntSystem, WeightedElitistACO):
             initial_pheromone=initial_pheromone,
             pheromone_evaporation_rate=pheromone_evaporation_rate
         )
-        WeightedElitistACO.__init__(
+        ReseteablePheromoneBasedACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -429,7 +428,6 @@ class ElitistAntSystem(AntSystem, WeightedElitistACO):
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             convergence_check_freq=convergence_check_freq,
-            elite_weight=elite_weight,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -439,6 +437,44 @@ class ElitistAntSystem(AntSystem, WeightedElitistACO):
             verbose=verbose,
             random_seed=random_seed
         )
+
+        self.elite_weight = elite_weight
+
+    @property
+    def elite_weight(self) -> float:
+        """Get and set the elite weigth.
+
+        :getter: Return the current elite weigth
+        :setter: Set the new elite weigth.  If set to :py:data:`None`,
+         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
+        :type: :py:class:`float`
+        :raises TypeError: If set to a value which is not a real number
+        :raises ValueError: If set to a value outside [0, 1]
+        """
+        return (
+            DEFAULT_ELITE_WEIGHT
+            if self._elite_weight is None
+            else self._elite_weight)
+
+    @elite_weight.setter
+    def elite_weight(self, weight: float | None) -> None:
+        """Set a new elite weigth.
+
+        :param weight: The new weight. If set to :py:data:`None`,
+         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
+        :type weight: :py:class:`float`
+        :raises TypeError: If *weight* is not a real number
+        :raises ValueError: If *weight* is outside [0, 1]
+        """
+        # Check prob
+        self._elite_weight = (
+            None if weight is None else check_float(
+                weight, "elite weigth", ge=0, le=1
+            )
+        )
+
+        # Reset the trainer
+        self.reset()
 
     def _increase_pheromone(self) -> None:
         """Increase the amount of pheromone.
@@ -463,7 +499,7 @@ class ElitistAntSystem(AntSystem, WeightedElitistACO):
             )
 
 
-class MMAS(AntSystem, ElitistACO):
+class MMAS(AntSystem, ReseteablePheromoneBasedACO):
     r""":math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant System algorithm."""
 
     def __init__(
@@ -609,7 +645,7 @@ class MMAS(AntSystem, ElitistACO):
             initial_pheromone=initial_pheromone,
             pheromone_evaporation_rate=pheromone_evaporation_rate
         )
-        ElitistACO.__init__(
+        ReseteablePheromoneBasedACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -1219,8 +1255,7 @@ __all__ = [
     'MMAS',
     'SingleObjAgeBasedPACO',
     'SingleObjQualityBasedPACO',
-    'DEFAULT_PHEROMONE_INFLUENCE',
-    'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
+    'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
 ]

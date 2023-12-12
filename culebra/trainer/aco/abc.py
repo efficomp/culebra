@@ -40,18 +40,20 @@ By the moment:
     pheromone matrices
   * :py:class:`~culebra.trainer.aco.abc.SingleObjACO`: A base class for all
     the single objective ACO-based trainers
+  * :py:class:`~culebra.trainer.aco.abc.PheromoneBasedACO`: A base class for
+    all pheromone-based single objective ACO trainers
   * :py:class:`~culebra.trainer.aco.abc.ElitistACO`: A base class for all
     the elitist single colony ACO-based trainers
-  * :py:class:`~culebra.trainer.aco.abc.WeightedElitistACO`: A base class for
-    all the elitist single colony ACO-based trainers where the elite deposit
-    a weighted amount of pheromone
+  * :py:class:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`: A base
+    class for all the elitist, pheromone-based, and reseteable single colony
+    ACO trainers
   * :py:class:`~culebra.trainer.aco.abc.PACO`: A base class for all
-    the population-based single colony ACO-based trainers
+    the population-based single colony ACO trainers
   * :py:class:`~culebra.trainer.aco.abc.AgeBasedPACO`: A base class for all
-    the population-based single colony ACO-based trainers with an age-based
+    the population-based single colony ACO trainers with an age-based
     population update strategy
   * :py:class:`~culebra.trainer.aco.abc.QualityBasedPACO`: A base class for all
-    the population-based single colony ACO-based trainers with a quality-based
+    the population-based single colony ACO trainers with a quality-based
     population update strategy
 """
 
@@ -89,8 +91,7 @@ from culebra.trainer.abc import SingleSpeciesTrainer
 from .constants import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
-    DEFAULT_CONVERGENCE_CHECK_FREQ,
-    DEFAULT_ELITE_WEIGHT
+    DEFAULT_CONVERGENCE_CHECK_FREQ
 )
 
 
@@ -1088,7 +1089,7 @@ class SingleObjACO(SinglePheromoneMatrixACO, SingleHeuristicMatrixACO):
 
 
 class PheromoneBasedACO(SingleColACO):
-    """Base class for al the ACO approaches guided by pheromone matrices.
+    """Base class for all the ACO approaches guided by pheromone matrices.
 
     This kind of ACO approach relies on the pheromone matrices to guide the
     search, modified by the colony's ants at each iteration. Thus, the
@@ -1163,184 +1164,6 @@ class PheromoneBasedACO(SingleColACO):
 class ElitistACO(SingleColACO):
     """Base class for all the elitist single colony ACO algorithms."""
 
-    def __init__(
-        self,
-        solution_cls: Type[Ant],
-        species: Species,
-        fitness_function: FitnessFunction,
-        initial_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        convergence_check_freq: Optional[int] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [ElitistACO],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
-    ) -> None:
-        r"""Create a new elitist single-colony ACO trainer.
-
-        :param solution_cls: The ant class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
-            subclass
-        :param species: The species for all the ants
-        :type species: :py:class:`~culebra.abc.Species`
-        :param fitness_function: The training fitness function
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param initial_pheromone: Initial amount of pheromone for the paths
-            of each pheromone matrix. Both a scalar value or a sequence of
-            values are allowed. If a scalar value is provided, it will be used
-            for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistACO.num_pheromone_matrices`
-            pheromone matrices.
-        :type initial_pheromone: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
-        :param heuristic: Heuristic matrices. Both a single matrix or a
-            sequence of matrices are allowed. If a single matrix is provided,
-            it will be replicated for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistACO.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
-        :type heuristic: A two-dimensional array-like object or a
-            :py:class:`~collections.abc.Sequence` of two-dimensional array-like
-            objects, optional
-        :param pheromone_influence: Relative influence of each pheromone
-            matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
-            values are allowed. If a scalar value is provided, it will be used
-            for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistACO.num_pheromone_matrices`
-            pheromone matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
-        :param heuristic_influence: Relative influence of each heuristic
-            (:math:`{\beta}`). Both a scalar value or a sequence of
-            values are allowed. If a scalar value is provided, it will be used
-            for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistACO.num_heuristic_matrices`
-            heuristic matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :py:data:`None`
-        :type heuristic_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
-        :param convergence_check_freq: Convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type convergence_check_freq: :py:class:`int`, optional
-        :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
-        :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param col_size: The colony size. If set to :py:data:`None`,
-            *fitness_function*'s
-            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
-            will be used. Defaults to :py:data:`None`
-        :type col_size: :py:class:`int`, greater than zero, optional
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
-        :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
-        :raises TypeError: If any argument is not of the appropriate type
-        :raises ValueError: If any argument has an incorrect value
-        """
-        # Init the superclass
-        SingleColACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone,
-            heuristic=heuristic,
-            pheromone_influence=pheromone_influence,
-            heuristic_influence=heuristic_influence,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            col_size=col_size,
-            checkpoint_enable=checkpoint_enable,
-            checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
-            random_seed=random_seed
-        )
-
-        # Get the parameters
-        self.convergence_check_freq = convergence_check_freq
-
-    @property
-    def convergence_check_freq(self) -> int:
-        """Get and set the convergence assessment frequency.
-
-        :getter: Return the convergence assessment frequency
-        :setter: Set a value for the convergence assessment frequency. If set
-            to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an int
-        :raises ValueError: If set to a non-positive value
-        """
-        return (
-            DEFAULT_CONVERGENCE_CHECK_FREQ
-            if self._convergence_check_freq is None
-            else self._convergence_check_freq
-        )
-
-    @convergence_check_freq.setter
-    def convergence_check_freq(self, value: int | None) -> None:
-        """Set a value for the convergence assessment frequency.
-
-        :param value: New value for the convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            is chosen
-        :type value: :py:class:`int`
-        :raises TypeError: If *value* is not an integer number
-        :raises ValueError: If *value* is non-positive
-        """
-        # Check the value
-        self._convergence_check_freq = (
-            None if value is None else check_int(
-                value, "convergence assessment frequency", gt=0
-            )
-        )
-
     def _get_state(self) -> Dict[str, Any]:
         """Return the state of this trainer.
 
@@ -1404,6 +1227,195 @@ class ElitistACO(SingleColACO):
         """Update the elite (best-so-far) ant."""
         self._elite.update(self.col)
 
+
+class ReseteablePheromoneBasedACO(PheromoneBasedACO, ElitistACO):
+    """Base class for the reseteable elitist pheromone-based ACO approaches."""
+
+    def __init__(
+        self,
+        solution_cls: Type[Ant],
+        species: Species,
+        fitness_function: FitnessFunction,
+        initial_pheromone: float | Sequence[float, ...],
+        heuristic: Optional[
+            Sequence[Sequence[float], ...] |
+            Sequence[Sequence[Sequence[float], ...], ...]
+        ] = None,
+        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
+        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        convergence_check_freq: Optional[int] = None,
+        max_num_iters: Optional[int] = None,
+        custom_termination_func: Optional[
+            Callable[
+                [SingleColACO],
+                bool
+            ]
+        ] = None,
+        col_size: Optional[int] = None,
+        checkpoint_enable: Optional[bool] = None,
+        checkpoint_freq: Optional[int] = None,
+        checkpoint_filename: Optional[str] = None,
+        verbose: Optional[bool] = None,
+        random_seed: Optional[int] = None
+    ) -> None:
+        r"""Create a reseteable elitist pheromone-based ACO trainer.
+
+        :param solution_cls: The ant class
+        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
+            subclass
+        :param species: The species for all the ants
+        :type species: :py:class:`~culebra.abc.Species`
+        :param fitness_function: The training fitness function
+        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :param initial_pheromone: Initial amount of pheromone for the paths
+            of each pheromone matrix. Both a scalar value or a sequence of
+            values are allowed. If a scalar value is provided, it will be used
+            for all the
+            :py:attr:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_pheromone_matrices`
+            pheromone matrices.
+        :type initial_pheromone: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :param heuristic: Heuristic matrices. Both a single matrix or a
+            sequence of matrices are allowed. If a single matrix is provided,
+            it will be replicated for all the
+            :py:attr:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_heuristic_matrices`
+            heuristic matrices. If omitted, the default heuristic matrices
+            provided by *fitness_function* are assumed. Defaults to
+            :py:data:`None`
+        :type heuristic: A two-dimensional array-like object or a
+            :py:class:`~collections.abc.Sequence` of two-dimensional array-like
+            objects, optional
+        :param pheromone_influence: Relative influence of each pheromone
+            matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
+            values are allowed. If a scalar value is provided, it will be used
+            for all the
+            :py:attr:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_pheromone_matrices`
+            pheromone matrices. If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
+            be used for all the pheromone matrices. Defaults to :py:data:`None`
+        :type pheromone_influence: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
+            optional
+        :param heuristic_influence: Relative influence of each heuristic
+            (:math:`{\beta}`). Both a scalar value or a sequence of
+            values are allowed. If a scalar value is provided, it will be used
+            for all the
+            :py:attr:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_heuristic_matrices`
+            heuristic matrices. If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
+            be used for all the heuristic matrices. Defaults to
+            :py:data:`None`
+        :type heuristic_influence: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
+            optional
+        :param convergence_check_freq: Convergence assessment frequency. If
+            set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            will be used. Defaults to :py:data:`None`
+        :type convergence_check_freq: :py:class:`int`, optional
+        :param max_num_iters: Maximum number of iterations. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :py:data:`None`
+        :type max_num_iters: :py:class:`int`, optional
+        :param custom_termination_func: Custom termination criterion. If set to
+            :py:data:`None`, the default termination criterion is used.
+            Defaults to :py:data:`None`
+        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
+            optional
+        :param col_size: The colony size. If set to :py:data:`None`,
+            *fitness_function*'s
+            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
+            will be used. Defaults to :py:data:`None`
+        :type col_size: :py:class:`int`, greater than zero, optional
+        :param checkpoint_enable: Enable/disable checkpoining. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_enable: :py:class:`bool`, optional
+        :param checkpoint_freq: The checkpoint frequency. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :py:data:`None`
+        :type checkpoint_freq: :py:class:`int`, optional
+        :param checkpoint_filename: The checkpoint file path. If set to
+            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :py:data:`None`
+        :type checkpoint_filename: :py:class:`str`, optional
+        :param verbose: The verbosity. If set to
+            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
+            :py:data:`None`
+        :type verbose: :py:class:`bool`, optional
+        :param random_seed: The seed, defaults to :py:data:`None`
+        :type random_seed: :py:class:`int`, optional
+        :raises TypeError: If any argument is not of the appropriate type
+        :raises ValueError: If any argument has an incorrect value
+        """
+        # Init the superclasses
+        PheromoneBasedACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromone=initial_pheromone
+        )
+        ElitistACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromone=initial_pheromone,
+            heuristic=heuristic,
+            pheromone_influence=pheromone_influence,
+            heuristic_influence=heuristic_influence,
+            max_num_iters=max_num_iters,
+            custom_termination_func=custom_termination_func,
+            col_size=col_size,
+            checkpoint_enable=checkpoint_enable,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_filename=checkpoint_filename,
+            verbose=verbose,
+            random_seed=random_seed
+        )
+
+        # Get the parameters
+        self.convergence_check_freq = convergence_check_freq
+
+    @property
+    def convergence_check_freq(self) -> int:
+        """Get and set the convergence assessment frequency.
+
+        :getter: Return the convergence assessment frequency
+        :setter: Set a value for the convergence assessment frequency. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            is chosen
+        :type: :py:class:`int`
+        :raises TypeError: If set to a value which is not an int
+        :raises ValueError: If set to a non-positive value
+        """
+        return (
+            DEFAULT_CONVERGENCE_CHECK_FREQ
+            if self._convergence_check_freq is None
+            else self._convergence_check_freq
+        )
+
+    @convergence_check_freq.setter
+    def convergence_check_freq(self, value: int | None) -> None:
+        """Set a value for the convergence assessment frequency.
+
+        :param value: New value for the convergence assessment frequency. If
+            set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            is chosen
+        :type value: :py:class:`int`
+        :raises TypeError: If *value* is not an integer number
+        :raises ValueError: If *value* is non-positive
+        """
+        # Check the value
+        self._convergence_check_freq = (
+            None if value is None else check_int(
+                value, "convergence assessment frequency", gt=0
+            )
+        )
+
     def _has_converged(self) -> None:
         """Detect if the trainer has converged.
 
@@ -1461,193 +1473,6 @@ class ElitistACO(SingleColACO):
         # Reset pheromone if convergence is reached
         if self._should_reset_pheromone():
             self._reset_pheromone()
-
-
-class WeightedElitistACO(ElitistACO):
-    """Base class for all the weighted elitist single colony ACO algorithms."""
-
-    def __init__(
-        self,
-        solution_cls: Type[Ant],
-        species: Species,
-        fitness_function: FitnessFunction,
-        initial_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        convergence_check_freq: Optional[int] = None,
-        elite_weight: Optional[float] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [WeightedElitistACO],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
-    ) -> None:
-        r"""Create a new weighted elitist single-colony ACO trainer.
-
-        :param solution_cls: The ant class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
-            subclass
-        :param species: The species for all the ants
-        :type species: :py:class:`~culebra.abc.Species`
-        :param fitness_function: The training fitness function
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
-        :param initial_pheromone: Initial amount of pheromone for the paths
-            of each pheromone matrix. Both a scalar value or a sequence of
-            values are allowed. If a scalar value is provided, it will be used
-            for all the
-            :py:attr:`~culebra.trainer.aco.abc.WeightedElitistACO.num_pheromone_matrices`
-            pheromone matrices.
-        :type initial_pheromone: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
-        :param heuristic: Heuristic matrices. Both a single matrix or a
-            sequence of matrices are allowed. If a single matrix is provided,
-            it will be replicated for all the
-            :py:attr:`~culebra.trainer.aco.abc.WeightedElitistACO.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
-        :type heuristic: A two-dimensional array-like object or a
-            :py:class:`~collections.abc.Sequence` of two-dimensional array-like
-            objects, optional
-        :param pheromone_influence: Relative influence of each pheromone
-            matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
-            values are allowed. If a scalar value is provided, it will be used
-            for all the
-            :py:attr:`~culebra.trainer.aco.abc.WeightedElitistACO.num_pheromone_matrices`
-            pheromone matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
-        :param heuristic_influence: Relative influence of each heuristic
-            (:math:`{\beta}`). Both a scalar value or a sequence of
-            values are allowed. If a scalar value is provided, it will be used
-            for all the
-            :py:attr:`~culebra.trainer.aco.abc.WeightedElitistACO.num_heuristic_matrices`
-            heuristic matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :py:data:`None`
-        :type heuristic_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
-        :param convergence_check_freq: Convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type convergence_check_freq: :py:class:`int`, optional
-        :param elite_weight: Weight for the elite ants (best-so-far ants)
-            respect to the iteration-best ants.
-            If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` will be used.
-            Defaults to :py:data:`None`
-        :type elite_weight: :py:class:`float` in [0, 1], optional
-        :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
-        :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param col_size: The colony size. If set to :py:data:`None`,
-            *fitness_function*'s
-            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
-            will be used. Defaults to :py:data:`None`
-        :type col_size: :py:class:`int`, greater than zero, optional
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
-        :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
-        :raises TypeError: If any argument is not of the appropriate type
-        :raises ValueError: If any argument has an incorrect value
-        """
-        # Init the superclass
-        ElitistACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone,
-            heuristic=heuristic,
-            pheromone_influence=pheromone_influence,
-            heuristic_influence=heuristic_influence,
-            convergence_check_freq=convergence_check_freq,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            col_size=col_size,
-            checkpoint_enable=checkpoint_enable,
-            checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
-            random_seed=random_seed
-        )
-
-        self.elite_weight = elite_weight
-
-    @property
-    def elite_weight(self) -> float:
-        """Get and set the elite weigth.
-
-        :getter: Return the current elite weigth
-        :setter: Set the new elite weigth.  If set to :py:data:`None`,
-         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value outside [0, 1]
-        """
-        return (
-            DEFAULT_ELITE_WEIGHT
-            if self._elite_weight is None
-            else self._elite_weight)
-
-    @elite_weight.setter
-    def elite_weight(self, weight: float | None) -> None:
-        """Set a new elite weigth.
-
-        :param weight: The new weight. If set to :py:data:`None`,
-         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
-        :type weight: :py:class:`float`
-        :raises TypeError: If *weight* is not a real number
-        :raises ValueError: If *weight* is outside [0, 1]
-        """
-        # Check prob
-        self._elite_weight = (
-            None if weight is None else check_float(
-                weight, "elite weigth", ge=0, le=1
-            )
-        )
-
-        # Reset the trainer
-        self.reset()
 
 
 class PACO(SingleColACO):
@@ -2262,8 +2087,9 @@ __all__ = [
     'MultiplePheromoneMatricesACO',
     'MultipleHeuristicMatricesACO',
     'SingleObjACO',
+    'PheromoneBasedACO',
     'ElitistACO',
-    'WeightedElitistACO',
+    'ReseteablePheromoneBasedACO',
     'PACO',
     'AgeBasedPACO',
     'QualityBasedPACO'

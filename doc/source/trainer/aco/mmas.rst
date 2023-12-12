@@ -26,13 +26,13 @@
 
 Class attributes
 ----------------
-
 .. autoattribute:: culebra.trainer.aco.MMAS.stats_names
 .. autoattribute:: culebra.trainer.aco.MMAS.objective_stats
 
 Properties
 ----------
-
+.. autoproperty:: culebra.trainer.aco.MMAS.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.MMAS.num_heuristic_matrices
 .. autoproperty:: culebra.trainer.aco.MMAS.solution_cls
 .. autoproperty:: culebra.trainer.aco.MMAS.species
 .. autoproperty:: culebra.trainer.aco.MMAS.fitness_function

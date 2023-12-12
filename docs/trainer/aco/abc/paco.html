@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="culebra.trainer.aco.abc.AgeBasedPACO class" href="age_based_paco.html" />
-    <link rel="prev" title="culebra.trainer.aco.abc.WeightedElitistACO class" href="weighted_elitist_aco.html" /> 
+    <link rel="prev" title="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO class" href="reseteable_pheromone_based_aco.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,7 +30,7 @@
           <a href="age_based_paco.html" title="culebra.trainer.aco.abc.AgeBasedPACO class"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="weighted_elitist_aco.html" title="culebra.trainer.aco.abc.WeightedElitistACO class"
+          <a href="reseteable_pheromone_based_aco.html" title="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
@@ -62,21 +62,21 @@ subclass) – The ant class</p></li>
 of each pheromone matrix. Both a scalar value or a sequence of
 values are allowed. If a scalar value is provided, it will be used
 for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.PACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 pheromone matrices.</p></li>
 <li><p><strong>max_pheromone</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or
 <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Maximum amount of pheromone for the paths
 of each pheromone matrix. Both a scalar value or a sequence of
 values are allowed. If a scalar value is provided, it will be used
 for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.PACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 pheromone matrices.</p></li>
 <li><p><strong>heuristic</strong> (A two-dimensional array-like object or a
 <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of two-dimensional array-like
 objects, optional) – Heuristic matrices. Both a single matrix or a
 sequence of matrices are allowed. If a single matrix is provided,
 it will be replicated for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_heuristic_matrices" title="culebra.trainer.aco.abc.PACO.num_heuristic_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></a>
 heuristic matrices. If omitted, the default heuristic matrices
 provided by <em>fitness_function</em> are assumed. Defaults to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
@@ -86,7 +86,7 @@ optional) – Relative influence of each pheromone
 matrix (<span class="math notranslate nohighlight">\({\alpha}\)</span>). Both a scalar value or a sequence of
 values are allowed. If a scalar value is provided, it will be used
 for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.PACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 pheromone matrices. If omitted,
 <a class="reference internal" href="../../aco.html#culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE" title="culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_PHEROMONE_INFLUENCE</span></code></a> will
 be used for all the pheromone matrices. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
@@ -96,7 +96,7 @@ optional) – Relative influence of each heuristic
 (<span class="math notranslate nohighlight">\({\beta}\)</span>). Both a scalar value or a sequence of
 values are allowed. If a scalar value is provided, it will be used
 for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_heuristic_matrices" title="culebra.trainer.aco.abc.PACO.num_heuristic_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></a>
 heuristic matrices. If omitted,
 <a class="reference internal" href="../../aco.html#culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE" title="culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HEURISTIC_INFLUENCE</span></code></a> will
 be used for all the heuristic matrices. Defaults to
@@ -155,6 +155,38 @@ will be used. Defaults to <a class="reference external" href="https://docs.pytho
 </section>
 <section id="properties">
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.PACO.num_pheromone_matrices">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PACO.</span></span><span class="sig-name descname"><span class="pre">num_pheromone_matrices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.aco.abc.PACO.num_pheromone_matrices" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number of pheromone matrices used by this trainer.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.PACO.num_heuristic_matrices">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PACO.</span></span><span class="sig-name descname"><span class="pre">num_heuristic_matrices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.aco.abc.PACO.num_heuristic_matrices" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number of heuristic matrices used by this trainer.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.PACO.solution_cls">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PACO.</span></span><span class="sig-name descname"><span class="pre">solution_cls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.aco.abc.PACO.solution_cls" title="Link to this definition">¶</a></dt>
@@ -229,7 +261,7 @@ will be used. Defaults to <a class="reference external" href="https://docs.pytho
 <dd class="field-even"><p>Set a new initial value for each pheromone matrix. Both a
 scalar value or a sequence of values are allowed. If a scalar value
 is provided, it will be used for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 pheromone matrices.</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -241,7 +273,7 @@ pheromone matrices.</p>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If any value is negative or zero</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a sequence of values with a length different
 from
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 is provided</p></li>
 </ul>
 </dd>
@@ -260,7 +292,7 @@ is provided</p></li>
 <dd class="field-even"><p>Set a new maximum value for each pheromone matrix. Both a
 scalar value or a sequence of values are allowed. If a scalar value
 is provided, it will be used for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.PACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 pheromone matrices.</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -274,7 +306,7 @@ pheromone matrices.</p>
 corresponding initial pheromone value</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a sequence of values with a length different
 from
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="#culebra.trainer.aco.abc.PACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.PACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 is provided</p></li>
 </ul>
 </dd>
@@ -293,7 +325,7 @@ is provided</p></li>
 <dd class="field-even"><p>Set new heuristic matrices. Both a single matrix or a
 sequence of matrices are allowed. If a single matrix is provided,
 it will be replicated for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></a>
 heuristic matrices. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the default
 heuristic (provided by the
 <a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.fitness_function" title="culebra.trainer.aco.abc.SingleColACO.fitness_function"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fitness_function</span></code></a>
@@ -317,7 +349,7 @@ shape</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If any element in any array-like object is negative</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a sequence is provided and it length is
 different from
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></p></li>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></a></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the array-like objects have different shapes</p></li>
 </ul>
 </dd>
@@ -336,7 +368,7 @@ different from
 <dd class="field-even"><p>Set a new value for the relative influence of each pheromone
 matrix. Both a scalar value or a sequence of values are allowed.
 If a scalar value is provided, it will be used for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 pheromone matrices. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../../aco.html#culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE" title="culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_PHEROMONE_INFLUENCE</span></code></a> is
 chosen.</p>
@@ -350,7 +382,7 @@ chosen.</p>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If any value is negative</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a sequence of values with a length different
 from
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_pheromone_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_pheromone_matrices</span></code></a>
 is provided</p></li>
 </ul>
 </dd>
@@ -369,7 +401,7 @@ is provided</p></li>
 <dd class="field-even"><p>Set a new value for the relative influence of each heuristic
 matrix. Both a scalar value or a sequence of values are allowed.
 If a scalar value is provided, it will be used for all the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></a>
 heuristic matrices. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../../aco.html#culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE" title="culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_HEURISTIC_INFLUENCE</span></code></a> is
 chosen.</p>
@@ -384,7 +416,7 @@ chosen.</p>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If any value is negative</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a sequence of values with a length different
 from
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code>
+<a class="reference internal" href="single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices" title="culebra.trainer.aco.abc.SingleColACO.num_heuristic_matrices"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_heuristic_matrices</span></code></a>
 is provided</p></li>
 </ul>
 </dd>
@@ -1266,7 +1298,7 @@ the pheromone updation process.</p>
           <a href="age_based_paco.html" title="culebra.trainer.aco.abc.AgeBasedPACO class"
              >next</a> |</li>
         <li class="right" >
-          <a href="weighted_elitist_aco.html" title="culebra.trainer.aco.abc.WeightedElitistACO class"
+          <a href="reseteable_pheromone_based_aco.html" title="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>

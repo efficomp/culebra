@@ -31,6 +31,8 @@ Class attributes
 
 Properties
 ----------
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.num_heuristic_matrices
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.species
 .. autoproperty:: culebra.trainer.aco.SingleObjAgeBasedPACO.fitness_function
