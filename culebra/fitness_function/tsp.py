@@ -868,7 +868,7 @@ class PathLength(FitnessFunction):
             with open_file(filepath_or_buffer) as buffer:
                 the_distances.append(parse_file(buffer))
 
-                return cls(*the_distances)
+        return cls(*the_distances)
 
     def __copy__(self) -> PathLength:
         """Shallow copy the fitness function."""
