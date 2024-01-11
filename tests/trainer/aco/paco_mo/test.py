@@ -306,17 +306,34 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
-            "pop_size": 5
+            "pop_size": 4
         }
+        elite_size = 10
 
         # Create the trainer
         trainer = PACO_MO(**params)
 
         # Init the search
         trainer._init_search()
+        trainer._start_iteration()
 
-        # TODO ...
+        # Generate the elite
+        for i in range(elite_size):
+            ant = trainer._generate_ant()
+            ant.fitness.values = (i, elite_size - i)
+            trainer._elite.update([ant])
 
+        # Generate a new sub-population
+        trainer._update_pop()
+
+        # Update the pheromone
+        trainer._update_pheromone()
+
+        # Calculate the choice_info for the next iteration
+        trainer._calculate_choice_info()
+
+        # Check tha the coince info has been calculated
+        self.assertEqual(trainer.choice_info.shape, trainer.heuristic[0].shape)
 
     def test_update_pop(self):
         """Test _update_pop."""
@@ -332,48 +349,40 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = PACO_MO(**params)
 
-        # Init the search
-        trainer._init_search()
-
         # Try to update the population with an empty elite
+        trainer._init_search()
         trainer._start_iteration()
         trainer._update_pop()
-        # The elite should be empty and
-        # the population should be filled with random ants
+
+        # Both the elite and subpopulation should be empty
         self.assertEqual(len(trainer._elite), 0)
-        self.assertEqual(len(trainer.pop), trainer.pop_size)
-        # Check the infoing and outgoing lists
-        self.assertEqual(trainer._pop_ingoing, trainer.pop)
-        self.assertTrue(len(trainer._pop_ingoing), 0)
+        self.assertEqual(len(trainer.pop), 0)
 
         # Try with an elite size lower than the population size
+        trainer._init_search()
         trainer._start_iteration()
         elite_size = trainer.pop_size // 2
         while len(trainer._elite) < elite_size:
             trainer._elite.update([trainer._generate_ant()])
         trainer._update_pop()
-        # All the elite ants should be in the population.
-        # The remaining place should be filled with random ants
-        for ant1, ant2 in zip(trainer.pop[:elite_size], trainer._elite):
+
+        # All the elite ants should be in the population
+        self.assertEqual(len(trainer._elite), len(trainer.pop))
+        for ant1, ant2 in zip(trainer.pop, trainer._elite):
             self.assertEqual(ant1, ant2)
-        self.assertEqual(len(trainer.pop), trainer.pop_size)
-        # Check the infoing and outgoing lists
-        self.assertEqual(trainer._pop_ingoing, trainer.pop)
-        self.assertTrue(len(trainer._pop_ingoing), 0)
 
         # Try with an elite size higher than the population size
+        trainer._init_search()
         trainer._start_iteration()
         elite_size = trainer.pop_size + 1
         while len(trainer._elite) < elite_size:
             trainer._elite.update([trainer._generate_ant()])
         trainer._update_pop()
+
         # All the ants in the population should be elite ants
         for ant in trainer.pop:
             self.assertTrue(ant in trainer._elite)
         self.assertEqual(len(trainer.pop), trainer.pop_size)
-        # Check the infoing and outgoing lists
-        self.assertEqual(trainer._pop_ingoing, trainer.pop)
-        self.assertTrue(len(trainer._pop_ingoing), 0)
 
     def test_update_pheromone(self):
         """Test _update_pheromone."""
@@ -394,7 +403,7 @@ class TrainerTester(unittest.TestCase):
 
         # Generate a new population and update the pheromone matrices
         trainer._start_iteration()
-        trainer._update_pop()
+        trainer._pop.append(trainer._generate_ant())
         trainer._update_pheromone()
 
         # Check the pheromone matrices
@@ -403,12 +412,6 @@ class TrainerTester(unittest.TestCase):
         ):
             self.assertTrue(np.all(matrix >= init_val))
             self.assertTrue(np.any(matrix != init_val))
-        
-        
-
-
-
-
 
 
 if __name__ == '__main__':

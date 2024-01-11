@@ -32,7 +32,6 @@ from typing import (
 from random import randrange
 
 import numpy as np
-from scipy.spatial.distance import cdist
 
 from deap.tools import HallOfFame
 
@@ -298,13 +297,75 @@ class PACO_MO(
         super()._reset_internals()
         self._pop = None
 
-# TODO hay que hacerlo
     def _calculate_choice_info(self) -> None:
         """Calculate the choice info matrix."""
-        self._choice_info = (
-            np.power(self.pheromone[0], self.pheromone_influence[0]) *
-            np.power(self.heuristic[0], self.heuristic_influence[0])
-        )
+        # Number of objectives
+        num_obj = self.fitness_function.num_obj
+
+        # Current number of ants in the population
+        pop_size = len(self.pop)
+
+        # Currenbt number of elite ants
+        elite_size = len(self._elite)
+
+        # Default weight for each objective
+        obj_weight = np.ones(num_obj)
+
+        # If the elite and the population are not empty
+        if elite_size > 0 and pop_size > 0:
+            # Get population's ants rank for each objective
+            ant_rank = np.zeros((num_obj, pop_size))
+
+            # For each objective ...
+            for obj_idx in range(num_obj):
+                # Rank the elite according to this objective,
+                # from worst to best
+                ranked_elite_by_obj = sorted(
+                    self._elite,
+                    key=lambda ant: ant.fitness.wvalues[obj_idx]
+                )
+
+                # For each ant in the population ...
+                for ant_idx, ant in enumerate(self.pop):
+                    ant_rank[obj_idx][ant_idx] = ranked_elite_by_obj.index(ant)
+
+            # Obtain the population's ants weight for each objective
+            ant_weight = np.zeros((num_obj, pop_size))
+
+            # Sum of ranks of each ant for all the objectives
+            rank_sum = ant_rank.sum(axis=0)
+
+            # For each objective ...
+            for obj_idx in range(num_obj):
+                # For each ant in the population ...
+                for ant_idx, ant in enumerate(self.pop):
+                    ant_weight[obj_idx][ant_idx] = (
+                        ant_rank[obj_idx][ant_idx] / rank_sum[ant_idx]
+                    )
+
+            # Obtain the average weight for each objective
+            obj_weight = ant_weight.mean(axis=1)
+
+        # Calculate the choice probabilites
+        self._choice_info = np.zeros(self.heuristic[0].shape)
+        for (
+            weight,
+            pheromone,
+            heuristic,
+            pheromone_influence,
+            heuristic_influence
+        ) in zip(
+            obj_weight,
+            self.pheromone,
+            self.heuristic,
+            self.pheromone_influence,
+            self.heuristic_influence
+        ):
+            self._choice_info += (
+                np.power(pheromone, pheromone_influence) *
+                np.power(heuristic, heuristic_influence) *
+                weight
+            )
 
     def _update_pop(self) -> None:
         """Generate a new sub-population for the current iteration.
@@ -338,10 +399,6 @@ class PACO_MO(
             # Use all the elite ants
             for ant in self._elite:
                 self._pop.append(ant)
-
-            # Complete the sub-population with random ants if necessary
-            while len(self.pop) < self.pop_size:
-                self.pop.append(self._generate_ant())
         else:
             # Candidate ants for the new sub-population
             candidate_ants = []
@@ -381,8 +438,6 @@ class PACO_MO(
                 self._pop.append(candidate_ants[nearest_ant_index])
                 del candidate_ants[nearest_ant_index]
                 remaining_room_in_subpop -= 1
-
-        self._pop_ingoing = self.pop
 
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.
