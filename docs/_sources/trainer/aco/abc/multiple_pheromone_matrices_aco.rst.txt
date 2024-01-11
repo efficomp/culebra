@@ -97,6 +97,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._generate_col
+.. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._init_pheromone
 .. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.MultiplePheromoneMatricesACO._decrease_pheromone

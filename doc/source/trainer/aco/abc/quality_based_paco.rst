@@ -100,6 +100,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._generate_col
+.. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._init_pheromone
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.QualityBasedPACO._decrease_pheromone

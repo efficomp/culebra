@@ -22,7 +22,9 @@
 from __future__ import annotations
 
 from typing import (
+    Any,
     Type,
+    Dict,
     Callable,
     Optional,
     Sequence
@@ -30,6 +32,9 @@ from typing import (
 from random import randrange
 
 import numpy as np
+from scipy.spatial.distance import cdist
+
+from deap.tools import HallOfFame
 
 from culebra.abc import Species, FitnessFunction
 from culebra.solution.abc import Ant
@@ -52,10 +57,10 @@ __status__ = 'Development'
 
 
 class PACO_MO(
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
+    PACO,
     ElitistACO,
-    PACO
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO
 ):
     """Implement the PACO-MO algorithm."""
 
@@ -72,7 +77,6 @@ class PACO_MO(
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        convergence_check_freq: Optional[int] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -146,11 +150,6 @@ class PACO_MO(
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
-        :param convergence_check_freq: Convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type convergence_check_freq: :py:class:`int`, optional
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -209,8 +208,7 @@ class PACO_MO(
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone,
-            convergence_check_freq=convergence_check_freq
+            initial_pheromone=initial_pheromone
         )
         PACO.__init__(
             self,
@@ -233,16 +231,89 @@ class PACO_MO(
             random_seed=random_seed
         )
 
+    def _get_state(self) -> Dict[str, Any]:
+        """Return the state of this trainer.
+
+        Overridden to ignore the population, which is now an internal
+        structure since the elite solutions are kept within the state.
+
+        :type: :py:class:`dict`
+        """
+        return super(PACO, self)._get_state()
+
+    def _set_state(self, state: Dict[str, Any]) -> None:
+        """Set the state of this trainer.
+
+        Overridden to ignore the population, which is now an internal
+        structure since the elite solutions are kept within the state.
+
+        :param state: The last loaded state
+        :type state: :py:class:`dict`
+        """
+        super(PACO, self)._set_state(state)
+
+    def _new_state(self) -> None:
+        """Generate a new trainer state.
+
+        Overridden to ignore the population, which is now an internal
+        structure since the elite solutions are kept within the state.
+        """
+        super(PACO, self)._new_state()
+
+    def _reset_state(self) -> None:
+        """Reset the trainer state.
+
+        Overridden to ignore the population, which is now an internal
+        structure since the elite solutions are kept within the state.
+        """
+        super(PACO, self)._reset_state()
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        return super(PACO, self).best_solutions()
+
+    def _init_internals(self) -> None:
+        """Set up the trainer internal data structures to start searching.
+
+        Create all the internal objects, functions and data structures needed
+        to run the search process. For the
+        :py:class:`~culebra.trainer.aco.abc.PACO_MO` class, the population
+        is an internal structure, since is generated each iteration.
+        """
+        super()._init_internals()
+        self._pop = []
+
+    def _reset_internals(self) -> None:
+        """Reset the internal structures of the trainer.
+
+        Overridden to reset the population.
+        """
+        super()._reset_internals()
+        self._pop = None
+
+# TODO hay que hacerlo
+    def _calculate_choice_info(self) -> None:
+        """Calculate the choice info matrix."""
+        self._choice_info = (
+            np.power(self.pheromone[0], self.pheromone_influence[0]) *
+            np.power(self.heuristic[0], self.heuristic_influence[0])
+        )
+
     def _update_pop(self) -> None:
         """Generate a new sub-population for the current iteration.
 
         The new sub-population is generated from the elite super-population.
-        The *_pop_ingoing* and *_pop_outgoing* lists are not used since the
-        sub-population is regenerated in each iteration.
         """
 
         def obj_dist(ant1: Ant, ant2: Ant) -> float:
-            """Return the distance between two ants in teh objective space.
+            """Return the distance between two ants in the objective space.
 
             :param ant1: The first ant
             :type ant1: :py:class:`~culebra.solution.abc.Ant`
@@ -251,11 +322,10 @@ class PACO_MO(
             :return: The distance in the objective space
             :rtype: :py:class:`float`
             """
-            dist = 0
-            for val1, val2 in zip(ant1.fitness.values, ant2.fitness.values):
-                dist += abs(val1 - val2)
-
-            return dist
+            fit1 = np.asarray(ant1.fitness.values)
+            fit2 = np.asarray(ant2.fitness.values)
+            diffs = np.abs(fit1 - fit2)
+            return np.sum(diffs)
 
         # Number of elite ants
         elite_size = len(self._elite)
@@ -268,6 +338,10 @@ class PACO_MO(
             # Use all the elite ants
             for ant in self._elite:
                 self._pop.append(ant)
+
+            # Complete the sub-population with random ants if necessary
+            while len(self.pop) < self.pop_size:
+                self.pop.append(self._generate_ant())
         else:
             # Candidate ants for the new sub-population
             candidate_ants = []
@@ -308,17 +382,19 @@ class PACO_MO(
                 del candidate_ants[nearest_ant_index]
                 remaining_room_in_subpop -= 1
 
+        self._pop_ingoing = self.pop
+
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.
 
         The pheromone trails are updated according to the current
         sub-population.
         """
-        # Init the heuristic matrices
-        heuristic_shape = self._heuristic[0].shape
+        # Init the pheromone matrices
+        shape = self._heuristic[0].shape
         self._pheromone = [
             np.full(
-                heuristic_shape,
+                shape,
                 initial_pheromone,
                 dtype=float
             ) for initial_pheromone in self.initial_pheromone
@@ -329,14 +405,6 @@ class PACO_MO(
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
-        # Create a new population from the elite
-        # and also the pheromone matrices
-        # mirar la interacción con los internals ...
-        self._update_pop()
-
-        # Generate the pheromone matrix according to the new sub-population
-        self._update_pheromone()
-
         # Create the ant colony and the ants' paths from the current
         # pheromone matrix
         self._generate_col()
@@ -344,8 +412,12 @@ class PACO_MO(
         # Update the elite
         self._update_elite()
 
+        # Create a new sub-population from the elite
+        # and also the pheromone matrices
+        self._update_pop()
 
-
+        # Generate the pheromone matrix according to the new sub-population
+        self._update_pheromone()
 
 
 # Exported symbols for this module

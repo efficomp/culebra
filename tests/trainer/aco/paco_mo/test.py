@@ -26,6 +26,8 @@ import unittest
 
 import numpy as np
 
+from deap.tools import ParetoFront
+
 from culebra.trainer.aco import PACO_MO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import DoublePathLength
@@ -54,7 +56,6 @@ class TrainerTester(unittest.TestCase):
             "heuristic": np.ones((num_nodes, num_nodes)),
             "pheromone_influence": 2,
             "heuristic_influence": 5,
-            "convergence_check_freq": 13,
             "max_num_iters": 123,
             "custom_termination_func": max,
             "col_size": 6,
@@ -83,9 +84,6 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(
             trainer.heuristic_influence[0], params["heuristic_influence"]
-        )
-        self.assertEqual(
-            trainer.convergence_check_freq, params["convergence_check_freq"]
         )
         self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(
@@ -137,8 +135,8 @@ class TrainerTester(unittest.TestCase):
             trainer.num_heuristic_matrices, fitness_func.num_obj
         )
 
-    def test_init_internals(self):
-        """Test the _init_internals method."""
+    def test_state(self):
+        """Test the get_state and _set_state methods."""
         params = {
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
@@ -149,7 +147,268 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = PACO_MO(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Save the trainer's state
+        state = trainer._get_state()
+
+        # Check the state
+        self.assertEqual(state["num_evals"], trainer.num_evals)
+        self.assertEqual(state["elite"], trainer._elite)
+
+        # Check that pop is not in state
+        with self.assertRaises(KeyError):
+            state["pop"]
+
+        elite = ParetoFront()
+        elite.update([trainer._generate_ant()])
+        # Change the state
+        state["num_evals"] = 100
+        state["elite"] = elite
+
+        # Set the new state
+        trainer._set_state(state)
+
+        # Test if the new values have been set
+        self.assertEqual(state["num_evals"], trainer.num_evals)
+        self.assertTrue(
+            np.all(state["elite"] == trainer._elite)
+        )
+
+    def test_new_state(self):
+        """Test _new_state."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Create a new state
         trainer._init_internals()
+        trainer._new_state()
+
+        # Check the elite
+        self.assertIsInstance(trainer._elite, ParetoFront)
+        self.assertEqual(len(trainer._elite), 0)
+
+    def test_reset_state(self):
+        """Test _reset_state."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Create a new state
+        trainer._init_internals()
+        trainer._new_state()
+
+        # Reset the state
+        trainer._reset_state()
+
+        # Check the elite
+        self.assertEqual(trainer._elite, None)
+
+    def test_best_solutions(self):
+        """Test the best_solutions method."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Try before any colony has been created
+        best_ones = trainer.best_solutions()
+        self.assertIsInstance(best_ones, list)
+        self.assertEqual(len(best_ones), 1)
+        self.assertEqual(len(best_ones[0]), 0)
+
+        # Update the elite
+        trainer._init_search()
+        trainer._start_iteration()
+        ant = trainer._generate_ant()
+        trainer._elite.update([ant])
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has only one solution
+        self.assertEqual(len(best_ones[0]), 1)
+
+        # Check that the solution in hof is sol1
+        self.assertTrue(ant in best_ones[0])
+
+    def test_init_internals(self):
+        """Test _init_internals."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Create a new state
+        trainer._init_internals()
+
+        # Check the population
+        self.assertIsInstance(trainer.pop, list)
+        self.assertEqual(len(trainer.pop), 0)
+
+    def test_reset_internals(self):
+        """Test _reset_internals."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Create a new state
+        trainer._init_internals()
+
+        # Reset the state
+        trainer._reset_internals()
+
+        # Check the population
+        self.assertEqual(trainer.pop, None)
+
+    def test_calculate_choice_info(self):
+        """Test _test_calculate_choice_info."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3,
+            "pop_size": 5
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Init the search
+        trainer._init_search()
+
+        # TODO ...
+
+
+    def test_update_pop(self):
+        """Test _update_pop."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3,
+            "pop_size": 5
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Init the search
+        trainer._init_search()
+
+        # Try to update the population with an empty elite
+        trainer._start_iteration()
+        trainer._update_pop()
+        # The elite should be empty and
+        # the population should be filled with random ants
+        self.assertEqual(len(trainer._elite), 0)
+        self.assertEqual(len(trainer.pop), trainer.pop_size)
+        # Check the infoing and outgoing lists
+        self.assertEqual(trainer._pop_ingoing, trainer.pop)
+        self.assertTrue(len(trainer._pop_ingoing), 0)
+
+        # Try with an elite size lower than the population size
+        trainer._start_iteration()
+        elite_size = trainer.pop_size // 2
+        while len(trainer._elite) < elite_size:
+            trainer._elite.update([trainer._generate_ant()])
+        trainer._update_pop()
+        # All the elite ants should be in the population.
+        # The remaining place should be filled with random ants
+        for ant1, ant2 in zip(trainer.pop[:elite_size], trainer._elite):
+            self.assertEqual(ant1, ant2)
+        self.assertEqual(len(trainer.pop), trainer.pop_size)
+        # Check the infoing and outgoing lists
+        self.assertEqual(trainer._pop_ingoing, trainer.pop)
+        self.assertTrue(len(trainer._pop_ingoing), 0)
+
+        # Try with an elite size higher than the population size
+        trainer._start_iteration()
+        elite_size = trainer.pop_size + 1
+        while len(trainer._elite) < elite_size:
+            trainer._elite.update([trainer._generate_ant()])
+        trainer._update_pop()
+        # All the ants in the population should be elite ants
+        for ant in trainer.pop:
+            self.assertTrue(ant in trainer._elite)
+        self.assertEqual(len(trainer.pop), trainer.pop_size)
+        # Check the infoing and outgoing lists
+        self.assertEqual(trainer._pop_ingoing, trainer.pop)
+        self.assertTrue(len(trainer._pop_ingoing), 0)
+
+    def test_update_pheromone(self):
+        """Test _update_pheromone."""
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": fitness_func,
+            "initial_pheromone": 1,
+            "max_pheromone": 3,
+            "pop_size": 5
+        }
+
+        # Create the trainer
+        trainer = PACO_MO(**params)
+
+        # Init the search
+        trainer._init_search()
+
+        # Generate a new population and update the pheromone matrices
+        trainer._start_iteration()
+        trainer._update_pop()
+        trainer._update_pheromone()
+
+        # Check the pheromone matrices
+        for matrix, init_val in zip(
+            trainer.pheromone, trainer.initial_pheromone
+        ):
+            self.assertTrue(np.all(matrix >= init_val))
+            self.assertTrue(np.any(matrix != init_val))
+        
+        
+
+
+
+
 
 
 if __name__ == '__main__':

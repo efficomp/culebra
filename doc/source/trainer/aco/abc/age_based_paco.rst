@@ -100,6 +100,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._generate_col
+.. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._init_pheromone
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.AgeBasedPACO._decrease_pheromone

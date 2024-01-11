@@ -909,6 +909,17 @@ class SingleColACO(SingleSpeciesTrainer):
         while len(self.col) < self.col_size:
             self.col.append(self._generate_ant())
 
+    def _init_pheromone(self) -> None:
+        """Init the pheromone matrix(ces) according to the initial value(s)."""
+        shape = self._heuristic[0].shape
+        self._pheromone = [
+            np.full(
+                shape,
+                initial_pheromone,
+                dtype=float
+            ) for initial_pheromone in self.initial_pheromone
+        ]
+
     def _deposit_pheromone(
         self, ants: Sequence[Ant], weight: Optional[float] = 1
     ) -> None:
@@ -986,20 +997,6 @@ class SingleColACO(SingleSpeciesTrainer):
         self._logbook.record(**record)
         if self.verbose:
             print(self._logbook.stream)
-
-    def best_solutions(self) -> Sequence[HallOfFame]:
-        """Get the best solutions found for each species.
-
-        Return the best single solution found for each species
-
-        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
-            solutions. One hof for each species
-        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
-        """
-        hof = ParetoFront()
-        if self.col is not None:
-            hof.update(self.col)
-        return [hof]
 
 
 class SinglePheromoneMatrixACO(SingleColACO):
@@ -1143,14 +1140,7 @@ class PheromoneBasedACO(SingleColACO):
         Overridden to generate the initial pheromone matrices.
         """
         super()._new_state()
-        heuristic_shape = self._heuristic[0].shape
-        self._pheromone = [
-            np.full(
-                heuristic_shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromone
-        ]
+        self._init_pheromone()
 
     def _reset_state(self) -> None:
         """Reset the trainer state.
@@ -1159,6 +1149,20 @@ class PheromoneBasedACO(SingleColACO):
         """
         super()._reset_state()
         self._pheromone = None
+
+    def best_solutions(self) -> Sequence[HallOfFame]:
+        """Get the best solutions found for each species.
+
+        Return the best single solution found for each species
+
+        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
+            solutions. One hof for each species
+        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        """
+        hof = ParetoFront()
+        if self.col is not None:
+            hof.update(self.col)
+        return [hof]
 
 
 class ElitistACO(SingleColACO):
@@ -1228,7 +1232,7 @@ class ElitistACO(SingleColACO):
         self._elite.update(self.col)
 
 
-class ReseteablePheromoneBasedACO(PheromoneBasedACO, ElitistACO):
+class ReseteablePheromoneBasedACO(ElitistACO, PheromoneBasedACO):
     """Base class for the reseteable elitist pheromone-based ACO approaches."""
 
     def __init__(
@@ -1448,17 +1452,6 @@ class ReseteablePheromoneBasedACO(PheromoneBasedACO, ElitistACO):
 
         return False
 
-    def _reset_pheromone(self) -> None:
-        """Reset the pheromone matrices."""
-        heuristic_shape = self._heuristic[0].shape
-        self._pheromone = [
-            np.full(
-                heuristic_shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromone
-        ]
-
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
         # Create the ant colony and the ants' paths
@@ -1472,7 +1465,7 @@ class ReseteablePheromoneBasedACO(PheromoneBasedACO, ElitistACO):
 
         # Reset pheromone if convergence is reached
         if self._should_reset_pheromone():
-            self._reset_pheromone()
+            self._init_pheromone()
 
 
 class PACO(SingleColACO):
@@ -1803,6 +1796,10 @@ class PACO(SingleColACO):
         # Set the state of this class
         self._pop = state["pop"]
 
+        # Generate the pheromone matrices with the current sub-population
+        self._init_pheromone()
+        self._deposit_pheromone(self.pop)
+
     def _new_state(self) -> None:
         """Generate a new trainer state.
 
@@ -1832,14 +1829,7 @@ class PACO(SingleColACO):
         structures should override this method.
         """
         super()._init_internals()
-        heuristic_shape = self._heuristic[0].shape
-        self._pheromone = [
-            np.full(
-                heuristic_shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromone
-        ]
+        self._init_pheromone()
         self._pop_ingoing = []
         self._pop_outgoing = []
 

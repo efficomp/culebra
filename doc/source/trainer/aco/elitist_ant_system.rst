@@ -99,9 +99,9 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_ant
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_col
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._init_pheromone
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._deposit_pheromone
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._should_reset_pheromone
-.. automethod:: culebra.trainer.aco.ElitistAntSystem._reset_pheromone
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._increase_pheromone
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._decrease_pheromone
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_pheromone

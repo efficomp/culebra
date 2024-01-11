@@ -883,7 +883,7 @@ the current value of
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._get_state">
 <span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._get_state" title="Link to this definition">¶</a></dt>
 <dd><p>Return the state of this trainer.</p>
-<p>Overridden to add the current pheromone matrices.</p>
+<p>Overridden to add the current elite to the trainer’s state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
@@ -895,8 +895,7 @@ the current value of
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._set_state">
 <span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._set_state" title="Link to this definition">¶</a></dt>
 <dd><p>Set the state of this trainer.</p>
-<p>Overridden to add the current pheromone matrices to the trainer’s
-state.</p>
+<p>Overridden to add the current elite to the trainer’s state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – The last loaded state</p>
@@ -930,7 +929,7 @@ state.</p>
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._new_state">
 <span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_new_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._new_state" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a new trainer state.</p>
-<p>Overridden to generate the initial pheromone matrices.</p>
+<p>Overridden to initialize the elite.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -947,7 +946,7 @@ initial state is generated with the
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._reset_state">
 <span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_reset_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._reset_state" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the trainer state.</p>
-<p>Overridden to reset the pheromone matrices.</p>
+<p>Overridden to reset the elite.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1175,6 +1174,12 @@ from the current node of <em>ant</em></p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_pheromone">
+<span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_init_pheromone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_pheromone" title="Link to this definition">¶</a></dt>
+<dd><p>Init the pheromone matrix(ces) according to the initial value(s).</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._deposit_pheromone">
 <span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_deposit_pheromone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._deposit_pheromone" title="Link to this definition">¶</a></dt>
 <dd><p>Make some ants deposit weighted pheromone.</p>
@@ -1195,12 +1200,6 @@ ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amoun
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._should_reset_pheromone">
 <span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_should_reset_pheromone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._should_reset_pheromone" title="Link to this definition">¶</a></dt>
 <dd><p>Return <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if pheromone should be reset.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._reset_pheromone">
-<span class="sig-prename descclassname"><span class="pre">ReseteablePheromoneBasedACO.</span></span><span class="sig-name descname"><span class="pre">_reset_pheromone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._reset_pheromone" title="Link to this definition">¶</a></dt>
-<dd><p>Reset the pheromone matrices.</p>
 </dd></dl>
 
 <dl class="py method">

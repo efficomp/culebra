@@ -49,14 +49,46 @@ class MyTrainer(
         self._choice_info = self.pheromone[0] * self.heuristic[0]
 
     def _update_pop(self) -> None:
-        """Update the population."""
-        # Ingoing ants
-        best_in_col = ParetoFront()
-        best_in_col.update(self.col)
+        """Update the population.
 
-        # Append the best ants to the population
-        for ant in best_in_col:
-            self._pop.append(ant)
+        The population is updated with the current iteration's colony. The best
+        ants in the current colony, which are put in the *_pop_ingoing* list,
+        will replace the eldest ants in the population, put in the
+        *_pop_outgoing* list.
+
+        These lists will be used later within the
+        :py:meth:`~culebra.trainer.aco.abc.AgeBasedPACO._increase_pheromone`
+        and
+        :py:meth:`~culebra.trainer.aco.abc.AgeBasedPACO._decrease_pheromone`
+        methods, respectively.
+        """
+        # Ingoing ants
+        self._pop_ingoing = ParetoFront()
+        self._pop_ingoing.update(self.col)
+
+        # Outgoing ants
+        self._pop_outgoing = []
+
+        # Remaining room in the population
+        remaining_room_in_pop = self.pop_size - len(self.pop)
+
+        # For all the ants in the ingoing list
+        for ant in self._pop_ingoing:
+            # If there is still room in the population, just append it
+            if remaining_room_in_pop > 0:
+                self._pop.append(ant)
+                remaining_room_in_pop -= 1
+
+                # If the population is full, start with ants replacement
+                if remaining_room_in_pop == 0:
+                    self._youngest_index = 0
+            # The eldest ant is replaced
+            else:
+                self._pop_outgoing.append(self.pop[self._youngest_index])
+                self.pop[self._youngest_index] = ant
+                self._youngest_index = (
+                    (self._youngest_index + 1) % self.pop_size
+                )
 
 
 num_nodes = 25
@@ -174,22 +206,33 @@ class TrainerTester(unittest.TestCase):
         trainer = MyTrainer(**params)
         trainer._init_search()
         trainer._start_iteration()
+        trainer._do_iteration()
 
         # Save the trainer's state
         state = trainer._get_state()
 
         # Check the state
         self.assertIsInstance(state["pop"], list)
-        self.assertEqual(len(state["pop"]), 0)
+        self.assertGreaterEqual(len(state["pop"]), 0)
 
-        # Change the state
-        state["pop"].append(trainer._generate_ant())
+        # Get the population and the pheromone matrices
+        pop = trainer.pop
+        pheromone = trainer.pheromone
+
+        # Reset the trainer
+        trainer.reset()
 
         # Set the new state
         trainer._set_state(state)
 
-        # Test if the population has been updated
-        self.assertEqual(len(trainer.pop), 1)
+        # Test if the pop has been restored
+        self.assertEqual(len(pop), len(trainer.pop))
+        for ant1, ant2 in zip(pop, trainer.pop):
+            self.assertEqual(ant1, ant2)
+
+        # Test if the pheromone has been restored
+        for pher1, pher2 in zip(pheromone, trainer.pheromone):
+            self.assertTrue(np.all(pher1 == pher2))
 
     def test_new_state(self):
         """Test _new_state."""
@@ -239,7 +282,7 @@ class TrainerTester(unittest.TestCase):
         # Reset the state
         trainer._reset_state()
 
-        # Check the elite
+        # Check the population
         self.assertEqual(trainer.pop, None)
 
     def test_init_internals(self):

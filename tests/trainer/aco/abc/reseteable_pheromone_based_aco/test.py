@@ -166,8 +166,8 @@ class TrainerTester(unittest.TestCase):
             pher[0][2] = initial_pheromone
         self.assertFalse(trainer._has_converged())
 
-    def test_reset_pheromone(self):
-        """Test the reset_pheromone method."""
+    def test_init_pheromone(self):
+        """Test the init_pheromone method."""
         # Trainer parameters
         species = Species(num_nodes)
         initial_pheromone = 10
@@ -196,7 +196,7 @@ class TrainerTester(unittest.TestCase):
             self.assertTrue(np.all(pher == 0))
 
         # Reset the pheromone
-        trainer._reset_pheromone()
+        trainer._init_pheromone()
 
         # Check the pheromone
         for pher in trainer.pheromone:

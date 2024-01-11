@@ -1250,6 +1250,12 @@ from the current node of <em>ant</em></p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._init_pheromone">
+<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_init_pheromone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._init_pheromone" title="Link to this definition">¶</a></dt>
+<dd><p>Init the pheromone matrix.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._deposit_pheromone">
 <span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_deposit_pheromone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._deposit_pheromone" title="Link to this definition">¶</a></dt>
 <dd><p>Make some ants deposit weighted pheromone.</p>
@@ -1270,12 +1276,6 @@ ant’s path, arc (<em>j</em>, <em>i</em>) is also incremented the by same amoun
 <dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._should_reset_pheromone">
 <span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_should_reset_pheromone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._should_reset_pheromone" title="Link to this definition">¶</a></dt>
 <dd><p>Return <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if pheromone should be reset.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.MMAS._reset_pheromone">
-<span class="sig-prename descclassname"><span class="pre">MMAS.</span></span><span class="sig-name descname"><span class="pre">_reset_pheromone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.MMAS._reset_pheromone" title="Link to this definition">¶</a></dt>
-<dd><p>Reset the pheromone matrices.</p>
 </dd></dl>
 
 <dl class="py method">

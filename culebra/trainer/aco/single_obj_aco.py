@@ -273,7 +273,7 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
         self._deposit_pheromone(self.col)
 
 
-class ElitistAntSystem(AntSystem, ReseteablePheromoneBasedACO):
+class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -499,7 +499,7 @@ class ElitistAntSystem(AntSystem, ReseteablePheromoneBasedACO):
             )
 
 
-class MMAS(AntSystem, ReseteablePheromoneBasedACO):
+class MMAS(ReseteablePheromoneBasedACO, AntSystem):
     r""":math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant System algorithm."""
 
     def __init__(
@@ -767,13 +767,14 @@ class MMAS(AntSystem, ReseteablePheromoneBasedACO):
         Overridden to initialize the pheromone limits and the last iteration
         number when the elite was updated.
         """
-        super()._new_state()
-
         # Init the pheromone limits
         self._max_pheromone = self.initial_pheromone[0]
         self._min_pheromone = (
             self._max_pheromone / (2 * self.fitness_function.num_nodes)
         )
+
+        super()._new_state()
+
         self._last_elite_iter = None
 
     def _reset_state(self) -> None:
@@ -881,16 +882,19 @@ class MMAS(AntSystem, ReseteablePheromoneBasedACO):
 
         return convergence
 
-    def _reset_pheromone(self) -> None:
-        """Reset the pheromone matrices."""
-        self._pheromone[0] = np.full(
-            self._pheromone[0].shape,
-            self._max_pheromone,
-            dtype=float
-        )
+    def _init_pheromone(self) -> None:
+        """Init the pheromone matrix."""
+        shape = self._heuristic[0].shape
+        self._pheromone = [
+            np.full(
+                shape,
+                self._max_pheromone,
+                dtype=float
+            )
+        ]
 
 
-class SingleObjAgeBasedPACO(SingleObjACO, AgeBasedPACO):
+class SingleObjAgeBasedPACO(AgeBasedPACO, SingleObjACO):
     """Single-objective PACO with an age-based population update strategy."""
 
     def __init__(
@@ -1048,7 +1052,7 @@ class SingleObjAgeBasedPACO(SingleObjACO, AgeBasedPACO):
         )
 
 
-class SingleObjQualityBasedPACO(SingleObjACO, QualityBasedPACO):
+class SingleObjQualityBasedPACO(QualityBasedPACO, SingleObjACO):
     """Single-objective PACO with a quality-based population update strategy."""
 
     def __init__(

@@ -185,6 +185,81 @@ class TrainerTester(unittest.TestCase):
         # Check the pheromone
         self.assertEqual(trainer.pheromone, None)
 
+    def test_best_solutions(self):
+        """Test the best_solutions method."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromone = (2, )
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": single_obj_fitness_func,
+            "initial_pheromone": initial_pheromone
+        }
+
+        # Create the trainer
+        trainer = MySinglePheromoneTrainer(**params)
+
+        # Try before the colony has been created
+        best_ones = trainer.best_solutions()
+        self.assertIsInstance(best_ones, list)
+        self.assertEqual(len(best_ones), 1)
+        self.assertEqual(len(best_ones[0]), 0)
+
+        # Generate some ants
+        ant1 = Ant(
+            species,
+            single_obj_fitness_func.Fitness,
+            path=optimum_paths[0]
+        )
+        worse_path = np.concatenate(
+            (
+                optimum_paths[0][:5],
+                optimum_paths[0][-1:],
+                optimum_paths[0][5:-2])
+        )
+        ant2 = Ant(
+            species,
+            single_obj_fitness_func.Fitness,
+            path=worse_path
+        )
+
+        # Init the search
+        trainer._init_search()
+
+        # Try a colony with different fitnesses
+        trainer._col = [ant1, ant2]
+
+        for ant in trainer.col:
+            trainer.evaluate(ant)
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has only one solution
+        self.assertEqual(len(best_ones[0]), 1)
+
+        # Check that the solution in hof is ant1
+        self.assertTrue(ant1 in best_ones[0])
+
+        # Set the same fitness for both solutions
+        for sol in trainer.col:
+            sol.fitness.values = (18, )
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has two solutions
+        self.assertEqual(len(best_ones[0]), 2)
+
+        # Check that ant1 and ant2 are the solutions in hof
+        self.assertTrue(ant1 in best_ones[0])
+        self.assertTrue(ant2 in best_ones[0])
+
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Trainer parameters

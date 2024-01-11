@@ -100,6 +100,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._generate_col
+.. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._init_pheromone
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.SingleObjQualityBasedPACO._decrease_pheromone
