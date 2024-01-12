@@ -26,18 +26,22 @@ This module is composed by:
 
   * Some popular single-objective ACO algorithms:
 
-      * The :py:class:`~culebra.trainer.aco.AntSystem` class, which implements
-        the Ant System algorithm
-      * The :py:class:`~culebra.trainer.aco.ElitistAntSystem` class, which
-        implements the Elitist Ant System algorithm
-      * The :py:class:`~culebra.trainer.aco.MMAS` class, which
-        implements the :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant
-        System algorithm
-      * The :py:class:`~culebra.trainer.aco.SingleObjAgeBasedPACO` class, which
-        implements a PACO approach with an age-based population update strategy
-      * The :py:class:`~culebra.trainer.aco.SingleObjQualityBasedPACO` class,
-        which implements a PACO approach with a quality-based population
-        update strategy
+    * The :py:class:`~culebra.trainer.aco.AntSystem` class, which implements
+      the Ant System algorithm
+    * The :py:class:`~culebra.trainer.aco.ElitistAntSystem` class, which
+      implements the Elitist Ant System algorithm
+    * The :py:class:`~culebra.trainer.aco.MMAS` class, which implements the
+      :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant System algorithm
+    * The :py:class:`~culebra.trainer.aco.SingleObjAgeBasedPACO` class, which
+      implements a PACO approach with an age-based population update strategy
+    * The :py:class:`~culebra.trainer.aco.SingleObjQualityBasedPACO` class,
+      which implements a PACO approach with a quality-based population update
+      strategy
+
+  * Some multi-objective ACO algorithms:
+
+    * The :py:class:`~culebra.trainer.aco.PACO_MO` class, which implements the
+      PACO-MO algorithm
 """
 
 from .constants import (
@@ -65,7 +69,7 @@ from .multi_obj_aco import (
 
 
 __author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2024, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.3.1'
 __maintainer__ = 'Jesús González'

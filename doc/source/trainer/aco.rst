@@ -81,3 +81,4 @@ Attributes
     MMAS <aco/mmas>
     SingleObjAgeBasedPACO <aco/single_obj_age_based_paco>
     SingleObjQualityBasedPACO <aco/single_obj_quality_based_paco>
+    PACO_MO <aco/paco_mo>

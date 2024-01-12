@@ -104,7 +104,7 @@ class PACO_MO(
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.PACO.num_pheromone_matrices`
+            :py:attr:`~culebra.trainer.aco.PACO_MO.num_pheromone_matrices`
             pheromone matrices.
         :type initial_pheromone: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`
@@ -112,14 +112,14 @@ class PACO_MO(
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.PACO.num_pheromone_matrices`
+            :py:attr:`~culebra.trainer.aco.PACO_MO.num_pheromone_matrices`
             pheromone matrices.
         :type max_pheromone: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`
         :param heuristic: Heuristic matrices. Both a single matrix or a
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
-            :py:attr:`~culebra.trainer.aco.abc.PACO.num_heuristic_matrices`
+            :py:attr:`~culebra.trainer.aco.PACO_MO.num_heuristic_matrices`
             heuristic matrices. If omitted, the default heuristic matrices
             provided by *fitness_function* are assumed. Defaults to
             :py:data:`None`
@@ -130,7 +130,7 @@ class PACO_MO(
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.PACO.num_pheromone_matrices`
+            :py:attr:`~culebra.trainer.aco.PACO_MO.num_pheromone_matrices`
             pheromone matrices. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
             be used for all the pheromone matrices. Defaults to :py:data:`None`
@@ -141,7 +141,7 @@ class PACO_MO(
             (:math:`{\beta}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.PACO.num_heuristic_matrices`
+            :py:attr:`~culebra.trainer.aco.PACO_MO.num_heuristic_matrices`
             heuristic matrices. If omitted,
             :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used for all the heuristic matrices. Defaults to
@@ -283,7 +283,7 @@ class PACO_MO(
 
         Create all the internal objects, functions and data structures needed
         to run the search process. For the
-        :py:class:`~culebra.trainer.aco.abc.PACO_MO` class, the population
+        :py:class:`~culebra.trainer.aco.PACO_MO` class, the population
         is an internal structure, since is generated each iteration.
         """
         super()._init_internals()
@@ -368,9 +368,9 @@ class PACO_MO(
             )
 
     def _update_pop(self) -> None:
-        """Generate a new sub-population for the current iteration.
+        """Generate a new population for the current iteration.
 
-        The new sub-population is generated from the elite super-population.
+        The new population is generated from the elite super-population.
         """
 
         def obj_dist(ant1: Ant, ant2: Ant) -> float:
@@ -391,7 +391,7 @@ class PACO_MO(
         # Number of elite ants
         elite_size = len(self._elite)
 
-        # A new sub-population is generated each iteration
+        # A new population is generated each iteration
         self._pop = []
 
         # If the number of elite ants is too small...
@@ -400,25 +400,25 @@ class PACO_MO(
             for ant in self._elite:
                 self._pop.append(ant)
         else:
-            # Candidate ants for the new sub-population
+            # Candidate ants for the new population
             candidate_ants = []
             for ant in self._elite:
                 candidate_ants.append(ant)
 
-            # Remaining room in he sub-population
-            remaining_room_in_subpop = self.pop_size
+            # Remaining room in the population
+            remaining_room_in_pop = self.pop_size
 
-            # Select one elite ant randomly to generate the new sub-population
-            subpop_generator_ant_index = randrange(elite_size)
-            subpop_generator_ant = candidate_ants[subpop_generator_ant_index]
+            # Select one elite ant randomly to generate the new population
+            pop_generator_ant_index = randrange(elite_size)
+            pop_generator_ant = candidate_ants[pop_generator_ant_index]
 
-            # Append it to the new sub-population
-            self._pop.append(subpop_generator_ant)
-            del candidate_ants[subpop_generator_ant_index]
-            remaining_room_in_subpop -= 1
+            # Append it to the new population
+            self._pop.append(pop_generator_ant)
+            del candidate_ants[pop_generator_ant_index]
+            remaining_room_in_pop -= 1
 
-            # While the subpop is not complete
-            while remaining_room_in_subpop > 0:
+            # While the pop is not complete
+            while remaining_room_in_pop > 0:
                 # Look for the nearest ant
                 nearest_ant_index = None
                 nearest_ant_dist = None
@@ -426,24 +426,23 @@ class PACO_MO(
                     # Init the nearest ant distance and index
                     if nearest_ant_index is None:
                         nearest_ant_index = index
-                        nearest_ant_dist = obj_dist(ant, subpop_generator_ant)
+                        nearest_ant_dist = obj_dist(ant, pop_generator_ant)
                     # Update the nearest ant distance and index
                     else:
-                        ant_dist = obj_dist(ant, subpop_generator_ant)
+                        ant_dist = obj_dist(ant, pop_generator_ant)
                         if ant_dist < nearest_ant_dist:
                             nearest_ant_index = index
                             nearest_ant_dist = ant_dist
 
-                # Append the nearest ant to subpop_generator_ant
+                # Append the nearest ant to pop_generator_ant
                 self._pop.append(candidate_ants[nearest_ant_index])
                 del candidate_ants[nearest_ant_index]
-                remaining_room_in_subpop -= 1
+                remaining_room_in_pop -= 1
 
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.
 
-        The pheromone trails are updated according to the current
-        sub-population.
+        The pheromone trails are updated according to the current population.
         """
         # Init the pheromone matrices
         shape = self._heuristic[0].shape
@@ -455,7 +454,7 @@ class PACO_MO(
             ) for initial_pheromone in self.initial_pheromone
         ]
 
-        # Update the pheromone matrices with the current sub-population
+        # Update the pheromone matrices with the current population
         self._deposit_pheromone(self.pop)
 
     def _do_iteration(self) -> None:
@@ -467,11 +466,11 @@ class PACO_MO(
         # Update the elite
         self._update_elite()
 
-        # Create a new sub-population from the elite
+        # Create a new population from the elite
         # and also the pheromone matrices
         self._update_pop()
 
-        # Generate the pheromone matrix according to the new sub-population
+        # Generate the pheromone matrix according to the new population
         self._update_pheromone()
 
 
