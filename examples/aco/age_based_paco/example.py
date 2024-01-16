@@ -25,7 +25,7 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
-from culebra.trainer.aco import SingleObjAgeBasedPACO
+from culebra.trainer.aco import AgeBasedPACO
 from culebra.fitness_function.tsp import SinglePathLength
 
 
@@ -67,7 +67,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = SingleObjAgeBasedPACO(**params)
+trainer = AgeBasedPACO(**params)
 
 # Train the wrapper
 print("Training ...")

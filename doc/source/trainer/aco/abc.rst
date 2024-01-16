@@ -40,5 +40,5 @@
     ElitistACO <abc/elitist_aco>
     ReseteablePheromoneBasedACO <abc/reseteable_pheromone_based_aco>
     PACO <abc/paco>
-    AgeBasedPACO <abc/age_based_paco>
-    QualityBasedPACO <abc/quality_based_paco>
+    MaxPheromonePACO <abc/max_pheromone_paco>
+    SingleObjPACO <abc/single_obj_paco>

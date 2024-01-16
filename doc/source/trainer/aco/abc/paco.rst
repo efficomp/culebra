@@ -37,7 +37,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.PACO.species
 .. autoproperty:: culebra.trainer.aco.abc.PACO.fitness_function
 .. autoproperty:: culebra.trainer.aco.abc.PACO.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.abc.PACO.max_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.PACO.heuristic
 .. autoproperty:: culebra.trainer.aco.abc.PACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.PACO.heuristic_influence

@@ -42,7 +42,8 @@ from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
     ElitistACO,
-    PACO
+    PACO,
+    MaxPheromonePACO
 )
 
 
@@ -56,7 +57,7 @@ __status__ = 'Development'
 
 
 class PACO_MO(
-    PACO,
+    MaxPheromonePACO,
     ElitistACO,
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO
@@ -209,7 +210,7 @@ class PACO_MO(
             fitness_function=fitness_function,
             initial_pheromone=initial_pheromone
         )
-        PACO.__init__(
+        MaxPheromonePACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -438,24 +439,6 @@ class PACO_MO(
                 self._pop.append(candidate_ants[nearest_ant_index])
                 del candidate_ants[nearest_ant_index]
                 remaining_room_in_pop -= 1
-
-    def _update_pheromone(self) -> None:
-        """Update the pheromone trails.
-
-        The pheromone trails are updated according to the current population.
-        """
-        # Init the pheromone matrices
-        shape = self._heuristic[0].shape
-        self._pheromone = [
-            np.full(
-                shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromone
-        ]
-
-        # Update the pheromone matrices with the current population
-        self._deposit_pheromone(self.pop)
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""

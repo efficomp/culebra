@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.abc.PACO`."""
+"""Unit test for :py:class:`culebra.trainer.aco.abc.SingleObjPACO`."""
 
 import unittest
 
@@ -28,20 +28,12 @@ import numpy as np
 
 from deap.tools import ParetoFront
 
-from culebra.trainer.aco.abc import (
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    PACO
-)
+from culebra.trainer.aco.abc import SingleObjPACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import DoublePathLength
+from culebra.fitness_function.tsp import SinglePathLength
 
 
-class MyTrainer(
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    PACO
-):
+class MyTrainer(SingleObjPACO):
     """Dummy implementation of a trainer method."""
 
     def _calculate_choice_info(self) -> None:
@@ -49,16 +41,31 @@ class MyTrainer(
         self._choice_info = self.pheromone[0] * self.heuristic[0]
 
     def _update_pop(self) -> None:
-        """Update the population."""
+        """Update the population.
+
+        The population is updated with the current iteration's colony. The best
+        ants in the current colony, which are put in the *_pop_ingoing* list,
+        will replace the eldest ants in the population, put in the
+        *_pop_outgoing* list.
+
+        These lists will be used later within the
+        :py:meth:`~culebra.trainer.aco.abc.SingleObjPACO._increase_pheromone`
+        and
+        :py:meth:`~culebra.trainer.aco.abc.SingleObjPACO._decrease_pheromone`
+        methods, respectively.
+        """
         # Ingoing ants
-        best_in_col = ParetoFront()
-        best_in_col.update(self.col)
+        self._pop_ingoing = ParetoFront()
+        self._pop_ingoing.update(self.col)
+
+        # Outgoing ants
+        self._pop_outgoing = []
 
         # Remaining room in the population
         remaining_room_in_pop = self.pop_size - len(self.pop)
 
         # For all the ants in the ingoing list
-        for ant in best_in_col:
+        for ant in self._pop_ingoing:
             # If there is still room in the population, just append it
             if remaining_room_in_pop > 0:
                 self._pop.append(ant)
@@ -69,6 +76,7 @@ class MyTrainer(
                     self._youngest_index = 0
             # The eldest ant is replaced
             else:
+                self._pop_outgoing.append(self.pop[self._youngest_index])
                 self.pop[self._youngest_index] = ant
                 self._youngest_index = (
                     (self._youngest_index + 1) % self.pop_size
@@ -76,24 +84,58 @@ class MyTrainer(
 
 
 num_nodes = 25
-optimum_paths = [
-    np.random.permutation(num_nodes),
-    np.random.permutation(num_nodes)
-]
-fitness_func = DoublePathLength.fromPath(*optimum_paths)
+optimum_path = np.random.permutation(num_nodes)
+fitness_func = SinglePathLength.fromPath(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.PACO`."""
+    """Test :py:class:`culebra.trainer.aco.abc.SingleObjPACO`."""
 
     def test_init(self):
         """Test __init__`."""
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
         valid_fitness_func = fitness_func
-        valid_initial_pheromone = [1, 2]
+        valid_initial_pheromone = 1
+
+        # Try invalid types for max_pheromone. Should fail
+        invalid_max_pheromone = (type, None)
+        for max_pheromone in invalid_max_pheromone:
+            with self.assertRaises(TypeError):
+                MyTrainer(
+                    valid_ant_cls,
+                    valid_species,
+                    valid_fitness_func,
+                    valid_initial_pheromone,
+                    max_pheromone=max_pheromone
+                )
+
+        # Try invalid values for max_pheromone. Should fail
+        invalid_max_pheromone = [
+            (-1, ), (max, ), (0, ), (1, 2, 3), [1, 3], (3, 2), (0, 3), (3, 0)
+        ]
+        for max_pheromone in invalid_max_pheromone:
+            with self.assertRaises(ValueError):
+                MyTrainer(
+                    valid_ant_cls,
+                    valid_species,
+                    valid_fitness_func,
+                    valid_initial_pheromone,
+                    max_pheromone=max_pheromone
+                )
+
+        # Try valid values for max_pheromone
+        valid_max_pheromone = 3.0
+        trainer = MyTrainer(
+            valid_ant_cls,
+            valid_species,
+            valid_fitness_func,
+            valid_initial_pheromone,
+            max_pheromone=valid_max_pheromone
+        )
+        self.assertEqual(trainer.max_pheromone, [valid_max_pheromone])
 
         # Try invalid types for pop_size. Should fail
         invalid_pop_size = (type, 'a', 1.5)
@@ -104,6 +146,7 @@ class TrainerTester(unittest.TestCase):
                     valid_species,
                     valid_fitness_func,
                     valid_initial_pheromone,
+                    valid_max_pheromone,
                     pop_size=pop_size
                 )
 
@@ -116,6 +159,7 @@ class TrainerTester(unittest.TestCase):
                     valid_species,
                     valid_fitness_func,
                     valid_initial_pheromone,
+                    valid_max_pheromone,
                     pop_size=pop_size
                 )
 
@@ -125,6 +169,7 @@ class TrainerTester(unittest.TestCase):
             valid_species,
             valid_fitness_func,
             valid_initial_pheromone,
+            valid_max_pheromone
         )
 
         self.assertEqual(
@@ -132,107 +177,18 @@ class TrainerTester(unittest.TestCase):
             trainer.col_size
         )
 
-    def test_state(self):
-        """Test the get_state and _set_state methods."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
-
-        # Save the trainer's state
-        state = trainer._get_state()
-
-        # Check the state
-        self.assertIsInstance(state["pop"], list)
-        self.assertGreaterEqual(len(state["pop"]), 0)
-
-        # Get the population and the pheromone matrices
-        pop = trainer.pop
-        pheromone = trainer.pheromone
-
-        # Reset the trainer
-        trainer.reset()
-
-        # Set the new state
-        trainer._set_state(state)
-
-        # Test if the pop has been restored
-        self.assertEqual(len(pop), len(trainer.pop))
-        for ant1, ant2 in zip(pop, trainer.pop):
-            self.assertEqual(ant1, ant2)
-
-        # Test if the pheromone has been restored
-        for pher1, pher2 in zip(pheromone, trainer.pheromone):
-            self.assertTrue(np.all(pher1 == pher2))
-
-    def test_new_state(self):
-        """Test _new_state."""
-        # Trainer parameters
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Create a new state
-        trainer._init_internals()
-        trainer._new_state()
-
-        # Check the population
-        self.assertIsInstance(trainer.pop, list)
-        self.assertEqual(len(trainer.pop), 0)
-
-    def test_reset_state(self):
-        """Test _reset_state."""
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Create a new state
-        trainer._init_internals()
-        trainer._new_state()
-
-        # Reset the state
-        trainer._reset_state()
-
-        # Check the population
-        self.assertEqual(trainer.pop, None)
-
     def test_init_internals(self):
         """Test _init_internals."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone
         }
 
         # Create the trainer
@@ -252,15 +208,23 @@ class TrainerTester(unittest.TestCase):
         ):
             self.assertTrue(np.all(pheromone_matrix == initial_pheromone))
 
+        # Check the internal structures
+        self.assertIsInstance(trainer._pop_ingoing, list)
+        self.assertIsInstance(trainer._pop_outgoing, list)
+        self.assertEqual(len(trainer._pop_ingoing), 0)
+        self.assertEqual(len(trainer._pop_outgoing), 0)
+
     def test_reset_internals(self):
         """Test _reset_internals."""
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone
         }
 
         # Create the trainer
@@ -274,108 +238,55 @@ class TrainerTester(unittest.TestCase):
 
         # Check the internal strucures
         self.assertEqual(trainer.pheromone, None)
+        self.assertEqual(trainer._pop_ingoing, None)
+        self.assertEqual(trainer._pop_outgoing, None)
 
-    def test_best_solutions(self):
-        """Test the best_solutions method."""
+    def test_increase_decrease_pheromone(self):
+        """Test the _increase_pheromone and _decrease_pheromone methods."""
+        # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
+        initial_pheromone = 1
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
+            "col_size": 1
         }
 
         # Create the trainer
         trainer = MyTrainer(**params)
-
-        # Try before any colony has been created
-        best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
-        self.assertEqual(len(best_ones), 1)
-        self.assertEqual(len(best_ones[0]), 0)
-
-        # Update the elite
         trainer._init_search()
         trainer._start_iteration()
+
+        # Use the same ant to increase an decrease pheromone
         ant = trainer._generate_ant()
-        trainer.pop.append(ant)
+        trainer._pop_ingoing.append(ant)
+        trainer._pop_outgoing.append(ant)
 
-        best_ones = trainer.best_solutions()
+        trainer._increase_pheromone()
+        trainer._decrease_pheromone()
 
-        # Check that best_ones contains only one species
-        self.assertEqual(len(best_ones), 1)
-
-        # Check that the hof has only one solution
-        self.assertEqual(len(best_ones[0]), 1)
-
-        # Check that the solution in hof is sol1
-        self.assertTrue(ant in best_ones[0])
-
-    def test_update_pheromone(self):
-        """Test _update_pheromone."""
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Init the search
-        trainer._init_search()
-
-        # Generate a new population and update the pheromone matrices
-        trainer._start_iteration()
-        trainer._pop.append(trainer._generate_ant())
-        trainer._update_pheromone()
-
-        # Check the pheromone matrices
-        for matrix, init_val in zip(
+        # pheromone should not be altered
+        for pher, init_pher_val in zip(
             trainer.pheromone, trainer.initial_pheromone
         ):
-            self.assertTrue(np.all(matrix >= init_val))
-            self.assertTrue(np.any(matrix != init_val))
-
-    def test_do_iteration(self):
-        """Test the _do_iteration method."""
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-
-        # The population should be empty
-        self.assertEqual(len(trainer.pop), 0)
-
-        # Generate a new colony
-        trainer._do_iteration()
-
-        # The population should not be empty
-        self.assertGreaterEqual(len(trainer.pop), 1)
+            self.assertTrue(np.all(pher == init_pher_val))
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = [2]
+        max_pheromone = [3]
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone
         }
 
         # Create the trainer

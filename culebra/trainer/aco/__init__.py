@@ -32,10 +32,10 @@ This module is composed by:
       implements the Elitist Ant System algorithm
     * The :py:class:`~culebra.trainer.aco.MMAS` class, which implements the
       :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant System algorithm
-    * The :py:class:`~culebra.trainer.aco.SingleObjAgeBasedPACO` class, which
+    * The :py:class:`~culebra.trainer.aco.AgeBasedPACO` class, which
       implements a PACO approach with an age-based population update strategy
-    * The :py:class:`~culebra.trainer.aco.SingleObjQualityBasedPACO` class,
-      which implements a PACO approach with a quality-based population update
+    * The :py:class:`~culebra.trainer.aco.QualityBasedPACO` class, which
+      implements a PACO approach with a quality-based population update
       strategy
 
   * Some multi-objective ACO algorithms:
@@ -56,8 +56,8 @@ from .single_obj_aco import (
     AntSystem,
     ElitistAntSystem,
     MMAS,
-    SingleObjAgeBasedPACO,
-    SingleObjQualityBasedPACO,
+    AgeBasedPACO,
+    QualityBasedPACO,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
     DEFAULT_ELITE_WEIGHT,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT
@@ -83,8 +83,8 @@ __all__ = [
     'AntSystem',
     'ElitistAntSystem',
     'MMAS',
-    'SingleObjAgeBasedPACO',
-    'SingleObjQualityBasedPACO',
+    'AgeBasedPACO',
+    'QualityBasedPACO',
     'PACO_MO',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',

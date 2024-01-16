@@ -20,14 +20,14 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.SingleObjQualityBasedPACO`."""
+"""Unit test for :py:class:`culebra.trainer.aco.QualityBasedPACO`."""
 
 import unittest
 
 import numpy as np
 
 from culebra.abc import Fitness
-from culebra.trainer.aco import SingleObjQualityBasedPACO
+from culebra.trainer.aco import QualityBasedPACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function import DEFAULT_THRESHOLD
 from culebra.fitness_function.tsp import PathLength
@@ -60,7 +60,7 @@ optimum_path = np.random.permutation(num_nodes)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.SingleObjQualityBasedPACO`."""
+    """Test :py:class:`culebra.trainer.aco.QualityBasedPACO`."""
 
     def test_update_pop(self):
         """Test the _update_pop method."""
@@ -81,7 +81,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the minimization trainer
-        minimization_trainer = SingleObjQualityBasedPACO(**minimization_params)
+        minimization_trainer = QualityBasedPACO(**minimization_params)
         minimization_trainer._init_search()
 
         # The initial population should be empty
@@ -136,7 +136,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the minimization trainer
-        maximization_trainer = SingleObjQualityBasedPACO(**maximization_params)
+        maximization_trainer = QualityBasedPACO(**maximization_params)
         maximization_trainer._init_search()
 
         # The initial population should be empty
@@ -177,6 +177,31 @@ class TrainerTester(unittest.TestCase):
         for ant in maximization_trainer.pop:
             self.assertNotEqual(ant.fitness.values, initial_fit_values)
             self.assertTrue(ant.fitness.values in fit_better_values)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        # Trainer parameters
+        species = Species(num_nodes)
+        initial_pheromone = 2
+        max_pheromone = 3
+
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": MyMinimizationFitnessFunc.fromPath(
+                optimum_path
+            ),
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
+            "col_size": 1,
+            "pop_size": 2
+        }
+
+        # Create the trainer
+        trainer = QualityBasedPACO(**params)
+        trainer._init_search()
+        self.assertIsInstance(repr(trainer), str)
+        self.assertIsInstance(str(trainer), str)
 
 
 if __name__ == '__main__':
