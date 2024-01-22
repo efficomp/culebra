@@ -42,6 +42,8 @@ This module is composed by:
 
     * The :py:class:`~culebra.trainer.aco.PACO_MO` class, which implements the
       PACO-MO algorithm
+    * The :py:class:`~culebra.trainer.aco.CPACO` class, which implements the
+      Crowding PACO algorithm
 """
 
 from .constants import (
@@ -64,7 +66,8 @@ from .single_obj_aco import (
 )
 
 from .multi_obj_aco import (
-    PACO_MO
+    PACO_MO,
+    CPACO
 )
 
 
@@ -86,6 +89,7 @@ __all__ = [
     'AgeBasedPACO',
     'QualityBasedPACO',
     'PACO_MO',
+    'CPACO',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',

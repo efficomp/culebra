@@ -20,12 +20,12 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Usage example of the PACO-MO trainer."""
+"""Usage example of the Crowding PACO trainer."""
 
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
-from culebra.trainer.aco import PACO_MO
+from culebra.trainer.aco import CPACO
 from culebra.fitness_function.tsp import DoublePathLength
 
 
@@ -53,15 +53,14 @@ params = {
     "species": species,
     "fitness_function": fitness_func,
     "initial_pheromone": initial_pheromone,
-    "max_pheromone": max_pheromone,
-    "col_size": 50,
-    "pop_size": 10,
+    "col_size": 20,
+    "pop_size": 20,
     "max_num_iters": 500,
     "checkpoint_enable": False
 }
 
 # Create the wrapper
-trainer = PACO_MO(**params)
+trainer = CPACO(**params)
 
 # Train the wrapper
 print("Training ...")

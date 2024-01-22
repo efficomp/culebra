@@ -33,12 +33,14 @@ from random import randrange
 
 import numpy as np
 
-from deap.tools import HallOfFame
+from deap.tools import HallOfFame, sortNondominated
 
 from culebra.abc import Species, FitnessFunction
 from culebra.solution.abc import Ant
 
 from culebra.trainer.aco.abc import (
+    SingleColACO,
+    SinglePheromoneMatrixACO,
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
     ElitistACO,
@@ -48,7 +50,7 @@ from culebra.trainer.aco.abc import (
 
 
 __author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2024, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
@@ -457,7 +459,224 @@ class PACO_MO(
         self._update_pheromone()
 
 
-# Exported symbols for this module
+class CPACO(
+    PACO,
+    SinglePheromoneMatrixACO,
+    MultipleHeuristicMatricesACO
+):
+    """Implement the Crowding PACO algorithm."""
+
+    def _new_state(self) -> None:
+        """Generate a new trainer state.
+
+        Overridden to initialize the population with random ants.
+        """
+        super()._new_state()
+
+        # Fill the population
+        while len(self.pop) < self.pop_size:
+            self.pop.append(self._generate_ant())
+
+        # Update the pheromone matrix
+        self._update_pheromone()
+
+    def _init_internals(self) -> None:
+        """Set up the trainer internal data structures to start searching.
+
+        Create all the internal objects, functions and data structures needed
+        to run the search process. For the
+        :py:class:`~culebra.trainer.aco.CPACO` class, the heuristic influence
+        correction factors are created. Subclasses which need more objects or
+        data structures should override this method.
+        """
+        super()._init_internals()
+        self._heuristic_influence_correction = np.ones(len(self.heuristic))
+
+    def _reset_internals(self) -> None:
+        """Reset the internal structures of the trainer.
+
+        Overridden to reset the pheromone matrices. If subclasses overwrite
+        the :py:meth:`~culebra.trainer.aco.CPACO._init_internals` method to
+        add any new internal object, this method should also be overridden to
+        reset all the internal objects of the trainer.
+        """
+        super()._reset_internals()
+        self._heuristic_influence_correction = None
+
+    def _calculate_choice_info(self) -> None:
+        """Calculate the choice info matrix.
+
+        The choice info matrix is re-calculated every time an ant is generated
+        since in CPACO each ant uses its own heuristic influence correction
+        factors.
+        """
+        # Heuristic info for the current ant
+        heuristic_info = np.ones(self.heuristic[0].shape)
+        for (
+            heuristic,
+            heuristic_influence,
+            heuristic_influence_correction
+        ) in zip(
+            self.heuristic,
+            self.heuristic_influence,
+            self._heuristic_influence_correction
+
+        ):
+            heuristic_info *= np.power(
+                heuristic,
+                heuristic_influence * heuristic_influence_correction
+            )
+
+        self._choice_info = (
+            np.power(self.pheromone[0], self.pheromone_influence[0]) *
+            heuristic_info
+        )
+
+    def _generate_ant(self) -> Ant:
+        """Generate a new ant.
+
+        A new set of heuristic influence correction factors is generated for
+        the ant. Then, the choice info for the ant is generated according to
+        these correction factors. Finally, the ant makes its path and gets
+        evaluated.
+        """
+        # Set the heuristic influence correction factors for this ant
+        temp = np.random.random(len(self.heuristic))
+        self._heuristic_influence_correction = temp / temp.sum()
+        # Calculate the choice info for this ant
+        self._calculate_choice_info()
+        # generate the ant
+        return super()._generate_ant()
+
+    def _start_iteration(self) -> None:
+        """Start an iteration.
+
+        Prepare the iteration metrics (number of evaluations, execution time)
+        before each iteration is run and create an empty ant colony.
+        Overridden to avoid the calculation of the choice information before
+        executing the next iteration because CPACO applies a different choice
+        probability for each ant.
+        """
+        super(SingleColACO, self)._start_iteration()
+        self._col = []
+
+    def _update_pop(self) -> None:
+        """Update the population."""
+
+        def num_common_arcs(ant1: Ant, ant2: Ant) -> int:
+            """Return the number of common arcs between two ants.
+
+            A symmetric problem is assumed. Thus, (*i*, *j*) and (*j*, *i*)
+            are considered the same arc.
+
+            :param ant1:  The first ant
+            :type ant1: :py:class:`culebra.solution.abc.Ant`
+            :param ant2:  The second ant
+            :type ant2: :py:class:`culebra.solution.abc.Ant`
+            """
+            # Number of detected common arcs
+            detected_common_arcs = 0
+
+            # For each node in ant1's path
+            for node1_index, node1 in enumerate(ant1.path):
+                # For each node in ant2's path
+                for node2_index, node2 in enumerate(ant2.path):
+                    # If nodes match, try to detect a common arc
+                    if node1 == node2:
+                        # ant1's next node
+                        ant1_next_node = ant1.path[
+                            (node1_index + 1) % len(ant1.path)
+                        ]
+                        # ant2's next node
+                        ant2_next_node = ant2.path[
+                            (node2_index + 1) % len(ant2.path)
+                        ]
+                        # ant2's previous node
+                        ant2_prev_node = ant2.path[node2_index - 1]
+                        # If there is an arc match
+                        if (
+                            ant1_next_node == ant2_next_node or
+                            ant1_next_node == ant2_prev_node
+                        ):
+                            # Increment the number of detected common arcs
+                            detected_common_arcs += 1
+
+            # Return the number of detected common arcs
+            return detected_common_arcs
+
+        # For each ant in the current colony
+        for col_ant in self.col:
+
+            # Closest ant in the population
+            closest_ant_index = randrange(self.pop_size)
+            closest_ant = self.pop[closest_ant_index]
+            # Number of common arcs between ant and
+            # its closest ant in the population
+            closest_ant_num_common_arcs = num_common_arcs(
+                col_ant,
+                closest_ant
+            )
+
+            # For all the ants in the population
+            for pop_ant_index, pop_ant in enumerate(self.pop):
+                # If the population ant is not the closest one
+                if pop_ant_index != closest_ant_index:
+                    # Get the number of common arcs
+                    pop_ant_num_common_arcs = num_common_arcs(
+                        col_ant,
+                        pop_ant
+                    )
+
+                    # If pop_ant is closer than closest_ant
+                    if (pop_ant_num_common_arcs > closest_ant_num_common_arcs):
+                        # Select pop_ant as the closest ant in the population
+                        closest_ant_index = pop_ant_index
+                        closest_ant = pop_ant
+                        closest_ant_num_common_arcs = pop_ant_num_common_arcs
+
+            # If the colony ant is better than its closest ant, replace it
+            if col_ant > closest_ant:
+                self.pop[closest_ant_index] = col_ant
+
+    def _deposit_pheromone(
+        self, ants: Sequence[Ant], amount: Optional[float] = 1
+    ) -> None:
+        """Make some ants deposit pheromone.
+
+        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
+        ant's path, arc (*j*, *i*) is also incremented the by same amount.
+
+        :param ants: The ants
+        :type ants: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.solution.abc.Ant`
+        :param amount: Amount of pheromone. Defaults to 1
+        :type amount: :py:class:`float`, optional
+        """
+        for ant in ants:
+            for pher in self.pheromone:
+                org = ant.path[-1]
+                for dest in ant.path:
+                    pher[org][dest] += amount
+                    pher[dest][org] += amount
+                    org = dest
+
+    def _update_pheromone(self) -> None:
+        """Update the pheromone trails.
+
+        The pheromone trails are updated according to the current population.
+        """
+        # Sort the population into nondomination levels
+        pareto_fronts = sortNondominated(self.pop, self.pop_size)
+
+        # Init the pheromone matrix
+        self._init_pheromone()
+
+        # Each ant increments pheromone according to its front
+        for front_index, front in enumerate(pareto_fronts):
+            self._deposit_pheromone(front, 1 / (front_index + 1))
+
+
 __all__ = [
-    'PACO_MO'
+    'PACO_MO',
+    'CPACO'
 ]

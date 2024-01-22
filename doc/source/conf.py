@@ -23,7 +23,7 @@ import os
 import sys
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2021, EFFICOMP'
+__copyright__ = 'Copyright 2024, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.1.1'
 __maintainer__ = 'Jesús González'
@@ -37,7 +37,7 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = 'culebra'
-copyright = '2023, <a href="https://efficomp.ugr.es">EFFICOMP</a>'
+copyright = '2024, <a href="https://efficomp.ugr.es">EFFICOMP</a>'
 author = 'Jesús González'
 
 # The full version, including alpha/beta/rc tags

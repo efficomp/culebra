@@ -51,7 +51,7 @@ By the moment:
     the population-based single colony ACO trainers
   * :py:class:`~culebra.trainer.aco.abc.MaxPheromonePACO`: A base class for all
     the population-based single colony ACO trainers using a maximum pheromone
-    ammount
+    amount
   * :py:class:`~culebra.trainer.aco.abc.SingleObjPACO`: A base class for all
     the population-based single colony and single objective ACO trainers
 """
@@ -1694,8 +1694,7 @@ class PACO(SingleColACO):
         self._pop = state["pop"]
 
         # Generate the pheromone matrices with the current sub-population
-        self._init_pheromone()
-        self._deposit_pheromone(self.pop)
+        self._update_pheromone()
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
@@ -1769,14 +1768,7 @@ class PACO(SingleColACO):
         The pheromone trails are updated according to the current population.
         """
         # Init the pheromone matrices
-        shape = self._heuristic[0].shape
-        self._pheromone = [
-            np.full(
-                shape,
-                initial_pheromone,
-                dtype=float
-            ) for initial_pheromone in self.initial_pheromone
-        ]
+        self._init_pheromone()
 
         # Update the pheromone matrices with the current population
         self._deposit_pheromone(self.pop)
@@ -1794,7 +1786,7 @@ class PACO(SingleColACO):
 
 
 class MaxPheromonePACO(PACO):
-    """Base class for the PACO approaches with a maximum ammount of pheromone."""
+    """Base class for the PACO approaches with a maximum amount of pheromone."""
 
     def __init__(
         self,

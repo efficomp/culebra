@@ -82,3 +82,4 @@ Attributes
     AgeBasedPACO <aco/age_based_paco>
     QualityBasedPACO <aco/quality_based_paco>
     PACO_MO <aco/paco_mo>
+    CPACO <aco/cpaco>

@@ -152,7 +152,7 @@ class TrainerTester(unittest.TestCase):
         def assert_path_pheromone_increment(trainer, ant, weight):
             """Check the pheromone in all the arcs of a path.
 
-            All the arcs should have the same are ammount of pheromone.
+            All the arcs should have the same are amount of pheromone.
             """
             for pher_index, (init_pher_val, max_pher_val) in enumerate(
                 zip(trainer.initial_pheromone, trainer.max_pheromone)
