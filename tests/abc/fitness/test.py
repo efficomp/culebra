@@ -34,7 +34,7 @@ class MyFitness(Fitness):
 
     weights = (1, -1)
     names = ("obj1", "obj2")
-    thresholds = (0.1, 0.2)
+    thresholds = [0.1, 0.2]
 
 
 class FitnessTester(unittest.TestCase):
@@ -52,9 +52,10 @@ class FitnessTester(unittest.TestCase):
         MyFitness.names = None
         MyFitness.thresholds = None
 
+        # Check default objective names
         fitness = MyFitness()
         self.assertEqual(fitness.names, ("obj_0", "obj_1"))
-        self.assertEqual(fitness.thresholds, (0, 0))
+        self.assertEqual(fitness.thresholds, [0, 0])
 
         # Try a wrong type for names. It should fail
         MyFitness.names = 3
@@ -73,7 +74,7 @@ class FitnessTester(unittest.TestCase):
             MyFitness()
 
         # Try a wrong number of thresholds. It should fail
-        MyFitness.thresholds = (0, 1, 2)
+        MyFitness.thresholds = [0, 1, 2]
         with self.assertRaises(TypeError):
             MyFitness()
 
@@ -83,6 +84,57 @@ class FitnessTester(unittest.TestCase):
 
         fitness = MyFitness(values=values)
         self.assertEqual(fitness.values, values)
+
+    def test_get_objective_threshold(self):
+        """Test :py:meth:~culebra.abc.Fitness.get_objective_threshold`."""
+        # Try an invalid type for the objective name. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitness.get_objective_threshold(1)
+
+        # Try an invalid objective name. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitness.get_objective_threshold("invalid_obj_name")
+
+        MyFitness.thresholds = [1, 1]
+        obj_index = 0
+        obj_name = MyFitness.names[obj_index]
+        obj_threshold = MyFitness.thresholds[obj_index]
+        self.assertEqual(
+            MyFitness.get_objective_threshold(obj_name), obj_threshold
+        )
+
+    def test_set_objective_threshold(self):
+        """Test :py:meth:~culebra.abc.Fitness.set_objective_threshold`."""
+        # Try an invalid type for the objective name. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitness.set_objective_threshold(1, 0.5)
+
+        # Try an invalid objective name. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitness.set_objective_threshold("invalid_obj_name", 0.5)
+
+        MyFitness.thresholds = [1, 1]
+        obj_index = 0
+        obj_name = MyFitness.names[obj_index]
+        obj_threshold = MyFitness.thresholds[obj_index]
+
+        # Try an invalid type for the threshold. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitness.set_objective_threshold(obj_name, "a")
+
+        # Try an invalid value for the threshold. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitness.set_objective_threshold(obj_name, -1)
+
+        # Set valid thresholds
+        for obj_index in range(len(MyFitness.names)):
+            obj_name = MyFitness.names[obj_index]
+            obj_threshold = MyFitness.thresholds[obj_index]
+            new_threshold = obj_threshold * 2
+            MyFitness.set_objective_threshold(obj_name, new_threshold)
+
+            # Check the new threshold
+            self.assertEqual(MyFitness.thresholds[obj_index], new_threshold)
 
     def test_del_values(self):
         """Test :py:meth:~culebra.abc.Fitness.delValues`."""
@@ -113,7 +165,7 @@ class FitnessTester(unittest.TestCase):
 
     def test_dominates(self):
         """Test the :py:meth:`~culebra.abc.Fitness.dominates` method."""
-        thresholds = (0, 2)
+        thresholds = [0, 2]
         min_max = (-1, 1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -154,7 +206,7 @@ class FitnessTester(unittest.TestCase):
 
     def test_le(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__le__` method."""
-        thresholds = (0, 2)
+        thresholds = [0, 2]
         min_max = (-1, 1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -195,7 +247,7 @@ class FitnessTester(unittest.TestCase):
 
     def test_lt(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__lt__` method."""
-        thresholds = (0, 2)
+        thresholds = [0, 2]
         min_max = (-1, 1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -236,7 +288,7 @@ class FitnessTester(unittest.TestCase):
 
     def test_eq(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__eq__` method."""
-        thresholds = (0, 2)
+        thresholds = [0, 2]
         min_max = (-1, 1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()

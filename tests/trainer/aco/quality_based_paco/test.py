@@ -41,7 +41,7 @@ class MyMinimizationFitnessFunc(PathLength):
 
         weights = (-1.0, )
         names = ("Min", )
-        thresholds = (DEFAULT_THRESHOLD, )
+        thresholds = [DEFAULT_THRESHOLD]
 
 
 class MyMaximizationFitnessFunc(PathLength):
@@ -52,7 +52,7 @@ class MyMaximizationFitnessFunc(PathLength):
 
         weights = (1.0, )
         names = ("Max", )
-        thresholds = (DEFAULT_THRESHOLD, )
+        thresholds = [DEFAULT_THRESHOLD]
 
 
 num_nodes = 25

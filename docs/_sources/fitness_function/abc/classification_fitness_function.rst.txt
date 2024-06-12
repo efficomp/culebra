@@ -44,6 +44,8 @@ Class attributes
 Class methods
 -------------
 .. automethod:: culebra.fitness_function.abc.ClassificationFitnessFunction.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.abc.ClassificationFitnessFunction.get_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.abc.ClassificationFitnessFunction.set_fitness_objective_threshold
 
 Properties
 ----------

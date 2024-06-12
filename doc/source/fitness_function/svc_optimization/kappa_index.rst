@@ -40,6 +40,8 @@ Class attributes
 Class methods
 -------------
 .. automethod:: culebra.fitness_function.svc_optimization.KappaIndex.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex.get_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex.set_fitness_objective_threshold
 
 Properties
 ----------

@@ -39,6 +39,8 @@ Class attributes
 Class methods
 -------------
 .. automethod:: culebra.fitness_function.tsp.SinglePathLength.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.tsp.SinglePathLength.get_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.tsp.SinglePathLength.set_fitness_objective_threshold
 .. automethod:: culebra.fitness_function.tsp.SinglePathLength.fromPath
 .. automethod:: culebra.fitness_function.tsp.SinglePathLength.fromTSPLib
 

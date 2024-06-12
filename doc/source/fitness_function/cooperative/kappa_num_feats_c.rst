@@ -42,6 +42,8 @@ Class attributes
 Class methods
 -------------
 .. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.get_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.set_fitness_objective_threshold
 
 Properties
 ----------

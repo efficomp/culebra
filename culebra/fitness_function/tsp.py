@@ -920,7 +920,7 @@ class SinglePathLength(PathLength):
         names = ("Len",)
         """Name of the objective."""
 
-        thresholds = (DEFAULT_THRESHOLD,)
+        thresholds = [DEFAULT_THRESHOLD]
         """Similarity threshold for fitness comparisons."""
 
 
@@ -944,7 +944,7 @@ class DoublePathLength(PathLength):
         names = ("Len0", "Len1")
         """Name of the objectives."""
 
-        thresholds = (DEFAULT_THRESHOLD,) * 2
+        thresholds = [DEFAULT_THRESHOLD] * 2
         """Similarity thresholds for fitness comparisons."""
 
 

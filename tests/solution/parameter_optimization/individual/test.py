@@ -48,7 +48,7 @@ class MyFitness(Fitness):
 
     weights = (1.0, 1.0)
     names = ("obj1", "obj2")
-    thresholds = (0.001, 0.001)
+    thresholds = [0.001, 0.001]
 
 
 class IndividualTester(unittest.TestCase):

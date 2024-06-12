@@ -823,7 +823,7 @@ class SingleColACO(SingleSpeciesTrainer):
         """
         # Get the nodes connected to any other node
         feasible_nodes = np.argwhere(
-            np.sum(self.choice_info, axis=0) > 0
+            np.sum(self.choice_info, axis=1) > 0
         ).flatten()
 
         if len(feasible_nodes) == 0:

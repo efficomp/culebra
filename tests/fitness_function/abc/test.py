@@ -63,7 +63,7 @@ class MyDatasetFitnessFunction(DatasetFitnessFunction):
 
         weights = (1.0, 1.0)
         names = ("obj1", "obj2")
-        thresholds = (0.001, 0.001)
+        thresholds = [0.001, 0.001]
 
     def evaluate(self, sol, index, representatives):
         """Evaluate one solution.
@@ -80,7 +80,7 @@ class MyClassificationFitnessFunction(ClassificationFitnessFunction):
 
         weights = (1.0, 1.0)
         names = ("obj1", "obj2")
-        thresholds = (0.001, 0.001)
+        thresholds = [0.001, 0.001]
 
     def evaluate(self, sol, index, representatives):
         """Evaluate one solution.
@@ -97,7 +97,7 @@ class MyFeatureSelectionFitnessFunction(FeatureSelectionFitnessFunction):
 
         weights = (1.0, 1.0)
         names = ("obj1", "obj2")
-        thresholds = (0.001, 0.001)
+        thresholds = [0.001, 0.001]
 
     def evaluate(self, sol, index, representatives):
         """Evaluate one solution.
@@ -114,7 +114,7 @@ class MyRBFSVCFitnessFunction(RBFSVCFitnessFunction):
 
         weights = (1.0, 1.0)
         names = ("obj1", "obj2")
-        thresholds = (0.001, 0.001)
+        thresholds = [0.001, 0.001]
 
     def evaluate(self, sol, index, representatives):
         """Evaluate one solution.

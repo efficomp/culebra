@@ -193,7 +193,7 @@ class Fitness(DeapFitness, Base):
     """
 
     thresholds = None
-    """A tuple with the similarity thresholds defined for all the objectives.
+    """A list with the similarity thresholds defined for all the objectives.
     Fitness objects are compared lexicographically. The comparison applies a
     similarity threshold to assume that two fitness values are similar (if
     their difference is lower than or equal to the similarity threshold).
@@ -226,7 +226,7 @@ class Fitness(DeapFitness, Base):
             )
 
         if self.thresholds is None:
-            self.__class__.thresholds = (0.0,) * self.num_obj
+            self.__class__.thresholds = [0.0] * self.num_obj
 
         if not isinstance(self.thresholds, Sequence):
             raise TypeError(
@@ -236,6 +236,54 @@ class Fitness(DeapFitness, Base):
                 f"The number of objective thresholds of {self.__class__} must "
                 "match its number of weights"
             )
+
+    @classmethod
+    def get_objective_threshold(cls, obj_name: str) -> None:
+        """Get the similarity threshold for the given objective.
+
+        :param obj_name: Objective name whose threshold is returned
+        :type obj_name: :py:class:`str`
+        :raises TypeError: If *obj_name* isn't a string
+        :raises ValueError: If *value* isn't a valid objective name
+        """
+        # Get the objective index from its name
+        try:
+            obj_index = cls.names.index(
+                check_str(obj_name, "objective name")
+            )
+        except ValueError as exc:
+            raise ValueError(f'Invalid objective name: {obj_name}') from exc
+
+        # Return its threshold
+        return cls.thresholds[obj_index]
+
+    @classmethod
+    def set_objective_threshold(cls, obj_name: str, value: float) -> None:
+        """Set a similarity threshold for the given objective.
+
+        :param obj_name: Objective name whose threshold is modified
+        :type obj_name: :py:class:`str`
+        :param value: New value for the similarity threshold.
+        :type value: :py:class:`float`
+        :raises TypeError: If *obj_name* isn't a string or *value* isn't a real
+            number
+        :raises ValueError: If *obj_name* isn't a valid objective name or
+            *value* is lower than 0
+        """
+        # Get the objective index from its name
+        try:
+            obj_index = cls.names.index(
+                check_str(obj_name, "objective name")
+            )
+        except ValueError as exc:
+            raise ValueError(f'Invalid objective name: {obj_name}') from exc
+
+        # Set the threshold for the objective
+        cls.thresholds[obj_index] = check_float(
+            value,
+            "similarity threshold for objective " + obj_name,
+            ge=0
+        )
 
     @property
     def num_obj(self) -> int:
@@ -417,8 +465,8 @@ class FitnessFunction(Base):
             is provided, the same threshold will be used for all the
             objectives. Different thresholds can be provided in a
             :py:class:`~collections.abc.Sequence`
-        :type: :py:class:`float` or :py:class:`~collections.abc.Sequence` of
-            :py:class:`float`
+        :type thresholds: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`
         :raises TypeError: If *thresholds* is not a real number or a
             :py:class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If any threshold is negative
@@ -431,9 +479,37 @@ class FitnessFunction(Base):
                 item_checker=partial(check_float, gt=0)
             )
         else:
-            cls.Fitness.thresholds = (
-                check_float(thresholds, "fitness thresholds", gt=0),
-            ) * len(cls.Fitness.weights)
+            cls.Fitness.thresholds = [
+                check_float(thresholds, "fitness thresholds", gt=0)
+            ] * len(cls.Fitness.weights)
+
+    @classmethod
+    def get_fitness_objective_threshold(cls, obj_name: str) -> None:
+        """Get the similarity threshold for the given objective.
+
+        :param obj_name: Objective name whose threshold is returned
+        :type obj_name: :py:class:`str`
+        :raises TypeError: If *obj_name* isn't a string
+        :raises ValueError: If *value* isn't a valid objective name
+        """
+        return cls.Fitness.get_objective_threshold(obj_name)
+
+    @classmethod
+    def set_fitness_objective_threshold(
+        cls, obj_name: str, value: float
+    ) -> None:
+        """Set a similarity threshold for the given fitness objective.
+
+        :param obj_name: Objective name whose threshold is modified
+        :type obj_name: :py:class:`str`
+        :param value: New value for the similarity threshold.
+        :type value: :py:class:`float`
+        :raises TypeError: If *obj_name* isn't a string or *value* isn't a real
+            number
+        :raises ValueError: If *obj_name* isn't a valid objective name or
+            *value* is lower than 0
+        """
+        cls.Fitness.set_objective_threshold(obj_name, value)
 
     @property
     def num_obj(self) -> int:

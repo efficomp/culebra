@@ -78,7 +78,7 @@ class NumFeats(FeatureSelectionFitnessFunction):
         names = ("NF",)
         """Name of the objective."""
 
-        thresholds = (DEFAULT_THRESHOLD,)
+        thresholds = [DEFAULT_THRESHOLD]
         """Similarity threshold for fitness comparisons."""
 
     def evaluate(
@@ -127,7 +127,7 @@ class KappaIndex(FeatureSelectionFitnessFunction):
         names = ("Kappa",)
         """Name of the objective."""
 
-        thresholds = (DEFAULT_THRESHOLD,)
+        thresholds = [DEFAULT_THRESHOLD]
         """Similarity threshold for fitness comparisons."""
 
     def evaluate(

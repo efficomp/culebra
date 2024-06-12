@@ -76,7 +76,7 @@ class C(RBFSVCFitnessFunction):
         names = ("C",)
         """Name of the objective."""
 
-        thresholds = (DEFAULT_THRESHOLD,)
+        thresholds = [DEFAULT_THRESHOLD]
         """Similarity threshold for fitness comparisons."""
 
     def evaluate(
@@ -122,7 +122,7 @@ class KappaIndex(RBFSVCFitnessFunction):
         names = ("Kappa",)
         """Name of the objective."""
 
-        thresholds = (DEFAULT_THRESHOLD,)
+        thresholds = [DEFAULT_THRESHOLD]
         """Similarity threshold for fitness comparisons."""
 
     def evaluate(

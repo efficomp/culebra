@@ -30,6 +30,11 @@ Class attributes
 .. autoattribute:: culebra.abc.Fitness.names
 .. autoattribute:: culebra.abc.Fitness.thresholds
 
+Class methods
+-------------
+.. automethod:: culebra.abc.Fitness.get_objective_threshold
+.. automethod:: culebra.abc.Fitness.set_objective_threshold
+
 Properties
 ----------
 .. autoproperty:: culebra.abc.Fitness.num_obj

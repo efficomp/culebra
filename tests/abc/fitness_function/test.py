@@ -35,7 +35,7 @@ class MyFitnessFunction(FitnessFunction):
 
         weights = (1.0, 1.0)
         names = ("obj1", "obj2")
-        thresholds = (0.001, 0.001)
+        thresholds = [0.001, 0.001]
 
     def evaluate(self, sol, index, representatives):
         """Evaluate one solution.
@@ -51,7 +51,7 @@ class FitnessFunctionTester(unittest.TestCase):
         """Test the set_fitness_thresholds class method."""
         invalid_threshold_types = (type, {}, len)
         invalid_threshold_value = -1
-        valid_thresholds = (0.33, 0.5, 2)
+        valid_thresholds = [0.33, 0.5, 2]
 
         # Try invalid types for the thresholds. Should fail
         for threshold in invalid_threshold_types:
@@ -87,6 +87,68 @@ class FitnessFunctionTester(unittest.TestCase):
         # Try a wrong number of thresholds
         with self.assertRaises(ValueError):
             MyFitnessFunction.set_fitness_thresholds(valid_thresholds)
+
+    def test_get_objective_threshold(self):
+        """Test :py:meth:~culebra.abc.Fitness.get_objective_threshold`."""
+        # Try an invalid type for the objective name. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitnessFunction.get_fitness_objective_threshold(1)
+
+        # Try an invalid objective name. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitnessFunction.get_fitness_objective_threshold(
+                "invalid_obj_name"
+            )
+
+        MyFitnessFunction.set_fitness_thresholds(1)
+        obj_index = 0
+        obj_name = MyFitnessFunction.Fitness.names[obj_index]
+        obj_threshold = MyFitnessFunction.Fitness.thresholds[obj_index]
+        self.assertEqual(
+            MyFitnessFunction.get_fitness_objective_threshold(obj_name),
+            obj_threshold
+        )
+
+    def test_set_fitness_objective_threshold(self):
+        """Test the set_fitness_objective_threshold class method."""
+        # Try an invalid type for the objective name. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitnessFunction.set_fitness_objective_threshold(1, 0.5)
+
+        # Try an invalid objective name. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitnessFunction.set_fitness_objective_threshold(
+                "invalid_obj_name",
+                0.5
+            )
+
+        MyFitnessFunction.set_fitness_thresholds(1)
+        obj_index = 0
+        obj_name = MyFitnessFunction.Fitness.names[obj_index]
+        obj_threshold = MyFitnessFunction.Fitness.thresholds[obj_index]
+
+        # Try an invalid type for the threshold. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitnessFunction.set_fitness_objective_threshold(obj_name, "a")
+
+        # Try an invalid value for the threshold. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitnessFunction.set_fitness_objective_threshold(obj_name, -1)
+
+        # Set valid thresholds
+        for obj_index in range(len(MyFitnessFunction.Fitness.names)):
+            obj_name = MyFitnessFunction.Fitness.names[obj_index]
+            obj_threshold = MyFitnessFunction.Fitness.thresholds[obj_index]
+            new_threshold = obj_threshold * 2
+            MyFitnessFunction.set_fitness_objective_threshold(
+                obj_name,
+                new_threshold,
+            )
+
+            # Check the new threshold
+            self.assertEqual(
+                MyFitnessFunction.Fitness.thresholds[obj_index], new_threshold
+            )
 
     def test_num_obj(self):
         """Test the num_obj property."""
