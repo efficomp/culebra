@@ -35,11 +35,13 @@ Properties
 .. autoproperty:: culebra.solution.tsp.Ant.fitness
 .. autoproperty:: culebra.solution.tsp.Ant.path
 .. autoproperty:: culebra.solution.tsp.Ant.current
+.. autoproperty:: culebra.solution.tsp.Ant.discarded
 
 
 Methods
 -------
 .. automethod:: culebra.solution.tsp.Ant.append
+.. automethod:: culebra.solution.tsp.Ant.discard
 .. automethod:: culebra.solution.tsp.Ant.dominates
 .. automethod:: culebra.solution.tsp.Ant.delete_fitness
 

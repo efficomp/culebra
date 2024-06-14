@@ -124,6 +124,22 @@ class Ant(Solution):
         """
         return self.path[-1] if len(self.path) > 0 else None
 
+    @property
+    @abstractmethod
+    def discarded(self) -> Sequence[int]:
+        """Nodes discarded by the ant.
+
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :raises NotImplementedError: if has not been overridden
+        :type: :py:class:`~collections.abc.Sequence`
+        """
+        raise NotImplementedError(
+            "The discarded property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
+
     @abstractmethod
     def append(self, node: int) -> None:
         """Append a new node to the ant's path.
@@ -136,7 +152,25 @@ class Ant(Solution):
         :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError(
-            "The add method has not been implemented in the "
+            "The append method has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
+
+    @abstractmethod
+    def discard(self, node: int) -> None:
+        """Discard a node.
+
+        The discarded node is not appended to the ant's path.
+
+        This method must be overridden by subclasses to return a correct
+        value.
+
+        :param node: The node
+        :type node: :py:class:`int`
+        :raises NotImplementedError: if has not been overridden
+        """
+        raise NotImplementedError(
+            "The discard method has not been implemented in the "
             f"{self.__class__.__name__} class"
         )
 
@@ -150,8 +184,10 @@ class Ant(Solution):
         species_info = str(self.species)
         fitness_info = self.fitness.values
 
-        return (f"{cls_name}(species={species_info}, fitness={fitness_info}, "
-                f"path={str(self)})")
+        return (
+            f"{cls_name}(species={species_info}, fitness={fitness_info}, "
+            f"path={str(self)}, discarded={self.discarded})"
+        )
 
 
 # Exported symbols for this module

@@ -307,6 +307,17 @@ class Ant(Solution, BaseAnt):
         """
         self._path = np.empty(shape=(0,), dtype=int)
 
+    @property
+    def discarded(self) -> Sequence[int]:
+        """Nodes discarded by the ant.
+
+        Return an empty sequence since all nodes must be visited for the TSP
+        problem.
+
+        :type: :py:class:`~collections.abc.Sequence`
+        """
+        return np.empty(shape=(0,), dtype=int)
+
     def append(self, node: int) -> None:
         """Append a new node to the ant's path.
 
@@ -325,6 +336,24 @@ class Ant(Solution, BaseAnt):
             )
 
         self._path = np.append(self.path, (node))
+
+    def discard(self, node: int) -> None:
+        """Discard a node.
+
+        This method raises an exception since nodes can not be discarded for
+        the TSP problem.
+
+        :param node: The node
+        :type node: :py:class:`int`
+        :raises RuntimeError: If called
+        """
+        raise RuntimeError(
+            "Nodes can not be discarded for the TSP problem"
+        )
+
+    def __repr__(self) -> str:
+        """Return the ant representation."""
+        return BaseAnt.__repr__(self)
 
 
 # Exported symbols for this module

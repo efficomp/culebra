@@ -35,6 +35,7 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.Ant.fitness
 .. autoproperty:: culebra.solution.feature_selection.Ant.path
 .. autoproperty:: culebra.solution.feature_selection.Ant.current
+.. autoproperty:: culebra.solution.feature_selection.Ant.discarded
 .. autoproperty:: culebra.solution.feature_selection.Ant.features
 .. autoproperty:: culebra.solution.feature_selection.Ant.num_feats
 .. autoproperty:: culebra.solution.feature_selection.Ant.min_feat
@@ -44,6 +45,7 @@ Properties
 Methods
 -------
 .. automethod:: culebra.solution.feature_selection.Ant.append
+.. automethod:: culebra.solution.feature_selection.Ant.discard
 .. automethod:: culebra.solution.feature_selection.Ant.dominates
 .. automethod:: culebra.solution.feature_selection.Ant.delete_fitness
 

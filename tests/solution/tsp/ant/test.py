@@ -61,6 +61,17 @@ class AntTester(unittest.TestCase):
         ant.path = valid_path
         self.assertTrue(np.all(valid_path == ant.path))
 
+    def test_discarded(self):
+        """Test the discarded property."""
+        num_nodes = 10
+        species = Species(num_nodes)
+        ant = Ant(species, MyFitness)
+
+        discarded_nodes = ant.discarded
+
+        self.assertIsInstance(discarded_nodes, np.ndarray)
+        self.assertEqual(len(discarded_nodes), 0)
+
     def test_append_current(self):
         """Test the append method."""
         num_nodes = 10
@@ -88,6 +99,15 @@ class AntTester(unittest.TestCase):
             ant.append(node)
             self.assertEqual(index + 1, len(ant.path))
             self.assertEqual(node, ant.current)
+
+    def test_discard(self):
+        """Test the append method."""
+        num_nodes = 10
+        species = Species(num_nodes)
+        ant = Ant(species, MyFitness)
+
+        with self.assertRaises(RuntimeError):
+            ant.discard(1)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

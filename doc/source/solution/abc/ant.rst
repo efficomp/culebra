@@ -35,10 +35,12 @@ Properties
 .. autoproperty:: culebra.solution.abc.Ant.fitness
 .. autoproperty:: culebra.solution.abc.Ant.path
 .. autoproperty:: culebra.solution.abc.Ant.current
+.. autoproperty:: culebra.solution.abc.Ant.discarded
 
 Methods
 -------
 .. automethod:: culebra.solution.abc.Ant.append
+.. automethod:: culebra.solution.abc.Ant.discard
 .. automethod:: culebra.solution.abc.Ant.dominates
 .. automethod:: culebra.solution.abc.Ant.delete_fitness
 

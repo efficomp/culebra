@@ -922,6 +922,7 @@ class Ant(IntSolution, BaseAnt):
         An empty path is set.
         """
         self._features = np.empty(shape=(0,), dtype=int)
+        self._discarded = np.empty(shape=(0,), dtype=int)
 
     @property
     def path(self) -> Sequence[int]:
@@ -931,16 +932,29 @@ class Ant(IntSolution, BaseAnt):
         """
         return self._features
 
+    @property
+    def discarded(self) -> Sequence[int]:
+        """Nodes discarded by the ant.
+
+        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        """
+        return self._discarded
+
     def append(self, feature: int) -> None:
         """Append a new feature to the ant's path.
 
         :raises ValueError: If *feature* does not meet the species
             constraints.
-        :raises ValueError: If *feature* is already in the path.
+        :raises ValueError: If *feature* is already in the path or has been
+            previously discarded
         """
         if feature in self.path:
             raise ValueError(
                 f"Feature {feature} is already in the path"
+            )
+        if feature in self.discarded:
+            raise ValueError(
+                f"Feature {feature} has been previously discarded"
             )
         self._features = np.append(self.path, (feature))
 
@@ -948,6 +962,24 @@ class Ant(IntSolution, BaseAnt):
             raise ValueError(
                 f"Feature {feature} does not meet the species constraints"
             )
+
+    def discard(self, feature: int) -> None:
+        """Discard a feature.
+
+        The discarded feature is not appended to the ant's path.
+
+        :raises ValueError: If *feature* is already in the path or has been
+            previously discarded
+        """
+        if feature in self.path:
+            raise ValueError(
+                f"Feature {feature} is already in the path"
+            )
+        if feature in self.discarded:
+            raise ValueError(
+                f"Feature {feature} has been previously discarded"
+            )
+        self._discarded = np.append(self.path, (feature))
 
     @property
     def features(self) -> Sequence[int]:
@@ -992,6 +1024,10 @@ class Ant(IntSolution, BaseAnt):
             raise ValueError(
                 "The path provided does not meet the species constraints"
             )
+
+    def __repr__(self) -> str:
+        """Return the ant representation."""
+        return BaseAnt.__repr__(self)
 
 
 class Metrics(Base):

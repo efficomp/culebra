@@ -129,22 +129,56 @@ class AntTester(unittest.TestCase):
 
             self.assertTrue((ant.path == feats).all())
 
+    def test_discard(self):
+        """Test the discard method and the discarded property."""
+        num_feats = 10
+        species = Species(num_feats)
+        ant = Ant(species, Fitness)
+
+        # Test that discarded is empty
+        self.assertEqual(len(ant.discarded), 0)
+
+        # All possible indices for the species
+        indices = np.arange(0, num_feats)
+
+        # Discard a feature
+        for index in indices:
+            ant.discard(index)
+            self.assertEqual(len(ant.discarded), 1)
+            self.assertTrue(index in ant.discarded)
+
+            # Try to discard the feature again. Should fail
+            with self.assertRaises(ValueError):
+                ant.discard(index)
+
+            # Try to append the discarded feature. Should fail
+            with self.assertRaises(ValueError):
+                ant.append(index)
+
     def test_append_current(self):
         """Test the append method."""
         num_feats = 10
         species = Species(num_feats)
-        ant = Ant(species, Fitness)
 
         # All possible indices for the species
         indices = np.arange(0, num_feats)
 
         # Test repeated features, should fail
+        ant = Ant(species, Fitness)
         for index in indices:
             ant.append(index)
             with self.assertRaises(ValueError):
                 ant.append(index)
 
+        # Test discarded features, should fail
+        ant = Ant(species, Fitness)
+        for index in indices:
+            ant.discard(index)
+            with self.assertRaises(ValueError):
+                ant.append(index)
+
         # Test invalid values, should fail
+        ant = Ant(species, Fitness)
         with self.assertRaises(ValueError):
             ant.append(num_feats)
         with self.assertRaises(ValueError):
