@@ -979,7 +979,7 @@ class Ant(IntSolution, BaseAnt):
             raise ValueError(
                 f"Feature {feature} has been previously discarded"
             )
-        self._discarded = np.append(self.path, (feature))
+        self._discarded = np.append(self.discarded, (feature))
 
     @property
     def features(self) -> Sequence[int]:

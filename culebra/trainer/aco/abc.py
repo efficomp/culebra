@@ -853,6 +853,7 @@ class SingleColACO(SingleSpeciesTrainer):
 
         probs = np.copy(self.choice_info[ant.current])
         probs[ant.path] = 0
+        probs[ant.discarded] = 0
         probs_sum = np.sum(probs)
         if probs_sum == 0:
             return probs
