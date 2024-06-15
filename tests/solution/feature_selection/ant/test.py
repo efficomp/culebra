@@ -144,7 +144,7 @@ class AntTester(unittest.TestCase):
         # Discard a feature
         for index in indices:
             ant.discard(index)
-            self.assertEqual(len(ant.discarded), 1)
+            self.assertEqual(len(ant.discarded), index + 1)
             self.assertTrue(index in ant.discarded)
 
             # Try to discard the feature again. Should fail
