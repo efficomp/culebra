@@ -521,7 +521,7 @@ class Dataset(Base):
         else:
             labels = np.unique(values)
             rep = dict(zip(labels, range(len(labels))))
-            numeric_values = data_s.replace(rep)
+            numeric_values = data_s.map(Series(rep))
 
         return numeric_values
 
