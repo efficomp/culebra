@@ -238,11 +238,15 @@ class Fitness(DeapFitness, Base):
             )
 
     @classmethod
-    def get_objective_threshold(cls, obj_name: str) -> None:
-        """Get the similarity threshold for the given objective.
+    def get_objective_index(cls, obj_name: str) -> int:
+        """Get the objective index given its name.
 
-        :param obj_name: Objective name whose threshold is returned
+        :param obj_name: Objective name whose index is returned
         :type obj_name: :py:class:`str`
+
+        :return: The index for the named objective
+        :rtype: :py:class:`int`
+
         :raises TypeError: If *obj_name* isn't a string
         :raises ValueError: If *value* isn't a valid objective name
         """
@@ -254,8 +258,19 @@ class Fitness(DeapFitness, Base):
         except ValueError as exc:
             raise ValueError(f'Invalid objective name: {obj_name}') from exc
 
-        # Return its threshold
-        return cls.thresholds[obj_index]
+        return obj_index
+
+    @classmethod
+    def get_objective_threshold(cls, obj_name: str) -> float:
+        """Get the similarity threshold for the given objective.
+
+        :param obj_name: Objective name whose threshold is returned
+        :type obj_name: :py:class:`str`
+        :raises TypeError: If *obj_name* isn't a string
+        :raises ValueError: If *obj_name* isn't a valid objective name
+        """
+        # Return the threshold
+        return cls.thresholds[cls.get_objective_index(obj_name)]
 
     @classmethod
     def set_objective_threshold(cls, obj_name: str, value: float) -> None:
@@ -270,20 +285,32 @@ class Fitness(DeapFitness, Base):
         :raises ValueError: If *obj_name* isn't a valid objective name or
             *value* is lower than 0
         """
-        # Get the objective index from its name
-        try:
-            obj_index = cls.names.index(
-                check_str(obj_name, "objective name")
-            )
-        except ValueError as exc:
-            raise ValueError(f'Invalid objective name: {obj_name}') from exc
-
         # Set the threshold for the objective
-        cls.thresholds[obj_index] = check_float(
+        cls.thresholds[cls.get_objective_index(obj_name)] = check_float(
             value,
             "similarity threshold for objective " + obj_name,
             ge=0
         )
+
+    def get_objective_value(self, obj_name: str) -> float:
+        """Get the value for the given objective.
+
+        :param obj_name: Objective name whose value is returned
+        :type obj_name: :py:class:`str`
+        :raises TypeError: If *obj_name* isn't a string
+        """
+        # Return the value
+        return self.values[self.get_objective_index(obj_name)]
+
+    def get_objective_wvalue(self, obj_name: str) -> float:
+        """Get the weighted value for the given objective.
+
+        :param obj_name: Objective name whose weighted value is returned
+        :type obj_name: :py:class:`str`
+        :raises TypeError: If *obj_name* isn't a string
+        """
+        # Return the value
+        return self.wvalues[self.get_objective_index(obj_name)]
 
     @property
     def num_obj(self) -> int:

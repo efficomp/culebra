@@ -85,6 +85,20 @@ class FitnessTester(unittest.TestCase):
         fitness = MyFitness(values=values)
         self.assertEqual(fitness.values, values)
 
+    def test_get_objective_index(self):
+        """Test :py:meth:~culebra.abc.Fitness.get_objective_index`."""
+        # Try an invalid type for the objective name. Should fail ...
+        with self.assertRaises(TypeError):
+            MyFitness.get_objective_index(1)
+
+        # Try an invalid objective name. Should fail ...
+        with self.assertRaises(ValueError):
+            MyFitness.get_objective_index("invalid_obj_name")
+
+        # Try correct names
+        for (index, name) in enumerate(MyFitness.names):
+            self.assertEqual(index, MyFitness.get_objective_index(name))
+
     def test_get_objective_threshold(self):
         """Test :py:meth:~culebra.abc.Fitness.get_objective_threshold`."""
         # Try an invalid type for the objective name. Should fail ...
@@ -135,6 +149,24 @@ class FitnessTester(unittest.TestCase):
 
             # Check the new threshold
             self.assertEqual(MyFitness.thresholds[obj_index], new_threshold)
+
+    def test_get_objective_value(self):
+        """Test :py:meth:~culebra.abc.Fitness.get_objective_value`."""
+        # Construct a fitness
+        fitness = MyFitness(values=(1, 2))
+
+        # Check the fitness values
+        for (name, value) in zip(fitness.names, fitness.values):
+            self.assertEqual(fitness.get_objective_value(name), value)
+
+    def test_get_objective_wvalue(self):
+        """Test :py:meth:~culebra.abc.Fitness.get_objective_wvalue`."""
+        # Construct a fitness
+        fitness = MyFitness(values=(1, 2))
+
+        # Check the fitness values
+        for (name, wvalue) in zip(fitness.names, fitness.wvalues):
+            self.assertEqual(fitness.get_objective_wvalue(name), wvalue)
 
     def test_del_values(self):
         """Test :py:meth:~culebra.abc.Fitness.delValues`."""
