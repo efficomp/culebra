@@ -78,6 +78,12 @@ class AntTester(unittest.TestCase):
         species = Species(num_nodes)
         ant = Ant(species, MyFitness)
 
+        # Test invalid feature types
+        invalid_features = ('a', self, None)
+        for feature in invalid_features:
+            with self.assertRaises(TypeError):
+                ant.append(feature)
+
         # All possible indices for the species
         indices = np.arange(0, num_nodes)
 

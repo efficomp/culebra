@@ -943,11 +943,15 @@ class Ant(IntSolution, BaseAnt):
     def append(self, feature: int) -> None:
         """Append a new feature to the ant's path.
 
+        :raises TypeError: If *feature* is not an integer number
         :raises ValueError: If *feature* does not meet the species
             constraints.
         :raises ValueError: If *feature* is already in the path or has been
             previously discarded
         """
+        # Check the feature type
+        feature = check_int(feature, "feature index")
+
         if feature in self.path:
             raise ValueError(
                 f"Feature {feature} is already in the path"
@@ -968,9 +972,13 @@ class Ant(IntSolution, BaseAnt):
 
         The discarded feature is not appended to the ant's path.
 
+        :raises TypeError: If *feature* is not an integer number
         :raises ValueError: If *feature* is already in the path or has been
             previously discarded
         """
+        # Check the feature type
+        feature = check_int(feature, "feature index")
+
         if feature in self.path:
             raise ValueError(
                 f"Feature {feature} is already in the path"

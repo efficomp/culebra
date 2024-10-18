@@ -1324,13 +1324,11 @@ class TrainerTester(unittest.TestCase):
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
-        initial_pheromone = [2]
         params = {
             "solution_cls": TSPAnt,
-            "species": species,
+            "species": TSPSpecies(tsp_num_nodes, tsp_banned_nodes),
             "fitness_function": tsp_fitness_func_single,
-            "initial_pheromone": initial_pheromone
+            "initial_pheromone": [2]
         }
 
         # Create the trainer
@@ -1343,6 +1341,15 @@ class TrainerTester(unittest.TestCase):
             trainer._start_iteration()
             ant = trainer._generate_ant()
             self.assertEqual(len(ant.path), len(tsp_feasible_nodes))
+
+        # Try an ant with all the nodes banned
+        params["species"] = TSPSpecies(tsp_num_nodes, range(tsp_num_nodes))
+
+        # Create the trainer
+        trainer = MySingleObjTrainer(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+        ant = trainer._generate_ant()
 
     def test_generate_col(self):
         """Test the _generate_col_method."""

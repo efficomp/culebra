@@ -321,10 +321,14 @@ class Ant(Solution, BaseAnt):
     def append(self, node: int) -> None:
         """Append a new node to the ant's path.
 
+        :raises TypeError: If *node* is not an integer number
         :raises ValueError: If *node* does not meet the species
             constraints.
         :raises ValueError: If *node* is already in the path.
         """
+        # Check the node type
+        node = check_int(node, "node index")
+
         if node in self.path:
             raise ValueError(
                 f"Node {node} is already in the path"

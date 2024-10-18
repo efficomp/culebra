@@ -123,6 +123,15 @@ class TrainerTester(unittest.TestCase):
             ant = trainer._generate_ant()
             self.assertEqual(len(ant.path), len(feasible_nodes))
 
+        # Try an ant with all the nodes banned
+        params["species"] = Species(num_nodes, range(num_nodes))
+
+        # Create the trainer
+        trainer = AntSystem(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+        ant = trainer._generate_ant()
+
     def test_decrease_pheromone(self):
         """Test the _decrease_pheromone method."""
         # Trainer parameters

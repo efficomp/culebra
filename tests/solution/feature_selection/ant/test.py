@@ -155,16 +155,29 @@ class AntTester(unittest.TestCase):
             with self.assertRaises(ValueError):
                 ant.append(index)
 
+        # Try to discard an invalid feature
+        invalid_features = ('a', self, None)
+        for feature in invalid_features:
+            with self.assertRaises(TypeError):
+                ant.discard(feature)
+
     def test_append_current(self):
         """Test the append method."""
         num_feats = 10
         species = Species(num_feats)
 
+        # Test repeated features, should fail
+        ant = Ant(species, Fitness)
+
+        # Test invalid feature types
+        invalid_features = ('a', self, None)
+        for feature in invalid_features:
+            with self.assertRaises(TypeError):
+                ant.append(feature)
+
         # All possible indices for the species
         indices = np.arange(0, num_feats)
 
-        # Test repeated features, should fail
-        ant = Ant(species, Fitness)
         for index in indices:
             ant.append(index)
             with self.assertRaises(ValueError):
