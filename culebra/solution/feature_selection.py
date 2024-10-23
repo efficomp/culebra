@@ -916,13 +916,35 @@ class IntVector(IntSolution, BaseIndividual):
 class Ant(IntSolution, BaseAnt):
     """Ant to apply ACO to Fs problems."""
 
+    def __init__(
+        self,
+        species: Species,
+        fitness_cls: Type[Fitness],
+        features: Optional[Sequence[int]] = None
+    ) -> None:
+        """Construct a default solution.
+
+        :param species: The species the solution will belong to
+        :type species:
+            :py:class:`~culebra.solution.feature_selection.Solution.species_cls`
+        :param fitness: The solution's fitness class
+        :type fitness: :py:class:`~culebra.abc.Fitness`
+        :param features: Initial features
+        :type features: :py:class:`~collections.abc.Sequence` of
+            :py:class:`int`
+        :raises TypeError: If *species* is not a valid species
+        :raises TypeError: If *fitness_cls* is not a valid fitness class
+        """
+        # Init the superclass
+        super().__init__(species, fitness_cls, features)
+        self._discarded = np.empty(shape=(0,), dtype=int)
+
     def _setup(self) -> None:
         """Set the default path for ants.
 
         An empty path is set.
         """
         self._features = np.empty(shape=(0,), dtype=int)
-        self._discarded = np.empty(shape=(0,), dtype=int)
 
     @property
     def path(self) -> Sequence[int]:

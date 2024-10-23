@@ -186,7 +186,7 @@ class Ant(Solution):
 
         return (
             f"{cls_name}(species={species_info}, fitness={fitness_info}, "
-            f"path={str(self)}, discarded={self.discarded})"
+            f"path={str(self.path)}, discarded={self.discarded})"
         )
 
 

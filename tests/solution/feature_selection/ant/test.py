@@ -27,6 +27,7 @@ import pickle
 import random
 from copy import copy, deepcopy
 from itertools import repeat
+from random import shuffle
 
 import numpy as np
 
@@ -61,6 +62,51 @@ class AntTester(unittest.TestCase):
     times = DEFAULT_TIMES
     """Times each function is executed."""
 
+    def test_init(self):
+        """Test the __init__ method."""
+        # Check the type of arguments
+        with self.assertRaises(TypeError):
+            Ant(BaseSpecies(), Fitness)
+        with self.assertRaises(TypeError):
+            Ant(Species(), Species)
+
+        # For each value for the number of features ...
+        for num_feats in self.num_feats_values:
+            # Create the species from num_feats
+            species = Species(num_feats)
+            # Execute the generator function the given number of times
+            for _ in repeat(None, self.times):
+                # Create an ant with an empty path
+                empty_ant = Ant(species, Fitness)
+                # Check that the default path is empty
+                self.assertEqual(
+                    empty_ant.num_feats, 0,
+                    f'Ant size: {empty_ant.num_feats}'
+                )
+                # Check that there are not any discasred feature
+                self.assertEqual(
+                    len(empty_ant.discarded), 0,
+                    f'Discarded: {empty_ant.discarded}'
+                )
+
+                # Create an ant with an full path
+                full_ant = Ant(
+                    species,
+                    Fitness,
+                    np.random.permutation(num_feats)
+                )
+                # Check that the default path is empty
+                self.assertEqual(
+                    full_ant.num_feats, num_feats,
+                    f'Ant size: {full_ant.num_feats}'
+                )
+                full_ant.__repr__()
+                # Check that there are not any discasred feature
+                self.assertEqual(
+                    len(full_ant.discarded), 0,
+                    f'Discarded: {full_ant.discarded}'
+                )
+
     def test_setup(self):
         """Test the _setup method."""
         # Check the type of arguments
@@ -79,7 +125,7 @@ class AntTester(unittest.TestCase):
                 # Check that the default path is empty
                 self.assertEqual(
                     ant.num_feats, 0,
-                    f'Ant size: {ant.num_feats} '
+                    f'Ant size: {ant.num_feats}'
                 )
 
     def test_features(self):
