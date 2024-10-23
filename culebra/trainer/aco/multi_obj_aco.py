@@ -308,7 +308,7 @@ class PACO_MO(
         # Current number of ants in the population
         pop_size = len(self.pop)
 
-        # Currenbt number of elite ants
+        # Current number of elite ants
         elite_size = len(self._elite)
 
         # Default weight for each objective
