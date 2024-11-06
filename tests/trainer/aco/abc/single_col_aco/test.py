@@ -1230,13 +1230,16 @@ class TrainerTester(unittest.TestCase):
 
         # Try to generate valid first nodes
         times = 1000
+        ant = trainer.solution_cls(
+            trainer.species, trainer.fitness_function.Fitness
+        )
         for _ in repeat(None, times):
-            self.assertTrue(trainer._initial_choice() in tsp_feasible_nodes)
+            self.assertTrue(trainer._initial_choice(ant) in tsp_feasible_nodes)
 
         # Try when all nodes are unfeasible
         trainer.heuristic = [np.zeros((tsp_num_nodes, tsp_num_nodes))]
         trainer._start_iteration()
-        self.assertEqual(trainer._initial_choice(), None)
+        self.assertEqual(trainer._initial_choice(ant), None)
 
     def test_feasible_neighborhood_probs(self):
         """Test the _feasible_neighborhood_probs method."""
@@ -1269,7 +1272,7 @@ class TrainerTester(unittest.TestCase):
             trainer._feasible_neighborhood_probs(ant)
 
         # Choose a first node for the ant
-        ant.append(trainer._initial_choice())
+        ant.append(trainer._initial_choice(ant))
 
         # Controls if the next node will be discarded or appended
         discardNextNode = True

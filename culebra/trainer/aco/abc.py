@@ -34,7 +34,6 @@ By the moment:
     heuristic matrix
   * :py:class:`~culebra.trainer.aco.abc.MultiplePheromoneMatricesACO`: A base
     class for all the single colony ACO-based trainers which use multiple
-    pheromone matrices
   * :py:class:`~culebra.trainer.aco.abc.MultipleHeuristicMatricesACO`: A base
     class for all the single colony ACO-based trainers which use multiple
     pheromone matrices
@@ -680,7 +679,6 @@ class SingleColACO(SingleSpeciesTrainer):
         :getter: Return the current colony size
         :setter: Set a new value for the colony size. If set to
             :py:data:`None`,
-            If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.abc.SingleColACO.fitness_function`'s
             :py:attr:`~culebra.abc.FitnessFunction.num_nodes` is chosen
         :type: :py:class:`int`, greater than zero
@@ -812,10 +810,14 @@ class SingleColACO(SingleSpeciesTrainer):
         self._col = []
         self._calculate_choice_info()
 
-    def _initial_choice(self) -> int | None:
+    def _initial_choice(self, ant: Ant) -> int | None:
         """Choose the initial node for an ant.
 
-        The selection is made randomly among all connected nodes.
+        The selection is made randomly among all connected nodes, avoiding
+        already discarded nodes.
+
+        :param ant: The ant
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
 
         :return: The index of the chosen node or :py:data:`None` if there
             isn't any feasible node
@@ -825,6 +827,9 @@ class SingleColACO(SingleSpeciesTrainer):
         feasible_nodes = np.argwhere(
             np.sum(self.choice_info, axis=1) > 0
         ).flatten()
+
+        # Avoid discarded nodes
+        feasible_nodes = np.setdiff1d(feasible_nodes, ant.discarded)
 
         if len(feasible_nodes) == 0:
             return None
@@ -876,7 +881,7 @@ class SingleColACO(SingleSpeciesTrainer):
         """
         # Return the initial choice for ants with an empty path
         if ant.current is None:
-            return self._initial_choice()
+            return self._initial_choice(ant)
 
         # Return the next feasible node, if available
         probs = self._feasible_neighborhood_probs(ant)
