@@ -7,16 +7,16 @@
 
     <title>culebra.solution.feature_selection module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=0f882399" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
     <script src="../_static/documentation_options.js?v=37f418d5"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="culebra.solution.feature_selection.Species class" href="feature_selection/species.html" />
     <link rel="prev" title="culebra.solution.abc.Ant class" href="abc/ant.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -54,7 +54,7 @@ the characteristics that the desired selected features should meet.</p></li>
 defining the interface for feature selectors.</p></li>
 </ul>
 </div></blockquote>
-<p>Two <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>-based implementations of the
+<p>Two <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>-based implementations of the
 <a class="reference internal" href="feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> class are also
 provided:</p>
 <blockquote>
@@ -62,7 +62,7 @@ provided:</p>
 <li><p><a class="reference internal" href="feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution" title="culebra.solution.feature_selection.BinarySolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinarySolution</span></code></a>:
 Solutions are coded as boolean vectors of a fixed length, the number of
 selectable features. One boolean value is associated to each selectable
-feature. If the boolean value is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, then the feature is
+feature. If the boolean value is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, then the feature is
 selected, otherwise the feature is ignored.</p></li>
 <li><p><a class="reference internal" href="feature_selection/int_solution.html#culebra.solution.feature_selection.IntSolution" title="culebra.solution.feature_selection.IntSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntSolution</span></code></a>: Solutions
 are coded as vectors of feature indices. Only features whose indices are
@@ -118,7 +118,7 @@ several metrics about the selected features finally obtained.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">

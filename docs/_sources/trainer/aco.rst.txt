@@ -62,6 +62,12 @@ Attributes
     use only the global-best ant.
 
 
+.. attribute:: DEFAULT_DISCARD_PROB
+    :annotation: = 0.5
+
+    Default probability of discarding a node (feature).
+
+
 ..
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
@@ -69,6 +75,7 @@ Attributes
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
     .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
+    .. autodata:: DEFAULT_DISCARD_PROB
 
 
 .. toctree::
@@ -83,3 +90,4 @@ Attributes
     QualityBasedPACO <aco/quality_based_paco>
     PACO_MO <aco/paco_mo>
     CPACO <aco/cpaco>
+    CPACO <aco/acofs>

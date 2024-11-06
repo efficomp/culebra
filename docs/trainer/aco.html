@@ -7,9 +7,9 @@
 
     <title>culebra.trainer.aco module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=0f882399" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
     <script src="../_static/documentation_options.js?v=37f418d5"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -17,7 +17,7 @@
     <link rel="next" title="culebra.trainer.aco.abc module" href="aco/abc.html" />
     <link rel="prev" title="culebra.trainer.ea.ParallelCooperativeEA class" href="ea/parallel_cooperative_ea.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -73,6 +73,12 @@ PACO-MO algorithm</p></li>
 Crowding PACO algorithm</p></li>
 </ul>
 </li>
+<li><p>ACO-based wrappers for Feature Selection problems:</p>
+<ul>
+<li><p>The <a class="reference internal" href="aco/acofs.html#culebra.trainer.aco.ACOFS" title="culebra.trainer.aco.ACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFS</span></code></a> class. A new ACO-based wrapper
+for Feature Selection problems</p></li>
+</ul>
+</li>
 </ul>
 </div></blockquote>
 <section id="attributes">
@@ -117,6 +123,12 @@ iteration-best ant to deposit pheromone. Iterations above this limit will
 use only the global-best ant.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_DISCARD_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_DISCARD_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_DISCARD_PROB" title="Link to this definition">¶</a></dt>
+<dd><p>Default probability of discarding a node (feature).</p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -128,7 +140,7 @@ use only the global-best ant.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">

@@ -44,6 +44,11 @@ This module is composed by:
       PACO-MO algorithm
     * The :py:class:`~culebra.trainer.aco.CPACO` class, which implements the
       Crowding PACO algorithm
+
+  * ACO-based wrappers for Feature Selection problems:
+
+    * The :py:class:`~culebra.trainer.aco.ACOFS` class. A new ACO-based wrapper
+      for Feature Selection problems
 """
 
 from .constants import (

@@ -318,8 +318,8 @@ class ACOFS(
         with a higher amount of pheromone are more likely to be selected.
 
         Then the remaining nodes also randomly selected according to the amount
-        of pheromone deposited in their adjacent arcs. The ant discard nodes
-        randomly according to
+        of pheromone deposited in their adjacent arcs. The ant may discard
+        nodes randomly according to
         :py:attr:`~culebra.trainer.aco.ACOFS.discard_prob`
         """
         # Start with an empty ant
