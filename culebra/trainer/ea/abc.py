@@ -459,7 +459,8 @@ class HomogeneousEA(SingleSpeciesTrainer):
         return (
             DEFAULT_CROSSOVER_PROB
             if self._crossover_prob is None
-            else self._crossover_prob)
+            else self._crossover_prob
+        )
 
     @crossover_prob.setter
     def crossover_prob(self, prob: float | None) -> None:
