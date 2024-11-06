@@ -70,6 +70,11 @@ from .multi_obj_aco import (
     CPACO
 )
 
+from .aco_fs import (
+    ACOFS,
+    DEFAULT_DISCARD_PROB
+)
+
 
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2024, EFFICOMP'
@@ -90,10 +95,12 @@ __all__ = [
     'QualityBasedPACO',
     'PACO_MO',
     'CPACO',
+    'ACOFS',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_ELITE_WEIGHT',
-    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
+    'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
+    'DEFAULT_DISCARD_PROB'
 ]
