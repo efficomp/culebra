@@ -54,7 +54,7 @@ params = {
     "fitness_function": fitness_func,
     "initial_pheromone": initial_pheromone,
     "col_size": 20,
-    "pop_size": 20,
+    "pop_size": 15,
     "max_num_iters": 500,
     "checkpoint_enable": False
 }

@@ -69,9 +69,9 @@ params = {
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "initial_pheromone": initial_pheromone,
-    "col_size": 150,
-    "pop_size": 150,
-    "max_num_iters": 150,
+    "col_size": 100,
+    "pop_size": 10,
+    "max_num_iters": 100,
     "checkpoint_enable": False
 }
 

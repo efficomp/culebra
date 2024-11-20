@@ -817,6 +817,7 @@ class SinglePopEA(HomogeneousEA):
         self._current_iter = -1
         self._evaluate_pop(self.pop)
         self._do_iteration_stats()
+        self._num_evals += self._current_iter_evals
         self._current_iter += 1
 
     def _reset_state(self) -> None:

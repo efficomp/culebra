@@ -30,6 +30,7 @@ from typing import (
     Sequence
 )
 from random import randrange
+from copy import copy
 
 import numpy as np
 
@@ -473,9 +474,26 @@ class CPACO(
         """
         super()._new_state()
 
-        # Fill the population
-        while len(self.pop) < self.pop_size:
-            self.pop.append(self._generate_ant())
+        # Not really in the state,
+        # but needed to evaluate the initial population
+        self._current_iter_evals = 0
+
+        # Save the colony
+        current_colony = copy(self.col)
+
+        # Fill the population and append its statistics to the logbook
+        # Since the evaluation of the initial population is performed
+        # before the first iteration, fix self.current_iter = -1
+        # The poppulation is filled through a initial colony sized to pop_size
+        # to enable the iterations stats
+        self._current_iter = -1
+        while len(self.col) < self.pop_size:
+            self.col.append(self._generate_ant())
+        self._do_iteration_stats()
+        self._num_evals += self._current_iter_evals
+        self._current_iter += 1
+        self._pop = self._col
+        self._col = current_colony
 
         # Update the pheromone matrix
         self._update_pheromone()

@@ -44,6 +44,8 @@ from culebra.trainer.aco.abc import (
     SingleHeuristicMatrixACO,
     PACO
 )
+from culebra.trainer.aco import CPACO
+
 
 DEFAULT_DISCARD_PROB = 0.5
 """Default probability of discarding a node (feature)."""
@@ -355,9 +357,26 @@ class ACOFS(
         """
         super()._new_state()
 
-        # Fill the population
-        while len(self.pop) < self.pop_size:
-            self.pop.append(self._generate_ant())
+        # Not really in the state,
+        # but needed to evaluate the initial population
+        self._current_iter_evals = 0
+
+        # Save the colony
+        current_colony = copy(self.col)
+
+        # Fill the population and append its statistics to the logbook
+        # Since the evaluation of the initial population is performed
+        # before the first iteration, fix self.current_iter = -1
+        # The poppulation is filled through a initial colony sized to pop_size
+        # to enable the iterations stats
+        self._current_iter = -1
+        while len(self.col) < self.pop_size:
+            self.col.append(self._generate_ant())
+        self._do_iteration_stats()
+        self._num_evals += self._current_iter_evals
+        self._current_iter += 1
+        self._pop = self._col
+        self._col = current_colony
 
         # Update the pheromone matrix
         self._update_pheromone()
