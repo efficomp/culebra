@@ -52,7 +52,7 @@ training_fitness_function = KappaNumFeats(
 )
 
 # Fix the fitness similarity threshold to 0.1 for all the objectives
-training_fitness_function.set_fitness_thresholds(0.1)
+training_fitness_function.set_fitness_thresholds(0.01)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(
@@ -68,10 +68,9 @@ params = {
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "initial_pheromone": initial_pheromone,
-    "col_size": 50,
+    "col_size": 20,
     "pop_size": 50,
-    # "max_num_iters": 200,
-    "max_num_iters": 2000,
+    "max_num_iters": 500,
     "checkpoint_enable": False
 }
 
