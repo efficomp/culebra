@@ -62,7 +62,12 @@ Attributes
     use only the global-best ant.
 
 
-.. attribute:: DEFAULT_DISCARD_PROB
+.. attribute:: DEFAULT_ACOFS_INITIAL_PHEROMONE
+    :annotation: = 1
+
+    Default initial pheromone.
+
+.. attribute:: DEFAULT_ACOFS_DISCARD_PROB
     :annotation: = 0.5
 
     Default probability of discarding a node (feature).
@@ -75,7 +80,8 @@ Attributes
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
     .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
-    .. autodata:: DEFAULT_DISCARD_PROB
+    .. autodata:: DEFAULT_ACOFS_INITIAL_PHEROMONE
+    .. autodata:: DEFAULT_ACOFS_DISCARD_PROB
 
 
 .. toctree::

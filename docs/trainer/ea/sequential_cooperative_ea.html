@@ -886,7 +886,7 @@ is chosen</p>
 if the search has not been done yet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1133,11 +1133,11 @@ or <a class="reference external" href="https://docs.python.org/3/library/constan
 <dd><p>Get the best individuals found for each species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A sequence containing <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of
+<dd class="field-odd"><p>A sequence containing <code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code> of
 individuals. One hof for each species</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1182,8 +1182,8 @@ trainer procedure. Only used if train is executed within a
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>best_found</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
-<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a>) – The best solutions found for each species.
-One <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> for each species</p></li>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code>) – The best solutions found for each species.
+One <code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code> for each species</p></li>
 <li><p><strong>fitness_func</strong> (<a class="reference internal" href="../../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>, optional) – Fitness function used to evaluate the final
 solutions. If ommited, the default training fitness function
 (<a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer.fitness_function" title="culebra.abc.Trainer.fitness_function"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fitness_function</span></code></a>) will be used</p></li>
@@ -1246,7 +1246,7 @@ not match the number of subpopulations.</p>
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer.representatives" title="culebra.abc.Trainer.representatives"><code class="xref py py-attr docutils literal notranslate"><span class="pre">representatives</span></code></a>
 trainer properties, along with a private boolean attribute that informs
 if the search has finished and also the states of the <a class="reference external" href="https://docs.python.org/3/library/random.html#module-random" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">random</span></code></a>
-and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v2.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
 <p>If subclasses use any more properties to keep their state, the
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._get_state" title="culebra.abc.Trainer._get_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_state()</span></code></a> and
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer._set_state" title="culebra.abc.Trainer._set_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_set_state()</span></code></a> methods must be
@@ -1501,7 +1501,7 @@ species initialized.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy;2024, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="../../_sources/trainer/ea/sequential_cooperative_ea.rst.txt"

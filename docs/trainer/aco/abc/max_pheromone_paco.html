@@ -333,7 +333,7 @@ property) are assumed.</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
-of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -431,14 +431,14 @@ is provided</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
-of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.MaxPheromonePACO.choice_info">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MaxPheromonePACO.</span></span><span class="sig-name descname"><span class="pre">choice_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.abc.MaxPheromonePACO.choice_info" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MaxPheromonePACO.</span></span><span class="sig-name descname"><span class="pre">choice_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.abc.MaxPheromonePACO.choice_info" title="Link to this definition">¶</a></dt>
 <dd><p>Get the choice information for all the graph’s arcs.</p>
 <p>The choice information is generated from both the pheromone and the
 heuristic matrices, modified by other parameters (depending on the ACO
@@ -447,7 +447,7 @@ feasible arc for the node.</p>
 <p>If the search process has not begun, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -693,7 +693,7 @@ is chosen</p>
 if the search has not been done yet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Logbook</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -852,11 +852,11 @@ or <a class="reference external" href="https://docs.python.org/3/library/constan
 <p>Return the best single solution found for each species</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A list containing <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> of
+<dd class="field-odd"><p>A list containing <code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code> of
 solutions. One hof for each species</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -901,8 +901,8 @@ trainer procedure. Only used if train is executed within a
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>best_found</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
-<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a>) – The best solutions found for each species.
-One <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> for each species</p></li>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code>) – The best solutions found for each species.
+One <code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code> for each species</p></li>
 <li><p><strong>fitness_func</strong> (<a class="reference internal" href="../../../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a>, optional) – Fitness function used to evaluate the final
 solutions. If ommited, the default training fitness function
 (<a class="reference internal" href="../../../abc/trainer.html#culebra.abc.Trainer.fitness_function" title="culebra.abc.Trainer.fitness_function"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fitness_function</span></code></a>) will be used</p></li>
@@ -1186,7 +1186,7 @@ isn’t any feasible node</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.MaxPheromonePACO._feasible_neighborhood_probs">
-<span class="sig-prename descclassname"><span class="pre">MaxPheromonePACO.</span></span><span class="sig-name descname"><span class="pre">_feasible_neighborhood_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.MaxPheromonePACO._feasible_neighborhood_probs" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MaxPheromonePACO.</span></span><span class="sig-name descname"><span class="pre">_feasible_neighborhood_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.MaxPheromonePACO._feasible_neighborhood_probs" title="Link to this definition">¶</a></dt>
 <dd><p>Return the probabilities of the feasible neighborhood of an ant.</p>
 <p>The feasible neighborhood is composed of those nodes not visited yet
 by the ant and connected to its current node. Each of these nodes has
@@ -1205,7 +1205,7 @@ calculated from the
 from the current node of <em>ant</em></p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1307,7 +1307,7 @@ pheromone. Defaults to 1</p></li>
       </ul>
     </div>
     <div class="footer">
-      &copy;2024, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="../../../_sources/trainer/aco/abc/max_pheromone_paco.rst.txt"
