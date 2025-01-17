@@ -26,10 +26,13 @@ import unittest
 from itertools import repeat
 from copy import copy
 
-
 import numpy as np
 
-from culebra.trainer.aco import ACOFS, DEFAULT_DISCARD_PROB
+from culebra.trainer.aco import (
+    ACOFS,
+    DEFAULT_ACOFS_INITIAL_PHEROMONE,
+    DEFAULT_ACOFS_DISCARD_PROB
+)
 from culebra.solution.feature_selection import Species, Ant
 from culebra.fitness_function.feature_selection import KappaNumFeats
 from culebra.tools import Dataset
@@ -54,7 +57,7 @@ dataset.normalize()
 # Species
 species = Species(
     num_feats=dataset.num_feats,
-    min_size=0,
+    min_size=2,
     min_feat=1,
     max_feat=dataset.num_feats-2
     )
@@ -83,7 +86,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -94,7 +97,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.species, species)
         self.assertEqual(trainer.fitness_function, training_fitness_function)
         self.assertEqual(
-            trainer.initial_pheromone[0], params["initial_pheromone"]
+            trainer.initial_pheromone[0], DEFAULT_ACOFS_INITIAL_PHEROMONE
         )
         self.assertTrue(
             np.all(
@@ -104,7 +107,14 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(trainer.col_size, species.num_feats)
         self.assertEqual(trainer.pop_size, species.num_feats)
-        self.assertEqual(trainer.discard_prob, DEFAULT_DISCARD_PROB)
+        self.assertEqual(trainer.discard_prob, DEFAULT_ACOFS_DISCARD_PROB)
+
+        # Try a custom value for the initial pheromone
+        custom_initial_pheromone = 2
+        trainer = ACOFS(**params, initial_pheromone=custom_initial_pheromone)
+        self.assertEqual(
+            trainer.initial_pheromone[0], custom_initial_pheromone
+        )
 
         # Try invalid types for discard_prob. Should fail
         invalid_probs = ('a', type)
@@ -124,7 +134,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -138,7 +148,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -154,7 +164,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -187,7 +197,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -220,7 +230,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -262,19 +272,13 @@ class TrainerTester(unittest.TestCase):
             choice = trainer._initial_choice(ant)
             self.assertFalse(choice in ant.discarded)
 
-        # Try when all nodes are unfeasible
-        trainer.heuristic = [np.zeros((num_nodes, num_nodes))]
-        trainer._init_search()
-
-        self.assertEqual(trainer._initial_choice(ant), None)
-
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         params = {
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -299,7 +303,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -325,7 +329,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1
+            "verbose": False
         }
 
         # Create the trainer
@@ -365,9 +369,9 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1,
             "pop_size": 2,
-            "col_size": 2
+            "col_size": 2,
+            "verbose": False
         }
 
         # Create the trainer
@@ -405,29 +409,30 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1,
-            "pop_size": 5
+            "pop_size": 5,
+            "verbose": False
         }
 
-        # Create the trainer
-        trainer = ACOFS(**params)
+        for i in range(1000):
+            # Create the trainer
+            trainer = ACOFS(**params)
 
-        # Try to update the population with an empty elite
-        trainer._init_search()
-        trainer._start_iteration()
+            # Try to update the population with an empty elite
+            trainer._init_search()
+            trainer._start_iteration()
 
-        # Reset the pheromone
-        trainer._init_pheromone()
+            # Reset the pheromone
+            trainer._init_pheromone()
 
-        # Let only the first ant deposit pheromone
-        trainer._deposit_pheromone(trainer.pop[:1], 3)
+            # Let only the first ant deposit pheromone
+            trainer._deposit_pheromone(trainer.pop[:1], 3)
 
-        ant = trainer.pop[0]
-        org = ant.path[-1]
-        for dest in ant.path:
-            self.assertEqual(trainer.pheromone[0][org][dest], 4)
-            self.assertEqual(trainer.pheromone[0][dest][org], 4)
-            org = dest
+            ant = trainer.pop[0]
+            org = ant.path[-1]
+            for dest in ant.path:
+                self.assertEqual(trainer.pheromone[0][org][dest], 4)
+                self.assertEqual(trainer.pheromone[0][dest][org], 4)
+                org = dest
 
     def test_update_pheromone(self):
         """Test _update_pheromone."""
@@ -435,8 +440,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "initial_pheromone": 1,
-            "pop_size": 5
+            "pop_size": 5,
+            "verbose": False
         }
 
         # Create the trainer

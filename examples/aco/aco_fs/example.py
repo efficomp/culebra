@@ -62,16 +62,16 @@ test_fitness_function = KappaNumFeats(
 # Initial pheromone
 initial_pheromone = 1
 
-
 # Trainer parameters
 params = {
     "solution_cls": Ant,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "initial_pheromone": initial_pheromone,
-    "col_size": 100,
-    "pop_size": 10,
-    "max_num_iters": 100,
+    "col_size": 50,
+    "pop_size": 50,
+    # "max_num_iters": 200,
+    "max_num_iters": 2000,
     "checkpoint_enable": False
 }
 

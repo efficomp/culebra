@@ -44,10 +44,12 @@ from culebra.trainer.aco.abc import (
     SingleHeuristicMatrixACO,
     PACO
 )
-from culebra.trainer.aco import CPACO
 
 
-DEFAULT_DISCARD_PROB = 0.5
+DEFAULT_ACOFS_INITIAL_PHEROMONE = 1
+"""Default initial pheromone."""
+
+DEFAULT_ACOFS_DISCARD_PROB = 0.5
 """Default probability of discarding a node (feature)."""
 
 
@@ -72,7 +74,7 @@ class ACOFS(
         solution_cls: Type[Ant],
         species: Species,
         fitness_function: FitnessFunction,
-        initial_pheromone: float | Sequence[float, ...],
+        initial_pheromone: float | Sequence[float, ...] = None,
         heuristic: Optional[
             Sequence[Sequence[float], ...] |
             Sequence[Sequence[Sequence[float], ...], ...]
@@ -109,7 +111,9 @@ class ACOFS(
             values are allowed. If a scalar value is provided, it will be used
             for all the
             :py:attr:`~culebra.trainer.aco.ACOFS.num_pheromone_matrices`
-            pheromone matrices.
+            pheromone matrices. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE`
+            will be used. Defaults to :py:data:`None`
         :type initial_pheromone: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`
         :param heuristic: Heuristic matrices. Both a single matrix or a
@@ -164,8 +168,8 @@ class ACOFS(
         :type pop_size: :py:class:`int`, greater than zero, optional
         :param discard_prob: Probability of discarding a node (feature). If
             set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_DISCARD_PROB` will be used.
-            Defaults to :py:data:`None`
+            :py:attr:`~culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB` will be
+            used. Defaults to :py:data:`None`
         :type discard_prob: :py:class:`float` in (0, 1), optional
         :param checkpoint_enable: Enable/disable checkpoining. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
@@ -225,6 +229,39 @@ class ACOFS(
 
         self.discard_prob = discard_prob
 
+    @SinglePheromoneMatrixACO.initial_pheromone.setter
+    def initial_pheromone(
+        self, values: float | Sequence[float, ...] | None
+    ) -> None:
+        """Set the initial value for each pheromone matrix.
+
+        :param values: New initial value for each pheromone matrix. Both a
+            scalar value or a sequence of values are allowed. If a scalar value
+            is provided, it will be used for all the
+            :py:attr:`~culebra.trainer.aco.num_pheromone_matrices`
+            pheromone matrices. . If set to :py:data:`None`,
+                :py:attr:`~culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE`
+                is chosen
+        :type values: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :raises TypeError: If *values* is neither a float nor a Sequence of
+            float values
+        :raises ValueError: If any element in *values* is negative or zero
+        :raises ValueError: If *values* is a sequence and it length is
+            different from
+            :py:attr:`~culebra.trainer.aco.num_pheromone_matrices`
+        """
+        if values is None:
+            SinglePheromoneMatrixACO.initial_pheromone.fset(
+                self,
+                DEFAULT_ACOFS_INITIAL_PHEROMONE
+            )
+        else:
+            SinglePheromoneMatrixACO.initial_pheromone.fset(
+                self,
+                values
+            )
+
     @property
     def discard_prob(self) -> float:
         """Get and set the probability of discarding a node.
@@ -232,13 +269,14 @@ class ACOFS(
         :getter: Return the current discard probability
         :setter: Set a new value for the discard probability. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_DISCARD_PROB` is chosen
+            :py:attr:`~culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB` is
+            chosen
         :type: :py:class:`float` in (0, 1)
         :raises TypeError: If set to a value which is not a real number
         :raises ValueError: If set to a value which is not in (0, 1)
         """
         return (
-            DEFAULT_DISCARD_PROB
+            DEFAULT_ACOFS_DISCARD_PROB
             if self._discard_prob is None
             else self._discard_prob
         )
@@ -248,7 +286,8 @@ class ACOFS(
         """Set a new discard probability.
 
         :param prob: The new probability. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_DISCARD_PROB` is chosen
+            :py:attr:`~culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB` is
+            chosen
         :type prob: :py:class:`float` in (0, 1)
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
@@ -324,26 +363,32 @@ class ACOFS(
         nodes randomly according to
         :py:attr:`~culebra.trainer.aco.ACOFS.discard_prob`
         """
-        # Start with an empty ant
-        ant = self.solution_cls(
-            self.species, self.fitness_function.Fitness
-        )
+        correct_ant_generated = False
 
-        # Try choosing a feature
-        choice = self._next_choice(ant)
+        while correct_ant_generated is False:
+            # Start with an empty ant
+            ant = self.solution_cls(
+                self.species, self.fitness_function.Fitness
+            )
 
-        # The chosen node is considered if the species maximum size has not
-        # yet been reached
-        while choice is not None and ant.num_feats < self.species.max_size:
-
-            # The chosen node may be discarded
-            if random() < self.discard_prob:
-                ant.discard(choice)
-            else:
-                ant.append(choice)
-
-            # Try another node
+            # Try choosing a feature
             choice = self._next_choice(ant)
+
+            # The chosen node is considered if the species maximum size has not
+            # yet been reached
+            while choice is not None and ant.num_feats < self.species.max_size:
+
+                # The chosen node may be discarded
+                if random() < self.discard_prob:
+                    ant.discard(choice)
+                else:
+                    ant.append(choice)
+
+                # Try another node
+                choice = self._next_choice(ant)
+
+            if ant.species.is_member(ant):
+                correct_ant_generated = True
 
         # Evaluate and return the ant
         self.evaluate(ant)
@@ -402,13 +447,36 @@ class ACOFS(
         :type amount: :py:class:`float`, optional
         """
         for ant in ants:
+            # for pher in self.pheromone:
+            #     if len(ant.path) > 2:
+            #         org = ant.path[-1]
+            #         for dest in ant.path:
+            #             pher[org][dest] += amount
+            #             pher[dest][org] += amount
+            #             org = dest
+            #     elif len(ant.path) == 2:
+            #         org = ant.path[0]
+            #         dest = ant.path[1]
+            #         pher[org][dest] += amount
+            #         pher[dest][org] += amount
+
+            # For paths with less than three nodes, the loop must skip
+            # the last node for a correct pheromone update
+            max_path_nodes = len(ant.path)
+            if max_path_nodes < 3:
+                max_path_nodes -= 1
+
             for pher in self.pheromone:
-                if len(ant.path) > 0:
-                    org = ant.path[-1]
-                    for dest in ant.path:
-                        pher[org][dest] += amount
-                        pher[dest][org] += amount
-                        org = dest
+                org = ant.path[-1]
+                processed_nodes = 0
+
+                for dest in ant.path:
+                    pher[org][dest] += amount
+                    pher[dest][org] += amount
+                    org = dest
+                    processed_nodes += 1
+                    if processed_nodes == max_path_nodes:
+                        break
 
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.

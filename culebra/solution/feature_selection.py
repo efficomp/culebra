@@ -984,11 +984,6 @@ class Ant(IntSolution, BaseAnt):
             )
         self._features = np.append(self.path, (feature))
 
-        if not self.species.is_member(self):
-            raise ValueError(
-                f"Feature {feature} does not meet the species constraints"
-            )
-
     def discard(self, feature: int) -> None:
         """Discard a feature.
 
