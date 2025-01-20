@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Usage example of the the ACO-FS wrapper."""
+"""Hyperparameter study for the zoo dataset."""
 
 from pandas import Series, DataFrame, MultiIndex
 
@@ -30,21 +30,23 @@ from culebra.trainer.aco import ACOFS
 from culebra.tools import Dataset
 
 
-# Dataset
-DATASET_PATH = (
-    "https://archive.ics.uci.edu/ml/machine-learning-databases/"
-    "statlog/australian/australian.dat"
-)
+# Datasets
+TRAINING_DATASET_PATH = "zoo_preprocessed_train.data"
+TEST_DATASET_PATH = "zoo_preprocessed_test.data"
 
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+# Load the datasets
+training_data = Dataset(TRAINING_DATASET_PATH, output_index=-1)
+test_data = Dataset(TRAINING_DATASET_PATH, output_index=-1)
 
 # Remove outliers
-dataset.remove_outliers()
+training_data.remove_outliers()
+test_data.remove_outliers()
+
 
 # Normalize inputs between 0 and 1
-dataset.normalize()
-(training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
+training_data.normalize()
+test_data.normalize()
+
 
 # Training fitness function, 50% of samples used for validation
 training_fitness_function = KappaNumFeats(
@@ -59,11 +61,16 @@ test_fitness_function = KappaNumFeats(
     training_data=training_data, test_data=test_data
 )
 
+ex
+# Voy por aquí. Tengo que diseñar el grid
+
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
+    "initial_pheromone": initial_pheromone,
     "col_size": 20,
     "pop_size": 50,
     "max_num_iters": 500,
