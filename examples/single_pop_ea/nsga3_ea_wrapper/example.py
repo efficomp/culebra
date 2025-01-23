@@ -53,7 +53,7 @@ training_fitness_function = KappaNumFeats(
 )
 
 # Fix the fitness similarity threshold to 0.1 for all the objectives
-training_fitness_function.set_fitness_thresholds(0.1)
+training_fitness_function.set_fitness_thresholds(0.01)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(
