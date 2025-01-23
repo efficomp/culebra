@@ -41,7 +41,8 @@ from culebra.abc import (
 from culebra.checker import (
     check_int,
     check_instance,
-    check_filename
+    check_filename,
+    check_func_params
 )
 from culebra.solution.feature_selection import (
     Species as FSSpecies,
@@ -216,7 +217,8 @@ for res, val in {var_name}.results.items():
         self,
         trainer: Trainer,
         test_fitness_function: Optional[FitnessFunction] = None,
-        results_base_filename: Optional[str] = None
+        results_base_filename: Optional[str] = None,
+        hyperparameters: Optional[dict] = None
     ) -> None:
         """Set a trainer evaluation.
 
@@ -228,15 +230,21 @@ for res, val in {var_name}.results.items():
         :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
         :param results_base_filename: The base filename to save the results.
-        :type results_base_filename: :py:class:`~str`
+        :type results_base_filename: :py:class:`~str`, optional
+        :param hyperparameters: Hyperparameter values used in this evaluation
+        :type hyperparameters: :py:class:`~dict`, optional
         :raises TypeError: If *trainer* is not a valid trainer
         :raises TypeError: If *test_fitness_function* is not a valid
             fitness function
         :raises TypeError: If *results_base_filename* is not a valid file name
+        :raises TypeError: If *hyperparameters* is not a dictionary
+        :raises ValueError: If the keys in *hyperparameters* are not strings
+        :raises ValueError: If any key in *hyperparameters* is reserved
         """
         self.trainer = trainer
         self.test_fitness_function = test_fitness_function
         self.results_base_filename = results_base_filename
+        self.hyperparameters = hyperparameters
 
     @property
     def trainer(self) -> Trainer:
@@ -303,7 +311,6 @@ for res, val in {var_name}.results.items():
         :getter: Return the results base filename
         :setter: Set a new results base filename. If set to :py:data:`None`,
             :py:attr:`culebra.tools.Results.default_base_filename` is used.
-            Defaults to :py:data:`None`.
         :raises TypeError: If set to an invalid file name
         """
         return self._results_base_filename
@@ -314,7 +321,6 @@ for res, val in {var_name}.results.items():
 
         :param filename: New results base filename. If set to :py:data:`None`,
             :py:attr:`culebra.tools.Results.default_base_filename` is used.
-            Defaults to :py:data:`None`.
         :type filename: :py:class:`~str`
         :raises TypeError: If *filename* is not a valid file name
         """
@@ -325,6 +331,66 @@ for res, val in {var_name}.results.items():
                 name="base filename to save the results"
             )
         )
+
+        # Reset results
+        self.reset()
+
+    def _is_reserved(self, name: str) -> bool:
+        """Return :py:data:`True` if the given hyperparameter name is reserved.
+
+        :param name: Hyperparameter name
+        :type values: :py:class:`~str`
+        """
+        reserved_labels = (
+            label for label in dir(_Labels) if not label.startswith("_")
+        )
+
+        for label in reserved_labels:
+            if name == getattr(_Labels, label):
+                return True
+
+        return False
+
+    @property
+    def hyperparameters(self) -> dict | None:
+        """Get and set the hyperparameter values used for the evaluation.
+
+        :getter: Return the hyperparameter values
+        :setter: Set a new set of hyperparameter values.
+        :raises TypeError: If the hyperparameters are not in a dictionary
+        :raises ValueError: If the keys of the dictionary are not strings
+        :raises ValueError: If any key in the dictionary is reserved
+        """
+        return self._hyperparameters
+
+    @hyperparameters.setter
+    def hyperparameters(self, values: dict | None) -> None:
+        """Set the hyperparameter values used for the evaluation.
+
+        :param values: Hyperparameter values used in this evaluation
+        :type values: :py:class:`~dict`
+        :raises TypeError: If *values* is not a dictionary
+        :raises ValueError: If the keys in *values* are not strings
+        :raises ValueError: If any key in *values* is reserved
+        """
+        if values is None:
+            self._hyperparameters = None
+            return
+
+        self._hyperparameters = (
+            None if values is None else check_func_params(
+                values,
+                name="hyperparameters"
+            )
+        )
+
+        # Check that no parameter name is reserved
+        for name in values.keys():
+            if self._is_reserved(name):
+                raise ValueError(
+                    "Attempt to use a reserved label as a hyperparameter "
+                    f"name: {name}"
+                )
 
         # Reset results
         self.reset()
@@ -364,8 +430,14 @@ for res, val in {var_name}.results.items():
 
         # Generate the Evaluation from the config module
         return cls(
-            getattr(config, 'trainer', None),
-            getattr(config, 'test_fitness_function', None)
+            trainer=getattr(config, 'trainer', None),
+            test_fitness_function=getattr(
+                config, 'test_fitness_function', None
+            ),
+            results_base_filename=getattr(
+                config, 'results_base_filename', None
+            ),
+            hyperparameters=getattr(config, 'hyperparameters', None)
         )
 
     @classmethod
@@ -599,8 +671,17 @@ class Experiment(Evaluation):
         # Create the dataframe
         df = DataFrame()
 
-        # Add the iteration stats
+        # Dataframe index
         index = []
+
+        # Add the hyperparameters (if any)
+        if self.hyperparameters is not None:
+            logbook_len = len(logbook)
+            for name, value in self.hyperparameters.items():
+                df[name] = (value,) * logbook_len * num_obj
+                index += [name]
+
+        # Add the iteration stats
         for stat in self._trainer.stats_names:
             df[stat.capitalize()] = logbook.select(stat) * num_obj
             index += [stat.capitalize()]
@@ -643,7 +724,12 @@ class Experiment(Evaluation):
         num_species = len(self.best_solutions)
 
         # Index for the dataframe
-        index = (
+        if self.hyperparameters is not None:
+            index = list(self.hyperparameters.keys())
+        else:
+            index = []
+
+        index += (
             [_Labels.species, _Labels.solution]
             if num_species > 1
             else [_Labels.solution]
@@ -660,7 +746,12 @@ class Experiment(Evaluation):
             # For each solution of the species
             for sol in hof:
                 # Create a row for the dataframe
-                row_index = (
+                if self.hyperparameters is not None:
+                    row_index = tuple(self.hyperparameters.values())
+                else:
+                    row_index = ()
+
+                row_index += (
                     (species_index, sol)
                     if num_species > 1
                     else (sol, )
@@ -696,7 +787,12 @@ class Experiment(Evaluation):
         num_species = len(self.best_solutions)
 
         # Index for the dataframe
-        index = (
+        if self.hyperparameters is not None:
+            index = list(self.hyperparameters.keys())
+        else:
+            index = []
+
+        index += (
             [_Labels.species, _Labels.fitness]
             if num_species > 1
             else [_Labels.fitness]
@@ -722,6 +818,10 @@ class Experiment(Evaluation):
 
             # Perform the stats
             species_df = DataFrame(columns=column_names)
+
+            if self.hyperparameters is not None:
+                for name, value in self.hyperparameters.items():
+                    species_df[name] = [value] * n_obj
 
             if num_species > 1:
                 species_df[_Labels.species] = [species_index] * n_obj
@@ -754,12 +854,22 @@ class Experiment(Evaluation):
         # Key of the result
         result_key = self._ResultKeys.execution_metrics
 
-        # Index for the dataframe
-        index = [_Labels.value]
-
         # Create the DataFrame if it doesn't exist
         if result_key not in self.results:
-            self.results[result_key] = DataFrame(index=index)
+            if self.hyperparameters is not None:
+                # Index for the dataframe
+                index = list(self.hyperparameters.keys())
+                self.results[result_key] = DataFrame()
+                for name, value in self.hyperparameters.items():
+                    self.results[result_key][name] = [value]
+
+                self.results[result_key].set_index(index, inplace=True)
+                self.results[result_key].sort_index(inplace=True)
+            else:
+                # Index for the dataframe
+                index = [_Labels.value]
+                self.results[result_key] = DataFrame(index=index)
+
             self.results[result_key].columns.set_names(
                 _Labels.metric, inplace=True
             )
@@ -776,7 +886,12 @@ class Experiment(Evaluation):
         result_key = self._ResultKeys.feature_metrics
 
         # Index for the dataframe
-        index = [_Labels.feature]
+        if self.hyperparameters is not None:
+            index = list(self.hyperparameters.keys())
+        else:
+            index = []
+
+        index += [_Labels.feature]
 
         # Column names for the dataframe
         column_names = index + list(self.feature_metric_functions.keys())
@@ -797,13 +912,19 @@ class Experiment(Evaluation):
         # Insert the df only if it is not empty
         if there_are_features:
             # Get the metrics
+            is_first_metric = True
             metric = None
             for name, func in self.feature_metric_functions.items():
                 metric = func(features_hof)
                 df[name] = metric
                 # If there is any metric
-                if metric is not None:
+                if metric is not None and is_first_metric:
+                    is_first_metric = False
                     df[_Labels.feature] = metric.index
+                    num_feats = len(metric.index)
+                    if self.hyperparameters is not None:
+                        for hyperparam, value in self.hyperparameters.items():
+                            df[hyperparam] = [value] * num_feats
 
             # Set the dataframe index
             df.set_index(index, inplace=True)
@@ -877,6 +998,7 @@ class Batch(Evaluation):
         trainer: Trainer,
         test_fitness_function: Optional[FitnessFunction] = None,
         results_base_filename: Optional[str] = None,
+        hyperparameters: Optional[dict] = None,
         num_experiments: Optional[int] = None
     ) -> None:
         """Generate a batch of experiments.
@@ -889,7 +1011,9 @@ class Batch(Evaluation):
         :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
         :param results_base_filename: The base filename to save the results.
-        :type results_base_filename: :py:class:`~str`
+        :type results_base_filename: :py:class:`~str`, optional
+        :param hyperparameters: Hyperparameter values used in this evaluation
+        :type hyperparameters: :py:class:`~dict`, optional
         :param num_experiments: Number of experiments in the batch,
             defaults to :py:attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS`
         :type num_experiments: :py:class:`int`, optional
@@ -897,9 +1021,19 @@ class Batch(Evaluation):
         :raises TypeError: If *test_fitness_function* is not a valid
             fitness function
         :raises TypeError: If *results_base_filename* is not a valid file name
+        :raises TypeError: If *hyperparameters* is not a dictionary
+        :raises ValueError: If the keys in *hyperparameters* are not strings
+        :raises ValueError: If any key in *hyperparameters* is reserved
+        :raises TypeError: If *num_experiments* is not an integer
+        :raises ValueError: If *num_experiments* is not greater than zero
         """
         # Init the super class
-        super().__init__(trainer, test_fitness_function, results_base_filename)
+        super().__init__(
+            trainer,
+            test_fitness_function,
+            results_base_filename,
+            hyperparameters
+        )
 
         # Number of experiments
         self.num_experiments = num_experiments
@@ -981,12 +1115,17 @@ class Batch(Evaluation):
         # Load the config module
         config = cls._load_config(config_filename)
 
-        # Generate the Evaluation from the config module
+        # Generate the Batch from the config module
         return cls(
-            getattr(config, 'trainer', None),
-            getattr(config, 'test_fitness_function', None),
-            getattr(config, 'results_base_filename', None),
-            getattr(config, 'num_experiments', None)
+            trainer=getattr(config, 'trainer', None),
+            test_fitness_function=getattr(
+                config, 'test_fitness_function', None
+            ),
+            results_base_filename=getattr(
+                config, 'results_base_filename', None
+            ),
+            hyperparameters=getattr(config, 'hyperparameters', None),
+            num_experiments=getattr(config, 'num_experiments', None)
         )
 
     def reset(self):
@@ -1022,11 +1161,20 @@ class Batch(Evaluation):
             setattr(self._ResultKeys, result_key, result_key)
 
             # Create the dataframe index
-            index = [_Labels.experiment]
+            if self.hyperparameters is not None:
+                index = list(self.hyperparameters.keys())
+            else:
+                index = []
+
+            index += [_Labels.experiment]
 
             if isinstance(exp_data, DataFrame):
                 if exp_data.index.names[0] is not None:
-                    index += exp_data.index.names
+                    if self.hyperparameters is not None:
+                        num_hyperparams = len(self.hyperparameters)
+                        index += exp_data.index.names[num_hyperparams:]
+                    else:
+                        index += exp_data.index.names
 
             self._results_indices[result_key] = index
 
@@ -1070,7 +1218,12 @@ class Batch(Evaluation):
         input_data = self.results[input_data_name]
 
         # Index for the dataframe
-        index = [_Labels.metric]
+        if self.hyperparameters is not None:
+            index = list(self.hyperparameters.keys())
+        else:
+            index = []
+
+        index += [_Labels.metric]
 
         # Column names for the dataframe
         column_names = index + list(self.stats_functions.keys())
@@ -1081,7 +1234,12 @@ class Batch(Evaluation):
         # For all the metrics
         for metric in input_data.columns:
             # New row for the dataframe
-            stats = [metric]
+            if self.hyperparameters is not None:
+                stats = list(self.hyperparameters.values())
+            else:
+                stats = []
+
+            stats += [metric]
 
             # Apply the stats
             for func in self.stats_functions.values():
@@ -1106,7 +1264,12 @@ class Batch(Evaluation):
             input_data = self.results[input_data_name]
 
             # Index for the dataframe
-            index = [_Labels.metric, _Labels.feature]
+            if self.hyperparameters is not None:
+                index = list(self.hyperparameters.keys())
+            else:
+                index = []
+
+            index += [_Labels.metric, _Labels.feature]
 
             # Column names for the dataframe
             column_names = index + list(self.stats_functions.keys())
@@ -1117,6 +1280,10 @@ class Batch(Evaluation):
             # Get the features
             features_index = input_data.index.names.index(_Labels.feature)
             the_features = input_data.index.levels[features_index]
+            feature_indices_slices = (slice(None),)
+            if self.hyperparameters is not None:
+                num_hypermarams = len(self.hyperparameters)
+                feature_indices_slices += (slice(None),) * num_hypermarams
 
             # For all the metrics
             for metric in input_data.columns:
@@ -1125,11 +1292,19 @@ class Batch(Evaluation):
 
                 # For all the features
                 for feature in the_features:
-                    # Values for each feature
-                    feature_metric_values = metric_values[:, feature]
+                    # Indices for the feature
+                    feature_indices = feature_indices_slices + (feature,)
+
+                    # Values for the feature
+                    feature_metric_values = metric_values[feature_indices]
 
                     # New row for the dataframe
-                    stats = [metric, feature]
+                    if self.hyperparameters is not None:
+                        stats = list(self.hyperparameters.values())
+                    else:
+                        stats = []
+
+                    stats += [metric, feature]
 
                     # Apply the stats
                     for func in self.stats_functions.values():
@@ -1165,7 +1340,12 @@ class Batch(Evaluation):
         input_data = self.results[input_data_key]
 
         # Index for the dataframe
-        index = [_Labels.fitness]
+        if self.hyperparameters is not None:
+            index = list(self.hyperparameters.keys())
+        else:
+            index = []
+
+        index += [_Labels.fitness]
 
         # Column names for the dataframe
         column_names = index + list(self.stats_functions.keys())
@@ -1179,7 +1359,12 @@ class Batch(Evaluation):
         # For all the objectives
         for obj_name in obj_names:
             # New row for the dataframe
-            stats = [obj_name]
+            if self.hyperparameters is not None:
+                stats = list(self.hyperparameters.values())
+            else:
+                stats = []
+
+            stats += [obj_name]
 
             # Apply the stats
             for func in self.stats_functions.values():
@@ -1211,7 +1396,8 @@ class Batch(Evaluation):
             experiment = Experiment(
                 self.trainer,
                 self.test_fitness_function,
-                self.results_base_filename
+                self.results_base_filename,
+                self.hyperparameters
             )
 
             # Run the experiment
@@ -1227,7 +1413,8 @@ class Batch(Evaluation):
         # Sort the results dataframes
         for result_key in self.results:
             self.results[result_key].set_index(
-                self._results_indices[result_key], inplace=True)
+                self._results_indices[result_key], inplace=True
+            )
             self.results[result_key].sort_index(inplace=True)
 
         # Perform some stats

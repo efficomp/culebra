@@ -136,12 +136,45 @@ class EvaluationTester(unittest.TestCase):
         self.assertEqual(evaluation.trainer, trainer)
         self.assertEqual(evaluation.test_fitness_function, None)
         self.assertEqual(evaluation.results_base_filename, None)
+        self.assertEqual(evaluation.hyperparameters, None)
         self.assertEqual(evaluation.results, None)
 
-        # Try an evaluation with a test fitness function
+        # Try an invalid test fitness function
+        with self.assertRaises(TypeError):
+            MyEvaluation(trainer, test_fitness_function="a")
+
+        # Try an invalid base filename
+        with self.assertRaises(TypeError):
+            MyEvaluation(trainer, results_base_filename=1)
+
+        # Try an invalid hyperparameter specification
+        with self.assertRaises(TypeError):
+            MyEvaluation(trainer, hyperparameters=1)
+
+        # Try an invalid hyperparameter name
+        with self.assertRaises(ValueError):
+            MyEvaluation(trainer, hyperparameters={1: 1})
+
+        # Try an reserved hyperparameter name
+        with self.assertRaises(ValueError):
+            MyEvaluation(trainer, hyperparameters={'Solution': 1})
+
+        # Try an evaluation with a custom test fitness function
         evaluation = MyEvaluation(trainer, test_fitness_function)
         self.assertEqual(
             evaluation.test_fitness_function, test_fitness_function)
+
+        # Try an evaluation with a custom results base name
+        my_basename = "my_base"
+        evaluation = MyEvaluation(trainer, results_base_filename=my_basename)
+        self.assertEqual(
+            evaluation.results_base_filename, my_basename)
+
+        # Try an evaluation with custom hyperparameters
+        my_hyperparameters = {"a": 1, "b": 2}
+        evaluation = MyEvaluation(trainer, hyperparameters=my_hyperparameters)
+        self.assertEqual(
+            evaluation.hyperparameters, my_hyperparameters)
 
     def test_from_config(self):
         """Test the from_config factory method."""
@@ -154,6 +187,15 @@ class EvaluationTester(unittest.TestCase):
         # Check the test fitness function
         self.assertIsInstance(
             evaluation.test_fitness_function, FitnessFunction)
+
+        # Check the results base filename
+        self.assertEqual(evaluation.results_base_filename, "my_results")
+
+        # Check the hyperparameters
+        self.assertEqual(
+            evaluation.hyperparameters,
+            {"representation_size": 2, "max_num_iters": 100}
+        )
 
     def test_reset(self):
         """Test the reset method."""

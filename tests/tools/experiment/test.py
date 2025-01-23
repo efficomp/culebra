@@ -125,7 +125,10 @@ class ExperimentTester(unittest.TestCase):
     def test_execute(self):
         """Test the _execute method."""
         # Create the experiment
-        experiment = Experiment(trainer, test_fitness_function)
+        experiment = Experiment(
+            trainer, test_fitness_function,
+            hyperparameters={"a": 0, "b": 1}
+        )
 
         # Execute the trainer
         experiment.run()

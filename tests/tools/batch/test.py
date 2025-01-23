@@ -54,12 +54,12 @@ dataset.normalize()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
 # Training fitness function, 50% of samples used for validation
-training_fitness_function = KappaNumFeatsC(
+my_training_fitness_function = KappaNumFeatsC(
     training_data=training_data, test_prop=0.5
 )
 
 # Test fitness function
-test_fitness_function = KappaNumFeatsC(
+my_test_fitness_function = KappaNumFeatsC(
     training_data=training_data, test_data=test_data
 )
 
@@ -92,7 +92,7 @@ params = {
         featureSelectionSpecies1,
         featureSelectionSpecies2
     ],
-    "fitness_function": training_fitness_function,
+    "fitness_function": my_training_fitness_function,
     "subtrainer_cls": ElitistEA,
     "representation_size": 2,
     "max_num_iters": 3,
@@ -101,14 +101,14 @@ params = {
     "gene_ind_mutation_probs": (
         1.0/classifierOptimizationSpecies.num_params
     ),
-    "checkpoint_enable": False,
+    "checkpoint_enable": True,
     "verbose": False
 }
 
 # Create the trainer
-trainer = ParallelCooperativeEA(**params)
+my_trainer = ParallelCooperativeEA(**params)
 
-num_experiments = 3
+my_num_experiments = 3
 
 
 class BatchTester(unittest.TestCase):
@@ -117,27 +117,32 @@ class BatchTester(unittest.TestCase):
     def test_init(self):
         """Test the :py:meth:`~culebra.tools.Batch.__init__` constructor."""
         # Try default params
-        batch = Batch(trainer)
+        batch = Batch(my_trainer)
 
-        self.assertEqual(batch.trainer, trainer)
+        self.assertEqual(batch.trainer, my_trainer)
         self.assertEqual(batch.test_fitness_function, None)
         self.assertEqual(batch.results, None)
         self.assertEqual(batch.results_base_filename, None)
+        self.assertEqual(batch.hyperparameters, None)
         self.assertEqual(batch.num_experiments, DEFAULT_NUM_EXPERIMENTS)
 
         # Try a batch with custom parameters
-        filename = "the_results"
+        my_filename = "the_results"
+        my_hyperparameters = {"a": 1}
         batch = Batch(
-            trainer,
-            test_fitness_function,
-            filename,
-            num_experiments
+            my_trainer,
+            my_test_fitness_function,
+            my_filename,
+            my_hyperparameters,
+            my_num_experiments
         )
         self.assertEqual(
-            batch.test_fitness_function, test_fitness_function)
+            batch.test_fitness_function, my_test_fitness_function)
         self.assertEqual(
-            batch.results_base_filename, filename)
-        self.assertEqual(batch.num_experiments, num_experiments)
+            batch.results_base_filename, my_filename)
+        self.assertEqual(
+            batch.hyperparameters, my_hyperparameters)
+        self.assertEqual(batch.num_experiments, my_num_experiments)
 
     def test_from_config(self):
         """Test the from_config factory method."""
@@ -151,13 +156,19 @@ class BatchTester(unittest.TestCase):
         self.assertIsInstance(
             batch.test_fitness_function, FitnessFunction)
 
+        # Check the hyperparameters
+        self.assertEqual(
+            batch.hyperparameters,
+            {"representation_size": 2, "max_num_iters": 100}
+        )
+
         # Check the number of experiments
         self.assertGreater(batch.num_experiments, DEFAULT_NUM_EXPERIMENTS)
 
     def test_exp_labels(self):
         """Test the exp_labels method."""
         # Try default params
-        batch = Batch(trainer)
+        batch = Batch(my_trainer)
 
         for num_exp in range(1, 15):
             batch.num_experiments = num_exp
@@ -167,7 +178,7 @@ class BatchTester(unittest.TestCase):
 
     def test_reset(self):
         """Test the reset method."""
-        batch = Batch(trainer)
+        batch = Batch(my_trainer)
         batch._results = 1
         batch._results_indices = {1: 2}
 
@@ -178,7 +189,13 @@ class BatchTester(unittest.TestCase):
     def test_execute(self):
         """Test the _execute method."""
         # Create the batch
-        batch = Batch(trainer, test_fitness_function, "res", num_experiments)
+        batch = Batch(
+            trainer=my_trainer,
+            test_fitness_function=my_test_fitness_function,
+            results_base_filename="res2",
+            # hyperparameters={"a": 1, "b": 2},
+            num_experiments=my_num_experiments
+        )
 
         # Execute the batch
         batch.run()

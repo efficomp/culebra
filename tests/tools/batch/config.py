@@ -98,5 +98,8 @@ params = {
 # Create the trainer
 trainer = ParallelCooperativeEA(**params)
 
+# Require some custom parameters to appear in the results
+hyperparameters = {"representation_size": 2, "max_num_iters": 100}
+
 # Number of experiments
 num_experiments = 10
