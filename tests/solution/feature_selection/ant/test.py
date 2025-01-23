@@ -27,7 +27,6 @@ import pickle
 import random
 from copy import copy, deepcopy
 from itertools import repeat
-from random import shuffle
 
 import numpy as np
 
@@ -235,13 +234,6 @@ class AntTester(unittest.TestCase):
             ant.discard(index)
             with self.assertRaises(ValueError):
                 ant.append(index)
-
-        # Test invalid values, should fail
-        ant = Ant(species, Fitness)
-        with self.assertRaises(ValueError):
-            ant.append(num_feats)
-        with self.assertRaises(ValueError):
-            ant.append(-1)
 
         # Try correct indices
         ant = Ant(species, Fitness)

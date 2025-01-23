@@ -105,7 +105,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromone": 1
+            "initial_pheromone": 1,
+            "verbose": False
         }
 
         # Create the trainer
@@ -119,7 +120,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromone": 1
+            "initial_pheromone": 1,
+            "verbose": False
         }
 
         # Create the trainer
@@ -135,7 +137,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromone": 1
+            "initial_pheromone": 1,
+            "verbose": False
         }
 
         # Create the trainer
@@ -175,7 +178,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromone": 1
+            "initial_pheromone": 1,
+            "verbose": False
         }
 
         # Create the trainer
@@ -201,7 +205,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromone": 1
+            "initial_pheromone": 1,
+            "verbose": False
         }
 
         # Create the trainer
@@ -231,7 +236,8 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "pop_size": 4
+            "pop_size": 4,
+            "verbose": False
         }
 
         # Create the trainer
@@ -254,7 +260,8 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "pop_size": 4
+            "pop_size": 4,
+            "verbose": False
         }
 
         # Create the trainer
@@ -295,7 +302,8 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "pop_size": 5
+            "pop_size": 5,
+            "verbose": False
         }
 
         # Create the trainer
@@ -337,7 +345,8 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "pop_size": 5
+            "pop_size": 5,
+            "verbose": False
         }
 
         # Create the trainer
@@ -367,7 +376,8 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "pop_size": 5
+            "pop_size": 5,
+            "verbose": False
         }
 
         # Create the trainer

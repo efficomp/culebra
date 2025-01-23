@@ -922,6 +922,7 @@ class SequentialDistributedTrainer(DistributedTrainer):
         # Generate the state of all the subtrainers
         for subtrainer in self.subtrainers:
             subtrainer._new_state()
+            self._num_evals  += subtrainer._num_evals
 
     def _load_state(self) -> None:
         """Load the state of the last checkpoint.

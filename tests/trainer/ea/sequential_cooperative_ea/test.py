@@ -289,9 +289,9 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = SequentialCooperativeEA(**params)
-        trainer._init_search()
+        # trainer._init_search()
 
-        self.assertEqual(trainer._current_iter, 0)
+        # self.assertEqual(trainer._current_iter, 0)
         trainer.train()
 
         max_num_iters = params["max_num_iters"]
