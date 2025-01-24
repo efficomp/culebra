@@ -228,7 +228,23 @@ class TrainerTester(unittest.TestCase):
             fitness_func,
             subtrainer_cls
         )
+
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
+
+        # All these parameters should be None if subtrainers are not generated
+        self.assertEqual(trainer.pop_size, None)
+        self.assertEqual(trainer.crossover_func, None)
+        self.assertEqual(trainer.mutation_func, None)
+        self.assertEqual(trainer.selection_func, None)
+        self.assertEqual(trainer.crossover_prob, None)
+        self.assertEqual(trainer.mutation_prob, None)
+        self.assertEqual(trainer.gene_ind_mutation_prob, None)
+        self.assertEqual(trainer.selection_func_params, None)
+
+        # Generate the subtrainers
+        trainer._generate_subtrainers()
+
+        # Now the default values of subtrainers should be returned
         self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
         self.assertEqual(
             trainer.crossover_func, trainer.solution_cls.crossover

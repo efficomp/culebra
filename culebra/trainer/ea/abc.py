@@ -1074,17 +1074,11 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
             solutions. One hof for each species
         :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
         """
-        hof = None
-        # If the search hasn't been initialized an empty HoF is returned
-        if self.subtrainers is None:
-            hof = ParetoFront()
-        else:
+        hof = ParetoFront()
+        if self.subtrainers is not None:
             for subtrainer in self.subtrainers:
-                if hof is None:
-                    hof = subtrainer.best_solutions()[0]
-                else:
-                    if subtrainer.pop is not None:
-                        hof.update(subtrainer.pop)
+                if subtrainer.pop is not None:
+                    hof.update(subtrainer.pop)
 
         return [hof]
 
@@ -1357,6 +1351,163 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             random_seed=random_seed,
             **subtrainer_params
         )
+
+    @HomogeneousEA.pop_size.getter
+    def pop_size(self) -> int:
+        """Get and set the population size.
+
+        :getter: Return the current population size
+        :setter: Set a new value for the population size. If set to
+            :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :type: :py:class:`int`, greater than zero
+        :raises TypeError: If set to a value which is not an :py:class:`int`
+        :raises ValueError: If set to a value which is not greater than zero
+        """
+        if self._pop_size is not None:
+            self._pop_size
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].pop_size
+        else:
+            return None
+
+    @HomogeneousEA.crossover_func.getter
+    def crossover_func(self) -> Callable[
+            [Individual, Individual],
+            Tuple[Individual, Individual]
+    ]:
+        """Get and set the crossover function.
+
+        :getter: Return the current crossover function
+        :setter: Set a new crossover function. If set to :py:data:`None`,
+            the :py:meth:`~culebra.solution.abc.Individual.crossover` method
+            of the individual class evolved by the trainer is chosen
+        :type: :py:class:`~collections.abc.Callable`
+        :raises TypeError: If set to a value which is not callable
+        """
+        if self._crossover_func is not None:
+            self._crossover_func
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].crossover_func
+        else:
+            return None
+
+    @HomogeneousEA.mutation_func.getter
+    def mutation_func(self) -> Callable[
+        [Individual, float],
+        Tuple[Individual]
+    ]:
+        """Get and set the mutation function.
+
+        :getter: Return the current mutation function
+        :setter: Set a new mutation function. If set to :py:data:`None`, the
+            :py:meth:`~culebra.solution.abc.Individual.mutate` method of the
+            individual class evolved by the trainer is chosen
+        :type: :py:class:`~collections.abc.Callable`
+        :raises TypeError: If set to a value which is not callable
+        """
+        if self._mutation_func is not None:
+            self._mutation_func
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].mutation_func
+        else:
+            return None
+
+    @HomogeneousEA.selection_func.getter
+    def selection_func(
+        self
+    ) -> Callable[[List[Individual], int, Any], List[Individual]]:
+        """Get and set the selection function.
+
+        :getter: Return the current selection function
+        :setter: Set the new selection function. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` is
+            chosen
+        :type: :py:class:`~collections.abc.Callable`
+        :raises TypeError: If set to a value which is not callable
+        """
+        if self._selection_func is not None:
+            self._selection_func
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].selection_func
+        else:
+            return None
+
+    @HomogeneousEA.crossover_prob.getter
+    def crossover_prob(self) -> float:
+        """Get and set the crossover probability.
+
+        :getter: Return the current crossover probability
+        :setter: Set the new crossover probability. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` is
+            chosen
+        :type: :py:class:`float` in (0, 1)
+        :raises TypeError: If set to a value which is not a real number
+        :raises ValueError: If set to a value which is not in (0, 1)
+        """
+        if self._crossover_prob is not None:
+            self._crossover_prob
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].crossover_prob
+        else:
+            return None
+
+    @HomogeneousEA.mutation_prob.getter
+    def mutation_prob(self) -> float:
+        """Get and set the mutation probability.
+
+        :getter: Return the current mutation probability
+        :setter: Set the new mutation probability. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` is
+            chosen
+        :type: :py:class:`float` in (0, 1)
+        :raises TypeError: If set to a value which is not a real number
+        :raises ValueError: If set to a value which is not in (0, 1)
+        """
+        if self._mutation_prob is not None:
+            self._mutation_prob
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].mutation_prob
+        else:
+            return None
+
+    @HomogeneousEA.gene_ind_mutation_prob.getter
+    def gene_ind_mutation_prob(self) -> float:
+        """Get and set the gene independent mutation probability.
+
+        :getter: Return the current gene independent mutation probability
+        :setter: Set the new gene independent mutation probability. If set to
+            :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            is chosen
+        :type: :py:class:`float` in (0, 1)
+        :raises TypeError: If set to a value which is not a real number
+        :raises ValueError: If set to a value which is not in (0, 1)
+        """
+        if self._gene_ind_mutation_prob is not None:
+            self._gene_ind_mutation_prob
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].gene_ind_mutation_prob
+        else:
+            return None
+
+    @HomogeneousEA.selection_func_params.getter
+    def selection_func_params(self) -> Dict[str, Any]:
+        """Get and set the parameters of the selection function.
+
+        :getter: Return the current parameters for the selection function
+        :setter: Set new parameters. If set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            is chosen
+        :type: :py:class:`dict`
+        :raises TypeError: If set to a value which is not a :py:class:`dict`
+        """
+        if self._selection_func_params is not None:
+            self._selection_func_params
+        elif self.subtrainers is not None:
+            return self.subtrainers[0].selection_func_params
+        else:
+            return None
 
     def _generate_subtrainers(self) -> None:
         """Generate the subpopulation trainers.
