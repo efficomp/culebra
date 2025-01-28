@@ -1255,7 +1255,7 @@ class ReseteablePheromoneBasedACO(ElitistACO, PheromoneBasedACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SingleColACO],
+                [ReseteablePheromoneBasedACO],
                 bool
             ]
         ] = None,
@@ -1699,7 +1699,7 @@ class PACO(SingleColACO):
         # Set the state of this class
         self._pop = state["pop"]
 
-        # Generate the pheromone matrices with the current sub-population
+        # Generate the pheromone matrices with the current population
         self._update_pheromone()
 
     def _new_state(self) -> None:
@@ -1810,7 +1810,7 @@ class MaxPheromonePACO(PACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [PACO],
+                [MaxPheromonePACO],
                 bool
             ]
         ] = None,
@@ -2081,7 +2081,7 @@ class SingleObjPACO(MaxPheromonePACO, SingleObjACO):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [PACO],
+                [SingleObjPACO],
                 bool
             ]
         ] = None,

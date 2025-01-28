@@ -26,7 +26,7 @@ from pandas import Series, DataFrame, MultiIndex
 
 from culebra.solution.feature_selection import Species, Ant
 from culebra.fitness_function.feature_selection import KappaNumFeats
-from culebra.trainer.aco import ACOFS
+from culebra.trainer.aco import ACOFS, ACOFS2
 from culebra.tools import Dataset
 
 
@@ -65,13 +65,13 @@ params = {
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "col_size": 20,
-    "pop_size": 50,
+    # "pop_size": 50,
     "max_num_iters": 500,
     "checkpoint_enable": False
 }
 
 # Create the wrapper
-wrapper = ACOFS(**params)
+wrapper = ACOFS2(**params)
 
 # Train the wrapper
 print("Training ...")

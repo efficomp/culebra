@@ -77,13 +77,14 @@ from .multi_obj_aco import (
 
 from .aco_fs import (
     ACOFS,
+    ACOFS2,
     DEFAULT_ACOFS_INITIAL_PHEROMONE,
     DEFAULT_ACOFS_DISCARD_PROB
 )
 
 
 __author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2024, EFFICOMP'
+__copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
@@ -102,6 +103,7 @@ __all__ = [
     'PACO_MO',
     'CPACO',
     'ACOFS',
+    'ACOFS2',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
