@@ -37,4 +37,6 @@ doc/build
 **/__pycache__
 **/people.sc.fsu.edu
 
+# My experiments
+experiments
 
