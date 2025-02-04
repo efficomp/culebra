@@ -42,3 +42,4 @@
     PACO <abc/paco>
     MaxPheromonePACO <abc/max_pheromone_paco>
     SingleObjPACO <abc/single_obj_paco>
+    ACO_FS <abc/aco_fs>
