@@ -31,8 +31,6 @@ from typing import (
 )
 from copy import copy
 
-import numpy as np
-
 from deap.tools import sortNondominated, selNSGA2
 
 from culebra.abc import Species, FitnessFunction
