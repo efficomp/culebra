@@ -54,11 +54,6 @@ class MyTrainer(
     def _increase_pheromone(self) -> None:
         """Increase the amount of pheromone."""
 
-    @property
-    def pheromone(self):
-        """Get the pheromone matrices."""
-        return self._pheromone
-
     def _get_state(self):
         """Return the state of this trainer."""
         # Get the state of the superclass

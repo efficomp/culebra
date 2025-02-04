@@ -54,7 +54,9 @@ This module is composed by:
 from .constants import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
-    DEFAULT_CONVERGENCE_CHECK_FREQ
+    DEFAULT_CONVERGENCE_CHECK_FREQ,
+    DEFAULT_ACO_FS_INITIAL_PHEROMONE,
+    DEFAULT_ACO_FS_DISCARD_PROB
 )
 
 from . import abc
@@ -76,17 +78,15 @@ from .multi_obj_aco import (
 )
 
 from .aco_fs import (
-    ACOFS,
-    ACOFS2,
-    DEFAULT_ACOFS_INITIAL_PHEROMONE,
-    DEFAULT_ACOFS_DISCARD_PROB
+    PACO_FS,
+    ElitistACO_FS
 )
 
 
 __author__ = 'Jesús González & Alberto Ortega'
 __copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.4.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
@@ -102,14 +102,14 @@ __all__ = [
     'QualityBasedPACO',
     'PACO_MO',
     'CPACO',
-    'ACOFS',
-    'ACOFS2',
+    'PACO_FS',
+    'ElitistACO_FS',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
-    'DEFAULT_ACOFS_INITIAL_PHEROMONE',
-    'DEFAULT_ACOFS_DISCARD_PROB'
+    'DEFAULT_ACO_FS_INITIAL_PHEROMONE',
+    'DEFAULT_ACO_FS_DISCARD_PROB'
 ]

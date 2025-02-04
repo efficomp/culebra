@@ -38,10 +38,18 @@ r"""Default heuristic influence (:math:`{\beta}`)."""
 DEFAULT_CONVERGENCE_CHECK_FREQ = 100
 """Default frequency to check if an elitist ACO has converged."""
 
+DEFAULT_ACO_FS_INITIAL_PHEROMONE = 1
+"""Default initial pheromone."""
+
+DEFAULT_ACO_FS_DISCARD_PROB = 0.5
+"""Default probability of discarding a node (feature)."""
+
 
 # Exported symbols for this module
 __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
-    'DEFAULT_CONVERGENCE_CHECK_FREQ'
+    'DEFAULT_CONVERGENCE_CHECK_FREQ',
+    'DEFAULT_ACO_FS_INITIAL_PHEROMONE',
+    'DEFAULT_ACO_FS_DISCARD_PROB'
 ]
