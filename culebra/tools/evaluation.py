@@ -677,9 +677,9 @@ class Experiment(Evaluation):
         # Add the hyperparameters (if any)
         if self.hyperparameters is not None:
             logbook_len = len(logbook)
-            for name, value in self.hyperparameters.items():
-                df[name] = (value,) * logbook_len * num_obj
-                index += [name]
+            for hyper_name, hyper_value in self.hyperparameters.items():
+                df[hyper_name] = (hyper_value,) * logbook_len * num_obj
+                index += [hyper_name]
 
         # Add the iteration stats
         for stat in self._trainer.stats_names:
@@ -860,8 +860,8 @@ class Experiment(Evaluation):
                 # Index for the dataframe
                 index = list(self.hyperparameters.keys())
                 self.results[result_key] = DataFrame()
-                for name, value in self.hyperparameters.items():
-                    self.results[result_key][name] = [value]
+                for hyper_name, hyper_value in self.hyperparameters.items():
+                    self.results[result_key][hyper_name] = [hyper_value]
 
                 self.results[result_key].set_index(index, inplace=True)
                 self.results[result_key].sort_index(inplace=True)
@@ -923,8 +923,11 @@ class Experiment(Evaluation):
                     df[_Labels.feature] = metric.index
                     num_feats = len(metric.index)
                     if self.hyperparameters is not None:
-                        for hyperparam, value in self.hyperparameters.items():
-                            df[hyperparam] = [value] * num_feats
+                        for (
+                                hyper_name,
+                                hyper_value
+                        ) in self.hyperparameters.items():
+                            df[hyper_name] = [hyper_value] * num_feats
 
             # Set the dataframe index
             df.set_index(index, inplace=True)
