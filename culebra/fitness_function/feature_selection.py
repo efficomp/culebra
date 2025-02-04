@@ -40,7 +40,7 @@ from __future__ import annotations
 from typing import Tuple, Optional
 from collections.abc import Sequence
 
-from sklearn.metrics import cohen_kappa_score
+from sklearn.metrics import cohen_kappa_score, accuracy_score
 
 from culebra.abc import Fitness
 from culebra.fitness_function import DEFAULT_THRESHOLD
@@ -122,7 +122,7 @@ class KappaIndex(FeatureSelectionFitnessFunction):
         """
 
         weights = (1.0,)
-        """Maximizes the valiation Kappa index."""
+        """Maximizes the validation Kappa index."""
 
         names = ("Kappa",)
         """Name of the objective."""
@@ -165,6 +165,67 @@ class KappaIndex(FeatureSelectionFitnessFunction):
             kappa = cohen_kappa_score(test_data.outputs, outputs_pred)
 
         return (kappa,)
+
+
+class Accuracy(FeatureSelectionFitnessFunction):
+    """Single-objective fitness function for classification problems.
+
+    Calculate the accuracy.
+    """
+
+    class Fitness(Fitness):
+        """Fitness class.
+
+        Handles the values returned by the
+        :py:meth:`~culebra.fitness_function.feature_selection.Accuracy.evaluate`
+        method within a
+        :py:class:`~culebra.solution.feature_selection.Solution`.
+        """
+
+        weights = (1.0,)
+        """Maximizes the validation accuracy."""
+
+        names = ("Accuracy",)
+        """Name of the objective."""
+
+        thresholds = [DEFAULT_THRESHOLD]
+        """Similarity threshold for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        accuracy = 0
+
+        if sol.features.size > 0:
+            # Get the training and test data
+            training_data, test_data = self._final_training_test_data()
+
+            # Train and get the outputs for the validation data
+            outputs_pred = self.classifier.fit(
+                training_data.inputs[:, sol.features],
+                training_data.outputs
+            ).predict(test_data.inputs[:, sol.features])
+            accuracy = accuracy_score(test_data.outputs, outputs_pred)
+
+        return (accuracy,)
 
 
 class KappaNumFeats(KappaIndex, NumFeats):
@@ -220,9 +281,64 @@ class KappaNumFeats(KappaIndex, NumFeats):
         return KappaIndex.evaluate(self, sol) + NumFeats.evaluate(self, sol)
 
 
+class AccuracyNumFeats(Accuracy, NumFeats):
+    """Bi-objective fitness class for feature selection.
+
+    Maximizes the accuracy and minimizes the number of features that a
+    solution has selected.
+    """
+
+    class Fitness(Fitness):
+        """Fitness class.
+
+        Handles the values returned by the
+        :py:meth:`~culebra.fitness_function.feature_selection.AccuracyNumFeats.evaluate`
+        method within a
+        :py:class:`~culebra.solution.feature_selection.Solution`.
+        """
+
+        weights = Accuracy.Fitness.weights + NumFeats.Fitness.weights
+        """Maximizes the accuracy and minimizes the number of features that a
+        solution has selected.
+        """
+
+        names = Accuracy.Fitness.names + NumFeats.Fitness.names
+        """Name of the objectives."""
+
+        thresholds = (
+            Accuracy.Fitness.thresholds + NumFeats.Fitness.thresholds
+        )
+        """Similarity thresholds for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        return Accuracy.evaluate(self, sol) + NumFeats.evaluate(self, sol)
+
+
 # Exported symbols for this module
 __all__ = [
     'NumFeats',
     'KappaIndex',
-    'KappaNumFeats'
+    'Accuracy',
+    'KappaNumFeats',
+    'AccuracyNumFeats'
 ]
