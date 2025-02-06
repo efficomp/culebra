@@ -304,7 +304,11 @@ class Dataset(Base):
         """
         if test is None:
             self._inputs -= self._inputs.min(axis=0)
-            self._inputs /= self._inputs.max(axis=0)
+
+            max_inputs = self._inputs.max(axis=0)
+            where_max_inputs_are_zero = np.where(np.isclose(max_inputs, 0))
+            max_inputs[where_max_inputs_are_zero] = 1
+            self._inputs /= max_inputs
         else:
             min_inputs = np.minimum(
                 self._inputs.min(axis=0), test._inputs.min(axis=0)
@@ -315,6 +319,9 @@ class Dataset(Base):
             max_inputs = np.maximum(
                 self._inputs.max(axis=0), test._inputs.max(axis=0)
             )
+            where_max_inputs_are_zero = np.where(np.isclose(max_inputs, 0))
+            max_inputs[where_max_inputs_are_zero] = 1
+
             self._inputs /= max_inputs
             test._inputs /= max_inputs
 
