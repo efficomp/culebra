@@ -33,12 +33,12 @@ Attributes
     Default population size.
 
 .. attribute:: DEFAULT_CROSSOVER_PROB
-    :annotation: = 0.9
+    :annotation: = 0.8
 
     Default crossover probability.
 
 .. attribute:: DEFAULT_MUTATION_PROB
-    :annotation: = 0.1
+    :annotation: = 0.2
 
     Default mutation probability.
 

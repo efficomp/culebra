@@ -34,10 +34,10 @@ __status__ = 'Development'
 DEFAULT_POP_SIZE = 100
 """Default population size."""
 
-DEFAULT_CROSSOVER_PROB = 0.9
+DEFAULT_CROSSOVER_PROB = 0.8
 """Default crossover probability."""
 
-DEFAULT_MUTATION_PROB = 0.1
+DEFAULT_MUTATION_PROB = 0.2
 """Default mutation probability."""
 
 DEFAULT_GENE_IND_MUTATION_PROB = 0.1
