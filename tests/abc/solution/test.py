@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.abc.Solution`."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 from culebra.abc import Solution, Species, Fitness
@@ -200,15 +200,21 @@ class SolutionTester(unittest.TestCase):
         """Serialization test.
 
         Test the :py:meth:`~culebra.abc.Solution.__setstate__` and
-        :py:meth:`~culebra.abc.Solution.__reduce__` methods.
+        :py:meth:`~culebra.abc.Solution.__reduce__` methods,
+        :py:meth:`~culebra.abc.Solution.save_pickle` and
+        :py:meth:`~culebra.abc.Solution.load_pickle` methods.
         """
         sol1 = MySolution(MySpecies(), MyFitness)
 
-        data = pickle.dumps(sol1)
-        sol2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        sol1.save_pickle(pickle_filename)
+        sol2 = MySolution.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(sol1, sol2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def _check_deepcopy(self, sol1, sol2):
         """Check if *sol1* is a deepcopy of *sol2*.

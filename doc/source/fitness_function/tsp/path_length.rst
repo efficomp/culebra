@@ -42,6 +42,7 @@ Class attributes
 
 Class methods
 -------------
+.. automethod:: culebra.fitness_function.tsp.PathLength.load_pickle
 .. automethod:: culebra.fitness_function.tsp.PathLength.set_fitness_thresholds
 .. automethod:: culebra.fitness_function.tsp.PathLength.get_fitness_objective_threshold
 .. automethod:: culebra.fitness_function.tsp.PathLength.set_fitness_objective_threshold
@@ -56,6 +57,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.tsp.PathLength.save_pickle
 .. automethod:: culebra.fitness_function.tsp.PathLength.heuristic
 .. automethod:: culebra.fitness_function.tsp.PathLength.greedy_solution
 .. automethod:: culebra.fitness_function.tsp.PathLength.evaluate

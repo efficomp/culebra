@@ -23,7 +23,7 @@
 """Test the feature selection fitness functions."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 from culebra.solution.feature_selection import (
@@ -99,11 +99,15 @@ class NumFeatsTester(unittest.TestCase):
         """
         func1 = self.FitnessFunc(Dataset())
 
-        data = pickle.dumps(func1)
-        func2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        func1.save_pickle(pickle_filename)
+        func2 = self.FitnessFunc.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(func1, func2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def _check_deepcopy(self, func1, func2):
         """Check if *func1* is a deepcopy of *func2*.

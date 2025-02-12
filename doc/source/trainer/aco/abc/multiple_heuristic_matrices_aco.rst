@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.stats_names
 .. autoattribute:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.num_pheromone_matrices
@@ -61,6 +65,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.save_pickle
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.reset
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.evaluate
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.best_solutions

@@ -23,7 +23,7 @@
 """Unit test for the tsp solutions."""
 
 import unittest
-import pickle
+from os import remove
 import copy
 
 import numpy as np
@@ -98,10 +98,14 @@ class SolutionTester(unittest.TestCase):
         species = Species(num_nodes)
         sol1 = MySolution(species, MyFitness, [1, 3, 5])
 
-        data = pickle.dumps(sol1)
-        sol2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        sol1.save_pickle(pickle_filename)
+        sol2 = MySolution.load_pickle(pickle_filename)
 
         self.assertTrue(np.all(sol1.path == sol2.path))
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_copy(self):
         """Copy test."""

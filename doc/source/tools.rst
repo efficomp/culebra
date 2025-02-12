@@ -31,6 +31,11 @@ Attributes
 
     Default column separator used within dataset files.
 
+.. attribute:: EXCEL_FILE_EXTENSION
+    :annotation: = 'xlsx'
+
+    File extension for Excel datasheets.
+
 .. attribute:: DEFAULT_ALPHA
     :annotation: = 0.05
 
@@ -72,19 +77,24 @@ Attributes
 
     Default number of experiments in the batch.
 
-.. attribute:: DEFAULT_SCRIPT_FILENAME
+.. attribute:: DEFAULT_RUN_SCRIPT_FILENAME
     :annotation: = 'run.py'
 
     Default file name for the script to run an evaluation.
 
-.. attribute:: DEFAULT_CONFIG_FILENAME
+.. attribute:: DEFAULT_CONFIG_SCRIPT_FILENAME
     :annotation: = 'config.py'
 
-    Default name for the configuration file for the evaluation.
+    Default file name for configuration files.
 
+.. attribute:: DEFAULT_RESULTS_BASENAME
+    :annotation: = 'results'
+
+    Default base name for results files.
 
 ..
     .. autodata:: DEFAULT_SEP
+    .. autodata:: EXCEL_FILE_EXTENSION
     .. autodata:: DEFAULT_ALPHA
     .. autodata:: DEFAULT_NORMALITY_TEST
     .. autodata:: DEFAULT_HOMOSCEDASTICITY_TEST
@@ -93,8 +103,9 @@ Attributes
     .. autodata:: DEFAULT_FEATURE_METRIC_FUNCTIONS
     .. autodata:: DEFAULT_BATCH_STATS_FUNCTIONS
     .. autodata:: DEFAULT_NUM_EXPERIMENTS
-    .. autodata:: DEFAULT_SCRIPT_FILENAME
-    .. autodata:: DEFAULT_CONFIG_FILENAME
+    .. autodata:: DEFAULT_RUN_SCRIPT_FILENAME
+    .. autodata:: DEFAULT_CONFIG_SCRIPT_FILENAME
+    .. autodata:: DEFAULT_RESULTS_BASENAME
 
 
 .. toctree::

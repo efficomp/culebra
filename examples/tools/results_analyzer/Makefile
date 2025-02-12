@@ -20,14 +20,12 @@
 # A bash shell will be used for the recipes
 SHELL = /bin/bash
 
-# Compare script
-COMPARE = compare.py
+# Script
+SCRIPT = script.py
 
-# Rank script
-RANK = rank.py
-
-# Results filename
-RESULTS = results.gz
+# Results
+RESULTS_BASENAME = results
+RESULTS_PICKLED = $(RESULTS_BASENAME).gz
 
 # Wrapper to be compared
 WRAPPER = nsga2_ea_wrapper
@@ -39,21 +37,12 @@ TEMP = __pycache__
 PYTHON = /usr/bin/env python3
 RM = rm -rf
 
-
-.PHONY: compare
-compare : $(WRAPPER)/$(RESULTS)
-	@echo "Comparing $(WRAPPER) ..."
-	@$(PYTHON) $(COMPARE)
+.PHONY: compare rank
+compare rank : $(SCRIPT) $(WRAPPER)/$(RESULTS_PICKLED)
+	@$(PYTHON) $(SCRIPT) $@
 	@echo
 
-.PHONY: rank
-rank : $(WRAPPER)/$(RESULTS)
-	@echo "Ranking $(WRAPPER) ..."
-	@echo
-	@$(PYTHON) $(RANK)
-	@echo
-
-$(WRAPPER)/$(RESULTS):
+$(WRAPPER)/$(RESULTS_PICKLED):
 	@echo "Generating the $(WRAPPER) results ..."
 	@echo
 	@make -s -C $(WRAPPER)

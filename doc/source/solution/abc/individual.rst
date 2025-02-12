@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.abc.Individual.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.abc.Individual.load_pickle
 
 Properties
 ----------
@@ -36,6 +39,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.solution.abc.Individual.save_pickle
 .. automethod:: culebra.solution.abc.Individual.crossover
 .. automethod:: culebra.solution.abc.Individual.mutate
 .. automethod:: culebra.solution.abc.Individual.dominates

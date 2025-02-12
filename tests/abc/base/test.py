@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.abc.Base`."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 from culebra.abc import Base
@@ -79,19 +79,25 @@ class BaseTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.abc.Base.__setstate__` and
-        :py:meth:`~culebra.abc.Base.__reduce__` methods.
+        Test the :py:meth:`~culebra.abc.Base.__setstate__`,
+        :py:meth:`~culebra.abc.Base.__reduce__`,
+        :py:meth:`~culebra.abc.Base.save_pickle` and
+        :py:meth:`~culebra.abc.Base.load_pickle` methods.
         """
         base1 = BaseSubclass(the_list)
 
-        data = pickle.dumps(base1)
-        base2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        base1.save_pickle(pickle_filename)
+        base2 = BaseSubclass.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(base1, base2)
 
+        # Remove the pickle file
+        remove(pickle_filename)
+
     def test_repr(self):
-        """Test the: py: meth: `~culebra.abc.Base.__repr__` method."""
+        """Test the: py:meth:`~culebra.abc.Base.__repr__` method."""
         lists = [[], the_list]
 
         for value in lists:

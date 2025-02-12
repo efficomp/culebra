@@ -24,15 +24,18 @@
 
 .. autoclass:: culebra.solution.tsp.Species
 
+Class methods
+-------------
+.. automethod:: culebra.solution.tsp.Species.load_pickle
 
 Properties
 ----------
 .. autoproperty:: culebra.solution.tsp.Species.num_nodes
 .. autoproperty:: culebra.solution.tsp.Species.banned_nodes
 
-
 Methods
 -------
+.. automethod:: culebra.solution.tsp.Species.save_pickle
 .. automethod:: culebra.solution.tsp.Species.is_banned
 .. automethod:: culebra.solution.tsp.Species.is_feasible
 .. automethod:: culebra.solution.tsp.Species.is_member

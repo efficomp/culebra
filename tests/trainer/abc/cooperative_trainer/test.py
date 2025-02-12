@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.trainer.abc.CooperativeTrainer`."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 from functools import partialmethod
 
@@ -636,11 +636,16 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer1 = MyTrainer(**params)
-        data = pickle.dumps(trainer1)
-        trainer2 = pickle.loads(data)
+
+        pickle_filename = "my_pickle.gz"
+        trainer1.save_pickle(pickle_filename)
+        trainer2 = MyTrainer.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

@@ -23,6 +23,8 @@
 """Unit test for :py:class:`culebra.trainer.aco.abc.MaxPheromonePACO`."""
 
 import unittest
+from copy import copy, deepcopy
+from os import remove
 
 import numpy as np
 
@@ -204,6 +206,90 @@ class TrainerTester(unittest.TestCase):
         trainer._deposit_pheromone(trainer.col, weight)
         assert_path_pheromone_increment(trainer, trainer.col[0], weight)
 
+    def test_copy(self):
+        """Test the __copy__ method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromone = [1, 2]
+        max_pheromone = [3, 4]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
+            "col_size": 1
+        }
+
+        # Create the trainer
+        trainer1 = MyTrainer(**params)
+        trainer2 = copy(trainer1)
+
+        # Copy only copies the first level (trainer1 != trainerl2)
+        self.assertNotEqual(id(trainer1), id(trainer2))
+
+        # The objects attributes are shared
+        self.assertEqual(
+            id(trainer1.fitness_function),
+            id(trainer2.fitness_function)
+        )
+        self.assertEqual(id(trainer1.species), id(trainer2.species))
+        self.assertEqual(trainer1.max_pheromone, trainer2.max_pheromone)
+
+        # Check some non mandatory parameters
+        self.assertEqual(trainer1.col_size, trainer2.col_size)
+        self.assertEqual(trainer1.max_num_iters, trainer2.max_num_iters)
+
+    def test_deepcopy(self):
+        """Test the __deepcopy__ method."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromone = [1, 2]
+        max_pheromone = [3, 4]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
+            "col_size": 1
+        }
+
+        # Create the trainer
+        trainer1 = MyTrainer(**params)
+        trainer2 = deepcopy(trainer1)
+
+        # Check the copy
+        self._check_deepcopy(trainer1, trainer2)
+
+    def test_serialization(self):
+        """Serialization test."""
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromone = [1, 2]
+        max_pheromone = [3, 4]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone,
+            "col_size": 1
+        }
+
+        # Create the trainer
+        trainer1 = MyTrainer(**params)
+
+        pickle_filename = "my_pickle.gz"
+        trainer1.save_pickle(pickle_filename)
+        trainer2 = MyTrainer.load_pickle(pickle_filename)
+
+        # Check the serialization
+        self._check_deepcopy(trainer1, trainer2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
+
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Trainer parameters
@@ -223,6 +309,38 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
+
+    def _check_deepcopy(self, trainer1, trainer2):
+        """Check if *trainer1* is a deepcopy of *trainer2*.
+
+        :param trainer1: The first trainer
+        :type trainer1: :py:class:`~culebra.trainer.aco.abc.MaxPheromonePACO`
+        :param trainer2: The second trainer
+        :type trainer2: :py:class:`~culebra.trainer.aco.abc.MaxPheromonePACO`
+        """
+        # Copies all the levels
+        self.assertNotEqual(id(trainer1), id(trainer2))
+        self.assertNotEqual(
+            id(trainer1.fitness_function),
+            id(trainer2.fitness_function)
+        )
+        self.assertNotEqual(
+            id(trainer1.fitness_function.distance),
+            id(trainer2.fitness_function.distance)
+        )
+
+        for dist1, dist2 in zip(
+            trainer1.fitness_function.distance,
+            trainer2.fitness_function.distance
+        ):
+            self.assertTrue((dist1 == dist2).all())
+
+        self.assertNotEqual(id(trainer1.species), id(trainer2.species))
+        self.assertEqual(trainer1.max_pheromone, trainer2.max_pheromone)
+
+        # Check some non mandatory parameters
+        self.assertEqual(trainer1.col_size, trainer2.col_size)
+        self.assertEqual(trainer1.max_num_iters, trainer2.max_num_iters)
 
 
 if __name__ == '__main__':

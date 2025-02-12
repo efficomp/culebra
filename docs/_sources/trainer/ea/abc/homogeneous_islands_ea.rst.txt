@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.abc.HomogeneousIslandsEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.HomogeneousIslandsEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.solution_cls
@@ -68,7 +72,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_checkpoint_filenames
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainers
 
-
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._subtrainer_suffixes
@@ -80,6 +83,7 @@ Static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA.save_pickle
 .. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA.reset
 .. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.HomogeneousIslandsEA.best_solutions

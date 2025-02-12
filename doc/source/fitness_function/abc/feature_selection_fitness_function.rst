@@ -43,6 +43,7 @@ Class attributes
 
 Class methods
 -------------
+.. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.load_pickle
 .. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.set_fitness_thresholds
 .. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.get_fitness_objective_threshold
 .. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.set_fitness_objective_threshold
@@ -58,5 +59,6 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.save_pickle
 .. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.heuristic
 .. automethod:: culebra.fitness_function.abc.FeatureSelectionFitnessFunction.evaluate

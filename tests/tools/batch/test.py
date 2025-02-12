@@ -24,7 +24,9 @@
 
 import unittest
 from os import remove
+from os.path import isfile
 from shutil import rmtree
+from copy import copy, deepcopy
 
 from pandas import DataFrame
 
@@ -40,7 +42,13 @@ from culebra.solution.parameter_optimization import (
 from culebra.fitness_function.cooperative import KappaNumFeatsC
 from culebra.trainer.ea import ElitistEA
 from culebra.trainer.ea import ParallelCooperativeEA
-from culebra.tools import Dataset, Results, Batch, DEFAULT_NUM_EXPERIMENTS
+from culebra.tools import (
+    Dataset,
+    Results,
+    Batch,
+    DEFAULT_NUM_EXPERIMENTS,
+    DEFAULT_RESULTS_BASENAME
+)
 
 # Dataset
 DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
@@ -122,7 +130,10 @@ class BatchTester(unittest.TestCase):
         self.assertEqual(batch.trainer, my_trainer)
         self.assertEqual(batch.test_fitness_function, None)
         self.assertEqual(batch.results, None)
-        self.assertEqual(batch.results_base_filename, None)
+        self.assertEqual(
+            batch.results_base_filename,
+            DEFAULT_RESULTS_BASENAME
+        )
         self.assertEqual(batch.hyperparameters, None)
         self.assertEqual(batch.num_experiments, DEFAULT_NUM_EXPERIMENTS)
 
@@ -214,9 +225,121 @@ class BatchTester(unittest.TestCase):
         for exp in batch.exp_labels:
             rmtree(exp)
 
-        # Remove the files
-        remove(batch.results.backup_filename)
-        remove(batch.results.excel_filename)
+        # Check the result files
+        isfile(batch.results_pickle_filename)
+        isfile(batch.results_excel_filename)
+
+        # Remove the result files
+        remove(batch.results_pickle_filename)
+        remove(batch.results_excel_filename)
+
+    def test_copy(self):
+        """Test the :py:meth:`~culebra.tools.Batch.__copy__` method."""
+        batch1 = Batch(
+            trainer=my_trainer,
+            test_fitness_function=my_test_fitness_function,
+            results_base_filename="res2",
+            # hyperparameters={"a": 1, "b": 2},
+            num_experiments=my_num_experiments
+        )
+
+        batch1.run()
+        batch2 = copy(batch1)
+
+        # Copy only copies the first level (batch1 != batch2)
+        self.assertNotEqual(id(batch1), id(batch2))
+
+        # The results are shared
+        self.assertEqual(id(batch1._results), id(batch2._results))
+
+        # The number of experiments match
+        self.assertEqual(batch1.num_experiments, batch2.num_experiments)
+
+        # Remove the experiments
+        for exp in batch1.exp_labels:
+            rmtree(exp)
+
+        # Remove the result files
+        remove(batch1.results_pickle_filename)
+        remove(batch1.results_excel_filename)
+
+    def test_deepcopy(self):
+        """Test :py:meth:`~culebra.tools.Batch.__deepcopy__`."""
+        batch1 = Batch(
+            trainer=my_trainer,
+            test_fitness_function=my_test_fitness_function,
+            results_base_filename="res2",
+            # hyperparameters={"a": 1, "b": 2},
+            num_experiments=my_num_experiments
+        )
+
+        batch1.run()
+        batch2 = deepcopy(batch1)
+
+        # Check the copy
+        self._check_deepcopy(batch1, batch2)
+
+        # Remove the experiments
+        for exp in batch1.exp_labels:
+            rmtree(exp)
+
+        # Remove the result files
+        remove(batch1.results_pickle_filename)
+        remove(batch1.results_excel_filename)
+
+    def test_serialization(self):
+        """Serialization test.
+
+        Test the :py:meth:`~culebra.tools.Batch.__setstate__` and
+        :py:meth:`~culebra.tools.Batch.__reduce__` methods.
+        """
+        batch1 = Batch(
+            trainer=my_trainer,
+            test_fitness_function=my_test_fitness_function,
+            results_base_filename="res2",
+            # hyperparameters={"a": 1, "b": 2},
+            num_experiments=my_num_experiments
+        )
+        batch1.run()
+
+        pickle_filename = "my_pickle.gz"
+        batch1.save_pickle(pickle_filename)
+        batch2 = Batch.load_pickle(pickle_filename)
+
+        # Check the copy
+        self._check_deepcopy(batch1, batch2)
+
+        # Remove the experiments
+        for exp in batch1.exp_labels:
+            rmtree(exp)
+
+        # Remove the result files
+        remove(batch1.results_pickle_filename)
+        remove(batch1.results_excel_filename)
+
+        # Remove the pickle file
+        remove(pickle_filename)
+
+    def _check_deepcopy(self, batch1, batch2):
+        """Check if *batch1* is a deepcopy of *batch2*.
+
+        :param batch1: The first batch
+        :type batch1: :py:class:`~culebra.tools.Batch`
+        :param batch2: The second batch
+        :type batch2: :py:class:`~culebra.tools.Batch`
+        """
+        # Copies all the levels
+        self.assertNotEqual(id(batch1), id(batch2))
+        if batch1.results is None:
+            self.assertEqual(batch2.results, None)
+        else:
+            for key in batch1.results:
+                self.assertTrue(
+                    batch1.results[key].equals(batch2.results[key])
+                )
+
+        # The number of experiments match
+        self.assertEqual(batch1.num_experiments, batch2.num_experiments)
 
 
 if __name__ == '__main__':

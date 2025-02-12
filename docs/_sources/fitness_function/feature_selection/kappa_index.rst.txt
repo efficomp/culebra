@@ -38,6 +38,7 @@ Class attributes
 
 Class methods
 -------------
+.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.load_pickle
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex.set_fitness_thresholds
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex.get_fitness_objective_threshold
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex.set_fitness_objective_threshold
@@ -53,5 +54,6 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.save_pickle
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex.heuristic
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex.evaluate

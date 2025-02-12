@@ -32,6 +32,7 @@ import numpy as np
 from pandas import Series, DataFrame, concat
 from deap.tools import HallOfFame, ParetoFront
 
+from culebra import PICKLE_FILE_EXTENSION
 from culebra.abc import (
     Base,
     Solution,
@@ -48,7 +49,7 @@ from culebra.solution.feature_selection import (
     Species as FSSpecies,
     Metrics
 )
-from culebra.tools import Results
+from culebra.tools import Results, EXCEL_FILE_EXTENSION
 
 
 __author__ = 'Jesús González'
@@ -160,15 +161,30 @@ DEFAULT_BATCH_STATS_FUNCTIONS = {
 """Default statistics calculated for the results gathered from all the
 experiments."""
 
+SCRIPT_FILE_EXTENSION = "py"
+"""File extension for python scripts."""
+
 DEFAULT_NUM_EXPERIMENTS = 1
 """Default number of experiments in the batch."""
 
+DEFAULT_RUN_SCRIPT_BASENAME = "run"
+"""Default base name for the script to run an evaluation."""
 
-DEFAULT_SCRIPT_FILENAME = "run.py"
+DEFAULT_RUN_SCRIPT_FILENAME = (
+    DEFAULT_RUN_SCRIPT_BASENAME + "." + SCRIPT_FILE_EXTENSION
+)
 """Default file name for the script to run an evaluation."""
 
-DEFAULT_CONFIG_FILENAME = "config.py"
-"""Default name for the configuration file for the evaluation."""
+DEFAULT_CONFIG_SCRIPT_BASENAME = "config"
+"""Default base name for configuration scripts."""
+
+DEFAULT_CONFIG_SCRIPT_FILENAME = (
+    DEFAULT_CONFIG_SCRIPT_BASENAME + "." + SCRIPT_FILE_EXTENSION
+)
+"""Default file name for configuration scripts."""
+
+DEFAULT_RESULTS_BASENAME = "results"
+"""Default base name for results files."""
 
 
 class Evaluation(Base):
@@ -188,10 +204,10 @@ class Evaluation(Base):
     stats_functions = DEFAULT_STATS_FUNCTIONS
     """Statistics calculated for the solutions."""
 
-    _script_code = """#!/usr/bin/env python3
+    _run_script_code = """#!/usr/bin/env python3
 
 #
-# This script relies on the {config_filename} script.
+# This script relies on the {config_script_filename} script.
 #
 # This script is a simple python module defining variables to be passed to
 # the {cls_name} constructor. These variables MUST have the same name than
@@ -201,7 +217,7 @@ class Evaluation(Base):
 from culebra.tools import {cls_name}
 
 # Create the {var_name}
-{var_name} = {cls_name}.from_config({config_filename})
+{var_name} = {cls_name}.from_config('{config_script_filename}')
 
 # Run the {var_name}
 {var_name}.run()
@@ -224,12 +240,15 @@ for res, val in {var_name}.results.items():
 
         :param trainer: The trainer method
         :type trainer: :py:class:`~culebra.abc.Trainer`
-        :param test_fitness_function: The fitness used to test. If
+        :param test_fitness_function: The fitness used to test. If set to
             :py:data:`None`, the training fitness function will be used.
             Defaults to :py:data:`None`.
         :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
         :param results_base_filename: The base filename to save the results.
+            If set to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used.
+            Defaults to :py:data:`None`
         :type results_base_filename: :py:class:`~str`, optional
         :param hyperparameters: Hyperparameter values used in this evaluation
         :type hyperparameters: :py:class:`~dict`, optional
@@ -310,17 +329,20 @@ for res, val in {var_name}.results.items():
 
         :getter: Return the results base filename
         :setter: Set a new results base filename. If set to :py:data:`None`,
-            :py:attr:`culebra.tools.Results.default_base_filename` is used.
+            :py:attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used.
         :raises TypeError: If set to an invalid file name
         """
-        return self._results_base_filename
+        return (
+            DEFAULT_RESULTS_BASENAME if self._results_base_filename is None
+            else self._results_base_filename
+        )
 
     @results_base_filename.setter
     def results_base_filename(self, filename: str | None) -> None:
         """Set a new results base filename.
 
         :param filename: New results base filename. If set to :py:data:`None`,
-            :py:attr:`culebra.tools.Results.default_base_filename` is used.
+            :py:attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used.
         :type filename: :py:class:`~str`
         :raises TypeError: If *filename* is not a valid file name
         """
@@ -334,6 +356,22 @@ for res, val in {var_name}.results.items():
 
         # Reset results
         self.reset()
+
+    @property
+    def results_pickle_filename(self) -> str:
+        """Get the filename used to save the pickled results.
+
+        :type: :py:class:`str`
+        """
+        return self.results_base_filename + "." + PICKLE_FILE_EXTENSION
+
+    @property
+    def results_excel_filename(self) -> str:
+        """Get the filename used to save the results in Excel format.
+
+        :type: :py:class:`str`
+        """
+        return self.results_base_filename + "." + EXCEL_FILE_EXTENSION
 
     def _is_reserved(self, name: str) -> bool:
         """Return :py:data:`True` if the given hyperparameter name is reserved.
@@ -405,28 +443,20 @@ for res, val in {var_name}.results.items():
 
     @classmethod
     def from_config(
-        cls, config_filename: Optional[str] = None
+        cls, config_script_filename: Optional[str] = None
     ) -> Evaluation:
         """Generate a new evaluation from a configuration file.
 
-        :param config_filename: Path to the configuration file. If set to
-            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_CONFIG_FILENAME`
-            is used. Defaults to :py:data:`None`
-        :type config_filename: :py:class:`str`, optional
-        :raises TypeError: If *config_filename* is an invalid file path
+        :param config_script_filename: Path to the configuration file. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
+            Defaults to :py:data:`None`
+        :type config_script_filename: :py:class:`str`, optional
+        :raises RuntimeError: If *config_script_filename* is an invalid file
+            path or an invalid configuration file
         """
-        config_filename = check_filename(
-            (
-                DEFAULT_CONFIG_FILENAME
-                if config_filename is None
-                else config_filename
-            ),
-            name="configuration file",
-            ext=".py"
-        )
-
         # Load the config module
-        config = cls._load_config(config_filename)
+        config = cls._load_config(config_script_filename)
 
         # Generate the Evaluation from the config module
         return cls(
@@ -441,52 +471,59 @@ for res, val in {var_name}.results.items():
         )
 
     @classmethod
-    def generate_script(
+    def generate_run_script(
         cls,
-        config_filename: Optional[str] = None,
-        script_filename: Optional[str] = None
+        config_script_filename: Optional[str] = None,
+        run_script_filename: Optional[str] = None
     ) -> None:
         """Generate a script to run an evaluation.
 
-        The parameters for the experiment are obtained from a
-        configuration file.
+        The parameters for the evaluation are taken from a configuration file.
 
-        :param config_filename: Path to the configuration file. If set to
-            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_CONFIG_FILENAME`
+        :param config_script_filename: Path to the configuration file. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
+            Defaults to :py:data:`None`
+        :type config_script_filename: :py:class:`str`
+        :param run_script_filename: File path to store the run script. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME`
             is used. Defaults to :py:data:`None`
-        :type config_filename: :py:class:`str`, optional
-        :param script_filename: File path to store the script. If set to
-            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_SCRIPT_FILENAME`
-            is used. Defaults to :py:data:`None`
-        :type script_filename: :py:class:`str`, optional.
+        :type run_script_filename: :py:class:`str`, optional.
+        :raises TypeError: If *config_script_filename* or *run_script_filename*
+            are not a valid filename
+        :raises ValueError: If the extension of *config_script_filename* or
+            *run_script_filename* is not '.py'
         """
-        config_filename = check_filename(
+        # Check the configuration script filename
+        config_script_filename = check_filename(
             (
-                DEFAULT_CONFIG_FILENAME
-                if config_filename is None
-                else config_filename
+                DEFAULT_CONFIG_SCRIPT_FILENAME
+                if config_script_filename is None
+                else config_script_filename
             ),
-            name="configuration file",
-            ext=".py"
+            name="configuration script file",
+            ext=SCRIPT_FILE_EXTENSION
         )
 
-        script_filename = check_filename(
+        # Check the run script filename
+        run_script_filename = check_filename(
             (
-                DEFAULT_SCRIPT_FILENAME
-                if script_filename is None
-                else script_filename
+                DEFAULT_RUN_SCRIPT_FILENAME
+                if run_script_filename is None
+                else run_script_filename
             ),
-            name="script file",
-            ext=".py"
+            name="run script file",
+            ext=SCRIPT_FILE_EXTENSION
         )
 
         cls_name = cls.__name__
         # Create the script file
-        with open(script_filename, 'w', encoding="utf8") as script:
-            script.write(
-                cls._script_code.format_map(
+        with open(run_script_filename, 'w', encoding="utf8") as run_script:
+            run_script.write(
+                cls._run_script_code.format_map(
                     {
-                        "config_filename": f"'{config_filename}'",
+                        "config_script_filename": config_script_filename,
                         "cls_name": cls_name,
                         "var_name": cls_name.lower(),
                         "res": "{res}"
@@ -494,8 +531,8 @@ for res, val in {var_name}.results.items():
                 )
             )
 
-        # Make the script file executable
-        os.chmod(script_filename, 0o777)
+        # Make the run script file executable
+        os.chmod(run_script_filename, 0o777)
 
     def reset(self) -> None:
         """Reset the results."""
@@ -508,16 +545,16 @@ for res, val in {var_name}.results.items():
         self.reset()
 
         # Init the results manager
-        self._results = Results(self.results_base_filename)
+        self._results = Results()
 
         # Run the evaluation
         self._execute()
 
         # Save the results
-        self.results.save()
+        self.results.save_pickle(self.results_pickle_filename)
 
         # Save the results to Excel
-        self.results.to_excel()
+        self.results.to_excel(self.results_excel_filename)
 
     @abstractmethod
     def _execute(self) -> None:
@@ -532,22 +569,51 @@ for res, val in {var_name}.results.items():
         )
 
     @staticmethod
-    def _load_config(config_filename: str) -> object:
+    def _load_config(config_script_filename: Optional[str] = None) -> object:
         """Generate a new evaluation from a configuration file.
 
-        :param config_filename: Path to the config file
-        :type config_filename: :py:class:`str`
-        :raises TypeError: If *config_filename* is an invalid file path
+        :param config_script_filename: Path to the configuration file. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
+            Defaults to :py:data:`None`
+        :type config_script_filename: :py:class:`str`, optional
+        :raises TypeError: If *config_script_filename* is not a valid filename
+        :raises ValueError: If the extension of *config_script_filename* is
+            not '.py'
+        :raises RuntimeError: If *config_script_filename* is an invalid file
+            path or an invalid configuration script
         """
-        # Get the spec
-        spec = importlib.util.spec_from_file_location(
-            "config",
-            check_filename(config_filename, "config filename", ext=".py")
+        # Check the configuration script filename
+        config_script_filename = check_filename(
+            (
+                DEFAULT_CONFIG_SCRIPT_FILENAME
+                if config_script_filename is None
+                else config_script_filename
+            ),
+            name="configuration script file",
+            ext=SCRIPT_FILE_EXTENSION
         )
 
-        # Load the module
-        config = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(config)
+        if not os.path.isfile(config_script_filename):
+            raise RuntimeError(
+                f"Configuration file not found: {config_script_filename}"
+            )
+
+        # Try to read the configuration script
+        try:
+            # Get the spec
+            spec = importlib.util.spec_from_file_location(
+                "config",
+                config_script_filename
+            )
+
+            # Load the module
+            config = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(config)
+        except Exception:
+            raise RuntimeError(
+                f"Bad configuration script: {config_script_filename}"
+            )
 
         return config
 
@@ -1014,6 +1080,9 @@ class Batch(Evaluation):
         :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
         :param results_base_filename: The base filename to save the results.
+            If set to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used.
+            Defaults to :py:data:`None`
         :type results_base_filename: :py:class:`~str`, optional
         :param hyperparameters: Hyperparameter values used in this evaluation
         :type hyperparameters: :py:class:`~dict`, optional
@@ -1095,28 +1164,20 @@ class Batch(Evaluation):
 
     @classmethod
     def from_config(
-        cls, config_filename: Optional[str] = None
-    ) -> Evaluation:
+        cls, config_script_filename: str
+    ) -> Batch:
         """Generate a new evaluation from a configuration file.
 
-        :param config_filename: Path to the configuration file. If set to
-            :py:data:`None`, :py:attr:`~culebra.tools.DEFAULT_CONFIG_FILENAME`
-            is used. Defaults to :py:data:`None`
-        :type config_filename: :py:class:`str`, optional
-        :raises TypeError: If *config_filename* is an invalid file path
+        :param config_script_filename: Path to the configuration file. If set
+            to :py:data:`None`,
+            :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
+            Defaults to :py:data:`None`
+        :type config_script_filename: :py:class:`str`, optional
+        :raises RuntimeError: If *config_script_filename* is an invalid file
+            path or an invalid configuration file
         """
-        config_filename = check_filename(
-            (
-                DEFAULT_CONFIG_FILENAME
-                if config_filename is None
-                else config_filename
-            ),
-            name="configuration file",
-            ext=".py"
-        )
-
         # Load the config module
-        config = cls._load_config(config_filename)
+        config = cls._load_config(config_script_filename)
 
         # Generate the Batch from the config module
         return cls(
@@ -1442,6 +1503,7 @@ __all__ = [
     'DEFAULT_FEATURE_METRIC_FUNCTIONS',
     'DEFAULT_BATCH_STATS_FUNCTIONS',
     'DEFAULT_NUM_EXPERIMENTS',
-    'DEFAULT_SCRIPT_FILENAME',
-    'DEFAULT_CONFIG_FILENAME'
+    'DEFAULT_RUN_SCRIPT_FILENAME',
+    'DEFAULT_CONFIG_SCRIPT_FILENAME',
+    'DEFAULT_RESULTS_BASENAME'
 ]

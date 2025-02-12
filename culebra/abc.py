@@ -54,6 +54,7 @@ from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
     DEFAULT_MAX_NUM_ITERS,
+    PICKLE_FILE_EXTENSION,
     DEFAULT_CHECKPOINT_ENABLE,
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
@@ -67,7 +68,8 @@ from culebra.checker import (
     check_float,
     check_instance,
     check_sequence,
-    check_func
+    check_func,
+    check_filename
 )
 
 
@@ -98,6 +100,40 @@ TRAINER_OBJECTIVE_STATS = {
 
 class Base:
     """Base for all classes in culebra."""
+
+    def save_pickle(self, filename: str) -> None:
+        """Pickle this object and save it to a file.
+
+        :param filename: The file name.
+        :type filename: :py:class:`~str`
+        :raises TypeError: If *filename* is not a valid file name
+        :raises ValueError: If the *filename* extension is not
+            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
+        """
+        filename = check_filename(
+            filename,
+            name="pickle file name",
+            ext=PICKLE_FILE_EXTENSION
+        )
+
+        to_pickle(self, filename)
+
+    @classmethod
+    def load_pickle(cls, filename: str) -> Base:
+        """Load a pickled object from a file.
+
+        :param filename: The file name.
+        :type filename: :py:class:`~str`
+        :raises TypeError: If *filename* is not a valid file name
+        :raises ValueError: If the *filename* extension is not
+            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
+        """
+        filename = check_filename(
+            filename,
+            name="pickle file name",
+            ext=PICKLE_FILE_EXTENSION
+        )
+        return read_pickle(filename)
 
     def __copy__(self) -> Base:
         """Shallow copy the object."""
@@ -1140,7 +1176,9 @@ class Trainer(Base):
             :py:data:`None`,
             :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
         :type: :py:class:`str`
-        :raises TypeError: If set to a value which is not a string
+        :raises TypeError: If set to a value which is not a a valid file name
+        :raises ValueError: If set to a value whose extension is not
+            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
         """
         return (
             DEFAULT_CHECKPOINT_FILENAME if self._checkpoint_filename is None
@@ -1155,12 +1193,16 @@ class Trainer(Base):
             :py:data:`None`,
             :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
         :type value: :py:class:`str`
-        :raises TypeError: If * value * is not a string
+        :raises TypeError: If *value* is not a valid file name
+        :raises ValueError: If the *value* extension is not
+            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
         """
         # Check the value
         self._checkpoint_filename = (
-            None if value is None else check_str(
-                value, "checkpoint file name"
+            None if value is None else check_filename(
+                value,
+                name="checkpoint file name",
+                ext=PICKLE_FILE_EXTENSION
             )
         )
 

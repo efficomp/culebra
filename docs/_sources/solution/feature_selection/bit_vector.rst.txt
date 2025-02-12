@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.BitVector.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.feature_selection.BitVector.load_pickle
 
 Properties
 ----------
@@ -38,9 +41,9 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.BitVector.min_feat
 .. autoproperty:: culebra.solution.feature_selection.BitVector.max_feat
 
-
 Methods
 -------
+.. automethod:: culebra.solution.feature_selection.BitVector.save_pickle
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover1p
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover2p
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover

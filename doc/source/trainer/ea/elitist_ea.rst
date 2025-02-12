@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.ElitistEA.stats_names
 .. autoattribute:: culebra.trainer.ea.ElitistEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.ElitistEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.ElitistEA.solution_cls
@@ -61,6 +65,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.ElitistEA.save_pickle
 .. automethod:: culebra.trainer.ea.ElitistEA.reset
 .. automethod:: culebra.trainer.ea.ElitistEA.evaluate
 .. automethod:: culebra.trainer.ea.ElitistEA.best_solutions

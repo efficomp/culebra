@@ -24,7 +24,6 @@
 
 import unittest
 import os
-import pickle
 from copy import copy, deepcopy
 from functools import partialmethod
 
@@ -614,11 +613,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = MyTrainer(**params)
 
-        data = pickle.dumps(trainer1)
-        trainer2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        trainer1.save_pickle(pickle_filename)
+        trainer2 = MyTrainer.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+        # Remove the pickle file
+        os.remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -641,9 +644,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :type trainer1: :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.abc.SinglePopTrainer`
+        :type trainer2: :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

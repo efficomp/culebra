@@ -23,7 +23,7 @@
 """Unit test for the feature selection ants."""
 
 import unittest
-import pickle
+from os import remove
 import random
 from copy import copy, deepcopy
 from itertools import repeat
@@ -245,6 +245,8 @@ class AntTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test."""
         # For each value for the number of features ...
+        pickle_filename = "my_pickle.gz"
+
         for num_feats in self.num_feats_values:
             species = Species(num_feats)
             # Build an ant the given number of times
@@ -254,10 +256,13 @@ class AntTester(unittest.TestCase):
                 feats = np.random.choice(indices, size=(size), replace=False)
                 ant1 = Ant(species, Fitness, feats)
 
-                data = pickle.dumps(ant1)
-                ant2 = pickle.loads(data)
+                ant1.save_pickle(pickle_filename)
+                ant2 = Ant.load_pickle(pickle_filename)
 
                 self.assertTrue((ant1.path == ant2.path).all())
+
+                # Remove the pickle file
+                remove(pickle_filename)
 
     def test_copy(self):
         """Copy test."""

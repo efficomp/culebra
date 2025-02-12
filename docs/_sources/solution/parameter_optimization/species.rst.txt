@@ -24,6 +24,10 @@
 
 .. autoclass:: culebra.solution.parameter_optimization.Species
 
+Class methods
+-------------
+.. automethod:: culebra.solution.parameter_optimization.Species.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.solution.parameter_optimization.Species.lower_bounds
@@ -34,4 +38,5 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.solution.parameter_optimization.Species.save_pickle
 .. automethod:: culebra.solution.parameter_optimization.Species.is_member

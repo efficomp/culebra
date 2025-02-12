@@ -323,10 +323,6 @@ class ResultsComparison(NamedTuple):
 class ResultsAnalyzer(UserDict, Base):
     """Perform statistical analyses over the results of several batches."""
 
-    def __init__(self) -> None:
-        """Create an empty results analyzer."""
-        super().__init__()
-
     def normality_test(
         self,
         dataframe_key: str,

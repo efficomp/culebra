@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.abc.IslandsTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.IslandsTrainer.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.abc.IslandsTrainer.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.solution_cls
@@ -60,7 +64,6 @@ Properties
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_checkpoint_filenames
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainers
 
-
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer._subtrainer_suffixes
@@ -81,6 +84,7 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.abc.IslandsTrainer.save_pickle
 .. automethod:: culebra.trainer.abc.IslandsTrainer._generate_subtrainers
 .. automethod:: culebra.trainer.abc.IslandsTrainer._get_state
 .. automethod:: culebra.trainer.abc.IslandsTrainer._set_state

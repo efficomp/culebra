@@ -33,6 +33,11 @@ Attributes:
 
     Default maximum number of iterations.
 
+.. attribute:: PICKLE_FILE_EXTENSION
+    :annotation: = 'gz'
+
+    Extension for files containing pickled objects.
+
 .. attribute:: DEFAULT_CHECKPOINT_ENABLE
     :annotation: = True
 
@@ -42,6 +47,11 @@ Attributes:
     :annotation: = 10
 
     Default checkpointing frequency for a :py:class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_CHECKPOINT_BASENAME
+     :annotation: = 'checkpoint'
+
+     Default basename for checkpointing files.
 
 .. attribute:: DEFAULT_CHECKPOINT_FILENAME
     :annotation: = 'checkpoint.gz'
@@ -61,8 +71,10 @@ Attributes:
 
 ..
     .. autodata:: DEFAULT_MAX_NUM_ITERS
+    .. autodata:: PICKLE_FILE_EXTENSION
     .. autodata:: DEFAULT_CHECKPOINT_ENABLE
     .. autodata:: DEFAULT_CHECKPOINT_FREQ
+    .. autodata:: DEFAULT_CHECKPOINT_BASENAME
     .. autodata:: DEFAULT_CHECKPOINT_FILENAME
     .. autodata:: DEFAULT_VERBOSITY
     .. autodata:: DEFAULT_INDEX

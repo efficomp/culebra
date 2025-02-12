@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.abc.DistributedTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.DistributedTrainer.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.abc.DistributedTrainer.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.DistributedTrainer.fitness_function
@@ -58,7 +62,6 @@ Properties
 .. autoproperty:: culebra.trainer.abc.DistributedTrainer.subtrainer_checkpoint_filenames
 .. autoproperty:: culebra.trainer.abc.DistributedTrainer.subtrainers
 
-
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.abc.DistributedTrainer._subtrainer_suffixes
@@ -70,6 +73,7 @@ Static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.abc.DistributedTrainer.save_pickle
 .. automethod:: culebra.trainer.abc.DistributedTrainer.reset
 .. automethod:: culebra.trainer.abc.DistributedTrainer.evaluate
 .. automethod:: culebra.trainer.abc.DistributedTrainer.best_solutions

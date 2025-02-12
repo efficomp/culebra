@@ -29,6 +29,9 @@ Class attributes
 .. autoattribute:: culebra.solution.parameter_optimization.Individual.species_cls
 .. autoattribute:: culebra.solution.parameter_optimization.Individual.eta
 
+Class methods
+-------------
+.. automethod:: culebra.solution.parameter_optimization.Individual.load_pickle
 
 Properties
 ----------
@@ -37,9 +40,9 @@ Properties
 .. autoproperty:: culebra.solution.parameter_optimization.Individual.named_values_cls
 .. autoproperty:: culebra.solution.parameter_optimization.Individual.values
 
-
 Methods
 -------
+.. automethod:: culebra.solution.parameter_optimization.Individual.save_pickle
 .. automethod:: culebra.solution.parameter_optimization.Individual.crossover
 .. automethod:: culebra.solution.parameter_optimization.Individual.mutate
 .. automethod:: culebra.solution.parameter_optimization.Individual.get

@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.NSGA.stats_names
 .. autoattribute:: culebra.trainer.ea.NSGA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.NSGA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.NSGA.solution_cls
@@ -63,6 +67,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.NSGA.save_pickle
 .. automethod:: culebra.trainer.ea.NSGA.reset
 .. automethod:: culebra.trainer.ea.NSGA.evaluate
 .. automethod:: culebra.trainer.ea.NSGA.best_solutions

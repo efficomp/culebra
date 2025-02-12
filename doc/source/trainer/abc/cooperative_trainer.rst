@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.abc.CooperativeTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.CooperativeTrainer.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.solution_classes
@@ -60,7 +64,6 @@ Properties
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_checkpoint_filenames
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainers
 
-
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer._subtrainer_suffixes
@@ -76,6 +79,7 @@ Private static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.save_pickle
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.reset
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.evaluate
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.best_solutions

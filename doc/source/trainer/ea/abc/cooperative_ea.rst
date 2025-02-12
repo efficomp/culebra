@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.abc.CooperativeEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.CooperativeEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.CooperativeEA.solution_classes
@@ -84,6 +88,7 @@ Private static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA.save_pickle
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA.reset
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA.best_solutions

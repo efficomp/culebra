@@ -21,25 +21,22 @@
 SHELL = /bin/bash
 
 # Configuration file
-CONFIG = config.py
+CONFIG_SCRIPT = config.py
 
 # Run script
-RUN = run.py
-
-# Backup file
-BACKUP = results.gz
-
-# Datasheet file
-DATASHEET = results.xlsx
+RUN_SCRIPT = run.py
 
 # Results
-RESULTS = $(BACKUP) $(DATASHEET)
+RESULTS_BASENAME = results
+RESULTS_PICKLED = $(RESULTS_BASENAME).gz
+RESULTS_EXCEL = $(RESULTS_BASENAME).xlsx
+RESULTS = $(RESULTS_PICKLED) $(RESULTS_EXCEL)
 
 # Temporary files
-TEMP = $(RUN) __pycache__
+TEMP = $(RUN_SCRIPT) __pycache__
 
 # Checkpoint files
-CHECKPOINT = $(wildcard checkpoint*)
+CHECKPOINTS = $(wildcard checkpoint*)
 
 # Experiments
 EXPERIMENTS = $(wildcard exp*)
@@ -50,17 +47,17 @@ RM = rm -rf
 
 
 .PHONY: all
-all : $(DATASHEET)
+all : $(RESULTS_EXCEL)
 
-$(RESULTS): $(RUN)
+$(RESULTS_EXCEL): $(RUN_SCRIPT)
 	@echo "Running ..."
-	@$(PYTHON) $(RUN)
+	@$(PYTHON) $(RUN_SCRIPT)
 	@echo
 
-$(RUN): $(CONFIG)
+$(RUN_SCRIPT): $(CONFIG_SCRIPT)
 	@echo "Generating the run script ..."
 	@echo -e \
-"import culebra\\nculebra.tools.Batch.generate_script('$(CONFIG)')" | $(PYTHON)
+"import culebra\\nculebra.tools.Batch.generate_run_script('$(CONFIG_SCRIPT)')" | $(PYTHON)
 	@echo
 
 .PHONY: clean

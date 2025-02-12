@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.IntVector.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.feature_selection.IntVector.load_pickle
 
 Properties
 ----------
@@ -38,9 +41,9 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.IntVector.min_feat
 .. autoproperty:: culebra.solution.feature_selection.IntVector.max_feat
 
-
 Methods
 -------
+.. automethod:: culebra.solution.feature_selection.IntVector.save_pickle
 .. automethod:: culebra.solution.feature_selection.IntVector.crossover
 .. automethod:: culebra.solution.feature_selection.IntVector.mutate
 .. automethod:: culebra.solution.feature_selection.IntVector.dominates

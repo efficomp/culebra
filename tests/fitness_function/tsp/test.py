@@ -23,7 +23,7 @@
 """Test the tsp fitness functions."""
 
 import unittest
-import pickle
+from os import remove
 from collections.abc import Sequence
 from copy import copy, deepcopy
 from itertools import repeat
@@ -829,11 +829,15 @@ class PathLengthTester(unittest.TestCase):
             np.random.permutation(num_nodes)
         )
 
-        data = pickle.dumps(func1)
-        func2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        func1.save_pickle(pickle_filename)
+        func2 = DoublePathLength.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(func1, func2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def _check_deepcopy(self, func1, func2):
         """Check if *func1* is a deepcopy of *func2*.

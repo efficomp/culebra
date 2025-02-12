@@ -23,7 +23,7 @@
 """Test the abstract base feature selection fitness functions."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 import numpy as np
@@ -236,11 +236,15 @@ class DatasetFitnessFunctionTester(unittest.TestCase):
         """Serialization test."""
         func1 = MyDatasetFitnessFunction(Dataset())
 
-        data = pickle.dumps(func1)
-        func2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        func1.save_pickle(pickle_filename)
+        func2 = MyDatasetFitnessFunction.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(func1, func2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -320,11 +324,15 @@ class ClassificationFitnessFunctionTester(unittest.TestCase):
         """Serialization test."""
         func1 = MyClassificationFitnessFunction(Dataset())
 
-        data = pickle.dumps(func1)
-        func2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        func1.save_pickle(pickle_filename)
+        func2 = MyClassificationFitnessFunction.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(func1, func2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

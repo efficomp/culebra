@@ -23,7 +23,7 @@
 """Unit test for the parameter optimization solutions."""
 
 import unittest
-import pickle
+from os import remove
 import copy
 from numbers import Integral, Real
 from itertools import repeat
@@ -209,6 +209,7 @@ class SolutionTester(unittest.TestCase):
     def test_3_serialization(self):
         """Serialization test."""
         print('Testing serialization ...', end=' ')
+        pickle_filename = "my_pickle.gz"
         # For each length until max_length ...
         for length in range(1, self.max_length + 1):
             species = Species(
@@ -219,9 +220,12 @@ class SolutionTester(unittest.TestCase):
             # Execute the generator function the given number of times
             for _ in repeat(None, self.times):
                 sol1 = Solution(species, MyFitness)
-                data = pickle.dumps(sol1)
-                sol2 = pickle.loads(data)
+                sol1.save_pickle(pickle_filename)
+                sol2 = Solution.load_pickle(pickle_filename)
                 self.assertTrue(sol1.values, sol2.values)
+
+                # Remove the pickle file
+                remove(pickle_filename)
 
         print('Ok')
 

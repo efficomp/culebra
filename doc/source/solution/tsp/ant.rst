@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.tsp.Ant.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.tsp.Ant.load_pickle
 
 Properties
 ----------
@@ -37,9 +40,9 @@ Properties
 .. autoproperty:: culebra.solution.tsp.Ant.current
 .. autoproperty:: culebra.solution.tsp.Ant.discarded
 
-
 Methods
 -------
+.. automethod:: culebra.solution.tsp.Ant.save_pickle
 .. automethod:: culebra.solution.tsp.Ant.append
 .. automethod:: culebra.solution.tsp.Ant.discard
 .. automethod:: culebra.solution.tsp.Ant.dominates

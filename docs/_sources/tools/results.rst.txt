@@ -24,24 +24,14 @@
 
 .. autoclass:: culebra.tools.Results
 
-Class attributes
-----------------
-.. autoattribute:: culebra.tools.Results.default_base_filename
-
 Class methods
 -------------
-.. automethod:: culebra.tools.Results.load
+.. automethod:: culebra.tools.Results.load_pickle
 .. automethod:: culebra.tools.Results.from_csv_files
-
-Properties
-----------
-.. autoproperty:: culebra.tools.Results.base_filename
-.. autoproperty:: culebra.tools.Results.backup_filename
-.. autoproperty:: culebra.tools.Results.excel_filename
 
 Methods
 -------
-.. automethod:: culebra.tools.Results.save
+.. automethod:: culebra.tools.Results.save_pickle
 .. automethod:: culebra.tools.Results.to_excel
 
 Dunder methods

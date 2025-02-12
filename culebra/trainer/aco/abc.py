@@ -74,7 +74,7 @@ from random import random
 from math import isclose
 from functools import partial
 from itertools import repeat
-from copy import copy
+from copy import copy, deepcopy
 
 import numpy as np
 from deap.tools import HallOfFame, ParetoFront
@@ -1001,6 +1001,51 @@ class SingleColACO(SingleSpeciesTrainer):
         self._logbook.record(**record)
         if self.verbose:
             print(self._logbook.stream)
+
+    def __copy__(self) -> SingleColACO:
+        """Shallow copy the trainer."""
+        cls = self.__class__
+        result = cls(
+            self.solution_cls,
+            self.species,
+            self.fitness_function,
+            self.initial_pheromone
+        )
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo: dict) -> SingleColACO:
+        """Deepcopy the trainer.
+
+        :param memo: Trainer attributes
+        :type memo: :py:class:`dict`
+        :return: A deep copy of the trainer
+        :rtype: :py:class:`~culebra.abc.Trainer`
+        """
+        cls = self.__class__
+        result = cls(
+            self.solution_cls,
+            self.species,
+            self.fitness_function,
+            self.initial_pheromone
+        )
+        result.__dict__.update(deepcopy(self.__dict__, memo))
+        return result
+
+    def __reduce__(self) -> tuple:
+        """Reduce the trainer.
+
+        :return: The reduction
+        :rtype: :py:class:`tuple`
+        """
+        return (self.__class__,
+                (
+                    self.solution_cls,
+                    self.species,
+                    self.fitness_function,
+                    self.initial_pheromone
+                ),
+                self.__dict__)
 
 
 class SinglePheromoneMatrixACO(SingleColACO):
@@ -2038,6 +2083,54 @@ class MaxPheromonePACO(PACO):
                     self._pheromone[pher_index][org][dest] += pher_delta
                     self._pheromone[pher_index][dest][org] += pher_delta
                     org = dest
+
+    def __copy__(self) -> MaxPheromonePACO:
+        """Shallow copy the trainer."""
+        cls = self.__class__
+        result = cls(
+            self.solution_cls,
+            self.species,
+            self.fitness_function,
+            self.initial_pheromone,
+            self.max_pheromone
+        )
+        result.__dict__.update(self.__dict__)
+        return result
+
+    def __deepcopy__(self, memo: dict) -> MaxPheromonePACO:
+        """Deepcopy the trainer.
+
+        :param memo: Trainer attributes
+        :type memo: :py:class:`dict`
+        :return: A deep copy of the trainer
+        :rtype: :py:class:`~culebra.abc.Trainer`
+        """
+        cls = self.__class__
+        result = cls(
+            self.solution_cls,
+            self.species,
+            self.fitness_function,
+            self.initial_pheromone,
+            self.max_pheromone
+        )
+        result.__dict__.update(deepcopy(self.__dict__, memo))
+        return result
+
+    def __reduce__(self) -> tuple:
+        """Reduce the trainer.
+
+        :return: The reduction
+        :rtype: :py:class:`tuple`
+        """
+        return (self.__class__,
+                (
+                    self.solution_cls,
+                    self.species,
+                    self.fitness_function,
+                    self.initial_pheromone,
+                    self.max_pheromone
+                ),
+                self.__dict__)
 
 
 class SingleObjPACO(MaxPheromonePACO, SingleObjACO):

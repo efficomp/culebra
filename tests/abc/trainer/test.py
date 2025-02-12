@@ -25,7 +25,6 @@
 import unittest
 import os
 import random
-import pickle
 from copy import copy, deepcopy
 from multiprocessing import Manager
 from functools import partial
@@ -851,7 +850,9 @@ class TrainerTester(unittest.TestCase):
         """Serialization test.
 
         Test the :py:meth:`~culebra.abc.Trainer.__setstate__` and
-        :py:meth:`~culebra.abc.Trainer.__reduce__` methods.
+        :py:meth:`~culebra.abc.Trainer.__reduce__` methods,
+        :py:meth:`~culebra.abc.Trainer.save_pickle` and
+        :py:meth:`~culebra.abc.Trainer.load_pickle` methods.
         """
         params = {
             "fitness_function": MyFitnessFunction(),
@@ -865,11 +866,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = MyTrainer(**params)
 
-        data = pickle.dumps(trainer1)
-        trainer2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        trainer1.save_pickle(pickle_filename)
+        trainer2 = MyTrainer.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+        # Remove the pickle file
+        os.remove(pickle_filename)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.

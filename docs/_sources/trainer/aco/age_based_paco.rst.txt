@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.aco.QualityBasedPACO.stats_names
 .. autoattribute:: culebra.trainer.aco.QualityBasedPACO.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_pheromone_matrices
@@ -64,6 +68,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.save_pickle
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.reset
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.evaluate
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.best_solutions

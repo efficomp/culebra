@@ -56,6 +56,9 @@ test_fitness_function = NumFeats(
     training_data=training_data, test_data=test_data
 )
 
+# Similarity threshold for the training fitness function
+training_fitness_function.set_fitness_thresholds(0.01)
+
 # Parameters for the wrapper
 params = {
     "solution_cls": IntVector,

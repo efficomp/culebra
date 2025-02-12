@@ -23,7 +23,7 @@
 """Unit test for the feature selection solutions."""
 
 import unittest
-import pickle
+from os import remove
 import copy
 from collections.abc import Sequence
 from itertools import repeat
@@ -227,6 +227,7 @@ class SolutionTester(unittest.TestCase):
         print('Testing the',
               self.solution_cls.__name__,
               'serialization ...', end=' ')
+        pickle_filename = "my_pickle.gz"
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:
             # And for each proportion ...
@@ -237,8 +238,8 @@ class SolutionTester(unittest.TestCase):
                 for _ in repeat(None, self.times):
                     sol1 = self.solution_cls(species, MyFitness)
 
-                    data = pickle.dumps(sol1)
-                    sol2 = pickle.loads(data)
+                    sol1.save_pickle(pickle_filename)
+                    sol2 = self.solution_cls.load_pickle(pickle_filename)
 
                     self.assertTrue((sol1.features == sol2.features).all())
                     self.assertTrue((sol1._features == sol2._features).all())
@@ -252,6 +253,10 @@ class SolutionTester(unittest.TestCase):
                         sol1.species.min_size, sol2.species.min_size)
                     self.assertEqual(
                         sol1.species.max_size, sol2.species.max_size)
+
+                    # Remove the pickle file
+                    remove(pickle_filename)
+
         print('Ok')
 
     def test_6_copy(self):

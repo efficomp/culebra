@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.abc.MultiPopEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.MultiPopEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.fitness_function
@@ -58,7 +62,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_checkpoint_filenames
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainers
 
-
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA._subtrainer_suffixes
@@ -70,6 +73,7 @@ Static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.save_pickle
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.reset
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.best_solutions

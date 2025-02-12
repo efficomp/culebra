@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.Solution.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.feature_selection.Solution.load_pickle
 
 Properties
 ----------
@@ -38,9 +41,9 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.Solution.min_feat
 .. autoproperty:: culebra.solution.feature_selection.Solution.max_feat
 
-
 Methods
 -------
+.. automethod:: culebra.solution.feature_selection.Solution.save_pickle
 .. automethod:: culebra.solution.feature_selection.Solution.dominates
 .. automethod:: culebra.solution.feature_selection.Solution.delete_fitness
 

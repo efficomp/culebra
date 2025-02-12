@@ -24,6 +24,11 @@
 
 .. autoclass:: culebra.tools.Dataset
 
+Class methods
+-------------
+.. automethod:: culebra.tools.Dataset.load_pickle
+.. automethod:: culebra.tools.Dataset.load_train_test
+
 Properties
 ----------
 .. autoproperty:: culebra.tools.Dataset.num_feats
@@ -31,12 +36,9 @@ Properties
 .. autoproperty:: culebra.tools.Dataset.inputs
 .. autoproperty:: culebra.tools.Dataset.outputs
 
-Class methods
--------------
-.. automethod:: culebra.tools.Dataset.load_train_test
-
 Methods
 -------
+.. automethod:: culebra.tools.Dataset.save_pickle
 .. automethod:: culebra.tools.Dataset.normalize
 .. automethod:: culebra.tools.Dataset.robust_scale
 .. automethod:: culebra.tools.Dataset.remove_outliers

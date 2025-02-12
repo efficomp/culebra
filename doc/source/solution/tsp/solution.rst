@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.tsp.Solution.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.tsp.Solution.load_pickle
 
 Properties
 ----------
@@ -35,9 +38,9 @@ Properties
 .. autoproperty:: culebra.solution.tsp.Solution.fitness
 .. autoproperty:: culebra.solution.tsp.Solution.path
 
-
 Methods
 -------
+.. automethod:: culebra.solution.tsp.Solution.save_pickle
 .. automethod:: culebra.solution.tsp.Solution.dominates
 .. automethod:: culebra.solution.tsp.Solution.delete_fitness
 

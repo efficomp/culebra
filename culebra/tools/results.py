@@ -26,7 +26,6 @@ from collections import UserDict
 from os.path import basename, splitext
 
 from pandas import DataFrame, read_csv, ExcelWriter
-from pandas.io.pickle import to_pickle, read_pickle
 
 from culebra.abc import Base
 from culebra.checker import (
@@ -48,63 +47,12 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-DEFAULT_RESULTS_BASE_FILENAME = "results"
-"""Default base file name for results backups."""
-
-BACKUP_EXTENSION = ".gz"
-"""Extension for backup files."""
-
-EXCEL_EXTENSION = ".xlsx"
-"""Extension for excel files."""
+EXCEL_FILE_EXTENSION = "xlsx"
+"""File extension for Excel datasheets."""
 
 
 class Results(UserDict, Base):
     """Manages the results produced by the evaluation of a trainer."""
-
-    default_base_filename = DEFAULT_RESULTS_BASE_FILENAME
-    """Default base file name for results backups."""
-
-    def __init__(self, base_filename: Optional[str] = None) -> None:
-        """Create an empty results manager.
-
-        :param base_filename: The base filename to save the results. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.tools.Results.default_base_filename` is used.
-            Defaults to :py:data:`None`.
-        :type base_filename: :py:class:`~str`, optional
-        :raises TypeError: If *base_filename* is not a valid file name
-        """
-        super().__init__()
-
-        # Set the defeault base name for backups
-        self.base_filename = (
-            DEFAULT_RESULTS_BASE_FILENAME
-            if base_filename is None
-            else base_filename
-        )
-
-    @classmethod
-    def load(cls, filename: Optional[str] = None) -> None:
-        """Load the results from a backup file.
-
-        :param filename: File path (must have the ".gz" extension). If set to
-            :py:data:`None`, the default
-            :py:attr:`~culebra.tools.Results.default_base_filename` is used.
-            Defaults to :py:data:`None`
-        :type filename: :py:class:`str`, optional
-        :raises TypeError: If *filename* is not a valid file name
-        :raises ValueError: If *filename* has an invalid extension
-        """
-        filename = check_filename(
-            (
-                Results.default_base_filename + BACKUP_EXTENSION
-                if filename is None
-                else filename
-            ),
-            name="results backup file name",
-            ext=BACKUP_EXTENSION
-        )
-        return read_pickle(filename)
 
     @classmethod
     def from_csv_files(
@@ -156,85 +104,19 @@ class Results(UserDict, Base):
         # Return the results
         return results
 
-    @property
-    def base_filename(self) -> str:
-        """Get and set the base filename used to save the results.
-
-        :getter: Return the current base_filename
-        :setter: Set a new base_filename
-        :type: :py:class:`str`
-        :raises TypeError: If the new name is not a valid file name
-        """
-        return self._base_filename
-
-    @base_filename.setter
-    def base_filename(self, filename: str) -> None:
-        """Set a new base filename used to save the results.
-
-        :param filename: The new base filename
-        :type filename: :py:class:`~str`
-        :raises TypeError: If *filename* is not a valid file name
-        """
-        self._base_filename = check_filename(
-            filename,
-            name="base filename to save the results"
-        )
-
-    @property
-    def backup_filename(self) -> str:
-        """Get tha backup filename used to save the results.
-
-        :type: :py:class:`str`
-        """
-        return self.base_filename + BACKUP_EXTENSION
-
-    @property
-    def excel_filename(self) -> str:
-        """Get tha filename used to save the results in Excel format.
-
-        :type: :py:class:`str`
-        """
-        return self.base_filename + EXCEL_EXTENSION
-
-    def save(self, filename: Optional[str] = None) -> None:
-        """Save these results.
-
-        :param filename: File path (must have the ".gz" extension). If setto
-            :py:data:`None`, :py:attr:`~culebra.tools.Results.backup_filename`
-            is used. Defaults to :py:data:`None`
-        :type filename: :py:class:`str`, optional.
-        :raises TypeError: If *filename* is not a valid file name
-        :raises ValueError: If *filename* has an invalid extension
-        """
-        filename = check_filename(
-            (
-                self.backup_filename
-                if filename is None
-                else filename
-            ),
-            name="results backup file name",
-            ext=BACKUP_EXTENSION
-        )
-        to_pickle(self, filename)
-
-    def to_excel(self, filename: Optional[str] = None) -> None:
+    def to_excel(self, filename: str) -> None:
         """Save the results to a Excel file.
 
-        :param filename: File path (must have the ".xlsx" extension). If set to
-            :py:data:`None`, :py:attr:`~culebra.tools.Results.excel_filename`
-            is used. Defaults to :py:data:`None`
-        :type filename: :py:class:`str`, optional.
+        :param filename: File path
+        :type filename: :py:class:`str`
         :raises TypeError: If *filename* is not a valid file name
-        :raises ValueError: If *filename* has an invalid extension
+        :raises ValueError: If the *filename* extension is not
+            :py:attr:`~culebra.tools.EXCEL_FILE_EXTENSION`
         """
         filename = check_filename(
-            (
-                self.excel_filename
-                if filename is None
-                else filename
-            ),
+            filename,
             name="results excel datasheet file name",
-            ext=EXCEL_EXTENSION
+            ext=EXCEL_FILE_EXTENSION
         )
 
         with ExcelWriter(filename) as writer: \
@@ -263,5 +145,6 @@ class Results(UserDict, Base):
 
 # Exported symbols for this module
 __all__ = [
-    'Results'
+    'Results',
+    'EXCEL_FILE_EXTENSION'
 ]

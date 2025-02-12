@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.abc.HomogeneousEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.HomogeneousEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.abc.HomogeneousEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.solution_cls
@@ -59,6 +63,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.abc.HomogeneousEA.save_pickle
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA.reset
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.HomogeneousEA.best_solutions

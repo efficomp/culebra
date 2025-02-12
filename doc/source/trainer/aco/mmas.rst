@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.aco.MMAS.stats_names
 .. autoattribute:: culebra.trainer.aco.MMAS.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.aco.MMAS.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.MMAS.num_pheromone_matrices
@@ -65,12 +69,11 @@ Properties
 
 Private properties
 ------------------
-
 .. autoproperty:: culebra.trainer.aco.MMAS._global_best_freq
 
 Methods
 -------
-
+.. automethod:: culebra.trainer.aco.MMAS.save_pickle
 .. automethod:: culebra.trainer.aco.MMAS.reset
 .. automethod:: culebra.trainer.aco.MMAS.evaluate
 .. automethod:: culebra.trainer.aco.MMAS.best_solutions
@@ -80,7 +83,6 @@ Methods
 
 Private methods
 ---------------
-
 .. automethod:: culebra.trainer.aco.MMAS._get_state
 .. automethod:: culebra.trainer.aco.MMAS._set_state
 .. automethod:: culebra.trainer.aco.MMAS._save_state

@@ -23,7 +23,7 @@
 """Unit test for the parameter optimization species."""
 
 import unittest
-import pickle
+from os import remove
 from numbers import Real, Integral
 from copy import copy, deepcopy
 
@@ -330,15 +330,19 @@ class SpeciesTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the __setstate__ and __reduce__ methods.
+        Test the __setstate__, __reduce__, save_pickle and load_pickle methods.
         """
         species1 = Species([1], [2])
 
-        data = pickle.dumps(species1)
-        species2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        species1.save_pickle(pickle_filename)
+        species2 = Species.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(species1, species2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

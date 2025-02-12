@@ -23,7 +23,6 @@
 """Unit test for :py:class:`culebra.tools.Evaluation`."""
 
 import unittest
-import pickle
 from os import remove
 from os.path import exists
 from copy import copy, deepcopy
@@ -46,7 +45,8 @@ from culebra.tools import (
     Dataset,
     Evaluation,
     Results,
-    DEFAULT_SCRIPT_FILENAME
+    DEFAULT_RUN_SCRIPT_FILENAME,
+    DEFAULT_RESULTS_BASENAME
 )
 
 # Dataset
@@ -135,7 +135,9 @@ class EvaluationTester(unittest.TestCase):
 
         self.assertEqual(evaluation.trainer, trainer)
         self.assertEqual(evaluation.test_fitness_function, None)
-        self.assertEqual(evaluation.results_base_filename, None)
+        self.assertEqual(
+            evaluation.results_base_filename, DEFAULT_RESULTS_BASENAME
+        )
         self.assertEqual(evaluation.hyperparameters, None)
         self.assertEqual(evaluation.results, None)
 
@@ -143,7 +145,7 @@ class EvaluationTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             MyEvaluation(trainer, test_fitness_function="a")
 
-        # Try an invalid base filename
+        # Try an invalid results base filename
         with self.assertRaises(TypeError):
             MyEvaluation(trainer, results_base_filename=1)
 
@@ -178,8 +180,16 @@ class EvaluationTester(unittest.TestCase):
 
     def test_from_config(self):
         """Test the from_config factory method."""
+        # Try invalid configuration filenames. Should fail...
+        with self.assertRaises(TypeError):
+            MyEvaluation.from_config(2)
+        with self.assertRaises(ValueError):
+            MyEvaluation.from_config("bad_config.txt")
+        with self.assertRaises(RuntimeError):
+            MyEvaluation.from_config("bad_config.py")
+
         # Generate the evaluation
-        evaluation = MyEvaluation.from_config("config.py")
+        evaluation = MyEvaluation.from_config()
 
         # Check the trainer
         self.assertIsInstance(evaluation.trainer, Trainer)
@@ -210,7 +220,7 @@ class EvaluationTester(unittest.TestCase):
         evaluation = MyEvaluation(trainer, test_fitness_function)
 
         # Init the results manager
-        evaluation._results = Results(evaluation.results_base_filename)
+        evaluation._results = Results()
 
         # Execute the trainer
         evaluation._execute()
@@ -220,26 +230,28 @@ class EvaluationTester(unittest.TestCase):
         for key in evaluation.results:
             self.assertIsInstance(evaluation.results[key], DataFrame)
 
-    def test_generate_script(self):
+    def test_generate_run_script(self):
         """Test the generate_script method."""
         # Generate the script with a default name
-        MyEvaluation.generate_script()
+        MyEvaluation.generate_run_script()
 
         # Check that file exists
-        self.assertTrue(exists(DEFAULT_SCRIPT_FILENAME))
+        self.assertTrue(exists(DEFAULT_RUN_SCRIPT_FILENAME))
 
         # Remove the file
-        remove(DEFAULT_SCRIPT_FILENAME)
+        remove(DEFAULT_RUN_SCRIPT_FILENAME)
 
         # Try a custom name
-        script_filename = "my_script.py"
-        MyEvaluation.generate_script(script_filename=script_filename)
+        my_run_script_filename = "my_script.py"
+        MyEvaluation.generate_run_script(
+            run_script_filename=my_run_script_filename
+        )
 
         # Check that file exists
-        self.assertTrue(exists(script_filename))
+        self.assertTrue(exists(my_run_script_filename))
 
         # Remove the file
-        remove(script_filename)
+        remove(my_run_script_filename)
 
     def test_run(self):
         """Test the run method."""
@@ -255,12 +267,12 @@ class EvaluationTester(unittest.TestCase):
         self.assertIsInstance(evaluation.results, Results)
 
         # Check that backup and results files exist
-        self.assertTrue(exists(evaluation.results.backup_filename))
-        self.assertTrue(exists(evaluation.results.excel_filename))
+        self.assertTrue(evaluation.results_pickle_filename)
+        self.assertTrue(evaluation.results_excel_filename)
 
         # Remove the files
-        remove(evaluation.results.backup_filename)
-        remove(evaluation.results.excel_filename)
+        remove(evaluation.results_pickle_filename)
+        remove(evaluation.results_excel_filename)
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Evaluation.__copy__` method."""
@@ -272,12 +284,12 @@ class EvaluationTester(unittest.TestCase):
         # Copy only copies the first level (evaluation1 != evaluation2)
         self.assertNotEqual(id(evaluation1), id(evaluation2))
 
-        # The species attributes are shared
+        # The results are shared
         self.assertEqual(id(evaluation1._results), id(evaluation2._results))
 
         # Remove the files
-        remove(evaluation1.results.backup_filename)
-        remove(evaluation1.results.excel_filename)
+        remove(evaluation1.results_pickle_filename)
+        remove(evaluation1.results_excel_filename)
 
     def test_deepcopy(self):
         """Test :py:meth:`~culebra.tools.Evaluation.__deepcopy__`."""
@@ -289,8 +301,8 @@ class EvaluationTester(unittest.TestCase):
         self._check_deepcopy(evaluation1, evaluation2)
 
         # Remove the files
-        remove(evaluation1.results.backup_filename)
-        remove(evaluation1.results.excel_filename)
+        remove(evaluation1.results_pickle_filename)
+        remove(evaluation1.results_excel_filename)
 
     def test_serialization(self):
         """Serialization test.
@@ -301,15 +313,19 @@ class EvaluationTester(unittest.TestCase):
         evaluation1 = MyEvaluation(trainer, test_fitness_function)
         evaluation1.run()
 
-        data = pickle.dumps(evaluation1)
-        evaluation2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        evaluation1.save_pickle(pickle_filename)
+        evaluation2 = MyEvaluation.load_pickle(pickle_filename)
 
         # Check the copy
         self._check_deepcopy(evaluation1, evaluation2)
 
-        # Remove the files
-        remove(evaluation1.results.backup_filename)
-        remove(evaluation1.results.excel_filename)
+        # Remove the result files
+        remove(evaluation1.results_pickle_filename)
+        remove(evaluation1.results_excel_filename)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def _check_deepcopy(self, evaluation1, evaluation2):
         """Check if *evaluation1* is a deepcopy of *evaluation2*.

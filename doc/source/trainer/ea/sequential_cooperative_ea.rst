@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.SequentialCooperativeEA.stats_names
 .. autoattribute:: culebra.trainer.ea.SequentialCooperativeEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.SequentialCooperativeEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.SequentialCooperativeEA.solution_classes
@@ -68,7 +72,6 @@ Properties
 .. autoproperty:: culebra.trainer.ea.SequentialCooperativeEA.subtrainer_checkpoint_filenames
 .. autoproperty:: culebra.trainer.ea.SequentialCooperativeEA.subtrainers
 
-
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.ea.SequentialCooperativeEA._subtrainer_suffixes
@@ -84,6 +87,7 @@ Private static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.SequentialCooperativeEA.save_pickle
 .. automethod:: culebra.trainer.ea.SequentialCooperativeEA.reset
 .. automethod:: culebra.trainer.ea.SequentialCooperativeEA.evaluate
 .. automethod:: culebra.trainer.ea.SequentialCooperativeEA.best_solutions

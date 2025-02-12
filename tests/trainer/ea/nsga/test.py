@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.trainer.ea.NSGA`."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 from deap.tools import selNSGA3
@@ -329,11 +329,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = NSGA(**params)
 
-        data = pickle.dumps(trainer1)
-        trainer2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        trainer1.save_pickle(pickle_filename)
+        trainer2 = NSGA.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.

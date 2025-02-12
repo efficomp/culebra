@@ -47,8 +47,10 @@ This module is composed by:
 
   * ACO-based wrappers for Feature Selection problems:
 
-    * The :py:class:`~culebra.trainer.aco.ACOFS` class. A new ACO-based wrapper
-      for Feature Selection problems
+    * The :py:class:`~culebra.trainer.aco.PACO_FS` class. A new
+      population-based wrapper ACO approach for Feature Selection problems
+    * The :py:class:`~culebra.trainer.aco.ElitistACO_FS` class. A new
+      elitist ACO-based wrapper for Feature Selection problems
 """
 
 from .constants import (

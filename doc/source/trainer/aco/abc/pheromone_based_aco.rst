@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.aco.abc.PheromoneBasedACO.stats_names
 .. autoattribute:: culebra.trainer.aco.abc.PheromoneBasedACO.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.num_pheromone_matrices
@@ -61,6 +65,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.save_pickle
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.reset
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.evaluate
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.best_solutions

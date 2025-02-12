@@ -38,6 +38,7 @@ Class attributes
 
 Class methods
 -------------
+.. automethod:: culebra.fitness_function.svc_optimization.C.load_pickle
 .. automethod:: culebra.fitness_function.svc_optimization.C.set_fitness_thresholds
 .. automethod:: culebra.fitness_function.svc_optimization.C.get_fitness_objective_threshold
 .. automethod:: culebra.fitness_function.svc_optimization.C.set_fitness_objective_threshold
@@ -53,5 +54,6 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.svc_optimization.C.save_pickle
 .. automethod:: culebra.fitness_function.svc_optimization.C.heuristic
 .. automethod:: culebra.fitness_function.svc_optimization.C.evaluate

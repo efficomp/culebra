@@ -29,22 +29,27 @@ Class attributes
 .. autoattribute:: culebra.tools.Batch.feature_metric_functions
 .. autoattribute:: culebra.tools.Batch.stats_functions
 
+Class methods
+-------------
+.. automethod:: culebra.tools.Batch.load_pickle
+.. automethod:: culebra.tools.Batch.from_config
+.. automethod:: culebra.tools.Batch.generate_run_script
+
 Properties
 ----------
 .. autoproperty:: culebra.tools.Batch.trainer
 .. autoproperty:: culebra.tools.Batch.test_fitness_function
 .. autoproperty:: culebra.tools.Batch.results_base_filename
+.. autoproperty:: culebra.tools.Batch.results_pickle_filename
+.. autoproperty:: culebra.tools.Batch.results_excel_filename
+.. autoproperty:: culebra.tools.Batch.hyperparameters
 .. autoproperty:: culebra.tools.Batch.results
 .. autoproperty:: culebra.tools.Batch.num_experiments
 .. autoproperty:: culebra.tools.Batch.exp_labels
 
-Class methods
--------------
-.. automethod:: culebra.tools.Batch.from_config
-.. automethod:: culebra.tools.Batch.generate_script
-
 Methods
 -------
+.. automethod:: culebra.tools.Batch.save_pickle
 .. automethod:: culebra.tools.Batch.reset
 .. automethod:: culebra.tools.Batch.run
 
@@ -55,3 +60,4 @@ Private methods
 .. automethod:: culebra.tools.Batch._add_feature_metrics_stats
 .. automethod:: culebra.tools.Batch._add_fitness_stats
 .. automethod:: culebra.tools.Batch._execute
+.. automethod:: culebra.tools.Batch._is_reserved

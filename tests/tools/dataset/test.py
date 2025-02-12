@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.tools.Dataset`."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 import numpy as np
@@ -477,11 +477,15 @@ class DatasetTester(unittest.TestCase):
         """
         dataset1 = Dataset("numeric_1.dat", output_index=0)
 
-        data = pickle.dumps(dataset1)
-        dataset2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        dataset1.save_pickle(pickle_filename)
+        dataset2 = Dataset.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(dataset1, dataset2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def _check_deepcopy(self, dataset1, dataset2):
         """Check if *dataset1* is a deepcopy of *dataset2*.

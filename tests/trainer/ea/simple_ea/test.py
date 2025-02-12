@@ -23,8 +23,8 @@
 """Unit test for :py:class:`culebra.trainer.ea.SimpleEA`."""
 
 import unittest
-import pickle
 from copy import copy, deepcopy
+from os import remove
 
 from deap.base import Toolbox
 
@@ -196,11 +196,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = SimpleEA(**params)
 
-        data = pickle.dumps(trainer1)
-        trainer2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        trainer1.save_pickle(pickle_filename)
+        trainer2 = SimpleEA.load_pickle(pickle_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -222,7 +226,7 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~tculebra.trainer.ea.SimpleEA`
+        :type trainer1: :py:class:`~culebra.trainer.ea.SimpleEA`
         :param trainer2: The second trainer
         :type trainer2: :py:class:`~culebra.trainer.ea.SimpleEA`
         """

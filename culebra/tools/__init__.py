@@ -44,7 +44,7 @@ many times, culebra provides this features by means of the following classes:
 """
 
 from .dataset import Dataset, DEFAULT_SEP
-from .results import Results
+from .results import Results, EXCEL_FILE_EXTENSION
 from .results_analyzer import (
     TestOutcome,
     ResultsComparison,
@@ -62,8 +62,9 @@ from .evaluation import (
     DEFAULT_FEATURE_METRIC_FUNCTIONS,
     DEFAULT_BATCH_STATS_FUNCTIONS,
     DEFAULT_NUM_EXPERIMENTS,
-    DEFAULT_SCRIPT_FILENAME,
-    DEFAULT_CONFIG_FILENAME
+    DEFAULT_RUN_SCRIPT_FILENAME,
+    DEFAULT_CONFIG_SCRIPT_FILENAME,
+    DEFAULT_RESULTS_BASENAME
 )
 
 
@@ -86,6 +87,7 @@ __all__ = [
     'Experiment',
     'Batch',
     'DEFAULT_SEP',
+    'EXCEL_FILE_EXTENSION',
     'DEFAULT_ALPHA',
     'DEFAULT_NORMALITY_TEST',
     'DEFAULT_HOMOSCEDASTICITY_TEST',
@@ -94,6 +96,7 @@ __all__ = [
     'DEFAULT_FEATURE_METRIC_FUNCTIONS',
     'DEFAULT_BATCH_STATS_FUNCTIONS',
     'DEFAULT_NUM_EXPERIMENTS',
-    'DEFAULT_SCRIPT_FILENAME',
-    'DEFAULT_CONFIG_FILENAME'
+    'DEFAULT_RUN_SCRIPT_FILENAME',
+    'DEFAULT_CONFIG_SCRIPT_FILENAME',
+    'DEFAULT_RESULTS_BASENAME'
 ]

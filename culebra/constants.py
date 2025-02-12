@@ -32,13 +32,21 @@ __status__ = 'Development'
 DEFAULT_MAX_NUM_ITERS = 100
 """Default maximum number of iterations."""
 
+PICKLE_FILE_EXTENSION = "gz"
+"""Extension for files containing pickled objects."""
+
 DEFAULT_CHECKPOINT_ENABLE = True
 """Default checkpointing enablement for a :py:class:`~culebra.abc.Trainer`."""
 
 DEFAULT_CHECKPOINT_FREQ = 10
 """Default checkpointing frequency for a :py:class:`~culebra.abc.Trainer`."""
 
-DEFAULT_CHECKPOINT_FILENAME = "checkpoint.gz"
+DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
+"""Default basename for checkpointing files."""
+
+DEFAULT_CHECKPOINT_FILENAME = (
+    DEFAULT_CHECKPOINT_BASENAME + "." + PICKLE_FILE_EXTENSION
+)
 """Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`."""
 
 DEFAULT_VERBOSITY = __debug__
@@ -52,8 +60,10 @@ distributed approaches.
 
 __all__ = [
     'DEFAULT_MAX_NUM_ITERS',
+    'PICKLE_FILE_EXTENSION',
     'DEFAULT_CHECKPOINT_ENABLE',
     'DEFAULT_CHECKPOINT_FREQ',
+    'DEFAULT_CHECKPOINT_BASENAME',
     'DEFAULT_CHECKPOINT_FILENAME',
     'DEFAULT_VERBOSITY',
     'DEFAULT_INDEX'

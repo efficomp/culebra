@@ -24,6 +24,7 @@
 
 import unittest
 from os import remove
+from os.path import isfile
 
 from pandas import DataFrame
 
@@ -138,10 +139,6 @@ class ExperimentTester(unittest.TestCase):
         self.assertNotEqual(experiment.best_solutions, None)
         self.assertNotEqual(experiment.best_representatives, None)
         self.assertIsInstance(experiment.results, Results)
-        self.assertEqual(
-            experiment.results.base_filename,
-            Results.default_base_filename
-        )
 
         for key in Experiment._ResultKeys.keys():
             self.assertTrue(key in experiment.results.keys())
@@ -149,9 +146,13 @@ class ExperimentTester(unittest.TestCase):
         for key in experiment.results:
             self.assertIsInstance(experiment.results[key], DataFrame)
 
+        # Check the result files
+        isfile(experiment.results_pickle_filename)
+        isfile(experiment.results_excel_filename)
+
         # Remove the files
-        remove(experiment.results.backup_filename)
-        remove(experiment.results.excel_filename)
+        remove(experiment.results_pickle_filename)
+        remove(experiment.results_excel_filename)
 
         # Try a different results base filename
         filename = "the_results"
@@ -162,11 +163,13 @@ class ExperimentTester(unittest.TestCase):
         # Execute the trainer
         experiment.run()
 
-        self.assertEqual(experiment.results.base_filename, filename)
+        # Check the result files
+        isfile(experiment.results_pickle_filename)
+        isfile(experiment.results_excel_filename)
 
         # Remove the files
-        remove(experiment.results.backup_filename)
-        remove(experiment.results.excel_filename)
+        remove(experiment.results_pickle_filename)
+        remove(experiment.results_excel_filename)
 
 
 if __name__ == '__main__':

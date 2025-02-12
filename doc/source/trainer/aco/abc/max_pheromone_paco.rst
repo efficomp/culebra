@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.aco.abc.MaxPheromonePACO.stats_names
 .. autoattribute:: culebra.trainer.aco.abc.MaxPheromonePACO.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_pheromone_matrices
@@ -64,6 +68,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.save_pickle
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.reset
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.evaluate
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.best_solutions

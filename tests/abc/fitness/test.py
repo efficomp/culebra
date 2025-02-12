@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.abc.Fitness`."""
 
 import unittest
-import pickle
+from os import remove
 from copy import copy, deepcopy
 
 from culebra.abc import Fitness
@@ -379,15 +379,21 @@ class FitnessTester(unittest.TestCase):
         """Serialization test.
 
         Test the :py:meth:`~culebra.abc.Fitness.__setstate__` and
-        :py:meth:`~culebra.abc.Fitness.__reduce__` methods.
+        :py:meth:`~culebra.abc.Fitness.__reduce__` methods,
+        :py:meth:`~culebra.abc.Fitness.save_pickle` and
+        :py:meth:`~culebra.abc.Fitness.load_pickle` methods.
         """
         fitness1 = MyFitness((1, 2))
 
-        data = pickle.dumps(fitness1)
-        fitness2 = pickle.loads(data)
+        pickle_filename = "my_pickle.gz"
+        fitness1.save_pickle(pickle_filename)
+        fitness2 = MyFitness.load_pickle(pickle_filename)
 
-        # Check the copy
+        # Check the serialization
         self._check_deepcopy(fitness1, fitness2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

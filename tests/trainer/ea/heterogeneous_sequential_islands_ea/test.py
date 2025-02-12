@@ -209,6 +209,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.fitness_function, fitness_function)
         self.assertEqual(trainer.subtrainer_cls, subtrainer_cls)
 
+        # Check the defaults that not depend on subtrainers
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(trainer.num_subtrainers, DEFAULT_NUM_SUBTRAINERS)
         self.assertEqual(

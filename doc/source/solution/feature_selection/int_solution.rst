@@ -28,6 +28,9 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.IntSolution.species_cls
 
+Class methods
+-------------
+.. automethod:: culebra.solution.feature_selection.IntSolution.load_pickle
 
 Properties
 ----------
@@ -38,7 +41,6 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.IntSolution.min_feat
 .. autoproperty:: culebra.solution.feature_selection.IntSolution.max_feat
 
-
 Methods
 -------
 .. automethod:: culebra.solution.feature_selection.IntSolution.dominates
@@ -46,6 +48,7 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.solution.feature_selection.IntSolution.save_pickle
 .. automethod:: culebra.solution.feature_selection.IntSolution._setup
 
 Dunder methods

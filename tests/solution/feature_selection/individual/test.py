@@ -25,8 +25,10 @@
 import unittest
 from collections.abc import Sequence
 from itertools import repeat
+from os import remove
 from time import perf_counter, sleep
 
+import numpy as np
 from pandas import DataFrame
 
 from culebra.abc import Species as BaseSpecies, Fitness
@@ -230,7 +232,26 @@ class IndividualTester(unittest.TestCase):
         self.assertIsInstance(str(individual), str)
         print('Ok')
 
-    def test_4_runtime(self):
+    def test_4_serialization(self):
+        """Serialization of individuals."""
+        print('Testing the',
+              self.individual_cls.__name__,
+              'save_pickle and load_pickle methods ...', end=' ')
+        num_feats = 10
+        species = Species(num_feats)
+        ind1 = self.individual_cls(species, MyFitness)
+        pickle_filename = "my_pickle.gz"
+        ind1.save_pickle(pickle_filename)
+        ind2 = self.individual_cls.load_pickle(pickle_filename)
+
+        # Check the serialization
+        self._check_deepcopy(ind1, ind2)
+
+        # Remove the pickle file
+        remove(pickle_filename)
+        print('Ok')
+
+    def test_5_runtime(self):
         """Runtime of the constructor and breeding operators."""
         dataframe = DataFrame()
         dataframe['constructor'] = self.__constructor_scalability()
@@ -240,6 +261,23 @@ class IndividualTester(unittest.TestCase):
         dataframe.index.name = 'num_feats'
 
         print(dataframe)
+
+    def _check_deepcopy(self, ind1, ind2):
+        """Check if *ind1* is a deepcopy of *ind2*.
+
+        :param ind1: The first individual
+        :type ind1: Any subclass of
+            :py:class:`~culebra.solution.feature_selection.Solution` and
+            :py:class:`~culebra.solution.abc.Individual`
+        :param ind2: The second individual
+        :type ind2: Any subclass of
+            :py:class:`~culebra.solution.feature_selection.Solution` and
+            :py:class:`~culebra.solution.abc.Individual`
+        """
+        # Copies all the levels
+        self.assertNotEqual(id(ind1), id(ind2))
+        self.assertNotEqual(id(ind1._features), id(ind2._features))
+        self.assertTrue(np.all(ind1.features == ind2.features))
 
     @staticmethod
     def __check_individual_cls(individual_cls):

@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.abc.ParallelDistributedTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.ParallelDistributedTrainer.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.fitness_function
@@ -70,6 +74,7 @@ Static methods
 
 Methods
 -------
+.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.save_pickle
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.reset
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.evaluate
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.best_solutions

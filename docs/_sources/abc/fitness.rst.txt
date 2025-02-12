@@ -32,6 +32,7 @@ Class attributes
 
 Class methods
 -------------
+.. automethod:: culebra.abc.Fitness.load_pickle
 .. automethod:: culebra.abc.Fitness.get_objective_threshold
 .. automethod:: culebra.abc.Fitness.set_objective_threshold
 
@@ -42,6 +43,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.abc.Fitness.save_pickle
 .. automethod:: culebra.abc.Fitness.dominates
 
 Dunder methods

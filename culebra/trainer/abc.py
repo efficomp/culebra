@@ -57,14 +57,16 @@ from typing import (
     List,
     Dict,
     Generator,
-    Sequence)
+    Sequence
+)
 from copy import deepcopy
 from functools import partial
 from multiprocessing import (
     cpu_count,
     Queue,
     Process,
-    Manager)
+    Manager
+)
 from os import path
 
 from deap.tools import Logbook, HallOfFame, ParetoFront
@@ -922,7 +924,7 @@ class SequentialDistributedTrainer(DistributedTrainer):
         # Generate the state of all the subtrainers
         for subtrainer in self.subtrainers:
             subtrainer._new_state()
-            self._num_evals  += subtrainer._num_evals
+            self._num_evals += subtrainer._num_evals
 
     def _load_state(self) -> None:
         """Load the state of the last checkpoint.

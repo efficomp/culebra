@@ -23,3 +23,11 @@
 ==================================
 
 .. autoclass:: culebra.abc.Base
+
+Class methods
+-------------
+.. automethod:: culebra.abc.Base.load_pickle
+
+Methods
+-------
+.. automethod:: culebra.abc.Base.save_pickle

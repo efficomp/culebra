@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.abc.Trainer.stats_names
 .. autoattribute:: culebra.abc.Trainer.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.abc.Trainer.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.abc.Trainer.fitness_function
@@ -50,6 +54,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.abc.Trainer.save_pickle
 .. automethod:: culebra.abc.Trainer.reset
 .. automethod:: culebra.abc.Trainer.evaluate
 .. automethod:: culebra.abc.Trainer.best_solutions

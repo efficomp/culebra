@@ -23,7 +23,6 @@
 """Unit test for :py:class:`culebra.tools.Results`."""
 
 import unittest
-import pickle
 from collections import UserDict
 from os import remove
 from os.path import exists
@@ -45,31 +44,6 @@ class ResultsTester(unittest.TestCase):
 
         # Check that the results manager subclass of UserDict
         self.assertIsInstance(results, UserDict)
-
-        # Check the results base filename
-        self.assertEqual(results.base_filename, Results.default_base_filename)
-
-        # Try an invalid base filename. Should fail
-        with self.assertRaises(TypeError):
-            Results(base_filename=1)
-
-        # Try a valid filename
-        filename = "name"
-        results = Results(base_filename=filename)
-        self.assertEqual(results.base_filename, filename)
-
-    def test_base_filename(self):
-        """Test the base_filename property."""
-        results = Results()
-
-        # Try an invalid basename. Should fail
-        with self.assertRaises(TypeError):
-            results.base_filename = 1
-
-        # Try a valid filename
-        filename = "name"
-        results.base_filename = filename
-        self.assertEqual(results.base_filename, filename)
 
     def test_setitem(self):
         """Test the :py:meth:`~culebra.tools.Results.__setitem__` method."""
@@ -139,39 +113,39 @@ class ResultsTester(unittest.TestCase):
             self.assertEqual(key1, key2)
             self.assertIsInstance(results[key1], DataFrame)
 
-    def test_load_save(self):
-        """Test the save and load methods."""
+    def test_serialization(self):
+        """Test the pickle and load_pickle methods."""
         data_filenames = ("test_fitness.csv", "execution_metrics.csv")
         data_keys = ("test_fitness", "execution_metrics")
-        bad_backup_filename_type = 1
-        bad_backup_filename_values = ["file", "file.tar"]
-        good_backup_filename = "myresults.gz"
+        bad_pickle_filename_type = 1
+        bad_pickle_filename_values = ["file", "file.tar"]
+        good_pickle_filename = "myresults.gz"
 
         results = Results.from_csv_files(data_filenames, data_keys)
 
         # Try saving with a wrong filename type
         with self.assertRaises(TypeError):
-            results.save(bad_backup_filename_type)
+            results.save_pickle(bad_pickle_filename_type)
 
         # Try saving with wrong filename values
-        for filename in bad_backup_filename_values:
+        for filename in bad_pickle_filename_values:
             with self.assertRaises(ValueError):
-                results.save(filename)
+                results.save_pickle(filename)
 
         # Try saving with a custom filename
-        results.save(good_backup_filename)
+        results.save_pickle(good_pickle_filename)
 
         # Try loading with a wrong filename type
         with self.assertRaises(TypeError):
-            Results.load(bad_backup_filename_type)
+            Results.load_pickle(bad_pickle_filename_type)
 
         # Try loading with wrong filename values
-        for filename in bad_backup_filename_values:
+        for filename in bad_pickle_filename_values:
             with self.assertRaises(ValueError):
-                results.save(filename)
+                results.save_pickle(filename)
 
         # Try loading with a custom filename
-        results2 = Results.load(good_backup_filename)
+        results2 = Results.load_pickle(good_pickle_filename)
 
         # Check keys and data
         for key in data_keys:
@@ -179,21 +153,7 @@ class ResultsTester(unittest.TestCase):
             self.assertTrue(results2[key].equals(results[key]))
 
         # Remove the file
-        remove(good_backup_filename)
-
-        # Try saving with the default filename
-        results.save()
-
-        # Try loading with the default filename
-        results3 = Results.load()
-
-        # Check keys and data
-        for key in data_keys:
-            self.assertTrue(key in results3)
-            self.assertTrue(results3[key].equals(results[key]))
-
-        # Remove the file
-        remove(results.backup_filename)
+        remove(good_pickle_filename)
 
     def test_to_excel(self):
         """Test the to_excel method."""
@@ -221,13 +181,6 @@ class ResultsTester(unittest.TestCase):
         # Remove the file
         remove(good_excel_filename)
 
-        # Try saving with to the default file
-        results.to_excel()
-        self.assertTrue(exists(results.excel_filename))
-
-        # Remove the file
-        remove(results.excel_filename)
-
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Results.__copy__` method."""
         data_filenames = ("test_fitness.csv", "execution_metrics.csv")
@@ -250,23 +203,6 @@ class ResultsTester(unittest.TestCase):
 
         results1 = Results.from_csv_files(data_filenames, data_keys)
         results2 = deepcopy(results1)
-
-        # Check the copy
-        self._check_deepcopy(results1, results2)
-
-    def test_serialization(self):
-        """Serialization test.
-
-        Test the :py:meth:`~culebra.tools.Results.__setstate__` and
-        :py:meth:`~culebra.tools.Results.__reduce__` methods.
-        """
-        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
-        data_keys = ("test_fitness", "execution_metrics")
-
-        results1 = Results.from_csv_files(data_filenames, data_keys)
-
-        data = pickle.dumps(results1)
-        results2 = pickle.loads(data)
 
         # Check the copy
         self._check_deepcopy(results1, results2)

@@ -42,11 +42,11 @@ from culebra.trainer.ea import (
     DEFAULT_POP_SIZE,
     NSGA,
     HomogeneousParallelIslandsEA as Trainer,
-    DEFAULT_SELECTION_FUNC,
     DEFAULT_CROSSOVER_PROB,
     DEFAULT_MUTATION_PROB,
     DEFAULT_GENE_IND_MUTATION_PROB,
-    DEFAULT_SELECTION_FUNC_PARAMS
+    DEFAULT_NSGA_SELECTION_FUNC,
+    DEFAULT_NSGA_SELECTION_FUNC_PARAMS
 )
 from culebra.solution.feature_selection import (
     Species,
@@ -188,28 +188,14 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.fitness_function, fitness_function)
         self.assertEqual(trainer.subtrainer_cls, subtrainer_cls)
 
+        # Check the defaults that not depend on subtrainers
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
-        self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
-        self.assertEqual(
-            trainer.crossover_func, trainer.solution_cls.crossover
-        )
-        self.assertEqual(trainer.mutation_func, trainer.solution_cls.mutate)
-        self.assertEqual(trainer.selection_func, DEFAULT_SELECTION_FUNC)
-        self.assertEqual(trainer.crossover_prob, DEFAULT_CROSSOVER_PROB)
-        self.assertEqual(trainer.mutation_prob, DEFAULT_MUTATION_PROB)
-        self.assertEqual(
-            trainer.gene_ind_mutation_prob, DEFAULT_GENE_IND_MUTATION_PROB
-        )
-        self.assertEqual(
-            trainer.selection_func_params, DEFAULT_SELECTION_FUNC_PARAMS
-        )
         self.assertEqual(trainer.num_subtrainers, cpu_count())
         self.assertEqual(
             trainer.representation_size, DEFAULT_REPRESENTATION_SIZE
         )
-        self.assertEqual(
-            trainer.representation_freq, DEFAULT_REPRESENTATION_FREQ
-        )
+        self.assertEqual(trainer.representation_freq,
+                         DEFAULT_REPRESENTATION_FREQ)
         self.assertEqual(
             trainer.representation_topology_func,
             DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
@@ -236,6 +222,36 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.verbose, __debug__)
         self.assertEqual(trainer.random_seed, None)
         self.assertEqual(trainer.subtrainer_params, {})
+
+        # The default values are only returned once the subtrainers have
+        # been generated. Thus they should be None by the moment
+        self.assertEqual(trainer.pop_size, None)
+        self.assertEqual(trainer.crossover_func, None)
+        self.assertEqual(trainer.mutation_func, None)
+        self.assertEqual(trainer.selection_func, None)
+        self.assertEqual(trainer.crossover_prob, None)
+        self.assertEqual(trainer.mutation_prob, None)
+        self.assertEqual(trainer.gene_ind_mutation_prob, None)
+        self.assertEqual(trainer.selection_func_params, None)
+
+        # Generate the subtrainers
+        trainer._generate_subtrainers()
+
+        # Now the trainer should return the default values of the subtrainers
+        self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
+        self.assertEqual(
+            trainer.crossover_func, trainer.solution_cls.crossover
+        )
+        self.assertEqual(trainer.mutation_func, trainer.solution_cls.mutate)
+        self.assertEqual(trainer.selection_func, DEFAULT_NSGA_SELECTION_FUNC)
+        self.assertEqual(trainer.crossover_prob, DEFAULT_CROSSOVER_PROB)
+        self.assertEqual(trainer.mutation_prob, DEFAULT_MUTATION_PROB)
+        self.assertEqual(
+            trainer.gene_ind_mutation_prob, DEFAULT_GENE_IND_MUTATION_PROB
+        )
+        self.assertEqual(
+            trainer.selection_func_params, DEFAULT_NSGA_SELECTION_FUNC_PARAMS
+        )
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

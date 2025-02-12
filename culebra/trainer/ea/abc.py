@@ -1365,7 +1365,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises ValueError: If set to a value which is not greater than zero
         """
         if self._pop_size is not None:
-            self._pop_size
+            return self._pop_size
         elif self.subtrainers is not None:
             return self.subtrainers[0].pop_size
         else:
@@ -1386,7 +1386,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises TypeError: If set to a value which is not callable
         """
         if self._crossover_func is not None:
-            self._crossover_func
+            return self._crossover_func
         elif self.subtrainers is not None:
             return self.subtrainers[0].crossover_func
         else:
@@ -1407,7 +1407,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises TypeError: If set to a value which is not callable
         """
         if self._mutation_func is not None:
-            self._mutation_func
+            return self._mutation_func
         elif self.subtrainers is not None:
             return self.subtrainers[0].mutation_func
         else:
@@ -1427,7 +1427,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises TypeError: If set to a value which is not callable
         """
         if self._selection_func is not None:
-            self._selection_func
+            return self._selection_func
         elif self.subtrainers is not None:
             return self.subtrainers[0].selection_func
         else:
@@ -1446,7 +1446,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises ValueError: If set to a value which is not in (0, 1)
         """
         if self._crossover_prob is not None:
-            self._crossover_prob
+            return self._crossover_prob
         elif self.subtrainers is not None:
             return self.subtrainers[0].crossover_prob
         else:
@@ -1465,7 +1465,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises ValueError: If set to a value which is not in (0, 1)
         """
         if self._mutation_prob is not None:
-            self._mutation_prob
+            return self._mutation_prob
         elif self.subtrainers is not None:
             return self.subtrainers[0].mutation_prob
         else:
@@ -1485,7 +1485,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises ValueError: If set to a value which is not in (0, 1)
         """
         if self._gene_ind_mutation_prob is not None:
-            self._gene_ind_mutation_prob
+            return self._gene_ind_mutation_prob
         elif self.subtrainers is not None:
             return self.subtrainers[0].gene_ind_mutation_prob
         else:
@@ -1503,7 +1503,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :raises TypeError: If set to a value which is not a :py:class:`dict`
         """
         if self._selection_func_params is not None:
-            self._selection_func_params
+            return self._selection_func_params
         elif self.subtrainers is not None:
             return self.subtrainers[0].selection_func_params
         else:

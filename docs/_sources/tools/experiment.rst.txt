@@ -29,32 +29,38 @@ Class attributes
 .. autoattribute:: culebra.tools.Experiment.feature_metric_functions
 .. autoattribute:: culebra.tools.Experiment.stats_functions
 
+Class methods
+-------------
+.. automethod:: culebra.tools.Experiment.load_pickle
+.. automethod:: culebra.tools.Experiment.from_config
+.. automethod:: culebra.tools.Experiment.generate_run_script
+
 Properties
 ----------
 .. autoproperty:: culebra.tools.Experiment.trainer
 .. autoproperty:: culebra.tools.Experiment.test_fitness_function
 .. autoproperty:: culebra.tools.Experiment.results_base_filename
+.. autoproperty:: culebra.tools.Experiment.results_pickle_filename
+.. autoproperty:: culebra.tools.Experiment.results_excel_filename
+.. autoproperty:: culebra.tools.Experiment.hyperparameters
 .. autoproperty:: culebra.tools.Experiment.results
 .. autoproperty:: culebra.tools.Experiment.best_solutions
-.. autoproperty:: tools.Experiment.best_representatives
-
-Class methods
--------------
-.. automethod:: tools.Experiment.from_config
-.. automethod:: tools.Experiment.generate_script
+.. autoproperty:: culebra.tools.Experiment.best_representatives
 
 Methods
 -------
-.. automethod:: tools.Experiment.reset
-.. automethod:: tools.Experiment.run
+.. automethod:: culebra.tools.Experiment.save_pickle
+.. automethod:: culebra.tools.Experiment.reset
+.. automethod:: culebra.tools.Experiment.run
 
 Private methods
 ---------------
-.. automethod:: tools.Experiment._do_training
-.. automethod:: tools.Experiment._add_training_stats
-.. automethod:: tools.Experiment._add_fitness
-.. automethod:: tools.Experiment._add_fitness_stats
-.. automethod:: tools.Experiment._add_execution_metric
-.. automethod:: tools.Experiment._add_feature_metrics
-.. automethod:: tools.Experiment._do_test
-.. automethod:: tools.Experiment._execute
+.. automethod:: culebra.tools.Experiment._do_training
+.. automethod:: culebra.tools.Experiment._add_training_stats
+.. automethod:: culebra.tools.Experiment._add_fitness
+.. automethod:: culebra.tools.Experiment._add_fitness_stats
+.. automethod:: culebra.tools.Experiment._add_execution_metric
+.. automethod:: culebra.tools.Experiment._add_feature_metrics
+.. automethod:: culebra.tools.Experiment._do_test
+.. automethod:: culebra.tools.Experiment._execute
+.. automethod:: culebra.tools.Experiment._is_reserved

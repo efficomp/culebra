@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.ea.abc.SinglePopEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.SinglePopEA.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.solution_cls
@@ -60,6 +64,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA.save_pickle
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.reset
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.best_solutions

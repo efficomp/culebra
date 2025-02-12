@@ -29,6 +29,10 @@ Class attributes
 .. autoattribute:: culebra.trainer.abc.SingleSpeciesTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.SingleSpeciesTrainer.objective_stats
 
+Class methods
+-------------
+.. automethod:: culebra.trainer.abc.SingleSpeciesTrainer.load_pickle
+
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.solution_cls
@@ -51,6 +55,7 @@ Properties
 
 Methods
 -------
+.. automethod:: culebra.trainer.abc.SingleSpeciesTrainer.save_pickle
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer.reset
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer.evaluate
 .. automethod:: culebra.trainer.abc.SingleSpeciesTrainer.best_solutions
