@@ -269,12 +269,12 @@ class TypeCheckerTester(unittest.TestCase):
             check_filename(valid_filename, "filename", ext=invalid_extension)
 
         # Try an invalid extension value
-        invalid_extension = ".ext"
+        invalid_extension = "ext"
         with self.assertRaises(ValueError):
             check_filename(valid_filename, "filename", ext=invalid_extension)
 
         # Try a valid extension
-        valid_extension = "ext"
+        valid_extension = ".ext"
         check_filename(valid_filename, "filename", ext=valid_extension)
 
     def test_matrix(self):

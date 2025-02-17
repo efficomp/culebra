@@ -47,7 +47,7 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-EXCEL_FILE_EXTENSION = "xlsx"
+EXCEL_FILE_EXTENSION = ".xlsx"
 """File extension for Excel datasheets."""
 
 

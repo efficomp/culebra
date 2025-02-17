@@ -24,12 +24,13 @@
 
 import unittest
 from os import remove
-from os.path import isfile
+from os.path import isfile, exists, join
 from shutil import rmtree
 from copy import copy, deepcopy
 
 from pandas import DataFrame
 
+from culebra import PICKLE_FILE_EXTENSION
 from culebra.abc import FitnessFunction, Trainer
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
@@ -47,7 +48,8 @@ from culebra.tools import (
     Results,
     Batch,
     DEFAULT_NUM_EXPERIMENTS,
-    DEFAULT_RESULTS_BASENAME
+    DEFAULT_RESULTS_BASENAME,
+    DEFAULT_RUN_SCRIPT_FILENAME
 )
 
 # Dataset
@@ -176,14 +178,14 @@ class BatchTester(unittest.TestCase):
         # Check the number of experiments
         self.assertGreater(batch.num_experiments, DEFAULT_NUM_EXPERIMENTS)
 
-    def test_exp_labels(self):
-        """Test the exp_labels method."""
+    def test_experiment_labels(self):
+        """Test the experiment_labels method."""
         # Try default params
         batch = Batch(my_trainer)
 
         for num_exp in range(1, 15):
             batch.num_experiments = num_exp
-            labels = batch.exp_labels
+            labels = batch.experiment_labels
             self.assertEqual(len(labels), num_exp)
             self.assertEqual(labels[-1], "exp" + str(num_exp - 1))
 
@@ -197,14 +199,45 @@ class BatchTester(unittest.TestCase):
         self.assertEqual(batch.results, None)
         self.assertEqual(batch._results_indices, {})
 
-    def test_execute(self):
-        """Test the _execute method."""
+    def test_setup(self):
+        """Test the setup method."""
         # Create the batch
         batch = Batch(
             trainer=my_trainer,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
-            # hyperparameters={"a": 1, "b": 2},
+            hyperparameters={"a": 1, "b": 2},
+            num_experiments=my_num_experiments
+        )
+        batch.setup()
+
+        experiment_filename = batch.experiment_basename + PICKLE_FILE_EXTENSION
+
+        # Check that the experimetn has been pickled
+        self.assertTrue(isfile(experiment_filename))
+
+        # Check the experiment folders
+        for exp_folder in batch.experiment_labels:
+            self.assertTrue(exists(exp_folder))
+            self.assertTrue(
+                isfile(
+                    join(exp_folder, DEFAULT_RUN_SCRIPT_FILENAME)
+                )
+            )
+
+        # Remove the files
+        remove(experiment_filename)
+        for exp_folder in batch.experiment_labels:
+            rmtree(exp_folder)
+
+    def test_run(self):
+        """Test the run method."""
+        # Create the batch
+        batch = Batch(
+            trainer=my_trainer,
+            test_fitness_function=my_test_fitness_function,
+            results_base_filename="res2",
+            hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
         )
 
@@ -222,7 +255,7 @@ class BatchTester(unittest.TestCase):
             self.assertIsInstance(batch.results[key], DataFrame)
 
         # Remove the experiments
-        for exp in batch.exp_labels:
+        for exp in batch.experiment_labels:
             rmtree(exp)
 
         # Check the result files
@@ -239,7 +272,7 @@ class BatchTester(unittest.TestCase):
             trainer=my_trainer,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
-            # hyperparameters={"a": 1, "b": 2},
+            hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
         )
 
@@ -256,7 +289,7 @@ class BatchTester(unittest.TestCase):
         self.assertEqual(batch1.num_experiments, batch2.num_experiments)
 
         # Remove the experiments
-        for exp in batch1.exp_labels:
+        for exp in batch1.experiment_labels:
             rmtree(exp)
 
         # Remove the result files
@@ -269,7 +302,7 @@ class BatchTester(unittest.TestCase):
             trainer=my_trainer,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
-            # hyperparameters={"a": 1, "b": 2},
+            hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
         )
 
@@ -280,7 +313,7 @@ class BatchTester(unittest.TestCase):
         self._check_deepcopy(batch1, batch2)
 
         # Remove the experiments
-        for exp in batch1.exp_labels:
+        for exp in batch1.experiment_labels:
             rmtree(exp)
 
         # Remove the result files
@@ -297,7 +330,7 @@ class BatchTester(unittest.TestCase):
             trainer=my_trainer,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
-            # hyperparameters={"a": 1, "b": 2},
+            hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
         )
         batch1.run()
@@ -310,7 +343,7 @@ class BatchTester(unittest.TestCase):
         self._check_deepcopy(batch1, batch2)
 
         # Remove the experiments
-        for exp in batch1.exp_labels:
+        for exp in batch1.experiment_labels:
             rmtree(exp)
 
         # Remove the result files

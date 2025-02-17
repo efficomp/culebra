@@ -32,7 +32,7 @@ __status__ = 'Development'
 DEFAULT_MAX_NUM_ITERS = 100
 """Default maximum number of iterations."""
 
-PICKLE_FILE_EXTENSION = "gz"
+PICKLE_FILE_EXTENSION = ".gz"
 """Extension for files containing pickled objects."""
 
 DEFAULT_CHECKPOINT_ENABLE = True
@@ -45,7 +45,7 @@ DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
 """Default basename for checkpointing files."""
 
 DEFAULT_CHECKPOINT_FILENAME = (
-    DEFAULT_CHECKPOINT_BASENAME + "." + PICKLE_FILE_EXTENSION
+    DEFAULT_CHECKPOINT_BASENAME + PICKLE_FILE_EXTENSION
 )
 """Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`."""
 

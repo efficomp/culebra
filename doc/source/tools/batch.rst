@@ -45,12 +45,14 @@ Properties
 .. autoproperty:: culebra.tools.Batch.hyperparameters
 .. autoproperty:: culebra.tools.Batch.results
 .. autoproperty:: culebra.tools.Batch.num_experiments
-.. autoproperty:: culebra.tools.Batch.exp_labels
+.. autoproperty:: culebra.tools.Batch.experiment_basename
+.. autoproperty:: culebra.tools.Batch.experiment_labels
 
 Methods
 -------
 .. automethod:: culebra.tools.Batch.save_pickle
 .. automethod:: culebra.tools.Batch.reset
+.. automethod:: culebra.tools.Batch.setup
 .. automethod:: culebra.tools.Batch.run
 
 Private methods

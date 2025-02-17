@@ -389,7 +389,7 @@ def check_filename(
     :rtype: :py:class:`str`
     :raises TypeError: If *value* is not a valid file name
     :raises ValueError: If *value* does not meet the constraints
-    :raises ValueError: If *ext* begins with a dot
+    :raises ValueError: If *ext* does not begin with a dot
     """
     # Check that value is a valid file path
     try:
@@ -406,16 +406,16 @@ def check_filename(
                 f"Not valid required extension for {name}: {ext}"
             ) from error
 
-        if ext.startswith("."):
+        if not ext.startswith("."):
             raise ValueError(
                 f"Not valid required extension for {name}. Extensions must "
-                f"not begin with a dot: {ext}"
+                f"begin with a dot: {ext}"
             )
 
         # Split the proposed file name
         (_, value_ext) = splitext(value)
         # Check the extension
-        if not ext == value_ext[1:]:
+        if not ext == value_ext:
             raise ValueError(
                 f"The extension of {name} should be {ext}: {value}"
             )

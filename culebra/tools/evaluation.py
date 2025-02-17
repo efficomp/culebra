@@ -25,7 +25,8 @@ from abc import abstractmethod
 from typing import Any, Tuple, List, Optional, Dict
 from collections.abc import Sequence
 from copy import deepcopy
-import os
+from os import chmod, makedirs, chdir
+from os.path import isfile, splitext, join
 import importlib.util
 
 import numpy as np
@@ -161,7 +162,7 @@ DEFAULT_BATCH_STATS_FUNCTIONS = {
 """Default statistics calculated for the results gathered from all the
 experiments."""
 
-SCRIPT_FILE_EXTENSION = "py"
+SCRIPT_FILE_EXTENSION = ".py"
 """File extension for python scripts."""
 
 DEFAULT_NUM_EXPERIMENTS = 1
@@ -171,7 +172,7 @@ DEFAULT_RUN_SCRIPT_BASENAME = "run"
 """Default base name for the script to run an evaluation."""
 
 DEFAULT_RUN_SCRIPT_FILENAME = (
-    DEFAULT_RUN_SCRIPT_BASENAME + "." + SCRIPT_FILE_EXTENSION
+    DEFAULT_RUN_SCRIPT_BASENAME + SCRIPT_FILE_EXTENSION
 )
 """Default file name for the script to run an evaluation."""
 
@@ -179,7 +180,7 @@ DEFAULT_CONFIG_SCRIPT_BASENAME = "config"
 """Default base name for configuration scripts."""
 
 DEFAULT_CONFIG_SCRIPT_FILENAME = (
-    DEFAULT_CONFIG_SCRIPT_BASENAME + "." + SCRIPT_FILE_EXTENSION
+    DEFAULT_CONFIG_SCRIPT_BASENAME + SCRIPT_FILE_EXTENSION
 )
 """Default file name for configuration scripts."""
 
@@ -207,7 +208,7 @@ class Evaluation(Base):
     _run_script_code = """#!/usr/bin/env python3
 
 #
-# This script relies on the {config_script_filename} script.
+# This script relies on the {config_filename} configuration file.
 #
 # This script is a simple python module defining variables to be passed to
 # the {cls_name} constructor. These variables MUST have the same name than
@@ -217,7 +218,7 @@ class Evaluation(Base):
 from culebra.tools import {cls_name}
 
 # Create the {var_name}
-{var_name} = {cls_name}.from_config('{config_script_filename}')
+{var_name} = {cls_name}.{factory_method}('{config_filename}')
 
 # Run the {var_name}
 {var_name}.run()
@@ -363,7 +364,7 @@ for res, val in {var_name}.results.items():
 
         :type: :py:class:`str`
         """
-        return self.results_base_filename + "." + PICKLE_FILE_EXTENSION
+        return self.results_base_filename + PICKLE_FILE_EXTENSION
 
     @property
     def results_excel_filename(self) -> str:
@@ -371,7 +372,7 @@ for res, val in {var_name}.results.items():
 
         :type: :py:class:`str`
         """
-        return self.results_base_filename + "." + EXCEL_FILE_EXTENSION
+        return self.results_base_filename + EXCEL_FILE_EXTENSION
 
     def _is_reserved(self, name: str) -> bool:
         """Return :py:data:`True` if the given hyperparameter name is reserved.
@@ -473,38 +474,53 @@ for res, val in {var_name}.results.items():
     @classmethod
     def generate_run_script(
         cls,
-        config_script_filename: Optional[str] = None,
+        config_filename: Optional[str] = None,
         run_script_filename: Optional[str] = None
     ) -> None:
         """Generate a script to run an evaluation.
 
         The parameters for the evaluation are taken from a configuration file.
 
-        :param config_script_filename: Path to the configuration file. If set
-            to :py:data:`None`,
+        :param config_filename: Path to the configuration file. It can be
+            whether a configuration script or a pickled
+            :py:attr:`~culebra.tools.Evaluation` instance. If set to
+            :py:data:`None`,
             :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
             Defaults to :py:data:`None`
-        :type config_script_filename: :py:class:`str`
+        :type config_filename: :py:class:`str`
         :param run_script_filename: File path to store the run script. If set
             to :py:data:`None`,
             :py:attr:`~culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME`
             is used. Defaults to :py:data:`None`
         :type run_script_filename: :py:class:`str`, optional.
-        :raises TypeError: If *config_script_filename* or *run_script_filename*
+        :raises TypeError: If *config_filename* or *run_script_filename*
             are not a valid filename
-        :raises ValueError: If the extension of *config_script_filename* or
-            *run_script_filename* is not '.py'
+        :raises ValueError: If the extensions of *config_filename* or
+            *run_script_filename* are not valid.
         """
-        # Check the configuration script filename
-        config_script_filename = check_filename(
+        # Check the configuration filename
+        config_filename = check_filename(
             (
                 DEFAULT_CONFIG_SCRIPT_FILENAME
-                if config_script_filename is None
-                else config_script_filename
+                if config_filename is None
+                else config_filename
             ),
-            name="configuration script file",
-            ext=SCRIPT_FILE_EXTENSION
+            name="configuration file"
         )
+
+        # Check the extension of the configuration file
+        (_, extension) = splitext(config_filename)
+        extension = extension.lower()
+        if extension == SCRIPT_FILE_EXTENSION:
+            factory_method = 'from_config'
+        elif extension == PICKLE_FILE_EXTENSION:
+            factory_method = 'load_pickle'
+        else:
+            raise ValueError(
+                "Not valid extension for the configuration file. "
+                "Valid extensions are .py for python scripts or .gz for "
+                "pickled evaluation objects: {config_filename}"
+            )
 
         # Check the run script filename
         run_script_filename = check_filename(
@@ -523,7 +539,8 @@ for res, val in {var_name}.results.items():
             run_script.write(
                 cls._run_script_code.format_map(
                     {
-                        "config_script_filename": config_script_filename,
+                        "config_filename": config_filename,
+                        "factory_method": factory_method,
                         "cls_name": cls_name,
                         "var_name": cls_name.lower(),
                         "res": "{res}"
@@ -532,7 +549,7 @@ for res, val in {var_name}.results.items():
             )
 
         # Make the run script file executable
-        os.chmod(run_script_filename, 0o777)
+        chmod(run_script_filename, 0o777)
 
     def reset(self) -> None:
         """Reset the results."""
@@ -544,17 +561,22 @@ for res, val in {var_name}.results.items():
         # Forget previous results
         self.reset()
 
-        # Init the results manager
-        self._results = Results()
+        if not isfile(self.results_pickle_filename):
+            # Init the results manager
+            self._results = Results()
 
-        # Run the evaluation
-        self._execute()
+            # Run the evaluation
+            self._execute()
 
-        # Save the results
-        self.results.save_pickle(self.results_pickle_filename)
+            # Save the results
+            self.results.save_pickle(self.results_pickle_filename)
+        else:
+            # Load the results
+            self._results = Results.load_pickle(self.results_pickle_filename)
 
-        # Save the results to Excel
-        self.results.to_excel(self.results_excel_filename)
+        if not isfile(self.results_excel_filename):
+            # Save the results to Excel
+            self.results.to_excel(self.results_excel_filename)
 
     @abstractmethod
     def _execute(self) -> None:
@@ -594,7 +616,7 @@ for res, val in {var_name}.results.items():
             ext=SCRIPT_FILE_EXTENSION
         )
 
-        if not os.path.isfile(config_script_filename):
+        if not isfile(config_script_filename):
             raise RuntimeError(
                 f"Configuration file not found: {config_script_filename}"
             )
@@ -1148,7 +1170,15 @@ class Batch(Evaluation):
         self.reset()
 
     @property
-    def exp_labels(self) -> Tuple[str]:
+    def experiment_basename(self) -> str:
+        """Return the experiments basename.
+
+        :type: :py:class:`str`
+        """
+        return _Labels.experiment.lower()
+
+    @property
+    def experiment_labels(self) -> Tuple[str]:
         """Get the label to identify each one of the experiments in the batch.
 
         :type: :py:class:`tuple` of :py:class:`str`
@@ -1158,7 +1188,7 @@ class Batch(Evaluation):
 
         # Return the experiment names
         return tuple(
-            _Labels.experiment.lower() +
+            self.experiment_basename +
             f"{i:0{suffix_len}d}" for i in range(self.num_experiments)
         )
 
@@ -1192,7 +1222,7 @@ class Batch(Evaluation):
             num_experiments=getattr(config, 'num_experiments', None)
         )
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the results."""
         super().reset()
         self._results_indices = {}
@@ -1272,7 +1302,7 @@ class Batch(Evaluation):
         # Update the batch results dataframe
         self.results[result_key] = df
 
-    def _add_execution_metrics_stats(self):
+    def _add_execution_metrics_stats(self) -> None:
         """Perform some stats on the execution metrics."""
         # Name of the result
         result_key = self._ResultKeys.batch_execution_metrics_stats
@@ -1317,7 +1347,7 @@ class Batch(Evaluation):
         df.columns.set_names(_Labels.stat, inplace=True)
         self.results[result_key] = df
 
-    def _add_feature_metrics_stats(self):
+    def _add_feature_metrics_stats(self) -> None:
         """Perform stats on the feature metrics of all the experiments."""
         try:
             # Name of the result
@@ -1442,27 +1472,63 @@ class Batch(Evaluation):
         df.columns.set_names(_Labels.stat, inplace=True)
         self.results[result_key] = df
 
-    def _execute(self):
-        """Execute a batch of experiments."""
-        # For all the experiments to be generated ...
-        for exp_label in self.exp_labels:
+    def setup(self) -> None:
+        """Set up the batch.
+
+        Create all the experiments for the batch.
+        """
+        # Create the experiment
+        experiment = Experiment(
+            self.trainer,
+            self.test_fitness_function,
+            self.results_base_filename,
+            self.hyperparameters
+        )
+        experiment_filename = self.experiment_basename + PICKLE_FILE_EXTENSION
+
+        # Save the experiment
+        experiment.save_pickle(experiment_filename)
+
+        for exp_folder in self.experiment_labels:
             try:
                 # Create the experiment folder
-                os.makedirs(exp_label)
+                makedirs(exp_folder)
             except FileExistsError:
                 # The directory already exists
                 pass
 
             # Change to the experiment folder
-            os.chdir(exp_label)
+            chdir(exp_folder)
 
-            # Create the experiment
-            experiment = Experiment(
-                self.trainer,
-                self.test_fitness_function,
-                self.results_base_filename,
-                self.hyperparameters
-            )
+            # Generate the run script for the experiment
+            path_to_experiment = join("..", experiment_filename)
+            experiment.generate_run_script(path_to_experiment)
+
+            # Return to the batch folder
+            chdir("..")
+
+    def run(self) -> None:
+        """Execute the batch and save the results."""
+        # Setup the batch
+        self.setup()
+
+        # Run the batch
+        super().run()
+
+    def _execute(self) -> None:
+        """Execute a batch of experiments."""
+        # Load the experiment
+        experiment = Experiment.load_pickle(
+            self.experiment_basename + PICKLE_FILE_EXTENSION
+        )
+
+        # For all the experiments to be generated ...
+        for exp_label in self.experiment_labels:
+            # Reset the experiment
+            experiment.reset()
+
+            # Change to the experiment folder
+            chdir(exp_label)
 
             # Run the experiment
             experiment.run()
@@ -1472,7 +1538,7 @@ class Batch(Evaluation):
                 self._append_data(result, exp_label, data)
 
             # Return to the batch folder
-            os.chdir("..")
+            chdir("..")
 
         # Sort the results dataframes
         for result_key in self.results:

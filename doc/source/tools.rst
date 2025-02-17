@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebbra.tools` module
-===============================
+:py:mod:`culebra.tools` module
+==============================
 
 .. automodule:: culebra.tools
 
@@ -32,7 +32,7 @@ Attributes
     Default column separator used within dataset files.
 
 .. attribute:: EXCEL_FILE_EXTENSION
-    :annotation: = 'xlsx'
+    :annotation: = '.xlsx'
 
     File extension for Excel datasheets.
 

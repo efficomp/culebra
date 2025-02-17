@@ -34,7 +34,7 @@ Attributes:
     Default maximum number of iterations.
 
 .. attribute:: PICKLE_FILE_EXTENSION
-    :annotation: = 'gz'
+    :annotation: = '.gz'
 
     Extension for files containing pickled objects.
 
