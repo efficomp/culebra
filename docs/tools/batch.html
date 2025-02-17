@@ -28,7 +28,7 @@
           <a href="experiment.html" title="culebra.tools.Experiment class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebbra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.Batch</span></code> class</a></li> 
       </ul>
     </div>  
@@ -132,14 +132,16 @@ path or an invalid configuration file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch.generate_run_script">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">generate_run_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.generate_run_script" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">generate_run_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.generate_run_script" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a script to run an evaluation.</p>
 <p>The parameters for the evaluation are taken from a configuration file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>config_script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file. If set
-to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file. It can be
+whether a configuration script or a pickled
+<a class="reference internal" href="evaluation.html#culebra.tools.Evaluation" title="culebra.tools.Evaluation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Evaluation</span></code></a> instance. If set to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></code></a> is used.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>run_script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, optional.) – File path to store the run script. If set
@@ -150,10 +152,10 @@ is used. Defaults to <a class="reference external" href="https://docs.python.org
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>config_script_filename</em> or <em>run_script_filename</em>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>config_filename</em> or <em>run_script_filename</em>
 are not a valid filename</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the extension of <em>config_script_filename</em> or
-<em>run_script_filename</em> is not ‘.py’</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the extensions of <em>config_filename</em> or
+<em>run_script_filename</em> are not valid.</p></li>
 </ul>
 </dd>
 </dl>
@@ -302,8 +304,19 @@ zero</p></li>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="culebra.tools.Batch.exp_labels">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">exp_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.tools.Batch.exp_labels" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Batch.experiment_basename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">experiment_basename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.Batch.experiment_basename" title="Link to this definition">¶</a></dt>
+<dd><p>Return the experiments basename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.tools.Batch.experiment_labels">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">experiment_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.tools.Batch.experiment_labels" title="Link to this definition">¶</a></dt>
 <dd><p>Get the label to identify each one of the experiments in the batch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -335,14 +348,21 @@ zero</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch.reset">
-<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.Batch.reset" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.reset" title="Link to this definition">¶</a></dt>
 <dd><p>Reset the results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.Batch.setup">
+<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.setup" title="Link to this definition">¶</a></dt>
+<dd><p>Set up the batch.</p>
+<p>Create all the experiments for the batch.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch.run">
 <span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.run" title="Link to this definition">¶</a></dt>
-<dd><p>Execute the evaluation and save the results.</p>
+<dd><p>Execute the batch and save the results.</p>
 </dd></dl>
 
 </section>
@@ -366,13 +386,13 @@ zero</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch._add_execution_metrics_stats">
-<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_add_execution_metrics_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.Batch._add_execution_metrics_stats" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_add_execution_metrics_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch._add_execution_metrics_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Perform some stats on the execution metrics.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch._add_feature_metrics_stats">
-<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_add_feature_metrics_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.Batch._add_feature_metrics_stats" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_add_feature_metrics_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch._add_feature_metrics_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Perform stats on the feature metrics of all the experiments.</p>
 </dd></dl>
 
@@ -392,7 +412,7 @@ zero</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch._execute">
-<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.Batch._execute" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch._execute" title="Link to this definition">¶</a></dt>
 <dd><p>Execute a batch of experiments.</p>
 </dd></dl>
 
@@ -429,7 +449,7 @@ zero</p></li>
           <a href="experiment.html" title="culebra.tools.Experiment class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebbra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.Batch</span></code> class</a></li> 
       </ul>
     </div>
