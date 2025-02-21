@@ -1,9 +1,8 @@
 numpy
 pandas
-scikit-learn
 deap
-toml
-openpyxl
-sphinx
-tabulate
+scikit-learn
 scikit_posthocs
+tabulate
+sphinx
+
