@@ -1,8 +1,7 @@
+deap
 numpy
 pandas
-deap
 scikit-learn
-scikit_posthocs
-tabulate
 sphinx
-
+tabulate
+scikit_posthocs

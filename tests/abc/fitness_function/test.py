@@ -51,7 +51,7 @@ class FitnessFunctionTester(unittest.TestCase):
         """Test the set_fitness_thresholds class method."""
         invalid_threshold_types = (type, {}, len)
         invalid_threshold_value = -1
-        valid_thresholds = [0.33, 0.5, 2]
+        valid_thresholds = [0, 0.33, 0.5, 2]
 
         # Try invalid types for the thresholds. Should fail
         for threshold in invalid_threshold_types:

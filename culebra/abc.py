@@ -539,11 +539,11 @@ class FitnessFunction(Base):
                 thresholds,
                 "fitness thresholds",
                 size=len(cls.Fitness.weights),
-                item_checker=partial(check_float, gt=0)
+                item_checker=partial(check_float, ge=0)
             )
         else:
             cls.Fitness.thresholds = [
-                check_float(thresholds, "fitness thresholds", gt=0)
+                check_float(thresholds, "fitness thresholds", ge=0)
             ] * len(cls.Fitness.weights)
 
     @classmethod
