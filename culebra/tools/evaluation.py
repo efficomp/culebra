@@ -683,6 +683,9 @@ class Experiment(Evaluation):
         test_fitness = 'test_fitness'
         """Test fitness of the best solutions found."""
 
+        test_best = 'test_best'
+        """Solution with the best (lexicographically) test fitness."""
+
         training_fitness_stats = "training_fitness_stats"
         """Training fitness stats."""
 
@@ -1043,6 +1046,75 @@ class Experiment(Evaluation):
         # Perform the test fitness stats
         self._add_fitness_stats(self._ResultKeys.test_fitness_stats)
 
+    def _find_best_lexicographically(self) -> None:
+        """Find the best solution in the Pareto Front.
+
+        Since the Pareto front solutions are not comparable, they are ordered
+        lexicographilly and the best solution is selected.
+
+        The test fitness are used to sort the solutions.
+        """
+        # Key of the result
+        result_key = self._ResultKeys.test_best
+
+        # Objective names
+        obj_names = list(self.best_solutions[0][0].fitness.names)
+
+        # Number of species
+        num_species = len(self.best_solutions)
+
+        # Index for the dataframe
+        if self.hyperparameters is not None:
+            index = list(self.hyperparameters.keys())
+        else:
+            index = []
+
+        index += (
+            [_Labels.species, _Labels.solution]
+            if num_species > 1
+            else [_Labels.solution]
+        )
+
+        # Column names for the dataframe
+        column_names = index + obj_names
+
+        # Create the solutions dataframe
+        df = DataFrame(columns=column_names)
+
+        # For each species
+        for species_index, hof in enumerate(self.best_solutions):
+            # Sort the hof
+            ordered = sorted(hof, reverse=True)
+
+            # Best (lexicographically)
+            best = ordered[0]
+
+            # Create a row for the dataframe
+            if self.hyperparameters is not None:
+                row_index = tuple(self.hyperparameters.values())
+            else:
+                row_index = ()
+
+            row_index += (
+                (species_index, best)
+                if num_species > 1
+                else (best, )
+            )
+            row = Series(
+                row_index + best.fitness.values,
+                index=column_names
+            )
+
+            # Append the row to the dataframe
+            df.loc[len(df)] = row
+
+        # Set the dataframe index
+        df.set_index(index, inplace=True)
+        df.columns.set_names(_Labels.fitness, inplace=True)
+
+        # Add the dataframe to the results
+        self.results[result_key] = df.astype(float)
+
     def _execute(self) -> None:
         """Execute the trainer method."""
         # Train the trainer
@@ -1060,6 +1132,9 @@ class Experiment(Evaluation):
 
         # Reset the state of the trainer to allow serialization
         self.trainer.reset()
+
+        # Find the best solution (lexicographcally)
+        self._find_best_lexicographically()
 
 
 class Batch(Evaluation):
