@@ -26,9 +26,25 @@ being optimized. It provides the following fitness functions:
   * :py:class:`~culebra.fitness_function.cooperative.KappaNumFeatsC`:
     Tri-objective fitness class for feature selection. Maximizes the Kohen's
     Kappa index and minimizes the number of features that a solution has
-    selected and also de C regularazation hyperparameter of the SVM-based
+    selected and also the C regularazation hyperparameter of the SVM-based
     classifier.
 
+  * :py:class:`~culebra.fitness_function.cooperative.KappaFeatsPropC`:
+    Tri-objective fitness class for feature selection. Maximizes the Kohen's
+    Kappa index and minimizes the number of features that a solution has
+    selected and also the C regularazation hyperparameter of the SVM-based
+    classifier.
+
+  * :py:class:`~culebra.fitness_function.cooperative.AccuracyNumFeatsC`:
+    Tri-objective fitness class for feature selection. Maximizes the accuracy
+    and minimizes the number of features that a solution has selected and also
+    the C regularazation hyperparameter of the SVM-based
+    classifier.
+
+  * :py:class:`~culebra.fitness_function.cooperative.AccuracyFeatsPropC`:
+    Tri-objective fitness class for feature selection. Maximizes the accuracy
+    and minimizes the number of features that a solution has selected and also
+    the C regularazation hyperparameter of the SVM-based classifier.
 """
 
 from __future__ import annotations
@@ -38,20 +54,26 @@ from collections.abc import Sequence
 
 from culebra.abc import Fitness, Solution
 
-from .feature_selection import KappaNumFeats
+from .abc import CooperativeRBFSVCFSFitnessFunction
+from .feature_selection import (
+    KappaNumFeats,
+    KappaFeatsProp,
+    AccuracyNumFeats,
+    AccuracyFeatsProp
+)
 from .svc_optimization import C
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.4.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class KappaNumFeatsC(KappaNumFeats, C):
+class KappaNumFeatsC(KappaNumFeats, C, CooperativeRBFSVCFSFitnessFunction):
     """Tri-objective fitness class for feature selection.
 
     Maximizes the Kohen's Kappa index and minimizes the number of features
@@ -81,11 +103,6 @@ class KappaNumFeatsC(KappaNumFeats, C):
 
         thresholds = KappaNumFeats.Fitness.thresholds + C.Fitness.thresholds
         """Similarity threshold for fitness comparisons."""
-
-    # Copy the :py:class:`culebra.fitness_function.parameter_optimizacion.C`
-    # properties
-    __init__ = C.__init__
-    classifier = C.classifier
 
     def evaluate(
         self,
@@ -118,45 +135,10 @@ class KappaNumFeatsC(KappaNumFeats, C):
         :return: The fitness of *sol*
         :rtype: :py:class:`tuple` of py:class:`float`
         """
-        # Number of representatives
-        num_representatives = len(representatives)
-
-        # Hyperparameters solution
-        sol_hyperparams = sol if index == 0 else representatives[0]
-
-        # Prototype solution for the final solution containing all the
-        # features
-        prototype_sol_features = sol if index == 1 else representatives[1]
-
-        # All the features
-        all_the_features = []
-
-        # Number of features
-        number_features = prototype_sol_features.species.num_feats
-
-        # Update the features and feature min and max indices
-        for repr_index in range(1, num_representatives):
-            # Choose thge correct solution
-            the_sol = (
-                sol if repr_index == index else representatives[repr_index]
-            )
-            # Get the features
-            all_the_features += list(the_sol.features)
-
-        # Features solution class
-        sol_features_cls = prototype_sol_features.__class__
-
-        # Features solution species class
-        sol_features_species_cls = prototype_sol_features.species.__class__
-
-        # Features solution species
-        sol_features_species = sol_features_species_cls(number_features)
-
-        # Features solution
-        sol_features = sol_features_cls(
-            species=sol_features_species,
-            fitness_cls=self.Fitness,
-            features=all_the_features
+        # Assemble the solution and representatives to construct a complete
+        # solution for each of the problems solved cooperatively
+        (sol_features, sol_hyperparams) = self.construct_solutions(
+            sol, index, representatives
         )
 
         # Set the classifier hyperparameters
@@ -169,5 +151,232 @@ class KappaNumFeatsC(KappaNumFeats, C):
         )
 
 
+class KappaFeatsPropC(KappaFeatsProp, C, CooperativeRBFSVCFSFitnessFunction):
+    """Tri-objective fitness class for feature selection.
+
+    Maximizes the Kohen's Kappa index and minimizes the number of features
+    that a solution has selected and also de C regularazation
+    hyperparameter of the SVM-based classifier.
+    """
+
+    class Fitness(Fitness):
+        """Fitness returned by this fitness function."""
+
+        weights = KappaFeatsProp.Fitness.weights + C.Fitness.weights
+        """Maximizes the Kohen's Kappa index and minimizes the number of
+        features that a solution has selected and also de C regularization
+        hyperparameter.
+        """
+
+        names = KappaFeatsProp.Fitness.names + C.Fitness.names
+        """Name of the objectives."""
+
+        thresholds = KappaFeatsProp.Fitness.thresholds + C.Fitness.thresholds
+        """Similarity threshold for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+           This fitness function assumes that:
+
+             * *representatives[0]*: Codes the SVC hyperparameters
+               (C and gamma). Thus, it is an instance of
+               :py:class:`culebra.solution.parameter_optimization.Solution`
+             * *representatives[1:]*: The remaining solutions code the
+               features selected, each solution a different range of
+               features. All of them are instances of
+               :py:class:`culebra.solution.feature_selection.Solution`
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem
+        :type index: :py:class:`int`
+        :param representatives: Representative solutions of each species
+            being optimized
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of py:class:`float`
+        """
+        # Assemble the solution and representatives to construct a complete
+        # solution for each of the problems solved cooperatively
+        (sol_features, sol_hyperparams) = self.construct_solutions(
+            sol, index, representatives
+        )
+
+        # Set the classifier hyperparameters
+        self.classifier.C = sol_hyperparams.values.C
+        self.classifier.gamma = sol_hyperparams.values.gamma
+
+        return (
+            KappaFeatsProp.evaluate(self, sol_features) +
+            C.evaluate(self, sol_hyperparams)
+        )
+
+
+class AccuracyNumFeatsC(
+    AccuracyNumFeats, C, CooperativeRBFSVCFSFitnessFunction
+):
+    """Tri-objective fitness class for feature selection.
+
+    Maximizes the accuracy and minimizes the number of features that a
+    solution has selected and also de C regularazation hyperparameter of the
+    SVM-based classifier.
+
+    More information about this fitness function can be found in
+    [Gonzalez2021]_.
+
+    .. [Gonzalez2021] J. González, J. Ortega, J. J. Escobar, M. Damas.
+       *A lexicographic cooperative co-evolutionary approach for feature
+       selection*. **Neurocomputing**, 463:59-76, 2021.
+       https://doi.org/10.1016/j.neucom.2021.08.003.
+    """
+
+    class Fitness(Fitness):
+        """Fitness returned by this fitness function."""
+
+        weights = AccuracyNumFeats.Fitness.weights + C.Fitness.weights
+        """Maximizes the accuracy and minimizes the number of features that a
+        solution has selected and also de C regularization hyperparameter.
+        """
+
+        names = AccuracyNumFeats.Fitness.names + C.Fitness.names
+        """Name of the objectives."""
+
+        thresholds = AccuracyNumFeats.Fitness.thresholds + C.Fitness.thresholds
+        """Similarity threshold for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+           This fitness function assumes that:
+
+             * *representatives[0]*: Codes the SVC hyperparameters
+               (C and gamma). Thus, it is an instance of
+               :py:class:`culebra.solution.parameter_optimization.Solution`
+             * *representatives[1:]*: The remaining solutions code the
+               features selected, each solution a different range of
+               features. All of them are instances of
+               :py:class:`culebra.solution.feature_selection.Solution`
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem
+        :type index: :py:class:`int`
+        :param representatives: Representative solutions of each species
+            being optimized
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of py:class:`float`
+        """
+        # Assemble the solution and representatives to construct a complete
+        # solution for each of the problems solved cooperatively
+        (sol_features, sol_hyperparams) = self.construct_solutions(
+            sol, index, representatives
+        )
+
+        # Set the classifier hyperparameters
+        self.classifier.C = sol_hyperparams.values.C
+        self.classifier.gamma = sol_hyperparams.values.gamma
+
+        return (
+            AccuracyNumFeats.evaluate(self, sol_features) +
+            C.evaluate(self, sol_hyperparams)
+        )
+
+
+class AccuracyFeatsPropC(
+    AccuracyFeatsProp, C, CooperativeRBFSVCFSFitnessFunction
+):
+    """Tri-objective fitness class for feature selection.
+
+    Maximizes the accuracy and minimizes the number of features that a
+    solution has selected and also de C regularazation hyperparameter of the
+    SVM-based classifier.
+    """
+
+    class Fitness(Fitness):
+        """Fitness returned by this fitness function."""
+
+        weights = AccuracyFeatsProp.Fitness.weights + C.Fitness.weights
+        """Maximizes the accuracy and minimizes the number of features that a
+        solution has selected and also de C regularization hyperparameter.
+        """
+
+        names = AccuracyFeatsProp.Fitness.names + C.Fitness.names
+        """Name of the objectives."""
+
+        thresholds = (
+            AccuracyFeatsProp.Fitness.thresholds + C.Fitness.thresholds
+        )
+        """Similarity threshold for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+           This fitness function assumes that:
+
+             * *representatives[0]*: Codes the SVC hyperparameters
+               (C and gamma). Thus, it is an instance of
+               :py:class:`culebra.solution.parameter_optimization.Solution`
+             * *representatives[1:]*: The remaining solutions code the
+               features selected, each solution a different range of
+               features. All of them are instances of
+               :py:class:`culebra.solution.feature_selection.Solution`
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem
+        :type index: :py:class:`int`
+        :param representatives: Representative solutions of each species
+            being optimized
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of py:class:`float`
+        """
+        # Assemble the solution and representatives to construct a complete
+        # solution for each of the problems solved cooperatively
+        (sol_features, sol_hyperparams) = self.construct_solutions(
+            sol, index, representatives
+        )
+
+        # Set the classifier hyperparameters
+        self.classifier.C = sol_hyperparams.values.C
+        self.classifier.gamma = sol_hyperparams.values.gamma
+
+        return (
+            AccuracyFeatsProp.evaluate(self, sol_features) +
+            C.evaluate(self, sol_hyperparams)
+        )
+
+
 # Exported symbols for this module
-__all__ = ['KappaNumFeatsC']
+__all__ = [
+    'KappaNumFeatsC',
+    'KappaFeatsPropC',
+    'AccuracyNumFeatsC',
+    'AccuracyFeatsPropC'
+]

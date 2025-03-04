@@ -32,10 +32,13 @@ from culebra.solution.feature_selection import (
 )
 from culebra.fitness_function.feature_selection import (
     NumFeats,
+    FeatsProportion,
     KappaIndex,
     Accuracy,
     KappaNumFeats,
-    AccuracyNumFeats
+    AccuracyNumFeats,
+    KappaFeatsProp,
+    AccuracyFeatsProp
 )
 from culebra.tools import Dataset
 
@@ -135,6 +138,39 @@ class NumFeatsTester(unittest.TestCase):
         fitness_func = self.FitnessFunc(dataset)
         self.assertIsInstance(repr(fitness_func), str)
         self.assertIsInstance(str(fitness_func), str)
+
+
+class FeatsProportionTester(unittest.TestCase):
+    """Test FeatsProportion."""
+
+    FitnessFunc = FeatsProportion
+
+    def test_evaluate(self):
+        """Test the evaluation method."""
+        # Fitness function to be tested
+        func = self.FitnessFunc(dataset)
+
+        # Species for the solution
+        species = Species(num_feats=dataset.num_feats)
+
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
+
+        # Check that the proportion of selected features is in [0, 1]
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], 0)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+    test_copy = NumFeatsTester.test_copy
+    test_deepcopy = NumFeatsTester.test_deepcopy
+    test_serialization = NumFeatsTester.test_serialization
+    _check_deepcopy = NumFeatsTester._check_deepcopy
+
+    test_copy = NumFeatsTester.test_copy
+    test_deepcopy = NumFeatsTester.test_deepcopy
+    test_serialization = NumFeatsTester.test_serialization
+    test_repr = NumFeatsTester.test_repr
+    _check_deepcopy = NumFeatsTester._check_deepcopy
 
 
 class KappaIndexTester(unittest.TestCase):
@@ -261,6 +297,76 @@ class AccuracyNumFeatsTester(unittest.TestCase):
 
         # Check the number of features
         self.assertEqual(sol.fitness.values[1], sol.num_feats)
+
+    test_copy = NumFeatsTester.test_copy
+    test_deepcopy = NumFeatsTester.test_deepcopy
+    test_serialization = NumFeatsTester.test_serialization
+    test_repr = NumFeatsTester.test_repr
+    _check_deepcopy = NumFeatsTester._check_deepcopy
+
+
+class KappaFeatsPropTester(unittest.TestCase):
+    """Test KappaFeatsProp."""
+
+    FitnessFunc = KappaFeatsProp
+
+    def test_evaluate(self):
+        """Test the evaluation method."""
+        # Fitness function to be tested
+        func = self.FitnessFunc(dataset)
+
+        # Species for the solution
+        species = Species(num_feats=dataset.num_feats)
+
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
+
+        # Evaluate the solution
+        sol.fitness.values = func.evaluate(sol)
+
+        # Check that Kappa is in [-1, 1]
+        self.assertGreaterEqual(sol.fitness.values[0], -1)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+        # Check that the proportion of selected features is in [0, 1]
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[1], 0)
+        self.assertLessEqual(sol.fitness.values[1], 1)
+
+    test_copy = NumFeatsTester.test_copy
+    test_deepcopy = NumFeatsTester.test_deepcopy
+    test_serialization = NumFeatsTester.test_serialization
+    test_repr = NumFeatsTester.test_repr
+    _check_deepcopy = NumFeatsTester._check_deepcopy
+
+
+class AccuracyFeatsPropTester(unittest.TestCase):
+    """Test AccuracyFeatsProp."""
+
+    FitnessFunc = AccuracyFeatsProp
+
+    def test_evaluate(self):
+        """Test the evaluation method."""
+        # Fitness function to be tested
+        func = self.FitnessFunc(dataset)
+
+        # Species for the solution
+        species = Species(num_feats=dataset.num_feats)
+
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
+
+        # Evaluate the solution
+        sol.fitness.values = func.evaluate(sol)
+
+        # Check that accuracy is in [0, 1]
+        self.assertGreaterEqual(sol.fitness.values[0], 0)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+        # Check that the proportion of selected features is in [0, 1]
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[1], 0)
+        self.assertLessEqual(sol.fitness.values[1], 1)
 
     test_copy = NumFeatsTester.test_copy
     test_deepcopy = NumFeatsTester.test_deepcopy

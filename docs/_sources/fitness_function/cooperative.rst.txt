@@ -27,4 +27,7 @@
 .. toctree::
     :hidden:
 
-    KappaNumFeats <cooperative/kappa_num_feats_c>
+    KappaNumFeatsC <cooperative/kappa_num_feats_c>
+    KappaFeatsPropC <cooperative/kappa_feats_prop_c>
+    AccuracyNumFeatsC <cooperative/accuracy_num_feats_c>
+    AccuracyFeatsPropC <cooperative/accuracy_feats_prop_c>

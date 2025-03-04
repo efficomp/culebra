@@ -28,5 +28,10 @@
     :hidden:
 
     NumFeats <feature_selection/num_feats>
+    FeatsProportion <feature_selection/feats_proportion>
     KappaIndex <feature_selection/kappa_index>
+    Accuracy <feature_selection/accuracy>
     KappaNumFeats <feature_selection/kappa_num_feats>
+    KappaFeatsProp <feature_selection/kappa_feats_prop>
+    AccuracyNumFeats <feature_selection/accuracy_num_feats>
+    AccuracyFeatsProp <feature_selection/accuracy_feats_prop>

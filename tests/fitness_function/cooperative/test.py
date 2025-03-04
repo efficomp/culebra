@@ -32,7 +32,12 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Solution as ClassifierOptimizationSolution
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.cooperative import (
+    KappaNumFeatsC,
+    KappaFeatsPropC,
+    AccuracyNumFeatsC,
+    AccuracyFeatsPropC
+)
 from culebra.tools import Dataset
 
 
@@ -46,52 +51,54 @@ dataset = Dataset(DATASET_PATH, output_index=-1)
 # Normalize inputs between 0 and 1
 dataset.normalize()
 
+# Species to optimize a SVM-based classifier
+hyperparams_species = ClassifierOptimizationSpecies(
+    lower_bounds=[0, 0],
+    upper_bounds=[100000, 100000],
+    names=["C", "gamma"]
+)
+
+# Species for the feature selection problem
+min_feat1 = 0
+max_feat1 = dataset.num_feats / 2
+features_species1 = FeatureSelectionSpecies(
+    num_feats=dataset.num_feats,
+    min_feat=min_feat1,
+    max_feat=max_feat1
+)
+
+min_feat2 = max_feat1 + 1
+max_feat2 = dataset.num_feats - 1
+features_species2 = FeatureSelectionSpecies(
+    num_feats=dataset.num_feats,
+    min_feat=min_feat2,
+    max_feat=max_feat2
+)
+
 
 class KappaNumFeatsCTester(unittest.TestCase):
     """Test KappaNumFeatsC."""
 
+    FitnessFunc = KappaNumFeatsC
+
     def test_evaluate(self):
         """Test the evaluation method."""
-        # Species to optimize a SVM-based classifier
-        hyperparams_species = ClassifierOptimizationSpecies(
-            lower_bounds=[0, 0],
-            upper_bounds=[100000, 100000],
-            names=["C", "gamma"]
-        )
-
-        # Species for the feature selection problem
-        min_feat1 = 0
-        max_feat1 = dataset.num_feats / 2
-        features_species1 = FeatureSelectionSpecies(
-            num_feats=dataset.num_feats,
-            min_feat=min_feat1,
-            max_feat=max_feat1
-        )
-
-        min_feat2 = max_feat1 + 1
-        max_feat2 = dataset.num_feats - 1
-        features_species2 = FeatureSelectionSpecies(
-            num_feats=dataset.num_feats,
-            min_feat=min_feat2,
-            max_feat=max_feat2
-        )
-
         hyperparams_sol = ClassifierOptimizationSolution(
-            hyperparams_species, KappaNumFeatsC.Fitness
+            hyperparams_species, self.FitnessFunc.Fitness
         )
 
         features_sol1 = FeatureSelectionSolution(
-            features_species1, KappaNumFeatsC.Fitness
+            features_species1, self.FitnessFunc.Fitness
         )
 
         features_sol2 = FeatureSelectionSolution(
-            features_species2, KappaNumFeatsC.Fitness
+            features_species2, self.FitnessFunc.Fitness
         )
 
         representatives = [hyperparams_sol, features_sol1, features_sol2]
 
         # Fitness function to be tested
-        fitness_func = KappaNumFeatsC(dataset)
+        fitness_func = self.FitnessFunc(dataset)
 
         # Evaluate the solutions
         for index, sol in enumerate(representatives):
@@ -115,9 +122,33 @@ class KappaNumFeatsCTester(unittest.TestCase):
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
-        fitness_func = KappaNumFeatsC(dataset)
+        fitness_func = self.FitnessFunc(dataset)
         self.assertIsInstance(repr(fitness_func), str)
         self.assertIsInstance(str(fitness_func), str)
+
+
+class KappaFeatsPropCTester(unittest.TestCase):
+    """Test KappaFeatsPropC."""
+
+    FitnessFunc = KappaFeatsPropC
+    test_evaluate = KappaNumFeatsCTester.test_evaluate
+    test_repr = KappaNumFeatsCTester.test_repr
+
+
+class AccuracyNumFeatsCTester(unittest.TestCase):
+    """Test AccuracyNumFeatsC."""
+
+    FitnessFunc = AccuracyNumFeatsC
+    test_evaluate = KappaNumFeatsCTester.test_evaluate
+    test_repr = KappaNumFeatsCTester.test_repr
+
+
+class AccuracyFeatsPropCTester(unittest.TestCase):
+    """Test AccuracyFeatsPropC."""
+
+    FitnessFunc = AccuracyFeatsPropC
+    test_evaluate = KappaNumFeatsCTester.test_evaluate
+    test_repr = KappaNumFeatsCTester.test_repr
 
 
 if __name__ == '__main__':

@@ -33,6 +33,14 @@ fitness functions. The following classes are provided:
   * :py:class:`~culebra.fitness_function.abc.RBFSVCFitnessFunction`:
     Is centered on the hyperparameters optimization of SVM-based classifiers
     with RBF kernels.
+
+  * :py:class:`~culebra.fitness_function.abc.CooperativeFSFitnessFunction`:
+    Abstract base class for all the fitness functions of cooperative FS
+    problems.
+
+  * :py:class:`~culebra.fitness_function.abc.CooperativeRBFSVCFSFitnessFunction`:
+    Abstract base class for all the fitness functions of cooperative FS
+    problems using RBF SVM classifiers.
 """
 
 from __future__ import annotations
@@ -45,7 +53,7 @@ import numpy as np
 from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
 
-from culebra.abc import FitnessFunction
+from culebra.abc import FitnessFunction, Solution
 from culebra.checker import check_float, check_instance
 from culebra.fitness_function import DEFAULT_CLASSIFIER
 from culebra.solution.feature_selection import Species as FSSpecies
@@ -53,9 +61,9 @@ from culebra.tools import Dataset
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.4.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -403,10 +411,97 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
             )
 
 
+class CooperativeFSFitnessFunction(FitnessFunction):
+    """Abstract base class fitness function for cooperative FS problems."""
+
+    def construct_solutions(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[Solution, ...]:
+        """Assemble the solution and representatives.
+
+           This fitness function assumes that:
+
+             * *representatives[0]*: Codes the SVC hyperparameters
+               (C and gamma). Thus, it is an instance of
+               :py:class:`culebra.solution.parameter_optimization.Solution`
+             * *representatives[1:]*: The remaining solutions code the
+               features selected, each solution a different range of
+               features. All of them are instances of
+               :py:class:`culebra.solution.feature_selection.Solution`
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem
+        :type index: :py:class:`int`
+        :param representatives: Representative solutions of each species
+            being optimized
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The solutions to the different problems solved cooperatively
+        :rtype: :py:class:`tuple` of py:class:`culebra.abc.Solution`
+        """
+        # Number of representatives
+        num_representatives = len(representatives)
+
+        # Hyperparameters solution
+        sol_hyperparams = sol if index == 0 else representatives[0]
+
+        # Prototype solution for the final solution containing all the
+        # features
+        prototype_sol_features = sol if index == 1 else representatives[1]
+
+        # All the features
+        all_the_features = []
+
+        # Number of features
+        number_features = prototype_sol_features.species.num_feats
+
+        # Update the features and feature min and max indices
+        for repr_index in range(1, num_representatives):
+            # Choose thge correct solution
+            the_sol = (
+                sol if repr_index == index else representatives[repr_index]
+            )
+            # Get the features
+            all_the_features += list(the_sol.features)
+
+        # Features solution class
+        sol_features_cls = prototype_sol_features.__class__
+
+        # Features solution species class
+        sol_features_species_cls = prototype_sol_features.species.__class__
+
+        # Features solution species
+        sol_features_species = sol_features_species_cls(number_features)
+
+        # Features solution
+        sol_features = sol_features_cls(
+            species=sol_features_species,
+            fitness_cls=self.Fitness,
+            features=all_the_features
+        )
+
+        return (sol_features, sol_hyperparams)
+
+
+class CooperativeRBFSVCFSFitnessFunction(
+    CooperativeFSFitnessFunction,
+    RBFSVCFitnessFunction
+):
+    """Abstract base class for cooperative FS problems using an RBF SVC classifier."""
+
+
 # Exported symbols for this module
 __all__ = [
     'DatasetFitnessFunction',
     'ClassificationFitnessFunction',
     'FeatureSelectionFitnessFunction',
-    'RBFSVCFitnessFunction'
+    'RBFSVCFitnessFunction',
+    'CooperativeFSFitnessFunction',
+    'CooperativeRBFSVCFSFitnessFunction'
 ]

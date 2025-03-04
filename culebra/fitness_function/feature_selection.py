@@ -25,14 +25,41 @@ problems:
     single-objective function that minimizes the number of selected features
     from a :py:class:`~culebra.tools.Dataset`.
 
+  * :py:class:`~culebra.fitness_function.feature_selection.FeatsProportion`:
+    Dummy single-objective function that minimizes the number of selected
+    features from a :py:class:`~culebra.tools.Dataset`. The difference with
+    :py:class:`~culebra.fitness_function.feature_selection.NumFeats` is just
+    that
+    :py:class:`~culebra.fitness_function.feature_selection.FeatsProportion`
+    returns a normalized number in [0, 1].
+
   * :py:class:`~culebra.fitness_function.feature_selection.KappaIndex`:
     Single-objective function that maximizes the Kohen's Kappa index for
     classification problems.
+
+  * :py:class:`~culebra.fitness_function.feature_selection.Accuracy`:
+    Single-objective function that maximizes the Accuracy for classification
+    problems.
 
   * :py:class:`~culebra.fitness_function.feature_selection.KappaNumFeats`:
     Bi-objective function composed by the two former functions. It tries to
     both maximize the Kohen's Kappa index and minimize the number of features
     that a solution has selected.
+
+  * :py:class:`~culebra.fitness_function.feature_selection.AccuracyNumFeats`:
+    Bi-objective function composed by the two former functions. It tries to
+    both maximize the Accuracy and minimize the number of features that a
+    solution has selected.
+
+  * :py:class:`~culebra.fitness_function.feature_selection.KappaFeatsProp`:
+    Bi-objective function composed by the two former functions. It tries to
+    both maximize the Kohen's Kappa index and minimize the proportion of
+    features that a solution has selected.
+
+  * :py:class:`~culebra.fitness_function.feature_selection.AccuracyFeatsProp`:
+    Bi-objective function composed by the two former functions. It tries to
+    both maximize the Accuracy and minimize the proportion of features that a
+    solution has selected.
 """
 
 from __future__ import annotations
@@ -104,6 +131,56 @@ class NumFeats(FeatureSelectionFitnessFunction):
         """
         # Return the solution's size
         return (sol.num_feats,)
+
+
+class FeatsProportion(FeatureSelectionFitnessFunction):
+    """Dummy single-objective fitness function for testing purposes.
+
+    Return the proportion of selected features chosen by a solution. That is,
+    0 if no features are selected or 1 if all the features have been chosen.
+    """
+
+    class Fitness(Fitness):
+        """Fitness class.
+
+        Handles the values returned by the
+        :py:meth:`~culebra.fitness_function.feature_selection.FeatsProportion.evaluate`
+        method within a
+        :py:class:`~culebra.solution.feature_selection.Solution`.
+        """
+
+        weights = (-1.0,)
+        """Minimize the proportion of features that a solution has selected."""
+
+        names = ("FP",)
+        """Name of the objective."""
+
+        thresholds = [DEFAULT_THRESHOLD]
+        """Similarity threshold for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        # Return the solution's size
+        return (float(sol.num_feats)/sol.species.num_feats,)
 
 
 class KappaIndex(FeatureSelectionFitnessFunction):
@@ -281,6 +358,62 @@ class KappaNumFeats(KappaIndex, NumFeats):
         return KappaIndex.evaluate(self, sol) + NumFeats.evaluate(self, sol)
 
 
+class KappaFeatsProp(KappaIndex, FeatsProportion):
+    """Bi-objective fitness class for feature selection.
+
+    Maximizes the Kohen's Kappa index and minimizes the proportion of features
+    that a solution has selected.
+    """
+
+    class Fitness(Fitness):
+        """Fitness class.
+
+        Handles the values returned by the
+        :py:meth:`~culebra.fitness_function.feature_selection.KappaFeatsProp.evaluate`
+        method within a
+        :py:class:`~culebra.solution.feature_selection.Solution`.
+        """
+
+        weights = KappaIndex.Fitness.weights + FeatsProportion.Fitness.weights
+        """Maximizes the Kohen's Kappa index and minimizes the propotion of
+        features that a solution has selected.
+        """
+
+        names = KappaIndex.Fitness.names + FeatsProportion.Fitness.names
+        """Name of the objectives."""
+
+        thresholds = (
+            KappaIndex.Fitness.thresholds + FeatsProportion.Fitness.thresholds
+        )
+        """Similarity thresholds for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        return (
+            KappaIndex.evaluate(self, sol) +
+            FeatsProportion.evaluate(self, sol)
+        )
+
+
 class AccuracyNumFeats(Accuracy, NumFeats):
     """Bi-objective fitness class for feature selection.
 
@@ -334,11 +467,70 @@ class AccuracyNumFeats(Accuracy, NumFeats):
         return Accuracy.evaluate(self, sol) + NumFeats.evaluate(self, sol)
 
 
+class AccuracyFeatsProp(Accuracy, FeatsProportion):
+    """Bi-objective fitness class for feature selection.
+
+    Maximizes the accuracy and minimizes the proportion of features that a
+    solution has selected.
+    """
+
+    class Fitness(Fitness):
+        """Fitness class.
+
+        Handles the values returned by the
+        :py:meth:`~culebra.fitness_function.feature_selection.AccuracyFeatsProp.evaluate`
+        method within a
+        :py:class:`~culebra.solution.feature_selection.Solution`.
+        """
+
+        weights = Accuracy.Fitness.weights + FeatsProportion.Fitness.weights
+        """Maximizes the accuracy and minimizes the proportion of features that
+        a solution has selected.
+        """
+
+        names = Accuracy.Fitness.names + FeatsProportion.Fitness.names
+        """Name of the objectives."""
+
+        thresholds = (
+            Accuracy.Fitness.thresholds + FeatsProportion.Fitness.thresholds
+        )
+        """Similarity thresholds for fitness comparisons."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        return (
+            Accuracy.evaluate(self, sol) +
+            FeatsProportion.evaluate(self, sol)
+        )
+
+
 # Exported symbols for this module
 __all__ = [
     'NumFeats',
+    'FeatsProportion',
     'KappaIndex',
     'Accuracy',
     'KappaNumFeats',
-    'AccuracyNumFeats'
+    'KappaFeatsProp',
+    'AccuracyNumFeats',
+    'AccuracyFeatsProp',
 ]

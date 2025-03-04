@@ -19,44 +19,45 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.cooperative.KappaNumFeatsC` class
-=====================================================================
+:py:class:`culebra.fitness_function.cooperative.KappaFeatsPropC` class
+======================================================================
 
-.. autoclass:: culebra.fitness_function.cooperative.KappaNumFeatsC
+.. autoclass:: culebra.fitness_function.cooperative.KappaFeatsPropC
 
     More information about this fitness function can be found in
     [Gonzalez2021]_.
 
 Class attributes
 ----------------
-.. class:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness
+.. class:: culebra.fitness_function.cooperative.KappaFeatsPropC.Fitness
 
     Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.cooperative.KappaNumFeatsC.evaluate`
+    :py:meth:`~culebra.fitness_function.cooperative.KappaFeatsPropC.evaluate`
     method within a :py:class:`~culebra.abc.Solution`.
 
-    .. autoattribute:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness.names
-    .. autoattribute:: culebra.fitness_function.cooperative.KappaNumFeatsC.Fitness.thresholds
+    .. autoattribute:: culebra.fitness_function.cooperative.KappaFeatsPropC.Fitness.weights
+    .. autoattribute:: culebra.fitness_function.cooperative.KappaFeatsPropC.Fitness.names
+    .. autoattribute:: culebra.fitness_function.cooperative.KappaFeatsPropC.Fitness.thresholds
 
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.load_pickle
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.load_pickle
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.get_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.set_fitness_objective_threshold
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.num_obj
-.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.num_nodes
-.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.training_data
-.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.test_data
-.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.test_prop
-.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.classifier
+.. autoproperty:: culebra.fitness_function.cooperative.KappaFeatsPropC.num_obj
+.. autoproperty:: culebra.fitness_function.cooperative.KappaFeatsPropC.num_nodes
+.. autoproperty:: culebra.fitness_function.cooperative.KappaFeatsPropC.training_data
+.. autoproperty:: culebra.fitness_function.cooperative.KappaFeatsPropC.test_data
+.. autoproperty:: culebra.fitness_function.cooperative.KappaFeatsPropC.test_prop
+.. autoproperty:: culebra.fitness_function.cooperative.KappaFeatsPropC.classifier
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.save_pickle
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.heuristic
-.. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.evaluate
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.save_pickle
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.heuristic
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.evaluate
+.. automethod:: culebra.fitness_function.cooperative.KappaFeatsPropC.construct_solutions

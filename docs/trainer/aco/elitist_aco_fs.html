@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>culebra.trainer.aco.ElitistACO_FS class &#8212; culebra</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
     <script src="../../_static/documentation_options.js?v=37f418d5"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
@@ -472,9 +472,9 @@ the trainer as its unique argument and returns a boolean value,
 otherwise.</p>
 <p>If more than one arguments are needed to define the termniation
 condition, <a class="reference external" href="https://docs.python.org/3/library/functools.html#functools.partial" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a> can be used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
-<span class="k">def</span> <span class="nf">my_crit</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">max_iters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_crit</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">max_iters</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">trainer</span><span class="o">.</span><span class="n">current_iter</span> <span class="o">&lt;</span> <span class="n">max_iters</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span>
