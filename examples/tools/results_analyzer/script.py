@@ -23,12 +23,12 @@
 """Usage example of the results analyzer."""
 
 from os import listdir, path
-from sys import argv
+from sys import argv, exit
 
 from culebra.tools import Results, ResultsAnalyzer, DEFAULT_RESULTS_BASENAME
 
 
-valid_commands = ("compare", "rank")
+valid_commands = ("compare", "rank", "effect_size")
 """Valid commands for this script."""
 
 
@@ -99,6 +99,8 @@ elif len(argv) > 2:
 
 # Get the command
 command = argv[1].lower()
+
+
 if command not in valid_commands:
     print(f"\nERROR: Bad command '{argv[1]}'\n")
     print_valid_commands(valid_commands)
@@ -131,7 +133,7 @@ if command == "rank":
     )
 
     print(multiple_rank)
-# Comparison of the results
+# Comparison or effect size estimation of the results
 else:
     # Keys of the data to be compared
     # The dict keys will be used to select a results dataframe
@@ -141,9 +143,16 @@ else:
         "test_fitness": ["Kappa", "NF"]
     }
 
-    # Compare the results
+    # Process the results
     for dataframe in comparison_data_keys.keys():
         for column in comparison_data_keys[dataframe]:
-            comparison = analyzer.compare(dataframe, column)
-            print("\n\n")
-            print(comparison)
+            print(f"{dataframe}.{column}", end=" ")
+
+            if command == "compare":
+                print("comparison")
+                results = analyzer.compare(dataframe, column)
+            else:
+                print("effect size")
+                results = analyzer.effect_size(dataframe, column)
+            print(results)
+            print()

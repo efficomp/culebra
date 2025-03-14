@@ -40,7 +40,9 @@ many times, culebra provides this features by means of the following classes:
   * The :py:class:`~culebra.tools.TestOutcome` class, to keep the outcome of a
     statistical test
   * The :py:class:`~culebra.tools.ResultsComparison` class, to keep the outcome
-    of a comperison of several batches results
+    of a comparison of several batches results
+  * The :py:class:`~culebra.tools.EffectSize` class, to keep the outcome
+    of an effect size estimation of several batches results
 """
 
 from .dataset import Dataset, DEFAULT_SEP
@@ -48,6 +50,7 @@ from .results import Results, EXCEL_FILE_EXTENSION
 from .results_analyzer import (
     TestOutcome,
     ResultsComparison,
+    EffectSize,
     ResultsAnalyzer,
     DEFAULT_ALPHA,
     DEFAULT_NORMALITY_TEST,
@@ -82,6 +85,7 @@ __all__ = [
     'Results',
     'TestOutcome',
     'ResultsComparison',
+    'EffectSize',
     'ResultsAnalyzer',
     'Evaluation',
     'Experiment',

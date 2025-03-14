@@ -1034,7 +1034,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertNotEqual(comparison_result.homoscedasticity, None)
         self.assertTrue(comparison_result.homoscedasticity.success.all())
         self.assertTrue(comparison_result.global_comparison.success.all())
-        self.assertEqual(comparison_result.pairwise_comparison, None)
+        self.assertNotEqual(comparison_result.pairwise_comparison, None)
 
         # Try a comparison of two equal heteroscedastic results
         comparison_result = analyzer.compare(
@@ -1044,7 +1044,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertFalse(comparison_result.normality.success.all())
         self.assertEqual(comparison_result.homoscedasticity, None)
         self.assertTrue(comparison_result.global_comparison.success.all())
-        self.assertEqual(comparison_result.pairwise_comparison, None)
+        self.assertNotEqual(comparison_result.pairwise_comparison, None)
 
         # Prepare the DataFrame with some data for the third results manager
         data3 = DataFrame()
@@ -1063,7 +1063,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertNotEqual(comparison_result.homoscedasticity, None)
         self.assertTrue(comparison_result.homoscedasticity.success.all())
         self.assertTrue(comparison_result.global_comparison.success.all())
-        self.assertEqual(comparison_result.pairwise_comparison, None)
+        self.assertNotEqual(comparison_result.pairwise_comparison, None)
 
         # Try a comparison of three equal heteroscedastic results
         comparison_result = analyzer.compare(
@@ -1073,7 +1073,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertFalse(comparison_result.normality.success.all())
         self.assertEqual(comparison_result.homoscedasticity, None)
         self.assertTrue(comparison_result.global_comparison.success.all())
-        self.assertEqual(comparison_result.pairwise_comparison, None)
+        self.assertNotEqual(comparison_result.pairwise_comparison, None)
 
         # Change data3 to store different distributions
         data3[parametric_column_key] = np.random.normal(
@@ -1237,6 +1237,53 @@ class ResultsAnalyzerTester(unittest.TestCase):
                 execution_metrics_key][runtime_key]["Results1"],
             3
         )
+
+    def test_effect_size(self):
+        """Test the rank method."""
+        column_key = "Data"
+        dataframe_key = "EffectSize"
+
+        # Fix the random seed
+        random.seed(1)
+        np.random.seed(1)
+
+        # Create the results analyzer
+        analyzer = ResultsAnalyzer()
+
+        # Prepare the DataFrame with some data for the first results manager
+        data1 = DataFrame()
+        data1[column_key] = 10 * np.random.randn(10000) + 60
+        results1 = Results()
+        results1[dataframe_key] = data1
+        analyzer["Results1"] = results1
+
+        # Prepare the DataFrame with some data for the second results manager
+        data2 = DataFrame()
+        data2[column_key] = 10 * np.random.randn(10000) + 55
+        results2 = Results()
+        results2[dataframe_key] = data2
+        analyzer["Results2"] = results2
+
+        # Prepare the DataFrame with some data for the second results manager
+        data3 = DataFrame()
+        data3[column_key] = np.array([5, 7, 9, 11, 13])
+        results3 = Results()
+        results3[dataframe_key] = data3
+        analyzer["Results3"] = results3
+
+        # Prepare the DataFrame with some data for the second results manager
+        data4 = DataFrame()
+        data4[column_key] = np.array([6, 8, 10, 12, 14])
+        results4 = Results()
+        results4[dataframe_key] = data4
+        analyzer["Results4"] = results4
+
+        effect_size = analyzer.effect_size(dataframe_key, column_key)
+        self.assertAlmostEqual(effect_size.value[0][1], 0.5, places=3)
+        self.assertAlmostEqual(effect_size.value[2][3], 0.31622776601683794)
+
+
+
 
 
 if __name__ == '__main__':

@@ -37,8 +37,8 @@ TEMP = __pycache__
 PYTHON = /usr/bin/env python3
 RM = rm -rf
 
-.PHONY: compare rank
-compare rank : $(SCRIPT) $(WRAPPER)/$(RESULTS_PICKLED)
+.PHONY: compare rank effect_size
+compare rank effect_size: $(SCRIPT) $(WRAPPER)/$(RESULTS_PICKLED)
 	@$(PYTHON) $(SCRIPT) $@
 	@echo
 

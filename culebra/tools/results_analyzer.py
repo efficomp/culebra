@@ -108,6 +108,29 @@ _P_ADJUST_NAMES = {
 """Names of p-values adjustment methods."""
 
 
+def title(text: str, underline: str = '-') -> str:
+    """Make a title for the output report.
+
+    :param text: Text to be displayed
+    :type text: :py:class:`str`
+    :param underline: Symbol used to underline the title
+    :type underline: :py:class:`str`
+    :return: The formatted title
+    :rtype: :py:class:`str`
+    """
+    # Check the underline char
+    underline_name = "underline character"
+    underline = check_str(underline, underline_name)
+    if len(underline) != 1:
+        raise ValueError(
+            f"The {underline_name} must be a single character: "
+            f"{underline}"
+        )
+
+    # Return the formatted title
+    return text + "\n" + (underline * len(text)) + "\n\n"
+
+
 class TestOutcome(NamedTuple):
     """Outcome from a statistical test."""
 
@@ -148,10 +171,11 @@ class TestOutcome(NamedTuple):
         data = []
         if len(self.pvalue.shape) == 1:
             if self.pvalue.size == 1:
-                headers = ('Success', 'p-value')
+                headers = ('Batch', 'Success', 'p-value')
                 index = None
                 data = [
                     [
+                        '\n'.join(self.batches),
                         self.success,
                         np.round(self.pvalue, _DEFAULT_PRECISION)
                     ]
@@ -169,7 +193,7 @@ class TestOutcome(NamedTuple):
                     for (i, _) in sorted_batches
                 ]
         else:
-            headers = ('Batch1', 'Batch2', 'Success', 'p-value')
+            headers = ('Batch0', 'Batch1', 'Success', 'p-value')
             index = None
             num_batches = len(self.batches)
             for i in range(num_batches):
@@ -192,12 +216,22 @@ class TestOutcome(NamedTuple):
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
+        output = title(self.test)
+        # Add the input parameters to the output
         inputs = [
-            [field.capitalize(), self.__getattribute__(field)]
-            for field in ('test', 'data', 'column', 'alpha')
+            ["Batches:", ", ".join(sorted(self.batches))]
         ]
 
-        return tabulate(inputs, tablefmt='plain') + "\n\n" + self.__str__()
+        inputs += [
+            [field.capitalize(), self.__getattribute__(field)]
+            for field in ('data', 'column', 'alpha')
+        ]
+
+        return (
+            output +
+            tabulate(inputs, tablefmt='plain') + "\n\n" +
+            self.__str__()
+        )
 
 
 class ResultsComparison(NamedTuple):
@@ -215,43 +249,16 @@ class ResultsComparison(NamedTuple):
 
     pairwise_comparison: TestOutcome | None
     """Outcome of the pairwise comparison of the results. Only performed if
-    all the analyzed results did not follow the same distribution."""
+    more than two results are analyzed and not all the analyzed results follow
+    the same distribution."""
 
-    def __str__(self) -> str:
-        """Pretty print of the comparison result."""
-
-        def title(text: str, underline: str = '-') -> str:
-            """Make a title for the output report.
-
-            :param text: Text to be displayed
-            :type text: :py:class:`str`
-            :param underline: Symbol used to underline the title
-            :type underline: :py:class:`str`
-            :return: The formatted title
-            :rtype: :py:class:`str`
-            """
-            # Check the underline char
-            underline_name = "underline character"
-            underline = check_str(underline, underline_name)
-            if len(underline) != 1:
-                raise ValueError(
-                    f"The {underline_name} must be a single character: "
-                    f"{underline}"
-                )
-
-            # Return the formatted title
-            return text + "\n" + (underline * len(text)) + "\n\n"
-
+    def __repr__(self) -> str:
+        """Print all the input parameters and outputs returned by a test."""
         # Title for the results analysis
         output = title("Results comparison", '=')
 
         # Get batches as a string
-        batches = ""
-        for batch_name in sorted(self.normality.batches):
-            if len(batches) == 0:
-                batches += batch_name
-            else:
-                batches += ", " + batch_name
+        batches = ", ".join(sorted(self.normality.batches))
 
         # Add the input parameters to the output
         inputs = [
@@ -310,14 +317,88 @@ class ResultsComparison(NamedTuple):
         # Output from a pairwise comparison
         if self.pairwise_comparison is not None:
             output += title(
-                "Pairwise comparison: " + self.pairwise_comparison.test, '-'
+                "Pairwise comparison: " +
+                self.pairwise_comparison.test +
+                f", alpha = {self.pairwise_comparison.alpha}",
+                '-'
             )
 
-            output += "Results following the same distribution "
-            output += f"(alpha = {self.pairwise_comparison.alpha})\n\n"
             output += self.pairwise_comparison.__str__()
 
         return output
+
+    def __str__(self) -> str:
+        """Pretty print of the success and p-values returned by a test."""
+        return self.pairwise_comparison.__str__()
+
+
+class EffectSize(NamedTuple):
+    """Outcome from a effect size estimation."""
+
+    test: str
+    """Name of the test."""
+
+    data: str
+    """Key for the dataframe containing the data"""
+
+    column: str
+    """Column key in the dataframe"""
+
+    batches: list
+    """Labels of all the analyzed batches."""
+
+    value: np.ndarray
+    """Effect size values."""
+
+    def __str__(self) -> str:
+        """Pretty print of the effect sizes."""
+        sorted_batches = list(
+            sorted(
+                dict(
+                    enumerate(self.batches)
+                ).items(),
+                key=lambda item: item[1]
+            )
+        )
+
+        data = []
+        headers = ('Batch0', 'Batch1', 'Effect size')
+        num_batches = len(self.batches)
+        for i in range(num_batches):
+            index_i, batch_i = sorted_batches[i]
+            for j in range(i+1, num_batches):
+                index_j, batch_j = sorted_batches[j]
+                data += [
+                    [
+                        batch_i,
+                        batch_j,
+                        round(
+                            self.value[index_i][index_j],
+                            _DEFAULT_PRECISION
+                        )
+                    ]
+                ]
+
+        return tabulate(data, headers=headers, showindex=None)
+
+    def __repr__(self) -> str:
+        """Print all the input parameters and outputs."""
+        output = title(self.test)
+        # Add the input parameters to the output
+        inputs = [
+            ["Batches:", ", ".join(sorted(self.batches))]
+        ]
+
+        inputs += [
+            [field.capitalize(), self.__getattribute__(field)]
+            for field in ('data', 'column')
+        ]
+
+        return (
+            output +
+            tabulate(inputs, tablefmt='plain') + "\n\n" +
+            self.__str__()
+        )
 
 
 class ResultsAnalyzer(UserDict, Base):
@@ -716,6 +797,80 @@ class ResultsAnalyzer(UserDict, Base):
             pvalue=results.to_numpy()
         )
 
+    def effect_size(
+        self,
+        dataframe_key: str,
+        column: str
+    ) -> TestOutcome:
+        """Effect size calculation for several batches.
+
+        The effect size is calculated with the Cohen's d index.
+
+        :param dataframe_key: Key to select a dataframe from the results
+            of all the batches
+        :type dataframe_key: :py:class:`str`
+        :param column: Column label to be analyzed in the selected dataframes
+            from the results of all the batches
+        :type column: :py:class:`str`
+        :return: The results of the effect sizes estimation
+        :rtype: :py:class:`~culebra.tools.EffectSize`
+        :raises ValueError: If there aren't sufficient data in the analyzed
+            results with such dataframe key and column label
+        """
+        def cohens_d(group1: Series, group2: Series) -> float:
+            """Calculate the Cohen's d index fot two groups.
+
+            :param group1: The first group
+            :type group1: :py:class:`~pandas.Series`
+            :param group2: :py:class:`~pandas.Series`
+            :type group2: Ejem....
+            :return: The effect size
+            :rtype: :py:class:`float`
+            """
+            # Calculating means of the two groups
+            mean1, mean2 = group1.mean(), group2.mean()
+
+            # Calculating pooled standard deviation
+            std1, std2 = group1.std(ddof=1), group2.std(ddof=1)
+            n1, n2 = len(group1), len(group2)
+            pooled_std = np.sqrt(
+                ((n1 - 1) * std1 ** 2 + (n2 - 1) * std2 ** 2) / (n1 + n2 - 2)
+            )
+
+            # Calculating Cohen's d
+            d = abs(mean1 - mean2) / pooled_std
+
+            return d
+
+        # Gather the data
+        data = self._gather_data(dataframe_key, column)
+        num_batches = len(data.keys())
+
+        # Check that the number of distributions is ok
+        if num_batches < 2:
+            raise ValueError(
+                "Less than two results with such dataframe key and column "
+                "label"
+            )
+
+        effect_size = np.zeros((num_batches, num_batches))
+
+        batch_names = tuple(data.keys())
+        for i, batch_i in enumerate(batch_names):
+            for j in range(i+1, num_batches):
+                batch_j = batch_names[j]
+                effect_size[i][j] = effect_size[j][i] = cohens_d(
+                    data[batch_i], data[batch_j]
+                )
+
+        return EffectSize(
+            test="Cohen's d index",
+            data=dataframe_key,
+            column=column,
+            batches=list(data.keys()),
+            value=effect_size
+        )
+
     def compare(
         self,
         dataframe_key: str,
@@ -808,6 +963,19 @@ class ResultsAnalyzer(UserDict, Base):
         ):
             pairwise_comparison_result = pairwise_compare_meth(
                 dataframe_key, column, alpha=alpha
+            )
+        else:
+            num_batches = len(self)
+            pairwise_comparison_result = TestOutcome(
+                test=global_comparison_result.test,
+                data=global_comparison_result.data,
+                column=global_comparison_result.column,
+                alpha=global_comparison_result.alpha,
+                batches=global_comparison_result.batches,
+                pvalue=np.full(
+                    (num_batches, num_batches),
+                    global_comparison_result.pvalue[0]
+                )
             )
 
         # Return the results
@@ -969,6 +1137,7 @@ class ResultsAnalyzer(UserDict, Base):
         # Return the ranks
         rank_series = Series(ranks, index=batch_names, name=column)
         rank_series.sort_index(inplace=True)
+
         return rank_series
 
     def multiple_rank(
@@ -1057,7 +1226,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         multi_index = MultiIndex.from_tuples(
             index_tuples, names=(
-                "DataFrame", "Column"
+                "DataFrame", "Batch"
             )
         )
         multiple_ranking.columns = multi_index
@@ -1117,6 +1286,7 @@ class ResultsAnalyzer(UserDict, Base):
 __all__ = [
     'TestOutcome',
     'ResultsComparison',
+    'EffectSize',
     'ResultsAnalyzer',
     'DEFAULT_ALPHA',
     'DEFAULT_NORMALITY_TEST',
