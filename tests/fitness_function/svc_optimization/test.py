@@ -31,20 +31,21 @@ from culebra.solution.parameter_optimization import (
 from culebra.fitness_function.svc_optimization import (
     C,
     KappaIndex,
-    KappaC
+    KappaC,
+    Accuracy,
+    AccuracyC
 )
 from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
-                'statlog/australian/australian.dat')
+dataset = Dataset.load_from_uci(name="Wine")
 
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+# Remove outliers
+dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 
 # Species for the solution
 species = Species(
@@ -85,7 +86,7 @@ class KappaIndexTester(unittest.TestCase):
     def test_evaluate(self):
         """Test the evaluation method."""
         # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        func = self.FitnessFunc(dataset, test_prop=0.3)
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
@@ -106,7 +107,7 @@ class KappaCTester(unittest.TestCase):
     def test_evaluate(self):
         """Test the evaluation method."""
         # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        func = self.FitnessFunc(dataset, test_prop=0.3)
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
@@ -116,6 +117,53 @@ class KappaCTester(unittest.TestCase):
 
         # Check that Kappa is in [-1, 1]
         self.assertGreaterEqual(sol.fitness.values[0], -1)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+        # Check the number of features
+        self.assertEqual(sol.fitness.values[1], sol.values.C)
+
+    test_repr = CTester.test_repr
+
+
+class AccuracyTester(unittest.TestCase):
+    """Test Accuracy."""
+
+    FitnessFunc = Accuracy
+
+    def test_evaluate(self):
+        """Test the evaluation method."""
+        # Fitness function to be tested
+        func = self.FitnessFunc(dataset, test_prop=0.3)
+
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
+
+        # Check that the accuracy is in [0, 1]
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], 0)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+    test_repr = CTester.test_repr
+
+
+class AccuracyCTester(unittest.TestCase):
+    """Test AccuracyC."""
+
+    FitnessFunc = AccuracyC
+
+    def test_evaluate(self):
+        """Test the evaluation method."""
+        # Fitness function to be tested
+        func = self.FitnessFunc(dataset, test_prop=0.3)
+
+        # Create the solution
+        sol = Solution(species=species, fitness_cls=func.Fitness)
+
+        # Evaluate the solution
+        sol.fitness.values = func.evaluate(sol)
+
+        # Check that the accuracy is in [0, 1]
+        self.assertGreaterEqual(sol.fitness.values[0], 0)
         self.assertLessEqual(sol.fitness.values[0], 1)
 
         # Check the number of features

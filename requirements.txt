@@ -6,3 +6,4 @@ sphinx
 tabulate
 openpyxl
 scikit_posthocs
+ucimlrepo

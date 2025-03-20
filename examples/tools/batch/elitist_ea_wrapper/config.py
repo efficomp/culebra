@@ -26,26 +26,17 @@ from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
-                'statlog/australian/australian.dat')
-
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+dataset = Dataset.load_from_uci(name="Wine")
 
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
-# Training fitness function, 50% of samples used for validation
-training_fitness_function = KappaC(
-    training_data=training_data, test_prop=0.5
-)
-
-# Fix the fitness similarity threshold to 0.1 for all the objectives
-training_fitness_function.set_fitness_thresholds(0.01)
+# Training fitness function
+training_fitness_function = KappaC(training_data=training_data, cv_folds=5)
 
 # Test fitness function
 test_fitness_function = KappaC(
@@ -69,7 +60,8 @@ params = {
     # At least one hyperparameter will be mutated
     "gene_ind_mutation_prob": 1.0/species.num_params,
     "pop_size": 100,
-    "max_num_iters": 100
+    "max_num_iters": 100,
+    "checkpoint_enable": False
 }
 
 # Create the wrapper

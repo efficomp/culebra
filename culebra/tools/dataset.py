@@ -34,6 +34,7 @@ from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
 from sklearn.preprocessing import RobustScaler
+from ucimlrepo import fetch_ucirepo
 
 from culebra.abc import Base
 from culebra.checker import check_str, check_int, check_float
@@ -291,6 +292,72 @@ class Dataset(Base):
             test = copy(training)
 
         return training, test
+
+    @classmethod
+    def load_from_uci(
+        cls,
+        name: Optional[str] = None,
+        id: Optional[int] = None,
+    ) -> Dataset:
+        """Load the dataset from the UCI ML repository.
+
+        The dataset can be identified by either its id or its name, but only
+        one of these should be provided.
+
+        If the dataset has more than one output column, only the first column
+        is considered.
+
+        :param name: Dataset name, or substring of name
+        :type name: :py:class:`str`
+        :param id: Dataset ID for UCI ML Repository
+        :type id: :py:class:`int`
+        :raises RuntimeError: If any input value is not numeric or there is any
+            missing data
+        :raises RuntimeError: When loading the dataset
+        :return: The datasets
+        :rtype: :py:class:`~culebra.tools.Dataset`
+        """
+        # Fetch the dataset
+        try:
+            uci_dataset = fetch_ucirepo(name, id)
+        except Exception as e:
+            raise RuntimeError("Error loading the dataset") from e
+
+        inputs_df = uci_dataset.data.features
+
+        # Check if there is any missing data
+        if Dataset.__has_missing_data(inputs_df):
+            raise RuntimeError("Missing inputs in the dataset")
+
+        # Check if all inputs are numeric
+        if not Dataset.__is_numeric(inputs_df):
+            raise RuntimeError(
+                "Input data must contain only numerical data"
+            )
+
+        output_df = uci_dataset.data.targets
+        output_s = output_df.iloc[:, 0]
+
+        # Check if there is any missing data
+        if Dataset.__has_missing_data(output_s):
+            raise RuntimeError("Missing outputs in the dataset")
+
+        # Check that both dataframes have the same number of rows
+        if not len(inputs_df.index) == len(output_s.index):
+            raise RuntimeError(
+                "The inputs and output do not have the same number of rows"
+            )
+
+        # Replace output labels by int identifiers (only if output is not
+        # numeric)
+        output_s = Dataset.__labels_to_numeric(output_s)
+
+        # Convert data to numpy ndarrays and create the dataset
+        dataset = Dataset()
+        dataset._inputs = inputs_df.to_numpy(dtype=float)
+        dataset._outputs = output_s.to_numpy()
+
+        return dataset
 
     def normalize(self, test: Optional[Dataset] = None) -> None:
         """Normalize the dataset between 0 and 1.

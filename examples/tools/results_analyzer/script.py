@@ -107,7 +107,7 @@ if command not in valid_commands:
     exit(-1)
 
 # List of batches results in csv format
-csv_batches_results = ["elitist_ea_wrapper"]
+csv_batches_results = ["nsga3_ea_wrapper"]
 
 # List of serialized batches results
 batches_results = ["nsga2_ea_wrapper"]
@@ -119,8 +119,8 @@ analyzer = init_analyzer(batches_results, csv_batches_results)
 if command == "rank":
     # Keys of the data to be ranked
     multiple_rank_dataframe_keys = (
-        "test_fitness",
-        "test_fitness",
+        "test_best",
+        "test_best",
         "execution_metrics"
     )
     multiple_rank_columns = ("Kappa", "NF", "Runtime")
@@ -140,7 +140,7 @@ else:
     # Each value in its associated list is a column key within the dataframe
     comparison_data_keys = {
         "execution_metrics": ["Runtime"],
-        "test_fitness": ["Kappa", "NF"]
+        "test_best": ["Kappa", "NF"]
     }
 
     # Process the results

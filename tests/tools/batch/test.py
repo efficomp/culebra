@@ -53,19 +53,18 @@ from culebra.tools import (
 )
 
 # Dataset
-DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
-                'statlog/australian/australian.dat')
+dataset = Dataset.load_from_uci(name="Wine")
 
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+# Remove outliers
+dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
-# Training fitness function, 50% of samples used for validation
+# Training fitness function
 my_training_fitness_function = KappaNumFeatsC(
-    training_data=training_data, test_prop=0.5
+    training_data=training_data, cv_folds=5
 )
 
 # Test fitness function
@@ -80,17 +79,24 @@ classifierOptimizationSpecies = ClassifierOptimizationSpecies(
     names=["C", "gamma"]
 )
 
+# Species to optimize a SVM-based classifier
+classifierOptimizationSpecies = ClassifierOptimizationSpecies(
+    lower_bounds=[0, 0],
+    upper_bounds=[1000, 1000],
+    names=["C", "gamma"]
+)
+
 # Species for the feature selection problem
 featureSelectionSpecies1 = FeatureSelectionSpecies(
     num_feats=dataset.num_feats,
-    max_feat=dataset.num_feats/2,
+    max_feat=dataset.num_feats//2,
 )
 featureSelectionSpecies2 = FeatureSelectionSpecies(
     num_feats=dataset.num_feats,
-    min_feat=dataset.num_feats/2 + 1,
+    min_feat=dataset.num_feats//2 + 1,
 )
 
-# Parameters for the trainer
+# Parameters for the wrapper
 params = {
     "solution_classes": [
         ClassifierOptimizationIndividual,
@@ -105,13 +111,17 @@ params = {
     "fitness_function": my_training_fitness_function,
     "subtrainer_cls": ElitistEA,
     "representation_size": 2,
+    "crossover_probs": 0.8,
+    "mutation_probs": 0.2,
+    "gene_ind_mutation_probs": (
+        # At least one hyperparameter/feature will be mutated
+        1.0/classifierOptimizationSpecies.num_params,
+        2.0/dataset.num_feats,
+        2.0/dataset.num_feats
+    ),
     "max_num_iters": 3,
     "pop_sizes": 2,
-    # At least one hyperparameter will be mutated
-    "gene_ind_mutation_probs": (
-        1.0/classifierOptimizationSpecies.num_params
-    ),
-    "checkpoint_enable": True,
+    "checkpoint_enable": False,
     "verbose": False
 }
 

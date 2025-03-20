@@ -32,7 +32,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
 from culebra.abc import Fitness, Species
-from culebra.fitness_function import DEFAULT_CLASSIFIER
+from culebra.fitness_function import DEFAULT_CLASSIFIER, DEFAULT_CV_FOLDS
 
 from culebra.fitness_function.abc import (
     DatasetFitnessFunction,
@@ -45,14 +45,13 @@ from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
-                'statlog/australian/australian.dat')
+dataset = Dataset.load_from_uci(name="Wine")
 
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+# Remove outliers
+dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 
 
 class MyDatasetFitnessFunction(DatasetFitnessFunction):
@@ -181,10 +180,33 @@ class DatasetFitnessFunctionTester(unittest.TestCase):
             func.test_prop = 'a'
 
         # Check invalid values
-        with self.assertRaises(ValueError):
-            func.test_prop = -0.1
-        with self.assertRaises(ValueError):
-            func.test_prop = 1.1
+        invalid_values = (-0.1, 0, 1, 1.3)
+        for invalid_value in invalid_values:
+            with self.assertRaises(ValueError):
+                func.test_prop = invalid_value
+
+    def test_cv_folds(self):
+        """Test the cv_folds property."""
+        # Fitness function to be tested
+        func = MyDatasetFitnessFunction(Dataset())
+
+        # Check a valid value
+        func.cv_folds = None
+        self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
+        func.cv_folds = 7
+        self.assertEqual(func.cv_folds, 7)
+
+        # Check type
+        invalid_types = ('a', 1.1)
+        for invalid_type in invalid_types:
+            with self.assertRaises(TypeError):
+                func.cv_folds = invalid_type
+
+        # Check invalid values
+        invalid_values = (-3, 0)
+        for invalid_value in invalid_values:
+            with self.assertRaises(ValueError):
+                func.cv_folds = invalid_value
 
     def test_final_training_test_data(self):
         """Test the generation of final training and test data."""
@@ -201,7 +223,8 @@ class DatasetFitnessFunctionTester(unittest.TestCase):
         # Training data should not be split
         func.test_data = None
         training, test = func._final_training_test_data()
-        self.assertTrue(training_data is training is test)
+        self.assertTrue(training_data is training)
+        self.assertTrue(test is None)
 
         # Set a test proportion
         func.test_prop = 0.3

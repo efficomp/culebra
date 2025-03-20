@@ -134,12 +134,7 @@ tsp_fitness_func_multi = DoublePathLength.fromPath(*tsp_optimum_paths)
 tsp_banned_nodes = [0, tsp_num_nodes-1]
 tsp_feasible_nodes = list(range(1, tsp_num_nodes - 1))
 
-# Feature selection related stuff
-FS_DATASET_PATH = (
-    "https://archive.ics.uci.edu/ml/machine-learning-databases/"
-    "statlog/australian/australian.dat"
-)
-fs_dataset = Dataset(FS_DATASET_PATH, output_index=-1)
+fs_dataset = Dataset.load_from_uci(name="Wine")
 
 fs_fitness_func = KappaNumFeats(training_data=fs_dataset)
 

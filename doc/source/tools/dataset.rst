@@ -28,6 +28,7 @@ Class methods
 -------------
 .. automethod:: culebra.tools.Dataset.load_pickle
 .. automethod:: culebra.tools.Dataset.load_train_test
+.. automethod:: culebra.tools.Dataset.load_from_uci
 
 Properties
 ----------

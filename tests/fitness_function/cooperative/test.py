@@ -42,14 +42,13 @@ from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
-                'statlog/australian/australian.dat')
+dataset = Dataset.load_from_uci(name="Wine")
 
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+# Remove outliers
+dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 
 # Species to optimize a SVM-based classifier
 hyperparams_species = ClassifierOptimizationSpecies(
@@ -60,7 +59,7 @@ hyperparams_species = ClassifierOptimizationSpecies(
 
 # Species for the feature selection problem
 min_feat1 = 0
-max_feat1 = dataset.num_feats / 2
+max_feat1 = dataset.num_feats // 2
 features_species1 = FeatureSelectionSpecies(
     num_feats=dataset.num_feats,
     min_feat=min_feat1,

@@ -24,40 +24,38 @@
 
 from pandas import Series, DataFrame, MultiIndex
 
+from sklearn.neighbors import KNeighborsClassifier
+
 from culebra.solution.feature_selection import Species, IntVector
-from culebra.fitness_function.feature_selection import NumFeats
+from culebra.fitness_function.feature_selection import KappaIndex
 from culebra.trainer.ea import SimpleEA
 from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = (
-    "https://archive.ics.uci.edu/ml/machine-learning-databases/"
-    "statlog/australian/australian.dat"
-)
-
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+dataset = Dataset.load_from_uci(name="Wine")
 
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
-# Training fitness function, 50% of samples used for validation
-training_fitness_function = NumFeats(
-    training_data=training_data, test_prop=0.5
+n_neighbors = 5
+"""Number of neighbors for k-NN."""
+
+knn_classifier = KNeighborsClassifier(n_neighbors)
+
+# Training fitness function
+training_fitness_function = KappaIndex(
+    training_data=training_data, classifier=knn_classifier, cv_folds=5
 )
 
 # Test fitness function
-test_fitness_function = NumFeats(
-    training_data=training_data, test_data=test_data
+test_fitness_function = KappaIndex(
+    training_data=training_data, test_data=test_data, classifier=knn_classifier
 )
-
-# Similarity threshold for the training fitness function
-training_fitness_function.set_fitness_thresholds(0.01)
 
 # Parameters for the wrapper
 params = {
@@ -66,9 +64,10 @@ params = {
     "fitness_function": training_fitness_function,
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
-    "gene_ind_mutation_prob": 0.5,
+    "gene_ind_mutation_prob": 1.0/dataset.num_feats,
     "max_num_iters": 100,
-    "pop_size": 100
+    "pop_size": dataset.num_feats,
+    "checkpoint_enable": False
 }
 
 # Create the wrapper
@@ -85,32 +84,32 @@ best_ones = wrapper.best_solutions()
 results = DataFrame()
 species = Series(dtype=object)
 individuals = Series(dtype=object)
-training_nf = Series(dtype=int)
+training_kappa = Series(dtype=int)
 
 for index, pop_best in enumerate(best_ones):
     for ind in pop_best:
         species.loc[len(species)] = index
         individuals.loc[len(individuals)] = ind
-        training_nf.loc[len(training_nf)] = int(ind.fitness.getValues()[0])
+        training_kappa.loc[len(training_kappa)] = ind.fitness.getValues()[0]
 
 results['Species'] = species
 results['Individual'] = individuals
-results['Training NF'] = training_nf
+results['Training Kappa'] = training_kappa
 
 # Apply the test data
 wrapper.test(best_found=best_ones, fitness_func=test_fitness_function)
 
 # Add the test results to the dataframe
-test_nf = Series(dtype=int)
+test_kappa = Series(dtype=int)
 for index, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        test_nf.loc[len(test_nf)] = int(ind.fitness.getValues()[0])
+        test_kappa.loc[len(test_kappa)] = ind.fitness.getValues()[0]
 
-results['Test NF'] = test_nf
+results['Test Kappa'] = test_kappa
 
 # Assign a new index to columns
 results.set_index(["Species", "Individual"], inplace=True)
-iterables = [["Training", "Test"], ["NF"]]
+iterables = [["Training", "Test"], ["Kappa"]]
 index = MultiIndex.from_product(iterables, names=["Phase", "Obj"])
 results.columns = index
 

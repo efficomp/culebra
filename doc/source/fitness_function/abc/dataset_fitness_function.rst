@@ -55,6 +55,7 @@ Properties
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.training_data
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.test_data
 .. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.test_prop
+.. autoproperty:: culebra.fitness_function.abc.DatasetFitnessFunction.cv_folds
 
 Methods
 -------

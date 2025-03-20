@@ -39,19 +39,13 @@ from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = (
-    "https://archive.ics.uci.edu/ml/machine-learning-databases/"
-    "statlog/australian/australian.dat"
-)
-
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+dataset = Dataset.load_from_uci(name="Wine")
 
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
 # Species
@@ -62,9 +56,9 @@ species = Species(
     max_feat=dataset.num_feats-2
     )
 
-# Training fitness function, 50% of samples used for validation
+# Training fitness function
 training_fitness_function = KappaNumFeats(
-    training_data=training_data, test_prop=0.5
+    training_data=training_data, cv_folds=5
 )
 
 # Test fitness function

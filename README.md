@@ -10,14 +10,15 @@ Experiments and experiment batches are automatized by means of the *Experiment* 
 
 Culebra requires Python 3. It also depends on the following Python packages:
 
-* [DEAP](https://deap.readthedocs.io/en/master/)
-* [NumPy](https://numpy.org/doc/stable/)
-* [Pandas](https://pandas.pydata.org/docs/)
-* [Scikit-learn](https://scikit-learn.org/stable/)
-* [Sphinx](https://www.sphinx-doc.org/en/master/)
+* [DEAP](https://pypi.org/project/deap/)
+* [NumPy](https://pypi.org/project/numpy/)
+* [Pandas](https://pypi.org/project/pandas/)
+* [Scikit-learn](https://pypi.org/project/scikit-learn/)
+* [Sphinx](https://pypi.org/project/Sphinx/)
 * [Tabulate](https://pypi.org/project/tabulate/)
 * [OpenPyXL](https://pypi.org/project/openpyxl/)
-* [scikit-posthocs](https://scikit-posthocs.readthedocs.io/en/latest/)
+* [scikit-posthocs](https://pypi.org/project/scikit-posthocs/)
+* [ucimlrepo](https://pypi.org/project/ucimlrepo/)
 
 ## Documentation
 

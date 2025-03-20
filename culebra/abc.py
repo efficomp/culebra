@@ -406,7 +406,7 @@ class Fitness(DeapFitness, Base):
         return hash(self.wvalues)
 
     def __gt__(self, other: Fitness) -> bool:
-        """Greater than operator.
+        """Lexicographic greater than operator.
 
         :param other: The other fitness
         :type other: :py:class:`~culebra.abc.Fitness`
@@ -414,7 +414,7 @@ class Fitness(DeapFitness, Base):
         return not self.__le__(other)
 
     def __ge__(self, other: Fitness) -> bool:
-        """Greater than or equal to operator.
+        """Lexicographic greater than or equal to operator.
 
         :param other: The other fitness
         :type other: :py:class:`~culebra.abc.Fitness`
@@ -422,7 +422,7 @@ class Fitness(DeapFitness, Base):
         return not self.__lt__(other)
 
     def __le__(self, other: Fitness) -> bool:
-        """Less than or equal to operator.
+        """Lexicographic less than or equal to operator.
 
         :param other: The other fitness
         :type other: :py:class:`~culebra.abc.Fitness`
@@ -442,7 +442,7 @@ class Fitness(DeapFitness, Base):
         return le
 
     def __lt__(self, other: Fitness) -> bool:
-        """Less than operator.
+        """Lexicographic less than operator.
 
         :param other: The other fitness
         :type other: :py:class:`~culebra.abc.Fitness`
@@ -462,7 +462,7 @@ class Fitness(DeapFitness, Base):
         return lt
 
     def __eq__(self, other: Fitness) -> bool:
-        """Equal to operator.
+        """Lexicographic equal to operator.
 
         :param other: The other fitness
         :type other: :py:class:`~culebra.abc.Fitness`
@@ -479,7 +479,7 @@ class Fitness(DeapFitness, Base):
         return eq
 
     def __ne__(self, other: Fitness) -> bool:
-        """Not equal to operator.
+        """Lexicographic not equal to operator.
 
         :param other: The other fitness
         :type other: :py:class:`~culebra.abc.Fitness`

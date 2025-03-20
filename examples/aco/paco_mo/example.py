@@ -56,7 +56,7 @@ params = {
     "max_pheromone": max_pheromone,
     "col_size": 50,
     "pop_size": 10,
-    "max_num_iters": 500,
+    "max_num_iters": 100,
     "checkpoint_enable": False
 }
 

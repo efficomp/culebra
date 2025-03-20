@@ -33,12 +33,16 @@ __status__ = 'Development'
 DEFAULT_CLASSIFIER = GaussianNB
 """Default classifier for fitness functions."""
 
-DEFAULT_THRESHOLD = 0.01
+DEFAULT_CV_FOLDS = 5
+"""Default number of folds for cross-validation."""
+
+DEFAULT_THRESHOLD = 0
 """Default similarity threshold for fitnesses."""
 
 
 # Exported symbols for this module
 __all__ = [
     'DEFAULT_CLASSIFIER',
-    'DEFAULT_THRESHOLD'
+    'DEFAULT_THRESHOLD',
+    'DEFAULT_CV_FOLDS'
 ]

@@ -27,6 +27,8 @@ from os import cpu_count
 from pandas import Series, DataFrame, MultiIndex
 from deap.tools import selTournament
 
+from sklearn.neighbors import KNeighborsClassifier
+
 from culebra.solution.feature_selection import Species, IntVector
 from culebra.fitness_function.feature_selection import KappaNumFeats
 from culebra.trainer.topology import ring_destinations
@@ -35,30 +37,37 @@ from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = ('https://archive.ics.uci.edu/ml/machine-learning-databases/'
-                'statlog/australian/australian.dat')
+dataset = Dataset.load_from_uci(name="Wine")
+"""Wine dataset."""
 
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+n_neighbors = 5
+"""Number of neighbors for k-NN."""
+
+training_cv_folds = 5
+"""Number of cross-validation folds for traioning."""
+
+test_prop = 0.3
+"""Proportion of the dataset used for test."""
 
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
-(training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
+# Normalize inputs
+dataset.robust_scale()
+(training_data, test_data) = dataset.split(test_prop=test_prop, random_seed=0)
 
-# Training fitness function, 50% of samples used for validation
+knn_classifier = KNeighborsClassifier(n_neighbors)
+
+# Training fitness function
 training_fitness_function = KappaNumFeats(
-    training_data=training_data, test_prop=0.5
+    training_data=training_data,
+    classifier=knn_classifier,
+    cv_folds=training_cv_folds
 )
-
-# Fix the fitness similarity threshold to 0.1 for all the objectives
-training_fitness_function.set_fitness_thresholds(0.01)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(
-    training_data=training_data, test_data=test_data
+    training_data=training_data, test_data=test_data, classifier=knn_classifier
 )
 
 # Number of islands
@@ -77,9 +86,10 @@ params = {
     "representation_selection_func_params": {"tournsize": 10},
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
-    "gene_ind_mutation_prob": 0.5,
-    "max_num_iters": 30,
-    "pop_size": 50
+    "gene_ind_mutation_prob": 1.0/dataset.num_feats,
+    "max_num_iters": 100,
+    "pop_size": dataset.num_feats,
+    "checkpoint_enable": False
 }
 
 # Create the wrapper

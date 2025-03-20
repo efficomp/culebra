@@ -50,7 +50,7 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-from .constants import DEFAULT_CLASSIFIER, DEFAULT_THRESHOLD
+from .constants import DEFAULT_CLASSIFIER, DEFAULT_THRESHOLD, DEFAULT_CV_FOLDS
 from . import abc, feature_selection, svc_optimization, cooperative, tsp
 
 
@@ -61,5 +61,6 @@ __all__ = [
     'cooperative',
     'tsp',
     'DEFAULT_CLASSIFIER',
-    'DEFAULT_THRESHOLD'
+    'DEFAULT_THRESHOLD',
+    'DEFAULT_CV_FOLDS'
 ]

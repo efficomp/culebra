@@ -41,6 +41,15 @@ AUSTRALIAN_NUM_FEATS = 14
 AUSTRALIAN_SIZE = 690
 """Number of samples of the Australian dataset."""
 
+WINE_NAME = "wine"
+"""Name of the Wine dataset in the UCI ML repo."""
+
+WINE_NUM_FEATS = 13
+"""Number of features of the Wine dataset."""
+
+WINE_SIZE = 178
+"""Number of samples of the Wine dataset."""
+
 
 class DatasetTester(unittest.TestCase):
     """Test :py:class:`culebra.tools.Dataset`."""
@@ -285,6 +294,13 @@ class DatasetTester(unittest.TestCase):
         self.assertTrue(datasets[0] is not datasets[1])
         self.assertEqual(datasets[1].num_feats, 4)
         self.assertEqual(datasets[1].size, 8)
+
+    def test_load_from_uci(self):
+        """Test the load_from_uci class method."""
+        # Dataset
+        dataset = Dataset.load_from_uci(name=WINE_NAME)
+        self.assertEqual(dataset.num_feats, WINE_NUM_FEATS)
+        self.assertEqual(dataset.size, WINE_SIZE)
 
     def test_normalize(self):
         """Test the normalization method."""

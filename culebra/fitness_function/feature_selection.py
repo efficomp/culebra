@@ -67,7 +67,8 @@ from __future__ import annotations
 from typing import Tuple, Optional
 from collections.abc import Sequence
 
-from sklearn.metrics import cohen_kappa_score, accuracy_score
+from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.metrics import cohen_kappa_score, accuracy_score, make_scorer
 
 from culebra.abc import Fitness
 from culebra.fitness_function import DEFAULT_THRESHOLD
@@ -234,12 +235,24 @@ class KappaIndex(FeatureSelectionFitnessFunction):
             # Get the training and test data
             training_data, test_data = self._final_training_test_data()
 
-            # Train and get the outputs for the validation data
-            outputs_pred = self.classifier.fit(
-                training_data.inputs[:, sol.features],
-                training_data.outputs
-            ).predict(test_data.inputs[:, sol.features])
-            kappa = cohen_kappa_score(test_data.outputs, outputs_pred)
+            if test_data is not None:
+                # Train and get the outputs for the validation data
+                outputs_pred = self.classifier.fit(
+                    training_data.inputs[:, sol.features],
+                    training_data.outputs
+                ).predict(test_data.inputs[:, sol.features])
+                kappa = cohen_kappa_score(test_data.outputs, outputs_pred)
+            else:
+                # Perform cross-validation
+                skf = StratifiedKFold(n_splits=self.cv_folds)
+                scores = cross_val_score(
+                    self.classifier,
+                    training_data.inputs[:, sol.features],
+                    training_data.outputs,
+                    cv=skf,
+                    scoring=make_scorer(cohen_kappa_score)
+                )
+                kappa = scores.mean()
 
         return (kappa,)
 
@@ -295,12 +308,24 @@ class Accuracy(FeatureSelectionFitnessFunction):
             # Get the training and test data
             training_data, test_data = self._final_training_test_data()
 
-            # Train and get the outputs for the validation data
-            outputs_pred = self.classifier.fit(
-                training_data.inputs[:, sol.features],
-                training_data.outputs
-            ).predict(test_data.inputs[:, sol.features])
-            accuracy = accuracy_score(test_data.outputs, outputs_pred)
+            if test_data is not None:
+                # Train and get the outputs for the validation data
+                outputs_pred = self.classifier.fit(
+                    training_data.inputs[:, sol.features],
+                    training_data.outputs
+                ).predict(test_data.inputs[:, sol.features])
+                accuracy = accuracy_score(test_data.outputs, outputs_pred)
+            else:
+                # Perform cross-validation
+                skf = StratifiedKFold(n_splits=self.cv_folds)
+                scores = cross_val_score(
+                    self.classifier,
+                    training_data.inputs[:, sol.features],
+                    training_data.outputs,
+                    cv=skf,
+                    scoring='accuracy'
+                )
+                accuracy = scores.mean()
 
         return (accuracy,)
 

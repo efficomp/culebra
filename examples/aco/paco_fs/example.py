@@ -24,6 +24,8 @@
 
 from pandas import Series, DataFrame, MultiIndex
 
+from sklearn.neighbors import KNeighborsClassifier
+
 from culebra.solution.feature_selection import Species, Ant
 from culebra.fitness_function.feature_selection import KappaNumFeats
 from culebra.trainer.aco import PACO_FS
@@ -31,32 +33,28 @@ from culebra.tools import Dataset
 
 
 # Dataset
-DATASET_PATH = (
-    "https://archive.ics.uci.edu/ml/machine-learning-databases/"
-    "statlog/australian/australian.dat"
-)
-
-# Load the dataset
-dataset = Dataset(DATASET_PATH, output_index=-1)
+dataset = Dataset.load_from_uci(name="Wine")
 
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs between 0 and 1
-dataset.normalize()
+# Normalize inputs
+dataset.robust_scale()
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
-# Training fitness function, 50% of samples used for validation
-training_fitness_function = KappaNumFeats(
-    training_data=training_data, test_prop=0.5
-)
+n_neighbors = 5
+"""Number of neighbors for k-NN."""
 
-# Fix the fitness similarity threshold to 0.1 for all the objectives
-training_fitness_function.set_fitness_thresholds(0.01)
+knn_classifier = KNeighborsClassifier(n_neighbors)
+
+# Training fitness function
+training_fitness_function = KappaNumFeats(
+    training_data=training_data, classifier=knn_classifier, cv_folds=5
+)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(
-    training_data=training_data, test_data=test_data
+    training_data=training_data, test_data=test_data, classifier=knn_classifier
 )
 
 # Trainer parameters
@@ -64,9 +62,8 @@ params = {
     "solution_cls": Ant,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
-    "col_size": 20,
-    "pop_size": 50,
-    "max_num_iters": 500,
+    "col_size": dataset.num_feats,
+    "max_num_iters": 100,
     "checkpoint_enable": False
 }
 

@@ -52,10 +52,11 @@ from copy import deepcopy
 import numpy as np
 from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_score
 
 from culebra.abc import FitnessFunction, Solution
-from culebra.checker import check_float, check_instance
-from culebra.fitness_function import DEFAULT_CLASSIFIER
+from culebra.checker import check_int, check_float, check_instance
+from culebra.fitness_function import DEFAULT_CLASSIFIER, DEFAULT_CV_FOLDS
 from culebra.solution.feature_selection import Species as FSSpecies
 from culebra.tools import Dataset
 
@@ -77,14 +78,14 @@ class DatasetFitnessFunction(FitnessFunction):
         training_data: Dataset,
         test_data: Optional[Dataset] = None,
         test_prop: Optional[float] = None,
+        cv_folds: Optional[int] = None
     ) -> None:
         """Construct a fitness function.
 
         If *test_data* are provided, the whole *training_data* are used to
         train. Otherwise, if *test_prop* is provided, *training_data* are
         split (stratified) into training and test data. Finally, if both
-        *test_data* and *test_prop* are omitted, *training_data* are also used
-        to test.
+        *test_data* and *test_prop* are omitted, cross-validation is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
@@ -93,6 +94,10 @@ class DatasetFitnessFunction(FitnessFunction):
         :param test_prop: A real value in [0, 1] or :py:data:`None`. Defaults
             to :py:data:`None`
         :type test_prop: :py:class:`float`, optional
+        :param cv_folds: The number of folds for cross-validation. If omitted,
+            :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS` is used.
+            Defaults to :py:data:`None`
+        :type cv_folds: :py:class:`int`, optional
         """
         # Init the superclass
         super().__init__()
@@ -101,6 +106,8 @@ class DatasetFitnessFunction(FitnessFunction):
         self.training_data = training_data
         self.test_data = test_data
         self.test_prop = test_prop
+        self.cv_folds = cv_folds
+        cross_val_score
 
     @property
     def training_data(self) -> Dataset:
@@ -157,21 +164,49 @@ class DatasetFitnessFunction(FitnessFunction):
             [0, 1] or :py:data:`None` is expected
         :type: :py:class:`float`
         :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value which is not in [0, 1]
+        :raises ValueError: If set to a value which is not in (0, 1)
         """
         return self._test_prop
 
     @test_prop.setter
     def test_prop(self, value: float | None) -> None:
-        """Set a value for proportion of data used to test.
+        """Set a value for the proportion of data used to test.
 
         :param value: A real value in [0, 1] or :py:data:`None`
-        :type value: A real number or :py:data:`None`
+        :type value: :py:class:`float` or :py:data:`None`
         :raises TypeError: If *value* is not a real number
-        :raises ValueError: If *value* is not in [0, 1]
+        :raises ValueError: If *value* is not in (0, 1)
         """
         self._test_prop = None if value is None else check_float(
             value, "test proportion", gt=0, lt=1
+        )
+
+    @property
+    def cv_folds(self) -> int | None:
+        """Get and set the number of cross-validation folds.
+
+        :getter: Return the number of cross-validation folds
+        :setter: Set a new value for the number of cross-validation folds. A
+            positive integer value or :py:data:`None` is expected
+        :type: :py:class:`int`
+        :raises TypeError: If set to a value which is not an integer value
+        :raises ValueError: If set to a value which is not positive
+        """
+        return (
+            self._cv_folds if self._cv_folds is not None else DEFAULT_CV_FOLDS
+        )
+
+    @cv_folds.setter
+    def cv_folds(self, value: int | None) -> None:
+        """Set a value for the number of cross-validation folds.
+
+        :param value: A positive integer value in [0, 1] or :py:data:`None`
+        :type value: :py:class:`int` or :py:data:`None`
+        :raises TypeError: If *value* is not an integer value
+        :raises ValueError: If *value* is not positive
+        """
+        self._cv_folds = None if value is None else check_int(
+            value, "number of cross-validation folds", gt=0
         )
 
     def _final_training_test_data(self) -> Tuple[Dataset, Dataset]:
@@ -180,8 +215,6 @@ class DatasetFitnessFunction(FitnessFunction):
         If *test_data* is not :py:data:`None`, the whole *training_data* are
         used to train. Otherwise, if *test_prop* is not :py:data:`None`,
         *training_data* are split (stratified) into training and test data.
-        Finally, if both *test_data* and *test_prop* are :py:data:`None`,
-        *training_data* are also used to test.
 
         :return: The final training and test datasets
         :rtype: :py:class:`tuple` of :py:class:`~culebra.tools.Dataset`
@@ -189,15 +222,11 @@ class DatasetFitnessFunction(FitnessFunction):
         training_data = self.training_data
         test_data = self.test_data
 
-        if test_data is None:
-            if self.test_prop is not None:
-                # Split training data into training and test
-                training_data, test_data = self.training_data.split(
-                    self.test_prop
-                )
-            else:
-                # Use the training data also to test
-                training_data = test_data = self.training_data
+        if test_data is None and self.test_prop is not None:
+            # Split training data into training and test
+            training_data, test_data = self.training_data.split(
+                self.test_prop
+            )
 
         return training_data, test_data
 
@@ -239,6 +268,7 @@ class ClassificationFitnessFunction(DatasetFitnessFunction):
         training_data: Dataset,
         test_data: Optional[Dataset] = None,
         test_prop: Optional[float] = None,
+        cv_folds: Optional[int] = None,
         classifier: ClassifierMixin = DEFAULT_CLASSIFIER()
     ) -> None:
         """Construct a fitness function.
@@ -256,13 +286,17 @@ class ClassificationFitnessFunction(DatasetFitnessFunction):
         :param test_prop: A real value in [0, 1] or :py:data:`None`. Defaults
             to :py:data:`None`
         :type test_prop: :py:class:`float`, optional
+        :param cv_folds: The number of folds for cross-validation. If omitted,
+            :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS` is used.
+            Defaults to :py:data:`None`
+        :type cv_folds: :py:class:`int`, optional
         :param classifier: The classifier, defaults to
             :py:attr:`~culebra.fitness_function.DEFAULT_CLASSIFIER`
         :type classifier: :py:class:`~sklearn.base.ClassifierMixin`,
             optional
         """
         # Init the superclass
-        super().__init__(training_data, test_data, test_prop)
+        super().__init__(training_data, test_data, test_prop, cv_folds)
         self.classifier = classifier
 
     @property
@@ -354,6 +388,7 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
         training_data: Dataset,
         test_data: Optional[Dataset] = None,
         test_prop: Optional[float] = None,
+        cv_folds: Optional[int] = None,
         classifier: ClassifierMixin = SVC(kernel='rbf')
     ) -> None:
         """Construct a fitness function.
@@ -371,12 +406,18 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
         :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
             to :py:data:`None`
         :type test_prop: :py:class:`float`, optional
+        :param cv_folds: The number of folds for cross-validation. If omitted,
+            :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS` is used.
+            Defaults to :py:data:`None`
+        :type cv_folds: :py:class:`int`, optional
         :param classifier: The classifier
         :type classifier: :py:class:`~sklearn.svm.SVC` with
             RBF kernels, optional
         """
         # Init the superclass
-        super().__init__(training_data, test_data, test_prop, classifier)
+        super().__init__(
+            training_data, test_data, test_prop, cv_folds, classifier
+        )
 
     @property
     def classifier(self) -> SVC:

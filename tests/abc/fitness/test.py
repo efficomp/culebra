@@ -197,164 +197,394 @@ class FitnessTester(unittest.TestCase):
 
     def test_dominates(self):
         """Test the :py:meth:`~culebra.abc.Fitness.dominates` method."""
-        thresholds = [0, 2]
-        min_max = (-1, 1)
+        weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
+        fitness_1.weights = fitness_2.weights = weights
 
-        # check minimization and maximization problems
-        for type_opt in min_max:
-            fitness_1.weights = (type_opt,) * fitness_1.num_obj
-            fitness_2.weights = fitness_1.weights
+        fitness_1.setValues((0.5, 0.5))
 
-            # Check different thresholds
-            for threshold in thresholds:
-                fitness_1.thresholds = (threshold,) * fitness_1.num_obj
-                fitness_2.thresholds = fitness_1.thresholds
+        # Try with thresholds = 0
+        fitness_1.thresholds = (0,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
 
-                for obj1 in range(7):
-                    for obj2 in range(7):
-                        fitness_1.setValues((3, 3))
-                        fitness_2.setValues((obj1, obj2))
-                        fitness_1_dominates_fitness_2 = False
+        # fitness_1 == fitness_2 -> fitness_1 should not dominate fitness_2
+        fitness_2.setValues(fitness_1.values)
+        self.assertFalse(fitness_1.dominates(fitness_2))
 
-                        for obj in range(2):
-                            if (
-                                fitness_1.wvalues[obj] - fitness_2.wvalues[obj]
-                                > fitness_1.thresholds[obj]
-                            ):
-                                fitness_1_dominates_fitness_2 = True
-                            elif (
-                                fitness_2.wvalues[obj] - fitness_1.wvalues[obj]
-                                > fitness_1.thresholds[obj]
-                            ):
-                                fitness_1_dominates_fitness_2 = False
-                                break
+        # One objective is better and the other is worst
+        # fitness_1 should not dominate fitness_2
+        off = 0.1
+        fitness_2.setValues(
+            (fitness_1.values[0]+off, fitness_1.values[1]+off)
+        )
+        self.assertFalse(fitness_1.dominates(fitness_2))
 
-                        self.assertEqual(
-                            fitness_1.dominates(fitness_2),
-                            fitness_1_dominates_fitness_2
-                        )
+        fitness_2.setValues(
+            (fitness_1.values[0]-off, fitness_1.values[1]-off)
+        )
+        self.assertFalse(fitness_1.dominates(fitness_2))
+
+        # One objective is equal and the other is worst
+        # fitness_1 should not dominate fitness_2
+        off = 0.1
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1]-off)
+        )
+        self.assertFalse(fitness_1.dominates(fitness_2))
+
+        fitness_2.setValues(
+            (fitness_1.values[0]+off, fitness_1.values[1])
+        )
+        self.assertFalse(fitness_1.dominates(fitness_2))
+
+        # One objective is equal and the other is better
+        # fitness_1 should dominate fitness_2
+        off = 0.1
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1]+off)
+        )
+        self.assertTrue(fitness_1.dominates(fitness_2))
+
+        fitness_2.setValues(
+            (fitness_1.values[0]-off, fitness_1.values[1])
+        )
+        self.assertTrue(fitness_1.dominates(fitness_2))
+
+        # The two objectives are better
+        # fitness_1 should dominate fitness_2
+        off = 0.1
+        fitness_2.setValues(
+            (fitness_1.values[0]-off, fitness_1.values[1]+off)
+        )
+        self.assertTrue(fitness_1.dominates(fitness_2))
+
+# ----------------------------------
+
+        # Try with thresholds = 0.1
+        threshold = 0.1
+        off = 2 * threshold
+        fitness_1.thresholds = (threshold,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
+
+        # Both objectives are within the threshold
+        # fitness_1 should not dominate fitness_2
+        offset_eq = (0, threshold/2, -threshold/2)
+        for off_eq1 in offset_eq:
+            for off_eq2 in offset_eq:
+                fitness_2.setValues(
+                    (fitness_1.values[0]+off_eq1, fitness_1.values[1]+off_eq2)
+                )
+                self.assertFalse(fitness_1.dominates(fitness_2))
+
+        # One objective is better and the other is worst
+        # fitness_1 should not dominate fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0]+off, fitness_1.values[1]+off)
+        )
+        self.assertFalse(fitness_1.dominates(fitness_2))
+
+        fitness_2.setValues(
+            (fitness_1.values[0]-off, fitness_1.values[1]-off)
+        )
+        self.assertFalse(fitness_1.dominates(fitness_2))
+
+        for off_eq in offset_eq:
+            # One objective is within the threshold and the other is worst
+            # fitness_1 should not dominate fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0]+off_eq, fitness_1.values[1]-off)
+            )
+            self.assertFalse(fitness_1.dominates(fitness_2))
+
+            fitness_2.setValues(
+                (fitness_1.values[0]+off, fitness_1.values[1]+off_eq)
+            )
+            self.assertFalse(fitness_1.dominates(fitness_2))
+
+            # One objective is within threshold  and the other is better
+            # fitness_1 should dominate fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0]+off_eq, fitness_1.values[1]+off)
+            )
+            self.assertTrue(fitness_1.dominates(fitness_2))
+
+            fitness_2.setValues(
+                (fitness_1.values[0]-off, fitness_1.values[1]+off_eq)
+            )
+            self.assertTrue(fitness_1.dominates(fitness_2))
+
+        # The two objectives are better
+        # fitness_1 should dominate fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0]-off,
+             fitness_1.values[1]+off)
+        )
+        self.assertTrue(fitness_1.dominates(fitness_2))
 
     def test_le(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__le__` method."""
-        thresholds = [0, 2]
-        min_max = (-1, 1)
+        weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
+        fitness_1.weights = fitness_2.weights = weights
 
-        # check minimization and maximization problems
-        for type_opt in min_max:
-            fitness_1.weights = (type_opt,) * fitness_1.num_obj
-            fitness_2.weights = fitness_1.weights
+        fitness_1.setValues((0.5, 0.5))
 
-            # Check different thresholds
-            for threshold in thresholds:
-                fitness_1.thresholds = (threshold,) * fitness_1.num_obj
-                fitness_2.thresholds = fitness_1.thresholds
+        # Try with thresholds = 0
+        fitness_1.thresholds = (0,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
 
-                for obj1 in range(7):
-                    for obj2 in range(7):
-                        fitness_1.setValues((3, 3))
-                        fitness_2.setValues((obj1, obj2))
+        # If the first component is lower, the second should not affect
+        # fitness_1 should be always lower than or equal to fitness_2
+        value_1 = fitness_1.values[0] + 0.1
+        offset_2 = (0, 0.1, -0.1)
+        for off in offset_2:
+            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            self.assertTrue(fitness_1 <= fitness_2)
 
-                        fitness_1_le_fitness_2 = True
-                        for obj in range(2):
-                            if (
-                                fitness_2.wvalues[obj] - fitness_1.wvalues[obj]
-                                > fitness_1.thresholds[obj]
-                            ):
-                                break
-                            if (
-                                fitness_1.wvalues[obj] - fitness_2.wvalues[obj]
-                                > fitness_1.thresholds[obj]
-                            ):
-                                fitness_1_le_fitness_2 = False
-                                break
+        # If the first compoment is equal, the second decides
+        off = 0.1
 
-                        self.assertEqual(
-                            fitness_1 <= fitness_2,
-                            fitness_1_le_fitness_2
-                        )
+        # fitness_1 > fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1] + off)
+        )
+        self.assertFalse(fitness_1 <= fitness_2)
+
+        # fitness_1 == fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1])
+        )
+        self.assertTrue(fitness_1 <= fitness_2)
+
+        # fitness_1 < fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1] - off)
+        )
+        self.assertTrue(fitness_1 <= fitness_2)
+
+        # Try with thresholds = 0.1
+        threshold = 0.1
+        fitness_1.thresholds = (threshold,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
+
+        # If the first component is lower, the second should no affect
+        # fitness_1 should be always lower than or equal to fitness_2
+        value_1 = fitness_1.values[0] + threshold * 2
+        offset_2 = (
+            0,
+            threshold/2,
+            threshold*2,
+            -threshold/2,
+            -threshold*2
+        )
+        for off in offset_2:
+            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            self.assertTrue(fitness_1 <= fitness_2)
+
+        # If the first compoment is within the threshold, the second decides
+        off_eq = (0, threshold/2, -threshold/2)
+        off_ne = threshold * 2
+        for off1 in off_eq:
+
+            # fitness_1 > fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0] + off1, fitness_1.values[1] + off_ne)
+            )
+            self.assertFalse(fitness_1 <= fitness_2)
+
+            # fitness_1 == fitness_2
+            for off2 in off_eq:
+                fitness_2.setValues(
+                    (fitness_1.values[0] + off1, fitness_1.values[1] + off2)
+                )
+                self.assertTrue(fitness_1 <= fitness_2)
+
+            # fitness_1 < fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0] + off1, fitness_1.values[1] - off_ne)
+            )
+            self.assertTrue(fitness_1 <= fitness_2)
 
     def test_lt(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__lt__` method."""
-        thresholds = [0, 2]
-        min_max = (-1, 1)
+        weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
+        fitness_1.weights = fitness_2.weights = weights
 
-        # check minimization and maximization problems
-        for type_opt in min_max:
-            fitness_1.weights = (type_opt,) * fitness_1.num_obj
-            fitness_2.weights = fitness_1.weights
+        fitness_1.setValues((0.5, 0.5))
 
-            # Check different thresholds
-            for threshold in thresholds:
-                fitness_1.thresholds = (threshold,) * fitness_1.num_obj
-                fitness_2.thresholds = fitness_1.thresholds
+        # Try with thresholds = 0
+        fitness_1.thresholds = (0,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
 
-                for obj1 in range(7):
-                    for obj2 in range(7):
-                        fitness_1.setValues((3, 3))
-                        fitness_2.setValues((obj1, obj2))
+        # If the first component is lower, the second should not affect
+        # fitness_1 should be always lower than fitness_2
+        value_1 = fitness_1.values[0] + 0.1
+        offset_2 = (0, 0.1, -0.1)
+        for off in offset_2:
+            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            self.assertTrue(fitness_1 < fitness_2)
 
-                        fitness_1_lt_fitness_2 = False
-                        for obj in range(2):
-                            if (
-                                fitness_2.wvalues[obj] - fitness_1.wvalues[obj]
-                                > fitness_1.thresholds[obj]
-                            ):
-                                fitness_1_lt_fitness_2 = True
-                                break
-                            if (
-                                fitness_1.wvalues[obj] - fitness_2.wvalues[obj]
-                                > fitness_1.thresholds[obj]
-                            ):
-                                break
+        # If the first compoment is equal, the second decides
+        off = 0.1
 
-                        self.assertEqual(
-                            fitness_1 < fitness_2,
-                            fitness_1_lt_fitness_2
-                        )
+        # fitness_1 > fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1] + off)
+        )
+        self.assertFalse(fitness_1 < fitness_2)
+
+        # fitness_1 == fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1])
+        )
+        self.assertFalse(fitness_1 < fitness_2)
+
+        # fitness_1 < fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1] - off)
+        )
+        self.assertTrue(fitness_1 < fitness_2)
+
+        # Try with thresholds = 0.1
+        threshold = 0.1
+        fitness_1.thresholds = (threshold,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
+
+        # If the first component is lower, the second should no affect
+        # fitness_1 should be always lower than fitness_2
+        value_1 = fitness_1.values[0] + threshold * 2
+        offset_2 = (
+            0,
+            threshold / 2,
+            threshold * 2,
+            -threshold / 2,
+            -threshold * 2
+        )
+        for off in offset_2:
+            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            self.assertTrue(fitness_1 < fitness_2)
+
+        # If the first compoment is within the threshold, the second decides
+        off_eq = (0, threshold / 2, -threshold / 2)
+        off_ne = threshold * 2
+        for off1 in off_eq:
+
+            # fitness_1 > fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0] + off1, fitness_1.values[1] + off_ne)
+            )
+            self.assertFalse(fitness_1 < fitness_2)
+
+            # fitness_1 == fitness_2
+            for off2 in off_eq:
+                fitness_2.setValues(
+                    (fitness_1.values[0] + off1, fitness_1.values[1] + off2)
+                )
+                self.assertFalse(fitness_1 < fitness_2)
+
+            # fitness_1 < fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0] + off1, fitness_1.values[1] - off_ne)
+            )
+            self.assertTrue(fitness_1 < fitness_2)
 
     def test_eq(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__eq__` method."""
-        thresholds = [0, 2]
-        min_max = (-1, 1)
+        weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
+        fitness_1.weights = fitness_2.weights = weights
 
-        # check minimization and maximization problems
-        for type_opt in min_max:
-            fitness_1.weights = (type_opt,) * fitness_1.num_obj
-            fitness_2.weights = fitness_1.weights
+        fitness_1.setValues((0.5, 0.5))
 
-            # Check different thresholds
-            for threshold in thresholds:
-                fitness_1.thresholds = (threshold,) * fitness_1.num_obj
-                fitness_2.thresholds = fitness_1.thresholds
+        # Try with thresholds = 0
+        fitness_1.thresholds = (0,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
 
-                for obj1 in range(7):
-                    for obj2 in range(7):
-                        fitness_1.setValues((3, 3))
-                        fitness_2.setValues((obj1, obj2))
+        # If the first component is not equal, the second should not affect
+        # fitness_1 should be always not equal to fitness_2
+        offset_1 = (0.1, -0.1)
+        offset_2 = (0, 0.1, -0.1)
+        for off1 in offset_1:
+            for off2 in offset_2:
+                fitness_2.setValues(
+                    (fitness_1.values[0]+off1, fitness_1.values[1]+off2)
+                )
+                self.assertFalse(fitness_1 == fitness_2)
 
-                        fitness_1_eq_fitness_2 = True
-                        for obj in range(2):
-                            if (
-                                abs(
-                                    fitness_2.wvalues[obj] -
-                                    fitness_1.wvalues[obj]
-                                ) > fitness_1.thresholds[obj]
-                            ):
-                                fitness_1_eq_fitness_2 = False
-                                break
+        # If the first compoment is equal, the second decides
+        off = 0.1
 
-                        self.assertEqual(
-                            fitness_1 == fitness_2,
-                            fitness_1_eq_fitness_2
-                        )
+        # fitness_1 > fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1] + off)
+        )
+        self.assertFalse(fitness_1 == fitness_2)
+
+        # fitness_1 == fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1])
+        )
+        self.assertTrue(fitness_1 == fitness_2)
+
+        # fitness_1 < fitness_2
+        fitness_2.setValues(
+            (fitness_1.values[0], fitness_1.values[1] - off)
+        )
+        self.assertFalse(fitness_1 == fitness_2)
+
+        # Try with thresholds = 0.1
+        threshold = 0.1
+        fitness_1.thresholds = (threshold,) * fitness_1.num_obj
+        fitness_2.thresholds = fitness_1.thresholds
+
+        # If the first component is not equal, the second should no affect
+        # fitness_1 should be always not equal to fitness_2
+        offset_1 = (
+            threshold * 2,
+            -threshold * 2
+        )
+        offset_2 = (
+            0,
+            threshold / 2,
+            threshold * 2,
+            -threshold / 2,
+            -threshold * 2
+        )
+        for off1 in offset_1:
+            for off2 in offset_2:
+                fitness_2.setValues(
+                    (fitness_1.values[0]+off1, fitness_1.values[1]+off2)
+                )
+                self.assertFalse(fitness_1 == fitness_2)
+
+        # If the first compoment is within the threshold, the second decides
+        off_eq = (0, threshold / 2, -threshold / 2)
+        off_ne = threshold * 2
+        for off1 in off_eq:
+
+            # fitness_1 > fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0] + off1, fitness_1.values[1] + off_ne)
+            )
+            self.assertFalse(fitness_1 == fitness_2)
+
+            # fitness_1 == fitness_2
+            for off2 in off_eq:
+                fitness_2.setValues(
+                    (fitness_1.values[0] + off1, fitness_1.values[1] + off2)
+                )
+                self.assertTrue(fitness_1 == fitness_2)
+
+            # fitness_1 < fitness_2
+            fitness_2.setValues(
+                (fitness_1.values[0] + off1, fitness_1.values[1] - off_ne)
+            )
+            self.assertFalse(fitness_1 == fitness_2)
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__copy__` method."""
