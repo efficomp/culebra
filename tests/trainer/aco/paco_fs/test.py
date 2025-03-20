@@ -171,9 +171,9 @@ class PACO_FSTester(unittest.TestCase):
         trainer._init_internals()
         trainer._new_state()
 
-        # Check the population
+        # Check the population. Should be empty
         self.assertIsInstance(trainer.pop, list)
-        self.assertEqual(len(trainer.pop), trainer.pop_size)
+        self.assertEqual(len(trainer.pop), 0)
 
         # Test the pheromone
         for pher, init_pher in zip(
@@ -194,6 +194,11 @@ class PACO_FSTester(unittest.TestCase):
         trainer = PACO_FS(**params)
         trainer._init_search()
         trainer._new_state()
+
+        # Fill the pop
+        while len(trainer.pop) < trainer.pop_size:
+            trainer.pop.append(trainer._generate_ant())
+        trainer._update_pheromone()
 
         # Save the trainer's state
         state = trainer._get_state()
@@ -240,6 +245,10 @@ class PACO_FSTester(unittest.TestCase):
         trainer._start_iteration()
         trainer._generate_col()
 
+        # Fill the pop
+        while len(trainer.pop) < trainer.pop_size:
+            trainer.pop.append(trainer._generate_ant())
+
         # Force a non-dominated ants in pop[0] and col[0]
         pop = copy(trainer.pop)
         col = copy(trainer.col)
@@ -279,6 +288,10 @@ class PACO_FSTester(unittest.TestCase):
 
         # Reset the pheromone values
         trainer._init_pheromone()
+
+        # Fill the pop
+        while len(trainer.pop) < trainer.pop_size:
+            trainer.pop.append(trainer._generate_ant())
 
         # Update pheromone according to the population
         trainer._update_pheromone()
