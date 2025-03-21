@@ -43,6 +43,7 @@ Methods
 .. automethod:: culebra.tools.Dataset.normalize
 .. automethod:: culebra.tools.Dataset.robust_scale
 .. automethod:: culebra.tools.Dataset.remove_outliers
+.. automethod:: culebra.tools.Dataset.oversample
 .. automethod:: culebra.tools.Dataset.append_random_features
 .. automethod:: culebra.tools.Dataset.split
 
