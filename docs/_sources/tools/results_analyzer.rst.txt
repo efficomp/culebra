@@ -37,6 +37,7 @@ Methods
 .. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_test
 .. automethod:: culebra.tools.ResultsAnalyzer.parametric_pairwise_test
 .. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test
+.. automethod:: culebra.tools.ResultsAnalyzer.effect_size
 .. automethod:: culebra.tools.ResultsAnalyzer.compare
 .. automethod:: culebra.tools.ResultsAnalyzer.rank
 .. automethod:: culebra.tools.ResultsAnalyzer.multiple_rank

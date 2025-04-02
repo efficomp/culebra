@@ -115,6 +115,7 @@ Attributes
     Results <tools/results>
     TestOutcome <tools/test_outcome>
     ResultsComparison <tools/results_comparison>
+    EffectSize <tools/effect_size>
     ResultsAnalyzer <tools/results_analyzer>
     Evaluation <tools/evaluation>
     Experiment <tools/experiment>

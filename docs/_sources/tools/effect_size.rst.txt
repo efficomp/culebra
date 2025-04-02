@@ -19,31 +19,22 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.Dataset` class
-=======================================
+:py:class:`culebra.tools.EffectSize` class
+==========================================
 
-.. autoclass:: culebra.tools.Dataset
+.. autoclass:: culebra.tools.EffectSize
 
-Class methods
--------------
-.. automethod:: culebra.tools.Dataset.load_pickle
-.. automethod:: culebra.tools.Dataset.load_train_test
-.. automethod:: culebra.tools.Dataset.load_from_uci
 
-Properties
+Attributes
 ----------
-.. autoproperty:: culebra.tools.Dataset.num_feats
-.. autoproperty:: culebra.tools.Dataset.size
-.. autoproperty:: culebra.tools.Dataset.inputs
-.. autoproperty:: culebra.tools.Dataset.outputs
+.. autoattribute:: culebra.tools.EffectSize.test
+.. autoattribute:: culebra.tools.EffectSize.data
+.. autoattribute:: culebra.tools.EffectSize.column
+.. autoattribute:: culebra.tools.EffectSize.batches
+.. autoattribute:: culebra.tools.EffectSize.value
 
-Methods
--------
-.. automethod:: culebra.tools.Dataset.save_pickle
-.. automethod:: culebra.tools.Dataset.normalize
-.. automethod:: culebra.tools.Dataset.robust_scale
-.. automethod:: culebra.tools.Dataset.remove_outliers
-.. automethod:: culebra.tools.Dataset.oversample
-.. automethod:: culebra.tools.Dataset.append_random_features
-.. automethod:: culebra.tools.Dataset.split
 
+Dunder methods
+--------------
+.. automethod:: culebra.tools.EffectSize.__str__
+.. automethod:: culebra.tools.EffectSize.__repr__

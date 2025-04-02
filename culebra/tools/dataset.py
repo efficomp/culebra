@@ -21,6 +21,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from copy import copy
 from os import PathLike
 from typing import Optional, Tuple, Union, TextIO
@@ -35,6 +36,7 @@ from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
 from sklearn.preprocessing import RobustScaler
 from ucimlrepo import fetch_ucirepo
+from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from culebra.abc import Base
 from culebra.checker import check_str, check_int, check_float
@@ -467,6 +469,66 @@ class Dataset(Base):
             self._outputs = np.delete(self._outputs, train_outlier_indices, 0)
             test._inputs = np.delete(test._inputs, test_outlier_indices, 0)
             test._outputs = np.delete(test._outputs, test_outlier_indices, 0)
+
+    def oversample(
+        self,
+        n_neighbors: Optional[int] = 5,
+        random_seed: Optional[int] = None
+    ) -> None:
+        """Oversample all classes but the majority class.
+
+        All classes but the majority class are oversampled to equal the number
+        of samples of the majority class.
+        :py:class:`~imblearn.over_sampling.SMOTE` is used for oversampling, but
+        if any class has less than *n_neighbors* samples,
+        :py:class:`~imblearn.over_sampling.RandomOverSampler` is first applied
+
+        :param n_neighbors: Number of neighbors for
+            :py:class:`~imblearn.over_sampling.SMOTE`, defaults to 5.
+        :type n_neighbors: :py:class:`int`, optional
+        :param random_seed: Random seed for the random generator, defaults to
+            :py:data:`None`
+        :type random_seed: :py:class:`int`, optional
+        """
+        # Number of samples per class
+        samples_per_class = Counter(self.outputs)
+
+        # If any class has less than n_neighbors samples, RandomOverSampler
+        # should be applied for all classes to have a minimum of n_neighbors
+        # samples
+        if any(count <= n_neighbors for count in samples_per_class.values()):
+            # Define a sampling strategy to assure a minimum of
+            # n_neighbos por class
+            for key, val in samples_per_class.items():
+                if samples_per_class[key] <= n_neighbors:
+                    samples_per_class[key] = n_neighbors + 1
+
+            # Create a RandomOverSampler instance
+            random_over_sampler = RandomOverSampler(
+                sampling_strategy=samples_per_class,
+                random_state=random_seed
+            )
+
+            # Oversample the current dataset
+            resampled_dataset = Dataset()
+            (
+                resampled_dataset._inputs,
+                resampled_dataset._outputs
+            ) = random_over_sampler.fit_resample(self.inputs, self.outputs)
+        else:
+            # Keep the current dataset
+            resampled_dataset = self
+
+        # Apply ADASYN
+        (
+            resampled_dataset._inputs,
+            resampled_dataset._outputs
+        ) = SMOTE(
+            k_neighbors=n_neighbors,
+            random_state=random_seed
+        ).fit_resample(resampled_dataset.inputs, resampled_dataset.outputs)
+
+        return resampled_dataset
 
     def append_random_features(
             self,

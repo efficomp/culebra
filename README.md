@@ -19,6 +19,7 @@ Culebra requires Python 3. It also depends on the following Python packages:
 * [OpenPyXL](https://pypi.org/project/openpyxl/)
 * [scikit-posthocs](https://pypi.org/project/scikit-posthocs/)
 * [ucimlrepo](https://pypi.org/project/ucimlrepo/)
+* [imbalanced-learn](https://pypi.org/project/imbalanced-learn/)
 
 ## Documentation
 
@@ -48,5 +49,5 @@ This work is supported by projects *New Computing Paradigms and Heterogeneous Pa
 
 ## Copyright
 
-Culebra © 2020-2023 [EFFICOMP](https://efficomp.ugr.es).
+Culebra © 2020-2025 [EFFICOMP](https://efficomp.ugr.es).
 

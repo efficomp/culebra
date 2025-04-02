@@ -31,8 +31,13 @@ Attributes
 
     Default classifier for fitness functions
 
+.. attribute:: DEFAULT_CV_FOLDS
+    :annotation: = 5
+
+    Default number of folds for cross-validation
+
 .. attribute:: DEFAULT_THRESHOLD
-    :annotation: = 0.01
+    :annotation: = 0
 
     Default similarity threshold for fitnesses
 

@@ -7,3 +7,4 @@ tabulate
 openpyxl
 scikit_posthocs
 ucimlrepo
+imbalanced-learn

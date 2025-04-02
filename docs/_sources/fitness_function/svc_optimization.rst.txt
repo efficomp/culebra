@@ -30,3 +30,5 @@
     C <svc_optimization/c>
     KappaIndex <svc_optimization/kappa_index>
     KappaC <svc_optimization/kappa_c>
+    Accuracy <svc_optimization/accuracy>
+    AccuracyC <svc_optimization/accuracy_c>

@@ -25,6 +25,7 @@
 import unittest
 from os import remove
 from copy import copy, deepcopy
+from collections import Counter
 
 import numpy as np
 
@@ -92,12 +93,12 @@ class DatasetTester(unittest.TestCase):
         # Try to load a mixed dataset with numeric labels.
         dataset = Dataset("numeric_1.dat", output_index=0)
         self.assertEqual(dataset.num_feats, 3)
-        self.assertEqual(dataset.size, 8)
+        self.assertEqual(dataset.size, 10)
 
         # Try to load a mixed dataset with non-numeric labels.
         dataset = Dataset("non_numeric.dat", output_index=0)
         self.assertEqual(dataset.num_feats, 4)
-        self.assertEqual(dataset.size, 8)
+        self.assertEqual(dataset.size, 10)
 
         # Try to load a mixed dataset from the Internet
         dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
@@ -139,58 +140,58 @@ class DatasetTester(unittest.TestCase):
         # Try to a split dataset with numeric labels.
         dataset = Dataset("numeric_1.dat", "numeric_1.dat")
         self.assertEqual(dataset.num_feats, 4)
-        self.assertEqual(dataset.size, 8)
+        self.assertEqual(dataset.size, 10)
 
         # Try to load a mixed dataset with non-numeric labels.
         dataset = Dataset("numeric_1.dat", "non_numeric.dat")
         self.assertEqual(dataset.num_feats, 4)
-        self.assertEqual(dataset.size, 8)
+        self.assertEqual(dataset.size, 10)
 
     def test_load_train_test(self):
         """Test :py:meth:`~culebra.tools.Dataset.load_train_test`."""
         # Try to load a mixed dataset
-        datasets = Dataset.load_train_test("numeric_1.dat", output_index=-1)
+        datasets = Dataset.load_train_test("numeric_1.dat", output_index=0)
 
         # Check the 2 datasets are returned
         self.assertEqual(len(datasets), 2)
 
         # Check that training dataset is numeric_1.dat
         self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 8)
+        self.assertEqual(datasets[0].size, 10)
 
         # Check that test dataset is a copy of training data
         self.assertTrue(datasets[0] is not datasets[1])
         self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 8)
+        self.assertEqual(datasets[1].size, 10)
 
         # Try to load a mixed dataset and split it
         datasets = Dataset.load_train_test(
-            "numeric_1.dat", output_index=-1, test_prop=0.25)
+            "numeric_1.dat", output_index=0, test_prop=0.2)
 
         # Check that training dataset is 75% of numeric_1.dat
         self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 8*0.75)
+        self.assertEqual(datasets[0].size, 10*0.8)
 
         # Check that test dataset is 25% of numeric_1.dat
         self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 8*0.25)
+        self.assertEqual(datasets[1].size, 10*0.2)
 
         # For mixed datasets, if test_prop is not None, the second dataset
         # should be ignored
         datasets = Dataset.load_train_test(
-            "numeric_1.dat", "numeric_2.dat", test_prop=0.25, output_index=-1)
+            "numeric_1.dat", "numeric_2.dat", test_prop=0.2, output_index=0)
 
         # Check that training dataset is 75% of numeric_1.dat
         self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 8*0.75)
+        self.assertEqual(datasets[0].size, 10*0.8)
 
         # Check that test dataset is 25% of numeric_1.dat
         self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 8*0.25)
+        self.assertEqual(datasets[1].size, 10*0.2)
 
         # Try to load a mixed dataset, split it and also normalize it
         datasets = Dataset.load_train_test(
-            AUSTRALIAN_PATH, output_index=-1, test_prop=0.25, normalize=True)
+            AUSTRALIAN_PATH, output_index=-1, test_prop=0.2, normalize=True)
 
         # Check that the minimum value for each feature is zero
         min_train_inputs = np.min(datasets[0].inputs, axis=0)
@@ -208,29 +209,29 @@ class DatasetTester(unittest.TestCase):
 
         # Try to load a mixed dataset and append it some random features
         datasets = Dataset.load_train_test(
-            "numeric_1.dat", output_index=-1, test_prop=0.25, random_feats=5)
+            "numeric_1.dat", output_index=0, test_prop=0.2, random_feats=5)
 
         # Check that training dataset is 75% of numeric_1.dat, but having
         # 5 more features
         self.assertEqual(datasets[0].num_feats, 3 + 5)
-        self.assertEqual(datasets[0].size, 8*0.75)
+        self.assertEqual(datasets[0].size, 10*0.8)
 
         # Check that test dataset is 25% of numeric_1.dat, but having
         # 5 more features
         self.assertEqual(datasets[1].num_feats, 3 + 5)
-        self.assertEqual(datasets[1].size, 8*0.25)
+        self.assertEqual(datasets[1].size, 10*0.2)
 
         # Try to load two mixed datasets, the first for training and the second
         # for testing
         datasets = Dataset.load_train_test(
-            "numeric_1.dat", "numeric_2.dat", output_index=-1)
+            "numeric_1.dat", "numeric_2.dat", output_index=0)
 
         # Check the 2 datasets are returned
         self.assertEqual(len(datasets), 2)
 
         # Check that training dataset is numeric_1.dat
         self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 8)
+        self.assertEqual(datasets[0].size, 10)
 
         # Check that test dataset is a numeric_2
         self.assertEqual(datasets[1].num_feats, 3)
@@ -253,12 +254,12 @@ class DatasetTester(unittest.TestCase):
 
         # Check the training dataset
         self.assertEqual(datasets[0].num_feats, 4+3)
-        self.assertEqual(datasets[0].size, 8*0.5)
+        self.assertEqual(datasets[0].size, 10*0.5)
 
         # Check the test dataset
         self.assertTrue(datasets[0] is not datasets[1])
         self.assertEqual(datasets[1].num_feats, 4+3)
-        self.assertEqual(datasets[1].size, 8*0.5)
+        self.assertEqual(datasets[1].size, 10*0.5)
 
         # Try to load two split datasets. Since test_prop is not None,
         # The second dataset should be ignored
@@ -271,12 +272,12 @@ class DatasetTester(unittest.TestCase):
 
         # Check the training dataset
         self.assertEqual(datasets[0].num_feats, 4)
-        self.assertEqual(datasets[0].size, 8*0.5)
+        self.assertEqual(datasets[0].size, 10*0.5)
 
         # Check the test dataset
         self.assertTrue(datasets[0] is not datasets[1])
         self.assertEqual(datasets[1].num_feats, 4)
-        self.assertEqual(datasets[1].size, 8*0.5)
+        self.assertEqual(datasets[1].size, 10*0.5)
 
         # Try to load two split datasets
         #  - numeric_1.dat conains the input features
@@ -288,12 +289,12 @@ class DatasetTester(unittest.TestCase):
 
         # Check the training dataset
         self.assertEqual(datasets[0].num_feats, 4)
-        self.assertEqual(datasets[0].size, 8)
+        self.assertEqual(datasets[0].size, 10)
 
         # Check the test dataset
         self.assertTrue(datasets[0] is not datasets[1])
         self.assertEqual(datasets[1].num_feats, 4)
-        self.assertEqual(datasets[1].size, 8)
+        self.assertEqual(datasets[1].size, 10)
 
     def test_load_from_uci(self):
         """Test the load_from_uci class method."""
@@ -464,6 +465,20 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(test_dataset._outputs.shape[0], size)
         self.assertTrue((test_dataset._inputs == 1).all())
         self.assertTrue((test_dataset._outputs == 1).all())
+
+    def test_oversample(self):
+        """Test the :py:meth:`~culebra.tools.Dataset.oversample` method."""
+        dataset1 = Dataset("numeric_1.dat", output_index=0)
+        samples_per_class_dataset1 = Counter(dataset1.outputs)
+        samples_majority_class = max(samples_per_class_dataset1.values())
+        dataset2 = dataset1.oversample()
+        samples_per_class_dataset2 = Counter(dataset2.outputs)
+        self.assertTrue(
+            all(
+                count == samples_majority_class
+                for count in samples_per_class_dataset2.values()
+            )
+        )
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Dataset.__copy__` method."""

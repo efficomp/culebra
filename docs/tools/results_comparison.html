@@ -13,7 +13,7 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.tools.ResultsAnalyzer class" href="results_analyzer.html" />
+    <link rel="next" title="culebra.tools.EffectSize class" href="effect_size.html" />
     <link rel="prev" title="culebra.tools.TestOutcome class" href="test_outcome.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
@@ -26,7 +26,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="results_analyzer.html" title="culebra.tools.ResultsAnalyzer class"
+          <a href="effect_size.html" title="culebra.tools.EffectSize class"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="test_outcome.html" title="culebra.tools.TestOutcome class"
@@ -74,7 +74,8 @@ results did not follow a normal distribution.</p>
 <dt class="sig sig-object py" id="culebra.tools.ResultsComparison.pairwise_comparison">
 <span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">pairwise_comparison</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.tools.ResultsComparison.pairwise_comparison" title="Link to this definition">¶</a></dt>
 <dd><p>Outcome of the pairwise comparison of the results. Only performed if
-all the analyzed results did not follow the same distribution.</p>
+more than two results are analyzed and not all the analyzed results follow
+the same distribution.</p>
 </dd></dl>
 
 </section>
@@ -83,7 +84,7 @@ all the analyzed results did not follow the same distribution.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.ResultsComparison.__str__">
 <span class="sig-prename descclassname"><span class="pre">ResultsComparison.</span></span><span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsComparison.__str__" title="Link to this definition">¶</a></dt>
-<dd><p>Pretty print of the comparison result.</p>
+<dd><p>Pretty print of the success and p-values returned by a test.</p>
 </dd></dl>
 
 </section>
@@ -105,7 +106,7 @@ all the analyzed results did not follow the same distribution.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="results_analyzer.html" title="culebra.tools.ResultsAnalyzer class"
+          <a href="effect_size.html" title="culebra.tools.EffectSize class"
              >next</a> |</li>
         <li class="right" >
           <a href="test_outcome.html" title="culebra.tools.TestOutcome class"

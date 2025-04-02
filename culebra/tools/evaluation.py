@@ -599,6 +599,8 @@ for res, val in {var_name}.results.items():
             :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
             Defaults to :py:data:`None`
         :type config_script_filename: :py:class:`str`, optional
+        :return: The configuration
+        :rtype: :py:class:`object`
         :raises TypeError: If *config_script_filename* is not a valid filename
         :raises ValueError: If the extension of *config_script_filename* is
             not '.py'
@@ -680,11 +682,16 @@ class Experiment(Evaluation):
         training_fitness = 'training_fitness'
         """Training fitness of the best solutions found."""
 
+        train_best = 'train_best'
+        """Validation fitness of the best solution found. The best solution
+        should be chosen according to the validation fitness."""
+
         test_fitness = 'test_fitness'
         """Test fitness of the best solutions found."""
 
         test_best = 'test_best'
-        """Solution with the best (lexicographically) test fitness."""
+        """Test fitness of the best solution found. The best solution should
+        be chosen according to the validation fitness."""
 
         training_fitness_stats = "training_fitness_stats"
         """Training fitness stats."""
@@ -1046,22 +1053,60 @@ class Experiment(Evaluation):
         # Perform the test fitness stats
         self._add_fitness_stats(self._ResultKeys.test_fitness_stats)
 
-    def _find_best_lexicographically(self) -> None:
+    def _find_best_lexicographically(self) -> Sequence[Solution]:
         """Find the best solution in the Pareto Front.
 
         Since the Pareto front solutions are not comparable, they are ordered
         lexicographilly and the best solution is selected.
 
-        The test fitness are used to sort the solutions.
+        The validation fitness should be used to sort the solutions.
+
+        :return: The solution (one per species)
+        :rtype: :py:class:`~collections.abc.Sequence` of
+          :py:class:`~culebra.abc.Solution`
         """
-        # Key of the result
-        result_key = self._ResultKeys.test_best
+        # List of the best solutions, one per species
+        the_best = []
+
+        # For each species
+        for species_index, hof in enumerate(self.best_solutions):
+            # Sort the hof
+            ordered = sorted(hof, reverse=True)
+
+            # Best (lexicographically)
+            the_best.append(ordered[0])
+
+        return the_best
+
+    def _add_best(
+        self,
+        best: Sequence[Solution],
+        fitness_func: FitnessFunction,
+        result_key: str
+    ) -> None:
+        """Add the best solution to the experiment results.
+
+        The best solution should have been selected according to the
+        validation fitness. It is evaluated only with the species that compose
+        the best solution, without any other representative
+
+        :param best: The best solution (one per species)
+        :type best: :py:class:`~collections.abc.Sequence` of
+        :param fitness_func: Fitness fuction to evaluate the best solution
+        :type fitness_func: :py:class:`~culebra.abc.FitnessFunction`
+        :param result_key: Result key.
+        :type result_key: :py:class:`str`
+        """
+        # Number of species
+        num_species = len(best)
+
+        # Evaluate the best solution
+        fit_values = fitness_func.evaluate(best[0], 0, best)
+        for sol in best:
+            sol.fitness.values = fit_values
 
         # Objective names
-        obj_names = list(self.best_solutions[0][0].fitness.names)
-
-        # Number of species
-        num_species = len(self.best_solutions)
+        obj_names = list(best[0].fitness.names)
 
         # Index for the dataframe
         if self.hyperparameters is not None:
@@ -1082,13 +1127,7 @@ class Experiment(Evaluation):
         df = DataFrame(columns=column_names)
 
         # For each species
-        for species_index, hof in enumerate(self.best_solutions):
-            # Sort the hof
-            ordered = sorted(hof, reverse=True)
-
-            # Best (lexicographically)
-            best = ordered[0]
-
+        for species_index, sol in enumerate(best):
             # Create a row for the dataframe
             if self.hyperparameters is not None:
                 row_index = tuple(self.hyperparameters.values())
@@ -1096,12 +1135,12 @@ class Experiment(Evaluation):
                 row_index = ()
 
             row_index += (
-                (species_index, best)
+                (species_index, sol)
                 if num_species > 1
-                else (best, )
+                else (sol, )
             )
             row = Series(
-                row_index + best.fitness.values,
+                row_index + sol.fitness.values,
                 index=column_names
             )
 
@@ -1120,6 +1159,10 @@ class Experiment(Evaluation):
         # Train the trainer
         self._do_training()
 
+        # Choose one solution (lexicographically) according to the validation
+        # fitness
+        best = self._find_best_lexicographically()
+
         # Add the execution metrics
         self._add_execution_metric(_Labels.runtime, self.trainer.runtime)
         self._add_execution_metric(_Labels.num_evals, self.trainer.num_evals)
@@ -1127,14 +1170,24 @@ class Experiment(Evaluation):
         # Add the features stats
         self._add_feature_metrics()
 
-        # Test the best solutions found
+        # Test the solutions found
         self._do_test()
+
+        self._add_best(
+            best,
+            self.trainer.fitness_function,
+            self._ResultKeys.train_best
+        )
+
+        # Evaluate the best solution with the test data
+        self._add_best(
+            best,
+            self.test_fitness_function,
+            self._ResultKeys.test_best
+        )
 
         # Reset the state of the trainer to allow serialization
         self.trainer.reset()
-
-        # Find the best solution (lexicographcally)
-        self._find_best_lexicographically()
 
 
 class Batch(Evaluation):
