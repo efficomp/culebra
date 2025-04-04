@@ -54,10 +54,10 @@ clean:
 	@echo
 
 
-.PHONY: distclean
-distclean:
+.PHONY: deepclean
+deepclean:
 	@$(RM) $(TEMP)
-	@make -s -C $(WRAPPER) distclean
+	@make -s -C $(WRAPPER) deepclean
 
 
 

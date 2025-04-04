@@ -63,6 +63,6 @@ clean:
 	@$(RM) $(RESULTS) $(TEMP)
 	@echo
 
-.PHONY: distclean
-distclean: clean
+.PHONY: deepclean
+deepclean: clean
 	@$(RM) $(CHECKPOINTS)

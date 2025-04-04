@@ -40,6 +40,6 @@ clean:
 	@$(RM) __pycache__
 	@echo
 
-.PHONY: distclean
-distclean: clean
+.PHONY: deepclean
+deepclean: clean
 	@$(RM) checkpoint*

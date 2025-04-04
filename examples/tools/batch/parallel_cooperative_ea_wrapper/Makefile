@@ -71,8 +71,8 @@ clean:
 	done
 	@echo
 
-.PHONY: distclean
-distclean:
+.PHONY: deepclean
+deepclean:
 	@echo "Cleaning ..."
 	@$(RM) $(RESULTS) $(TEMP) $(EXPERIMENTS)
 

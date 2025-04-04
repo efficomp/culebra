@@ -49,11 +49,13 @@ training_cv_folds = 5
 test_prop = 0.3
 """Proportion of the dataset used for test."""
 
+# Scale inputs
+dataset.scale()
+
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs
-dataset.robust_scale()
+# Split the dataset
 (training_data, test_data) = dataset.split(test_prop=test_prop, random_seed=0)
 
 knn_classifier = KNeighborsClassifier(n_neighbors)

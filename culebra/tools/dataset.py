@@ -34,7 +34,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
-from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import MinMaxScaler, RobustScaler
 from ucimlrepo import fetch_ucirepo
 from imblearn.over_sampling import RandomOverSampler, SMOTE
 
@@ -178,124 +178,6 @@ class Dataset(Base):
         return self._outputs
 
     @classmethod
-    def load_train_test(
-        cls,
-        *files: FilePath | Url | TextIO,
-        test_prop: Optional[float] = None,
-        output_index: Optional[int] = None,
-        sep: str = DEFAULT_SEP,
-        normalize: bool = False,
-        random_feats: Optional[int] = None,
-        random_seed: Optional[int] = None,
-    ) -> Tuple[Dataset, Dataset]:
-        """Load the training and test data.
-
-        Datasets can be organized in only one file or in two files. If one
-        file per dataset is used, then *output_index* must be used to indicate
-        which column stores the output values. If *output_index* is set to
-        :py:data:`None` (its default value), it will be assumed that each
-        dataset is composed by two consecutive files, the first one containing
-        the input columns and the second one storing the output column. Only
-        the first column of the second file will be loaded (just one output
-        value per sample).
-
-        If *test_prop* is set a valid proportion, the training and test
-        datasets will be generated splitting the first dataset provided.
-        Otherwise a test dataset can be provided appending more files, but if
-        it isn't, the training dataset is assumed to be also the test dataset.
-
-        :param files: Files containing the data. If *output_index* is
-            :py:data:`None`,
-            two consecutive files are required for each dataset, otherwise,
-            each file contains a whole dataset (input and output columns).
-        :type files: Sequence of path-like objects, urls or file-like objects
-        :param test_prop: Proportion of the first dataset used as test data.
-            The remaining samples will be used as training data.
-        :type test_prop: :py:class:`float`, optional
-        :param output_index: If datasets are provided with only one file,
-            this parameter indicates which column in the file does contain the
-            output values. Otherwise this parameter must be set to
-            :py:data:`None` to express that inputs and ouputs are stored in
-            two different files. Its default value is :py:data:`None`
-        :type output_index: :py:class:`int`, optional
-        :param sep: Column separator used within the files. Defaults to
-            :py:attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: :py:class:`str`, optional
-        :param normalize: If :py:data:`True`, datasets will be normalized
-            into [0, 1]. Defaults to :py:data:`False`
-        :type normalize: :py:class:`bool`
-        :param random_feats: Number of random features to be appended, defaults
-            to :py:data:`None`
-        :type random_feats: An :py:class:`int` greater than 0, optional
-        :param random_seed: Random seed for the random generator, defaults to
-            :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
-        :raises TypeError: If at least one dataset is not provided
-        :raises TypeError: If *output_index* is not :py:data:`None` or
-            :py:class:`int`
-        :raises TypeError: If *test_prop* is not :py:data:`None` or
-            :py:class:`float`
-        :raises TypeError: If *sep* is not a string
-        :raises ValueError: If *test_prop* is not in (0, 1)
-        :raises IndexError: If *output_index* is out of range
-        :raises RuntimeError: If any input value is not numeric or there is any
-            missing data
-        :raises RuntimeError: When loading a dataset composed of two files, if
-            the file containing the input columns and the file containing the
-            output column do not have the same number of rows.
-        :raises RuntimeError: When training and test datasets do not have the
-            same number of columns.
-        :return: A :py:class:`tuple` of :py:class:`~culebra.tools.Dataset`
-            containing the training and test datasets
-        :rtype: :py:class:`tuple`
-        """
-        # If two files are used per dataset
-        files_per_dataset = 2
-        if output_index is not None:
-            files_per_dataset = 1
-
-        # Load the training dataset
-        training = cls(*files, output_index=output_index, sep=sep)
-
-        # No test dataset by the moment...
-        test = None
-
-        # If the dataset must be split...
-        if test_prop is not None:
-            # Split the dataset
-            training, test = training.split(test_prop, random_seed)
-
-        # Else, if there are test data files...
-        elif len(files) >= 2 * files_per_dataset:
-            # Load the test dataset
-            test = cls(
-                *files[files_per_dataset:],
-                output_index=output_index,
-                sep=sep
-            )
-
-            # Check if training and test data have the same number of columns
-            if training.num_feats != test.num_feats:
-                raise RuntimeError(
-                    "Training and test data do not have the same number of "
-                    "features"
-                )
-        if normalize:
-            training.normalize(test)
-
-        if random_feats is not None:
-            training = training.append_random_features(
-                random_feats, random_seed)
-            if test is not None:
-                test = test.append_random_features(random_feats, random_seed)
-
-        # The test dataset will be the same dataset by default
-        if test is None:
-            test = copy(training)
-
-        return training, test
-
-    @classmethod
     def load_from_uci(
         cls,
         name: Optional[str] = None,
@@ -313,8 +195,7 @@ class Dataset(Base):
         :type name: :py:class:`str`
         :param id: Dataset ID for UCI ML Repository
         :type id: :py:class:`int`
-        :raises RuntimeError: If any input value is not numeric or there is any
-            missing data
+        :raises RuntimeError: If there is any missing data
         :raises RuntimeError: When loading the dataset
         :return: The datasets
         :rtype: :py:class:`~culebra.tools.Dataset`
@@ -331,10 +212,10 @@ class Dataset(Base):
         if Dataset.__has_missing_data(inputs_df):
             raise RuntimeError("Missing inputs in the dataset")
 
-        # Check if all inputs are numeric
-        if not Dataset.__is_numeric(inputs_df):
-            raise RuntimeError(
-                "Input data must contain only numerical data"
+        # Replace categorical inputs by int values
+        for col in range(inputs_df.shape[1]):
+            inputs_df.iloc[:, col] = Dataset.__labels_to_numeric(
+                inputs_df.iloc[:, col]
             )
 
         output_df = uci_dataset.data.targets
@@ -361,114 +242,64 @@ class Dataset(Base):
 
         return dataset
 
-    def normalize(self, test: Optional[Dataset] = None) -> None:
-        """Normalize the dataset between 0 and 1.
+    def normalize(self) -> None:
+        """Normalize the dataset between 0 and 1."""
+        self._inputs = MinMaxScaler().fit(self._inputs).transform(self._inputs)
 
-        If a test dataset is provided, both are taken into account to calculate
-        the minimum and maximum value and then both are normalized.
+    def scale(self) -> None:
+        """Scale features robust to outliers."""
+        self._inputs = RobustScaler().fit(self._inputs).transform(self._inputs)
 
-        :param test: Test dataset or :py:data:`None`, defaults to
-            :py:data:`None`
-        :type test: :py:class:`~culebra.tools.Dataset`, optional
-        """
-        if test is None:
-            self._inputs -= self._inputs.min(axis=0)
-
-            max_inputs = self._inputs.max(axis=0)
-            where_max_inputs_are_zero = np.where(np.isclose(max_inputs, 0))
-            max_inputs[where_max_inputs_are_zero] = 1
-            self._inputs /= max_inputs
-        else:
-            min_inputs = np.minimum(
-                self._inputs.min(axis=0), test._inputs.min(axis=0)
-            )
-            self._inputs -= min_inputs
-            test._inputs -= min_inputs
-
-            max_inputs = np.maximum(
-                self._inputs.max(axis=0), test._inputs.max(axis=0)
-            )
-            where_max_inputs_are_zero = np.where(np.isclose(max_inputs, 0))
-            max_inputs[where_max_inputs_are_zero] = 1
-
-            self._inputs /= max_inputs
-            test._inputs /= max_inputs
-
-    def robust_scale(self, test: Optional[Dataset] = None) -> None:
-        """Scale features robust to outliers.
-
-        If a test dataset is provided, both are taken into account and then
-        both are scaled.
-
-        :param test: Test dataset or :py:data:`None`, defaults to
-            :py:data:`None`
-        :type test: :py:class:`~culebra.tools.Dataset`, optional
-        """
-        if test is None:
-            inputs = self._inputs
-        else:
-            inputs = np.concatenate((self._inputs, test._inputs))
-
-        transformer = RobustScaler().fit(inputs)
-        self._inputs = transformer.transform(self._inputs)
-        if test is not None:
-            test._inputs = transformer.transform(test._inputs)
-
-    def remove_outliers(self, test: Optional[Dataset] = None) -> None:
+    def remove_outliers(
+        self,
+        prop: float = 0.05,
+        random_seed: Optional[int] = None
+    ) -> None:
         """Remove the outliers.
 
-        If a test dataset is provided, both are taken into account to remove
-        the outliers. Outliers will be also removed fomr the test dataset.
-
-        :param test: Test dataset or :py:data:`None`, defaults to
+        :param prop: Expected outlier proportion por class, defaults to 0.05
+        :type prop: :py:class:`float`
+        :param random_seed: Random seed for the random generator, defaults to
             :py:data:`None`
-        :type test: :py:class:`~culebra.tools.Dataset`, optional
+        :type random_seed: :py:class:`int`, optional
         """
-        if test is None:
-            inputs = self._inputs
-        else:
-            inputs = np.concatenate((self._inputs, test._inputs))
-
         # The outlier detectors
         detectors = [
-            IsolationForest(),
-            LocalOutlierFactor(),
-            OneClassSVM(nu=0.01)
+            IsolationForest(contamination=prop, random_state=random_seed),
+            LocalOutlierFactor(contamination=prop),
+            OneClassSVM(nu=prop)
         ]
 
-        # Use majority voting among several detectors
-        majority_voting = {}
-        for i in range(len(inputs)):
-            majority_voting[i] = 0
+        # Detection threshold
+        detection_th = len(detectors) / 2
 
-        # Apply the detectors
-        for detector in detectors:
-            for i in np.where(detector.fit_predict(inputs) < 0)[0]:
-                majority_voting[i] += 1
+        # Filtered samples
+        filtered_inputs = []
+        filtered_outputs = []
 
-        # Get the outliers
-        threshold = len(detectors) / 2
-        outlier_indices = [
-            key for key in majority_voting
-            if majority_voting[key] > threshold
-        ]
+        # Outlier detection by class
+        for class_label in np.unique(self.outputs):
+            # Filter samples by class
+            inputs_class = self.inputs[self.outputs == class_label]
 
-        # Remove the outliers
-        if test is None:
-            self._inputs = np.delete(self._inputs, outlier_indices, 0)
-            self._outputs = np.delete(self._outputs, outlier_indices, 0)
-        else:
-            train_outlier_indices = [
-                index for index in outlier_indices if index < self.size
-            ]
-            test_outlier_indices = [
-                index - self.size
-                for index in outlier_indices if index >= self.size
-            ]
-            self._inputs = np.delete(self._inputs, train_outlier_indices, 0)
-            self._outputs = np.delete(self._outputs, train_outlier_indices, 0)
-            test._inputs = np.delete(test._inputs, test_outlier_indices, 0)
-            test._outputs = np.delete(test._outputs, test_outlier_indices, 0)
+            # Use majority voting among several detectors
+            majority_voting = np.zeros((len(inputs_class),))
+
+            # Apply the detectors
+            for detector in detectors:
+                majority_voting += (detector.fit_predict(inputs_class) < 0)
+
+            # Get the outliers indices
+            outlier_indices = majority_voting > detection_th
+
+            # Remove the outliers
+            inputs_class = np.delete(inputs_class, outlier_indices, 0)
+
+            filtered_inputs.append(inputs_class)
+            filtered_outputs.append([class_label]*len(inputs_class))
+
+        self._inputs = np.vstack(filtered_inputs)
+        self._outputs = np.concatenate(filtered_outputs)
 
     def oversample(
         self,
@@ -710,8 +541,7 @@ class Dataset(Base):
             :py:attr:`~culebra.tools.DEFAULT_SEP`
         :type sep: :py:class:`str`, optional
         :raises TypeError: If *sep* is not a string
-        :raises RuntimeError: If any input value is not numeric or there is any
-            missing data
+        :raises RuntimeError: If there is any missing data
         :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
             input columns and a :py:class:`~pandas.Series` with the output
             column
@@ -732,10 +562,10 @@ class Dataset(Base):
         inputs_df, output_s = Dataset.__split_input_output(
             dataframe, output_index)
 
-        # Check if all inputs are numeric
-        if not Dataset.__is_numeric(inputs_df):
-            raise RuntimeError(
-                f"Input data must contain only numerical data in {file}"
+        # Replace categorical inputs by int values
+        for col in range(inputs_df.shape[1]):
+            inputs_df.iloc[:, col] = Dataset.__labels_to_numeric(
+                inputs_df.iloc[:, col]
             )
 
         return inputs_df, output_s
@@ -757,9 +587,8 @@ class Dataset(Base):
             :py:attr:`~culebra.tools.DEFAULT_SEP`
         :type sep: :py:class:`str`, optional
         :raises TypeError: If *sep* is not a string
-        :raises RuntimeError: If any input value is not numeric, if there is
-            any missing data, or if the *files* do not have the same number of
-            rows
+        :raises RuntimeError: If there is any missing data or if the *files*
+          do not have the same number of rows
         :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
             input columns and a :py:class:`~pandas.Series` with the output
             column
@@ -784,10 +613,10 @@ class Dataset(Base):
         if Dataset.__has_missing_data(inputs_df):
             raise RuntimeError(f"Missing data in {files[0]}")
 
-        # Check if all inputs are numeric
-        if not Dataset.__is_numeric(inputs_df):
-            raise RuntimeError(
-                f"Input data must contain only numerical data in {files[0]}"
+        # Replace categorical inputs by int values
+        for col in range(inputs_df.shape[1]):
+            inputs_df.iloc[:, col] = Dataset.__labels_to_numeric(
+                inputs_df.iloc[:, col]
             )
 
         try:

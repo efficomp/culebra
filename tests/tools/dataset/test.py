@@ -86,9 +86,9 @@ class DatasetTester(unittest.TestCase):
             Dataset("missing.dat", output_index=0)
 
         # Try to load a mixed dataset with non-numeric input data.
-        # It should fail
-        with self.assertRaises(RuntimeError):
-            Dataset("non_numeric.dat", output_index=1)
+        dataset = Dataset("non_numeric.dat", output_index=1)
+        self.assertEqual(dataset.inputs[0, 0], 0)
+        self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
 
         # Try to load a mixed dataset with numeric labels.
         dataset = Dataset("numeric_1.dat", output_index=0)
@@ -128,9 +128,9 @@ class DatasetTester(unittest.TestCase):
             Dataset("missing.dat", "numeric_1.dat")
 
         # Try to load a split dataset with non-numeric input data.
-        # It should fail
-        with self.assertRaises(RuntimeError):
-            Dataset("non_numeric.dat", "numeric_1.dat")
+        dataset = Dataset("non_numeric.dat", "numeric_1.dat")
+        self.assertEqual(dataset.inputs[0, 0], 0)
+        self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
 
         # Try to load a split dataset with different number of inputs and
         # outputs. It should fail
@@ -147,155 +147,6 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(dataset.num_feats, 4)
         self.assertEqual(dataset.size, 10)
 
-    def test_load_train_test(self):
-        """Test :py:meth:`~culebra.tools.Dataset.load_train_test`."""
-        # Try to load a mixed dataset
-        datasets = Dataset.load_train_test("numeric_1.dat", output_index=0)
-
-        # Check the 2 datasets are returned
-        self.assertEqual(len(datasets), 2)
-
-        # Check that training dataset is numeric_1.dat
-        self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 10)
-
-        # Check that test dataset is a copy of training data
-        self.assertTrue(datasets[0] is not datasets[1])
-        self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 10)
-
-        # Try to load a mixed dataset and split it
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", output_index=0, test_prop=0.2)
-
-        # Check that training dataset is 75% of numeric_1.dat
-        self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 10*0.8)
-
-        # Check that test dataset is 25% of numeric_1.dat
-        self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 10*0.2)
-
-        # For mixed datasets, if test_prop is not None, the second dataset
-        # should be ignored
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", "numeric_2.dat", test_prop=0.2, output_index=0)
-
-        # Check that training dataset is 75% of numeric_1.dat
-        self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 10*0.8)
-
-        # Check that test dataset is 25% of numeric_1.dat
-        self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 10*0.2)
-
-        # Try to load a mixed dataset, split it and also normalize it
-        datasets = Dataset.load_train_test(
-            AUSTRALIAN_PATH, output_index=-1, test_prop=0.2, normalize=True)
-
-        # Check that the minimum value for each feature is zero
-        min_train_inputs = np.min(datasets[0].inputs, axis=0)
-        min_test_inputs = np.min(datasets[1].inputs, axis=0)
-        min_values = np.minimum(min_train_inputs, min_test_inputs)
-        self.assertEqual(min(min_values), 0)
-        self.assertEqual(max(min_values), 0)
-
-        # Check that the maximum value for each feature is one
-        max_train_inputs = np.max(datasets[0].inputs, axis=0)
-        max_test_inputs = np.max(datasets[1].inputs, axis=0)
-        max_values = np.maximum(max_train_inputs, max_test_inputs)
-        self.assertEqual(max(max_values), 1)
-        self.assertEqual(max(max_values), 1)
-
-        # Try to load a mixed dataset and append it some random features
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", output_index=0, test_prop=0.2, random_feats=5)
-
-        # Check that training dataset is 75% of numeric_1.dat, but having
-        # 5 more features
-        self.assertEqual(datasets[0].num_feats, 3 + 5)
-        self.assertEqual(datasets[0].size, 10*0.8)
-
-        # Check that test dataset is 25% of numeric_1.dat, but having
-        # 5 more features
-        self.assertEqual(datasets[1].num_feats, 3 + 5)
-        self.assertEqual(datasets[1].size, 10*0.2)
-
-        # Try to load two mixed datasets, the first for training and the second
-        # for testing
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", "numeric_2.dat", output_index=0)
-
-        # Check the 2 datasets are returned
-        self.assertEqual(len(datasets), 2)
-
-        # Check that training dataset is numeric_1.dat
-        self.assertEqual(datasets[0].num_feats, 3)
-        self.assertEqual(datasets[0].size, 10)
-
-        # Check that test dataset is a numeric_2
-        self.assertEqual(datasets[1].num_feats, 3)
-        self.assertEqual(datasets[1].size, 4)
-
-        # Try to load two mixed datasets, the first for training and the second
-        # for testing. It should fail because datasets have different number
-        # of features
-        self.assertRaises(RuntimeError, Dataset.load_train_test,
-                          "numeric_1.dat", "non_numeric.dat", output_index=0)
-
-        # Try to load a split dataset
-        #  - numeric_1.dat conains the input features
-        #  - non_numeric.dat contains the outputs. Onle the first column is
-        #    considered
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", "non_numeric.dat", test_prop=0.5, random_feats=3)
-        # Check the 2 datasets are returned
-        self.assertEqual(len(datasets), 2)
-
-        # Check the training dataset
-        self.assertEqual(datasets[0].num_feats, 4+3)
-        self.assertEqual(datasets[0].size, 10*0.5)
-
-        # Check the test dataset
-        self.assertTrue(datasets[0] is not datasets[1])
-        self.assertEqual(datasets[1].num_feats, 4+3)
-        self.assertEqual(datasets[1].size, 10*0.5)
-
-        # Try to load two split datasets. Since test_prop is not None,
-        # The second dataset should be ignored
-        #  - numeric_1.dat conains the input features
-        #  - non_numeric.dat contains the outputs. Onle the first column is
-        #    considered
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", "non_numeric.dat", "numeric_1.dat",
-            "non_numeric.dat", test_prop=0.5)
-
-        # Check the training dataset
-        self.assertEqual(datasets[0].num_feats, 4)
-        self.assertEqual(datasets[0].size, 10*0.5)
-
-        # Check the test dataset
-        self.assertTrue(datasets[0] is not datasets[1])
-        self.assertEqual(datasets[1].num_feats, 4)
-        self.assertEqual(datasets[1].size, 10*0.5)
-
-        # Try to load two split datasets
-        #  - numeric_1.dat conains the input features
-        #  - non_numeric.dat contains the outputs. Onle the first column is
-        #    considered
-        datasets = Dataset.load_train_test(
-            "numeric_1.dat", "non_numeric.dat", "numeric_1.dat",
-            "non_numeric.dat")
-
-        # Check the training dataset
-        self.assertEqual(datasets[0].num_feats, 4)
-        self.assertEqual(datasets[0].size, 10)
-
-        # Check the test dataset
-        self.assertTrue(datasets[0] is not datasets[1])
-        self.assertEqual(datasets[1].num_feats, 4)
-        self.assertEqual(datasets[1].size, 10)
-
     def test_load_from_uci(self):
         """Test the load_from_uci class method."""
         # Dataset
@@ -307,52 +158,46 @@ class DatasetTester(unittest.TestCase):
         """Test the normalization method."""
         # Load the data
         dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
-        (training_data, test_data) = dataset.split(
-            test_prop=0.3, random_seed=0
-        )
-        training_data.normalize(test_data)
+        dataset.normalize()
 
         # Check that the minimum value for each feature is zero
-        min_train_inputs = np.min(training_data.inputs, axis=0)
-        min_test_inputs = np.min(test_data.inputs, axis=0)
-        min_values = np.minimum(min_train_inputs, min_test_inputs)
-        self.assertEqual(min(min_values), 0)
-        self.assertEqual(max(min_values), 0)
+        min_inputs = np.min(dataset.inputs, axis=0)
+        self.assertAlmostEqual(min(min_inputs), 0)
+        self.assertAlmostEqual(max(min_inputs), 0)
 
         # Check that the maximum value for each feature is one
-        max_train_inputs = np.max(training_data.inputs, axis=0)
-        max_test_inputs = np.max(test_data.inputs, axis=0)
-        max_values = np.maximum(max_train_inputs, max_test_inputs)
-        self.assertEqual(max(max_values), 1)
-        self.assertEqual(max(max_values), 1)
+        max_inputs = np.max(dataset.inputs, axis=0)
+        self.assertAlmostEqual(max(max_inputs), 1)
+        self.assertAlmostEqual(max(max_inputs), 1)
 
-    def test_robust_scale(self):
-        """Test the robust_scale method."""
-        num_feats = 1000
-        size = 1000
+    def test_scale(self):
+        """Test the scale method."""
+        num_feats = 10
+        size = 100
 
-        # Create a dataset with repeated samples, there isn't any outlier
+        # Create a dataset with similar samples, there isn't any outlier
         dataset = Dataset()
         dataset._inputs = np.concatenate(
             (
-                np.ones((int(size/2), num_feats)),
-                np.ones((int(size/2), num_feats)) * 10
+                np.random.random_sample(
+                    (size//2, num_feats)
+                ) * 0.001,
+                np.random.random_sample(
+                    (size//2, num_feats)
+                ) * 0.001 + 10
             )
         )
 
-        dataset._outputs = np.concatenate(
-            (
-                np.ones((int(size/2), 1)),
-                np.ones((int(size/2), 1)) * 10
-            )
+        dataset._outputs = np.asarray(
+            [0] * (size//2) + [10] * (size//2)
         )
 
-        # Try robust_scale
-        dataset.robust_scale()
+        # Try scale
+        dataset.scale()
 
         # Check the scale
-        self.assertEqual(np.min(dataset.inputs), -0.5)
-        self.assertEqual(np.max(dataset.inputs), 0.5)
+        self.assertAlmostEqual(np.min(dataset.inputs), -0.5, places=1)
+        self.assertAlmostEqual(np.max(dataset.inputs), 0.5, places=1)
 
         # Insert outliers
         dataset._inputs = np.concatenate(
@@ -380,25 +225,40 @@ class DatasetTester(unittest.TestCase):
             )
         )
 
-        # Try robust_scale again
-        dataset.robust_scale()
+        # Try scale again
+        dataset.scale()
 
         # Remove the outliers
-        dataset.remove_outliers()
+        dataset._inputs = np.delete(dataset._inputs, (0), axis=0)
+        dataset._inputs = np.delete(dataset._inputs, (size), axis=0)
+        dataset._outputs = np.delete(dataset._outputs, (0), axis=0)
+        dataset._outputs = np.delete(dataset._outputs, (size), axis=0)
 
         # The scale should be the same than without outliers
-        self.assertEqual(np.min(dataset.inputs), -0.5)
-        self.assertEqual(np.max(dataset.inputs), 0.5)
+        self.assertAlmostEqual(np.min(dataset.inputs), -0.5, places=1)
+        self.assertAlmostEqual(np.max(dataset.inputs), 0.5, places=1)
 
     def test_remove_outliers(self):
         """Test the outliers removal method."""
-        num_feats = 10
+        num_feats = 4
         size = 100
 
-        # Create a dataset with repeated samples, there isn't any outlier
+        # Create a dataset with similar samples, there isn't any outlier
         dataset = Dataset()
-        dataset._inputs = np.ones((size, num_feats))
-        dataset._outputs = np.ones((size, 1))
+        dataset._inputs = np.concatenate(
+            (
+                np.ones(
+                    (int(size/2), num_feats)
+                ),
+                np.ones(
+                    (int(size/2), num_feats)
+                ) * 10
+            )
+        )
+
+        dataset._outputs = np.asarray(
+            [1] * (size//2) + [10] * (size//2)
+        )
 
         # Try to remove the outliers
         dataset.remove_outliers()
@@ -413,7 +273,7 @@ class DatasetTester(unittest.TestCase):
             ([[-100] * num_feats], dataset._inputs, [[100] * num_feats])
         )
         dataset._outputs = np.concatenate(
-            ([[-100]], dataset._outputs, [[100]])
+            ([1], dataset._outputs, [10])
         )
 
         # Check that the size has increased
@@ -428,43 +288,6 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(dataset.size, size)
         self.assertEqual(dataset._inputs.shape[0], size)
         self.assertEqual(dataset._outputs.shape[0], size)
-        self.assertTrue((dataset._inputs == 1).all())
-        self.assertTrue((dataset._outputs == 1).all())
-
-        # Try also with a test dataset having outliers
-        test_dataset = copy(dataset)
-
-        # Insert outliers
-        test_dataset._inputs = np.concatenate(
-            ([[-100] * num_feats], test_dataset._inputs, [[100] * num_feats])
-        )
-        test_dataset._outputs = np.concatenate(
-            ([[-100]], test_dataset._outputs, [[100]])
-        )
-
-        # Check that the size has increased
-        self.assertEqual(dataset.size, size)
-        self.assertEqual(dataset._inputs.shape[0], size)
-        self.assertEqual(dataset._outputs.shape[0], size)
-        self.assertEqual(test_dataset.size, size + 2)
-        self.assertEqual(test_dataset._inputs.shape[0], size + 2)
-        self.assertEqual(test_dataset._outputs.shape[0], size + 2)
-
-        # Try to remove the outliers again
-        dataset.remove_outliers(test_dataset)
-
-        # The outlier should have dissapeared
-        self.assertEqual(dataset.size, size)
-        self.assertEqual(dataset._inputs.shape[0], size)
-        self.assertEqual(dataset._outputs.shape[0], size)
-        self.assertTrue((dataset._inputs == 1).all())
-        self.assertTrue((dataset._outputs == 1).all())
-
-        self.assertEqual(test_dataset.size, size)
-        self.assertEqual(test_dataset._inputs.shape[0], size)
-        self.assertEqual(test_dataset._outputs.shape[0], size)
-        self.assertTrue((test_dataset._inputs == 1).all())
-        self.assertTrue((test_dataset._outputs == 1).all())
 
     def test_oversample(self):
         """Test the :py:meth:`~culebra.tools.Dataset.oversample` method."""

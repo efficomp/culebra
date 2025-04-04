@@ -41,11 +41,11 @@ from culebra.tools import Dataset
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
 
+# Scale inputs
+dataset.scale()
+
 # Remove outliers
 dataset.remove_outliers()
-
-# Normalize inputs
-dataset.robust_scale()
 
 # Default species for all the tests
 species = Species(num_feats=dataset.num_feats)

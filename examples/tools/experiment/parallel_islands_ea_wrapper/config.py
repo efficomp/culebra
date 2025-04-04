@@ -35,12 +35,18 @@ from culebra.tools import Dataset
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
 
+# Scale inputs
+dataset.scale()
+
 # Remove outliers
 dataset.remove_outliers()
 
-# Normalize inputs
-dataset.robust_scale()
+# Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
+
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
 
 n_neighbors = 5
 """Number of neighbors for k-NN."""
@@ -51,6 +57,9 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 training_fitness_function = KappaNumFeats(
     training_data=training_data, classifier=knn_classifier, cv_folds=5
 )
+
+# Set the training fitness similarity threshold
+training_fitness_function.set_fitness_thresholds(0.001)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(
