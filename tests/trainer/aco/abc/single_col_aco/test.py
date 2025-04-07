@@ -136,6 +136,9 @@ tsp_feasible_nodes = list(range(1, tsp_num_nodes - 1))
 
 fs_dataset = Dataset.load_from_uci(name="Wine")
 
+# Preprocess the dataset
+fs_dataset = fs_dataset.drop_missing().scale().remove_outliers(random_seed=0)
+
 fs_fitness_func = KappaNumFeats(training_data=fs_dataset)
 
 

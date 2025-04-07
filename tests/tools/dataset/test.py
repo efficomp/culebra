@@ -81,9 +81,8 @@ class DatasetTester(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             Dataset("empty.dat", output_index=0)
 
-        # Try to load a mixed dataset with missing data. It should fail
-        with self.assertRaises(RuntimeError):
-            Dataset("missing.dat", output_index=0)
+        # Try to load a mixed dataset with missing data
+        dataset = Dataset("missing.dat", output_index=0)
 
         # Try to load a mixed dataset with non-numeric input data.
         dataset = Dataset("non_numeric.dat", output_index=1)
@@ -107,7 +106,7 @@ class DatasetTester(unittest.TestCase):
 
         # Try to load a dataset stored in one file, but without output_index.
         # It should fail
-        with self.assertRaises(TypeError):
+        with self.assertRaises(RuntimeError):
             Dataset("numeric_1.dat")
 
         # Try to load a split dataset with an invalid separator.
@@ -127,15 +126,15 @@ class DatasetTester(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             Dataset("missing.dat", "numeric_1.dat")
 
-        # Try to load a split dataset with non-numeric input data.
-        dataset = Dataset("non_numeric.dat", "numeric_1.dat")
-        self.assertEqual(dataset.inputs[0, 0], 0)
-        self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
-
         # Try to load a split dataset with different number of inputs and
         # outputs. It should fail
         with self.assertRaises(RuntimeError):
             Dataset("numeric_1.dat", "numeric_2.dat")
+
+        # Try to load a split dataset with non-numeric input data.
+        dataset = Dataset("non_numeric.dat", "numeric_1.dat")
+        self.assertEqual(dataset.inputs[0, 0], 0)
+        self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
 
         # Try to a split dataset with numeric labels.
         dataset = Dataset("numeric_1.dat", "numeric_1.dat")
@@ -158,15 +157,15 @@ class DatasetTester(unittest.TestCase):
         """Test the normalization method."""
         # Load the data
         dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
-        dataset.normalize()
+        normalized = dataset.normalize()
 
         # Check that the minimum value for each feature is zero
-        min_inputs = np.min(dataset.inputs, axis=0)
+        min_inputs = np.min(normalized.inputs, axis=0)
         self.assertAlmostEqual(min(min_inputs), 0)
         self.assertAlmostEqual(max(min_inputs), 0)
 
         # Check that the maximum value for each feature is one
-        max_inputs = np.max(dataset.inputs, axis=0)
+        max_inputs = np.max(normalized.inputs, axis=0)
         self.assertAlmostEqual(max(max_inputs), 1)
         self.assertAlmostEqual(max(max_inputs), 1)
 
@@ -193,11 +192,11 @@ class DatasetTester(unittest.TestCase):
         )
 
         # Try scale
-        dataset.scale()
+        scaled = dataset.scale()
 
         # Check the scale
-        self.assertAlmostEqual(np.min(dataset.inputs), -0.5, places=1)
-        self.assertAlmostEqual(np.max(dataset.inputs), 0.5, places=1)
+        self.assertAlmostEqual(np.min(scaled.inputs), -0.5, places=1)
+        self.assertAlmostEqual(np.max(scaled.inputs), 0.5, places=1)
 
         # Insert outliers
         dataset._inputs = np.concatenate(
@@ -226,17 +225,30 @@ class DatasetTester(unittest.TestCase):
         )
 
         # Try scale again
-        dataset.scale()
+        scaled = dataset.scale()
 
         # Remove the outliers
-        dataset._inputs = np.delete(dataset._inputs, (0), axis=0)
-        dataset._inputs = np.delete(dataset._inputs, (size), axis=0)
-        dataset._outputs = np.delete(dataset._outputs, (0), axis=0)
-        dataset._outputs = np.delete(dataset._outputs, (size), axis=0)
+        scaled._inputs = np.delete(scaled._inputs, (0), axis=0)
+        scaled._inputs = np.delete(scaled._inputs, (size), axis=0)
+        scaled._outputs = np.delete(scaled._outputs, (0), axis=0)
+        scaled._outputs = np.delete(scaled._outputs, (size), axis=0)
 
         # The scale should be the same than without outliers
-        self.assertAlmostEqual(np.min(dataset.inputs), -0.5, places=1)
-        self.assertAlmostEqual(np.max(dataset.inputs), 0.5, places=1)
+        self.assertAlmostEqual(np.min(scaled.inputs), -0.5, places=1)
+        self.assertAlmostEqual(np.max(scaled.inputs), 0.5, places=1)
+
+    def test_drop_missing(self):
+        """Test the mising values removal method."""
+        dataset = Dataset("missing.dat", output_index=-1)
+
+        self.assertTrue(np.isnan(dataset.inputs).any())
+        self.assertTrue(np.isnan(dataset.outputs).any())
+
+        clean_dataset = dataset.drop_missing()
+
+        self.assertFalse(np.isnan(clean_dataset.inputs).all())
+        self.assertFalse(np.isnan(clean_dataset.outputs).all())
+
 
     def test_remove_outliers(self):
         """Test the outliers removal method."""
@@ -261,12 +273,12 @@ class DatasetTester(unittest.TestCase):
         )
 
         # Try to remove the outliers
-        dataset.remove_outliers()
+        clean_data = dataset.remove_outliers()
 
         # Check that all the samples remain
-        self.assertEqual(dataset.size, size)
-        self.assertEqual(dataset._inputs.shape[0], size)
-        self.assertEqual(dataset._outputs.shape[0], size)
+        self.assertEqual(clean_data.size, size)
+        self.assertEqual(clean_data._inputs.shape[0], size)
+        self.assertEqual(clean_data._outputs.shape[0], size)
 
         # Insert outliers
         dataset._inputs = np.concatenate(
@@ -282,12 +294,12 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(dataset._outputs.shape[0], size + 2)
 
         # Try to remove the outliers again
-        dataset.remove_outliers()
+        clean_data = dataset.remove_outliers()
 
         # The outlier should have dissapeared
-        self.assertEqual(dataset.size, size)
-        self.assertEqual(dataset._inputs.shape[0], size)
-        self.assertEqual(dataset._outputs.shape[0], size)
+        self.assertEqual(clean_data.size, size)
+        self.assertEqual(clean_data._inputs.shape[0], size)
+        self.assertEqual(clean_data._outputs.shape[0], size)
 
     def test_oversample(self):
         """Test the :py:meth:`~culebra.tools.Dataset.oversample` method."""

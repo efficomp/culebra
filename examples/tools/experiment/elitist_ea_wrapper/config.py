@@ -28,11 +28,8 @@ from culebra.tools import Dataset
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
 
-# Scale inputs
-dataset.scale()
-
-# Remove outliers
-dataset.remove_outliers()
+# Preprocess the dataset
+dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)

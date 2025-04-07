@@ -22,12 +22,12 @@
 from __future__ import annotations
 
 from collections import Counter
-from copy import copy
 from os import PathLike
+from copy import deepcopy
 from typing import Optional, Tuple, Union, TextIO
 
 import numpy as np
-from pandas import Series, DataFrame, read_csv, to_numeric
+from pandas import Series, DataFrame, read_csv
 from pandas.errors import EmptyDataError
 from sklearn.utils.validation import check_random_state
 from sklearn.model_selection import train_test_split
@@ -46,7 +46,7 @@ Url = str
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
 __version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
@@ -110,11 +110,12 @@ class Dataset(Base):
             :py:class:`int`
         :raises TypeError: If *sep* is not a string
         :raises IndexError: If *output_index* is out of range
-        :raises RuntimeError: If any input value is not numeric or there is any
-            missing data
+        :raises RuntimeError: If *output_index* is :py:data:`None` and only
+            one file is provided
         :raises RuntimeError: When loading a dataset composed of two files, if
             the file containing the input columns and the file containing the
             output column do not have the same number of rows.
+        :raises RuntimeError: If any file is empty
         :return: The dataset
         :rtype: :py:class:`~culebra.tools.Dataset`
         """
@@ -128,6 +129,11 @@ class Dataset(Base):
         else:
             # If inputs and output data are in separate files
             if output_index is None:
+                if len(files) < 2:
+                    raise RuntimeError(
+                        "Only one file is provided and output_index is None"
+                    )
+
                 # Load the training data
                 data_x, data_y = Dataset.__load_split_dataset(*files, sep=sep)
             # If inputs and output data are in the same file
@@ -136,10 +142,6 @@ class Dataset(Base):
                 (data_x, data_y) = Dataset.__load_mixed_dataset(
                     files[0], output_index=output_index, sep=sep
                 )
-
-            # Replace output labels by int identifiers (only if output is not
-            # numeric)
-            data_y = Dataset.__labels_to_numeric(data_y)
 
             # Convert data to numpy ndarrays
             self._inputs = data_x.to_numpy(dtype=float)
@@ -195,66 +197,100 @@ class Dataset(Base):
         :type name: :py:class:`str`
         :param id: Dataset ID for UCI ML Repository
         :type id: :py:class:`int`
-        :raises RuntimeError: If there is any missing data
-        :raises RuntimeError: When loading the dataset
-        :return: The datasets
+        :raises RuntimeError: If the dataset can not be loaded
+        :return: The dataset
         :rtype: :py:class:`~culebra.tools.Dataset`
         """
-        # Fetch the dataset
+        dataset = None
+
         try:
+            # Fetch the dataset
             uci_dataset = fetch_ucirepo(name, id)
+
+            inputs_df = Dataset.__categorical_to_numeric(
+                uci_dataset.data.features
+            )
+            output_s = Dataset.__categorical_to_numeric(
+                uci_dataset.data.targets
+            ).iloc[:, 0]
+
+            # Check that both dataframes have the same number of rows
+            if not len(inputs_df.index) == len(output_s.index):
+                raise RuntimeError(
+                    "The inputs and output do not have the same number of rows"
+                )
+
+            # Convert data to numpy ndarrays and create the dataset
+            dataset = Dataset()
+            dataset._inputs = inputs_df.to_numpy(dtype=float)
+            dataset._outputs = output_s.to_numpy()
         except Exception as e:
-            raise RuntimeError("Error loading the dataset") from e
-
-        inputs_df = uci_dataset.data.features
-
-        # Check if there is any missing data
-        if Dataset.__has_missing_data(inputs_df):
-            raise RuntimeError("Missing inputs in the dataset")
-
-        # Replace categorical inputs by int values
-        for col in range(inputs_df.shape[1]):
-            inputs_df.iloc[:, col] = Dataset.__labels_to_numeric(
-                inputs_df.iloc[:, col]
-            )
-
-        output_df = uci_dataset.data.targets
-        output_s = output_df.iloc[:, 0]
-
-        # Check if there is any missing data
-        if Dataset.__has_missing_data(output_s):
-            raise RuntimeError("Missing outputs in the dataset")
-
-        # Check that both dataframes have the same number of rows
-        if not len(inputs_df.index) == len(output_s.index):
-            raise RuntimeError(
-                "The inputs and output do not have the same number of rows"
-            )
-
-        # Replace output labels by int identifiers (only if output is not
-        # numeric)
-        output_s = Dataset.__labels_to_numeric(output_s)
-
-        # Convert data to numpy ndarrays and create the dataset
-        dataset = Dataset()
-        dataset._inputs = inputs_df.to_numpy(dtype=float)
-        dataset._outputs = output_s.to_numpy()
+            raise RuntimeError(str(e)) from e
 
         return dataset
 
-    def normalize(self) -> None:
-        """Normalize the dataset between 0 and 1."""
-        self._inputs = MinMaxScaler().fit(self._inputs).transform(self._inputs)
+    def normalize(self) -> Dataset:
+        """Normalize the dataset between 0 and 1.
 
-    def scale(self) -> None:
-        """Scale features robust to outliers."""
-        self._inputs = RobustScaler().fit(self._inputs).transform(self._inputs)
+        :return: A normalized dataset
+        :rtype: :py:class:`~culebra.tools.Dataset`
+        """
+        normalized_dataset = Dataset()
+        normalized_dataset._inputs = MinMaxScaler().fit(
+            self._inputs
+        ).transform(self._inputs)
+        normalized_dataset._outputs = deepcopy(self.outputs)
+        return normalized_dataset
+
+    def scale(self) -> Dataset:
+        """Scale features robust to outliers.
+
+        :return: A scaled dataset
+        :rtype: :py:class:`~culebra.tools.Dataset`
+        """
+        scaled_dataset = Dataset()
+        scaled_dataset._inputs = RobustScaler().fit(
+            self._inputs
+        ).transform(self._inputs)
+        scaled_dataset._outputs = deepcopy(self.outputs)
+        return scaled_dataset
+
+    def drop_missing(self) -> Dataset:
+        """Drop samples with missing values.
+
+        :return: A clean dataset
+        :rtype: :py:class:`~culebra.tools.Dataset`
+        """
+        clean_dataset = Dataset()
+
+        # Samples with missing inputs
+        samples_to_be_dropped = [
+            sample[0] for sample in np.argwhere(np.isnan(self.inputs))
+        ]
+
+        # Samples with missing outputs
+        samples_to_be_dropped += [
+            sample[0] for sample in np.argwhere(np.isnan(self.outputs))
+        ]
+
+        # remove duplicated indices
+        samples_to_be_dropped = list(set(samples_to_be_dropped))
+
+        clean_dataset._inputs = np.delete(
+            self.inputs, samples_to_be_dropped, axis=0
+        )
+
+        clean_dataset._outputs = np.delete(
+            self.outputs, samples_to_be_dropped, axis=0
+        )
+
+        return clean_dataset
 
     def remove_outliers(
         self,
         prop: float = 0.05,
         random_seed: Optional[int] = None
-    ) -> None:
+    ) -> Dataset:
         """Remove the outliers.
 
         :param prop: Expected outlier proportion por class, defaults to 0.05
@@ -262,6 +298,8 @@ class Dataset(Base):
         :param random_seed: Random seed for the random generator, defaults to
             :py:data:`None`
         :type random_seed: :py:class:`int`, optional
+        :return: A clean dataset
+        :rtype: :py:class:`~culebra.tools.Dataset`
         """
         # The outlier detectors
         detectors = [
@@ -298,14 +336,16 @@ class Dataset(Base):
             filtered_inputs.append(inputs_class)
             filtered_outputs.append([class_label]*len(inputs_class))
 
-        self._inputs = np.vstack(filtered_inputs)
-        self._outputs = np.concatenate(filtered_outputs)
+        clean_dataset = Dataset()
+        clean_dataset._inputs = np.vstack(filtered_inputs)
+        clean_dataset._outputs = np.concatenate(filtered_outputs)
+        return clean_dataset
 
     def oversample(
         self,
         n_neighbors: Optional[int] = 5,
         random_seed: Optional[int] = None
-    ) -> None:
+    ) -> Dataset:
         """Oversample all classes but the majority class.
 
         All classes but the majority class are oversampled to equal the number
@@ -320,6 +360,8 @@ class Dataset(Base):
         :param random_seed: Random seed for the random generator, defaults to
             :py:data:`None`
         :type random_seed: :py:class:`int`, optional
+        :return: An oversampled dataset
+        :rtype: :py:class:`~culebra.tools.Dataset`
         """
         # Number of samples per class
         samples_per_class = Counter(self.outputs)
@@ -350,7 +392,7 @@ class Dataset(Base):
             # Keep the current dataset
             resampled_dataset = self
 
-        # Apply ADASYN
+        # Apply SMOTE
         (
             resampled_dataset._inputs,
             resampled_dataset._outputs
@@ -386,18 +428,18 @@ class Dataset(Base):
         random_state = check_random_state(random_seed)
 
         # Create an empty dataset
-        new = self.__class__()
+        new_dataset = self.__class__()
 
         # Append num_feats random features to the input data
-        new._inputs = np.concatenate(
+        new_dataset._inputs = np.concatenate(
             (self._inputs, random_state.rand(self.size, num_feats)), axis=1
         )
 
         # Copy the output data
-        new._outputs = np.copy(self._outputs)
+        new_dataset._outputs = np.deepcopy(self._outputs)
 
         # Return the new dataset
-        return new
+        return new_dataset
 
     def split(
             self,
@@ -446,51 +488,27 @@ class Dataset(Base):
         return training, test
 
     @staticmethod
-    def __is_numeric(dataframe: DataFrame) -> bool:
-        """Check if all the elements in a dataframe are numeric.
+    def __categorical_to_numeric(dataframe: DataFrame) -> DataFrame:
+        """Replace categorical values by numeric values.
 
         :param dataframe: A dataframe
         :type dataframe: :py:class:`~pandas.DataFrame`
-        :return: :py:data:`True` if all the elements are numeric
-        :rtype: :py:class:`bool`
+        :return: A dataframe with numerical values
+        :rtype: :py:class:`~pandas.DataFrame`
         """
-        return dataframe.apply(
-            lambda s: to_numeric(s, errors="coerce").notnull().all()
-        ).all()
+        output_df = DataFrame()
+        for col_name in dataframe:
+            col_values = dataframe[col_name].to_numpy()
 
-    @staticmethod
-    def __has_missing_data(dataframe: DataFrame) -> bool:
-        """Check if a dataframe has missing values.
+            # If the column values are not numeric
+            if not np.issubdtype(col_values.dtype, np.number):
+                labels = np.unique(col_values)
+                rep = dict(zip(labels, range(len(labels))))
+                output_df[col_name] = dataframe[col_name].map(Series(rep))
+            else:
+                output_df[col_name] = dataframe[col_name]
 
-        :param dataframe: A dataframe
-        :type dataframe: :py:class:`~pandas.DataFrame`
-        :return: :py:data:`True` if there is any missing value
-        :rtype: :py:class:`bool`
-        """
-        return dataframe.isna().values.any()
-
-    @staticmethod
-    def __labels_to_numeric(data_s: Series) -> Series:
-        """Replace output labels by numeric identifiers.
-
-        The replacement is performed only if output data is not numeric.
-
-        :param data_s: The outputs
-        :type data_s: :py:class:`~pandas.Series`
-        :return: A series of numeric values
-        :rtype: :py:class:`~pandas.Series`
-        """
-        values = data_s.to_numpy()
-
-        # If outputs are numeric that's all!
-        if np.issubdtype(values.dtype, np.number):
-            numeric_values = data_s
-        else:
-            labels = np.unique(values)
-            rep = dict(zip(labels, range(len(labels))))
-            numeric_values = data_s.map(Series(rep))
-
-        return numeric_values
+        return output_df
 
     @staticmethod
     def __split_input_output(
@@ -525,10 +543,39 @@ class Dataset(Base):
         return inputs_df, output_s
 
     @staticmethod
+    def __load_dataframe(
+        path: FilePath | Url | TextIO,
+        sep: str = DEFAULT_SEP
+    ) -> DataFrame:
+        """Load a dataframe.
+
+        Also replace categorical data by numerical data.
+
+        :param path: Path to the file contining the data
+        :type path: Path-like object, urls or file-like object
+        :param sep: Separator between columns
+        :type sep: :py:class:`str`
+        """
+        # Check sep
+        sep = check_str(sep, "separator")
+
+        df = None
+        try:
+            # Read the data
+            df = Dataset.__categorical_to_numeric(
+                read_csv(path, sep=sep, header=None)
+            )
+        except EmptyDataError as error:
+            raise RuntimeError(f"No data in {path}") from error
+
+        return df
+
+    @staticmethod
     def __load_mixed_dataset(
-            file: FilePath | Url | TextIO,
-            output_index: int,
-            sep: str = DEFAULT_SEP) -> Tuple[DataFrame, Series]:
+        file: FilePath | Url | TextIO,
+        output_index: int,
+        sep: str = DEFAULT_SEP
+    ) -> Tuple[DataFrame, Series]:
         """Load a mixed data set.
 
         Inputs and output are in the same file.
@@ -541,32 +588,18 @@ class Dataset(Base):
             :py:attr:`~culebra.tools.DEFAULT_SEP`
         :type sep: :py:class:`str`, optional
         :raises TypeError: If *sep* is not a string
-        :raises RuntimeError: If there is any missing data
         :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
             input columns and a :py:class:`~pandas.Series` with the output
             column
         :rtype: :py:class:`tuple`
         """
-        # Check sep
-        sep = check_str(sep, "separator")
+        # Load the data
+        dataframe = Dataset.__load_dataframe(file, sep)
 
-        try:
-            dataframe = read_csv(file, sep=sep, header=None)
-        except EmptyDataError as error:
-            raise RuntimeError(f"No data in {file}") from error
-
-        # Check if there is any missing data
-        if Dataset.__has_missing_data(dataframe):
-            raise RuntimeError(f"Missing data in {file}")
-
+        # Separate inputs and outputs
         inputs_df, output_s = Dataset.__split_input_output(
-            dataframe, output_index)
-
-        # Replace categorical inputs by int values
-        for col in range(inputs_df.shape[1]):
-            inputs_df.iloc[:, col] = Dataset.__labels_to_numeric(
-                inputs_df.iloc[:, col]
-            )
+            dataframe, output_index
+        )
 
         return inputs_df, output_s
 
@@ -587,48 +620,19 @@ class Dataset(Base):
             :py:attr:`~culebra.tools.DEFAULT_SEP`
         :type sep: :py:class:`str`, optional
         :raises TypeError: If *sep* is not a string
-        :raises RuntimeError: If there is any missing data or if the *files*
-          do not have the same number of rows
+        :raises RuntimeError: If the *files* do not have the same number of
+            rows
         :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
             input columns and a :py:class:`~pandas.Series` with the output
             column
         :rtype: :py:class:`tuple`
         """
-        # Check files
-        if len(files) < 2:
-            raise TypeError(
-                "A minimum of two files (inputs and outpus) are needed "
-                "(output_index is None)"
-            )
+        # Load the input data
+        inputs_df = Dataset.__load_dataframe(files[0], sep)
 
-        # Check sep
-        sep = check_str(sep, "separator")
-
-        try:
-            inputs_df = read_csv(files[0], sep=sep, header=None)
-        except EmptyDataError as error:
-            raise RuntimeError(f"No data in {files[0]}") from error
-
-        # Check if there is any missing data
-        if Dataset.__has_missing_data(inputs_df):
-            raise RuntimeError(f"Missing data in {files[0]}")
-
-        # Replace categorical inputs by int values
-        for col in range(inputs_df.shape[1]):
-            inputs_df.iloc[:, col] = Dataset.__labels_to_numeric(
-                inputs_df.iloc[:, col]
-            )
-
-        try:
-            output_df = read_csv(files[1], sep=sep, header=None)
-        except EmptyDataError as error:
-            raise RuntimeError(f"No data in {files[1]}") from error
-
+        # Load the output data
+        output_df = Dataset.__load_dataframe(files[1], sep)
         output_s = output_df.iloc[:, 0]
-
-        # Check if there is any missing data
-        if Dataset.__has_missing_data(output_s):
-            raise RuntimeError(f"Missing data in {files[1]}")
 
         # Check that both dataframes have the same number of rows
         if not len(inputs_df.index) == len(output_s.index):
