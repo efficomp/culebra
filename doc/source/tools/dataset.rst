@@ -41,6 +41,7 @@ Methods
 .. automethod:: culebra.tools.Dataset.save_pickle
 .. automethod:: culebra.tools.Dataset.normalize
 .. automethod:: culebra.tools.Dataset.scale
+.. automethod:: culebra.tools.Dataset.drop_missing
 .. automethod:: culebra.tools.Dataset.remove_outliers
 .. automethod:: culebra.tools.Dataset.oversample
 .. automethod:: culebra.tools.Dataset.append_random_features
