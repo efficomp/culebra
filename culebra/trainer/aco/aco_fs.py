@@ -29,7 +29,6 @@ from typing import (
     Sequence,
     Dict
 )
-from copy import copy
 
 from deap.tools import sortNondominated, selNSGA2
 

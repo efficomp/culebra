@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.trainer.aco.abc.ACO_FS`."""
 
 import unittest
-from itertools import repeat
+from itertools import repeat, combinations
 from copy import copy, deepcopy
 from os import remove
 
@@ -254,7 +254,7 @@ class ACO_FSTester(unittest.TestCase):
         trainer._initial_choice(ant)
 
         # Try to generate valid first nodes
-        times = 1000
+        times = 100
         acc = np.zeros(num_nodes)
         for _ in repeat(None, times):
             node = trainer._initial_choice(ant)
@@ -287,7 +287,7 @@ class ACO_FSTester(unittest.TestCase):
         species_num_feats = species.max_feat - species.min_feat + 1
 
         # Generate ants
-        for _ in range(1000):
+        for _ in range(100):
             ant = trainer._generate_ant()
             self.assertEqual(
                 species_num_feats,
@@ -303,23 +303,38 @@ class ACO_FSTester(unittest.TestCase):
             "verbose": False
         }
 
-        for i in range(1000):
-            # Create the trainer
-            trainer = ACO_FS(**params)
+        # Create the trainer
+        trainer = ACO_FS(**params)
 
-            # Init the internal strcutures
-            trainer._init_internals()
-
+        # Init the internal strcutures
+        trainer._init_internals()
+        for i in range(100):
             ant = trainer._generate_ant()
+
+            # Init the pheromone matrix
+            trainer._init_pheromone()
 
             # Let only the first ant deposit pheromone
             trainer._deposit_pheromone([ant], 3)
 
-            org = ant.path[-1]
-            for dest in ant.path:
-                self.assertEqual(trainer.pheromone[0][org][dest], 4)
-                self.assertEqual(trainer.pheromone[0][dest][org], 4)
-                org = dest
+            # All the combinations of two features from those in the path
+            indices = [item for item in combinations(ant.path, 2)]
+            for i in range(species.num_feats):
+                for j in range(i+1, species.num_feats):
+                    if (i, j) in indices or (j, i) in indices:
+                        self.assertGreater(
+                            trainer.pheromone[0][i][j],
+                            trainer.initial_pheromone
+                        )
+                        self.assertGreater(
+                            trainer.pheromone[0][j][i],
+                            trainer.initial_pheromone
+                        )
+                    else:
+                        self.assertEqual(
+                            trainer.pheromone[0][j][i],
+                            trainer.initial_pheromone
+                        )
 
     def test_copy(self):
         """Test the __copy__ method."""

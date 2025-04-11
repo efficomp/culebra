@@ -71,9 +71,9 @@ from typing import (
     Optional
 )
 from random import random
-from math import isclose
+from math import isclose, comb
 from functools import partial
-from itertools import repeat
+from itertools import repeat, combinations
 from copy import copy, deepcopy
 
 import numpy as np
@@ -2699,23 +2699,18 @@ class ACO_FS(
         :type amount: :py:class:`float`, optional
         """
         for ant in ants:
-            # For paths with less than three nodes, the loop must skip
-            # the last node for a correct pheromone update
-            max_path_nodes = len(ant.path)
-            if max_path_nodes < 3:
-                max_path_nodes -= 1
+            if len(ant.path) > 1:
+                # All the combinations of two features from those in the path
+                indices = combinations(ant.path, 2)
 
-            for pher in self.pheromone:
-                org = ant.path[-1]
-                processed_nodes = 0
+                # Divide the amount of pjheromone among all the couples
+                amount_per_combination = amount / comb(len(ant.path), 2)
 
-                for dest in ant.path:
-                    pher[org][dest] += amount
-                    pher[dest][org] += amount
-                    org = dest
-                    processed_nodes += 1
-                    if processed_nodes == max_path_nodes:
-                        break
+                # Deposit the pheromone
+                for pher in self.pheromone:
+                    for (i, j) in indices:
+                        pher[i][j] += amount_per_combination
+                        pher[j][i] += amount_per_combination
 
 
 # Exported symbols for this module
