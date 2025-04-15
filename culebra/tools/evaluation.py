@@ -132,6 +132,9 @@ class _Labels:
     num_evals = "NEvals"
     """Label for the number of evaluations column in dataframes."""
 
+    num_iters = "NIters"
+    """Label for the number of iterations column in dataframes."""
+
     experiment = "Exp"
     """Label for the experiment column in dataframes."""
 
@@ -1165,6 +1168,9 @@ class Experiment(Evaluation):
 
         # Add the execution metrics
         self._add_execution_metric(_Labels.runtime, self.trainer.runtime)
+        self._add_execution_metric(
+            _Labels.num_iters, self.trainer.current_iter
+        )
         self._add_execution_metric(_Labels.num_evals, self.trainer.num_evals)
 
         # Add the features stats

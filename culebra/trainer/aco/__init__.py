@@ -51,6 +51,9 @@ This module is composed by:
       population-based wrapper ACO approach for Feature Selection problems
     * The :py:class:`~culebra.trainer.aco.ElitistACO_FS` class. A new
       elitist ACO-based wrapper for Feature Selection problems
+    * The :py:class:`~culebra.trainer.aco.ACO_FSConvergenceDetector` class,
+      designed to enable stopping :py:class:`~culebra.trainer.aco.abc.ACO_FS`
+      trainers upon convergence
 """
 
 from .constants import (
@@ -80,6 +83,7 @@ from .multi_obj_aco import (
 )
 
 from .aco_fs import (
+    ACO_FSConvergenceDetector,
     PACO_FS,
     ElitistACO_FS
 )
@@ -104,6 +108,7 @@ __all__ = [
     'QualityBasedPACO',
     'PACO_MO',
     'CPACO',
+    'ACO_FSConvergenceDetector',
     'PACO_FS',
     'ElitistACO_FS',
     'DEFAULT_PHEROMONE_INFLUENCE',

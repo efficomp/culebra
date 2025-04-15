@@ -29,13 +29,16 @@ from typing import (
     Sequence,
     Dict
 )
+from math import isclose
 
+import numpy as np
 from deap.tools import sortNondominated, selNSGA2
 
-from culebra.abc import Species, FitnessFunction
+from culebra.abc import Base, Species, FitnessFunction
 from culebra.solution.abc import Ant
 
 from culebra.trainer.aco.abc import (
+    ReseteablePheromoneBasedACO,
     ElitistACO,
     PACO,
     ACO_FS
@@ -49,6 +52,55 @@ __version__ = '0.3.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
+
+
+class ACO_FSConvergenceDetector(Base):
+    """Detect the convergence of an :py:attr:`~culebra.trainer.aco.abc.ACO_FS`
+    instance.
+    """
+
+    def __init__(
+        self, convergence_check_freq: Optional[int] = None
+    ) -> None:
+        """Create a convergence detector.
+
+        :param convergence_check_freq: Convergence assessment frequency. If
+            set to :py:data:`None`,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            will be used. Defaults to :py:data:`None`
+        :type convergence_check_freq: :py:class:`int`, optional
+        """
+        self.convergence_check_freq = convergence_check_freq
+        self.last_pheromone = None
+
+    convergence_check_freq = (
+        ReseteablePheromoneBasedACO.convergence_check_freq
+    )
+
+    def has_converged(self, trainer) -> None:
+        """Detect if the trainer has converged.
+
+        :param trainer: The trainer
+        :type trainer: An :py:attr:`~culebra.trainer.aco.abc.ACO_FS`
+            instance
+
+        :return: :py:data:`True` if the trainer has converged
+        :rtype: :py:class:`bool`
+        """
+        convergence = False
+        if trainer.current_iter % self.convergence_check_freq == 0:
+            if trainer.current_iter != 0:
+                diff = np.sum(
+                    np.abs(
+                        trainer.pheromone[0] - self.last_pheromone[0]
+                    )
+                )
+                if isclose(diff, 0):
+                    convergence = True
+
+            self.last_pheromone = trainer.pheromone
+
+        return convergence
 
 
 class PACO_FS(
@@ -430,6 +482,7 @@ class ElitistACO_FS(
 
 
 __all__ = [
+    'ACO_FSConvergenceDetector',
     'PACO_FS',
-    'ElitistACO_FS',
+    'ElitistACO_FS'
 ]

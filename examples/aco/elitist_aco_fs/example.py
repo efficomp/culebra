@@ -28,7 +28,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, Ant
 from culebra.fitness_function.feature_selection import KappaNumFeats
-from culebra.trainer.aco import ElitistACO_FS
+from culebra.trainer.aco import ElitistACO_FS, ACO_FSConvergenceDetector
 from culebra.tools import Dataset
 
 
@@ -56,13 +56,19 @@ test_fitness_function = KappaNumFeats(
     training_data=training_data, test_data=test_data, classifier=knn_classifier
 )
 
+# Custom termination
+convergence_detector = ACO_FSConvergenceDetector(
+    convergence_check_freq=100
+)
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "col_size": dataset.num_feats,
-    "max_num_iters": 100,
+    "max_num_iters": 1000,
+    "custom_termination_func": convergence_detector.has_converged,
     "checkpoint_enable": False
 }
 
@@ -119,5 +125,6 @@ results.columns = index
 print("\nResults ...")
 print(results)
 
-print(f"\nNum Evals: {wrapper.num_evals}")
+print(f"\nNum Iters: {wrapper.current_iter}")
+print(f"Num Evals: {wrapper.num_evals}")
 print(f"Runtime  : {wrapper.runtime}")
