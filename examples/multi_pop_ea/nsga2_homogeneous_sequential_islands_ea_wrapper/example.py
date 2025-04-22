@@ -55,6 +55,10 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=test_prop, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 knn_classifier = KNeighborsClassifier(n_neighbors)
 
 # Training fitness function

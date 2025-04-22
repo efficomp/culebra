@@ -20,6 +20,7 @@
 """Use of the experiment class to evaluate a parallel islands-based wrapper."""
 
 from os import cpu_count
+from collections import Counter
 
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -57,6 +58,17 @@ training_fitness_function = KappaNumFeats(
 
 # Set the training fitness similarity threshold
 training_fitness_function.set_fitness_thresholds(0.001)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaNumFeats(
+    training_data=training_data,
+    classifier=knn_classifier,
+    cv_folds=max_folds
+)
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(

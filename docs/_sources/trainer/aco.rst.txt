@@ -98,3 +98,4 @@ Attributes
     CPACO <aco/cpaco>
     PACO_FS <aco/paco_fs>
     ElitistACO_FS <aco/elitist_aco_fs>
+    ACO_FSConvergenceDetector <aco/aco_fs_convergence_detector>

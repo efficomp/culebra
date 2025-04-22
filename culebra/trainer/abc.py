@@ -1074,6 +1074,20 @@ class ParallelDistributedTrainer(DistributedTrainer):
         )
 
     @property
+    def current_iter(self) -> int | None:
+        """Get the current iteration.
+
+        Return the current iteration or :py:data:`None` if the search has
+        not been done yet.
+
+        :type: :py:class:`int`
+        """
+        if self.subtrainers is not None:
+            return self.subtrainers[0].current_iter
+        else:
+            return self._current_iter
+
+    @property
     def num_evals(self) -> int | None:
         """Get the number of evaluations performed while training.
 

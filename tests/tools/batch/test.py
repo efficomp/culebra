@@ -27,6 +27,7 @@ from os import remove
 from os.path import isfile, exists, join
 from shutil import rmtree
 from copy import copy, deepcopy
+from collections import Counter
 
 from pandas import DataFrame
 
@@ -61,21 +62,28 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 # Training fitness function
 my_training_fitness_function = KappaNumFeatsC(
     training_data=training_data, cv_folds=5
 )
 
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+my_untie_best_fitness_function = KappaNumFeatsC(
+    training_data=training_data,
+    cv_folds=max_folds
+)
+
 # Test fitness function
 my_test_fitness_function = KappaNumFeatsC(
     training_data=training_data, test_data=test_data
-)
-
-# Species to optimize a SVM-based classifier
-classifierOptimizationSpecies = ClassifierOptimizationSpecies(
-    lower_bounds=[0, 0],
-    upper_bounds=[1000, 1000],
-    names=["C", "gamma"]
 )
 
 # Species to optimize a SVM-based classifier
@@ -139,6 +147,7 @@ class BatchTester(unittest.TestCase):
         batch = Batch(my_trainer)
 
         self.assertEqual(batch.trainer, my_trainer)
+        self.assertEqual(batch.untie_best_fitness_function, None)
         self.assertEqual(batch.test_fitness_function, None)
         self.assertEqual(batch.results, None)
         self.assertEqual(
@@ -153,17 +162,24 @@ class BatchTester(unittest.TestCase):
         my_hyperparameters = {"a": 1}
         batch = Batch(
             my_trainer,
+            my_untie_best_fitness_function,
             my_test_fitness_function,
             my_filename,
             my_hyperparameters,
             my_num_experiments
         )
         self.assertEqual(
-            batch.test_fitness_function, my_test_fitness_function)
+            batch.untie_best_fitness_function, my_untie_best_fitness_function
+        )
         self.assertEqual(
-            batch.results_base_filename, my_filename)
+            batch.test_fitness_function, my_test_fitness_function
+        )
         self.assertEqual(
-            batch.hyperparameters, my_hyperparameters)
+            batch.results_base_filename, my_filename
+        )
+        self.assertEqual(
+            batch.hyperparameters, my_hyperparameters
+        )
         self.assertEqual(batch.num_experiments, my_num_experiments)
 
     def test_from_config(self):
@@ -173,6 +189,10 @@ class BatchTester(unittest.TestCase):
 
         # Check the trainer
         self.assertIsInstance(batch.trainer, Trainer)
+
+        # Check the untie fitness function
+        self.assertIsInstance(
+            batch.untie_best_fitness_function, FitnessFunction)
 
         # Check the test fitness function
         self.assertIsInstance(
@@ -213,6 +233,7 @@ class BatchTester(unittest.TestCase):
         # Create the batch
         batch = Batch(
             trainer=my_trainer,
+            untie_best_fitness_function=my_untie_best_fitness_function,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -244,6 +265,7 @@ class BatchTester(unittest.TestCase):
         # Create the batch
         batch = Batch(
             trainer=my_trainer,
+            untie_best_fitness_function=my_untie_best_fitness_function,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -279,6 +301,7 @@ class BatchTester(unittest.TestCase):
         """Test the :py:meth:`~culebra.tools.Batch.__copy__` method."""
         batch1 = Batch(
             trainer=my_trainer,
+            untie_best_fitness_function=my_untie_best_fitness_function,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -309,6 +332,7 @@ class BatchTester(unittest.TestCase):
         """Test :py:meth:`~culebra.tools.Batch.__deepcopy__`."""
         batch1 = Batch(
             trainer=my_trainer,
+            untie_best_fitness_function=my_untie_best_fitness_function,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -337,6 +361,7 @@ class BatchTester(unittest.TestCase):
         """
         batch1 = Batch(
             trainer=my_trainer,
+            untie_best_fitness_function=my_untie_best_fitness_function,
             test_fitness_function=my_test_fitness_function,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},

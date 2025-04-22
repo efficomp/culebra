@@ -45,6 +45,10 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 # Training fitness function
 training_fitness_function = KappaNumFeatsC(
     training_data=training_data, cv_folds=5
@@ -92,8 +96,8 @@ params = {
     "gene_ind_mutation_probs": (
         # At least one hyperparameter/feature will be mutated
         1.0/classifierOptimizationSpecies.num_params,
-        1.0/dataset.num_feats,
-        1.0/dataset.num_feats
+        2.0/dataset.num_feats,
+        2.0/dataset.num_feats
     ),
     "max_num_iters": 500,
     "pop_sizes": dataset.num_feats,

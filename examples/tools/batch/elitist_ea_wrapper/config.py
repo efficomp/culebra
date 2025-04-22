@@ -19,6 +19,8 @@
 
 """Use of the experiment class to evaluate an elitist wrapper."""
 
+from collections import Counter
+
 from culebra.solution.parameter_optimization import Species, Individual
 from culebra.fitness_function.svc_optimization import KappaC
 from culebra.trainer.ea import ElitistEA
@@ -34,8 +36,25 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 # Training fitness function
 training_fitness_function = KappaC(training_data=training_data, cv_folds=5)
+
+# Set the training fitness similarity threshold
+training_fitness_function.set_fitness_thresholds(0.001)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaC(
+    training_data=training_data,
+    cv_folds=max_folds
+)
 
 # Test fitness function
 test_fitness_function = KappaC(
@@ -58,7 +77,7 @@ params = {
     "mutation_prob": 0.2,
     # At least one hyperparameter will be mutated
     "gene_ind_mutation_prob": 1.0/species.num_params,
-    "pop_size": 100,
+    "pop_size": dataset.num_feats,
     "max_num_iters": 100,
     "checkpoint_enable": False
 }

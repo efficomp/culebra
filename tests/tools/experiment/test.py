@@ -25,6 +25,7 @@
 import unittest
 from os import remove
 from os.path import isfile
+from collections import Counter
 
 from pandas import DataFrame
 
@@ -51,9 +52,23 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 # Training fitness function
 training_fitness_function = KappaNumFeatsC(
     training_data=training_data, cv_folds=5
+)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaNumFeatsC(
+    training_data=training_data,
+    cv_folds=max_folds
 )
 
 # Test fitness function
@@ -127,7 +142,9 @@ class ExperimentTester(unittest.TestCase):
         """Test the _execute method."""
         # Create the experiment
         experiment = Experiment(
-            trainer, test_fitness_function,
+            trainer,
+            untie_best_fitness_function,
+            test_fitness_function,
             hyperparameters={"a": 0, "b": 1}
         )
 
@@ -157,7 +174,10 @@ class ExperimentTester(unittest.TestCase):
         # Try a different results base filename
         filename = "the_results"
         experiment = Experiment(
-            trainer, test_fitness_function, filename
+            trainer,
+            untie_best_fitness_function,
+            test_fitness_function,
+            filename
         )
 
         # Execute the trainer

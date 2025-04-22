@@ -19,6 +19,8 @@
 
 """Use of the experiment class to evaluate a parallel cooperative wrapper."""
 
+from collections import Counter
+
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
@@ -41,9 +43,26 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 # Training fitness function
 training_fitness_function = KappaNumFeatsC(
     training_data=training_data, cv_folds=5
+)
+
+# Set the training fitness similarity threshold
+training_fitness_function.set_fitness_thresholds(0.001)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaNumFeatsC(
+    training_data=training_data,
+    cv_folds=max_folds
 )
 
 # Test fitness function
@@ -88,8 +107,8 @@ params = {
     "gene_ind_mutation_probs": (
         # At least one hyperparameter/feature will be mutated
         1.0/classifierOptimizationSpecies.num_params,
-        1.0/dataset.num_feats,
-        1.0/dataset.num_feats
+        2.0/dataset.num_feats,
+        2.0/dataset.num_feats
     ),
     "max_num_iters": 500,
     "pop_sizes": dataset.num_feats,

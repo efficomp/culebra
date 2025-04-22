@@ -38,6 +38,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.tools.Batch.trainer
+.. autoproperty:: culebra.tools.Batch.untie_best_fitness_function
 .. autoproperty:: culebra.tools.Batch.test_fitness_function
 .. autoproperty:: culebra.tools.Batch.results_base_filename
 .. autoproperty:: culebra.tools.Batch.results_pickle_filename

@@ -20,6 +20,7 @@
 """Example of the batch class to evaluate a parallel islands-based wrapper."""
 
 from os import cpu_count
+from collections import Counter
 
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -41,6 +42,10 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 n_neighbors = 5
 """Number of neighbors for k-NN."""
 
@@ -49,6 +54,20 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 # Training fitness function
 training_fitness_function = KappaNumFeats(
     training_data=training_data, classifier=knn_classifier, cv_folds=5
+)
+
+# Set the training fitness similarity threshold
+training_fitness_function.set_fitness_thresholds(0.001)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaNumFeats(
+    training_data=training_data,
+    classifier=knn_classifier,
+    cv_folds=max_folds
 )
 
 # Test fitness function

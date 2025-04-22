@@ -244,12 +244,12 @@ class KappaIndex(FeatureSelectionFitnessFunction):
                 kappa = cohen_kappa_score(test_data.outputs, outputs_pred)
             else:
                 # Perform cross-validation
-                skf = StratifiedKFold(n_splits=self.cv_folds)
+                cv = StratifiedKFold(n_splits=self.cv_folds)
                 scores = cross_val_score(
                     self.classifier,
                     training_data.inputs[:, sol.features],
                     training_data.outputs,
-                    cv=skf,
+                    cv=cv,
                     scoring=make_scorer(cohen_kappa_score)
                 )
                 kappa = scores.mean()
@@ -317,12 +317,12 @@ class Accuracy(FeatureSelectionFitnessFunction):
                 accuracy = accuracy_score(test_data.outputs, outputs_pred)
             else:
                 # Perform cross-validation
-                skf = StratifiedKFold(n_splits=self.cv_folds)
+                cv = StratifiedKFold(n_splits=self.cv_folds)
                 scores = cross_val_score(
                     self.classifier,
                     training_data.inputs[:, sol.features],
                     training_data.outputs,
-                    cv=skf,
+                    cv=cv,
                     scoring='accuracy'
                 )
                 accuracy = scores.mean()

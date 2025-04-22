@@ -19,6 +19,8 @@
 
 """Example of the batch class to evaluate an NSGA-2-based wrapper."""
 
+from collections import Counter
+
 from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, IntVector
@@ -36,6 +38,10 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 n_neighbors = 5
 """Number of neighbors for k-NN."""
 
@@ -44,6 +50,20 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 # Training fitness function
 training_fitness_function = KappaNumFeats(
     training_data=training_data, classifier=knn_classifier, cv_folds=5
+)
+
+# Set the training fitness similarity threshold
+training_fitness_function.set_fitness_thresholds(0.001)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaNumFeats(
+    training_data=training_data,
+    classifier=knn_classifier,
+    cv_folds=max_folds
 )
 
 # Test fitness function
@@ -57,8 +77,8 @@ params = {
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
     "subtrainer_cls": NSGA,
-    "gene_ind_mutation_prob": 2.0/dataset.num_feats,
-    "max_num_iters": 100,
+    "gene_ind_mutation_prob": 1.0/dataset.num_feats,
+    "max_num_iters": 200,
     "pop_size": dataset.num_feats,
     "checkpoint_enable": False
 

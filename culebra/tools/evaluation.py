@@ -236,6 +236,7 @@ for res, val in {var_name}.results.items():
     def __init__(
         self,
         trainer: Trainer,
+        untie_best_fitness_function: Optional[FitnessFunction] = None,
         test_fitness_function: Optional[FitnessFunction] = None,
         results_base_filename: Optional[str] = None,
         hyperparameters: Optional[dict] = None
@@ -244,8 +245,14 @@ for res, val in {var_name}.results.items():
 
         :param trainer: The trainer method
         :type trainer: :py:class:`~culebra.abc.Trainer`
-        :param test_fitness_function: The fitness used to test. If set to
-            :py:data:`None`, the training fitness function will be used.
+        :param untie_best_fitness_function: The fitness function used to
+            select the best solution from those found by the trainer in case
+            of a tie. If set to :py:data:`None`, the training fitness function
+            will be used. Defaults to :py:data:`None`.
+        :type untie_best_fitness_function:
+            :py:class:`~culebra.abc.FitnessFunction`, optional
+        :param test_fitness_function: The fitness function used to test. If
+            set to :py:data:`None`, the training fitness function will be used.
             Defaults to :py:data:`None`.
         :type test_fitness_function: :py:class:`~culebra.abc.FitnessFunction`,
             optional
@@ -265,6 +272,7 @@ for res, val in {var_name}.results.items():
         :raises ValueError: If any key in *hyperparameters* is reserved
         """
         self.trainer = trainer
+        self.untie_best_fitness_function = untie_best_fitness_function
         self.test_fitness_function = test_fitness_function
         self.results_base_filename = results_base_filename
         self.hyperparameters = hyperparameters
@@ -295,6 +303,43 @@ for res, val in {var_name}.results.items():
         self.reset()
 
     @property
+    def untie_best_fitness_function(self) -> FitnessFunction | None:
+        """Get and set the fitness function to untie the best solutions.
+
+        :getter: Return the untie fitness function
+        :setter: Set a new untie fitness function. If set to :py:data:`None`
+            and several tied solutions are found by the trainer, the first of
+            them will be returned.
+        :type: :py:class:`~culebra.abc.FitnessFunction`
+        :raises TypeError: If set to a value which is not a valid fitness
+            funtion
+        """
+        return self._untie_best_fitness_function
+
+    @untie_best_fitness_function.setter
+    def untie_best_fitness_function(
+        self, func: FitnessFunction | None
+    ) -> None:
+        """Set a new fitness function to untie the best solutions.
+
+        :param func: New untie fitness function. If set to :py:data:`None`
+            and several tied solutions are found by the trainer, the first of
+            them will be returned.
+        :type func: :py:class:`~culebra.abc.FitnessFunction`
+        :raises TypeError: If *func* is not a valid fitness
+            function
+        """
+        # Check the function
+        self._untie_best_fitness_function = (
+            None if func is None else check_instance(
+                func, "untie fitness function", FitnessFunction
+            )
+        )
+
+        # Reset results
+        self.reset()
+
+    @property
     def test_fitness_function(self) -> FitnessFunction | None:
         """Get and set the test fitness function.
 
@@ -309,7 +354,7 @@ for res, val in {var_name}.results.items():
 
     @test_fitness_function.setter
     def test_fitness_function(self, func: FitnessFunction | None) -> None:
-        """Set a new trainer method.
+        """Set a new test fitness function.
 
         :param func: New test fitness function. If set to :py:data:`None`,
             the training fitness function will also be used for testing.
@@ -465,6 +510,9 @@ for res, val in {var_name}.results.items():
         # Generate the Evaluation from the config module
         return cls(
             trainer=getattr(config, 'trainer', None),
+            untie_best_fitness_function=getattr(
+                config, 'untie_best_fitness_function', None
+            ),
             test_fitness_function=getattr(
                 config, 'test_fitness_function', None
             ),
@@ -1068,18 +1116,59 @@ class Experiment(Evaluation):
         :rtype: :py:class:`~collections.abc.Sequence` of
           :py:class:`~culebra.abc.Solution`
         """
-        # List of the best solutions, one per species
-        the_best = []
+        # Tied best solutions. May be several per species
+        tied_best = []
 
         # For each species
         for species_index, hof in enumerate(self.best_solutions):
             # Sort the hof
             ordered = sorted(hof, reverse=True)
 
-            # Best (lexicographically)
-            the_best.append(ordered[0])
+            # Get the individuals with best fitness within the species
+            species_best = []
+            species_best_fitness = ordered[0].fitness
+            for ind in ordered:
+                if ind.fitness == species_best_fitness:
+                    species_best.append(ind)
+                else:
+                    break
 
-        return the_best
+            tied_best.append(species_best)
+
+        # Obtain al the combinations of solutions from each species
+        all_combinations = [[]]
+
+        for species_best in tied_best:
+            temp = all_combinations
+            all_combinations = []
+            for comb in temp:
+                for item in species_best:
+                    all_combinations.append(comb + [item])
+
+        # If an untie function is defined
+        if self.untie_best_fitness_function is not None:
+            eval_func = self.untie_best_fitness_function
+        else:
+            eval_func = self.trainer.fitness_function
+
+        # Evaluate each combination
+        all_combinations_fitness = []
+        for solution in all_combinations:
+            fitness = eval_func.Fitness(
+                eval_func.evaluate(solution[0], 0, solution)
+                )
+            fitness.thresholds = [0] * fitness.num_obj
+            all_combinations_fitness.append(fitness)
+
+        # Get the best
+        sorted_indices = [
+            i[0] for i in sorted(
+                enumerate(all_combinations_fitness), key=lambda x: x[1],
+                reverse=True
+            )
+        ]
+
+        return all_combinations[sorted_indices[0]]
 
     def _add_best(
         self,
@@ -1221,6 +1310,7 @@ class Batch(Evaluation):
     def __init__(
         self,
         trainer: Trainer,
+        untie_best_fitness_function: Optional[FitnessFunction] = None,
         test_fitness_function: Optional[FitnessFunction] = None,
         results_base_filename: Optional[str] = None,
         hyperparameters: Optional[dict] = None,
@@ -1230,6 +1320,12 @@ class Batch(Evaluation):
 
         :param trainer: The trainer method
         :type trainer: :py:class:`~culebra.abc.Trainer`
+        :param untie_best_fitness_function: The fitness function used to
+            select the best solution from those found by the trainer in case
+            of a tie. If set to :py:data:`None`, the training fitness function
+            will be used. Defaults to :py:data:`None`.
+        :type untie_best_fitness_function:
+            :py:class:`~culebra.abc.FitnessFunction`, optional
         :param test_fitness_function: The fitness used to test. If
             :py:data:`None`, the training fitness function will be used.
             Defaults to :py:data:`None`.
@@ -1258,6 +1354,7 @@ class Batch(Evaluation):
         # Init the super class
         super().__init__(
             trainer,
+            untie_best_fitness_function,
             test_fitness_function,
             results_base_filename,
             hyperparameters
@@ -1346,6 +1443,9 @@ class Batch(Evaluation):
         # Generate the Batch from the config module
         return cls(
             trainer=getattr(config, 'trainer', None),
+            untie_best_fitness_function=getattr(
+                config, 'untie_best_fitness_function', None
+            ),
             test_fitness_function=getattr(
                 config, 'test_fitness_function', None
             ),
@@ -1614,6 +1714,7 @@ class Batch(Evaluation):
         # Create the experiment
         experiment = Experiment(
             self.trainer,
+            self.untie_best_fitness_function,
             self.test_fitness_function,
             self.results_base_filename,
             self.hyperparameters

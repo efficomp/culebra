@@ -26,6 +26,7 @@ import unittest
 from os import remove
 from os.path import exists
 from copy import copy, deepcopy
+from collections import Counter
 
 from pandas import DataFrame
 
@@ -58,9 +59,23 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Split the dataset
 (training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
 
+# Oversample the training data to make all the clases have the same number
+# of samples
+training_data = training_data.oversample(random_seed=0)
+
 # Training fitness function
 training_fitness_function = KappaNumFeatsC(
     training_data=training_data, cv_folds=5
+)
+
+# Untie fitness function to select the best solution
+samples_per_class = Counter(training_data.outputs)
+max_folds = samples_per_class[
+    min(samples_per_class, key=samples_per_class.get)
+]
+untie_best_fitness_function = KappaNumFeatsC(
+    training_data=training_data,
+    cv_folds=max_folds
 )
 
 # Test fitness function
@@ -136,12 +151,18 @@ class EvaluationTester(unittest.TestCase):
         evaluation = MyEvaluation(trainer)
 
         self.assertEqual(evaluation.trainer, trainer)
+        self.assertEqual(evaluation.untie_best_fitness_function, None)
+
         self.assertEqual(evaluation.test_fitness_function, None)
         self.assertEqual(
             evaluation.results_base_filename, DEFAULT_RESULTS_BASENAME
         )
         self.assertEqual(evaluation.hyperparameters, None)
         self.assertEqual(evaluation.results, None)
+
+        # Try an invalid untie fitness function
+        with self.assertRaises(TypeError):
+            MyEvaluation(trainer, untie_best_fitness_function="a")
 
         # Try an invalid test fitness function
         with self.assertRaises(TypeError):
@@ -159,26 +180,39 @@ class EvaluationTester(unittest.TestCase):
         with self.assertRaises(ValueError):
             MyEvaluation(trainer, hyperparameters={1: 1})
 
-        # Try an reserved hyperparameter name
+        # Try a reserved hyperparameter name
         with self.assertRaises(ValueError):
             MyEvaluation(trainer, hyperparameters={'Solution': 1})
 
-        # Try an evaluation with a custom test fitness function
-        evaluation = MyEvaluation(trainer, test_fitness_function)
+        # Try an evaluation with a custom untie fitness function
+        evaluation = MyEvaluation(
+            trainer, untie_best_fitness_function=untie_best_fitness_function
+        )
         self.assertEqual(
-            evaluation.test_fitness_function, test_fitness_function)
+            evaluation.untie_best_fitness_function, untie_best_fitness_function
+        )
+
+        # Try an evaluation with a custom test fitness function
+        evaluation = MyEvaluation(
+            trainer, test_fitness_function=test_fitness_function
+        )
+        self.assertEqual(
+            evaluation.test_fitness_function, test_fitness_function
+        )
 
         # Try an evaluation with a custom results base name
         my_basename = "my_base"
         evaluation = MyEvaluation(trainer, results_base_filename=my_basename)
         self.assertEqual(
-            evaluation.results_base_filename, my_basename)
+            evaluation.results_base_filename, my_basename
+        )
 
         # Try an evaluation with custom hyperparameters
         my_hyperparameters = {"a": 1, "b": 2}
         evaluation = MyEvaluation(trainer, hyperparameters=my_hyperparameters)
         self.assertEqual(
-            evaluation.hyperparameters, my_hyperparameters)
+            evaluation.hyperparameters, my_hyperparameters
+        )
 
     def test_from_config(self):
         """Test the from_config factory method."""
@@ -195,6 +229,10 @@ class EvaluationTester(unittest.TestCase):
 
         # Check the trainer
         self.assertIsInstance(evaluation.trainer, Trainer)
+
+        # Check the untie fitness function
+        self.assertIsInstance(
+            evaluation.untie_best_fitness_function, FitnessFunction)
 
         # Check the test fitness function
         self.assertIsInstance(
@@ -259,7 +297,10 @@ class EvaluationTester(unittest.TestCase):
         """Test the run method."""
         # Create the evaluation
         evaluation = MyEvaluation(
-            trainer, test_fitness_function, "the_results"
+            trainer,
+            untie_best_fitness_function,
+            test_fitness_function,
+            "the_results"
         )
 
         # Run the trainer
@@ -278,7 +319,11 @@ class EvaluationTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Evaluation.__copy__` method."""
-        evaluation1 = MyEvaluation(trainer, test_fitness_function)
+        evaluation1 = MyEvaluation(
+            trainer,
+            untie_best_fitness_function,
+            test_fitness_function
+        )
 
         evaluation1.run()
         evaluation2 = copy(evaluation1)
@@ -295,7 +340,11 @@ class EvaluationTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test :py:meth:`~culebra.tools.Evaluation.__deepcopy__`."""
-        evaluation1 = MyEvaluation(trainer, test_fitness_function)
+        evaluation1 = MyEvaluation(
+            trainer,
+            untie_best_fitness_function,
+            test_fitness_function
+        )
         evaluation1.run()
         evaluation2 = deepcopy(evaluation1)
 
@@ -312,7 +361,11 @@ class EvaluationTester(unittest.TestCase):
         Test the :py:meth:`~culebra.tools.Evaluation.__setstate__` and
         :py:meth:`~culebra.tools.Evaluation.__reduce__` methods.
         """
-        evaluation1 = MyEvaluation(trainer, test_fitness_function)
+        evaluation1 = MyEvaluation(
+            trainer,
+            untie_best_fitness_function,
+            test_fitness_function
+        )
         evaluation1.run()
 
         pickle_filename = "my_pickle.gz"
