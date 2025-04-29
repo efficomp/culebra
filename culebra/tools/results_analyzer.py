@@ -1072,7 +1072,11 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Get the mean value for each batch
         means = {
-            (index, name, data.mean())
+            (
+                index,
+                name,
+                data.mean()
+            )
             for (index, (name, data))
             in enumerate(self._gather_data(dataframe_key, column).items())
         }
@@ -1098,7 +1102,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         batch_names = [name for (_, name, _) in sorted_means]
 
-        num_batches = len(self)
+        num_batches = len(means)
         # If all the batches results are equal
         if comparison.global_comparison.success.all():
             ranks = average_ranks(0, num_batches-1)
@@ -1256,7 +1260,7 @@ class ResultsAnalyzer(UserDict, Base):
         self,
         dataframe_key: str,
         column: str,
-    ) -> Dict['str', Series]:
+    ) -> Dict['str', Series | None]:
         """Gather data from the results in the analyzer.
 
         :param dataframe_key: Key to select a dataframe from the results
