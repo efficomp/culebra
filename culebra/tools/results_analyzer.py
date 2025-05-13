@@ -39,7 +39,8 @@ from scipy.stats import (
     f_oneway,
     mannwhitneyu,
     kruskal,
-    tukey_hsd
+    tukey_hsd,
+    ConstantInputWarning
 )
 from scikit_posthocs import posthoc_dunn
 from tabulate import tabulate
@@ -587,9 +588,14 @@ class ResultsAnalyzer(UserDict, Base):
             test = f_oneway
 
         # Apply the test
-        with catch_warnings():
-            simplefilter("ignore")
+        with catch_warnings(record=True) as w:
+            simplefilter("always")
             results = test(*data.values())
+            if len(w) > 0 and isinstance(w[0].message, ConstantInputWarning):
+                F_onewayResult = namedtuple(
+                    'F_onewayResult', ('statistic', 'pvalue')
+                )
+                results = F_onewayResult(results.statistic, 1)
 
         # Return the results
         return TestOutcome(
