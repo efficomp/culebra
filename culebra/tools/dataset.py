@@ -61,9 +61,7 @@ DEFAULT_SEP = '\\s+'
 class Dataset(Base):
     """Dataset handler.
 
-    Datasets can be loaded from local files or URLs using either the
-    constructor or the :py:meth:`~culebra.tools.Dataset.load_train_test`
-    class method. Their attributes are:
+    Datasets can be loaded from local files or URLs. Their attributes are:
 
       * :py:attr:`~culebra.tools.Dataset.num_feats`: Number of input features
       * :py:attr:`~culebra.tools.Dataset.size`: Number of samples
