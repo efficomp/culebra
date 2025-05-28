@@ -45,6 +45,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.is_noisy
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.num_obj
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.num_nodes
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.training_data

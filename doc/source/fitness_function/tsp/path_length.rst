@@ -51,6 +51,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.is_noisy
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_obj
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_nodes
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.distance

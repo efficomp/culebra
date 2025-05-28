@@ -45,6 +45,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_obj
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.training_data

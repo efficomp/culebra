@@ -48,6 +48,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.is_noisy
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.num_obj
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.num_nodes
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.training_data

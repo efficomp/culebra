@@ -45,6 +45,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp.num_obj
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp.training_data

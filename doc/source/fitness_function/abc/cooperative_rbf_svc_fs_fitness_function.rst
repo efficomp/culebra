@@ -50,6 +50,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.abc.CooperativeRBFSVCFSFitnessFunction.is_noisy
 .. autoproperty:: culebra.fitness_function.abc.CooperativeRBFSVCFSFitnessFunction.num_obj
 .. autoproperty:: culebra.fitness_function.abc.CooperativeRBFSVCFSFitnessFunction.num_nodes
 .. autoproperty:: culebra.fitness_function.abc.CooperativeRBFSVCFSFitnessFunction.training_data
