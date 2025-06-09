@@ -53,8 +53,20 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp.test_prop
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaFeatsProp._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp.save_pickle
 .. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp.heuristic
 .. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp._score
+.. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp._final_training_test_data
+.. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp._evaluate_train_test
+.. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp._evaluate_mccv
+.. automethod:: culebra.fitness_function.feature_selection.KappaFeatsProp._evaluate_kfcv

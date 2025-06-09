@@ -23,8 +23,6 @@
 """Test the feature selection fitness functions."""
 
 import unittest
-from os import remove
-from copy import copy, deepcopy
 
 from culebra.solution.feature_selection import (
     Species,
@@ -49,6 +47,9 @@ dataset = Dataset.load_from_uci(name="Wine")
 # Preprocess the dataset
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
+# Species for the solution
+species = Species(num_feats=dataset.num_feats)
+
 
 class NumFeatsTester(unittest.TestCase):
     """Test NumFeats."""
@@ -58,10 +59,7 @@ class NumFeatsTester(unittest.TestCase):
     def test_evaluate(self):
         """Test the evaluation method."""
         # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
-
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
+        func = self.FitnessFunc()
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
@@ -71,67 +69,15 @@ class NumFeatsTester(unittest.TestCase):
         # Check the fitness function
         self.assertEqual(sol.fitness.values, (sol.num_feats,))
 
-    def test_copy(self):
-        """Test the __copy__ method."""
-        func1 = self.FitnessFunc(dataset)
-        func2 = copy(func1)
-
-        # Copy only copies the first level (func1 != func2)
-        self.assertNotEqual(id(func1), id(func2))
-
-        # The objects attributes are shared
-        self.assertEqual(id(func1.training_data), id(func2.training_data))
-        self.assertEqual(id(func1.classifier), id(func2.classifier))
-
-    def test_deepcopy(self):
-        """Test the __deepcopy__ method."""
-        func1 = self.FitnessFunc(Dataset())
-        func2 = deepcopy(func1)
-
-        # Check the copy
-        self._check_deepcopy(func1, func2)
-
-    def test_serialization(self):
-        """Serialization test.
-
-        Test the __setstate__ and __reduce__ methods.
-        """
-        func1 = self.FitnessFunc(Dataset())
-
-        pickle_filename = "my_pickle.gz"
-        func1.save_pickle(pickle_filename)
-        func2 = self.FitnessFunc.load_pickle(pickle_filename)
-
-        # Check the serialization
-        self._check_deepcopy(func1, func2)
-
-        # Remove the pickle file
-        remove(pickle_filename)
-
-    def _check_deepcopy(self, func1, func2):
-        """Check if *func1* is a deepcopy of *func2*.
-
-        :param func1: The first fitness function
-        :type func1:
-            :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`
-        :param func2: The second fitness function
-        :type func2:
-            :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`
-        """
-        # Copies all the levels
-        self.assertNotEqual(id(func1), id(func2))
-        self.assertNotEqual(id(func1.training_data), id(func2.training_data))
-
-        self.assertTrue(
-            (func1.training_data.inputs == func2.training_data.inputs).all()
-        )
-        self.assertTrue(
-            (func1.training_data.outputs == func2.training_data.outputs).all()
-        )
+    def test_is_noisy(self):
+        """Test the is_noisy property."""
+        # Fitness function to be tested
+        func = self.FitnessFunc()
+        self.assertEqual(func.is_noisy, False)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
-        fitness_func = self.FitnessFunc(dataset)
+        fitness_func = self.FitnessFunc()
         self.assertIsInstance(repr(fitness_func), str)
         self.assertIsInstance(str(fitness_func), str)
 
@@ -144,10 +90,7 @@ class FeatsProportionTester(unittest.TestCase):
     def test_evaluate(self):
         """Test the evaluation method."""
         # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
-
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
+        func = self.FitnessFunc()
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
@@ -157,16 +100,8 @@ class FeatsProportionTester(unittest.TestCase):
         self.assertGreaterEqual(sol.fitness.values[0], 0)
         self.assertLessEqual(sol.fitness.values[0], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    _check_deepcopy = NumFeatsTester._check_deepcopy
-
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
+    test_is_noisy = NumFeatsTester.test_is_noisy
     test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
 
 
 class KappaIndexTester(unittest.TestCase):
@@ -174,32 +109,55 @@ class KappaIndexTester(unittest.TestCase):
 
     FitnessFunc = KappaIndex
 
+    def test_is_noisy(self):
+        """Test the is_noisy property."""
+        training_data, test_data = dataset.split(0.3)
+
+        # Fitness function to be tested
+        func = self.FitnessFunc(training_data)
+
+        func.test_prop = None
+        self.assertEqual(func.is_noisy, False)
+        func.test_prop = 0.5
+        self.assertEqual(func.is_noisy, True)
+
+        func = self.FitnessFunc(training_data, test_data)
+        self.assertEqual(func.is_noisy, False)
+
     def test_evaluate(self):
         """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        training_data, test_data = dataset.split(0.3)
 
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
+        # Fitness function to be tested
+        func = self.FitnessFunc(training_data)
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
 
-        # Check that Kappa is in [-1, 1]
+        # Check that the Kappa index is in [-1, 1]
+
+        # Test kfcv evaluation
         sol.fitness.values = func.evaluate(sol)
         self.assertGreaterEqual(sol.fitness.values[0], -1)
         self.assertLessEqual(sol.fitness.values[0], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+        # Test mccv evaluation
+        func.test_prop = 0.5
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], -1)
+        self.assertLessEqual(sol.fitness.values[0], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+        # Test train_test evaluation
+        func = self.FitnessFunc(training_data, test_data)
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], -1)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        fitness_func = self.FitnessFunc(dataset)
+        self.assertIsInstance(repr(fitness_func), str)
+        self.assertIsInstance(str(fitness_func), str)
 
 
 class AccuracyTester(unittest.TestCase):
@@ -209,30 +167,35 @@ class AccuracyTester(unittest.TestCase):
 
     def test_evaluate(self):
         """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        training_data, test_data = dataset.split(0.3)
 
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
+        # Fitness function to be tested
+        func = self.FitnessFunc(training_data)
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
 
-        # Check that accuracy is in [0, 1]
+        # Check that the accuracy is in [0, 1]
+
+        # Test kfcv evaluation
         sol.fitness.values = func.evaluate(sol)
         self.assertGreaterEqual(sol.fitness.values[0], 0)
         self.assertLessEqual(sol.fitness.values[0], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+        # Test mccv evaluation
+        func.test_prop = 0.5
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], 0)
+        self.assertLessEqual(sol.fitness.values[0], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+        # Test train_test evaluation
+        func = self.FitnessFunc(training_data, test_data)
+        sol.fitness.values = func.evaluate(sol)
+        self.assertGreaterEqual(sol.fitness.values[0], 0)
+        self.assertLessEqual(sol.fitness.values[0], 1)
+
+    test_is_noisy = KappaIndexTester.test_is_noisy
+    test_repr = KappaIndexTester.test_repr
 
 
 class KappaNumFeatsTester(unittest.TestCase):
@@ -245,9 +208,6 @@ class KappaNumFeatsTester(unittest.TestCase):
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
 
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
-
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
 
@@ -261,11 +221,8 @@ class KappaNumFeatsTester(unittest.TestCase):
         # Check the number of features
         self.assertEqual(sol.fitness.values[1], sol.num_feats)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+    test_is_noisy = KappaIndexTester.test_is_noisy
+    test_repr = KappaIndexTester.test_repr
 
 
 class AccuracyNumFeatsTester(unittest.TestCase):
@@ -278,9 +235,6 @@ class AccuracyNumFeatsTester(unittest.TestCase):
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
 
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
-
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
 
@@ -294,11 +248,8 @@ class AccuracyNumFeatsTester(unittest.TestCase):
         # Check the number of features
         self.assertEqual(sol.fitness.values[1], sol.num_feats)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+    test_is_noisy = KappaIndexTester.test_is_noisy
+    test_repr = KappaIndexTester.test_repr
 
 
 class KappaFeatsPropTester(unittest.TestCase):
@@ -310,9 +261,6 @@ class KappaFeatsPropTester(unittest.TestCase):
         """Test the evaluation method."""
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
-
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
@@ -329,11 +277,8 @@ class KappaFeatsPropTester(unittest.TestCase):
         self.assertGreaterEqual(sol.fitness.values[1], 0)
         self.assertLessEqual(sol.fitness.values[1], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+    test_is_noisy = KappaIndexTester.test_is_noisy
+    test_repr = KappaIndexTester.test_repr
 
 
 class AccuracyFeatsPropTester(unittest.TestCase):
@@ -345,9 +290,6 @@ class AccuracyFeatsPropTester(unittest.TestCase):
         """Test the evaluation method."""
         # Fitness function to be tested
         func = self.FitnessFunc(dataset)
-
-        # Species for the solution
-        species = Species(num_feats=dataset.num_feats)
 
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.Fitness)
@@ -364,11 +306,8 @@ class AccuracyFeatsPropTester(unittest.TestCase):
         self.assertGreaterEqual(sol.fitness.values[1], 0)
         self.assertLessEqual(sol.fitness.values[1], 1)
 
-    test_copy = NumFeatsTester.test_copy
-    test_deepcopy = NumFeatsTester.test_deepcopy
-    test_serialization = NumFeatsTester.test_serialization
-    test_repr = NumFeatsTester.test_repr
-    _check_deepcopy = NumFeatsTester._check_deepcopy
+    test_is_noisy = KappaIndexTester.test_is_noisy
+    test_repr = KappaIndexTester.test_repr
 
 
 if __name__ == '__main__':

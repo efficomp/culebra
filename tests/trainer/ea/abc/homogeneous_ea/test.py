@@ -38,7 +38,7 @@ from culebra.solution.feature_selection import (
     BinarySolution as FeatureSelectionSolution,
     BitVector as FeatureSelectionIndividual
 )
-from culebra.fitness_function.feature_selection import NumFeats
+from culebra.fitness_function.feature_selection import KappaIndex
 from culebra.tools import Dataset
 
 
@@ -64,7 +64,7 @@ class TrainerTester(unittest.TestCase):
         """Test __init__`."""
         valid_solution_cls = FeatureSelectionIndividual
         valid_species = FeatureSelectionSpecies(dataset.num_feats)
-        valid_fitness_func = NumFeats(dataset)
+        valid_fitness_func = KappaIndex(dataset)
 
         # Try invalid individual classes. Should fail
         invalid_individual_classes = (type, None, 1, FeatureSelectionSolution)
@@ -256,7 +256,7 @@ class TrainerTester(unittest.TestCase):
         # Set custom params
         solution_cls = FeatureSelectionIndividual
         species = FeatureSelectionSpecies(dataset.num_feats)
-        fitness_func = NumFeats(dataset)
+        fitness_func = KappaIndex(dataset)
         params = {
             "solution_cls": solution_cls,
             "species": species,

@@ -249,7 +249,6 @@ class DatasetTester(unittest.TestCase):
         self.assertFalse(np.isnan(clean_dataset.inputs).all())
         self.assertFalse(np.isnan(clean_dataset.outputs).all())
 
-
     def test_remove_outliers(self):
         """Test the outliers removal method."""
         num_feats = 4
@@ -314,6 +313,74 @@ class DatasetTester(unittest.TestCase):
                 for count in samples_per_class_dataset2.values()
             )
         )
+
+    def test_select_features(self):
+        """Test the select_features method."""
+        dataset = Dataset("numeric_1.dat", output_index=0)
+
+        # Try a valid sequence of feature indices
+        valid_feats = [0, 2]
+        reduced_dataset = dataset.select_features(valid_feats)
+        self.assertEqual(dataset.size, reduced_dataset.size)
+        self.assertTrue((dataset.outputs == reduced_dataset.outputs).all())
+        self.assertTrue(
+            (dataset.inputs[:, valid_feats] == reduced_dataset.inputs).all()
+        )
+
+        # Try a invalid types for the feature indices
+        invalid_feat_types = (
+            [0, 'a'],
+            [-1, 2],
+            [0, dataset.num_feats]
+        )
+        for feats in invalid_feat_types:
+            with self.assertRaises(ValueError):
+                dataset.select_features(feats)
+
+    def test_append_random_features(self):
+        """Test the append_random_features method."""
+        dataset = Dataset("numeric_1.dat", output_index=0)
+
+        random_feats = 4
+        new_dataset = dataset.append_random_features(random_feats)
+
+        self.assertEqual(
+            new_dataset.num_feats, dataset.num_feats + random_feats
+        )
+
+        # Try an invalid type for the number of random features
+        invalid_random_feats_type = 'a'
+        with self.assertRaises(TypeError):
+            dataset.append_random_features(invalid_random_feats_type)
+
+        # Try an invalid value for the number of random features
+        invalid_random_feats_value = -3
+        with self.assertRaises(ValueError):
+            dataset.append_random_features(invalid_random_feats_value)
+
+    def test_split(self):
+        """Test the split method."""
+        dataset = Dataset("numeric_1.dat", output_index=0).oversample()
+
+        test_prop = 0.25
+        training, test = dataset.split(test_prop)
+
+        self.assertEqual(
+            training.size, dataset.size * (1 - test_prop)
+        )
+        self.assertEqual(
+            test.size, dataset.size * test_prop
+        )
+
+        # Try an invalid type for the test proportion
+        invalid_test_prop_type = 'a'
+        with self.assertRaises(TypeError):
+            dataset.split(invalid_test_prop_type)
+
+        # Try an invalid value for the test proportion
+        invalid_test_prop_value = -3
+        with self.assertRaises(ValueError):
+            dataset.split(invalid_test_prop_value)
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Dataset.__copy__` method."""

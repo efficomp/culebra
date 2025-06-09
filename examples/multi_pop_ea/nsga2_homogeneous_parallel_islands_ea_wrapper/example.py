@@ -81,7 +81,7 @@ params = {
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
     "gene_ind_mutation_prob": 1.0/dataset.num_feats,
-    "max_num_iters": 100,
+    "max_num_iters": 500,
     "pop_size": dataset.num_feats,
     "checkpoint_enable": False
 }

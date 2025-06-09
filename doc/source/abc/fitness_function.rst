@@ -49,6 +49,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.abc.FitnessFunction.is_noisy
 .. autoproperty:: culebra.abc.FitnessFunction.num_obj
 .. autoproperty:: culebra.abc.FitnessFunction.num_nodes
 

@@ -150,6 +150,12 @@ class FitnessFunctionTester(unittest.TestCase):
                 MyFitnessFunction.Fitness.thresholds[obj_index], new_threshold
             )
 
+    def test_is_noisy(self):
+        """Test the is_noisy property."""
+        # Fitness function to be tested
+        func = MyFitnessFunction()
+        self.assertEqual(func.is_noisy, False)
+
     def test_num_obj(self):
         """Test the num_obj property."""
         # Fitness function to be tested

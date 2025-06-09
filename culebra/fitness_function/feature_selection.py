@@ -67,12 +67,15 @@ from __future__ import annotations
 from typing import Tuple, Optional
 from collections.abc import Sequence
 
-from sklearn.model_selection import cross_val_score, StratifiedKFold
-from sklearn.metrics import cohen_kappa_score, accuracy_score, make_scorer
+from sklearn.metrics import cohen_kappa_score, accuracy_score
 
-from culebra.abc import Fitness
+from culebra.abc import Fitness, FitnessFunction
 from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.abc import FeatureSelectionFitnessFunction
+from culebra.fitness_function.abc import ClassificationFSScorer
+from culebra.fitness_function.dataset_score import (
+    KappaIndex as DatasetKappaIndex,
+    Accuracy as DatasetAccuracy
+)
 from culebra.solution.feature_selection import Solution
 
 
@@ -85,7 +88,7 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class NumFeats(FeatureSelectionFitnessFunction):
+class NumFeats(FitnessFunction):
     """Dummy single-objective fitness function for testing purposes.
 
     Return the number of selected features by a solution.
@@ -134,7 +137,7 @@ class NumFeats(FeatureSelectionFitnessFunction):
         return (sol.num_feats,)
 
 
-class FeatsProportion(FeatureSelectionFitnessFunction):
+class FeatsProportion(FitnessFunction):
     """Dummy single-objective fitness function for testing purposes.
 
     Return the proportion of selected features chosen by a solution. That is,
@@ -184,150 +187,18 @@ class FeatsProportion(FeatureSelectionFitnessFunction):
         return (float(sol.num_feats)/sol.species.num_feats,)
 
 
-class KappaIndex(FeatureSelectionFitnessFunction):
+class KappaIndex(ClassificationFSScorer, DatasetKappaIndex):
     """Single-objective fitness function for classification problems.
 
     Calculate the Kohen's Kappa index.
     """
 
-    class Fitness(Fitness):
-        """Fitness class.
 
-        Handles the values returned by the
-        :py:meth:`~culebra.fitness_function.feature_selection.KappaIndex.evaluate`
-        method within a
-        :py:class:`~culebra.solution.feature_selection.Solution`.
-        """
-
-        weights = (1.0,)
-        """Maximizes the validation Kappa index."""
-
-        names = ("Kappa",)
-        """Name of the objective."""
-
-        thresholds = [DEFAULT_THRESHOLD]
-        """Similarity threshold for fitness comparisons."""
-
-    def evaluate(
-        self,
-        sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
-        """Evaluate a solution.
-
-        :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
-        :param index: Index where *sol* should be inserted in the
-            representatives sequence to form a complete solution for the
-            problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
-        :param representatives: Representative solutions of each species
-            being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        kappa = 0
-
-        if sol.features.size > 0:
-            # Get the training and test data
-            training_data, test_data = self._final_training_test_data()
-
-            if test_data is not None:
-                # Train and get the outputs for the validation data
-                outputs_pred = self.classifier.fit(
-                    training_data.inputs[:, sol.features],
-                    training_data.outputs
-                ).predict(test_data.inputs[:, sol.features])
-                kappa = cohen_kappa_score(test_data.outputs, outputs_pred)
-            else:
-                # Perform cross-validation
-                cv = StratifiedKFold(n_splits=self.cv_folds)
-                scores = cross_val_score(
-                    self.classifier,
-                    training_data.inputs[:, sol.features],
-                    training_data.outputs,
-                    cv=cv,
-                    scoring=make_scorer(cohen_kappa_score)
-                )
-                kappa = scores.mean()
-
-        return (kappa,)
-
-
-class Accuracy(FeatureSelectionFitnessFunction):
+class Accuracy(ClassificationFSScorer, DatasetAccuracy):
     """Single-objective fitness function for classification problems.
 
     Calculate the accuracy.
     """
-
-    class Fitness(Fitness):
-        """Fitness class.
-
-        Handles the values returned by the
-        :py:meth:`~culebra.fitness_function.feature_selection.Accuracy.evaluate`
-        method within a
-        :py:class:`~culebra.solution.feature_selection.Solution`.
-        """
-
-        weights = (1.0,)
-        """Maximizes the validation accuracy."""
-
-        names = ("Accuracy",)
-        """Name of the objective."""
-
-        thresholds = [DEFAULT_THRESHOLD]
-        """Similarity threshold for fitness comparisons."""
-
-    def evaluate(
-        self,
-        sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
-        """Evaluate a solution.
-
-        :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
-        :param index: Index where *sol* should be inserted in the
-            representatives sequence to form a complete solution for the
-            problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
-        :param representatives: Representative solutions of each species
-            being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        accuracy = 0
-
-        if sol.features.size > 0:
-            # Get the training and test data
-            training_data, test_data = self._final_training_test_data()
-
-            if test_data is not None:
-                # Train and get the outputs for the validation data
-                outputs_pred = self.classifier.fit(
-                    training_data.inputs[:, sol.features],
-                    training_data.outputs
-                ).predict(test_data.inputs[:, sol.features])
-                accuracy = accuracy_score(test_data.outputs, outputs_pred)
-            else:
-                # Perform cross-validation
-                cv = StratifiedKFold(n_splits=self.cv_folds)
-                scores = cross_val_score(
-                    self.classifier,
-                    training_data.inputs[:, sol.features],
-                    training_data.outputs,
-                    cv=cv,
-                    scoring='accuracy'
-                )
-                accuracy = scores.mean()
-
-        return (accuracy,)
 
 
 class KappaNumFeats(KappaIndex, NumFeats):

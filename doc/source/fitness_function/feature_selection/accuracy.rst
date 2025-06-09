@@ -53,8 +53,20 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.test_prop
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy.save_pickle
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy.heuristic
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._score
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._final_training_test_data
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_train_test
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_mccv
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_kfcv

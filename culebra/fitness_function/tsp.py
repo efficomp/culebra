@@ -98,7 +98,7 @@ class PathLength(FitnessFunction):
         :raises ValueError: If the array-like objects have different shapes
         """
         # Init the superclass
-        super().__init__()
+        FitnessFunction.__init__(self)
         self.distance = distance_matrices
 
     @property

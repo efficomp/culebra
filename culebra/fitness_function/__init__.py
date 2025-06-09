@@ -25,6 +25,9 @@ selection problem. Currently:
   * The :py:mod:`~culebra.fitness_function.abc` sub-module provides abstract
     classes to define the remaining fitness functions.
 
+  * The :py:mod:`~culebra.fitness_function.dataset_score` sub-module provides
+    abstract classes to score dataset-related problems.
+
   * The :py:mod:`~culebra.fitness_function.feature_selection` sub-module is
     centered in datasets dimensionality reduction.
 
@@ -50,12 +53,24 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-from .constants import DEFAULT_CLASSIFIER, DEFAULT_THRESHOLD, DEFAULT_CV_FOLDS
-from . import abc, feature_selection, svc_optimization, cooperative, tsp
+from .constants import (
+    DEFAULT_CLASSIFIER,
+    DEFAULT_THRESHOLD,
+    DEFAULT_CV_FOLDS
+)
+from . import (
+    abc,
+    dataset_score,
+    feature_selection,
+    svc_optimization,
+    cooperative,
+    tsp
+)
 
 
 __all__ = [
     'abc',
+    'dataset_score',
     'feature_selection',
     'svc_optimization',
     'cooperative',

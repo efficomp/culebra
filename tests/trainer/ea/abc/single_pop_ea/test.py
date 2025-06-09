@@ -136,7 +136,7 @@ class TrainerTester(unittest.TestCase):
         """Test __init__`."""
         valid_individual_cls = FeatureSelectionIndividual
         valid_species = FeatureSelectionSpecies(dataset.num_feats)
-        valid_fitness_func = NumFeats(dataset)
+        valid_fitness_func = NumFeats()
 
         # Try invalid individual classes. Should fail
         invalid_individual_classes = (type, None, 1, FeatureSelectionSolution)
@@ -330,7 +330,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset)
+            "fitness_function": NumFeats()
         }
 
         # Construct a parameterized trainer
@@ -376,7 +376,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -398,7 +398,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -424,7 +424,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -475,7 +475,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "checkpoint_enable": False,
             "verbose": False
@@ -552,7 +552,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -580,7 +580,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -601,7 +601,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -625,7 +625,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "pop_size": 2,
             "verbose": False
         }
@@ -649,24 +649,6 @@ class TrainerTester(unittest.TestCase):
         self.assertNotEqual(
             id(trainer1.fitness_function),
             id(trainer2.fitness_function)
-        )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
         )
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))

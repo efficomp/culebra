@@ -58,7 +58,7 @@ class TrainerTester(unittest.TestCase):
         """Test the constructor."""
         valid_solution_cls = FeatureSelectionIndividual
         valid_species = FeatureSelectionSpecies(dataset.num_feats)
-        valid_fitness_func = NumFeats(dataset)
+        valid_fitness_func = NumFeats()
 
         # Try invalid solution classes. Should fail
         invalid_solution_classes = (type, None, 'a', 1)
@@ -115,7 +115,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "verbose": False
         }
 
@@ -142,7 +142,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "verbose": False
         }
 
@@ -162,7 +162,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "verbose": False
         }
 
@@ -185,7 +185,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
-            "fitness_function": NumFeats(dataset),
+            "fitness_function": NumFeats(),
             "verbose": False
         }
 
@@ -208,24 +208,6 @@ class TrainerTester(unittest.TestCase):
         self.assertNotEqual(
             id(trainer1.fitness_function),
             id(trainer2.fitness_function)
-        )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
         )
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))

@@ -33,11 +33,9 @@ Class attributes
     method within a
     :py:class:`~culebra.solution.parameter_optimization.Solution`.
 
-
     .. autoattribute:: culebra.fitness_function.svc_optimization.KappaC.Fitness.weights
     .. autoattribute:: culebra.fitness_function.svc_optimization.KappaC.Fitness.names
     .. autoattribute:: culebra.fitness_function.svc_optimization.KappaC.Fitness.thresholds
-
 
 Class methods
 -------------
@@ -56,8 +54,20 @@ Properties
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.test_prop
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaC.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaC._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.svc_optimization.KappaC.save_pickle
 .. automethod:: culebra.fitness_function.svc_optimization.KappaC.heuristic
 .. automethod:: culebra.fitness_function.svc_optimization.KappaC.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC._score
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC._final_training_test_data
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC._evaluate_train_test
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC._evaluate_mccv
+.. automethod:: culebra.fitness_function.svc_optimization.KappaC._evaluate_kfcv

@@ -45,6 +45,7 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats.num_obj
 .. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats.training_data
@@ -52,8 +53,20 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats.test_prop
 .. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.feature_selection.AccuracyNumFeats._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats.save_pickle
 .. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats.heuristic
 .. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats._score
+.. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats._final_training_test_data
+.. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats._evaluate_train_test
+.. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats._evaluate_mccv
+.. automethod:: culebra.fitness_function.feature_selection.AccuracyNumFeats._evaluate_kfcv

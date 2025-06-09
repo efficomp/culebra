@@ -44,6 +44,7 @@ Methods
 .. automethod:: culebra.tools.Dataset.drop_missing
 .. automethod:: culebra.tools.Dataset.remove_outliers
 .. automethod:: culebra.tools.Dataset.oversample
+.. automethod:: culebra.tools.Dataset.select_features
 .. automethod:: culebra.tools.Dataset.append_random_features
 .. automethod:: culebra.tools.Dataset.split
 

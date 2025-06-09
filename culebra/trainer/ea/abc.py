@@ -746,7 +746,10 @@ class SinglePopEA(HomogeneousEA):
             :py:class:`~culebra.solution.abc.Individual`
         """
         # Select the individuals with an invalid fitness
-        invalid_inds = [ind for ind in pop if not ind.fitness.valid]
+        if self.fitness_function.is_noisy:
+            invalid_inds = pop
+        else:
+            invalid_inds = [ind for ind in pop if not ind.fitness.valid]
 
         for ind in invalid_inds:
             self.evaluate(ind)

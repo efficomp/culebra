@@ -51,6 +51,7 @@ Attributes
     :hidden:
 
     abc <fitness_function/abc>
+    dataset_score <fitness_function/dataset_score>
     feature_selection <fitness_function/feature_selection>
     svc_optimization <fitness_function/svc_optimization>
     cooperative <fitness_function/cooperative>

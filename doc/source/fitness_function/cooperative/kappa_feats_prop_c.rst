@@ -56,6 +56,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.test_prop
 .. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.cooperative.KappaNumFeatsC._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.cooperative.KappaNumFeatsC.save_pickle

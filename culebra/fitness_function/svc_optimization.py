@@ -51,12 +51,13 @@ from __future__ import annotations
 from typing import Optional, Tuple
 from collections.abc import Sequence
 
-from sklearn.model_selection import cross_val_score, StratifiedKFold
-from sklearn.metrics import accuracy_score, cohen_kappa_score, make_scorer
-
-from culebra.abc import Fitness
+from culebra.abc import Fitness, FitnessFunction
 from culebra.fitness_function import DEFAULT_THRESHOLD
-from culebra.fitness_function.abc import RBFSVCFitnessFunction
+from culebra.fitness_function.abc import RBFSVCScorer
+from culebra.fitness_function.dataset_score import (
+    KappaIndex as DatasetKappaIndex,
+    Accuracy as DatasetAccuracy
+)
 from culebra.solution.parameter_optimization import Solution
 
 
@@ -69,7 +70,7 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class C(RBFSVCFitnessFunction):
+class C(FitnessFunction):
     """Minimization of the C hyperparameter of RBF SVCs."""
 
     class Fitness(Fitness):
@@ -115,147 +116,18 @@ class C(RBFSVCFitnessFunction):
         return (sol.values.C,)
 
 
-class KappaIndex(RBFSVCFitnessFunction):
-    """Maximize the Kohen's Kappa index."""
+class KappaIndex(RBFSVCScorer, DatasetKappaIndex):
+    """Single-objective fitness function for classification problems.
 
-    class Fitness(Fitness):
-        """Fitness class.
-
-        Handles the values returned by the
-        :py:meth:`~culebra.solution.svc_optimization.C.evaluate` method within
-        a :py:class:`~culebra.solution.parameter_optimization.Solution`.
-        """
-
-        weights = (1.0,)
-        """Maximizes the valiation Kappa index."""
-
-        names = ("Kappa",)
-        """Name of the objective."""
-
-        thresholds = [DEFAULT_THRESHOLD]
-        """Similarity threshold for fitness comparisons."""
-
-    def evaluate(
-        self,
-        sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
-        """Evaluate a solution.
-
-        :param sol: Solution to be evaluated.
-        :type sol:
-            :py:class:`~culebra.solution.parameter_optimization.Solution`
-        :param index: Index where *sol* should be inserted in the
-            representatives sequence to form a complete solution for the
-            problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
-        :param representatives: Representative solutions of each species
-            being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        # Set the classifier hyperparameters
-        hyperparams = sol.values
-        self.classifier.C = hyperparams.C
-        self.classifier.gamma = hyperparams.gamma
-
-        # Get the training and test data
-        training_data, test_data = self._final_training_test_data()
-
-        if test_data is not None:
-            # Train and get the outputs for the validation data
-            outputs_pred = self.classifier.fit(
-                training_data.inputs, training_data.outputs
-            ).predict(test_data.inputs)
-            kappa = cohen_kappa_score(test_data.outputs, outputs_pred)
-        else:
-            # Perform cross-validation
-            skf = StratifiedKFold(n_splits=self.cv_folds)
-            scores = cross_val_score(
-                self.classifier,
-                training_data.inputs,
-                training_data.outputs,
-                cv=skf,
-                scoring=make_scorer(cohen_kappa_score)
-            )
-            kappa = scores.mean()
-
-        return (kappa,)
+    Calculate the Kohen's Kappa index.
+    """
 
 
-class Accuracy(RBFSVCFitnessFunction):
-    """Maximize the accuracy."""
+class Accuracy(RBFSVCScorer, DatasetAccuracy):
+    """Single-objective fitness function for classification problems.
 
-    class Fitness(Fitness):
-        """Fitness class.
-
-        Handles the values returned by the
-        :py:meth:`~culebra.solution.svc_optimization.Accuracy.evaluate`
-        method within a
-        :py:class:`~culebra.solution.parameter_optimization.Solution`.
-        """
-
-        weights = (1.0,)
-        """Maximizes the validation accuracy."""
-
-        names = ("Accuracy",)
-        """Name of the objective."""
-
-        thresholds = [DEFAULT_THRESHOLD]
-        """Similarity threshold for fitness comparisons."""
-
-    def evaluate(
-        self,
-        sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
-        """Evaluate a solution.
-
-        :param sol: Solution to be evaluated.
-        :type sol:
-            :py:class:`~culebra.solution.parameter_optimization.Solution`
-        :param index: Index where *sol* should be inserted in the
-            representatives sequence to form a complete solution for the
-            problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
-        :param representatives: Representative solutions of each species
-            being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        # Set the classifier hyperparameters
-        hyperparams = sol.values
-        self.classifier.C = hyperparams.C
-        self.classifier.gamma = hyperparams.gamma
-
-        # Get the training and test data
-        training_data, test_data = self._final_training_test_data()
-
-        if test_data is not None:
-            # Train and get the outputs for the validation data
-            outputs_pred = self.classifier.fit(
-                training_data.inputs, training_data.outputs
-            ).predict(test_data.inputs)
-            accuracy = accuracy_score(test_data.outputs, outputs_pred)
-        else:
-            # Perform cross-validation
-            skf = StratifiedKFold(n_splits=self.cv_folds)
-            scores = cross_val_score(
-                self.classifier,
-                training_data.inputs,
-                training_data.outputs,
-                cv=skf,
-                scoring='accuracy'
-            )
-            accuracy = scores.mean()
-
-        return (accuracy,)
+    Calculate the accuracy.
+    """
 
 
 class KappaC(KappaIndex, C):
@@ -366,10 +238,9 @@ class AccuracyC(Accuracy, C):
 
 # Exported symbols for this module
 __all__ = [
-    'RBFSVCFitnessFunction',
     'C',
     'KappaIndex',
-    'KappaC',
     'Accuracy',
+    'KappaC',
     'AccuracyC'
 ]

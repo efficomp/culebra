@@ -24,7 +24,8 @@ from __future__ import annotations
 from collections import Counter
 from os import PathLike
 from copy import deepcopy
-from typing import Optional, Tuple, Union, TextIO
+from typing import Optional, Tuple, Sequence, Union, TextIO
+from functools import partial
 
 import numpy as np
 from pandas import Series, DataFrame, read_csv
@@ -39,7 +40,7 @@ from ucimlrepo import fetch_ucirepo
 from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from culebra.abc import Base
-from culebra.checker import check_str, check_int, check_float
+from culebra.checker import check_str, check_int, check_float, check_sequence
 
 FilePath = Union[str, "PathLike[str]"]
 Url = str
@@ -401,6 +402,26 @@ class Dataset(Base):
 
         return resampled_dataset
 
+    def select_features(self, feats: Sequence[int]) -> Dataset:
+        """Return a new dataset only with some selected features.
+
+        :param feats: Indices of the selected features
+        :type feats: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :return: The new dataset
+        :rtype: :py:class:`~culebra.tools.Dataset`
+        """
+        feats = check_sequence(
+            feats,
+            "selected feature indices",
+            item_checker=partial(check_int, ge=0, lt=self.num_feats)
+        )
+
+        new_dataset = Dataset()
+        new_dataset._inputs = self.inputs[:, feats]
+        new_dataset._outputs = self.outputs
+
+        return new_dataset
+
     def append_random_features(
             self,
             num_feats: int,
@@ -434,7 +455,7 @@ class Dataset(Base):
         )
 
         # Copy the output data
-        new_dataset._outputs = np.deepcopy(self._outputs)
+        new_dataset._outputs = deepcopy(self._outputs)
 
         # Return the new dataset
         return new_dataset

@@ -48,12 +48,17 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.is_noisy
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.num_obj
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.num_nodes
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.training_data
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.test_data
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.test_prop
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC.classifier
+
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.cooperative.AccuracyFeatsPropC._worst_score
 
 Methods
 -------

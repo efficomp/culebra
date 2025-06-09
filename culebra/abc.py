@@ -575,6 +575,11 @@ class FitnessFunction(Base):
         cls.Fitness.set_objective_threshold(obj_name, value)
 
     @property
+    def is_noisy(self) -> int:
+        """Return :py:attr:`True` if the fitness function is noisy."""
+        return False
+
+    @property
     def num_obj(self) -> int:
         """Get the number of objectives.
 

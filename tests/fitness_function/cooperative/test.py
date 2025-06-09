@@ -116,6 +116,21 @@ class KappaNumFeatsCTester(unittest.TestCase):
         with self.assertRaises(AttributeError):
             fitness_func.evaluate(hyperparams_sol, 1, representatives)
 
+    def test_is_noisy(self):
+        """Test the is_noisy property."""
+        training_data, test_data = dataset.split(0.3)
+
+        # Fitness function to be tested
+        func = self.FitnessFunc(training_data)
+
+        func.test_prop = None
+        self.assertEqual(func.is_noisy, False)
+        func.test_prop = 0.5
+        self.assertEqual(func.is_noisy, True)
+
+        func = self.FitnessFunc(training_data, test_data)
+        self.assertEqual(func.is_noisy, False)
+
     def test_repr(self):
         """Test the repr and str dunder methods."""
         fitness_func = self.FitnessFunc(dataset)
@@ -127,6 +142,7 @@ class KappaFeatsPropCTester(unittest.TestCase):
     """Test KappaFeatsPropC."""
 
     FitnessFunc = KappaFeatsPropC
+    test_is_noisy = KappaNumFeatsCTester.test_is_noisy
     test_evaluate = KappaNumFeatsCTester.test_evaluate
     test_repr = KappaNumFeatsCTester.test_repr
 
@@ -135,6 +151,7 @@ class AccuracyNumFeatsCTester(unittest.TestCase):
     """Test AccuracyNumFeatsC."""
 
     FitnessFunc = AccuracyNumFeatsC
+    test_is_noisy = KappaNumFeatsCTester.test_is_noisy
     test_evaluate = KappaNumFeatsCTester.test_evaluate
     test_repr = KappaNumFeatsCTester.test_repr
 
@@ -143,6 +160,7 @@ class AccuracyFeatsPropCTester(unittest.TestCase):
     """Test AccuracyFeatsPropC."""
 
     FitnessFunc = AccuracyFeatsPropC
+    test_is_noisy = KappaNumFeatsCTester.test_is_noisy
     test_evaluate = KappaNumFeatsCTester.test_evaluate
     test_repr = KappaNumFeatsCTester.test_repr
 

@@ -56,6 +56,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyNumFeatsC.test_prop
 .. autoproperty:: culebra.fitness_function.cooperative.AccuracyNumFeatsC.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.cooperative.AccuracyNumFeatsC._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.cooperative.AccuracyNumFeatsC.save_pickle

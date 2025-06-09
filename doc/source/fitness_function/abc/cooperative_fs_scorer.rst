@@ -19,21 +19,21 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.abc.CooperativeFSFitnessFunction` class
-===========================================================================
+:py:class:`culebra.fitness_function.abc.CooperativeFSScorer` class
+==================================================================
 
-.. autoclass:: culebra.fitness_function.abc.CooperativeFSFitnessFunction
+.. autoclass:: culebra.fitness_function.abc.CooperativeFSScorer
 
 Class attributes
 ----------------
-.. class:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.Fitness
+.. class:: culebra.fitness_function.abc.CooperativeFSScorer.Fitness
 
     Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.abc.CooperativeFSFitnessFunction.evaluate`
+    :py:meth:`~culebra.fitness_function.abc.CooperativeFSScorer.evaluate`
     method within a :py:class:`~culebra.abc.Solution`.
 
     This class must be implemented within all the
-    :py:class:`~culebra.fitness_function.abc.CooperativeFSFitnessFunction`
+    :py:class:`~culebra.fitness_function.abc.CooperativeFSScorer`
     subclasses, as a subclass of the :py:class:`~culebra.abc.Fitness` class,
     to define its three class attributes (
     :py:attr:`~culebra.abc.Fitness.weights`,
@@ -43,19 +43,20 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.load_pickle
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.load_pickle
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.set_fitness_thresholds
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.get_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.set_fitness_objective_threshold
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.num_obj
-.. autoproperty:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.num_nodes
+.. autoproperty:: culebra.fitness_function.abc.CooperativeFSScorer.is_noisy
+.. autoproperty:: culebra.fitness_function.abc.CooperativeFSScorer.num_obj
+.. autoproperty:: culebra.fitness_function.abc.CooperativeFSScorer.num_nodes
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.save_pickle
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.heuristic
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.evaluate
-.. automethod:: culebra.fitness_function.abc.CooperativeFSFitnessFunction.construct_solutions
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.save_pickle
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.heuristic
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.evaluate
+.. automethod:: culebra.fitness_function.abc.CooperativeFSScorer.construct_solutions

@@ -33,11 +33,9 @@ Class attributes
     method within a
     :py:class:`~culebra.solution.parameter_optimization.Solution`.
 
-
     .. autoattribute:: culebra.fitness_function.svc_optimization.AccuracyC.Fitness.weights
     .. autoattribute:: culebra.fitness_function.svc_optimization.AccuracyC.Fitness.names
     .. autoattribute:: culebra.fitness_function.svc_optimization.AccuracyC.Fitness.thresholds
-
 
 Class methods
 -------------
@@ -56,8 +54,20 @@ Properties
 .. autoproperty:: culebra.fitness_function.svc_optimization.AccuracyC.test_prop
 .. autoproperty:: culebra.fitness_function.svc_optimization.AccuracyC.classifier
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.svc_optimization.AccuracyC._worst_score
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.svc_optimization.AccuracyC.save_pickle
 .. automethod:: culebra.fitness_function.svc_optimization.AccuracyC.heuristic
 .. automethod:: culebra.fitness_function.svc_optimization.AccuracyC.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_function.svc_optimization.AccuracyC._score
+.. automethod:: culebra.fitness_function.svc_optimization.AccuracyC._final_training_test_data
+.. automethod:: culebra.fitness_function.svc_optimization.AccuracyC._evaluate_train_test
+.. automethod:: culebra.fitness_function.svc_optimization.AccuracyC._evaluate_mccv
+.. automethod:: culebra.fitness_function.svc_optimization.AccuracyC._evaluate_kfcv

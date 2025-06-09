@@ -54,7 +54,7 @@ from collections.abc import Sequence
 
 from culebra.abc import Fitness, Solution
 
-from .abc import CooperativeRBFSVCFSFitnessFunction
+from .abc import CooperativeRBFSVCFSScorer
 from .feature_selection import (
     KappaNumFeats,
     KappaFeatsProp,
@@ -73,7 +73,7 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class KappaNumFeatsC(KappaNumFeats, C, CooperativeRBFSVCFSFitnessFunction):
+class KappaNumFeatsC(KappaNumFeats, C, CooperativeRBFSVCFSScorer):
     """Tri-objective fitness class for feature selection.
 
     Maximizes the Kohen's Kappa index and minimizes the number of features
@@ -137,7 +137,7 @@ class KappaNumFeatsC(KappaNumFeats, C, CooperativeRBFSVCFSFitnessFunction):
         """
         # Assemble the solution and representatives to construct a complete
         # solution for each of the problems solved cooperatively
-        (sol_features, sol_hyperparams) = self.construct_solutions(
+        (sol_hyperparams, sol_features) = self.construct_solutions(
             sol, index, representatives
         )
 
@@ -151,7 +151,7 @@ class KappaNumFeatsC(KappaNumFeats, C, CooperativeRBFSVCFSFitnessFunction):
         )
 
 
-class KappaFeatsPropC(KappaFeatsProp, C, CooperativeRBFSVCFSFitnessFunction):
+class KappaFeatsPropC(KappaFeatsProp, C, CooperativeRBFSVCFSScorer):
     """Tri-objective fitness class for feature selection.
 
     Maximizes the Kohen's Kappa index and minimizes the number of features
@@ -207,7 +207,7 @@ class KappaFeatsPropC(KappaFeatsProp, C, CooperativeRBFSVCFSFitnessFunction):
         """
         # Assemble the solution and representatives to construct a complete
         # solution for each of the problems solved cooperatively
-        (sol_features, sol_hyperparams) = self.construct_solutions(
+        (sol_hyperparams, sol_features) = self.construct_solutions(
             sol, index, representatives
         )
 
@@ -222,7 +222,7 @@ class KappaFeatsPropC(KappaFeatsProp, C, CooperativeRBFSVCFSFitnessFunction):
 
 
 class AccuracyNumFeatsC(
-    AccuracyNumFeats, C, CooperativeRBFSVCFSFitnessFunction
+    AccuracyNumFeats, C, CooperativeRBFSVCFSScorer
 ):
     """Tri-objective fitness class for feature selection.
 
@@ -286,7 +286,7 @@ class AccuracyNumFeatsC(
         """
         # Assemble the solution and representatives to construct a complete
         # solution for each of the problems solved cooperatively
-        (sol_features, sol_hyperparams) = self.construct_solutions(
+        (sol_hyperparams, sol_features) = self.construct_solutions(
             sol, index, representatives
         )
 
@@ -301,7 +301,7 @@ class AccuracyNumFeatsC(
 
 
 class AccuracyFeatsPropC(
-    AccuracyFeatsProp, C, CooperativeRBFSVCFSFitnessFunction
+    AccuracyFeatsProp, C, CooperativeRBFSVCFSScorer
 ):
     """Tri-objective fitness class for feature selection.
 
@@ -359,7 +359,7 @@ class AccuracyFeatsPropC(
         """
         # Assemble the solution and representatives to construct a complete
         # solution for each of the problems solved cooperatively
-        (sol_features, sol_hyperparams) = self.construct_solutions(
+        (sol_hyperparams, sol_features) = self.construct_solutions(
             sol, index, representatives
         )
 

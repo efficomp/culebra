@@ -21,38 +21,40 @@
 This sub-module provides several abstract classes that help defining other
 fitness functions. The following classes are provided:
 
-  * :py:class:`~culebra.fitness_function.abc.DatasetFitnessFunction`: Allows
+  * :py:class:`~culebra.fitness_function.abc.DatasetScorer`: Allows
     the definition of dataset-related fitness functions.
 
-  * :py:class:`~culebra.fitness_function.abc.ClassificationFitnessFunction`:
-    Lets defining classification-related fitness functions
+  * :py:class:`~culebra.fitness_function.abc.ClassificationScorer`:
+    Lets defining dataset classification-related fitness functions
 
-  * :py:class:`~culebra.fitness_function.abc.FeatureSelectionFitnessFunction`:
-    Designed to support feature selection problems
+  * :py:class:`~culebra.fitness_function.abc.ClassificationFSScorer`:
+    Designed to support feature selection on classification problems
 
-  * :py:class:`~culebra.fitness_function.abc.RBFSVCFitnessFunction`:
+  * :py:class:`~culebra.fitness_function.abc.RBFSVCScorer`:
     Is centered on the hyperparameters optimization of SVM-based classifiers
     with RBF kernels.
 
-  * :py:class:`~culebra.fitness_function.abc.CooperativeFSFitnessFunction`:
+  * :py:class:`~culebra.fitness_function.abc.CooperativeFSScorer`:
     Abstract base class for all the fitness functions of cooperative FS
     problems.
 
-  * :py:class:`~culebra.fitness_function.abc.CooperativeRBFSVCFSFitnessFunction`:
+  * :py:class:`~culebra.fitness_function.abc.CooperativeRBFSVCFSScorer`:
     Abstract base class for all the fitness functions of cooperative FS
     problems using RBF SVM classifiers.
 """
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from collections.abc import Sequence
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 from copy import deepcopy
 
 import numpy as np
 from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.metrics import make_scorer
 
 from culebra.abc import FitnessFunction, Solution
 from culebra.checker import check_int, check_float, check_instance
@@ -70,7 +72,7 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class DatasetFitnessFunction(FitnessFunction):
+class DatasetScorer(FitnessFunction):
     """Abstract base fitness function for dataset evaluation problems."""
 
     def __init__(
@@ -84,30 +86,32 @@ class DatasetFitnessFunction(FitnessFunction):
 
         If *test_data* are provided, the whole *training_data* are used to
         train. Otherwise, if *test_prop* is provided, *training_data* are
-        split (stratified) into training and test data. Finally, if both
-        *test_data* and *test_prop* are omitted, cross-validation is applied.
+        split (stratified) into training and test data each time
+        :py:meth:`~culebra.FitnessFunction.DatasetScorer.evaluate` is
+        called and a Monte Carlo cross validation is applied. Finally, if both
+        *test_data* and *test_prop* are omitted, a *k*-fold cross-validation
+        is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
         :param test_data: The test dataset, defaults to :py:data:`None`
         :type test_data: :py:class:`~culebra.tools.Dataset`, optional
-        :param test_prop: A real value in [0, 1] or :py:data:`None`. Defaults
+        :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
             to :py:data:`None`
         :type test_prop: :py:class:`float`, optional
-        :param cv_folds: The number of folds for cross-validation. If omitted,
-            :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS` is used.
-            Defaults to :py:data:`None`
+        :param cv_folds: The number of folds for *k*-fold cross-validation.
+            If omitted, :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS`
+            is used. Defaults to :py:data:`None`
         :type cv_folds: :py:class:`int`, optional
         """
         # Init the superclass
-        super().__init__()
+        FitnessFunction.__init__(self)
 
         # Set the attributes to default values
         self.training_data = training_data
         self.test_data = test_data
         self.test_prop = test_prop
         self.cv_folds = cv_folds
-        cross_val_score
 
     @property
     def training_data(self) -> Dataset:
@@ -161,7 +165,7 @@ class DatasetFitnessFunction(FitnessFunction):
 
         :getter: Return the test data proportion
         :setter: Set a new value for the test data porportion. A real value in
-            [0, 1] or :py:data:`None` is expected
+            (0, 1) or :py:data:`None` is expected
         :type: :py:class:`float`
         :raises TypeError: If set to a value which is not a real number
         :raises ValueError: If set to a value which is not in (0, 1)
@@ -172,7 +176,7 @@ class DatasetFitnessFunction(FitnessFunction):
     def test_prop(self, value: float | None) -> None:
         """Set a value for the proportion of data used to test.
 
-        :param value: A real value in [0, 1] or :py:data:`None`
+        :param value: A real value in (0, 1) or :py:data:`None`
         :type value: :py:class:`float` or :py:data:`None`
         :raises TypeError: If *value* is not a real number
         :raises ValueError: If *value* is not in (0, 1)
@@ -200,7 +204,7 @@ class DatasetFitnessFunction(FitnessFunction):
     def cv_folds(self, value: int | None) -> None:
         """Set a value for the number of cross-validation folds.
 
-        :param value: A positive integer value in [0, 1] or :py:data:`None`
+        :param value: A positive integer value in (0, 1) or :py:data:`None`
         :type value: :py:class:`int` or :py:data:`None`
         :raises TypeError: If *value* is not an integer value
         :raises ValueError: If *value* is not positive
@@ -209,42 +213,184 @@ class DatasetFitnessFunction(FitnessFunction):
             value, "number of cross-validation folds", gt=0
         )
 
-    def _final_training_test_data(self) -> Tuple[Dataset, Dataset]:
+    @property
+    def is_noisy(self) -> int:
+        """Return :py:attr:`True` if the fitness function is noisy."""
+        if self.test_data is None and self.test_prop is not None:
+            return True
+
+        return False
+
+    @property
+    @abstractmethod
+    def _worst_score(self) -> float:
+        """Worst achievable score.
+
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :raises NotImplementedError: if has not been overridden
+        :type: :py:class:`float`
+        """
+        raise NotImplementedError(
+            "The path property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
+
+    @staticmethod
+    @abstractmethod
+    def _score(
+        outputs: Sequence[float],
+        outputs_pred: Sequence[float],
+        **kwargs: Any
+    ) -> float:
+        """Score function to be used in the evaluation.
+
+        This method must be overridden by subclasses to return a correct
+        value.
+        """
+        raise NotImplementedError(
+            "The scorer method has not been implemented")
+
+    def _final_training_test_data(
+        self,
+        sol: Solution
+    ) -> Tuple[Dataset, Dataset]:
         """Get the final training and test data.
 
-        If *test_data* is not :py:data:`None`, the whole *training_data* are
-        used to train. Otherwise, if *test_prop* is not :py:data:`None`,
-        *training_data* are split (stratified) into training and test data.
+        :param sol: Solution to be evaluated. It may influence the final
+            datasets
+        :type sol: :py:class:`~culebra.abc.Solution`
 
         :return: The final training and test datasets
         :rtype: :py:class:`tuple` of :py:class:`~culebra.tools.Dataset`
         """
-        training_data = self.training_data
-        test_data = self.test_data
+        return self.training_data, self.test_data
 
-        if test_data is None and self.test_prop is not None:
-            # Split training data into training and test
-            training_data, test_data = self.training_data.split(
-                self.test_prop
-            )
+    @abstractmethod
+    def _evaluate_train_test(
+        self,
+        training_data: Dataset,
+        test_data: Dataset
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
 
-        return training_data, test_data
+        This method must be overridden by subclasses to return a correct
+        value.
 
-    def __copy__(self) -> DatasetFitnessFunction:
+        :param training_data: The training dataset
+        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :param test_data: The test dataset
+        :type test_data: :py:class:`~culebra.tools.Dataset`
+        :raises NotImplementedError: if has not been overridden
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        raise NotImplementedError(
+            "The _evaluate_train_test method has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    @abstractmethod
+    def _evaluate_mccv(
+        self,
+        training_data: Dataset
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        The *training_data* are split (stratified) into training and test data
+        according to
+        :py:attr:`~culebra.fitness_function.abc.DatasetScorer.test_prop`
+        each time the solution is evalueted and a Monte Carlo cross-validation
+        is applied.
+
+        This method must be overridden by subclasses to return a correct
+        value.
+
+        :param training_data: The training dataset
+        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        raise NotImplementedError(
+            "The _evaluate_mccv method has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    @abstractmethod
+    def _evaluate_kfcv(
+        self,
+        training_data: Dataset,
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        A *k*-fold cross-validation is applied using the *training_data* with
+        :py:attr:`~culebra.fitness_function.abc.DatasetScorer.cv_folds`
+        folds.
+
+        This method must be overridden by subclasses to return a correct
+        value.
+
+        :param training_data: The training dataset
+        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :raises NotImplementedError: if has not been overridden
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        raise NotImplementedError(
+            "The _evaluate_kfcv method has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, optional
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: A :py:class:`~collections.abc.Sequence`
+            containing instances of :py:class:`~culebra.abc.Solution`,
+            optional
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        # Obtain the final training and test data
+        training_data, test_data = self._final_training_test_data(sol)
+
+        # If test data are available, train with the whole training data
+        # and test with the test data
+        if test_data is not None:
+            return self._evaluate_train_test(training_data, test_data)
+        # If not, if a test porportion is given, apply Monte Carlo
+        # cross-validation
+        elif self.test_prop is not None:
+            return self._evaluate_mccv(training_data)
+        # Else, apply k-fold cross-validation
+        else:
+            return self._evaluate_kfcv(training_data)
+
+    def __copy__(self) -> DatasetScorer:
         """Shallow copy the fitness function."""
         cls = self.__class__
         result = cls(self.training_data)
         result.__dict__.update(self.__dict__)
         return result
 
-    def __deepcopy__(self, memo: dict) -> DatasetFitnessFunction:
+    def __deepcopy__(self, memo: dict) -> DatasetScorer:
         """Deepcopy the fitness function.
 
         :param memo: Fitness function attributes
         :type memo: :py:class:`dict`
         :return: A deep copy of the fitness function
         :rtype:
-            :py:class:`~culebra.feature_selection.abc.DatasetFitnessFunction`
+            :py:class:`~culebra.feature_selection.abc.DatasetScorer`
         """
         cls = self.__class__
         result = cls(self.training_data)
@@ -260,8 +406,8 @@ class DatasetFitnessFunction(FitnessFunction):
         return (self.__class__, (self.training_data,), self.__dict__)
 
 
-class ClassificationFitnessFunction(DatasetFitnessFunction):
-    """Abstract base fitness function for classification problems."""
+class ClassificationScorer(DatasetScorer):
+    """Abstract base fitness function for dataset classification problems."""
 
     def __init__(
         self,
@@ -269,34 +415,39 @@ class ClassificationFitnessFunction(DatasetFitnessFunction):
         test_data: Optional[Dataset] = None,
         test_prop: Optional[float] = None,
         cv_folds: Optional[int] = None,
-        classifier: ClassifierMixin = DEFAULT_CLASSIFIER()
+        classifier: Optional[ClassifierMixin] = None
     ) -> None:
         """Construct a fitness function.
 
         If *test_data* are provided, the whole *training_data* are used to
-        train the *classifier*. Otherwise, if *test_prop* is provided,
-        *training_data* are split (stratified) into training and test data.
-        Finally, if both *test_data* and *test_prop* are omitted,
-        *training_data* are also used to test.
+        train. Otherwise, if *test_prop* is provided, *training_data* are
+        split (stratified) into training and test data each time
+        :py:meth:`~culebra.FitnessFunction.ClassificationScorer.evaluate`
+        is called and a Monte Carlo cross validation is applied. Finally, if
+        both *test_data* and *test_prop* are omitted, a *k*-fold
+        cross-validation is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
         :param test_data: The test dataset, defaults to :py:data:`None`
         :type test_data: :py:class:`~culebra.tools.Dataset`, optional
-        :param test_prop: A real value in [0, 1] or :py:data:`None`. Defaults
+        :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
             to :py:data:`None`
         :type test_prop: :py:class:`float`, optional
-        :param cv_folds: The number of folds for cross-validation. If omitted,
-            :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS` is used.
-            Defaults to :py:data:`None`
+        :param cv_folds: The number of folds for *k*-fold cross-validation.
+            If omitted, :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS`
+            is used. Defaults to :py:data:`None`
         :type cv_folds: :py:class:`int`, optional
-        :param classifier: The classifier, defaults to
+        :param classifier: The classifier. If set to :py:data:`None`,
             :py:attr:`~culebra.fitness_function.DEFAULT_CLASSIFIER`
+            will be used. Defaults to :py:data:`None`
         :type classifier: :py:class:`~sklearn.base.ClassifierMixin`,
             optional
         """
         # Init the superclass
-        super().__init__(training_data, test_data, test_prop, cv_folds)
+        DatasetScorer.__init__(
+            self, training_data, test_data, test_prop, cv_folds
+        )
         self.classifier = classifier
 
     @property
@@ -311,20 +462,139 @@ class ClassificationFitnessFunction(DatasetFitnessFunction):
         return self._classifier
 
     @classifier.setter
-    def classifier(self, value: ClassifierMixin) -> None:
+    def classifier(self, value: ClassifierMixin | None) -> None:
         """Set a classifier.
 
-        :param value: The classifier
+        :param value: The classifier. If set to :py:data:`None`,
+            :py:attr:`~culebra.fitness_function.DEFAULT_CLASSIFIER`
+            is chosen
         :type value: Any subclass of :py:class:`~sklearn.base.ClassifierMixin`
         :raises TypeError: If *value* is not a classifier
         """
-        self._classifier = check_instance(
-            value, "classifier", cls=ClassifierMixin
+        self._classifier = (
+            DEFAULT_CLASSIFIER() if value is None else check_instance(
+                value, "classifier", cls=ClassifierMixin
+            )
         )
 
+    def _evaluate_train_test(
+        self,
+        training_data: Dataset,
+        test_data: Dataset
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
 
-class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
-    """Abstract base fitness function for feature selection problems."""
+        This method must be overridden by subclasses to return a correct
+        value.
+
+        :param training_data: The training dataset
+        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :param test_data: The test dataset
+        :type test_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        outputs_pred = self.classifier.fit(
+            training_data.inputs,
+            training_data.outputs
+        ).predict(test_data.inputs)
+        return (self.__class__._score(test_data.outputs, outputs_pred), )
+
+    def _evaluate_mccv(
+        self,
+        training_data: Dataset
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        The *training_data* are split (stratified) into training and test data
+        according to
+        :py:attr:`~culebra.fitness_function.abc.DatasetScorer.test_prop`
+        each time the solution is evalueted and a Monte Carlo cross-validation
+        is applied.
+
+        :param training_data: The training dataset
+        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        # Split training data into training and test
+        training_data, test_data = training_data.split(self.test_prop)
+        return self._evaluate_train_test(training_data, test_data)
+
+    def _evaluate_kfcv(
+        self,
+        training_data: Dataset,
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        A *k*-fold cross-validation is applied using the *training_data* with
+        :py:attr:`~culebra.fitness_function.abc.DatasetScorer.cv_folds`
+        folds.
+
+        :param training_data: The training dataset
+        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness values for *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        scores = cross_val_score(
+            self.classifier,
+            training_data.inputs,
+            training_data.outputs,
+            cv=StratifiedKFold(n_splits=self.cv_folds),
+            scoring=make_scorer(self.__class__._score)
+        )
+        return (scores.mean(), )
+
+
+class ClassificationFSScorer(ClassificationScorer):
+    """Abstract base fitness function for feature selection on classification problems."""
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        if sol.features.size > 0:
+            return ClassificationScorer.evaluate(
+                self, sol, index, representatives
+            )
+        else:
+            return (self._worst_score, )
+
+    def _final_training_test_data(
+        self,
+        sol: Solution
+    ) -> Tuple[Dataset, Dataset]:
+        """Get the final training and test data.
+
+        :param sol: Solution to be evaluated. It is used to select the
+          features from the datasets
+        :type sol: :py:class:`~culebra.abc.Solution`
+
+        :return: The final training and test datasets
+        :rtype: :py:class:`tuple` of :py:class:`~culebra.tools.Dataset`
+        """
+        return (
+            self.training_data.select_features(sol.features),
+            None if self.test_data is None else
+            self.test_data.select_features(sol.features)
+        )
 
     @property
     def num_nodes(self) -> int:
@@ -380,7 +650,7 @@ class FeatureSelectionFitnessFunction(ClassificationFitnessFunction):
         return (heuristic, )
 
 
-class RBFSVCFitnessFunction(ClassificationFitnessFunction):
+class RBFSVCScorer(ClassificationScorer):
     """Abstract base class fitness function for RBF SVC optimization."""
 
     def __init__(
@@ -389,15 +659,17 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
         test_data: Optional[Dataset] = None,
         test_prop: Optional[float] = None,
         cv_folds: Optional[int] = None,
-        classifier: ClassifierMixin = SVC(kernel='rbf')
+        classifier: Optional[ClassifierMixin] = None
     ) -> None:
         """Construct a fitness function.
 
         If *test_data* are provided, the whole *training_data* are used to
-        train the *classifier*. Otherwise, if *test_prop* is provided,
-        *training_data* are split (stratified) into training and test data.
-        Finally, if both *test_data* and *test_prop* are omitted,
-        *training_data* are also used to test.
+        train. Otherwise, if *test_prop* is provided, *training_data* are
+        split (stratified) into training and test data each time
+        :py:meth:`~culebra.FitnessFunction.RBFSVCScorer.evaluate` is
+        called and a Monte Carlo cross validation is applied. Finally, if both
+        *test_data* and *test_prop* are omitted, a *k*-fold cross-validation
+        is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
@@ -406,17 +678,19 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
         :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
             to :py:data:`None`
         :type test_prop: :py:class:`float`, optional
-        :param cv_folds: The number of folds for cross-validation. If omitted,
-            :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS` is used.
-            Defaults to :py:data:`None`
+        :param cv_folds: The number of folds for *k*-fold cross-validation.
+            If omitted, :py:attr:`~culebra.fitness_function.DEFAULT_CV_FOLDS`
+            is used. Defaults to :py:data:`None`
         :type cv_folds: :py:class:`int`, optional
-        :param classifier: The classifier
+        :param classifier: The classifier. If set to :py:data:`None`,
+            a :py:class:`~sklearn.svm.SVC` with RBF kernels will be used.
+            Defaults to :py:data:`None`
         :type classifier: :py:class:`~sklearn.svm.SVC` with
             RBF kernels, optional
         """
         # Init the superclass
-        super().__init__(
-            training_data, test_data, test_prop, cv_folds, classifier
+        ClassificationScorer.__init__(
+            self, training_data, test_data, test_prop, cv_folds, classifier
         )
 
     @property
@@ -433,26 +707,63 @@ class RBFSVCFitnessFunction(ClassificationFitnessFunction):
         return self._classifier
 
     @classifier.setter
-    def classifier(self, value: SVC) -> None:
+    def classifier(self, value: ClassifierMixin | None) -> None:
         """Set a classifier.
 
-        :param value: The classifier
-        :type value: Any subclass of :py:class:`~sklearn.svm.SVC` with RBF
-            kernels
-        :raises TypeError: If *value* is not an :py:class:`~sklearn.svm.SVC`
+        :param value: The classifier. If set to :py:data:`None`,
+            :py:class:`~sklearn.svm.SVC with RBF kernels is chosen
+        :type: Any subclass of :py:class:`~sklearn.svm.SVC` with RBF kernels
+        :raises TypeError: If set to a value which is not an
+            :py:class:`~sklearn.svm.SVC`
         :raises ValueError: If the classifier has not RBF kernels
         """
-        self._classifier = check_instance(
-            value, "classifier", cls=SVC
-        )
-
-        if self._classifier.kernel != 'rbf':
-            raise ValueError(
-                f"The classifier has not RBF kernels: {value}"
+        if value is not None:
+            value = check_instance(
+                value, "classifier", cls=SVC
             )
 
+            if value.kernel != 'rbf':
+                raise ValueError(
+                    f"The classifier has not RBF kernels: {value}"
+                )
+        else:
+            value = SVC(kernel='rbf')
 
-class CooperativeFSFitnessFunction(FitnessFunction):
+        self._classifier = value
+
+    def evaluate(
+        self,
+        sol: Solution,
+        index: Optional[int] = None,
+        representatives: Optional[Sequence[Solution]] = None
+    ) -> Tuple[float, ...]:
+        """Evaluate a solution.
+
+        :param sol: Solution to be evaluated.
+        :type sol:
+            :py:class:`~culebra.solution.parameter_optimization.Solution`
+        :param index: Index where *sol* should be inserted in the
+            representatives sequence to form a complete solution for the
+            problem. Only used by cooperative problems
+        :type index: :py:class:`int`, ignored
+        :param representatives: Representative solutions of each species
+            being optimized. Only used by cooperative problems
+        :type representatives: :py:class:`~collections.abc.Sequence` of
+            :py:class:`~culebra.abc.Solution`, ignored
+        :return: The fitness of *sol*
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        # Set the classifier hyperparameters
+        hyperparams = sol.values
+        self.classifier.C = hyperparams.C
+        self.classifier.gamma = hyperparams.gamma
+
+        return ClassificationScorer.evaluate(
+            self, sol, index, representatives
+        )
+
+
+class CooperativeFSScorer(FitnessFunction):
     """Abstract base class fitness function for cooperative FS problems."""
 
     def construct_solutions(
@@ -527,22 +838,22 @@ class CooperativeFSFitnessFunction(FitnessFunction):
             features=all_the_features
         )
 
-        return (sol_features, sol_hyperparams)
+        return (sol_hyperparams, sol_features)
 
 
-class CooperativeRBFSVCFSFitnessFunction(
-    CooperativeFSFitnessFunction,
-    RBFSVCFitnessFunction
+class CooperativeRBFSVCFSScorer(
+    CooperativeFSScorer,
+    RBFSVCScorer
 ):
     """Abstract base class for cooperative FS problems using an RBF SVC classifier."""
 
 
 # Exported symbols for this module
 __all__ = [
-    'DatasetFitnessFunction',
-    'ClassificationFitnessFunction',
-    'FeatureSelectionFitnessFunction',
-    'RBFSVCFitnessFunction',
-    'CooperativeFSFitnessFunction',
-    'CooperativeRBFSVCFSFitnessFunction'
+    'DatasetScorer',
+    'ClassificationScorer',
+    'ClassificationFSScorer',
+    'RBFSVCScorer',
+    'CooperativeFSScorer',
+    'CooperativeRBFSVCFSScorer'
 ]
