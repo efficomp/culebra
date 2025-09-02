@@ -8,3 +8,5 @@ openpyxl
 scikit_posthocs
 ucimlrepo
 imbalanced-learn
+dill
+multiprocess

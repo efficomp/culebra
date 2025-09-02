@@ -24,33 +24,24 @@
 
 .. autoclass:: culebra.fitness_function.feature_selection.KappaIndex
 
-Class attributes
-----------------
-.. class:: culebra.fitness_function.feature_selection.KappaIndex.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.feature_selection.KappaIndex.evaluate`
-    method within a :py:class:`~culebra.solution.feature_selection.Solution`.
-
-    .. autoattribute:: culebra.fitness_function.feature_selection.KappaIndex.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.feature_selection.KappaIndex.Fitness.names
-    .. autoattribute:: culebra.fitness_function.feature_selection.KappaIndex.Fitness.thresholds
-
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.load_pickle
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.load
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.num_obj
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.obj_weights
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.obj_names
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.obj_thresholds
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.fitness_cls
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.num_nodes
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.index
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.training_data
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.test_data
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.test_prop
+.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.cv_folds
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.classifier
 
 Private properties
@@ -59,9 +50,10 @@ Private properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.save_pickle
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.heuristic
+.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.dump
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex.evaluate
+.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.is_evaluable
+.. automethod:: culebra.fitness_function.feature_selection.KappaIndex.heuristic
 
 Private methods
 ---------------

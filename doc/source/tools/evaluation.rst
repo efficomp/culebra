@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Evaluation.load_pickle
+.. automethod:: culebra.tools.Evaluation.load
 .. automethod:: culebra.tools.Evaluation.from_config
 .. automethod:: culebra.tools.Evaluation.generate_run_script
 
@@ -41,14 +41,14 @@ Properties
 .. autoproperty:: culebra.tools.Evaluation.untie_best_fitness_function
 .. autoproperty:: culebra.tools.Evaluation.test_fitness_function
 .. autoproperty:: culebra.tools.Evaluation.results_base_filename
-.. autoproperty:: culebra.tools.Evaluation.results_pickle_filename
-.. autoproperty:: culebra.tools.Evaluation.results_excel_filename
+.. autoproperty:: culebra.tools.Evaluation.serialized_results_filename
+.. autoproperty:: culebra.tools.Evaluation.excel_results_filename
 .. autoproperty:: culebra.tools.Evaluation.hyperparameters
 .. autoproperty:: culebra.tools.Evaluation.results
 
 Methods
 -------
-.. automethod:: culebra.tools.Evaluation.save_pickle
+.. automethod:: culebra.tools.Evaluation.dump
 .. automethod:: culebra.tools.Evaluation.reset
 .. automethod:: culebra.tools.Evaluation.run
 

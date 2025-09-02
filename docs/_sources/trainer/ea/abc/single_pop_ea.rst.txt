@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.ea.abc.SinglePopEA.load_pickle
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA.load
 
 Properties
 ----------
@@ -64,7 +64,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.abc.SinglePopEA.save_pickle
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA.dump
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.reset
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA.best_solutions

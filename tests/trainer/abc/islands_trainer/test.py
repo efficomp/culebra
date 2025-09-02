@@ -26,6 +26,7 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer import (
     DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC,
     DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
@@ -36,8 +37,33 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -49,13 +75,15 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Default species for all the tests
 species = Species(num_feats=dataset.num_feats)
 
+fitness_func = KappaNumFeats(dataset)
+
 
 class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
-        self.sol = Solution(self.species, self.fitness_function.Fitness)
+        self.sol = Solution(self.species, self.fitness_function.fitness_cls)
         self.evaluate(self.sol)
 
 
@@ -126,7 +154,6 @@ class TrainerTester(unittest.TestCase):
         """Test :py:meth:`culebra.trainer.abc.IslandsTrainer.__init__`."""
         valid_solution = Solution
         valid_species = Species(dataset.num_feats)
-        valid_fitness_func = Fitness(dataset)
         valid_subtrainer_cls = MySingleSpeciesTrainer
 
         # Try invalid solution classes. Should fail
@@ -136,7 +163,7 @@ class TrainerTester(unittest.TestCase):
                 MyIslandsTrainer(
                     solution_cls,
                     valid_species,
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls
                 )
 
@@ -147,7 +174,7 @@ class TrainerTester(unittest.TestCase):
                 MyIslandsTrainer(
                     valid_solution,
                     inv_species,
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls
                 )
 
@@ -156,7 +183,7 @@ class TrainerTester(unittest.TestCase):
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyIslandsTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_topology_func=func
                 )
@@ -167,7 +194,7 @@ class TrainerTester(unittest.TestCase):
         for params in invalid_params:
             with self.assertRaises(TypeError):
                 MyIslandsTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_topology_func_params=params
                 )
@@ -177,7 +204,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyIslandsTrainer(
             valid_solution,
             valid_species,
-            valid_fitness_func,
+            fitness_func,
             valid_subtrainer_cls,
             representation_topology_func=valid_representation_topology_func
         )
@@ -191,7 +218,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyIslandsTrainer(
             valid_solution,
             valid_species,
-            valid_fitness_func,
+            fitness_func,
             valid_subtrainer_cls,
             representation_topology_func_params=valid_params
         )
@@ -204,7 +231,7 @@ class TrainerTester(unittest.TestCase):
         trainer = MyIslandsTrainer(
             valid_solution,
             valid_species,
-            valid_fitness_func,
+            fitness_func,
             valid_subtrainer_cls,
         )
 
@@ -221,7 +248,6 @@ class TrainerTester(unittest.TestCase):
         """Test the __copy__ method."""
         # Parameters for the trainer
         solution_cls = Solution
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = MySingleSpeciesTrainer
         params = {
@@ -255,7 +281,6 @@ class TrainerTester(unittest.TestCase):
         """Test the __deepcopy__ method."""
         # Parameters for the trainer
         solution_cls = Solution
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = MySingleSpeciesTrainer
         params = {
@@ -282,7 +307,6 @@ class TrainerTester(unittest.TestCase):
         """
         # Set custom params
         solution_cls = Solution
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = MySingleSpeciesTrainer
         params = {
@@ -298,21 +322,20 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer1 = MyIslandsTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyIslandsTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyIslandsTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Set custom params
         solution_cls = Solution
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = MySingleSpeciesTrainer
         params = {
@@ -339,34 +362,12 @@ class TrainerTester(unittest.TestCase):
         :param trainer2: The second trainer
         :type trainer2: :py:class:`culebra.trainer.abc.IslandsTrainer`
         """
-        # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.subtrainer_params), id(trainer2.subtrainer_params)
         )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
-        )
-
-        self.assertNotEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(
-            id(trainer1.species.num_feats), id(trainer2.species.num_feats)
+            trainer1.subtrainer_params, trainer2.subtrainer_params
         )
 
 

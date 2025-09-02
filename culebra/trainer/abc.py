@@ -61,16 +61,16 @@ from typing import (
 )
 from copy import deepcopy
 from functools import partial
-from multiprocessing import (
+from multiprocess import (
     cpu_count,
     Queue,
     Process,
     Manager
 )
-from os import path
 
 from deap.tools import Logbook, HallOfFame, ParetoFront
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import (
     Solution,
     Species,
@@ -277,6 +277,21 @@ class SingleSpeciesTrainer(Trainer):
         return (self.__class__,
                 (self.solution_cls, self.species, self.fitness_function),
                 self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> SingleSpeciesTrainer:
+        """Return a single species trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_solution_cls'],
+            state['_species'],
+            state['_fitness_function']
+        )
+        obj.__setstate__(state)
+        return obj
 
 
 class DistributedTrainer(Trainer):
@@ -732,8 +747,8 @@ class DistributedTrainer(Trainer):
         self
     ) -> Generator[str, None, None]:
         """Checkpoint file name of all the subtrainers."""
-        base_name = path.splitext(self.checkpoint_filename)[0]
-        extension = path.splitext(self.checkpoint_filename)[1]
+        base_name = self.checkpoint_filename[:-len(SERIALIZED_FILE_EXTENSION)]
+        extension = SERIALIZED_FILE_EXTENSION
 
         # Generator for the subtrainer checkpoint file names
         return (
@@ -907,6 +922,20 @@ class DistributedTrainer(Trainer):
                     self.subtrainer_cls
                 ),
                 self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> DistributedTrainer:
+        """Return a distributed trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_fitness_function'],
+            state['_subtrainer_cls']
+        )
+        obj.__setstate__(state)
+        return obj
 
 
 class SequentialDistributedTrainer(DistributedTrainer):
@@ -1158,7 +1187,7 @@ class ParallelDistributedTrainer(DistributedTrainer):
     def _init_internals(self) -> None:
         """Set up the trainer internal data structures to start searching.
 
-        Overridden to create a multiprocessing manager and proxies to
+        Overridden to create a multiprocess manager and proxies to
         communicate with the processes running the subtrainers.
         """
         super()._init_internals()
@@ -1172,7 +1201,7 @@ class ParallelDistributedTrainer(DistributedTrainer):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overridden to reset the multiprocessing manager and proxies.
+        Overridden to reset the multiprocess manager and proxies.
         """
         super()._reset_internals()
         self._manager = None
@@ -1501,6 +1530,22 @@ class IslandsTrainer(SingleSpeciesTrainer, DistributedTrainer):
                 ),
                 self.__dict__)
 
+    @classmethod
+    def __fromstate__(cls, state: dict) -> IslandsTrainer:
+        """Return an islands-based trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_solution_cls'],
+            state['_species'],
+            state['_fitness_function'],
+            state['_subtrainer_cls']
+        )
+        obj.__setstate__(state)
+        return obj
+
 
 class MultiSpeciesTrainer(Trainer):
     """Base class for trainers that find solutions for multiple species."""
@@ -1683,6 +1728,21 @@ class MultiSpeciesTrainer(Trainer):
         return (self.__class__,
                 (self.solution_classes, self.species, self.fitness_function),
                 self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> SingleSpeciesTrainer:
+        """Return a single species trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_solution_classes'],
+            state['_species'],
+            state['_fitness_function']
+        )
+        obj.__setstate__(state)
+        return obj
 
 
 class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
@@ -2018,7 +2078,7 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
             subtrainer._representatives.append(
                 [
                     ind_cls(
-                        spe, subtrainer.fitness_function.Fitness
+                        spe, subtrainer.fitness_function.fitness_cls
                     ) if i != subtrainer.index else None
                     for i, (ind_cls, spe) in enumerate(
                         zip(solution_classes, species)
@@ -2070,6 +2130,22 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
                     self.subtrainer_cls
                 ),
                 self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> CooperativeTrainer:
+        """Return a cooperative trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_solution_classes'],
+            state['_species'],
+            state['_fitness_function'],
+            state['_subtrainer_cls']
+        )
+        obj.__setstate__(state)
+        return obj
 
 
 # Exported symbols for this module

@@ -38,6 +38,9 @@ from scipy.stats import (
 
 from culebra.tools import Results, ResultsAnalyzer
 
+CSV_FILE_EXTENSION = ".csv"
+"""Extension for csv files."""
+
 
 class ResultsAnalyzerTester(unittest.TestCase):
     """Test the :py:class:`~culebra.tools.ResultsAnalyzer` class."""
@@ -59,8 +62,8 @@ class ResultsAnalyzerTester(unittest.TestCase):
         analyzer = ResultsAnalyzer()
         results = Results.from_csv_files(
             (
-                "execution_metrics.csv",
-                "test_fitness.csv"
+                "execution_metrics" + CSV_FILE_EXTENSION,
+                "test_fitness" + CSV_FILE_EXTENSION
             )
         )
         key = "my_wrapper"
@@ -1019,8 +1022,14 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         # Prepare the DataFrame with some data for the second results manager
         data2 = DataFrame()
-        data2[parametric_column_key] = data1[parametric_column_key]
-        data2[non_parametric_column_key] = data1[non_parametric_column_key]
+        data2[parametric_column_key] = (
+            data1[parametric_column_key] +
+            np.random.uniform(low=-0.001, high=0.001, size=200)
+        )
+        data2[non_parametric_column_key] = (
+            data1[non_parametric_column_key] +
+            np.random.uniform(low=-0.001, high=0.001, size=200)
+        )
         results2 = Results()
         results2[dataframe_key] = data2
         analyzer["Results2"] = results2
@@ -1036,7 +1045,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         self.assertTrue(comparison_result.global_comparison.success.all())
         self.assertNotEqual(comparison_result.pairwise_comparison, None)
 
-        # Try a comparison of two equal heteroscedastic results
+        # Try a comparison of two equal but not normal results
         comparison_result = analyzer.compare(
             dataframe_key, non_parametric_column_key
         )
@@ -1048,8 +1057,14 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         # Prepare the DataFrame with some data for the third results manager
         data3 = DataFrame()
-        data3[parametric_column_key] = data1[parametric_column_key]
-        data3[non_parametric_column_key] = data1[non_parametric_column_key]
+        data3[parametric_column_key] = (
+            data1[parametric_column_key] +
+            np.random.uniform(low=-0.001, high=0.001, size=200)
+        )
+        data3[non_parametric_column_key] = (
+            data1[non_parametric_column_key] +
+            np.random.uniform(low=-0.001, high=0.001, size=200)
+        )
         results3 = Results()
         results3[dataframe_key] = data3
         analyzer["Results3"] = results3
@@ -1079,7 +1094,10 @@ class ResultsAnalyzerTester(unittest.TestCase):
         data3[parametric_column_key] = np.random.normal(
             size=200, loc=5
         )
-        data3[non_parametric_column_key] = data3[parametric_column_key]
+        data3[non_parametric_column_key] = (
+            data3[parametric_column_key] +
+            np.random.uniform(low=-0.001, high=0.001, size=200)
+        )
 
         # Try a comparison of three different normal and homoscedastic results
         comparison_result = analyzer.compare(
@@ -1281,9 +1299,6 @@ class ResultsAnalyzerTester(unittest.TestCase):
         effect_size = analyzer.effect_size(dataframe_key, column_key)
         self.assertAlmostEqual(effect_size.value[0][1], 0.5, places=3)
         self.assertAlmostEqual(effect_size.value[2][3], 0.31622776601683794)
-
-
-
 
 
 if __name__ == '__main__':

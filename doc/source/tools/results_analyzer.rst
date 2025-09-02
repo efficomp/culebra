@@ -26,11 +26,11 @@
 
 Class methods
 -------------
-.. automethod:: culebra.tools.ResultsAnalyzer.load_pickle
+.. automethod:: culebra.tools.ResultsAnalyzer.load
 
 Methods
 -------
-.. automethod:: culebra.tools.ResultsAnalyzer.save_pickle
+.. automethod:: culebra.tools.ResultsAnalyzer.dump
 .. automethod:: culebra.tools.ResultsAnalyzer.normality_test
 .. automethod:: culebra.tools.ResultsAnalyzer.homoscedasticity_test
 .. automethod:: culebra.tools.ResultsAnalyzer.parametric_test

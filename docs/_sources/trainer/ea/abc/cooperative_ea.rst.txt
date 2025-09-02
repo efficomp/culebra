@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.ea.abc.CooperativeEA.load_pickle
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA.load
 
 Properties
 ----------
@@ -88,7 +88,7 @@ Private static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.abc.CooperativeEA.save_pickle
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA.dump
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA.reset
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA.best_solutions

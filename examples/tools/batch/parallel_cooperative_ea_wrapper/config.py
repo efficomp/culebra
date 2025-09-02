@@ -21,6 +21,8 @@
 
 from collections import Counter
 
+from sklearn.svm import SVC
+
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
@@ -29,9 +31,32 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.trainer.ea import ElitistEA, ParallelCooperativeEA
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
 
 
 # Dataset
@@ -53,7 +78,7 @@ training_fitness_function = KappaNumFeatsC(
 )
 
 # Set the training fitness similarity threshold
-training_fitness_function.set_fitness_thresholds(0.001)
+training_fitness_function.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)

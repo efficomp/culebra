@@ -24,12 +24,12 @@
 
 import unittest
 import os
-from multiprocessing.queues import Queue
+from multiprocess.queues import Queue
 from copy import copy, deepcopy
 
 from deap.tools import Logbook
 
-from culebra import DEFAULT_MAX_NUM_ITERS
+from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
 from culebra.trainer import (
     DEFAULT_NUM_SUBTRAINERS,
     DEFAULT_REPRESENTATION_SIZE,
@@ -43,8 +43,33 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -55,6 +80,8 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 # Default species for all the tests
 species = Species(num_feats=dataset.num_feats)
+
+fitness_func = KappaNumFeats(dataset)
 
 
 class MyTrainer(DistributedTrainer):
@@ -101,7 +128,6 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test :py:meth:`~culebra.trainer.abc.DistributedTrainer.__init__`."""
-        valid_fitness_func = Fitness(dataset)
         valid_subtrainer_cls = SingleSpeciesTrainer
 
         # Try fitness functions. Should fail
@@ -118,7 +144,7 @@ class TrainerTester(unittest.TestCase):
         for cls in invalid_trainer_classes:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     cls
                 )
 
@@ -127,7 +153,7 @@ class TrainerTester(unittest.TestCase):
         for max_num_iters in invalid_max_num_iters:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     max_num_iters=max_num_iters
                 )
@@ -137,7 +163,7 @@ class TrainerTester(unittest.TestCase):
         for max_num_iters in invalid_max_num_iters:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     max_num_iters=max_num_iters
                 )
@@ -147,7 +173,7 @@ class TrainerTester(unittest.TestCase):
         for num_subtrainers in invalid_num_subtrainers:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     num_subtrainers=num_subtrainers
                 )
@@ -157,7 +183,7 @@ class TrainerTester(unittest.TestCase):
         for num_subtrainers in invalid_num_subtrainers:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     num_subtrainers=num_subtrainers
                 )
@@ -167,7 +193,7 @@ class TrainerTester(unittest.TestCase):
         for representation_size in invalid_representation_sizes:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_size=representation_size
                 )
@@ -177,7 +203,7 @@ class TrainerTester(unittest.TestCase):
         for representation_size in invalid_representation_sizes:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_size=representation_size
                 )
@@ -187,7 +213,7 @@ class TrainerTester(unittest.TestCase):
         for representation_freq in invalid_representation_freqs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_freq=representation_freq
                 )
@@ -197,7 +223,7 @@ class TrainerTester(unittest.TestCase):
         for representation_freq in invalid_representation_freqs:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_freq=representation_freq
                 )
@@ -207,7 +233,7 @@ class TrainerTester(unittest.TestCase):
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_selection_func=func
                 )
@@ -218,13 +244,13 @@ class TrainerTester(unittest.TestCase):
         for params in invalid_params:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    valid_fitness_func,
+                    fitness_func,
                     valid_subtrainer_cls,
                     representation_selection_func_params=params
                 )
 
         # Test default params
-        trainer = MyTrainer(valid_fitness_func, valid_subtrainer_cls)
+        trainer = MyTrainer(fitness_func, valid_subtrainer_cls)
 
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(trainer.num_subtrainers, DEFAULT_NUM_SUBTRAINERS)
@@ -250,7 +276,7 @@ class TrainerTester(unittest.TestCase):
 
         # Test islands trainer extra params
         trainer = MyTrainer(
-            valid_fitness_func,
+            fitness_func,
             valid_subtrainer_cls,
             extra="foo")
         self.assertEqual(trainer.subtrainer_params, {"extra": "foo"})
@@ -259,7 +285,7 @@ class TrainerTester(unittest.TestCase):
         """Test the _subtrainer_suffixes method."""
         # Parameters for the trainer
         params = {
-            "fitness_function": Fitness(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": SingleSpeciesTrainer
         }
 
@@ -280,10 +306,10 @@ class TrainerTester(unittest.TestCase):
         """Test subtrainer_checkpoint_filenames."""
         # Parameters for the trainer
         params = {
-            "fitness_function": Fitness(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": SingleSpeciesTrainer,
             "num_subtrainers": 2,
-            "checkpoint_filename": "my_check.gz"
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION
         }
 
         # Create the trainer
@@ -292,13 +318,15 @@ class TrainerTester(unittest.TestCase):
         # Check the file names
         self.assertEqual(
             tuple(trainer.subtrainer_checkpoint_filenames),
-            ("my_check_0.gz", "my_check_1.gz")
+            (
+                "my_check_0" + SERIALIZED_FILE_EXTENSION,
+                "my_check_1" + SERIALIZED_FILE_EXTENSION
+            )
         )
 
     def test_init_internals(self):
         """Test _init_internals."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -339,7 +367,6 @@ class TrainerTester(unittest.TestCase):
     def test_reset_internals(self):
         """Test _reset_internals."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -365,7 +392,6 @@ class TrainerTester(unittest.TestCase):
         """Test checkpointing."""
         # Create a default trainer
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -408,7 +434,6 @@ class TrainerTester(unittest.TestCase):
     def test_new_state(self):
         """Test _new_state."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -432,7 +457,6 @@ class TrainerTester(unittest.TestCase):
     def test_logbook(self):
         """Test the logbook property."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -464,7 +488,6 @@ class TrainerTester(unittest.TestCase):
     def test_copy(self):
         """Test the __copy__ method."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -495,7 +518,6 @@ class TrainerTester(unittest.TestCase):
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -519,7 +541,6 @@ class TrainerTester(unittest.TestCase):
         Test the __setstate__ and __reduce__ methods.
         """
         # Set custom params
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -533,20 +554,19 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer1 = MyTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        os.remove(pickle_filename)
+        # Remove the serialized file
+        os.remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Set custom params
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         subtrainer_cls = SingleSpeciesTrainer
         params = {
@@ -571,29 +591,12 @@ class TrainerTester(unittest.TestCase):
         :param trainer2: The second trainer
         :type trainer2: :py:class:`~culebra.trainer.abc.DistributedTrainer`
         """
-        # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.subtrainer_params), id(trainer2.subtrainer_params)
         )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
+        self.assertEqual(
+            trainer1.subtrainer_params, trainer2.subtrainer_params
         )
 
 

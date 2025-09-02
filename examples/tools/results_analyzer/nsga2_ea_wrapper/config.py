@@ -24,9 +24,34 @@ from collections import Counter
 from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, IntVector
-from culebra.fitness_function.feature_selection import KappaNumFeats
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.trainer.ea import NSGA, HomogeneousParallelIslandsEA
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -53,7 +78,7 @@ training_fitness_function = KappaNumFeats(
 )
 
 # Set the training fitness similarity threshold
-training_fitness_function.set_fitness_thresholds(0.001)
+training_fitness_function.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)

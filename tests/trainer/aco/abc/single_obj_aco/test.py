@@ -29,7 +29,10 @@ import numpy as np
 
 from culebra.trainer.aco.abc import SingleObjACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 class MyTrainer(SingleObjACO):
@@ -82,8 +85,11 @@ optimum_paths = [
     np.random.permutation(num_nodes),
     np.random.permutation(num_nodes)
 ]
-fitness_func_single = SinglePathLength.fromPath(optimum_paths[0])
-fitness_func_multi = DoublePathLength.fromPath(*optimum_paths)
+fitness_func_multi = MultiObjectivePathLength(
+    PathLength.fromPath(optimum_paths[0]),
+    PathLength.fromPath(optimum_paths[1])
+)
+fitness_func_single = fitness_func_multi.objectives[0]
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 

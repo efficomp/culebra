@@ -30,7 +30,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.solution.abc.Individual.load_pickle
+.. automethod:: culebra.solution.abc.Individual.load
 
 Properties
 ----------
@@ -39,7 +39,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.abc.Individual.save_pickle
+.. automethod:: culebra.solution.abc.Individual.dump
 .. automethod:: culebra.solution.abc.Individual.crossover
 .. automethod:: culebra.solution.abc.Individual.mutate
 .. automethod:: culebra.solution.abc.Individual.dominates

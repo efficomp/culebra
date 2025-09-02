@@ -30,7 +30,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.solution.feature_selection.BitVector.load_pickle
+.. automethod:: culebra.solution.feature_selection.BitVector.load
 
 Properties
 ----------
@@ -43,7 +43,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.BitVector.save_pickle
+.. automethod:: culebra.solution.feature_selection.BitVector.dump
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover1p
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover2p
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover

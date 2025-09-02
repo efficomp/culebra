@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.MMAS.load_pickle
+.. automethod:: culebra.trainer.aco.MMAS.load
 
 Properties
 ----------
@@ -73,7 +73,7 @@ Private properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.MMAS.save_pickle
+.. automethod:: culebra.trainer.aco.MMAS.dump
 .. automethod:: culebra.trainer.aco.MMAS.reset
 .. automethod:: culebra.trainer.aco.MMAS.evaluate
 .. automethod:: culebra.trainer.aco.MMAS.best_solutions

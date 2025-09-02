@@ -26,14 +26,14 @@ from typing import Any, Tuple, List, Optional, Dict
 from collections.abc import Sequence
 from copy import deepcopy
 from os import chmod, makedirs, chdir
-from os.path import isfile, splitext, join
+from os.path import isfile, join
 import importlib.util
 
 import numpy as np
 from pandas import Series, DataFrame, concat
 from deap.tools import HallOfFame, ParetoFront
 
-from culebra import PICKLE_FILE_EXTENSION
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import (
     Base,
     Solution,
@@ -407,15 +407,15 @@ for res, val in {var_name}.results.items():
         self.reset()
 
     @property
-    def results_pickle_filename(self) -> str:
-        """Get the filename used to save the pickled results.
+    def serialized_results_filename(self) -> str:
+        """Get the filename used to save the serialized results.
 
         :type: :py:class:`str`
         """
-        return self.results_base_filename + PICKLE_FILE_EXTENSION
+        return self.results_base_filename + SERIALIZED_FILE_EXTENSION
 
     @property
-    def results_excel_filename(self) -> str:
+    def excel_results_filename(self) -> str:
         """Get the filename used to save the results in Excel format.
 
         :type: :py:class:`str`
@@ -533,7 +533,7 @@ for res, val in {var_name}.results.items():
         The parameters for the evaluation are taken from a configuration file.
 
         :param config_filename: Path to the configuration file. It can be
-            whether a configuration script or a pickled
+            whether a configuration script or a serialized
             :py:attr:`~culebra.tools.Evaluation` instance. If set to
             :py:data:`None`,
             :py:attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
@@ -549,29 +549,34 @@ for res, val in {var_name}.results.items():
         :raises ValueError: If the extensions of *config_filename* or
             *run_script_filename* are not valid.
         """
-        # Check the configuration filename
-        config_filename = check_filename(
-            (
-                DEFAULT_CONFIG_SCRIPT_FILENAME
-                if config_filename is None
-                else config_filename
-            ),
-            name="configuration file"
-        )
+        if config_filename is None:
+            config_filename = DEFAULT_CONFIG_SCRIPT_FILENAME
 
-        # Check the extension of the configuration file
-        (_, extension) = splitext(config_filename)
-        extension = extension.lower()
-        if extension == SCRIPT_FILE_EXTENSION:
-            factory_method = 'from_config'
-        elif extension == PICKLE_FILE_EXTENSION:
-            factory_method = 'load_pickle'
-        else:
-            raise ValueError(
-                "Not valid extension for the configuration file. "
-                "Valid extensions are .py for python scripts or .gz for "
-                "pickled evaluation objects: {config_filename}"
+        # Check the configuration filename
+        try:
+            config_filename = check_filename(
+                config_filename,
+                name="configuration file",
+                ext=SCRIPT_FILE_EXTENSION
             )
+            factory_method = 'from_config'
+        except ValueError:
+            try:
+                config_filename = check_filename(
+                    config_filename,
+                    name="configuration file",
+                    ext=SERIALIZED_FILE_EXTENSION
+                )
+                factory_method = 'load'
+            except ValueError:
+                raise ValueError(
+                    "Not valid extension for the configuration file. "
+                    f"Valid extensions are {SCRIPT_FILE_EXTENSION} for "
+                    f"python scripts or {SERIALIZED_FILE_EXTENSION} for "
+                    f"serialized evaluation objects: {config_filename}"
+                )
+            except TypeError as error:
+                raise error
 
         # Check the run script filename
         run_script_filename = check_filename(
@@ -612,7 +617,7 @@ for res, val in {var_name}.results.items():
         # Forget previous results
         self.reset()
 
-        if not isfile(self.results_pickle_filename):
+        if not isfile(self.serialized_results_filename):
             # Init the results manager
             self._results = Results()
 
@@ -620,14 +625,14 @@ for res, val in {var_name}.results.items():
             self._execute()
 
             # Save the results
-            self.results.save_pickle(self.results_pickle_filename)
+            self.results.dump(self.serialized_results_filename)
         else:
             # Load the results
-            self._results = Results.load_pickle(self.results_pickle_filename)
+            self._results = Results.load(self.serialized_results_filename)
 
-        if not isfile(self.results_excel_filename):
+        if not isfile(self.excel_results_filename):
             # Save the results to Excel
-            self.results.to_excel(self.results_excel_filename)
+            self.results.to_excel(self.excel_results_filename)
 
     @abstractmethod
     def _execute(self) -> None:
@@ -720,6 +725,19 @@ for res, val in {var_name}.results.items():
         """
         return (self.__class__, (self.trainer, ), self.__dict__)
 
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Evaluation:
+        """Return a species from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_trainer']
+        )
+        obj.__setstate__(state)
+        return obj
+
 
 class Experiment(Evaluation):
     """Run a trainer method from the parameters in a config file."""
@@ -806,7 +824,7 @@ class Experiment(Evaluation):
         num_obj = tr_fitness_func.num_obj
 
         # Fitness objective names
-        obj_names = tr_fitness_func.Fitness.names
+        obj_names = tr_fitness_func.fitness_cls.names
 
         # Training logbook
         logbook = self.trainer.logbook
@@ -1154,7 +1172,7 @@ class Experiment(Evaluation):
         # Evaluate each combination
         all_combinations_fitness = []
         for solution in all_combinations:
-            fitness = eval_func.Fitness(
+            fitness = eval_func.fitness_cls(
                 eval_func.evaluate(solution[0], 0, solution)
                 )
             fitness.thresholds = [0] * fitness.num_obj
@@ -1719,10 +1737,12 @@ class Batch(Evaluation):
             self.results_base_filename,
             self.hyperparameters
         )
-        experiment_filename = self.experiment_basename + PICKLE_FILE_EXTENSION
+        experiment_filename = (
+            self.experiment_basename + SERIALIZED_FILE_EXTENSION
+        )
 
         # Save the experiment
-        experiment.save_pickle(experiment_filename)
+        experiment.dump(experiment_filename)
 
         for exp_folder in self.experiment_labels:
             try:
@@ -1753,8 +1773,8 @@ class Batch(Evaluation):
     def _execute(self) -> None:
         """Execute a batch of experiments."""
         # Load the experiment
-        experiment = Experiment.load_pickle(
-            self.experiment_basename + PICKLE_FILE_EXTENSION
+        experiment = Experiment.load(
+            self.experiment_basename + SERIALIZED_FILE_EXTENSION
         )
 
         # For all the experiments to be generated ...

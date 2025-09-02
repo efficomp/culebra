@@ -26,33 +26,37 @@ import unittest
 
 import numpy as np
 
-from culebra.abc import Fitness
 from culebra.trainer.aco import QualityBasedPACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function import DEFAULT_THRESHOLD
 from culebra.fitness_function.tsp import PathLength
 
 
 class MyMinimizationFitnessFunc(PathLength):
-    """Dummy fitness function with two objectives."""
+    """Dummy fitness function."""
 
-    class Fitness(Fitness):
-        """Fitness class."""
+    @property
+    def obj_weights(self):
+        """Minimize the path length."""
+        return (-1.0, )
 
-        weights = (-1.0, )
-        names = ("Min", )
-        thresholds = [DEFAULT_THRESHOLD]
+    @property
+    def obj_names(self):
+        """Name of the objective."""
+        return ("Min",)
 
 
 class MyMaximizationFitnessFunc(PathLength):
-    """Dummy fitness function with two objectives."""
+    """Dummy fitness function."""
 
-    class Fitness(Fitness):
-        """Fitness class."""
+    @property
+    def obj_weights(self):
+        """Maximize the path length."""
+        return (1.0, )
 
-        weights = (1.0, )
-        names = ("Max", )
-        thresholds = [DEFAULT_THRESHOLD]
+    @property
+    def obj_names(self):
+        """Name of the objective."""
+        return ("Max",)
 
 
 num_nodes = 25

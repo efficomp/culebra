@@ -294,7 +294,7 @@ class TypeCheckerTester(unittest.TestCase):
             ]
         ]
         for matrix in invalid_matrix_dtypes:
-            with self.assertRaises(TypeError):
+            with self.assertRaises(ValueError):
                 check_matrix(matrix, name="matrix", dtype='int')
 
         # Try invalid matrix values. Should fail

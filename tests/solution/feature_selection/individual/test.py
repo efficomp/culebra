@@ -31,6 +31,7 @@ from time import perf_counter, sleep
 import numpy as np
 from pandas import DataFrame
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies, Fitness
 from culebra.solution.abc import Individual
 from culebra.solution.feature_selection import (
@@ -236,19 +237,19 @@ class IndividualTester(unittest.TestCase):
         """Serialization of individuals."""
         print('Testing the',
               self.individual_cls.__name__,
-              'save_pickle and load_pickle methods ...', end=' ')
+              'dump and load methods ...', end=' ')
         num_feats = 10
         species = Species(num_feats)
         ind1 = self.individual_cls(species, MyFitness)
-        pickle_filename = "my_pickle.gz"
-        ind1.save_pickle(pickle_filename)
-        ind2 = self.individual_cls.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        ind1.dump(serialized_filename)
+        ind2 = self.individual_cls.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(ind1, ind2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
         print('Ok')
 
     def test_5_runtime(self):

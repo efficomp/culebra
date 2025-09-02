@@ -25,10 +25,13 @@
 from os import listdir, path
 from sys import argv, exit
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.tools import Results, ResultsAnalyzer, DEFAULT_RESULTS_BASENAME
 
+CSV_FILE_EXTENSION = ".csv"
+"""Extension for csv files."""
 
-valid_commands = ("compare", "rank", "effect_size")
+valid_commands = ("compare", "rank", "effect-size")
 """Valid commands for this script."""
 
 
@@ -50,14 +53,16 @@ def init_analyzer(batches_results, csv_batches_results):
         analyzer[batch] = Results.from_csv_files(
             [
                 path.join(batch, file)
-                for file in listdir(batch) if file.endswith('.csv')
+                for file in listdir(batch) if file.endswith(CSV_FILE_EXTENSION)
             ]
         )
 
     # Add the other batches results
     for batch in batches_results:
-        analyzer[batch] = Results.load_pickle(
-            path.join(batch, DEFAULT_RESULTS_BASENAME + ".gz")
+        analyzer[batch] = Results.load(
+            path.join(
+                batch, DEFAULT_RESULTS_BASENAME + SERIALIZED_FILE_EXTENSION
+            )
         )
 
     return analyzer
@@ -99,7 +104,6 @@ elif len(argv) > 2:
 
 # Get the command
 command = argv[1].lower()
-
 
 if command not in valid_commands:
     print(f"\nERROR: Bad command '{argv[1]}'\n")

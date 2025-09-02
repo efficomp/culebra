@@ -29,12 +29,12 @@ from culebra.trainer.aco import (
     ElitistAntSystem,
     DEFAULT_PHEROMONE_EVAPORATION_RATE
 )
-from culebra.fitness_function.tsp import SinglePathLength
+from culebra.fitness_function.tsp import PathLength
 
 
 # Load the GR17 distances matrix from TSPLIB
 # The minimal tour has length 2085
-fitness_func = SinglePathLength.fromTSPLib(
+fitness_func = PathLength.fromTSPLib(
     "https://raw.githubusercontent.com/mastqe/tsplib/master/gr17.tsp"
 )
 

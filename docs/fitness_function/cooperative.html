@@ -13,8 +13,8 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.fitness_function.cooperative.KappaFeatsPropC class" href="cooperative/kappa_num_feats_c.html" />
-    <link rel="prev" title="culebra.fitness_function.svc_optimization.AccuracyC class" href="svc_optimization/accuracy_c.html" /> 
+    <link rel="next" title="culebra.fitness_function.cooperative.FSSVCScorer class" href="cooperative/fs_svc_scorer.html" />
+    <link rel="prev" title="culebra.fitness_function.svc_optimization.Accuracy class" href="svc_optimization/accuracy.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -26,10 +26,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="cooperative/kappa_num_feats_c.html" title="culebra.fitness_function.cooperative.KappaFeatsPropC class"
+          <a href="cooperative/fs_svc_scorer.html" title="culebra.fitness_function.cooperative.FSSVCScorer class"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="svc_optimization/accuracy_c.html" title="culebra.fitness_function.svc_optimization.AccuracyC class"
+          <a href="svc_optimization/accuracy.html" title="culebra.fitness_function.svc_optimization.Accuracy class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
@@ -49,25 +49,9 @@ of a feature selection problem while the classifier hyperparamters are also
 being optimized. It provides the following fitness functions:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="cooperative/kappa_feats_prop_c.html#culebra.fitness_function.cooperative.KappaNumFeatsC" title="culebra.fitness_function.cooperative.KappaNumFeatsC"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaNumFeatsC</span></code></a>:
-Tri-objective fitness class for feature selection. Maximizes the Kohen’s
-Kappa index and minimizes the number of features that a solution has
-selected and also the C regularazation hyperparameter of the SVM-based
-classifier.</p></li>
-<li><p><a class="reference internal" href="cooperative/kappa_num_feats_c.html#culebra.fitness_function.cooperative.KappaFeatsPropC" title="culebra.fitness_function.cooperative.KappaFeatsPropC"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaFeatsPropC</span></code></a>:
-Tri-objective fitness class for feature selection. Maximizes the Kohen’s
-Kappa index and minimizes the number of features that a solution has
-selected and also the C regularazation hyperparameter of the SVM-based
-classifier.</p></li>
-<li><p><a class="reference internal" href="cooperative/accuracy_feats_prop_c.html#culebra.fitness_function.cooperative.AccuracyNumFeatsC" title="culebra.fitness_function.cooperative.AccuracyNumFeatsC"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccuracyNumFeatsC</span></code></a>:
-Tri-objective fitness class for feature selection. Maximizes the accuracy
-and minimizes the number of features that a solution has selected and also
-the C regularazation hyperparameter of the SVM-based
-classifier.</p></li>
-<li><p><a class="reference internal" href="cooperative/accuracy_num_feats_c.html#culebra.fitness_function.cooperative.AccuracyFeatsPropC" title="culebra.fitness_function.cooperative.AccuracyFeatsPropC"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccuracyFeatsPropC</span></code></a>:
-Tri-objective fitness class for feature selection. Maximizes the accuracy
-and minimizes the number of features that a solution has selected and also
-the C regularazation hyperparameter of the SVM-based classifier.</p></li>
+<li><p><a class="reference internal" href="cooperative/fs_svc_scorer.html#culebra.fitness_function.cooperative.FSSVCScorer" title="culebra.fitness_function.cooperative.FSSVCScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FSSVCScorer</span></code></a>:
+Abstract base class for all the fitness functions of cooperative FS
+problems.</p></li>
 </ul>
 </div></blockquote>
 <div class="toctree-wrapper compound">
@@ -90,10 +74,10 @@ the C regularazation hyperparameter of the SVM-based classifier.</p></li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="cooperative/kappa_num_feats_c.html" title="culebra.fitness_function.cooperative.KappaFeatsPropC class"
+          <a href="cooperative/fs_svc_scorer.html" title="culebra.fitness_function.cooperative.FSSVCScorer class"
              >next</a> |</li>
         <li class="right" >
-          <a href="svc_optimization/accuracy_c.html" title="culebra.fitness_function.svc_optimization.AccuracyC class"
+          <a href="svc_optimization/accuracy.html" title="culebra.fitness_function.svc_optimization.Accuracy class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>

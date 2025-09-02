@@ -35,7 +35,7 @@
     MultiPopEA <abc/multi_pop_ea>
 
     IslandsEA <abc/islands_ea>
+    CooperativeEA <abc/cooperative_ea>
+
     HomogeneousIslandsEA <abc/homogeneous_islands_ea>
     HeterogeneousIslandsEA <abc/heterogeneous_islands_ea>
-
-    CooperativeEA <abc/cooperative_ea>

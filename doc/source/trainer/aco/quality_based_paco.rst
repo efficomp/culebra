@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.AgeBasedPACO.load_pickle
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.load
 
 Properties
 ----------
@@ -68,7 +68,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.AgeBasedPACO.save_pickle
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.dump
 .. automethod:: culebra.trainer.aco.AgeBasedPACO.reset
 .. automethod:: culebra.trainer.aco.AgeBasedPACO.evaluate
 .. automethod:: culebra.trainer.aco.AgeBasedPACO.best_solutions

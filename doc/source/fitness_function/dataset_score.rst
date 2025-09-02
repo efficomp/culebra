@@ -24,8 +24,27 @@
 
 .. automodule:: culebra.fitness_function.dataset_score
 
+Attributes:
+-----------
+.. attribute:: DEFAULT_CLASSIFIER
+    :annotation: = <class 'sklearn.naive_bayes.GaussianNB'>
+
+    Default classifier for fitness functions.
+
+.. attribute:: DEFAULT_CV_FOLDS
+    :annotation: = 5
+
+    Default number of folds for cross-validation.
+
+..
+    .. autodata:: DEFAULT_CLASSIFIER
+    .. autodata:: DEFAULT_CV_FOLDS
+
+
+
 .. toctree::
     :hidden:
 
-    KappaIndex <dataset_score/kappa_index>
+    abc <dataset_score/abc>
     Accuracy <dataset_score/accuracy>
+    KappaIndex <dataset_score/kappa_index>

@@ -45,21 +45,20 @@ selection problem. Currently:
 """
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.4.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-from .constants import (
-    DEFAULT_CLASSIFIER,
-    DEFAULT_THRESHOLD,
-    DEFAULT_CV_FOLDS
-)
+from . import abc
+
+from .functions import MultiObjectiveFitnessFunction
+
+
 from . import (
-    abc,
     dataset_score,
     feature_selection,
     svc_optimization,
@@ -70,12 +69,10 @@ from . import (
 
 __all__ = [
     'abc',
+    'MultiObjectiveFitnessFunction',
     'dataset_score',
     'feature_selection',
     'svc_optimization',
     'cooperative',
-    'tsp',
-    'DEFAULT_CLASSIFIER',
-    'DEFAULT_THRESHOLD',
-    'DEFAULT_CV_FOLDS'
+    'tsp'
 ]

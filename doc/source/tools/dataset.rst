@@ -26,7 +26,7 @@
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Dataset.load_pickle
+.. automethod:: culebra.tools.Dataset.load
 .. automethod:: culebra.tools.Dataset.load_from_uci
 
 Properties
@@ -38,7 +38,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.tools.Dataset.save_pickle
+.. automethod:: culebra.tools.Dataset.dump
 .. automethod:: culebra.tools.Dataset.normalize
 .. automethod:: culebra.tools.Dataset.scale
 .. automethod:: culebra.tools.Dataset.drop_missing

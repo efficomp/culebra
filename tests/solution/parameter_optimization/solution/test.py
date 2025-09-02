@@ -28,6 +28,7 @@ import copy
 from numbers import Integral, Real
 from itertools import repeat
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies, Fitness
 from culebra.solution.parameter_optimization import Solution, Species
 
@@ -209,7 +210,7 @@ class SolutionTester(unittest.TestCase):
     def test_3_serialization(self):
         """Serialization test."""
         print('Testing serialization ...', end=' ')
-        pickle_filename = "my_pickle.gz"
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         # For each length until max_length ...
         for length in range(1, self.max_length + 1):
             species = Species(
@@ -220,12 +221,12 @@ class SolutionTester(unittest.TestCase):
             # Execute the generator function the given number of times
             for _ in repeat(None, self.times):
                 sol1 = Solution(species, MyFitness)
-                sol1.save_pickle(pickle_filename)
-                sol2 = Solution.load_pickle(pickle_filename)
+                sol1.dump(serialized_filename)
+                sol2 = Solution.load(serialized_filename)
                 self.assertTrue(sol1.values, sol2.values)
 
-                # Remove the pickle file
-                remove(pickle_filename)
+                # Remove the serialized file
+                remove(serialized_filename)
 
         print('Ok')
 

@@ -13,7 +13,7 @@
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="culebra.trainer.ea.abc.CooperativeEA class" href="cooperative_ea.html" />
+    <link rel="next" title="culebra.trainer.ea.SimpleEA class" href="../simple_ea.html" />
     <link rel="prev" title="culebra.trainer.ea.abc.HomogeneousIslandsEA class" href="homogeneous_islands_ea.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
@@ -26,7 +26,7 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="cooperative_ea.html" title="culebra.trainer.ea.abc.CooperativeEA class"
+          <a href="../simple_ea.html" title="culebra.trainer.ea.SimpleEA class"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="homogeneous_islands_ea.html" title="culebra.trainer.ea.abc.HomogeneousIslandsEA class"
@@ -217,9 +217,9 @@ trainer</p></li>
 <section id="class-methods">
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.ea.abc.HeterogeneousIslandsEA.load_pickle">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HeterogeneousIslandsEA.</span></span><span class="sig-name descname"><span class="pre">load_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.abc.HeterogeneousIslandsEA.load_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Load a pickled object from a file.</p>
+<dt class="sig sig-object py" id="culebra.trainer.ea.abc.HeterogeneousIslandsEA.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HeterogeneousIslandsEA.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.abc.HeterogeneousIslandsEA.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -228,7 +228,7 @@ trainer</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../../../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -882,7 +882,7 @@ is chosen</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If set to a value which is not a a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If set to a value whose extension is not
-<a class="reference internal" href="../../../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -1109,9 +1109,9 @@ representatives</p>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.ea.abc.HeterogeneousIslandsEA.save_pickle">
-<span class="sig-prename descclassname"><span class="pre">HeterogeneousIslandsEA.</span></span><span class="sig-name descname"><span class="pre">save_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.abc.HeterogeneousIslandsEA.save_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Pickle this object and save it to a file.</p>
+<dt class="sig sig-object py" id="culebra.trainer.ea.abc.HeterogeneousIslandsEA.dump">
+<span class="sig-prename descclassname"><span class="pre">HeterogeneousIslandsEA.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.ea.abc.HeterogeneousIslandsEA.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -1120,7 +1120,7 @@ representatives</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../../../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -1208,7 +1208,7 @@ cooperative or <a class="reference external" href="https://docs.python.org/3/lib
 <dd class="field-odd"><p><strong>state_proxy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DictProxy</span></code>,
 optional) – Dictionary proxy to copy the output state of the
 trainer procedure. Only used if train is executed within a
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Process</span></code></a>. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<a class="reference external" href="https://multiprocess.readthedocs.io/en/latest/index.html#multiprocess.Process" title="(in multiprocess v0.70.19.dev0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocess.Process</span></code></a>. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1286,7 +1286,7 @@ not match the number of subpopulations.</p>
 <a class="reference internal" href="../../../abc/trainer.html#culebra.abc.Trainer.representatives" title="culebra.abc.Trainer.representatives"><code class="xref py py-attr docutils literal notranslate"><span class="pre">representatives</span></code></a>
 trainer properties, along with a private boolean attribute that informs
 if the search has finished and also the states of the <a class="reference external" href="https://docs.python.org/3/library/random.html#module-random" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">random</span></code></a>
-and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/random/index.html#module-numpy.random" title="(in NumPy v2.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> modules.</p>
 <p>If subclasses use any more properties to keep their state, the
 <a class="reference internal" href="../../../abc/trainer.html#culebra.abc.Trainer._get_state" title="culebra.abc.Trainer._get_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_state()</span></code></a> and
 <a class="reference internal" href="../../../abc/trainer.html#culebra.abc.Trainer._set_state" title="culebra.abc.Trainer._set_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_set_state()</span></code></a> methods must be
@@ -1513,7 +1513,7 @@ species initialized.</p>
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="cooperative_ea.html" title="culebra.trainer.ea.abc.CooperativeEA class"
+          <a href="../simple_ea.html" title="culebra.trainer.ea.SimpleEA class"
              >next</a> |</li>
         <li class="right" >
           <a href="homogeneous_islands_ea.html" title="culebra.trainer.ea.abc.HomogeneousIslandsEA class"

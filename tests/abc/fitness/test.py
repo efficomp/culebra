@@ -26,6 +26,7 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Fitness
 
 
@@ -44,143 +45,38 @@ class FitnessTester(unittest.TestCase):
         """Test the :py:meth:`~culebra.abc.Fitness.__init__` constructor."""
         # Check default values
         fitness = MyFitness()
+        self.assertEqual(fitness.values, ())
         self.assertEqual(fitness.weights, MyFitness.weights)
         self.assertEqual(fitness.names, MyFitness.names)
         self.assertEqual(fitness.thresholds, MyFitness.thresholds)
-
-        # Delete the names and thresholds
-        MyFitness.names = None
-        MyFitness.thresholds = None
-
-        # Check default objective names
-        fitness = MyFitness()
-        self.assertEqual(fitness.names, ("obj_0", "obj_1"))
-        self.assertEqual(fitness.thresholds, [0, 0])
-
-        # Try a wrong type for names. It should fail
-        MyFitness.names = 3
-        with self.assertRaises(TypeError):
-            MyFitness()
-
-        # Try a wrong number of names. It should fail
-        MyFitness.names = ("a", "b", "c")
-        with self.assertRaises(TypeError):
-            MyFitness()
-
-        # Try a wrong type for thresholds. It should fail
-        MyFitness.names = None
-        MyFitness.thresholds = 1
-        with self.assertRaises(TypeError):
-            MyFitness()
-
-        # Try a wrong number of thresholds. It should fail
-        MyFitness.thresholds = [0, 1, 2]
-        with self.assertRaises(TypeError):
-            MyFitness()
+        self.assertEqual(
+            fitness.num_evaluations,
+            [0] * fitness.num_obj
+        )
 
         # Try initial values
-        MyFitness.thresholds = None
         values = (2, 3)
-
         fitness = MyFitness(values=values)
         self.assertEqual(fitness.values, values)
 
-    def test_get_objective_index(self):
-        """Test :py:meth:~culebra.abc.Fitness.get_objective_index`."""
-        # Try an invalid type for the objective name. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitness.get_objective_index(1)
-
-        # Try an invalid objective name. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitness.get_objective_index("invalid_obj_name")
-
-        # Try correct names
-        for (index, name) in enumerate(MyFitness.names):
-            self.assertEqual(index, MyFitness.get_objective_index(name))
-
-    def test_get_objective_threshold(self):
-        """Test :py:meth:~culebra.abc.Fitness.get_objective_threshold`."""
-        # Try an invalid type for the objective name. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitness.get_objective_threshold(1)
-
-        # Try an invalid objective name. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitness.get_objective_threshold("invalid_obj_name")
-
-        MyFitness.thresholds = [1, 1]
-        obj_index = 0
-        obj_name = MyFitness.names[obj_index]
-        obj_threshold = MyFitness.thresholds[obj_index]
-        self.assertEqual(
-            MyFitness.get_objective_threshold(obj_name), obj_threshold
-        )
-
-    def test_set_objective_threshold(self):
-        """Test :py:meth:~culebra.abc.Fitness.set_objective_threshold`."""
-        # Try an invalid type for the objective name. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitness.set_objective_threshold(1, 0.5)
-
-        # Try an invalid objective name. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitness.set_objective_threshold("invalid_obj_name", 0.5)
-
-        MyFitness.thresholds = [1, 1]
-        obj_index = 0
-        obj_name = MyFitness.names[obj_index]
-        obj_threshold = MyFitness.thresholds[obj_index]
-
-        # Try an invalid type for the threshold. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitness.set_objective_threshold(obj_name, "a")
-
-        # Try an invalid value for the threshold. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitness.set_objective_threshold(obj_name, -1)
-
-        # Set valid thresholds
-        for obj_index in range(len(MyFitness.names)):
-            obj_name = MyFitness.names[obj_index]
-            obj_threshold = MyFitness.thresholds[obj_index]
-            new_threshold = obj_threshold * 2
-            MyFitness.set_objective_threshold(obj_name, new_threshold)
-
-            # Check the new threshold
-            self.assertEqual(MyFitness.thresholds[obj_index], new_threshold)
-
-    def test_get_objective_value(self):
-        """Test :py:meth:~culebra.abc.Fitness.get_objective_value`."""
-        # Construct a fitness
-        fitness = MyFitness(values=(1, 2))
-
-        # Check the fitness values
-        for (name, value) in zip(fitness.names, fitness.values):
-            self.assertEqual(fitness.get_objective_value(name), value)
-
-    def test_get_objective_wvalue(self):
-        """Test :py:meth:~culebra.abc.Fitness.get_objective_wvalue`."""
-        # Construct a fitness
-        fitness = MyFitness(values=(1, 2))
-
-        # Check the fitness values
-        for (name, wvalue) in zip(fitness.names, fitness.wvalues):
-            self.assertEqual(fitness.get_objective_wvalue(name), wvalue)
+        # Try an invalid number of initial values
+        values = (2, 3, 3)
+        with self.assertRaises(AssertionError):
+            MyFitness(values=values)
 
     def test_del_values(self):
         """Test :py:meth:~culebra.abc.Fitness.delValues`."""
-        # Construct a fitness
-        fitness = MyFitness(values=(1, 2))
+        # Check default objective names
+        fitness = MyFitness()
+        fitness.values = (2, 3)
+        fitness.num_evaluations[1] += 1
 
-        # The fitness values and context should have been deleted
-        self.assertEqual(fitness.values, (1, 2))
+        self.assertTrue(fitness.valid)
+        self.assertEqual(fitness.num_evaluations, [0, 1])
 
-        # Try delValues
-        fitness.delValues()
-
-        # The fitness values and context should have been deleted
-        self.assertEqual(fitness.values, ())
+        del fitness.values
+        self.assertFalse(fitness.valid)
+        self.assertEqual(fitness.num_evaluations, [0, 0])
 
     def test_num_obj(self):
         """Test the :py:attr:`~culebra.abc.Fitness.num_obj` property."""
@@ -258,8 +154,6 @@ class FitnessTester(unittest.TestCase):
             (fitness_1.values[0]-off, fitness_1.values[1]+off)
         )
         self.assertTrue(fitness_1.dominates(fitness_2))
-
-# ----------------------------------
 
         # Try with thresholds = 0.1
         threshold = 0.1
@@ -610,20 +504,20 @@ class FitnessTester(unittest.TestCase):
 
         Test the :py:meth:`~culebra.abc.Fitness.__setstate__` and
         :py:meth:`~culebra.abc.Fitness.__reduce__` methods,
-        :py:meth:`~culebra.abc.Fitness.save_pickle` and
-        :py:meth:`~culebra.abc.Fitness.load_pickle` methods.
+        :py:meth:`~culebra.abc.Fitness.dump` and
+        :py:meth:`~culebra.abc.Fitness.load` methods.
         """
         fitness1 = MyFitness((1, 2))
 
-        pickle_filename = "my_pickle.gz"
-        fitness1.save_pickle(pickle_filename)
-        fitness2 = MyFitness.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        fitness1.dump(serialized_filename)
+        fitness2 = MyFitness.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(fitness1, fitness2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

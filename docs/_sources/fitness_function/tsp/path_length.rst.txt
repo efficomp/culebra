@@ -24,41 +24,28 @@
 
 .. autoclass:: culebra.fitness_function.tsp.PathLength
 
-Class attributes
-----------------
-.. class:: culebra.fitness_function.tsp.PathLength.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.tsp.PathLength.evaluate` method
-    within a :py:class:`~culebra.solution.tsp.Solution`.
-
-    This class must be implemented within all the
-    :py:class:`~culebra.fitness_function.tsp.PathLength` subclasses, as a
-    subclass of the :py:class:`~culebra.abc.Fitness` class, to define its three
-    class attributes (:py:attr:`~culebra.abc.Fitness.weights`,
-    :py:attr:`~culebra.abc.Fitness.names`, and
-    :py:attr:`~culebra.abc.Fitness.thresholds`) according to the fitness
-    function.
-
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.tsp.PathLength.load_pickle
-.. automethod:: culebra.fitness_function.tsp.PathLength.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.tsp.PathLength.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.tsp.PathLength.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.tsp.PathLength.load
 .. automethod:: culebra.fitness_function.tsp.PathLength.fromPath
 .. automethod:: culebra.fitness_function.tsp.PathLength.fromTSPLib
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.is_noisy
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_obj
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_weights
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_names
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_thresholds
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.fitness_cls
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.is_noisy
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_nodes
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.index
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.distance
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.tsp.PathLength.save_pickle
+.. automethod:: culebra.fitness_function.tsp.PathLength.dump
 .. automethod:: culebra.fitness_function.tsp.PathLength.heuristic
-.. automethod:: culebra.fitness_function.tsp.PathLength.greedy_solution
 .. automethod:: culebra.fitness_function.tsp.PathLength.evaluate
+.. automethod:: culebra.fitness_function.tsp.PathLength.is_evaluable
+.. automethod:: culebra.fitness_function.tsp.PathLength.greedy_solution

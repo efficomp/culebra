@@ -30,12 +30,13 @@ from itertools import repeat
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies
 from culebra.fitness_function.feature_selection import NumFeats
 from culebra.solution.feature_selection import Species, Ant
 
 
-Fitness = NumFeats.Fitness
+Fitness = NumFeats().fitness_cls
 """Default fitness class."""
 
 DEFAULT_NUM_FEATS_VALUES = [10, 100, 1000, 10000]
@@ -245,7 +246,7 @@ class AntTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test."""
         # For each value for the number of features ...
-        pickle_filename = "my_pickle.gz"
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
 
         for num_feats in self.num_feats_values:
             species = Species(num_feats)
@@ -256,13 +257,13 @@ class AntTester(unittest.TestCase):
                 feats = np.random.choice(indices, size=(size), replace=False)
                 ant1 = Ant(species, Fitness, feats)
 
-                ant1.save_pickle(pickle_filename)
-                ant2 = Ant.load_pickle(pickle_filename)
+                ant1.dump(serialized_filename)
+                ant2 = Ant.load(serialized_filename)
 
                 self.assertTrue((ant1.path == ant2.path).all())
 
-                # Remove the pickle file
-                remove(pickle_filename)
+                # Remove the serialized file
+                remove(serialized_filename)
 
     def test_copy(self):
         """Copy test."""

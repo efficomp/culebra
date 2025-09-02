@@ -26,7 +26,7 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 
-from culebra import DEFAULT_MAX_NUM_ITERS
+from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
 from culebra.trainer.abc import SingleSpeciesTrainer
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
@@ -169,15 +169,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = MyTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

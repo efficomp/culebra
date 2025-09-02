@@ -20,6 +20,8 @@ Culebra requires Python 3. It also depends on the following Python packages:
 * [scikit-posthocs](https://pypi.org/project/scikit-posthocs/)
 * [ucimlrepo](https://pypi.org/project/ucimlrepo/)
 * [imbalanced-learn](https://pypi.org/project/imbalanced-learn/)
+* [dill] (https://pypi.org/project/dill/)
+* [multiprocess] (https://pypi.org/project/multiprocess/)
 
 ## Documentation
 

@@ -25,6 +25,8 @@
 import unittest
 from os import remove
 from copy import copy, deepcopy
+
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.solution.feature_selection import Species, MAX_PROP
 
 
@@ -214,19 +216,19 @@ class SpeciesTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the __setstate__, __reduce__, save_pickle and load_pickle methods.
+        Test the __setstate__, __reduce__, dump and load methods.
         """
         species1 = Species(18)
 
-        pickle_filename = "my_pickle.gz"
-        species1.save_pickle(pickle_filename)
-        species2 = Species.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        species1.dump(serialized_filename)
+        species2 = Species.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(species1, species2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

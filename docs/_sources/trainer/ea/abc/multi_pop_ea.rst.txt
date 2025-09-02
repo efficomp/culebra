@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.load_pickle
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.load
 
 Properties
 ----------
@@ -73,7 +73,7 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.save_pickle
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.dump
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.reset
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.best_solutions

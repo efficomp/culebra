@@ -31,9 +31,11 @@ import io
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies
 from culebra.solution.tsp import Species, Solution
-from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
+from culebra.fitness_function.tsp import PathLength, MultiObjectivePathLength
+from culebra.fitness_function.feature_selection import NumFeats
 
 
 class PathLengthTester(unittest.TestCase):
@@ -41,166 +43,97 @@ class PathLengthTester(unittest.TestCase):
 
     def test_init(self):
         """Test the constructor."""
-        # Try an invalid number of distance matrices. Should fail
-        invalid_number_of_matrices = [
-            (),
-            (
-                [
-                    [0, 1],
-                    [1, 0]
-                ],
-            ),
-            (
-                [
-                    [0, 1],
-                    [1, 0]
-                ],
-                [
-                    [0, 2],
-                    [2, 0]
-                ],
-                [
-                    [0, 3],
-                    [3, 0]
-                ],
-            )
-        ]
-        for matrices in invalid_number_of_matrices:
-            with self.assertRaises(ValueError):
-                DoublePathLength(*matrices)
-
         # Try an invalid values within a matrix. Should fail
-        invalid_matrix_values = [
-            (
-                [
-                    [max, 1],
-                    [1, 0]
-                ],
-            ),
-            (
-                [
-                    [0, 'a'],
-                    [1, 0]
-                ],
-            ),
-            (
-                [
-                    [0, 1],
-                    [1, int]
-                ],
-            )
+        invalid_matrices = [
+            [
+                [max, 1],
+                [1, 0]
+            ],
+            [
+                [0, 'a'],
+                [1, 0]
+            ],
+            [
+                [0, 1],
+                [1, int]
+            ]
         ]
-        for matrices in invalid_matrix_values:
+        for matrix in invalid_matrices:
             with self.assertRaises(ValueError):
-                SinglePathLength(matrices)
+                PathLength(matrix)
 
         # Try non homogeneous matrices. Should fail
         non_homogeneous_matrices = [
-            (
-                [
-                    [0],
-                    [1, 0]
-                ],
-            ),
-            (
-                [
-                    [0, 1],
-                    [1]
-                ],
-            )
+            [
+                [0],
+                [1, 0]
+            ],
+            [
+                [0, 1],
+                [1]
+            ]
         ]
-        for matrices in non_homogeneous_matrices:
+        for matrix in non_homogeneous_matrices:
             with self.assertRaises(ValueError):
-                SinglePathLength(*matrices)
+                PathLength(matrix)
 
         # Try matrices ith an invalid number of dimensions. Should fail
         invalid_dimension_matrices = [
-            (
-                [1, 0],
-            ),
-            (
+            [1, 0],
+            [
                 [
-                    [
-                        [0, 1],
-                        [1, 0]
-                    ],
-                    [
-                        [0, 1],
-                        [1, 0]
-                    ]
+                    [0, 1],
+                    [1, 0]
                 ],
-            )
+                [
+                    [0, 1],
+                    [1, 0]
+                ]
+            ]
         ]
-        for matrices in invalid_dimension_matrices:
+        for matrix in invalid_dimension_matrices:
             with self.assertRaises(ValueError):
-                SinglePathLength(*matrices)
+                PathLength(matrix)
 
         # Try non square matrices. Should fail
         non_square_matrices = [
             [
-                [
-                    [0, 1, 2],
-                    [1, 0, 4]
-                ]
+                [0, 1, 2],
+                [1, 0, 4]
             ],
-            [
-                [
-                    [0, 1],
-                    [1, 2],
-                    [3, 1],
-                    [2, 5]
-                ]
-            ]
-        ]
-        for matrices in non_square_matrices:
-            with self.assertRaises(ValueError):
-                SinglePathLength(*matrices)
-
-        # Try matrices with negative values. Should fail
-        negative_values = [
-            [
-                [
-                    [-1, 1],
-                    [1, 0]
-                ]
-            ],
-            [
-                [
-                    [0, -1],
-                    [1, 0]
-                ]
-            ],
-            [
-                [
-                    [0, 1],
-                    [-1, 0]
-                ]
-            ],
-            [
-                [
-                    [0, 1],
-                    [1, -1]
-                ]
-            ]
-        ]
-        for matrices in negative_values:
-            with self.assertRaises(ValueError):
-                SinglePathLength(*matrices)
-
-        # Try matrices with different shapes. Should fail
-        different_shapes_matrices = [
             [
                 [0, 1],
+                [1, 2],
+                [3, 1],
+                [2, 5]
+            ]
+        ]
+        for matrix in non_square_matrices:
+            with self.assertRaises(ValueError):
+                PathLength(matrix)
+
+        # Try matrices with negative values. Should fail
+        matrices_with_negative_values = [
+            [
+                [-1, 1],
                 [1, 0]
             ],
             [
-                [0, 1, 2],
-                [1, 0, 3],
-                [2, 3, 0]
+                [0, -1],
+                [1, 0]
+            ],
+            [
+                [0, 1],
+                [-1, 0]
+            ],
+            [
+                [0, 1],
+                [1, -1]
             ]
         ]
-        with self.assertRaises(ValueError):
-            DoublePathLength(*different_shapes_matrices)
+        for matrix in matrices_with_negative_values:
+            with self.assertRaises(ValueError):
+                PathLength(matrix)
 
         # Try empty matrices. Should fail
         empty_matrices = [
@@ -222,71 +155,70 @@ class PathLengthTester(unittest.TestCase):
         ]
         for matrices in empty_matrices:
             with self.assertRaises(ValueError):
-                SinglePathLength(*matrices)
+                PathLength(matrix)
 
         # Try valid distance matrices
         valid_matrices = [
             [
-                [
-                    [0, 1],
-                    [1, 0]
-                ],
-                [
-                    [0, 2],
-                    [2, 0]
-                ]
+                [0, 2],
+                [2, 0]
             ],
             [
-                [
-                    [0, 2, 3],
-                    [2, 0, 6],
-                    [3, 6, 0]
-                ],
-                [
-                    [0, 4, 7],
-                    [4, 0, 8],
-                    [7, 8, 0]
-                ]
+                [0, 4, 7],
+                [4, 0, 8],
+                [7, 8, 0]
             ]
         ]
-        for matrices in valid_matrices:
-            fitness_func = DoublePathLength(*matrices)
-            for dist1, dist2 in zip(matrices, fitness_func.distance):
+        for matrix in valid_matrices:
+            fitness_func = PathLength(matrix)
+            for dist1, dist2 in zip(matrix, fitness_func.distance):
                 self.assertTrue(
                     np.all(
                         np.asarray(dist1, dtype=float) == dist2
                     )
                 )
 
+        # Check a valid index
+        valid_index = 3
+        func = PathLength([[0, 1], [1, 0]], index=valid_index)
+        self.assertEqual(func.index, valid_index)
+
+        # Check an invalid index type
+        invalid_index_type = 'a'
+        with self.assertRaises(TypeError):
+            PathLength([[0, 1], [1, 0]], index=invalid_index_type)
+
+        # Check an invalid index valur
+        invalid_index_value = -1
+        with self.assertRaises(ValueError):
+            PathLength([[0, 1], [1, 0]], index=invalid_index_value)
+
+    def test_obj_names(self):
+        """Test the obj_names property."""
+        # Check default parameter values
+        func = PathLength([[0, 1], [1, 0]], index=8)
+        self.assertEqual(func.index, 8)
+        self.assertEqual(func.obj_names, ("Len",))
+
     def test_num_nodes(self):
         """Test the num_nodes property."""
         max_num_nodes = 10
         for num_nodes in range(2, max_num_nodes):
-            fitness_func = SinglePathLength(np.ones((num_nodes, num_nodes)))
+            fitness_func = PathLength(np.ones((num_nodes, num_nodes)))
             self.assertEqual(fitness_func.num_nodes, num_nodes)
 
     def test_heuristic(self):
         """Test the heuristic method."""
-        distance_matrices = (
-            [
-                [0, 1, 2, 3, 4, 5],
-                [1, 0, 6, 7, 8, 9],
-                [2, 6, 0, 1, 2, 3],
-                [3, 7, 1, 0, 4, 5],
-                [4, 8, 2, 4, 0, 6],
-                [5, 9, 3, 5, 6, 0]
-            ],
-            [
-                [0, 4, 1, 5, 8, 9],
-                [4, 0, 2, 6, 3, 1],
-                [1, 2, 0, 4, 5, 7],
-                [5, 6, 4, 0, 2, 6],
-                [8, 3, 5, 2, 0, 4],
-                [9, 1, 7, 6, 4, 0]
-            ]
-        )
+        distance_matrix = [
+            [0, 1, 2, 3, 4, 5],
+            [1, 0, 6, 7, 8, 9],
+            [2, 6, 0, 1, 2, 3],
+            [3, 7, 1, 0, 4, 5],
+            [4, 8, 2, 4, 0, 6],
+            [5, 9, 3, 5, 6, 0]
+        ]
 
-        fitness_func = DoublePathLength(*distance_matrices)
+        fitness_func = PathLength(distance_matrix)
 
         # Try an invalid species. Should fail
         species = BaseSpecies()
@@ -302,40 +234,27 @@ class PathLengthTester(unittest.TestCase):
         heuristic = fitness_func.heuristic(species)
         self.assertIsInstance(heuristic, Sequence)
 
-        # Check the heuristic_matrices
-        for (
-            heur,
-            dist
-        ) in zip(
-            heuristic,
-            fitness_func.distance
-        ):
-            for i in range(species.num_nodes):
-                for j in range(species.num_nodes):
-                    if i == j or i in banned_nodes or j in banned_nodes:
-                        self.assertEqual(heur[i][j], 0)
-                    else:
-                        self.assertAlmostEqual(
-                            heur[i][j],
-                            1/dist[i][j]
-                        )
+        # Check the heuristic_matrix
+        heuristic = fitness_func.heuristic(species)[0]
+        for i in range(species.num_nodes):
+            for j in range(species.num_nodes):
+                if i == j or i in banned_nodes or j in banned_nodes:
+                    self.assertEqual(heuristic[i][j], 0)
+                else:
+                    self.assertAlmostEqual(
+                        heuristic[i][j],
+                        1/distance_matrix[i][j]
+                    )
 
     def test_greddy_solution(self):
         """Test the greedy solution method."""
-        distance_matrices = (
-            [
-                [0, 1, 2],
-                [1, 0, 6],
-                [2, 6, 0]
-            ],
-            [
-                [0, 4, 1],
-                [4, 0, 2],
-                [1, 2, 0]
-            ]
-        )
+        distance_matrix = [
+            [0, 1, 2],
+            [1, 0, 6],
+            [2, 6, 0]
+        ]
 
-        fitness_func = DoublePathLength(*distance_matrices)
+        fitness_func = PathLength(distance_matrix)
         num_nodes = fitness_func.num_nodes
         banned_nodes = [0, fitness_func.num_nodes-1]
         species = Species(
@@ -358,20 +277,13 @@ class PathLengthTester(unittest.TestCase):
 
     def test_evaluate(self):
         """Test the evaluate method."""
-        distance_matrices = (
-            [
-                [0, 1, 2],
-                [1, 0, 6],
-                [2, 6, 0]
-            ],
-            [
-                [0, 4, 1],
-                [4, 0, 2],
-                [1, 2, 0]
-            ]
-        )
+        distance_matrix = [
+            [0, 4, 1],
+            [4, 0, 2],
+            [1, 2, 0]
+        ]
 
-        fitness_func = DoublePathLength(*distance_matrices)
+        fitness_func = PathLength(distance_matrix)
         species = Species(fitness_func.num_nodes)
 
         # Try valid permutations
@@ -380,12 +292,12 @@ class PathLengthTester(unittest.TestCase):
             for _ in repeat(None, times):
                 sol = Solution(
                     species,
-                    DoublePathLength.Fitness,
+                    fitness_func.fitness_cls,
                     np.random.permutation(fitness_func.num_nodes)
                 )
                 fitness = fitness_func.evaluate(sol)
                 self.assertIsInstance(fitness, tuple)
-                self.assertEqual(len(fitness), 2)
+                self.assertEqual(len(fitness), 1)
                 for i in range(fitness_func.num_obj):
                     self.assertGreater(fitness[i], 0)
 
@@ -411,9 +323,9 @@ class PathLengthTester(unittest.TestCase):
                 [2, 1, 0]
             ]
         ]
-        for paths in invalid_path_sequence_lengths:
+        for path in invalid_path_sequence_lengths:
             with self.assertRaises(ValueError):
-                DoublePathLength.fromPath(*paths)
+                PathLength.fromPath(path)
 
         # Try invalid path types. Should fail
         invalid_path_types = [
@@ -427,9 +339,9 @@ class PathLengthTester(unittest.TestCase):
                 Species
             ]
         ]
-        for paths in invalid_path_types:
-            with self.assertRaises(TypeError):
-                SinglePathLength.fromPath(*paths)
+        for path in invalid_path_types:
+            with self.assertRaises(ValueError):
+                PathLength.fromPath(path)
 
         # Try invalid path values. Should fail
         invalid_path_values = [
@@ -446,9 +358,9 @@ class PathLengthTester(unittest.TestCase):
                 [0, 1.5]
             ]
         ]
-        for paths in invalid_path_values:
+        for path in invalid_path_values:
             with self.assertRaises(ValueError):
-                SinglePathLength.fromPath(*paths)
+                PathLength.fromPath(path)
 
         # Try invalid paths. Should fail
         invalid_paths = [
@@ -465,91 +377,64 @@ class PathLengthTester(unittest.TestCase):
                 [0, 3]
             ],
         ]
-        for paths in invalid_paths:
+        for path in invalid_paths:
             with self.assertRaises(ValueError):
-                SinglePathLength.fromPath(*paths)
-
-        # Try paths of different lengths. Should fail
-        different_length_paths = [
-            [0, 1, 2], [0, 1, 2, 3]
-        ]
-
-        with self.assertRaises(ValueError):
-            DoublePathLength.fromPath(*different_length_paths)
+                PathLength.fromPath(path)
 
         # Try valid permutations
         times = 100
         num_nodes = 5
         for _ in repeat(None, times):
-            paths = [
-                np.random.permutation(num_nodes),
-                np.random.permutation(num_nodes)
-            ]
+            path = np.random.permutation(num_nodes)
 
-            fitness_func = DoublePathLength.fromPath(*paths)
+            fitness_func = PathLength.fromPath(path)
 
             # Check the distance
-            for path, dist in zip(paths, fitness_func.distance):
-                for org_idx, org in enumerate(path):
-                    dest_1 = path[org_idx - 1]
-                    dest_2 = path[(org_idx + 1) % num_nodes]
+            dist = fitness_func.distance
+            for org_idx, org in enumerate(path):
+                dest_1 = path[org_idx - 1]
+                dest_2 = path[(org_idx + 1) % num_nodes]
 
-                    for node in range(num_nodes):
-                        if node == dest_1 or node == dest_2:
-                            self.assertEqual(
-                                dist[org][node], 1
-                            )
-                        elif node == org:
-                            self.assertEqual(
-                                dist[org][node], 0
-                            )
-                        else:
-                            self.assertEqual(
-                                dist[org][node], 10
-                            )
+                for node in range(num_nodes):
+                    if node == dest_1 or node == dest_2:
+                        self.assertEqual(
+                            dist[org][node], 1
+                        )
+                    elif node == org:
+                        self.assertEqual(
+                            dist[org][node], 0
+                        )
+                    else:
+                        self.assertEqual(
+                            dist[org][node], 10
+                        )
 
     def test_from_tsplib_parameters(self):
         """Test the parameter parsing part of the fromTSPLib class method."""
-        # Try invalid file sequence lengths. Should fail
-        invalid_file_sequence_lengths = [
-            [],
-            [
-                "problem1.tsp"
-            ],
-            [
-                "problem1.tsp",
-                "problem2.tsp",
-                "problem3.tsp"
-            ]
-        ]
-        for files in invalid_file_sequence_lengths:
-            with self.assertRaises(ValueError):
-                DoublePathLength.fromTSPLib(*files)
-
         # Try invalid buffer types. Should fail
         invalid_buffer_types = [
-            [len],
-            [Species],
-            [4]
+            len,
+            Species,
+            4
         ]
-        for buffers in invalid_buffer_types:
+        for buffer in invalid_buffer_types:
             with self.assertRaises(AttributeError):
-                SinglePathLength.fromTSPLib(*buffers)
+                PathLength.fromTSPLib(buffer)
 
         # Try invalid file paths. Should fail
         invalid_paths = [
-            ["hi"],
-            ["/dev/hi"],
-            ["https://none.none/none"]
+            "hi",
+            "/dev/hi",
+            "https://none.none/none"
         ]
-        for paths in invalid_paths:
+        for path in invalid_paths:
             with self.assertRaises(RuntimeError):
-                SinglePathLength.fromTSPLib(*paths)
+                PathLength.fromTSPLib(path)
 
         # Try an invalid problem type. Should fail
         buffer = """TYPE: new"""
         with self.assertRaises(RuntimeError):
-            SinglePathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try invalid dimensions. Should fail
         invalid_buffers = [
@@ -560,24 +445,24 @@ class PathLengthTester(unittest.TestCase):
             ]
         for buffer in invalid_buffers:
             with self.assertRaises(RuntimeError):
-                SinglePathLength.fromTSPLib(io.StringIO(buffer))
+                PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try an invalid edge weight type. Should fail
         buffer = "EDGE_WEIGHT_TYPE: new"
         with self.assertRaises(RuntimeError):
-            SinglePathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try an invalid edge weight format. Should fail
         buffer = "EDGE_WEIGHT_FORMAT: new"
         with self.assertRaises(RuntimeError):
-            SinglePathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.fromTSPLib(io.StringIO(buffer))
 
     def test_from_tsplib_node_coord_section(self):
         """Test the node coord section parsing of fromTSPLib."""
         # Try a buffer with missing DIMENSION. Should fail
         buffer = "NODE_COORD_SECTION"
         with self.assertRaises(RuntimeError):
-            SinglePathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try buffers with missing nodes. Should fail
         invalid_buffers = [
@@ -597,7 +482,7 @@ class PathLengthTester(unittest.TestCase):
             ]
         for buffer in invalid_buffers:
             with self.assertRaises(RuntimeError):
-                SinglePathLength.fromTSPLib(io.StringIO(buffer))
+                PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try a valid buffer
         buffer = (
@@ -609,11 +494,11 @@ class PathLengthTester(unittest.TestCase):
             "2 1 1\n"
             "3 2 2\n"
         )
-        fitness_func = SinglePathLength.fromTSPLib(io.StringIO(buffer))
+        fitness_func = PathLength.fromTSPLib(io.StringIO(buffer))
         self.assertEqual(fitness_func.num_nodes, 3)
         self.assertTrue(
             np.all(
-                fitness_func.distance[0] ==
+                fitness_func.distance ==
                 np.asarray(
                     [
                         [0, 2, 4],
@@ -625,11 +510,11 @@ class PathLengthTester(unittest.TestCase):
         )
 
         # Try a valid local file
-        fitness_func = SinglePathLength.fromTSPLib("test.tsp")
+        fitness_func = PathLength.fromTSPLib("test.tsp")
         self.assertEqual(fitness_func.num_nodes, 5)
         self.assertTrue(
             np.all(
-                fitness_func.distance[0] ==
+                fitness_func.distance ==
                 np.asarray(
                     [
                         [0, 1, 2, 3, 4],
@@ -643,14 +528,14 @@ class PathLengthTester(unittest.TestCase):
         )
 
         # Try a valid url
-        fitness_func = SinglePathLength.fromTSPLib(
+        fitness_func = PathLength.fromTSPLib(
             "https://raw.githubusercontent.com/mastqe/tsplib/master/"
             "kroA100.tsp"
         )
         expected_num_nodes = 100
         self.assertEqual(fitness_func.num_nodes, expected_num_nodes)
         self.assertEqual(
-            fitness_func.distance[0].shape,
+            fitness_func.distance.shape,
             (expected_num_nodes, expected_num_nodes)
         )
 
@@ -667,21 +552,21 @@ class PathLengthTester(unittest.TestCase):
             "2 1 1\n"
         )
         with self.assertRaises(RuntimeError):
-            SinglePathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try a full matrix with an excessive number of values. Should fail
         buffer += "1 2 3 4"
         with self.assertRaises(RuntimeError):
-            SinglePathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.fromTSPLib(io.StringIO(buffer))
 
         # Try a correct full matrix
-        fitness_func = SinglePathLength.fromTSPLib(
+        fitness_func = PathLength.fromTSPLib(
             "https://raw.githubusercontent.com/mastqe/tsplib/master/bays29.tsp"
         )
         expected_num_nodes = 29
         self.assertEqual(fitness_func.num_nodes, expected_num_nodes)
         self.assertEqual(
-            fitness_func.distance[0].shape,
+            fitness_func.distance.shape,
             (expected_num_nodes, expected_num_nodes)
         )
 
@@ -697,7 +582,7 @@ class PathLengthTester(unittest.TestCase):
             "    8 9 \n"
             "      1 \n"
         )
-        upper_row_fitness_func = SinglePathLength.fromTSPLib(
+        upper_row_fitness_func = PathLength.fromTSPLib(
             io.StringIO(upper_row_buffer)
         )
         expected_num_nodes = 5
@@ -706,7 +591,7 @@ class PathLengthTester(unittest.TestCase):
             expected_num_nodes
         )
         self.assertEqual(
-            upper_row_fitness_func.distance[0].shape,
+            upper_row_fitness_func.distance.shape,
             (expected_num_nodes, expected_num_nodes)
         )
 
@@ -722,7 +607,7 @@ class PathLengthTester(unittest.TestCase):
             "3 6 8   \n"
             "4 7 9 1 \n"
         )
-        lower_row_fitness_func = SinglePathLength.fromTSPLib(
+        lower_row_fitness_func = PathLength.fromTSPLib(
             io.StringIO(lower_row_buffer)
         )
         self.assertEqual(
@@ -730,13 +615,13 @@ class PathLengthTester(unittest.TestCase):
             expected_num_nodes
         )
         self.assertEqual(
-            lower_row_fitness_func.distance[0].shape,
+            lower_row_fitness_func.distance.shape,
             (expected_num_nodes, expected_num_nodes)
         )
         self.assertTrue(
             np.all(
-                upper_row_fitness_func.distance[0] ==
-                lower_row_fitness_func.distance[0]
+                upper_row_fitness_func.distance ==
+                lower_row_fitness_func.distance
             )
         )
 
@@ -753,7 +638,7 @@ class PathLengthTester(unittest.TestCase):
             "      9 1 \n"
             "        9 \n"
         )
-        upper_diag_row_fitness_func = SinglePathLength.fromTSPLib(
+        upper_diag_row_fitness_func = PathLength.fromTSPLib(
             io.StringIO(upper_diag_row_buffer)
         )
         expected_num_nodes = 5
@@ -762,7 +647,7 @@ class PathLengthTester(unittest.TestCase):
             expected_num_nodes
         )
         self.assertEqual(
-            upper_diag_row_fitness_func.distance[0].shape,
+            upper_diag_row_fitness_func.distance.shape,
             (expected_num_nodes, expected_num_nodes)
         )
 
@@ -779,7 +664,7 @@ class PathLengthTester(unittest.TestCase):
             "3 6 8 9   \n"
             "4 7 9 1 9 \n"
         )
-        lower_diag_row_fitness_func = SinglePathLength.fromTSPLib(
+        lower_diag_row_fitness_func = PathLength.fromTSPLib(
             io.StringIO(lower_diag_row_buffer)
         )
         self.assertEqual(
@@ -787,20 +672,20 @@ class PathLengthTester(unittest.TestCase):
             expected_num_nodes
         )
         self.assertEqual(
-            lower_diag_row_fitness_func.distance[0].shape,
+            lower_diag_row_fitness_func.distance.shape,
             (expected_num_nodes, expected_num_nodes)
         )
         self.assertTrue(
             np.all(
-                upper_diag_row_fitness_func.distance[0] ==
-                lower_diag_row_fitness_func.distance[0]
+                upper_diag_row_fitness_func.distance ==
+                lower_diag_row_fitness_func.distance
             )
         )
 
     def test_copy(self):
         """Test the __copy__ method."""
         num_nodes = 5
-        func1 = SinglePathLength.fromPath(np.random.permutation(num_nodes))
+        func1 = PathLength.fromPath(np.random.permutation(num_nodes))
         func2 = copy(func1)
 
         # Copy only copies the first level (func1 != func2)
@@ -812,7 +697,7 @@ class PathLengthTester(unittest.TestCase):
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
         num_nodes = 5
-        func1 = SinglePathLength.fromPath(np.random.permutation(num_nodes))
+        func1 = PathLength.fromPath(np.random.permutation(num_nodes))
         func2 = deepcopy(func1)
 
         # Check the copy
@@ -824,20 +709,17 @@ class PathLengthTester(unittest.TestCase):
         Test the __setstate__ and __reduce__ methods.
         """
         num_nodes = 5
-        func1 = DoublePathLength.fromPath(
-            np.random.permutation(num_nodes),
-            np.random.permutation(num_nodes)
-        )
+        func1 = PathLength.fromPath(np.random.permutation(num_nodes))
 
-        pickle_filename = "my_pickle.gz"
-        func1.save_pickle(pickle_filename)
-        func2 = DoublePathLength.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        func1.dump(serialized_filename)
+        func2 = PathLength.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(func1, func2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def _check_deepcopy(self, func1, func2):
         """Check if *func1* is a deepcopy of *func2*.
@@ -856,11 +738,64 @@ class PathLengthTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         num_nodes = 5
-        fitness_func = SinglePathLength.fromPath(
-            np.random.permutation(num_nodes)
-        )
+        fitness_func = PathLength.fromPath(np.random.permutation(num_nodes))
         self.assertIsInstance(repr(fitness_func), str)
         self.assertIsInstance(str(fitness_func), str)
+
+
+class MultiObjectivePathLengthTester(unittest.TestCase):
+    """Test the MultiObjectivePathLength class."""
+
+    def test_init(self):
+        """Test the constructor."""
+        num_nodes = 5
+
+        # Try an invalid objective. Should fail ...
+        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj2 = NumFeats()
+        with self.assertRaises(ValueError):
+            MultiObjectivePathLength(obj1, obj2)
+
+        # Try objectives with different number of nodes. Should fail ...
+        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj2 = PathLength.fromPath(np.random.permutation(num_nodes + 1))
+        with self.assertRaises(ValueError):
+            MultiObjectivePathLength(obj1, obj2)
+
+        # Try a function without objectives
+        func = MultiObjectivePathLength()
+        self.assertEqual(func.num_obj, 0)
+
+        # Try a function with  two objectives
+        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
+        func = MultiObjectivePathLength(obj1, obj2)
+        self.assertEqual(func.num_obj, 2)
+        self.assertEqual(obj1, func.objectives[0])
+        self.assertEqual(obj2, func.objectives[1])
+
+    def test_obj_names(self):
+        """Test the obj_names property."""
+        num_nodes = 5
+        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
+        func = MultiObjectivePathLength(obj1, obj2)
+        self.assertEqual(func.obj_names, ('Len_0', 'Len_1'))
+
+    def test_heuristic(self):
+        """Test the heuristic method."""
+        num_nodes = 5
+        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
+        func = MultiObjectivePathLength(obj1, obj2)
+
+        species = Species(func.num_nodes, banned_nodes=[1])
+        heur1 = obj1.heuristic(species)
+        heur2 = obj2.heuristic(species)
+
+        self.assertEqual(len(func.heuristic(species)), 2)
+        self.assertTrue((func.heuristic(species)[0] == heur1).all())
+        self.assertTrue((func.heuristic(species)[1] == heur2).all())
 
 
 if __name__ == '__main__':

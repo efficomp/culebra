@@ -24,19 +24,29 @@
 
 import unittest
 
+from os import remove
+from copy import copy, deepcopy
+
+from sklearn.metrics import cohen_kappa_score
+
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
+from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
+
+from culebra.fitness_function.feature_selection.abc import (
+    FSClassificationScorer
+)
+
+
 from culebra.fitness_function.feature_selection import (
     NumFeats,
     FeatsProportion,
     KappaIndex,
     Accuracy,
-    KappaNumFeats,
-    AccuracyNumFeats,
-    KappaFeatsProp,
-    AccuracyFeatsProp
+    FSMultiObjectiveDatasetScorer
 )
 from culebra.tools import Dataset
 
@@ -51,6 +61,35 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 species = Species(num_feats=dataset.num_feats)
 
 
+class MyFSClassificationScorer(FSClassificationScorer):
+    """Dummy implementation of a fitness function."""
+
+    @property
+    def obj_weights(self):
+        """Objective weights."""
+        return (1, )
+
+    @property
+    def obj_names(self):
+        """Objective names."""
+        return ("Kappa",)
+
+    _score = cohen_kappa_score
+
+
+class AnotherSingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
+    """Dummy implementation of a fitness function."""
+
+    @property
+    def obj_weights(self):
+        """Objective weights."""
+        return (1, )
+
+    def evaluate(self, sol, index, representatives):
+        """Evaluate a solution."""
+        return (2,)
+
+
 class NumFeatsTester(unittest.TestCase):
     """Test NumFeats."""
 
@@ -62,7 +101,7 @@ class NumFeatsTester(unittest.TestCase):
         func = self.FitnessFunc()
 
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         sol.fitness.values = func.evaluate(sol)
 
@@ -93,7 +132,7 @@ class FeatsProportionTester(unittest.TestCase):
         func = self.FitnessFunc()
 
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         # Check that the proportion of selected features is in [0, 1]
         sol.fitness.values = func.evaluate(sol)
@@ -115,10 +154,9 @@ class KappaIndexTester(unittest.TestCase):
 
         # Fitness function to be tested
         func = self.FitnessFunc(training_data)
-
-        func.test_prop = None
         self.assertEqual(func.is_noisy, False)
-        func.test_prop = 0.5
+
+        func = self.FitnessFunc(training_data, test_prop=0.5)
         self.assertEqual(func.is_noisy, True)
 
         func = self.FitnessFunc(training_data, test_data)
@@ -132,7 +170,7 @@ class KappaIndexTester(unittest.TestCase):
         func = self.FitnessFunc(training_data)
 
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         # Check that the Kappa index is in [-1, 1]
 
@@ -173,7 +211,7 @@ class AccuracyTester(unittest.TestCase):
         func = self.FitnessFunc(training_data)
 
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         # Check that the accuracy is in [0, 1]
 
@@ -198,116 +236,136 @@ class AccuracyTester(unittest.TestCase):
     test_repr = KappaIndexTester.test_repr
 
 
-class KappaNumFeatsTester(unittest.TestCase):
-    """Test KappaNumFeats."""
+class FSMultiObjectiveDatasetScorerTester(unittest.TestCase):
+    """Test FSMultiObjectiveDatasetScorer."""
 
-    FitnessFunc = KappaNumFeats
+    def test_init(self):
+        """Test the constructor."""
+        # Objectives
+        obj0 = MyFSClassificationScorer(dataset)
+        obj1 = AnotherSingleObjectiveFitnessFunction()
 
-    def test_evaluate(self):
-        """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        # Try with only an objective, that is not valid
+        with self.assertRaises(ValueError):
+            FSMultiObjectiveDatasetScorer(obj1)
 
-        # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        # Try with only an objective
+        func = FSMultiObjectiveDatasetScorer(obj0)
+        self.assertEqual(func.num_obj, 1)
+        self.assertEqual(func.objectives, [obj0])
+        self.assertEqual(func.obj_weights, obj0.obj_weights)
+        self.assertEqual(func.obj_names, obj0.obj_names)
+        self.assertEqual(obj0.index, 0)
 
-        # Evaluate the solution
-        sol.fitness.values = func.evaluate(sol)
+        # Try a bi-objective fitness function
+        func = FSMultiObjectiveDatasetScorer(obj0, obj1)
 
-        # Check that Kappa is in [-1, 1]
-        self.assertGreaterEqual(sol.fitness.values[0], -1)
-        self.assertLessEqual(sol.fitness.values[0], 1)
+        self.assertEqual(func.num_obj, 2)
+        self.assertEqual(func.objectives, [obj0, obj1])
+        self.assertEqual(
+            func.obj_weights, obj0.obj_weights + obj1.obj_weights
+        )
+        self.assertEqual(
+            func.obj_names, obj0.obj_names + obj1.obj_names
+        )
+        self.assertEqual(obj0.index, 0)
+        self.assertEqual(obj1.index, 1)
 
-        # Check the number of features
-        self.assertEqual(sol.fitness.values[1], sol.num_feats)
+    def test_num_nodes(self):
+        """Test the num_nodes property."""
+        func = FSMultiObjectiveDatasetScorer(
+            MyFSClassificationScorer(dataset),
+            AnotherSingleObjectiveFitnessFunction()
+        )
 
-    test_is_noisy = KappaIndexTester.test_is_noisy
-    test_repr = KappaIndexTester.test_repr
+        self.assertEqual(func.num_nodes, dataset.num_feats)
 
+    def test_heuristic(self):
+        """Test the heuristic method."""
+        obj0 = MyFSClassificationScorer(dataset)
+        obj1 = AnotherSingleObjectiveFitnessFunction()
+        func = FSMultiObjectiveDatasetScorer(obj0, obj1)
+        num_feats = 10
+        min_feat = 2
+        max_feat = 8
+        species = Species(
+            num_feats=num_feats, min_feat=min_feat, max_feat=max_feat
+        )
+        self.assertTrue(
+            (func.heuristic(species)[0] == obj0.heuristic(species)[0]).all()
+        )
 
-class AccuracyNumFeatsTester(unittest.TestCase):
-    """Test AccuracyNumFeats."""
+    def test_copy(self):
+        """Test the __copy__ method."""
+        func1 = FSMultiObjectiveDatasetScorer(
+            MyFSClassificationScorer(dataset),
+            AnotherSingleObjectiveFitnessFunction()
+        )
+        func2 = copy(func1)
 
-    FitnessFunc = AccuracyNumFeats
+        # Copy only copies the first level (func1 != func2)
+        self.assertNotEqual(id(func1), id(func2))
 
-    def test_evaluate(self):
-        """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        # The objects attributes are shared
+        self.assertEqual(id(func1.objectives), id(func2.objectives))
 
-        # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+    def test_deepcopy(self):
+        """Test the __deepcopy__ method."""
+        func1 = FSMultiObjectiveDatasetScorer(
+            MyFSClassificationScorer(dataset),
+            AnotherSingleObjectiveFitnessFunction()
+        )
+        func2 = deepcopy(func1)
 
-        # Evaluate the solution
-        sol.fitness.values = func.evaluate(sol)
+        # Check the copy
+        self._check_deepcopy(func1, func2)
 
-        # Check that accuracy is in [0, 1]
-        self.assertGreaterEqual(sol.fitness.values[0], 0)
-        self.assertLessEqual(sol.fitness.values[0], 1)
+    def test_serialization(self):
+        """Serialization test."""
+        func1 = FSMultiObjectiveDatasetScorer(
+            MyFSClassificationScorer(dataset),
+            AnotherSingleObjectiveFitnessFunction()
+        )
 
-        # Check the number of features
-        self.assertEqual(sol.fitness.values[1], sol.num_feats)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        func1.dump(serialized_filename)
+        func2 = FSMultiObjectiveDatasetScorer.load(serialized_filename)
 
-    test_is_noisy = KappaIndexTester.test_is_noisy
-    test_repr = KappaIndexTester.test_repr
+        # Check the serialization
+        self._check_deepcopy(func1, func2)
 
+        # Remove the serialized file
+        remove(serialized_filename)
 
-class KappaFeatsPropTester(unittest.TestCase):
-    """Test KappaFeatsProp."""
+    def test_repr(self):
+        """Test the repr and str dunder methods."""
+        func = FSMultiObjectiveDatasetScorer(
+            MyFSClassificationScorer(dataset),
+            AnotherSingleObjectiveFitnessFunction()
+        )
+        self.assertIsInstance(repr(func), str)
+        self.assertIsInstance(str(func), str)
 
-    FitnessFunc = KappaFeatsProp
+    def _check_deepcopy(self, func1, func2):
+        """Check if *func1* is a deepcopy of *func2*.
 
-    def test_evaluate(self):
-        """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
+        :param func1: The first fitness function
+        :type func1:
+            :py:class:`~culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorerTester`
+        :param func2: The second fitness function
+        :type func2:
+            :py:class:`~culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorerTester`
+        """
+        # Copies all the levels
+        self.assertNotEqual(id(func1), id(func2))
+        self.assertNotEqual(id(func1.objectives), id(func2.objectives))
 
-        # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
-
-        # Evaluate the solution
-        sol.fitness.values = func.evaluate(sol)
-
-        # Check that Kappa is in [-1, 1]
-        self.assertGreaterEqual(sol.fitness.values[0], -1)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-
-        # Check that the proportion of selected features is in [0, 1]
-        sol.fitness.values = func.evaluate(sol)
-        self.assertGreaterEqual(sol.fitness.values[1], 0)
-        self.assertLessEqual(sol.fitness.values[1], 1)
-
-    test_is_noisy = KappaIndexTester.test_is_noisy
-    test_repr = KappaIndexTester.test_repr
-
-
-class AccuracyFeatsPropTester(unittest.TestCase):
-    """Test AccuracyFeatsProp."""
-
-    FitnessFunc = AccuracyFeatsProp
-
-    def test_evaluate(self):
-        """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset)
-
-        # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
-
-        # Evaluate the solution
-        sol.fitness.values = func.evaluate(sol)
-
-        # Check that accuracy is in [0, 1]
-        self.assertGreaterEqual(sol.fitness.values[0], 0)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-
-        # Check that the proportion of selected features is in [0, 1]
-        sol.fitness.values = func.evaluate(sol)
-        self.assertGreaterEqual(sol.fitness.values[1], 0)
-        self.assertLessEqual(sol.fitness.values[1], 1)
-
-    test_is_noisy = KappaIndexTester.test_is_noisy
-    test_repr = KappaIndexTester.test_repr
+        self.assertTrue(
+            (
+                func1.objectives[0].training_data.inputs ==
+                func2.objectives[0].training_data.inputs
+            ).all()
+        )
 
 
 if __name__ == '__main__':

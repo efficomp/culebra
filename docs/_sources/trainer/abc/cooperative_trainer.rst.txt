@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.load_pickle
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.load
 
 Properties
 ----------
@@ -79,7 +79,7 @@ Private static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.save_pickle
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.dump
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.reset
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.evaluate
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.best_solutions

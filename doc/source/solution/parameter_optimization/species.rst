@@ -26,7 +26,7 @@
 
 Class methods
 -------------
-.. automethod:: culebra.solution.parameter_optimization.Species.load_pickle
+.. automethod:: culebra.solution.parameter_optimization.Species.load
 
 Properties
 ----------
@@ -38,5 +38,5 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.parameter_optimization.Species.save_pickle
+.. automethod:: culebra.solution.parameter_optimization.Species.dump
 .. automethod:: culebra.solution.parameter_optimization.Species.is_member

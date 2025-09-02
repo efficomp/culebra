@@ -26,9 +26,9 @@
 
 Class methods
 -------------
-.. automethod:: culebra.abc.Species.load_pickle
+.. automethod:: culebra.abc.Species.load
 
 Methods
 -------
-.. automethod:: culebra.abc.Species.save_pickle
+.. automethod:: culebra.abc.Species.dump
 .. automethod:: culebra.abc.Species.is_member

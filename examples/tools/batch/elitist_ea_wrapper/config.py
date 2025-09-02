@@ -22,9 +22,34 @@
 from collections import Counter
 
 from culebra.solution.parameter_optimization import Species, Individual
-from culebra.fitness_function.svc_optimization import KappaC
+from culebra.fitness_function import MultiObjectiveFitnessFunction
+from culebra.fitness_function.svc_optimization import (
+    KappaIndex,
+    C
+)
 from culebra.trainer.ea import ElitistEA
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaC(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return MultiObjectiveFitnessFunction(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        C()
+    )
 
 
 # Dataset
@@ -44,7 +69,7 @@ training_data = training_data.oversample(random_seed=0)
 training_fitness_function = KappaC(training_data=training_data, cv_folds=5)
 
 # Set the training fitness similarity threshold
-training_fitness_function.set_fitness_thresholds(0.001)
+training_fitness_function.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)

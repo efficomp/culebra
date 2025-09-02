@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.load_pickle
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.load
 
 Properties
 ----------
@@ -73,7 +73,7 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.save_pickle
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.dump
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.reset
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.evaluate
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.best_solutions

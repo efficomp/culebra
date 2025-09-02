@@ -24,37 +24,20 @@
 
 .. autoclass:: culebra.abc.FitnessFunction
 
-Class attributes
-----------------
-.. class:: culebra.abc.FitnessFunction.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.abc.FitnessFunction.evaluate` method, within a
-    :py:class:`~culebra.abc.Solution`.
-
-    This class must be implemented within all the
-    :py:class:`~culebra.abc.FitnessFunction` subclasses, as a subclass of the
-    :py:class:`~culebra.abc.Fitness` class, to define its three class
-    attributes (:py:attr:`~culebra.abc.Fitness.weights`,
-    :py:attr:`~culebra.abc.Fitness.names`, and
-    :py:attr:`~culebra.abc.Fitness.thresholds`) according to the fitness
-    function.
-
 Class methods
 -------------
-.. automethod:: culebra.abc.FitnessFunction.load_pickle
-.. automethod:: culebra.abc.FitnessFunction.set_fitness_thresholds
-.. automethod:: culebra.abc.FitnessFunction.get_fitness_objective_threshold
-.. automethod:: culebra.abc.FitnessFunction.set_fitness_objective_threshold
+.. automethod:: culebra.abc.FitnessFunction.load
 
 Properties
 ----------
-.. autoproperty:: culebra.abc.FitnessFunction.is_noisy
 .. autoproperty:: culebra.abc.FitnessFunction.num_obj
-.. autoproperty:: culebra.abc.FitnessFunction.num_nodes
+.. autoproperty:: culebra.abc.FitnessFunction.obj_weights
+.. autoproperty:: culebra.abc.FitnessFunction.obj_names
+.. autoproperty:: culebra.abc.FitnessFunction.obj_thresholds
+.. autoproperty:: culebra.abc.FitnessFunction.fitness_cls
+.. autoproperty:: culebra.abc.FitnessFunction.is_noisy
 
 Methods
 -------
-.. automethod:: culebra.abc.FitnessFunction.save_pickle
-.. automethod:: culebra.abc.FitnessFunction.heuristic
+.. automethod:: culebra.abc.FitnessFunction.dump
 .. automethod:: culebra.abc.FitnessFunction.evaluate

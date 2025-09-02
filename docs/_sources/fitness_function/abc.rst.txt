@@ -27,9 +27,5 @@
 .. toctree::
     :hidden:
 
-    DatasetScorer <abc/dataset_scorer>
-    ClassificationScorer <abc/classification_scorer>
-    ClassificationFSScorer <abc/classification_fs_scorer>
-    RBFSVCScorer <abc/rbf_svc_scorer>
-    CooperativeFSScorer <abc/cooperative_fs_scorer>
-    CooperativeRBFSVCFSScorer <abc/cooperative_rbf_svc_fs_scorer>
+    ACOFitnessFunction <abc/aco_fitness_function>
+    SingleObjectiveFitnessFunction <abc/single_objective_fitness_function>

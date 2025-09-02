@@ -30,7 +30,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.solution.feature_selection.Solution.load_pickle
+.. automethod:: culebra.solution.feature_selection.Solution.load
 
 Properties
 ----------
@@ -43,7 +43,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.Solution.save_pickle
+.. automethod:: culebra.solution.feature_selection.Solution.dump
 .. automethod:: culebra.solution.feature_selection.Solution.dominates
 .. automethod:: culebra.solution.feature_selection.Solution.delete_fitness
 

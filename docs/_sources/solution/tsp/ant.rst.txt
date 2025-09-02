@@ -30,7 +30,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.solution.tsp.Ant.load_pickle
+.. automethod:: culebra.solution.tsp.Ant.load
 
 Properties
 ----------
@@ -42,7 +42,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.tsp.Ant.save_pickle
+.. automethod:: culebra.solution.tsp.Ant.dump
 .. automethod:: culebra.solution.tsp.Ant.append
 .. automethod:: culebra.solution.tsp.Ant.discard
 .. automethod:: culebra.solution.tsp.Ant.dominates

@@ -29,7 +29,9 @@ from copy import copy, deepcopy
 from collections import Counter
 
 from pandas import DataFrame
+from sklearn.svm import SVC
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import FitnessFunction, Trainer
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
@@ -39,7 +41,12 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.trainer.ea import ElitistEA
 from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import (
@@ -49,6 +56,28 @@ from culebra.tools import (
     DEFAULT_RUN_SCRIPT_FILENAME,
     DEFAULT_RESULTS_BASENAME
 )
+
+SCRIPT_FILE_EXTENSION = ".py"
+"""File extension for python scripts."""
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -63,25 +92,22 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # of samples
 training_data = training_data.oversample(random_seed=0)
 
+
 # Training fitness function
-training_fitness_function = KappaNumFeatsC(
-    training_data=training_data, cv_folds=5
-)
+training_fitness_function = KappaNumFeatsC(training_data, cv_folds=5)
+
+# Set the training fitness similarity threshold
+training_fitness_function.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-untie_best_fitness_function = KappaNumFeatsC(
-    training_data=training_data,
-    cv_folds=max_folds
-)
+untie_best_fitness_function = KappaNumFeatsC(training_data, cv_folds=max_folds)
 
 # Test fitness function
-test_fitness_function = KappaNumFeatsC(
-    training_data=training_data, test_data=test_data
-)
+test_fitness_function = KappaNumFeatsC(training_data, test_data)
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(
@@ -222,7 +248,7 @@ class EvaluationTester(unittest.TestCase):
         with self.assertRaises(ValueError):
             MyEvaluation.from_config("bad_config.txt")
         with self.assertRaises(RuntimeError):
-            MyEvaluation.from_config("bad_config.py")
+            MyEvaluation.from_config("bad_config" + SCRIPT_FILE_EXTENSION)
 
         # Generate the evaluation
         evaluation = MyEvaluation.from_config()
@@ -272,6 +298,28 @@ class EvaluationTester(unittest.TestCase):
 
     def test_generate_run_script(self):
         """Test the generate_script method."""
+        # Try an invalid filename. Should fail...
+        with self.assertRaises(TypeError):
+            MyEvaluation.generate_run_script(5)
+
+        # Try an invalid config_filename. Should fail...
+        with self.assertRaises(ValueError):
+            MyEvaluation.generate_run_script(
+                config_filename="no_extension_filename"
+            )
+
+        # Try an invalid extension for config_filename. Should fail...
+        with self.assertRaises(ValueError):
+            MyEvaluation.generate_run_script(
+                config_filename="filename.bad_ext"
+            )
+
+        # Try an invalid extension for config_filename. Should fail...
+        with self.assertRaises(ValueError):
+            MyEvaluation.generate_run_script(
+                run_script_filename="filename.bad_ext"
+            )
+
         # Generate the script with a default name
         MyEvaluation.generate_run_script()
 
@@ -281,8 +329,30 @@ class EvaluationTester(unittest.TestCase):
         # Remove the file
         remove(DEFAULT_RUN_SCRIPT_FILENAME)
 
-        # Try a custom name
-        my_run_script_filename = "my_script.py"
+        # Try with a custom configuration script filename
+        MyEvaluation.generate_run_script(
+            config_filename="custom-config" + SCRIPT_FILE_EXTENSION
+        )
+
+        # Check that file exists
+        self.assertTrue(exists(DEFAULT_RUN_SCRIPT_FILENAME))
+
+        # Remove the file
+        remove(DEFAULT_RUN_SCRIPT_FILENAME)
+
+        # Try with a custom configuration serialized configuration
+        MyEvaluation.generate_run_script(
+            config_filename="custom-config" + SERIALIZED_FILE_EXTENSION
+        )
+
+        # Check that file exists
+        self.assertTrue(exists(DEFAULT_RUN_SCRIPT_FILENAME))
+
+        # Remove the file
+        remove(DEFAULT_RUN_SCRIPT_FILENAME)
+
+        # Try a custom script name
+        my_run_script_filename = "my_script" + SCRIPT_FILE_EXTENSION
         MyEvaluation.generate_run_script(
             run_script_filename=my_run_script_filename
         )
@@ -310,12 +380,12 @@ class EvaluationTester(unittest.TestCase):
         self.assertIsInstance(evaluation.results, Results)
 
         # Check that backup and results files exist
-        self.assertTrue(evaluation.results_pickle_filename)
-        self.assertTrue(evaluation.results_excel_filename)
+        self.assertTrue(evaluation.serialized_results_filename)
+        self.assertTrue(evaluation.excel_results_filename)
 
         # Remove the files
-        remove(evaluation.results_pickle_filename)
-        remove(evaluation.results_excel_filename)
+        remove(evaluation.serialized_results_filename)
+        remove(evaluation.excel_results_filename)
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Evaluation.__copy__` method."""
@@ -335,8 +405,8 @@ class EvaluationTester(unittest.TestCase):
         self.assertEqual(id(evaluation1._results), id(evaluation2._results))
 
         # Remove the files
-        remove(evaluation1.results_pickle_filename)
-        remove(evaluation1.results_excel_filename)
+        remove(evaluation1.serialized_results_filename)
+        remove(evaluation1.excel_results_filename)
 
     def test_deepcopy(self):
         """Test :py:meth:`~culebra.tools.Evaluation.__deepcopy__`."""
@@ -352,8 +422,8 @@ class EvaluationTester(unittest.TestCase):
         self._check_deepcopy(evaluation1, evaluation2)
 
         # Remove the files
-        remove(evaluation1.results_pickle_filename)
-        remove(evaluation1.results_excel_filename)
+        remove(evaluation1.serialized_results_filename)
+        remove(evaluation1.excel_results_filename)
 
     def test_serialization(self):
         """Serialization test.
@@ -368,19 +438,19 @@ class EvaluationTester(unittest.TestCase):
         )
         evaluation1.run()
 
-        pickle_filename = "my_pickle.gz"
-        evaluation1.save_pickle(pickle_filename)
-        evaluation2 = MyEvaluation.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        evaluation1.dump(serialized_filename)
+        evaluation2 = MyEvaluation.load(serialized_filename)
 
         # Check the copy
         self._check_deepcopy(evaluation1, evaluation2)
 
         # Remove the result files
-        remove(evaluation1.results_pickle_filename)
-        remove(evaluation1.results_excel_filename)
+        remove(evaluation1.serialized_results_filename)
+        remove(evaluation1.excel_results_filename)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def _check_deepcopy(self, evaluation1, evaluation2):
         """Check if *evaluation1* is a deepcopy of *evaluation2*.

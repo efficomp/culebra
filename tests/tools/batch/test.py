@@ -26,12 +26,13 @@ import unittest
 from os import remove
 from os.path import isfile, exists, join
 from shutil import rmtree
-from copy import copy, deepcopy
 from collections import Counter
+from copy import copy, deepcopy
 
 from pandas import DataFrame
+from sklearn.svm import SVC
 
-from culebra import PICKLE_FILE_EXTENSION
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import FitnessFunction, Trainer
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
@@ -41,17 +42,41 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.trainer.ea import ElitistEA
 from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import (
     Dataset,
-    Results,
     Batch,
+    Results,
     DEFAULT_NUM_EXPERIMENTS,
     DEFAULT_RESULTS_BASENAME,
     DEFAULT_RUN_SCRIPT_FILENAME
 )
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -66,10 +91,12 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # of samples
 training_data = training_data.oversample(random_seed=0)
 
+
 # Training fitness function
-my_training_fitness_function = KappaNumFeatsC(
-    training_data=training_data, cv_folds=5
-)
+my_training_fitness_function = KappaNumFeatsC(training_data, cv_folds=5)
+
+# Set the training fitness similarity threshold
+my_training_fitness_function.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
@@ -77,14 +104,12 @@ max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
 my_untie_best_fitness_function = KappaNumFeatsC(
-    training_data=training_data,
-    cv_folds=max_folds
+    training_data, cv_folds=max_folds
 )
 
 # Test fitness function
-my_test_fitness_function = KappaNumFeatsC(
-    training_data=training_data, test_data=test_data
-)
+my_test_fitness_function = KappaNumFeatsC(training_data, test_data)
+
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(
@@ -241,9 +266,11 @@ class BatchTester(unittest.TestCase):
         )
         batch.setup()
 
-        experiment_filename = batch.experiment_basename + PICKLE_FILE_EXTENSION
+        experiment_filename = (
+            batch.experiment_basename + SERIALIZED_FILE_EXTENSION
+        )
 
-        # Check that the experimetn has been pickled
+        # Check that the experimetn has been serialized
         self.assertTrue(isfile(experiment_filename))
 
         # Check the experiment folders
@@ -290,12 +317,12 @@ class BatchTester(unittest.TestCase):
             rmtree(exp)
 
         # Check the result files
-        isfile(batch.results_pickle_filename)
-        isfile(batch.results_excel_filename)
+        isfile(batch.serialized_results_filename)
+        isfile(batch.excel_results_filename)
 
         # Remove the result files
-        remove(batch.results_pickle_filename)
-        remove(batch.results_excel_filename)
+        remove(batch.serialized_results_filename)
+        remove(batch.excel_results_filename)
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Batch.__copy__` method."""
@@ -325,8 +352,8 @@ class BatchTester(unittest.TestCase):
             rmtree(exp)
 
         # Remove the result files
-        remove(batch1.results_pickle_filename)
-        remove(batch1.results_excel_filename)
+        remove(batch1.serialized_results_filename)
+        remove(batch1.excel_results_filename)
 
     def test_deepcopy(self):
         """Test :py:meth:`~culebra.tools.Batch.__deepcopy__`."""
@@ -350,8 +377,8 @@ class BatchTester(unittest.TestCase):
             rmtree(exp)
 
         # Remove the result files
-        remove(batch1.results_pickle_filename)
-        remove(batch1.results_excel_filename)
+        remove(batch1.serialized_results_filename)
+        remove(batch1.excel_results_filename)
 
     def test_serialization(self):
         """Serialization test.
@@ -369,9 +396,9 @@ class BatchTester(unittest.TestCase):
         )
         batch1.run()
 
-        pickle_filename = "my_pickle.gz"
-        batch1.save_pickle(pickle_filename)
-        batch2 = Batch.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        batch1.dump(serialized_filename)
+        batch2 = Batch.load(serialized_filename)
 
         # Check the copy
         self._check_deepcopy(batch1, batch2)
@@ -381,11 +408,11 @@ class BatchTester(unittest.TestCase):
             rmtree(exp)
 
         # Remove the result files
-        remove(batch1.results_pickle_filename)
-        remove(batch1.results_excel_filename)
+        remove(batch1.serialized_results_filename)
+        remove(batch1.excel_results_filename)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def _check_deepcopy(self, batch1, batch2):
         """Check if *batch1* is a deepcopy of *batch2*.

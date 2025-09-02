@@ -27,8 +27,11 @@ from os import remove
 from copy import copy, deepcopy
 from functools import partialmethod
 
+from sklearn.svm import SVC
+
 from deap.tools import ParetoFront
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.abc import SingleSpeciesTrainer, CooperativeTrainer
 from culebra.trainer.topology import full_connected_destinations
 from culebra.solution.feature_selection import (
@@ -39,8 +42,31 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Solution as ClassifierOptimizationSolution
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC as FitnessFunc
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
 
 
 # Dataset
@@ -49,6 +75,9 @@ dataset = Dataset.load_from_uci(name="Wine")
 # Preprocess the dataset
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
+# Training fitness function
+fitness_func = KappaNumFeatsC(dataset, cv_folds=5)
+
 
 class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
@@ -56,7 +85,7 @@ class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     def _do_iteration(self):
         """Implement an iteration of the search process."""
         self.sol = self.solution_cls(
-            self.species, self.fitness_function.Fitness
+            self.species, self.fitness_function.fitness_cls
         )
         self.evaluate(self.sol)
 
@@ -260,7 +289,7 @@ class TrainerTester(unittest.TestCase):
             [None, valid_species[0]]
         )
 
-        valid_fitness_func = FitnessFunc(dataset)
+        valid_fitness_func = fitness_func
         valid_subtrainer_cls = MySingleSpeciesTrainer
         valid_num_subtrainers = 2
 
@@ -396,7 +425,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "representation_size": 2,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "verbose": False,
@@ -444,7 +473,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
@@ -494,7 +523,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "max_num_iters": 2,
             "representation_size": 2,
@@ -546,7 +575,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
@@ -588,7 +617,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
@@ -623,7 +652,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
@@ -633,15 +662,15 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer1 = MyTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -661,7 +690,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": FitnessFunc(dataset),
+            "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
             "verbose": False,
@@ -685,24 +714,10 @@ class TrainerTester(unittest.TestCase):
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.subtrainer_params), id(trainer2.subtrainer_params)
         )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
+        self.assertEqual(
+            trainer1.subtrainer_params, trainer2.subtrainer_params
         )
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
         for spe1, spe2 in zip(trainer1.species, trainer2.species):

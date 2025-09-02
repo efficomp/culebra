@@ -13,7 +13,7 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.fitness_function.abc.DatasetScorer class" href="abc/dataset_scorer.html" />
+    <link rel="next" title="culebra.fitness_function.abc.ACOFitnessFunction class" href="abc/aco_fitness_function.html" />
     <link rel="prev" title="culebra.fitness_function module" href="../fitness_function.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
@@ -26,7 +26,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="abc/dataset_scorer.html" title="culebra.fitness_function.abc.DatasetScorer class"
+          <a href="abc/aco_fitness_function.html" title="culebra.fitness_function.abc.ACOFitnessFunction class"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../fitness_function.html" title="culebra.fitness_function module"
@@ -48,21 +48,11 @@
 fitness functions. The following classes are provided:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="abc/dataset_scorer.html#culebra.fitness_function.abc.DatasetScorer" title="culebra.fitness_function.abc.DatasetScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetScorer</span></code></a>: Allows
-the definition of dataset-related fitness functions.</p></li>
-<li><p><a class="reference internal" href="abc/classification_scorer.html#culebra.fitness_function.abc.ClassificationScorer" title="culebra.fitness_function.abc.ClassificationScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassificationScorer</span></code></a>:
-Lets defining dataset classification-related fitness functions</p></li>
-<li><p><a class="reference internal" href="abc/classification_fs_scorer.html#culebra.fitness_function.abc.ClassificationFSScorer" title="culebra.fitness_function.abc.ClassificationFSScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassificationFSScorer</span></code></a>:
-Designed to support feature selection on classification problems</p></li>
-<li><p><a class="reference internal" href="abc/rbf_svc_scorer.html#culebra.fitness_function.abc.RBFSVCScorer" title="culebra.fitness_function.abc.RBFSVCScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">RBFSVCScorer</span></code></a>:
-Is centered on the hyperparameters optimization of SVM-based classifiers
-with RBF kernels.</p></li>
-<li><p><a class="reference internal" href="abc/cooperative_fs_scorer.html#culebra.fitness_function.abc.CooperativeFSScorer" title="culebra.fitness_function.abc.CooperativeFSScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CooperativeFSScorer</span></code></a>:
-Abstract base class for all the fitness functions of cooperative FS
-problems.</p></li>
-<li><p><a class="reference internal" href="abc/cooperative_rbf_svc_fs_scorer.html#culebra.fitness_function.abc.CooperativeRBFSVCFSScorer" title="culebra.fitness_function.abc.CooperativeRBFSVCFSScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CooperativeRBFSVCFSScorer</span></code></a>:
-Abstract base class for all the fitness functions of cooperative FS
-problems using RBF SVM classifiers.</p></li>
+<li><p><a class="reference internal" href="abc/aco_fitness_function.html#culebra.fitness_function.abc.ACOFitnessFunction" title="culebra.fitness_function.abc.ACOFitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFitnessFunction</span></code></a>:
+Abstract base class for the all the fitness functions for ACO-based
+trainers.</p></li>
+<li><p><a class="reference internal" href="abc/single_objective_fitness_function.html#culebra.fitness_function.abc.SingleObjectiveFitnessFunction" title="culebra.fitness_function.abc.SingleObjectiveFitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleObjectiveFitnessFunction</span></code></a>:
+Abstract base class for all the single-objective fitness functions.</p></li>
 </ul>
 </div></blockquote>
 <div class="toctree-wrapper compound">
@@ -85,7 +75,7 @@ problems using RBF SVM classifiers.</p></li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="abc/dataset_scorer.html" title="culebra.fitness_function.abc.DatasetScorer class"
+          <a href="abc/aco_fitness_function.html" title="culebra.fitness_function.abc.ACOFitnessFunction class"
              >next</a> |</li>
         <li class="right" >
           <a href="../fitness_function.html" title="culebra.fitness_function module"

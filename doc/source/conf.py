@@ -90,7 +90,10 @@ intersphinx_mapping = {
     'scikit-learn':     ('https://scikit-learn.org/stable/', None),
     'deap':             ('https://deap.readthedocs.io/en/master/', None),
     'scipy':            ('https://docs.scipy.org/doc/scipy/', None),
-    'imbalanced-learn': ('https://imbalanced-learn.org/stable/', None)
+    'imbalanced-learn': ('https://imbalanced-learn.org/stable/', None),
+    'multiprocess':     (
+        'https://multiprocess.readthedocs.io/en/latest/', None
+                        )
 }
 
 # -- Options for HTML output -------------------------------------------------

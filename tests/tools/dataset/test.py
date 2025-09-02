@@ -29,6 +29,7 @@ from collections import Counter
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.tools import Dataset
 
 AUSTRALIAN_PATH = (
@@ -410,15 +411,15 @@ class DatasetTester(unittest.TestCase):
         """
         dataset1 = Dataset("numeric_1.dat", output_index=0)
 
-        pickle_filename = "my_pickle.gz"
-        dataset1.save_pickle(pickle_filename)
-        dataset2 = Dataset.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        dataset1.dump(serialized_filename)
+        dataset2 = Dataset.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(dataset1, dataset2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def _check_deepcopy(self, dataset1, dataset2):
         """Check if *dataset1* is a deepcopy of *dataset2*.

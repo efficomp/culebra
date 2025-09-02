@@ -30,10 +30,35 @@ from deap.tools import selTournament
 from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, IntVector
-from culebra.fitness_function.feature_selection import KappaNumFeats
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.trainer.topology import ring_destinations
 from culebra.trainer.ea import NSGA, HeterogeneousSequentialIslandsEA
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -81,7 +106,7 @@ params = {
     "crossover_probs": 0.8,
     "mutation_probs": 0.2,
     "gene_ind_mutation_probs": tuple(
-        (1.0 + i) / dataset.num_feats for i in range(num_subtrainers)
+        (1.0 + i) / (num_subtrainers + 1) for i in range(num_subtrainers)
     ),
     "max_num_iters": 30,
     "pop_sizes": tuple(

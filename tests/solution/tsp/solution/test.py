@@ -28,6 +28,7 @@ import copy
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies, Fitness
 from culebra.solution.tsp import Species, Solution
 
@@ -98,14 +99,14 @@ class SolutionTester(unittest.TestCase):
         species = Species(num_nodes)
         sol1 = MySolution(species, MyFitness, [1, 3, 5])
 
-        pickle_filename = "my_pickle.gz"
-        sol1.save_pickle(pickle_filename)
-        sol2 = MySolution.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        sol1.dump(serialized_filename)
+        sol2 = MySolution.load(serialized_filename)
 
         self.assertTrue(np.all(sol1.path == sol2.path))
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_copy(self):
         """Copy test."""

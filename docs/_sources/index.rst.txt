@@ -28,15 +28,20 @@ Welcome to culebra's documentation!
 
 Attributes:
 -----------
+.. attribute:: DEFAULT_SIMILARITY_THRESHOLD
+    :annotation: = 0.0
+
+    Default similarity threshold for fitnesses.
+
 .. attribute:: DEFAULT_MAX_NUM_ITERS
     :annotation: = 100
 
     Default maximum number of iterations.
 
-.. attribute:: PICKLE_FILE_EXTENSION
-    :annotation: = '.gz'
+.. attribute:: SERIALIZED_FILE_EXTENSION
+    :annotation: = '.dill.gz'
 
-    Extension for files containing pickled objects.
+    Extension for files containing serialized objects.
 
 .. attribute:: DEFAULT_CHECKPOINT_ENABLE
     :annotation: = True
@@ -54,7 +59,7 @@ Attributes:
      Default basename for checkpointing files.
 
 .. attribute:: DEFAULT_CHECKPOINT_FILENAME
-    :annotation: = 'checkpoint.gz'
+    :annotation: = 'checkpoint.dill.gz'
 
     Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`.
 
@@ -70,8 +75,9 @@ Attributes:
     distributed approaches.
 
 ..
+    .. autodata:: DEFAULT_SIMILARITY_THRESHOLD
     .. autodata:: DEFAULT_MAX_NUM_ITERS
-    .. autodata:: PICKLE_FILE_EXTENSION
+    .. autodata:: SERIALIZED_FILE_EXTENSION
     .. autodata:: DEFAULT_CHECKPOINT_ENABLE
     .. autodata:: DEFAULT_CHECKPOINT_FREQ
     .. autodata:: DEFAULT_CHECKPOINT_BASENAME

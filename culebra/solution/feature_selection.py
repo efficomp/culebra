@@ -384,6 +384,19 @@ class Species(BaseSpecies):
         """
         return (self.__class__, (self.num_feats,), self.__dict__)
 
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Species:
+        """Return a species from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_num_feats']
+        )
+        obj.__setstate__(state)
+        return obj
+
 
 class Solution(BaseSolution):
     """Abstract base class for all the feature selector solutions."""

@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.abc.IslandsTrainer.load_pickle
+.. automethod:: culebra.trainer.abc.IslandsTrainer.load
 
 Properties
 ----------
@@ -84,7 +84,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.abc.IslandsTrainer.save_pickle
+.. automethod:: culebra.trainer.abc.IslandsTrainer.dump
 .. automethod:: culebra.trainer.abc.IslandsTrainer._generate_subtrainers
 .. automethod:: culebra.trainer.abc.IslandsTrainer._get_state
 .. automethod:: culebra.trainer.abc.IslandsTrainer._set_state

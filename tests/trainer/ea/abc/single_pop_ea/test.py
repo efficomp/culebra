@@ -27,7 +27,9 @@ import os
 from copy import copy, deepcopy
 from functools import partialmethod
 
-from culebra import DEFAULT_MAX_NUM_ITERS
+from sklearn.svm import SVC
+
+from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
 from culebra.trainer.ea import (
     DEFAULT_POP_SIZE,
     DEFAULT_CROSSOVER_PROB,
@@ -46,9 +48,31 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.feature_selection import NumFeats
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
 
 
 # Dataset
@@ -98,7 +122,7 @@ def init_representatives(
         trainer._representatives.append(
             [
                 ind_cls(
-                    spe, trainer.fitness_function.Fitness
+                    spe, trainer.fitness_function.fitness_cls
                 ) if i != trainer.index else None
                 for i, (ind_cls, spe) in enumerate(
                     zip(
@@ -340,7 +364,7 @@ class TrainerTester(unittest.TestCase):
         trainer1._pop = [
             FeatureSelectionIndividual(
                 params["species"],
-                params["fitness_function"].Fitness
+                params["fitness_function"].fitness_cls
             )
         ]
 
@@ -493,19 +517,19 @@ class TrainerTester(unittest.TestCase):
         # Generate some individuals
         sol1 = FeatureSelectionIndividual(
             params["species"],
-            params["fitness_function"].Fitness,
+            params["fitness_function"].fitness_cls,
             (1, 2)
         )
 
         sol2 = FeatureSelectionIndividual(
             params["species"],
-            params["fitness_function"].Fitness,
+            params["fitness_function"].fitness_cls,
             (1, 2, 3)
         )
 
         sol3 = FeatureSelectionIndividual(
             params["species"],
-            params["fitness_function"].Fitness,
+            params["fitness_function"].fitness_cls,
             (0, 2, 3)
         )
         # Init the search
@@ -609,15 +633,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = MyTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        os.remove(pickle_filename)
+        # Remove the serialized file
+        os.remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

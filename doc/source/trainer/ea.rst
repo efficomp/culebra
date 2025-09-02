@@ -48,7 +48,7 @@ Attributes
     Default gene independent mutation probability.
 
 .. attribute:: DEFAULT_SELECTION_FUNC
-    :annotation: = <function selTournament>¶
+    :annotation: = <function selTournament>
 
     Default selection function.
 

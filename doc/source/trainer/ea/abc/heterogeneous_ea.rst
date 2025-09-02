@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.load_pickle
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.load
 
 Properties
 ----------
@@ -82,7 +82,7 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.save_pickle
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.dump
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.reset
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.evaluate
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.best_solutions

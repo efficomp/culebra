@@ -24,31 +24,19 @@
 
 .. autoclass:: culebra.fitness_function.svc_optimization.Accuracy
 
-Class attributes
-----------------
-.. class:: culebra.fitness_function.svc_optimization.Accuracy.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.svc_optimization.Accuracy.evaluate`
-    method within a
-    :py:class:`~culebra.solution.parameter_optimization.Solution`.
-
-    .. autoattribute:: culebra.fitness_function.svc_optimization.Accuracy.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.svc_optimization.Accuracy.Fitness.names
-    .. autoattribute:: culebra.fitness_function.svc_optimization.Accuracy.Fitness.thresholds
-
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.load_pickle
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.load
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.is_noisy
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.num_obj
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.num_nodes
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_weights
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_names
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.fitness_cls
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.is_noisy
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.index
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.training_data
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.test_data
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.test_prop
@@ -60,9 +48,9 @@ Private properties
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.save_pickle
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.heuristic
+.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.dump
 .. automethod:: culebra.fitness_function.svc_optimization.Accuracy.evaluate
+.. automethod:: culebra.fitness_function.svc_optimization.Accuracy.is_evaluable
 
 Private methods
 ---------------

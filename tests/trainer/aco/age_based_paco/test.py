@@ -26,14 +26,15 @@ import unittest
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import AgeBasedPACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import SinglePathLength
+from culebra.fitness_function.tsp import PathLength
 
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = SinglePathLength.fromPath(optimum_path)
+fitness_func = PathLength.fromPath(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -58,7 +59,7 @@ class TrainerTester(unittest.TestCase):
             "pop_size": 5,
             "checkpoint_enable": False,
             "checkpoint_freq": 13,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "verbose": False,
             "random_seed": 15
         }

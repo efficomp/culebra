@@ -13,8 +13,8 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.fitness_function.feature_selection.NumFeats class" href="feature_selection/num_feats.html" />
-    <link rel="prev" title="culebra.fitness_function.dataset_score.KappaIndex class" href="dataset_score/accuracy.html" /> 
+    <link rel="next" title="culebra.fitness_function.feature_selection.abc module" href="feature_selection/abc.html" />
+    <link rel="prev" title="culebra.fitness_function.dataset_score.KappaIndex class" href="dataset_score/kappa_index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -26,10 +26,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="feature_selection/num_feats.html" title="culebra.fitness_function.feature_selection.NumFeats class"
+          <a href="feature_selection/abc.html" title="culebra.fitness_function.feature_selection.abc module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="dataset_score/accuracy.html" title="culebra.fitness_function.dataset_score.KappaIndex class"
+          <a href="dataset_score/kappa_index.html" title="culebra.fitness_function.dataset_score.KappaIndex class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
@@ -43,11 +43,15 @@
             
   <section id="module-culebra.fitness_function.feature_selection">
 <span id="culebra-fitness-function-feature-selection-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.feature_selection" title="culebra.fitness_function.feature_selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.feature_selection" title="Link to this heading">¶</a></h1>
-<p>Feature selection related fitness functions.</p>
-<p>This sub-module provides several fitness functions to solve feature selecion
-problems:</p>
+<p>Fitness functions related to feature selection.</p>
+<p>This module is composed by:</p>
 <blockquote>
 <div><ul class="simple">
+<li><p>The <a class="reference internal" href="feature_selection/abc.html#module-culebra.fitness_function.feature_selection.abc" title="culebra.fitness_function.feature_selection.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module,
+where some abstract base classes are defined to support fitness functions
+developed in this module</p></li>
+<li><p>Some single-objective scoring fitness functions:</p>
+<ul>
 <li><p><a class="reference internal" href="feature_selection/num_feats.html#culebra.fitness_function.feature_selection.NumFeats" title="culebra.fitness_function.feature_selection.NumFeats"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumFeats</span></code></a>: Dummy
 single-objective function that minimizes the number of selected features
 from a <a class="reference internal" href="../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>.</p></li>
@@ -64,22 +68,14 @@ classification problems.</p></li>
 <li><p><a class="reference internal" href="feature_selection/accuracy.html#culebra.fitness_function.feature_selection.Accuracy" title="culebra.fitness_function.feature_selection.Accuracy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Accuracy</span></code></a>:
 Single-objective function that maximizes the Accuracy for classification
 problems.</p></li>
-<li><p><a class="reference internal" href="feature_selection/kappa_num_feats.html#culebra.fitness_function.feature_selection.KappaNumFeats" title="culebra.fitness_function.feature_selection.KappaNumFeats"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaNumFeats</span></code></a>:
-Bi-objective function composed by the two former functions. It tries to
-both maximize the Kohen’s Kappa index and minimize the number of features
-that a solution has selected.</p></li>
-<li><p><a class="reference internal" href="feature_selection/accuracy_num_feats.html#culebra.fitness_function.feature_selection.AccuracyNumFeats" title="culebra.fitness_function.feature_selection.AccuracyNumFeats"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccuracyNumFeats</span></code></a>:
-Bi-objective function composed by the two former functions. It tries to
-both maximize the Accuracy and minimize the number of features that a
-solution has selected.</p></li>
-<li><p><a class="reference internal" href="feature_selection/kappa_feats_prop.html#culebra.fitness_function.feature_selection.KappaFeatsProp" title="culebra.fitness_function.feature_selection.KappaFeatsProp"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaFeatsProp</span></code></a>:
-Bi-objective function composed by the two former functions. It tries to
-both maximize the Kohen’s Kappa index and minimize the proportion of
-features that a solution has selected.</p></li>
-<li><p><a class="reference internal" href="feature_selection/accuracy_feats_prop.html#culebra.fitness_function.feature_selection.AccuracyFeatsProp" title="culebra.fitness_function.feature_selection.AccuracyFeatsProp"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccuracyFeatsProp</span></code></a>:
-Bi-objective function composed by the two former functions. It tries to
-both maximize the Accuracy and minimize the proportion of features that a
-solution has selected.</p></li>
+</ul>
+</li>
+<li><p>A multi-objective fitness function that can aggregate several objectives:</p>
+<ul>
+<li><p><a class="reference internal" href="feature_selection/fs_multi_objective_dataset_scorer.html#culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer" title="culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FSMultiObjectiveDatasetScorer</span></code></a>:
+Supports multi-objective FS on dataset-related problems</p></li>
+</ul>
+</li>
 </ul>
 </div></blockquote>
 <div class="toctree-wrapper compound">
@@ -102,10 +98,10 @@ solution has selected.</p></li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="feature_selection/num_feats.html" title="culebra.fitness_function.feature_selection.NumFeats class"
+          <a href="feature_selection/abc.html" title="culebra.fitness_function.feature_selection.abc module"
              >next</a> |</li>
         <li class="right" >
-          <a href="dataset_score/accuracy.html" title="culebra.fitness_function.dataset_score.KappaIndex class"
+          <a href="dataset_score/kappa_index.html" title="culebra.fitness_function.dataset_score.KappaIndex class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>

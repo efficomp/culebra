@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.load_pickle
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.load
 
 Properties
 ----------
@@ -68,7 +68,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.save_pickle
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.dump
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.reset
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.evaluate
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.best_solutions

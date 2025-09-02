@@ -30,7 +30,7 @@ from deap.tools import ParetoFront
 
 from culebra.trainer.aco.abc import SingleObjPACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import SinglePathLength
+from culebra.fitness_function.tsp import PathLength
 
 
 class MyTrainer(SingleObjPACO):
@@ -85,7 +85,7 @@ class MyTrainer(SingleObjPACO):
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = SinglePathLength.fromPath(optimum_path)
+fitness_func = PathLength.fromPath(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 

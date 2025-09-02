@@ -30,7 +30,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.solution.feature_selection.IntSolution.load_pickle
+.. automethod:: culebra.solution.feature_selection.IntSolution.load
 
 Properties
 ----------
@@ -48,7 +48,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.solution.feature_selection.IntSolution.save_pickle
+.. automethod:: culebra.solution.feature_selection.IntSolution.dump
 .. automethod:: culebra.solution.feature_selection.IntSolution._setup
 
 Dunder methods

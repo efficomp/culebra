@@ -24,33 +24,22 @@
 
 .. autoclass:: culebra.fitness_function.feature_selection.NumFeats
 
-Class attributes
-----------------
-.. class:: culebra.fitness_function.feature_selection.NumFeats.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.feature_selection.NumFeats.evaluate`
-    method within a :py:class:`~culebra.solution.feature_selection.Solution`.
-
-    .. autoattribute:: culebra.fitness_function.feature_selection.NumFeats.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.feature_selection.NumFeats.Fitness.names
-    .. autoattribute:: culebra.fitness_function.feature_selection.NumFeats.Fitness.thresholds
-
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.load_pickle
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.feature_selection.NumFeats.load
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_obj
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_nodes
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_weights
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_names
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_thresholds
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.fitness_cls
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.is_noisy
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.index
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.save_pickle
-.. automethod:: culebra.fitness_function.feature_selection.NumFeats.heuristic
+.. automethod:: culebra.fitness_function.feature_selection.NumFeats.dump
 .. automethod:: culebra.fitness_function.feature_selection.NumFeats.evaluate
+.. automethod:: culebra.fitness_function.feature_selection.NumFeats.is_evaluable

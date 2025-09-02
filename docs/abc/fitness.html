@@ -97,9 +97,9 @@ If not defined, 0 will be used for each objective.</p>
 <section id="class-methods">
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.abc.Fitness.load_pickle">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">load_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.abc.Fitness.load_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Load a pickled object from a file.</p>
+<dt class="sig sig-object py" id="culebra.abc.Fitness.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.abc.Fitness.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -108,46 +108,7 @@ If not defined, 0 will be used for each objective.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.abc.Fitness.get_objective_threshold">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">get_objective_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#culebra.abc.Fitness.get_objective_threshold" title="Link to this definition">¶</a></dt>
-<dd><p>Get the similarity threshold for the given objective.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Objective name whose threshold is returned</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>obj_name</em> isn’t a string</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <em>obj_name</em> isn’t a valid objective name</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.abc.Fitness.set_objective_threshold">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">set_objective_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.abc.Fitness.set_objective_threshold" title="Link to this definition">¶</a></dt>
-<dd><p>Set a similarity threshold for the given objective.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Objective name whose threshold is modified</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – New value for the similarity threshold.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>obj_name</em> isn’t a string or <em>value</em> isn’t a real
-number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <em>obj_name</em> isn’t a valid objective name or
-<em>value</em> is lower than 0</p></li>
+<a class="reference internal" href="../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -163,6 +124,18 @@ number</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.abc.Fitness.num_evaluations">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">num_evaluations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.abc.Fitness.num_evaluations" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number of times each objective has been evaluated.</p>
+<p>Useful to implement Monte Carlo cross-validation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -190,9 +163,9 @@ override this property.</p>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.abc.Fitness.save_pickle">
-<span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">save_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.abc.Fitness.save_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Pickle this object and save it to a file.</p>
+<dt class="sig sig-object py" id="culebra.abc.Fitness.dump">
+<span class="sig-prename descclassname"><span class="pre">Fitness.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.abc.Fitness.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -201,7 +174,7 @@ override this property.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>

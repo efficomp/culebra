@@ -34,7 +34,10 @@ from culebra.trainer.aco.abc import (
     ElitistACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import DoublePathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 class MyTrainer(
@@ -91,11 +94,10 @@ class MyTrainer(
 
 
 num_nodes = 25
-optimum_paths = [
-    np.random.permutation(num_nodes),
-    np.random.permutation(num_nodes)
-]
-fitness_func = DoublePathLength.fromPath(*optimum_paths)
+fitness_func = MultiObjectivePathLength(
+    PathLength.fromPath(np.random.permutation(num_nodes)),
+    PathLength.fromPath(np.random.permutation(num_nodes))
+)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 

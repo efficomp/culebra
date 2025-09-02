@@ -28,12 +28,14 @@ from culebra.solution.parameter_optimization import (
     Species,
     Solution
 )
+from culebra.solution.feature_selection import (
+    Species as FSSpecies,
+    BitVector as FSIndividual
+)
 from culebra.fitness_function.svc_optimization import (
     C,
     KappaIndex,
-    KappaC,
-    Accuracy,
-    AccuracyC
+    Accuracy
 )
 from culebra.tools import Dataset
 
@@ -60,8 +62,14 @@ class CTester(unittest.TestCase):
         # Fitness function to be tested
         func = self.FitnessFunc()
 
+        # Try an invalid solution class. Should fail...
+        fs_species = FSSpecies(num_feats=3)
+        fs_ind = FSIndividual(fs_species, func.fitness_cls)
+        with self.assertRaises(ValueError):
+            func.evaluate(fs_ind)
+
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         sol.fitness.values = func.evaluate(sol)
 
@@ -92,10 +100,9 @@ class KappaIndexTester(unittest.TestCase):
 
         # Fitness function to be tested
         func = self.FitnessFunc(training_data)
-
-        func.test_prop = None
         self.assertEqual(func.is_noisy, False)
-        func.test_prop = 0.5
+
+        func = self.FitnessFunc(training_data, test_prop=0.5)
         self.assertEqual(func.is_noisy, True)
 
         func = self.FitnessFunc(training_data, test_data)
@@ -109,7 +116,7 @@ class KappaIndexTester(unittest.TestCase):
         func = self.FitnessFunc(training_data)
 
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         # Check that the Kappa index is in [-1, 1]
 
@@ -150,7 +157,7 @@ class AccuracyTester(unittest.TestCase):
         func = self.FitnessFunc(training_data)
 
         # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
+        sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
         # Check that the accuracy is in [0, 1]
 
@@ -170,60 +177,6 @@ class AccuracyTester(unittest.TestCase):
         sol.fitness.values = func.evaluate(sol)
         self.assertGreaterEqual(sol.fitness.values[0], 0)
         self.assertLessEqual(sol.fitness.values[0], 1)
-
-    test_is_noisy = KappaIndexTester.test_is_noisy
-    test_repr = KappaIndexTester.test_repr
-
-
-class KappaCTester(unittest.TestCase):
-    """Test :py:class:`~culebra.fitness_function.svc_optimization.KappaC`."""
-
-    FitnessFunc = KappaC
-
-    def test_evaluate(self):
-        """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset, test_prop=0.3)
-
-        # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
-
-        # Evaluate the solution
-        sol.fitness.values = func.evaluate(sol)
-
-        # Check that Kappa is in [-1, 1]
-        self.assertGreaterEqual(sol.fitness.values[0], -1)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-
-        # Check the number of features
-        self.assertEqual(sol.fitness.values[1], sol.values.C)
-
-    test_is_noisy = KappaIndexTester.test_is_noisy
-    test_repr = KappaIndexTester.test_repr
-
-
-class AccuracyCTester(unittest.TestCase):
-    """Test AccuracyC."""
-
-    FitnessFunc = AccuracyC
-
-    def test_evaluate(self):
-        """Test the evaluation method."""
-        # Fitness function to be tested
-        func = self.FitnessFunc(dataset, test_prop=0.3)
-
-        # Create the solution
-        sol = Solution(species=species, fitness_cls=func.Fitness)
-
-        # Evaluate the solution
-        sol.fitness.values = func.evaluate(sol)
-
-        # Check that the accuracy is in [0, 1]
-        self.assertGreaterEqual(sol.fitness.values[0], 0)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-
-        # Check the number of features
-        self.assertEqual(sol.fitness.values[1], sol.values.C)
 
     test_is_noisy = KappaIndexTester.test_is_noisy
     test_repr = KappaIndexTester.test_repr

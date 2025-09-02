@@ -21,6 +21,8 @@
 
 from collections import Counter
 
+from sklearn.svm import SVC
+
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
@@ -29,10 +31,33 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.trainer.ea import ElitistEA
 from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
 
 
 # Dataset
@@ -48,28 +73,22 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # of samples
 training_data = training_data.oversample(random_seed=0)
 
+
 # Training fitness function
-training_fitness_function = KappaNumFeatsC(
-    training_data=training_data, cv_folds=5
-)
+training_fitness_function = KappaNumFeatsC(training_data, cv_folds=5)
 
 # Set the training fitness similarity threshold
-training_fitness_function.set_fitness_thresholds(0.001)
+training_fitness_function.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-untie_best_fitness_function = KappaNumFeatsC(
-    training_data=training_data,
-    cv_folds=max_folds
-)
+untie_best_fitness_function = KappaNumFeatsC(training_data, cv_folds=max_folds)
 
 # Test fitness function
-test_fitness_function = KappaNumFeatsC(
-    training_data=training_data, test_data=test_data
-)
+test_fitness_function = KappaNumFeatsC(training_data, test_data)
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(

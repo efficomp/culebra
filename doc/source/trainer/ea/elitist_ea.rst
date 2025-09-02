@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.ea.ElitistEA.load_pickle
+.. automethod:: culebra.trainer.ea.ElitistEA.load
 
 Properties
 ----------
@@ -65,7 +65,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.ElitistEA.save_pickle
+.. automethod:: culebra.trainer.ea.ElitistEA.dump
 .. automethod:: culebra.trainer.ea.ElitistEA.reset
 .. automethod:: culebra.trainer.ea.ElitistEA.evaluate
 .. automethod:: culebra.trainer.ea.ElitistEA.best_solutions

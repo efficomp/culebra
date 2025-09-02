@@ -396,6 +396,20 @@ class Species(BaseSpecies):
             self.__dict__
         )
 
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Species:
+        """Return a species from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_lower_bounds'],
+            state['_upper_bounds']
+        )
+        obj.__setstate__(state)
+        return obj
+
 
 class Solution(BaseSolution):
     """Parameter optimization solution."""
@@ -573,7 +587,7 @@ class Individual(Solution, BaseIndividual):
     def mutate(self, indpb: float) -> Tuple[Individual]:
         """Mutate the individual.
 
-        Polynimial mutation is used.
+        Polynomial mutation is used.
 
         :param indpb: Independent probability for each parameter to be mutated.
         :type indpb: :py:class:`float`

@@ -24,33 +24,22 @@
 
 .. autoclass:: culebra.fitness_function.feature_selection.FeatsProportion
 
-Class attributes
-----------------
-.. class:: culebra.fitness_function.feature_selection.FeatsProportion.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.feature_selection.FeatsProportion.evaluate`
-    method within a :py:class:`~culebra.solution.feature_selection.Solution`.
-
-    .. autoattribute:: culebra.fitness_function.feature_selection.FeatsProportion.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.feature_selection.FeatsProportion.Fitness.names
-    .. autoattribute:: culebra.fitness_function.feature_selection.FeatsProportion.Fitness.thresholds
-
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.load_pickle
-.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.load
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.num_obj
-.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.num_nodes
+.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.obj_weights
+.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.obj_names
+.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.obj_thresholds
+.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.fitness_cls
+.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.is_noisy
+.. autoproperty:: culebra.fitness_function.feature_selection.FeatsProportion.index
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.save_pickle
-.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.heuristic
+.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.dump
 .. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.evaluate
+.. automethod:: culebra.fitness_function.feature_selection.FeatsProportion.is_evaluable

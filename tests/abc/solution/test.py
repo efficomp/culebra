@@ -26,6 +26,7 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Solution, Species, Fitness
 
 
@@ -201,20 +202,20 @@ class SolutionTester(unittest.TestCase):
 
         Test the :py:meth:`~culebra.abc.Solution.__setstate__` and
         :py:meth:`~culebra.abc.Solution.__reduce__` methods,
-        :py:meth:`~culebra.abc.Solution.save_pickle` and
-        :py:meth:`~culebra.abc.Solution.load_pickle` methods.
+        :py:meth:`~culebra.abc.Solution.dump` and
+        :py:meth:`~culebra.abc.Solution.load` methods.
         """
         sol1 = MySolution(MySpecies(), MyFitness)
 
-        pickle_filename = "my_pickle.gz"
-        sol1.save_pickle(pickle_filename)
-        sol2 = MySolution.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        sol1.dump(serialized_filename)
+        sol2 = MySolution.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(sol1, sol2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def _check_deepcopy(self, sol1, sol2):
         """Check if *sol1* is a deepcopy of *sol2*.

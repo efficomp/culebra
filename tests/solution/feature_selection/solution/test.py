@@ -29,6 +29,7 @@ from collections.abc import Sequence
 from itertools import repeat
 from time import sleep
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies, Fitness
 from culebra.solution.feature_selection import (
     Species,
@@ -227,7 +228,7 @@ class SolutionTester(unittest.TestCase):
         print('Testing the',
               self.solution_cls.__name__,
               'serialization ...', end=' ')
-        pickle_filename = "my_pickle.gz"
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:
             # And for each proportion ...
@@ -238,8 +239,8 @@ class SolutionTester(unittest.TestCase):
                 for _ in repeat(None, self.times):
                     sol1 = self.solution_cls(species, MyFitness)
 
-                    sol1.save_pickle(pickle_filename)
-                    sol2 = self.solution_cls.load_pickle(pickle_filename)
+                    sol1.dump(serialized_filename)
+                    sol2 = self.solution_cls.load(serialized_filename)
 
                     self.assertTrue((sol1.features == sol2.features).all())
                     self.assertTrue((sol1._features == sol2._features).all())
@@ -254,8 +255,8 @@ class SolutionTester(unittest.TestCase):
                     self.assertEqual(
                         sol1.species.max_size, sol2.species.max_size)
 
-                    # Remove the pickle file
-                    remove(pickle_filename)
+                    # Remove the serialized file
+                    remove(serialized_filename)
 
         print('Ok')
 

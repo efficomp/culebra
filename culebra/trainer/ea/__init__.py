@@ -29,8 +29,10 @@ This module is composed by:
 
       * The :py:class:`~culebra.trainer.ea.SimpleEA` class, which implements
         the simplest EA
+
       * The :py:class:`~culebra.trainer.ea.ElitistEA` class, which provides an
         elitist EA
+
       * The :py:class:`~culebra.trainer.ea.NSGA` class, which implements a
         multi-objective EA, based on Non-dominated sorting, able to run both
         the NSGA-II and the NSGA-III algorithms

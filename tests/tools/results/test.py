@@ -28,7 +28,11 @@ from os import remove
 from os.path import exists
 from copy import copy, deepcopy
 from pandas import DataFrame
-from culebra.tools import Results
+from culebra import SERIALIZED_FILE_EXTENSION
+from culebra.tools import Results, EXCEL_FILE_EXTENSION
+
+CSV_FILE_EXTENSION = ".csv"
+"""Extension for csv files."""
 
 
 class ResultsTester(unittest.TestCase):
@@ -75,10 +79,13 @@ class ResultsTester(unittest.TestCase):
         """Test the from_csv_files class method."""
         results = Results()
 
-        bad_filename = "bad.csv"
+        bad_filename = "bad" + CSV_FILE_EXTENSION
         bad_key = 1
         bad_sep = 2
-        good_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        good_filenames = (
+            "test_fitness" + CSV_FILE_EXTENSION,
+            "execution_metrics" + CSV_FILE_EXTENSION
+        )
         good_keys = ("test_fitness", "execution_metrics")
 
         # Try to read a non-existing file
@@ -114,38 +121,45 @@ class ResultsTester(unittest.TestCase):
             self.assertIsInstance(results[key1], DataFrame)
 
     def test_serialization(self):
-        """Test the pickle and load_pickle methods."""
-        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        """Test the dump and load methods."""
+        BAD_EXTENSION = ".tar"
+        data_filenames = (
+            "test_fitness" + CSV_FILE_EXTENSION,
+            "execution_metrics" + CSV_FILE_EXTENSION
+        )
         data_keys = ("test_fitness", "execution_metrics")
-        bad_pickle_filename_type = 1
-        bad_pickle_filename_values = ["file", "file.tar"]
-        good_pickle_filename = "myresults.gz"
+        bad_serialized_filename_type = 1
+        bad_serialized_filename_values = [
+            "file",
+            "file" + BAD_EXTENSION
+        ]
+        good_serialized_filename = "myresults" + SERIALIZED_FILE_EXTENSION
 
         results = Results.from_csv_files(data_filenames, data_keys)
 
         # Try saving with a wrong filename type
         with self.assertRaises(TypeError):
-            results.save_pickle(bad_pickle_filename_type)
+            results.dump(bad_serialized_filename_type)
 
         # Try saving with wrong filename values
-        for filename in bad_pickle_filename_values:
+        for filename in bad_serialized_filename_values:
             with self.assertRaises(ValueError):
-                results.save_pickle(filename)
+                results.dump(filename)
 
         # Try saving with a custom filename
-        results.save_pickle(good_pickle_filename)
+        results.dump(good_serialized_filename)
 
         # Try loading with a wrong filename type
         with self.assertRaises(TypeError):
-            Results.load_pickle(bad_pickle_filename_type)
+            Results.load(bad_serialized_filename_type)
 
         # Try loading with wrong filename values
-        for filename in bad_pickle_filename_values:
+        for filename in bad_serialized_filename_values:
             with self.assertRaises(ValueError):
-                results.save_pickle(filename)
+                results.dump(filename)
 
         # Try loading with a custom filename
-        results2 = Results.load_pickle(good_pickle_filename)
+        results2 = Results.load(good_serialized_filename)
 
         # Check keys and data
         for key in data_keys:
@@ -153,15 +167,18 @@ class ResultsTester(unittest.TestCase):
             self.assertTrue(results2[key].equals(results[key]))
 
         # Remove the file
-        remove(good_pickle_filename)
+        remove(good_serialized_filename)
 
     def test_to_excel(self):
         """Test the to_excel method."""
-        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_filenames = (
+            "test_fitness" + CSV_FILE_EXTENSION,
+            "execution_metrics" + CSV_FILE_EXTENSION
+        )
         data_keys = ("test_fitness", "execution_metrics")
         bad_excel_filename_type = 1
         bad_excel_filename_values = ["file", "file.tar"]
-        good_excel_filename = "myresults.xlsx"
+        good_excel_filename = "myresults" + EXCEL_FILE_EXTENSION
 
         results = Results.from_csv_files(data_filenames, data_keys)
 
@@ -183,7 +200,10 @@ class ResultsTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the :py:meth:`~culebra.tools.Results.__copy__` method."""
-        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_filenames = (
+            "test_fitness" + CSV_FILE_EXTENSION,
+            "execution_metrics" + CSV_FILE_EXTENSION
+        )
         data_keys = ("test_fitness", "execution_metrics")
 
         results1 = Results.from_csv_files(data_filenames, data_keys)
@@ -198,7 +218,10 @@ class ResultsTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test :py:meth:`~culebra.tools.Results.__deepcopy__`."""
-        data_filenames = ("test_fitness.csv", "execution_metrics.csv")
+        data_filenames = (
+            "test_fitness" + CSV_FILE_EXTENSION,
+            "execution_metrics" + CSV_FILE_EXTENSION
+        )
         data_keys = ("test_fitness", "execution_metrics")
 
         results1 = Results.from_csv_files(data_filenames, data_keys)

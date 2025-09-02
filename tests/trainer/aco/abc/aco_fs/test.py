@@ -29,6 +29,7 @@ from os import remove
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import (
     DEFAULT_ACO_FS_INITIAL_PHEROMONE,
     DEFAULT_ACO_FS_DISCARD_PROB
@@ -36,8 +37,33 @@ from culebra.trainer.aco import (
 from culebra.trainer.aco.abc import ACO_FS
 
 from culebra.solution.feature_selection import Species, Ant
-from culebra.fitness_function.feature_selection import KappaNumFeats
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -58,14 +84,10 @@ species = Species(
     )
 
 # Training fitness function
-training_fitness_function = KappaNumFeats(
-    training_data=training_data, cv_folds=5
-)
+training_fitness_function = KappaNumFeats(training_data, cv_folds=5)
 
 # Test fitness function
-test_fitness_function = KappaNumFeats(
-    training_data=training_data, test_data=test_data
-)
+test_fitness_function = KappaNumFeats(training_data, test_data=test_data)
 
 # Lists of banned and feasible nodes
 banned_nodes = [0, dataset.num_feats-1]
@@ -241,7 +263,7 @@ class ACO_FSTester(unittest.TestCase):
 
         # The ant
         ant = trainer.solution_cls(
-            trainer.species, trainer.fitness_function.Fitness
+            trainer.species, trainer.fitness_function.fitness_cls
         )
 
         # Favor a feature
@@ -394,15 +416,15 @@ class ACO_FSTester(unittest.TestCase):
         # Create the trainer
         trainer1 = ACO_FS(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = ACO_FS.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = ACO_FS.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -433,24 +455,6 @@ class ACO_FSTester(unittest.TestCase):
         self.assertNotEqual(
             id(trainer1.fitness_function),
             id(trainer2.fitness_function)
-        )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
         )
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))

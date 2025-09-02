@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.load_pickle
+.. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.load
 
 Properties
 ----------
@@ -83,7 +83,7 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.save_pickle
+.. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.dump
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.reset
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.evaluate
 .. automethod:: culebra.trainer.ea.HeterogeneousParallelIslandsEA.best_solutions

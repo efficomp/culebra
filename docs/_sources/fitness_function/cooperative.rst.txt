@@ -27,7 +27,4 @@
 .. toctree::
     :hidden:
 
-    KappaNumFeatsC <cooperative/kappa_num_feats_c>
-    KappaFeatsPropC <cooperative/kappa_feats_prop_c>
-    AccuracyNumFeatsC <cooperative/accuracy_num_feats_c>
-    AccuracyFeatsPropC <cooperative/accuracy_feats_prop_c>
+    FSSVCScorer <cooperative/fs_svc_scorer>

@@ -31,7 +31,7 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
-from culebra.fitness_function.feature_selection import KappaIndex as Fitness
+from culebra.fitness_function.feature_selection import KappaIndex
 from culebra.tools import Dataset
 
 
@@ -51,7 +51,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaIndex(dataset)
         }
 
         # Create the trainer
@@ -67,7 +67,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaIndex(dataset)
         }
 
         # Create the trainer
@@ -96,7 +96,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaIndex(dataset),
             "pop_size": 1000,
             "elite_size": 13
         }
@@ -128,7 +128,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaIndex(dataset),
             "pop_size": 100,
             "verbose": False
         }
@@ -152,7 +152,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaIndex(dataset),
             "pop_size": 100,
             "verbose": False
         }
@@ -175,7 +175,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaIndex(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }
@@ -195,7 +195,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaIndex(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }

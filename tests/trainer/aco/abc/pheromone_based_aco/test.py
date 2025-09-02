@@ -34,7 +34,10 @@ from culebra.trainer.aco.abc import (
     MultipleHeuristicMatricesACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 class MyTrainer(PheromoneBasedACO):
@@ -70,8 +73,11 @@ optimum_paths = [
     np.random.permutation(num_nodes),
     np.random.permutation(num_nodes)
 ]
-single_obj_fitness_func = SinglePathLength.fromPath(optimum_paths[0])
-multiple_obj_fitness_func = DoublePathLength.fromPath(*optimum_paths)
+multiple_obj_fitness_func = MultiObjectivePathLength(
+    PathLength.fromPath(optimum_paths[0]),
+    PathLength.fromPath(optimum_paths[1])
+)
+single_obj_fitness_func = multiple_obj_fitness_func.objectives[0]
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -209,7 +215,7 @@ class TrainerTester(unittest.TestCase):
         # Generate some ants
         ant1 = Ant(
             species,
-            single_obj_fitness_func.Fitness,
+            single_obj_fitness_func.fitness_cls,
             path=optimum_paths[0]
         )
         worse_path = np.concatenate(
@@ -220,7 +226,7 @@ class TrainerTester(unittest.TestCase):
         )
         ant2 = Ant(
             species,
-            single_obj_fitness_func.Fitness,
+            single_obj_fitness_func.fitness_cls,
             path=worse_path
         )
 

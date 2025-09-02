@@ -30,8 +30,33 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -160,7 +185,7 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test :py:meth:`~culebra.trainer.ea.abc.HeterogeneousEA.__init__`."""
-        valid_fitness_func = Fitness(dataset)
+        valid_fitness_func = KappaNumFeats(dataset)
         valid_subtrainer_cls = SinglePopEA
         valid_num_subtrainers = 3
 
@@ -562,7 +587,7 @@ class TrainerTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Set custom params
-        fitness_func = Fitness(dataset)
+        fitness_func = KappaNumFeats(dataset)
         subtrainer_cls = SinglePopEA
         num_subtrainers = 3
         params = {

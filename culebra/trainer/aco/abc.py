@@ -896,7 +896,10 @@ class SingleColACO(SingleSpeciesTrainer):
 
         The ant makes its path and gets evaluated.
         """
-        ant = self.solution_cls(self.species, self.fitness_function.Fitness)
+        ant = self.solution_cls(
+            self.species,
+            self.fitness_function.fitness_cls
+        )
         choice = self._next_choice(ant)
 
         while choice is not None:
@@ -1046,6 +1049,22 @@ class SingleColACO(SingleSpeciesTrainer):
                     self.initial_pheromone
                 ),
                 self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> SingleColACO:
+        """Return a single colony ACO trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_solution_cls'],
+            state['_species'],
+            state['_fitness_function'],
+            state['_initial_pheromone']
+        )
+        obj.__setstate__(state)
+        return obj
 
 
 class SinglePheromoneMatrixACO(SingleColACO):
@@ -2132,6 +2151,23 @@ class MaxPheromonePACO(PACO):
                 ),
                 self.__dict__)
 
+    @classmethod
+    def __fromstate__(cls, state: dict) -> MaxPheromonePACO:
+        """Return a max pheromone PACO trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(
+            state['_solution_cls'],
+            state['_species'],
+            state['_fitness_function'],
+            state['_initial_pheromone'],
+            state['_max_pheromone']
+        )
+        obj.__setstate__(state)
+        return obj
+
 
 class SingleObjPACO(MaxPheromonePACO, SingleObjACO):
     """Base class for the single colony and single objective PACO approaches."""
@@ -2657,7 +2693,7 @@ class ACO_FS(
         while correct_ant_generated is False:
             # Start with an empty ant
             ant = self.solution_cls(
-                self.species, self.fitness_function.Fitness
+                self.species, self.fitness_function.fitness_cls
             )
 
             # Try choosing a feature

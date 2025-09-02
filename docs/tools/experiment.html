@@ -98,9 +98,9 @@ fitness function</p></li>
 <section id="class-methods">
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.Experiment.load_pickle">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">load_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.tools.Experiment.load_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Load a pickled object from a file.</p>
+<dt class="sig sig-object py" id="culebra.tools.Experiment.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.tools.Experiment.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -109,7 +109,7 @@ fitness function</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -142,7 +142,7 @@ path or an invalid configuration file</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the configuration file. It can be
-whether a configuration script or a pickled
+whether a configuration script or a serialized
 <a class="reference internal" href="evaluation.html#culebra.tools.Evaluation" title="culebra.tools.Evaluation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Evaluation</span></code></a> instance. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></code></a> is used.
@@ -251,9 +251,9 @@ funtion</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="culebra.tools.Experiment.results_pickle_filename">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">results_pickle_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.Experiment.results_pickle_filename" title="Link to this definition">¶</a></dt>
-<dd><p>Get the filename used to save the pickled results.</p>
+<dt class="sig sig-object py" id="culebra.tools.Experiment.serialized_results_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">serialized_results_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.Experiment.serialized_results_filename" title="Link to this definition">¶</a></dt>
+<dd><p>Get the filename used to save the serialized results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -262,8 +262,8 @@ funtion</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="culebra.tools.Experiment.results_excel_filename">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">results_excel_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.Experiment.results_excel_filename" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.Experiment.excel_results_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">excel_results_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.Experiment.excel_results_filename" title="Link to this definition">¶</a></dt>
 <dd><p>Get the filename used to save the results in Excel format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -295,7 +295,7 @@ funtion</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.tools.Experiment.results">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.tools.Experiment.results" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.tools.Experiment.results" title="Link to this definition">¶</a></dt>
 <dd><p>Get all the results provided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -320,9 +320,9 @@ funtion</p>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.Experiment.save_pickle">
-<span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">save_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Experiment.save_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Pickle this object and save it to a file.</p>
+<dt class="sig sig-object py" id="culebra.tools.Experiment.dump">
+<span class="sig-prename descclassname"><span class="pre">Experiment.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.Experiment.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -331,7 +331,7 @@ funtion</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>

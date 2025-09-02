@@ -24,33 +24,11 @@
 
 .. automodule:: culebra.fitness_function
 
-Attributes
-----------
-.. attribute:: DEFAULT_CLASSIFIER
-    :annotation: = <class 'sklearn.naive_bayes.GaussianNB'>
-
-    Default classifier for fitness functions
-
-.. attribute:: DEFAULT_CV_FOLDS
-    :annotation: = 5
-
-    Default number of folds for cross-validation
-
-.. attribute:: DEFAULT_THRESHOLD
-    :annotation: = 0
-
-    Default similarity threshold for fitnesses
-
-
-..
-    .. autodata:: DEFAULT_CLASSIFIER
-    .. autodata:: DEFAULT_THRESHOLD
-
-
 .. toctree::
     :hidden:
 
     abc <fitness_function/abc>
+    MultiObjectiveFitnessFunction <fitness_function/multi_objective_fitness_function>
     dataset_score <fitness_function/dataset_score>
     feature_selection <fitness_function/feature_selection>
     svc_optimization <fitness_function/svc_optimization>

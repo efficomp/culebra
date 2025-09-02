@@ -34,8 +34,33 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -47,13 +72,15 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Default species for all the tests
 species = Species(num_feats=dataset.num_feats)
 
+fitness_func = KappaNumFeats(dataset)
+
 
 class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
-        self.sol = Solution(self.species, self.fitness_function.Fitness)
+        self.sol = Solution(self.species, self.fitness_function.fitness_cls)
         self.evaluate(self.sol)
 
 
@@ -103,7 +130,7 @@ class TrainerTester(unittest.TestCase):
         """Test the constructor."""
         # Test default params
         trainer = MyDistributedTrainer(
-            Fitness(dataset),
+            fitness_func,
             MySingleSpeciesTrainer
         )
 
@@ -112,7 +139,6 @@ class TrainerTester(unittest.TestCase):
     def test_checkpoining(self):
         """Test checkpointing."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         params = {
@@ -157,7 +183,6 @@ class TrainerTester(unittest.TestCase):
     def test_search(self):
         """Test _search and _finish_search."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         max_num_iters = 10
@@ -188,7 +213,6 @@ class TrainerTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         max_num_iters = 10

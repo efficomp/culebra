@@ -30,7 +30,7 @@ from typing import (
     Sequence,
     Type)
 from numbers import Integral, Real
-from os.path import normcase, normpath, splitext
+from os.path import normcase, normpath
 
 import numpy as np
 
@@ -412,10 +412,8 @@ def check_filename(
                 f"begin with a dot: {ext}"
             )
 
-        # Split the proposed file name
-        (_, value_ext) = splitext(value)
         # Check the extension
-        if not ext == value_ext:
+        if not value.endswith(ext):
             raise ValueError(
                 f"The extension of {name} should be {ext}: {value}"
             )
@@ -481,7 +479,7 @@ def check_matrix(
     try:
         the_matrix = np.asarray(values, dtype=dtype)
     except TypeError as err:
-        raise TypeError(
+        raise ValueError(
             f"The {name} values are not '{dtype.name}'"
         ) from err
     except ValueError as err:

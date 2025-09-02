@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.load_pickle
+.. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.load
 
 Properties
 ----------
@@ -55,7 +55,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.save_pickle
+.. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.dump
 .. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.reset
 .. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.evaluate
 .. automethod:: culebra.trainer.abc.MultiSpeciesTrainer.best_solutions

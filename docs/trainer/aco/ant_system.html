@@ -109,7 +109,7 @@ optional) – Custom termination criterion. If set to
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>col_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, greater than zero, optional) – The colony size. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <em>fitness_function</em>’s
-<a class="reference internal" href="../../abc/fitness_function.html#culebra.abc.FitnessFunction.num_nodes" title="culebra.abc.FitnessFunction.num_nodes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_nodes</span></code></a>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_nodes</span></code>
 will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>checkpoint_enable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Enable/disable checkpoining. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../../index.html#culebra.DEFAULT_CHECKPOINT_ENABLE" title="culebra.DEFAULT_CHECKPOINT_ENABLE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CHECKPOINT_ENABLE</span></code></a> will
@@ -153,9 +153,9 @@ will be used. Defaults to <a class="reference external" href="https://docs.pytho
 <section id="class-methods">
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem.load_pickle">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">load_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem.load_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Load a pickled object from a file.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -164,7 +164,7 @@ will be used. Defaults to <a class="reference external" href="https://docs.pytho
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -312,7 +312,7 @@ property) are assumed.</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
-of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -343,14 +343,14 @@ different from
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>
-of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem.choice_info">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">choice_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.AntSystem.choice_info" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">choice_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.aco.AntSystem.choice_info" title="Link to this definition">¶</a></dt>
 <dd><p>Get the choice information for all the graph’s arcs.</p>
 <p>The choice information is generated from both the pheromone and the
 heuristic matrices, modified by other parameters (depending on the ACO
@@ -359,7 +359,7 @@ feasible arc for the node.</p>
 <p>If the search process has not begun, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,7 +543,7 @@ Defaults to <a class="reference external" href="https://docs.python.org/3/librar
 <dd class="field-even"><p>Set a new value for the colony size. If set to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="abc/single_col_aco.html#culebra.trainer.aco.abc.SingleColACO.fitness_function" title="culebra.trainer.aco.abc.SingleColACO.fitness_function"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fitness_function</span></code></a>’s
-<a class="reference internal" href="../../abc/fitness_function.html#culebra.abc.FitnessFunction.num_nodes" title="culebra.abc.FitnessFunction.num_nodes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_nodes</span></code></a> is chosen</p>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">num_nodes</span></code> is chosen</p>
 </dd>
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, greater than zero</p>
@@ -625,7 +625,7 @@ is chosen</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If set to a value which is not a a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If set to a value whose extension is not
-<a class="reference internal" href="../../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -779,9 +779,9 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem.save_pickle">
-<span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">save_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem.save_pickle" title="Link to this definition">¶</a></dt>
-<dd><p>Pickle this object and save it to a file.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem.dump">
+<span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
@@ -790,7 +790,7 @@ representatives, <a class="reference external" href="https://docs.python.org/3/l
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
-<a class="reference internal" href="../../index.html#culebra.PICKLE_FILE_EXTENSION" title="culebra.PICKLE_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PICKLE_FILE_EXTENSION</span></code></a></p></li>
+<a class="reference internal" href="../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -878,7 +878,7 @@ cooperative or <a class="reference external" href="https://docs.python.org/3/lib
 <dd class="field-odd"><p><strong>state_proxy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DictProxy</span></code>,
 optional) – Dictionary proxy to copy the output state of the
 trainer procedure. Only used if train is executed within a
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Process</span></code></a>. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<a class="reference external" href="https://multiprocess.readthedocs.io/en/latest/index.html#multiprocess.Process" title="(in multiprocess v0.70.19.dev0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocess.Process</span></code></a>. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1174,7 +1174,7 @@ isn’t any feasible node</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.AntSystem._feasible_neighborhood_probs">
-<span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">_feasible_neighborhood_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem._feasible_neighborhood_probs" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">AntSystem.</span></span><span class="sig-name descname"><span class="pre">_feasible_neighborhood_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../solution/abc/ant.html#culebra.solution.abc.Ant" title="culebra.solution.abc.Ant"><span class="pre">Ant</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.AntSystem._feasible_neighborhood_probs" title="Link to this definition">¶</a></dt>
 <dd><p>Return the probabilities of the feasible neighborhood of an ant.</p>
 <p>The feasible neighborhood is composed of those nodes not visited yet
 by the ant and connected to its current node. Each of these nodes has
@@ -1193,7 +1193,7 @@ calculated from the
 from the current node of <em>ant</em></p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

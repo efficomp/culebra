@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>culebra.fitness_function.feature_selection.abc.FSDatasetScorer class &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css?v=279e0f84" />
+    <script src="../../../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="culebra.fitness_function.feature_selection.abc.FSClassificationScorer class" href="fs_classification_scorer.html" />
+    <link rel="prev" title="culebra.fitness_function.feature_selection.abc.FSScorer class" href="fs_scorer.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fs_classification_scorer.html" title="culebra.fitness_function.feature_selection.abc.FSClassificationScorer class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fs_scorer.html" title="culebra.fitness_function.feature_selection.abc.FSScorer class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../feature_selection.html" ><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../abc.html" accesskey="U"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection.abc.FSDatasetScorer</span></code> class</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="culebra-fitness-function-feature-selection-abc-fsdatasetscorer-class">
+<h1><a class="reference internal" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer" title="culebra.fitness_function.feature_selection.abc.FSDatasetScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection.abc.FSDatasetScorer</span></code></a> class<a class="headerlink" href="#culebra-fitness-function-feature-selection-abc-fsdatasetscorer-class" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FSDatasetScorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_prop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_folds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer" title="Link to this definition">¶</a></dt>
+<dd><p>Construct the fitness function.</p>
+<p>If <em>test_data</em> are provided, the whole <em>training_data</em> are used to
+train. Otherwise, if <em>test_prop</em> is provided, <em>training_data</em> are
+split (stratified) into training and test data each time
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code> is
+called and a Monte Carlo cross validation is applied. Finally, if both
+<em>test_data</em> and <em>test_prop</em> are omitted, a <em>k</em>-fold cross-validation
+is applied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_data</strong> (<a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The training dataset</p></li>
+<li><p><strong>test_data</strong> (<a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>, optional) – The test dataset, defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>test_prop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – A real value in (0, 1) or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>. Defaults
+to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>cv_folds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – The number of folds for <em>k</em>-fold cross-validation.
+If omitted,
+<a class="reference internal" href="../../dataset_score.html#culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS" title="culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CV_FOLDS</span></code></a>
+is used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Index of this objective when it is used for
+multi-objective fitness functions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.13)"><strong>RuntimeError</strong></a> – If the number of objectives is not 1</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>training_data</em> or <em>test_data</em> is an invalid
+dataset</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>test_prop</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <em>test_prop</em> is not in (0, 1)</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>cv_folds</em> is not an integer value</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <em>cv_folds</em> is not positive</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>index</em> is not an integer number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <em>index</em> is not positive</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="class-methods">
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.num_obj">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">num_obj</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.num_obj" title="Link to this definition">¶</a></dt>
+<dd><p>Get the number of objectives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_weights">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">obj_weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_weights" title="Link to this definition">¶</a></dt>
+<dd><p>Get the objective weights.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_names">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">obj_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_names" title="Link to this definition">¶</a></dt>
+<dd><p>Get the objective names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_thresholds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">obj_thresholds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_thresholds" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set new objective similarity thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the current thresholds</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set new thresholds. If only a single value is provided, the
+same threshold will be used for all the objectives. Different
+thresholds can be provided in a
+<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If neither a real number nor a
+<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of real numbers id provided</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If any threshold is negative</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the length of the thresholds sequence does not
+match the number of objectives</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.fitness_cls">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">fitness_cls</span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.fitness_cls" title="Link to this definition">¶</a></dt>
+<dd><p>Return the fitness class for the fitness function.</p>
+<p>Subclasses must override this property to generate an adequate fitness
+class.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.is_noisy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">is_noisy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.is_noisy" title="Link to this definition">¶</a></dt>
+<dd><p>Return <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the fitness function is noisy.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.num_nodes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">num_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.num_nodes" title="Link to this definition">¶</a></dt>
+<dd><p>Return the problem graph’s number of nodes for ACO-based trainers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The problem graph’s number of nodes</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.index" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set the index of this objective.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the current index</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new index</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the index is not an integer number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the index is not positive</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.training_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">training_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.training_data" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set the training dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the training dataset</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new training dataset</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If set to an invalid dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.test_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">test_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.test_data" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set the test dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the test dataset</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new test dataset</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If set to an invalid dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.test_prop">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">test_prop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.test_prop" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set the proportion of data used to test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the test data proportion</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new value for the test data porportion. A real value in
+(0, 1) or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is expected</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If set to a value which is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If set to a value which is not in (0, 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.cv_folds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">cv_folds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.cv_folds" title="Link to this definition">¶</a></dt>
+<dd><p>Get and set the number of cross-validation folds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return the number of cross-validation folds</p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new value for the number of cross-validation folds. A
+positive integer value or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is expected</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If set to a value which is not an integer value</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If set to a value which is not positive</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="private-properties">
+<h2>Private properties<a class="headerlink" href="#private-properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer._worst_score">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">_worst_score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer._worst_score" title="Link to this definition">¶</a></dt>
+<dd><p>Worst achievable score.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.dump">
+<span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.evaluate">
+<span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representatives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.evaluate" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a solution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sol</strong> (<a class="reference internal" href="../../../solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a>) – Solution to be evaluated.</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, ignored) – Index where <em>sol</em> should be inserted in the
+representatives sequence to form a complete solution for the
+problem. Only used by cooperative problems</p></li>
+<li><p><strong>representatives</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
+<a class="reference internal" href="../../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a>, ignored) – Representative solutions of each species
+being optimized. Only used by cooperative problems</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitness of <em>sol</em></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <em>sol</em> is not evaluable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.is_evaluable">
+<span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">is_evaluable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.is_evaluable" title="Link to this definition">¶</a></dt>
+<dd><p>Return <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the solution can be evaluated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sol</strong> (<a class="reference internal" href="../../../solution/parameter_optimization/solution.html#culebra.solution.parameter_optimization.Solution" title="culebra.solution.parameter_optimization.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a>) – Solution to be evaluated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer.heuristic">
+<span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">heuristic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../solution/feature_selection/species.html#culebra.solution.feature_selection.Species" title="culebra.solution.feature_selection.Species"><span class="pre">Species</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer.heuristic" title="Link to this definition">¶</a></dt>
+<dd><p>Get the heuristic matrices for ACO-based trainers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>species</strong> (<a class="reference internal" href="../../../solution/feature_selection/species.html#culebra.solution.feature_selection.Species" title="culebra.solution.feature_selection.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a>) – Species constraining the problem solutions</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>species</em> is not an instance of
+<a class="reference internal" href="../../../solution/feature_selection/species.html#culebra.solution.feature_selection.Species" title="culebra.solution.feature_selection.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple with only one heuristic matrix. Arcs between
+selectable features have a heuristic value of 1, while arcs
+involving any non-selectable feature or arcs from a feature to
+itself have a heuristic value of 0.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="private-methods">
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer._score">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.13)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.13)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer._score" title="Link to this definition">¶</a></dt>
+<dd><p>Score function to be used in the evaluation.</p>
+<p>This method must be overridden by subclasses to return a correct
+value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer._final_training_test_data">
+<span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">_final_training_test_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer._final_training_test_data" title="Link to this definition">¶</a></dt>
+<dd><p>Get the final training and test data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sol</strong> (<a class="reference internal" href="../../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a>) – Solution to be evaluated. It is used to select the
+features from the datasets</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final training and test datasets</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_train_test">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">_evaluate_train_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_train_test" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a solution.</p>
+<p>This method must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_data</strong> (<a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The training dataset</p></li>
+<li><p><strong>test_data</strong> (<a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The test dataset</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The fitness values for <em>sol</em></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_mccv">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">_evaluate_mccv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_mccv" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a solution.</p>
+<p>The <em>training_data</em> are split (stratified) into training and test data
+according to
+<a class="reference internal" href="../../dataset_score/abc/dataset_scorer.html#culebra.fitness_function.dataset_score.abc.DatasetScorer.test_prop" title="culebra.fitness_function.dataset_score.abc.DatasetScorer.test_prop"><code class="xref py py-attr docutils literal notranslate"><span class="pre">test_prop</span></code></a>
+each time the solution is evaluated and a Monte Carlo cross-validation
+is applied.</p>
+<p>This method must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sol</strong> (<a class="reference internal" href="../../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a>) – Solution to be evaluated.</p></li>
+<li><p><strong>training_data</strong> (<a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The training dataset</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fitness values for <em>sol</em></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_kfcv">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">FSDatasetScorer.</span></span><span class="sig-name descname"><span class="pre">_evaluate_kfcv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_kfcv" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a solution.</p>
+<p>A <em>k</em>-fold cross-validation is applied using the <em>training_data</em> with
+<a class="reference internal" href="../../dataset_score/abc/dataset_scorer.html#culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds" title="culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cv_folds</span></code></a>
+folds.</p>
+<p>This method must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>training_data</strong> (<a class="reference internal" href="../../../tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>) – The training dataset</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – if has not been overridden</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The fitness values for <em>sol</em></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fs_classification_scorer.html" title="culebra.fitness_function.feature_selection.abc.FSClassificationScorer class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fs_scorer.html" title="culebra.fitness_function.feature_selection.abc.FSScorer class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../feature_selection.html" ><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../abc.html" ><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.feature_selection.abc.FSDatasetScorer</span></code> class</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../../../_sources/fitness_function/feature_selection/abc/fs_dataset_scorer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work is supported by projects <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia,
+        Innovación y Universidades</a></i>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../../../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../../../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

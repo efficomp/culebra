@@ -28,6 +28,7 @@ from copy import copy, deepcopy
 
 from deap.tools import selNSGA3
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.ea import (
     DEFAULT_POP_SIZE,
     NSGA,
@@ -39,8 +40,33 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -59,7 +85,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
 
@@ -78,7 +104,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "nsga3_reference_points_p": 1,
             "nsga3_reference_points_scaling": 4
         }
@@ -98,7 +124,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
         # trainer.pop_size should be DEFAULT_POP_SIZE
@@ -108,7 +134,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "selection_func": selNSGA3
         }
         trainer = NSGA(**params)
@@ -124,7 +150,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "pop_size": pop_size
         }
         trainer = NSGA(**params)
@@ -137,7 +163,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
         # trainer.selection_func should be DEFAULT_NSGA_SELECTION_FUNC
@@ -155,7 +181,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
         # trainer.selection_func should be DEFAULT_NSGA_SELECTION_FUNC
@@ -175,7 +201,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
 
@@ -197,7 +223,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
 
@@ -216,7 +242,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
 
@@ -232,7 +258,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset)
+            "fitness_function": KappaNumFeats(dataset)
         }
         trainer = NSGA(**params)
 
@@ -250,7 +276,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }
@@ -270,7 +296,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }
@@ -297,7 +323,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }
@@ -317,7 +343,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }
@@ -325,15 +351,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = NSGA(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = NSGA.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = NSGA.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.
@@ -345,32 +371,13 @@ class TrainerTester(unittest.TestCase):
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))
-        self.assertNotEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
-        )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.training_data),
-            id(trainer2.fitness_function.training_data)
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.inputs ==
-                trainer2.fitness_function.training_data.inputs
-            ).all()
-        )
-
-        self.assertTrue(
-            (
-                trainer1.fitness_function.training_data.outputs ==
-                trainer2.fitness_function.training_data.outputs
-            ).all()
-        )
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(
-            id(trainer1.species.num_feats), id(trainer2.species.num_feats)
+            trainer1.species.num_feats, trainer2.species.num_feats
+        )
+        self.assertEqual(
+            trainer1.species.max_feat, trainer2.species.max_feat
         )
 
     def test_repr(self):
@@ -379,7 +386,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_enable": False,
             "verbose": False
         }

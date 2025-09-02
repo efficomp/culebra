@@ -26,12 +26,12 @@
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Results.load_pickle
+.. automethod:: culebra.tools.Results.load
 .. automethod:: culebra.tools.Results.from_csv_files
 
 Methods
 -------
-.. automethod:: culebra.tools.Results.save_pickle
+.. automethod:: culebra.tools.Results.dump
 .. automethod:: culebra.tools.Results.to_excel
 
 Dunder methods

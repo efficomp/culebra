@@ -26,7 +26,7 @@ import unittest
 import os
 import random
 from copy import copy, deepcopy
-from multiprocessing import Manager
+from multiprocess import Manager
 from functools import partial
 
 import numpy as np
@@ -38,10 +38,10 @@ from culebra import (
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
     DEFAULT_VERBOSITY,
-    DEFAULT_INDEX
+    DEFAULT_INDEX,
+    SERIALIZED_FILE_EXTENSION
 )
 from culebra.abc import (
-    Fitness,
     FitnessFunction,
     Solution,
     Species,
@@ -85,11 +85,15 @@ class MySpecies(Species):
 class MyFitnessFunction(FitnessFunction):
     """Dummy implementation of a fitness function."""
 
-    class Fitness(Fitness):
-        """Fitness returned by this fitness function."""
+    @property
+    def obj_weights(self):
+        """Objective weights."""
+        return (1, )
 
-        weights = (1.0,)
-        names = ("max",)
+    @property
+    def obj_names(self):
+        """Objective names."""
+        return ("max",)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution.
@@ -112,11 +116,15 @@ class MyFitnessFunction(FitnessFunction):
 class MyOtherFitnessFunction(FitnessFunction):
     """Dummy implementation of a fitness function."""
 
-    class Fitness(Fitness):
-        """Fitness returned by this fitness function."""
+    @property
+    def obj_weights(self):
+        """Objective weights."""
+        return (1, )
 
-        weights = (1.0,)
-        names = ("doublemax",)
+    @property
+    def obj_names(self):
+        """Objective names."""
+        return ("doublemax",)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution.
@@ -145,7 +153,7 @@ class MyTrainer(Trainer):
         Dummy implementation.
         """
         species = MySpecies()
-        solution = MySolution(species, MyFitnessFunction.Fitness)
+        solution = MySolution(species, MyFitnessFunction().fitness_cls)
         solution.fitness.values = self.fitness_function.evaluate(solution)
         population = (solution,)
 
@@ -216,7 +224,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyFitnessFunction(),
             "checkpoint_enable": False,
             "checkpoint_freq": 25,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
             "verbose": False
         }
@@ -232,13 +240,13 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.runtime, None)
         self.assertEqual(trainer._stats, None)
 
-        self.assertTrue(
-            trainer.checkpoint_enable is params["checkpoint_enable"])
-        self.assertTrue(trainer.checkpoint_freq is params["checkpoint_freq"])
-        self.assertTrue(
-            trainer.checkpoint_filename is params["checkpoint_filename"])
-        self.assertTrue(trainer.random_seed is params["random_seed"])
-        self.assertTrue(trainer.verbose is params["verbose"])
+        self.assertEqual(
+            trainer.checkpoint_enable, params["checkpoint_enable"])
+        self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
+        self.assertEqual(
+            trainer.checkpoint_filename, params["checkpoint_filename"])
+        self.assertEqual(trainer.random_seed, params["random_seed"])
+        self.assertEqual(trainer.verbose, params["verbose"])
 
     def test_index(self):
         """Test the index property."""
@@ -301,8 +309,9 @@ class TrainerTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             trainer.checkpoint_filename = ['a']
 
-        trainer.checkpoint_filename = "my_check.gz"
-        self.assertEqual(trainer.checkpoint_filename, "my_check.gz")
+        checkpoint_filename = "my_check" + SERIALIZED_FILE_EXTENSION
+        trainer.checkpoint_filename = checkpoint_filename
+        self.assertEqual(trainer.checkpoint_filename, checkpoint_filename)
 
     def test_random_seed(self):
         """Test :py:attr:`~culebra.abc.Trainer.random_seed`."""
@@ -385,14 +394,16 @@ class TrainerTester(unittest.TestCase):
         """Test the solution evaluation."""
         # Create the species
         species = MySpecies()
+        fitness_func = MyFitnessFunction()
+        fitness_cls = fitness_func.fitness_cls
 
         # Create one solution
-        sol1 = MySolution(species, MyFitnessFunction.Fitness, 1)
-        sol2 = MySolution(species, MyFitnessFunction.Fitness, 2)
-        sol3 = MySolution(species, MyFitnessFunction.Fitness, 3)
+        sol1 = MySolution(species, fitness_cls, 1)
+        sol2 = MySolution(species, fitness_cls, 2)
+        sol3 = MySolution(species, fitness_cls, 3)
 
         # Create the trainer
-        trainer = MyTrainer(MyFitnessFunction())
+        trainer = MyTrainer(fitness_func)
 
         # Omit the fitness function.
         # The default training funtion should be used
@@ -402,18 +413,19 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(
             sol1.fitness.names,
-            MyFitnessFunction.Fitness.names
+            fitness_func.obj_names
         )
 
         # Provide a different fitness function.
         # The default training function should be used
-        trainer.evaluate(sol1, MyOtherFitnessFunction())
+        other_func = MyOtherFitnessFunction()
+        trainer.evaluate(sol1, other_func)
         self.assertEqual(
             sol1.fitness.values, (sol1.val*2,) * sol1.fitness.num_obj
         )
         self.assertEqual(
             sol1.fitness.names,
-            MyOtherFitnessFunction.Fitness.names
+            other_func.obj_names
         )
 
         # Provide representatives
@@ -425,7 +437,7 @@ class TrainerTester(unittest.TestCase):
 
         trainer.evaluate(
             sol2,
-            fitness_func=MyOtherFitnessFunction(),
+            fitness_func=other_func,
             representatives=[[sol1], [sol3]]
         )
         self.assertEqual(
@@ -752,7 +764,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyFitnessFunction(),
             "checkpoint_enable": False,
             "checkpoint_freq": 25,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
             "verbose": False
         }
@@ -805,7 +817,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyFitnessFunction(),
             "checkpoint_enable": False,
             "checkpoint_freq": 25,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
             "verbose": False
         }
@@ -834,7 +846,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyFitnessFunction(),
             "checkpoint_enable": False,
             "checkpoint_freq": 25,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
             "verbose": False
         }
@@ -851,14 +863,14 @@ class TrainerTester(unittest.TestCase):
 
         Test the :py:meth:`~culebra.abc.Trainer.__setstate__` and
         :py:meth:`~culebra.abc.Trainer.__reduce__` methods,
-        :py:meth:`~culebra.abc.Trainer.save_pickle` and
-        :py:meth:`~culebra.abc.Trainer.load_pickle` methods.
+        :py:meth:`~culebra.abc.Trainer.dump` and
+        :py:meth:`~culebra.abc.Trainer.load` methods.
         """
         params = {
             "fitness_function": MyFitnessFunction(),
             "checkpoint_enable": False,
             "checkpoint_freq": 25,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
             "verbose": False
         }
@@ -866,15 +878,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = MyTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        os.remove(pickle_filename)
+        # Remove the serialized file
+        os.remove(serialized_filename)
 
     def _check_deepcopy(self, trainer1, trainer2):
         """Check if *trainer1* is a deepcopy of *trainer2*.
@@ -891,14 +903,14 @@ class TrainerTester(unittest.TestCase):
             id(trainer2.fitness_function)
         )
         self.assertTrue(
-            trainer1.fitness_function.Fitness.weights ==
-            trainer2.fitness_function.Fitness.weights
+            trainer1.fitness_function.obj_weights ==
+            trainer2.fitness_function.obj_weights
         )
 
         self.assertTrue(
             (
-                trainer1.fitness_function.Fitness.names ==
-                trainer2.fitness_function.Fitness.names
+                trainer1.fitness_function.obj_names ==
+                trainer2.fitness_function.obj_names
             )
         )
 
@@ -908,7 +920,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": MyFitnessFunction(),
             "checkpoint_enable": False,
             "checkpoint_freq": 25,
-            "checkpoint_filename": "my_check.gz",
+            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
             "verbose": False
         }

@@ -24,31 +24,50 @@
 
 import unittest
 
-from culebra.abc import Species, Fitness, FitnessFunction
+from os import remove
+
+from culebra import DEFAULT_SIMILARITY_THRESHOLD, SERIALIZED_FILE_EXTENSION
+from culebra.abc import FitnessFunction
 
 
 class MyFitnessFunction(FitnessFunction):
     """Dummy implementation of a fitness function."""
 
-    class Fitness(Fitness):
-        """Fitness returned by this fitness function."""
+    @property
+    def obj_weights(self):
+        """Objective weights."""
+        return (1, 1)
 
-        weights = (1.0, 1.0)
-        names = ("obj1", "obj2")
-        thresholds = [0.001, 0.001]
-
-    def evaluate(self, sol, index, representatives):
-        """Evaluate one solution.
-
-        Dummy implementation of the evaluation function.
-        """
+    def evaluate(self, sol, index=None, representatives=None):
+        """Evaluate one solution."""
+        return (0, 0)
 
 
 class FitnessFunctionTester(unittest.TestCase):
     """Test :py:class:`~culebra.abc.FitnessFunction`."""
 
-    def test_set_fitness_thresholds(self):
-        """Test the set_fitness_thresholds class method."""
+    def test_num_obj(self):
+        """Test the num_obj property."""
+        # Fitness function to be tested
+        func = MyFitnessFunction()
+        self.assertEqual(func.num_obj, len(func.obj_weights))
+
+    def test_obj_names(self):
+        """Test the obj_names property."""
+        # Fitness function to be tested
+        func = MyFitnessFunction()
+        self.assertEqual(func.obj_names, ("obj_0", "obj_1"))
+
+    def test_obj_thresholds(self):
+        """Test the obj_thresholds property."""
+        # Try default objective similarity thresholds
+        func = MyFitnessFunction()
+
+        self.assertEqual(
+            func.obj_thresholds,
+            [DEFAULT_SIMILARITY_THRESHOLD] * func.num_obj
+            )
+
         invalid_threshold_types = (type, {}, len)
         invalid_threshold_value = -1
         valid_thresholds = [0, 0.33, 0.5, 2]
@@ -56,99 +75,32 @@ class FitnessFunctionTester(unittest.TestCase):
         # Try invalid types for the thresholds. Should fail
         for threshold in invalid_threshold_types:
             with self.assertRaises(TypeError):
-                MyFitnessFunction.set_fitness_thresholds(threshold)
+                func.obj_thresholds = threshold
 
         # Try invalid values for the threshold. Should fail
         with self.assertRaises(ValueError):
-            MyFitnessFunction.set_fitness_thresholds(invalid_threshold_value)
+            func.obj_thresholds = invalid_threshold_value
 
         # Try a fixed value for all the thresholds
         for threshold in valid_thresholds:
-            MyFitnessFunction.set_fitness_thresholds(threshold)
+            func.obj_thresholds = threshold
             # Check the length of the sequence
-            self.assertEqual(
-                len(MyFitnessFunction.Fitness.thresholds),
-                len(MyFitnessFunction.Fitness.weights)
-            )
+            self.assertEqual(len(func.obj_thresholds), func.num_obj)
 
             # Check that all the values match
-            for th in MyFitnessFunction.Fitness.thresholds:
+            for th in func.obj_thresholds:
                 self.assertEqual(threshold, th)
 
         # Try different values of threshold for each objective
-        MyFitnessFunction.set_fitness_thresholds(
-            valid_thresholds[:len(MyFitnessFunction.Fitness.weights)]
-        )
+        func.obj_thresholds = valid_thresholds[:func.num_obj]
         for th1, th2 in zip(
-            valid_thresholds, MyFitnessFunction.Fitness.thresholds
+            valid_thresholds, func.obj_thresholds
         ):
             self.assertEqual(th1, th2)
 
         # Try a wrong number of thresholds
         with self.assertRaises(ValueError):
-            MyFitnessFunction.set_fitness_thresholds(valid_thresholds)
-
-    def test_get_objective_threshold(self):
-        """Test :py:meth:~culebra.abc.Fitness.get_objective_threshold`."""
-        # Try an invalid type for the objective name. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitnessFunction.get_fitness_objective_threshold(1)
-
-        # Try an invalid objective name. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitnessFunction.get_fitness_objective_threshold(
-                "invalid_obj_name"
-            )
-
-        MyFitnessFunction.set_fitness_thresholds(1)
-        obj_index = 0
-        obj_name = MyFitnessFunction.Fitness.names[obj_index]
-        obj_threshold = MyFitnessFunction.Fitness.thresholds[obj_index]
-        self.assertEqual(
-            MyFitnessFunction.get_fitness_objective_threshold(obj_name),
-            obj_threshold
-        )
-
-    def test_set_fitness_objective_threshold(self):
-        """Test the set_fitness_objective_threshold class method."""
-        # Try an invalid type for the objective name. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitnessFunction.set_fitness_objective_threshold(1, 0.5)
-
-        # Try an invalid objective name. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitnessFunction.set_fitness_objective_threshold(
-                "invalid_obj_name",
-                0.5
-            )
-
-        MyFitnessFunction.set_fitness_thresholds(1)
-        obj_index = 0
-        obj_name = MyFitnessFunction.Fitness.names[obj_index]
-        obj_threshold = MyFitnessFunction.Fitness.thresholds[obj_index]
-
-        # Try an invalid type for the threshold. Should fail ...
-        with self.assertRaises(TypeError):
-            MyFitnessFunction.set_fitness_objective_threshold(obj_name, "a")
-
-        # Try an invalid value for the threshold. Should fail ...
-        with self.assertRaises(ValueError):
-            MyFitnessFunction.set_fitness_objective_threshold(obj_name, -1)
-
-        # Set valid thresholds
-        for obj_index in range(len(MyFitnessFunction.Fitness.names)):
-            obj_name = MyFitnessFunction.Fitness.names[obj_index]
-            obj_threshold = MyFitnessFunction.Fitness.thresholds[obj_index]
-            new_threshold = obj_threshold * 2
-            MyFitnessFunction.set_fitness_objective_threshold(
-                obj_name,
-                new_threshold,
-            )
-
-            # Check the new threshold
-            self.assertEqual(
-                MyFitnessFunction.Fitness.thresholds[obj_index], new_threshold
-            )
+            func.obj_thresholds = valid_thresholds
 
     def test_is_noisy(self):
         """Test the is_noisy property."""
@@ -156,30 +108,27 @@ class FitnessFunctionTester(unittest.TestCase):
         func = MyFitnessFunction()
         self.assertEqual(func.is_noisy, False)
 
-    def test_num_obj(self):
-        """Test the num_obj property."""
-        # Fitness function to be tested
-        func = MyFitnessFunction()
-        self.assertEqual(func.num_obj, len(MyFitnessFunction.Fitness.weights))
-
-    def test_num_nodes(self):
-        """Test the num_nodes property."""
-        # Fitness function to be tested
-        func = MyFitnessFunction()
-        self.assertEqual(func.num_nodes, None)
-
-    def test_heuristic(self):
-        """Test the heuristic method."""
-        # Fitness function to be tested
-
-        func = MyFitnessFunction()
-        self.assertEqual(func.heuristic(Species()), None)
-
     def test_repr(self):
         """Test the repr and str dunder methods."""
         func = MyFitnessFunction()
         self.assertIsInstance(repr(func), str)
         self.assertIsInstance(str(func), str)
+
+    def test_fitness_serialization(self):
+        """Test the serialization of fitnesses."""
+        func = MyFitnessFunction()
+        fitness1 = func.fitness_cls(func.evaluate(None))
+
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        fitness1.dump(serialized_filename)
+        fitness2 = fitness1.__class__.load(serialized_filename)
+
+        # Check the serialization
+        self.assertNotEqual(id(fitness1), id(fitness2))
+        self.assertEqual(fitness1.wvalues, fitness2.wvalues)
+
+        # Remove the serialized file
+        remove(serialized_filename)
 
 
 if __name__ == '__main__':

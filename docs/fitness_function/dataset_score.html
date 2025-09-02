@@ -13,8 +13,8 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.fitness_function.dataset_score.Accuracy class" href="dataset_score/kappa_index.html" />
-    <link rel="prev" title="culebra.fitness_function.abc.CooperativeRBFSVCFSScorer class" href="abc/cooperative_rbf_svc_fs_scorer.html" /> 
+    <link rel="next" title="culebra.fitness_function.dataset_score.abc module" href="dataset_score/abc.html" />
+    <link rel="prev" title="culebra.fitness_function.MultiObjectiveFitnessFunction class" href="multi_objective_fitness_function.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -26,10 +26,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="dataset_score/kappa_index.html" title="culebra.fitness_function.dataset_score.Accuracy class"
+          <a href="dataset_score/abc.html" title="culebra.fitness_function.dataset_score.abc module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="abc/cooperative_rbf_svc_fs_scorer.html" title="culebra.fitness_function.abc.CooperativeRBFSVCFSScorer class"
+          <a href="multi_objective_fitness_function.html" title="culebra.fitness_function.MultiObjectiveFitnessFunction class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
@@ -43,21 +43,40 @@
             
   <section id="module-culebra.fitness_function.dataset_score">
 <span id="culebra-fitness-function-dataset-score-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.dataset_score" title="culebra.fitness_function.dataset_score"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.dataset_score</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.dataset_score" title="Link to this heading">¶</a></h1>
-<p>Feature selection related fitness functions.</p>
-<p>This sub-module provides several abstract fitness functions to score
-dataset-related problems:</p>
+<p>Fitness functions related to dataset scoring.</p>
+<p>This module is composed by:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="feature_selection/kappa_index.html#culebra.fitness_function.feature_selection.KappaIndex" title="culebra.fitness_function.feature_selection.KappaIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaIndex</span></code></a>:
-Single-objective function that maximizes the Kohen’s Kappa index for
-classification problems.</p></li>
-<li><p><a class="reference internal" href="feature_selection/accuracy.html#culebra.fitness_function.feature_selection.Accuracy" title="culebra.fitness_function.feature_selection.Accuracy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Accuracy</span></code></a>:
-Single-objective function that maximizes the Accuracy for classification
-problems.</p></li>
+<li><p>The <a class="reference internal" href="dataset_score/abc.html#module-culebra.fitness_function.dataset_score.abc" title="culebra.fitness_function.dataset_score.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module,
+where some abstract base classes are defined to support fitness functions
+developed in this module</p></li>
+<li><p>Some popular scoring fitness functions:</p>
+<ul>
+<li><p><a class="reference internal" href="dataset_score/kappa_index.html#culebra.fitness_function.dataset_score.KappaIndex" title="culebra.fitness_function.dataset_score.KappaIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaIndex</span></code></a>:
+Single-objective function that maximizes the Kohen’s Kappa index.</p></li>
+<li><p><a class="reference internal" href="dataset_score/accuracy.html#culebra.fitness_function.dataset_score.Accuracy" title="culebra.fitness_function.dataset_score.Accuracy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Accuracy</span></code></a>:
+Single-objective function that maximizes the Accuracy.</p></li>
+</ul>
+</li>
 </ul>
 </div></blockquote>
+<section id="attributes">
+<h2>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER">
+<span class="sig-name descname"><span class="pre">DEFAULT_CLASSIFIER</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'sklearn.naive_bayes.GaussianNB'&gt;</span></em><a class="headerlink" href="#culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER" title="Link to this definition">¶</a></dt>
+<dd><p>Default classifier for fitness functions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS">
+<span class="sig-name descname"><span class="pre">DEFAULT_CV_FOLDS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS" title="Link to this definition">¶</a></dt>
+<dd><p>Default number of folds for cross-validation.</p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
+</section>
 </section>
 
 
@@ -76,10 +95,10 @@ problems.</p></li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="dataset_score/kappa_index.html" title="culebra.fitness_function.dataset_score.Accuracy class"
+          <a href="dataset_score/abc.html" title="culebra.fitness_function.dataset_score.abc module"
              >next</a> |</li>
         <li class="right" >
-          <a href="abc/cooperative_rbf_svc_fs_scorer.html" title="culebra.fitness_function.abc.CooperativeRBFSVCFSScorer class"
+          <a href="multi_objective_fitness_function.html" title="culebra.fitness_function.MultiObjectiveFitnessFunction class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>

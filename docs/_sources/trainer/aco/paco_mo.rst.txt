@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.PACO_MO.load_pickle
+.. automethod:: culebra.trainer.aco.PACO_MO.load
 
 Properties
 ----------
@@ -68,7 +68,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.PACO_MO.save_pickle
+.. automethod:: culebra.trainer.aco.PACO_MO.dump
 .. automethod:: culebra.trainer.aco.PACO_MO.reset
 .. automethod:: culebra.trainer.aco.PACO_MO.evaluate
 .. automethod:: culebra.trainer.aco.PACO_MO.best_solutions

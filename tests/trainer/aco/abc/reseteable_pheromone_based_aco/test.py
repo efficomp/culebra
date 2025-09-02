@@ -28,6 +28,7 @@ from os import remove
 
 import numpy as np
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import DEFAULT_CONVERGENCE_CHECK_FREQ
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
@@ -35,7 +36,10 @@ from culebra.trainer.aco.abc import (
     ReseteablePheromoneBasedACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import DoublePathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 class MyTrainer(
@@ -57,11 +61,10 @@ class MyTrainer(
 
 
 num_nodes = 25
-optimum_paths = [
-    np.random.permutation(num_nodes),
-    np.random.permutation(num_nodes)
-]
-fitness_func = DoublePathLength.fromPath(*optimum_paths)
+fitness_func = MultiObjectivePathLength(
+    PathLength.fromPath(np.random.permutation(num_nodes)),
+    PathLength.fromPath(np.random.permutation(num_nodes))
+)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -315,15 +318,15 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer1 = MyTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MyTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MyTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -359,16 +362,6 @@ class TrainerTester(unittest.TestCase):
             id(trainer1.fitness_function),
             id(trainer2.fitness_function)
         )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.distance),
-            id(trainer2.fitness_function.distance)
-        )
-
-        for dist1, dist2 in zip(
-            trainer1.fitness_function.distance,
-            trainer2.fitness_function.distance
-        ):
-            self.assertTrue((dist1 == dist2).all())
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
 

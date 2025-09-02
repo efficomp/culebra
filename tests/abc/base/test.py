@@ -26,6 +26,7 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Base
 
 
@@ -81,20 +82,20 @@ class BaseTester(unittest.TestCase):
 
         Test the :py:meth:`~culebra.abc.Base.__setstate__`,
         :py:meth:`~culebra.abc.Base.__reduce__`,
-        :py:meth:`~culebra.abc.Base.save_pickle` and
-        :py:meth:`~culebra.abc.Base.load_pickle` methods.
+        :py:meth:`~culebra.abc.Base.dump` and
+        :py:meth:`~culebra.abc.Base.load` methods.
         """
         base1 = BaseSubclass(the_list)
 
-        pickle_filename = "my_pickle.gz"
-        base1.save_pickle(pickle_filename)
-        base2 = BaseSubclass.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        base1.dump(serialized_filename)
+        base2 = BaseSubclass.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(base1, base2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the: py:meth:`~culebra.abc.Base.__repr__` method."""
@@ -115,6 +116,7 @@ class BaseTester(unittest.TestCase):
         :type obj2: :py:class:`BaseSubclass`
         """
         # Copies all the levels
+        self.assertTrue(obj1.__class__, obj2.__class__)
         self.assertNotEqual(id(obj1), id(obj2))
         self.assertNotEqual(id(obj1._my_list), id(obj2._my_list))
         for list1, list2 in zip(obj1._my_list, obj2._my_list):

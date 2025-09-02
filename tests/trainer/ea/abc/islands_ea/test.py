@@ -29,8 +29,33 @@ from culebra.solution.feature_selection import BitVector
 from culebra.trainer.abc import SingleSpeciesTrainer
 from culebra.trainer.ea.abc import SinglePopEA, IslandsEA
 from culebra.solution.feature_selection import Species
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -138,7 +163,7 @@ class TrainerTester(unittest.TestCase):
     def test_subtrainer_cls(self):
         """Test the subtrainer_cls property."""
         solution_cls = BitVector
-        valid_fitness_func = Fitness(dataset)
+        valid_fitness_func = KappaNumFeats(dataset)
         valid_subtrainer_cls = SinglePopEA
 
         # Try invalid subtrainer_cls. Should fail
@@ -167,7 +192,7 @@ class TrainerTester(unittest.TestCase):
         """Test best_solutions."""
         # Parameters for the trainer
         solution_cls = BitVector
-        fitness_func = Fitness(dataset)
+        fitness_func = KappaNumFeats(dataset)
         subtrainer_cls = SinglePopEA
         num_subtrainers = 2
         params = {
@@ -207,7 +232,7 @@ class TrainerTester(unittest.TestCase):
         """Test receive_representatives."""
         # Parameters for the trainer
         solution_cls = BitVector
-        fitness_func = Fitness(dataset)
+        fitness_func = KappaNumFeats(dataset)
         subtrainer_cls = SinglePopEA
         num_subtrainers = 2
         params = {
@@ -247,7 +272,7 @@ class TrainerTester(unittest.TestCase):
     def test_send_representatives(self):
         """Test send_representatives."""
         solution_cls = BitVector
-        fitness_func = Fitness(dataset)
+        fitness_func = KappaNumFeats(dataset)
         subtrainer_cls = SinglePopEA
         num_subtrainers = 2
         params = {
@@ -304,7 +329,7 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Set custom params
         solution_cls = BitVector
-        fitness_func = Fitness(dataset)
+        fitness_func = KappaNumFeats(dataset)
         subtrainer_cls = SinglePopEA
         num_subtrainers = 2
         params = {

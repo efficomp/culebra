@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.AntSystem.load_pickle
+.. automethod:: culebra.trainer.aco.AntSystem.load
 
 Properties
 ----------
@@ -66,7 +66,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.AntSystem.save_pickle
+.. automethod:: culebra.trainer.aco.AntSystem.dump
 .. automethod:: culebra.trainer.aco.AntSystem.reset
 .. automethod:: culebra.trainer.aco.AntSystem.evaluate
 .. automethod:: culebra.trainer.aco.AntSystem.best_solutions

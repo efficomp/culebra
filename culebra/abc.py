@@ -44,17 +44,19 @@ from collections.abc import Sequence
 from copy import deepcopy
 from functools import partial
 from time import perf_counter
-from multiprocessing.managers import DictProxy
+from multiprocess.managers import DictProxy
 import random
 
 import numpy as np
-from pandas.io.pickle import read_pickle, to_pickle
+import dill
+import gzip
 from deap.base import Fitness as DeapFitness
 from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
+    DEFAULT_SIMILARITY_THRESHOLD,
     DEFAULT_MAX_NUM_ITERS,
-    PICKLE_FILE_EXTENSION,
+    SERIALIZED_FILE_EXTENSION,
     DEFAULT_CHECKPOINT_ENABLE,
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
@@ -63,7 +65,6 @@ from culebra import (
 )
 from culebra.checker import (
     check_bool,
-    check_str,
     check_int,
     check_float,
     check_instance,
@@ -101,39 +102,42 @@ TRAINER_OBJECTIVE_STATS = {
 class Base:
     """Base for all classes in culebra."""
 
-    def save_pickle(self, filename: str) -> None:
-        """Pickle this object and save it to a file.
+    def dump(self, filename: str) -> None:
+        """Serialize this object and save it to a file.
 
         :param filename: The file name.
         :type filename: :py:class:`~str`
         :raises TypeError: If *filename* is not a valid file name
         :raises ValueError: If the *filename* extension is not
-            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
+            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         filename = check_filename(
             filename,
-            name="pickle file name",
-            ext=PICKLE_FILE_EXTENSION
+            name="serialized file name",
+            ext=SERIALIZED_FILE_EXTENSION
         )
 
-        to_pickle(self, filename)
+        with gzip.open(filename, 'wb') as f:
+            dill.dump(self, f)
 
     @classmethod
-    def load_pickle(cls, filename: str) -> Base:
-        """Load a pickled object from a file.
+    def load(cls, filename: str) -> Base:
+        """Load a serialized object from a file.
 
         :param filename: The file name.
         :type filename: :py:class:`~str`
         :raises TypeError: If *filename* is not a valid file name
         :raises ValueError: If the *filename* extension is not
-            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
+            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         filename = check_filename(
             filename,
-            name="pickle file name",
-            ext=PICKLE_FILE_EXTENSION
+            name="serialized file name",
+            ext=SERIALIZED_FILE_EXTENSION
         )
-        return read_pickle(filename)
+
+        with gzip.open(filename, 'rb') as f:
+            return cls.__fromstate__(dill.load(f).__dict__)
 
     def __copy__(self) -> Base:
         """Shallow copy the object."""
@@ -200,6 +204,17 @@ class Base:
         msg += ")"
         return msg
 
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Base:
+        """Return an object from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls()
+        obj.__setstate__(state)
+        return obj
+
 
 class Fitness(DeapFitness, Base):
     """Define the base class for the fitness of a solution."""
@@ -244,109 +259,23 @@ class Fitness(DeapFitness, Base):
         """
         # Init the superclasses
         super().__init__(values)
+        self._num_evaluations = [0] * self.num_obj
 
-        if self.names is None:
-            suffix_len = len(str(self.num_obj-1))
+    @property
+    def num_evaluations(self) -> List[float]:
+        """Get the number of times each objective has been evaluated.
 
-            self.__class__.names = tuple(
-                f"obj_{i:0{suffix_len}d}" for i in range(self.num_obj)
-            )
+        Useful to implement Monte Carlo cross-validation
 
-        if not isinstance(self.names, Sequence):
-            raise TypeError(
-                f"Objective names of {self.__class__} must be a sequence")
-        if len(self.names) != self.num_obj:
-            raise TypeError(
-                f"The number of objective names of {self.__class__} must "
-                "match its number of weights"
-            )
-
-        if self.thresholds is None:
-            self.__class__.thresholds = [0.0] * self.num_obj
-
-        if not isinstance(self.thresholds, Sequence):
-            raise TypeError(
-                f"Objective thresholds of {self.__class__} must be a sequence")
-        if len(self.thresholds) != self.num_obj:
-            raise TypeError(
-                f"The number of objective thresholds of {self.__class__} must "
-                "match its number of weights"
-            )
-
-    @classmethod
-    def get_objective_index(cls, obj_name: str) -> int:
-        """Get the objective index given its name.
-
-        :param obj_name: Objective name whose index is returned
-        :type obj_name: :py:class:`str`
-
-        :return: The index for the named objective
-        :rtype: :py:class:`int`
-
-        :raises TypeError: If *obj_name* isn't a string
-        :raises ValueError: If *value* isn't a valid objective name
+        :type: :py:class:`list` of :py:class:`float`
         """
-        # Get the objective index from its name
-        try:
-            obj_index = cls.names.index(
-                check_str(obj_name, "objective name")
-            )
-        except ValueError as exc:
-            raise ValueError(f'Invalid objective name: {obj_name}') from exc
+        return self._num_evaluations
 
-        return obj_index
-
-    @classmethod
-    def get_objective_threshold(cls, obj_name: str) -> float:
-        """Get the similarity threshold for the given objective.
-
-        :param obj_name: Objective name whose threshold is returned
-        :type obj_name: :py:class:`str`
-        :raises TypeError: If *obj_name* isn't a string
-        :raises ValueError: If *obj_name* isn't a valid objective name
-        """
-        # Return the threshold
-        return cls.thresholds[cls.get_objective_index(obj_name)]
-
-    @classmethod
-    def set_objective_threshold(cls, obj_name: str, value: float) -> None:
-        """Set a similarity threshold for the given objective.
-
-        :param obj_name: Objective name whose threshold is modified
-        :type obj_name: :py:class:`str`
-        :param value: New value for the similarity threshold.
-        :type value: :py:class:`float`
-        :raises TypeError: If *obj_name* isn't a string or *value* isn't a real
-            number
-        :raises ValueError: If *obj_name* isn't a valid objective name or
-            *value* is lower than 0
-        """
-        # Set the threshold for the objective
-        cls.thresholds[cls.get_objective_index(obj_name)] = check_float(
-            value,
-            "similarity threshold for objective " + obj_name,
-            ge=0
-        )
-
-    def get_objective_value(self, obj_name: str) -> float:
-        """Get the value for the given objective.
-
-        :param obj_name: Objective name whose value is returned
-        :type obj_name: :py:class:`str`
-        :raises TypeError: If *obj_name* isn't a string
-        """
-        # Return the value
-        return self.values[self.get_objective_index(obj_name)]
-
-    def get_objective_wvalue(self, obj_name: str) -> float:
-        """Get the weighted value for the given objective.
-
-        :param obj_name: Objective name whose weighted value is returned
-        :type obj_name: :py:class:`str`
-        :raises TypeError: If *obj_name* isn't a string
-        """
-        # Return the value
-        return self.wvalues[self.get_objective_index(obj_name)]
+    @DeapFitness.values.deleter
+    def values(self):
+        """Update the values deletion to reset the number of evaluations."""
+        super().delValues()
+        self._num_evaluations = [0] * self.num_obj
 
     @property
     def num_obj(self) -> int:
@@ -498,86 +427,39 @@ class Fitness(DeapFitness, Base):
 class FitnessFunction(Base):
     """Base fitness function."""
 
-    class Fitness(Fitness):
-        """Fitness class.
-
-        Handles the values returned by the
-        :py:meth:`~culebra.abc.FitnessFunction.evaluate` method within an
-        :py:class:`~culebra.abc.Solution`.
-
-        This class must be implemented within all the
-        :py:class:`~culebra.abc.FitnessFunction` subclasses, as a subclass of
-        the :py:class:`~culebra.abc.Fitness` class, to define its three class
-        attributes (:py:attr:`~culebra.abc.Fitness.weights`,
-        :py:attr:`~culebra.abc.Fitness.names`, and
-        :py:attr:`~culebra.abc.Fitness.thresholds`) according to the fitness
-        function.
-        """
-
-    @classmethod
-    def set_fitness_thresholds(
-        cls, thresholds: float | Sequence[float]
+    def __init__(
+        self
     ) -> None:
-        """Set new fitness thresholds.
-
-        Modifies the :py:attr:`~culebra.abc.Fitness.thresholds` of the
-        :py:attr:`~culebra.abc.FitnessFunction.Fitness` objects generated by
-        this fitness function.
-
-        :param thresholds: The new thresholds. If only a single value
-            is provided, the same threshold will be used for all the
-            objectives. Different thresholds can be provided in a
-            :py:class:`~collections.abc.Sequence`
-        :type thresholds: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
-        :raises TypeError: If *thresholds* is not a real number or a
-            :py:class:`~collections.abc.Sequence` of real numbers
-        :raises ValueError: If any threshold is negative
-        """
-        if isinstance(thresholds, Sequence):
-            cls.Fitness.thresholds = check_sequence(
-                thresholds,
-                "fitness thresholds",
-                size=len(cls.Fitness.weights),
-                item_checker=partial(check_float, ge=0)
-            )
-        else:
-            cls.Fitness.thresholds = [
-                check_float(thresholds, "fitness thresholds", ge=0)
-            ] * len(cls.Fitness.weights)
-
-    @classmethod
-    def get_fitness_objective_threshold(cls, obj_name: str) -> None:
-        """Get the similarity threshold for the given objective.
-
-        :param obj_name: Objective name whose threshold is returned
-        :type obj_name: :py:class:`str`
-        :raises TypeError: If *obj_name* isn't a string
-        :raises ValueError: If *value* isn't a valid objective name
-        """
-        return cls.Fitness.get_objective_threshold(obj_name)
-
-    @classmethod
-    def set_fitness_objective_threshold(
-        cls, obj_name: str, value: float
-    ) -> None:
-        """Set a similarity threshold for the given fitness objective.
-
-        :param obj_name: Objective name whose threshold is modified
-        :type obj_name: :py:class:`str`
-        :param value: New value for the similarity threshold.
-        :type value: :py:class:`float`
-        :raises TypeError: If *obj_name* isn't a string or *value* isn't a real
-            number
-        :raises ValueError: If *obj_name* isn't a valid objective name or
-            *value* is lower than 0
-        """
-        cls.Fitness.set_objective_threshold(obj_name, value)
+        """Create the fitness function."""
+        super().__init__()
+        self.obj_thresholds = None
 
     @property
-    def is_noisy(self) -> int:
-        """Return :py:attr:`True` if the fitness function is noisy."""
-        return False
+    @abstractmethod
+    def obj_weights(self) -> Tuple[int, ...]:
+        """Get the objective weights.
+
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :type: :py:class:`tuple` of :py:class:`int`
+        :raises NotImplementedError: if has not been overridden
+        """
+        raise NotImplementedError(
+            "The obj_weights property has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    @property
+    def obj_names(self) -> Tuple[str, ...]:
+        """Get the objective names.
+
+        :type: :py:class:`tuple` of :py:class:`str`
+        """
+        suffix_len = len(str(self.num_obj-1))
+
+        return tuple(
+            f"obj_{i:0{suffix_len}d}" for i in range(self.num_obj)
+        )
 
     @property
     def num_obj(self) -> int:
@@ -585,36 +467,85 @@ class FitnessFunction(Base):
 
         :type: :py:class:`int`
         """
-        return len(self.Fitness.weights)
+        return len(self.obj_weights)
 
     @property
-    def num_nodes(self) -> int | None:
-        """Return the problem graph's number of nodes for ACO-based trainers.
+    def obj_thresholds(self) -> List[float]:
+        """Get and set new objective similarity thresholds.
 
-        Subclasses solvable with ACO-based approaches should override this
-        property to return the problem graph's number of nodes. Otherwise,
-        :py:data:`None` is returned
-
-        :return: The problem graph's number of nodes if an ACO-based approach
-            is applicable or :py:data:`None` otherwise
-        :rtype: :py:class:`int`
+        :getter: Return the current thresholds
+        :setter: Set new thresholds. If only a single value is provided, the
+            same threshold will be used for all the objectives. Different
+            thresholds can be provided in a
+            :py:class:`~collections.abc.Sequence`.
+        :type thresholds: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :raises TypeError: If neither a real number nor a
+            :py:class:`~collections.abc.Sequence` of real numbers id provided
+        :raises ValueError: If any threshold is negative
+        :raises ValueError: If the length of the thresholds sequence does not
+            match the number of objectives
         """
-        return None
+        return self._obj_thresholds
 
-    def heuristic(self, species: Species) -> Sequence[np.ndarray, ...] | None:
-        """Get the heuristic matrices for ACO-based trainers.
+    @obj_thresholds.setter
+    def obj_thresholds(
+        self, values: float | Sequence[float] | None
+    ) -> None:
+        """Get and set new objective similarity thresholds.
 
-        Subclasses solvable with ACO-based approaches should override this
-        method. Otherwise, :py:data:`None` is returned
-
-        :param species: Species constraining the problem solutions
-        :type species: :py:class:`~culebra.abc.Species`
-        :return: A sequence of heuristic matrices if an ACO-based approach is
-            applicable or :py:data:`None` otherwise
-        :rtype: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~numpy.ndarray`
+        :getter: Return the current thresholds
+        :setter: Set new thresholds. If only a single value is provided, the
+            same threshold will be used for all the objectives. Different
+            thresholds can be provided in a
+            :py:class:`~collections.abc.Sequence`.
+        :type thresholds: :py:class:`float` or
+            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :raises TypeError: If neither a real number nor a
+            :py:class:`~collections.abc.Sequence` of real numbers id provided
+        :raises ValueError: If any threshold is negative
+        :raises ValueError: If the length of the thresholds sequence does not
+            match the number of objectives
         """
-        return None
+        if isinstance(values, Sequence):
+            self._obj_thresholds = check_sequence(
+                values,
+                "objective similarity thresholds",
+                size=self.num_obj,
+                item_checker=partial(check_float, ge=0)
+            )
+        elif values is not None:
+            self._obj_thresholds = [
+                check_float(values, "objective similarity threshold", ge=0)
+            ] * self.num_obj
+        else:
+            self._obj_thresholds = (
+                [DEFAULT_SIMILARITY_THRESHOLD] * self.num_obj
+            )
+
+    @property
+    def fitness_cls(self):
+        """Return the fitness class for the fitness function.
+
+        Subclasses must override this property to generate an adequate fitness
+        class.
+        """
+        fitness_class_name = f"{self.__class__.__name__}.Fitness"
+        fitness_class = type(
+            fitness_class_name,
+            (Fitness,),
+            {
+                "weights": self.obj_weights,
+                "names": self.obj_names,
+                "thresholds": self.obj_thresholds
+            }
+        )
+        return fitness_class
+
+    @property
+    def is_noisy(self) -> int:
+        """Return :py:data:`True` if the fitness function is noisy."""
+        return False
 
     @abstractmethod
     def evaluate(
@@ -863,6 +794,17 @@ class Solution(Base):
             self.__class__,
             (self.species, self.fitness.__class__),
             self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Solution:
+        """Return a solution from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(state['_species'], state['_fitness'].__class__)
+        obj.__setstate__(state)
+        return obj
 
 
 class Trainer(Base):
@@ -1183,7 +1125,7 @@ class Trainer(Base):
         :type: :py:class:`str`
         :raises TypeError: If set to a value which is not a a valid file name
         :raises ValueError: If set to a value whose extension is not
-            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
+            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         return (
             DEFAULT_CHECKPOINT_FILENAME if self._checkpoint_filename is None
@@ -1200,14 +1142,14 @@ class Trainer(Base):
         :type value: :py:class:`str`
         :raises TypeError: If *value* is not a valid file name
         :raises ValueError: If the *value* extension is not
-            :py:attr:`~culebra.PICKLE_FILE_EXTENSION`
+            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         # Check the value
         self._checkpoint_filename = (
             None if value is None else check_filename(
                 value,
                 name="checkpoint file name",
-                ext=PICKLE_FILE_EXTENSION
+                ext=SERIALIZED_FILE_EXTENSION
             )
         )
 
@@ -1485,7 +1427,7 @@ class Trainer(Base):
             func = fitness_func
             # If other fitness function is used, the solution's fitness
             # must be changed
-            sol.fitness = func.Fitness()
+            sol.fitness = func.fitness_cls()
         else:
             # Select the training fitness function
             func = self.fitness_function
@@ -1508,10 +1450,11 @@ class Trainer(Base):
                 if sol.fitness.valid is False:
                     sol.fitness.values = fit_values
                 else:
-                    trial_fitness = func.Fitness(fit_values)
+                    trial_fitness = func.fitness_cls(fit_values)
                     # If the trial fitness is better
                     # TODO Other criteria should be tested to choose
                     # the better fitness estimation
+                    # Average???
                     if trial_fitness > sol.fitness:
                         sol.fitness.values = fit_values
         else:
@@ -1559,8 +1502,8 @@ class Trainer(Base):
 
         :param state_proxy: Dictionary proxy to copy the output state of the
             trainer procedure. Only used if train is executed within a
-            :py:class:`multiprocessing.Process`. Defaults to :py:data:`None`
-        :type state_proxy: :py:class:`~multiprocessing.managers.DictProxy`,
+            :py:class:`multiprocess.Process`. Defaults to :py:data:`None`
+        :type state_proxy: :py:class:`~multiprocess.managers.DictProxy`,
             optional
         """
         # Check state_proxy
@@ -1653,7 +1596,8 @@ class Trainer(Base):
         :raises Exception: If the checkpoint file can't be written
         """
         # Save the state
-        to_pickle(self._get_state(), self.checkpoint_filename)
+        with gzip.open(self.checkpoint_filename, 'wb') as f:
+            dill.dump(self._get_state(), f)
 
     def _load_state(self) -> None:
         """Load the state of the last checkpoint.
@@ -1661,7 +1605,8 @@ class Trainer(Base):
         :raises Exception: If the checkpoint file can't be loaded
         """
         # Load the state
-        self._set_state(read_pickle(self.checkpoint_filename))
+        with gzip.open(self.checkpoint_filename, 'rb') as f:
+            self._set_state(dill.load(f))
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
@@ -1937,6 +1882,17 @@ class Trainer(Base):
         :rtype: :py:class:`tuple`
         """
         return (self.__class__, (self.fitness_function,), self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Trainer:
+        """Return a trainer from a state.
+
+        :param state: The state.
+        :type state: :py:class:`~dict`
+        """
+        obj = cls(state['_fitness_function'])
+        obj.__setstate__(state)
+        return obj
 
 
 # Exported symbols for this module

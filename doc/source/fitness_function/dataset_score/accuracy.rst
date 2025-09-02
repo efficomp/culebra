@@ -19,59 +19,43 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.dataset_score.KappaIndex` class
-===================================================================
+:py:class:`culebra.fitness_function.dataset_score.Accuracy` class
+=================================================================
 
-.. autoclass:: culebra.fitness_function.dataset_score.KappaIndex
-
-Class attributes
-----------------
-.. class:: culebra.fitness_function.dataset_score.KappaIndex.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.dataset_score.KappaIndex.evaluate` method
-    within a :py:class:`~culebra.abc.Solution`.
-
-    This class must be implemented within all the
-    :py:class:`~culebra.fitness_function.dataset_score.KappaIndex`
-    subclasses, as a subclass of the :py:class:`~culebra.abc.Fitness` class,
-    to define its three class attributes (
-    :py:attr:`~culebra.abc.Fitness.weights`,
-    :py:attr:`~culebra.abc.Fitness.names`, and
-    :py:attr:`~culebra.abc.Fitness.thresholds`) according to the fitness
-    function.
+.. autoclass:: culebra.fitness_function.dataset_score.Accuracy
 
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.load_pickle
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy.load
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.is_noisy
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.num_obj
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.num_nodes
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.training_data
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.test_data
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.test_prop
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex.cv_folds
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.num_obj
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_weights
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_names
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_thresholds
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.fitness_cls
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.is_noisy
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.index
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.training_data
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.test_data
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.test_prop
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.cv_folds
 
 Private properties
 ------------------
-.. autoproperty:: culebra.fitness_function.dataset_score.KappaIndex._worst_score
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy._worst_score
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.save_pickle
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.heuristic
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex.evaluate
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy.dump
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy.evaluate
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy.is_evaluable
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex._score
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex._final_training_test_data
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex._evaluate_train_test
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex._evaluate_mccv
-.. automethod:: culebra.fitness_function.dataset_score.KappaIndex._evaluate_kfcv
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._score
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._final_training_test_data
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_train_test
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_mccv
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_kfcv

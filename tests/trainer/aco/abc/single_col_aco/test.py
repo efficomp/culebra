@@ -29,7 +29,7 @@ from os import remove
 
 import numpy as np
 
-from culebra import DEFAULT_MAX_NUM_ITERS
+from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE
@@ -40,13 +40,20 @@ from culebra.solution.tsp import (
     Solution as TSPSolution,
     Ant as TSPAnt
 )
-from culebra.fitness_function.tsp import SinglePathLength, DoublePathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 from culebra.solution.feature_selection import (
     Species as FSSpecies,
     Ant as FSAnt
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
 
 
@@ -129,8 +136,11 @@ tsp_optimum_paths = [
     np.random.permutation(tsp_num_nodes),
     np.random.permutation(tsp_num_nodes)
 ]
-tsp_fitness_func_single = SinglePathLength.fromPath(tsp_optimum_paths[0])
-tsp_fitness_func_multi = DoublePathLength.fromPath(*tsp_optimum_paths)
+tsp_fitness_func_multi = MultiObjectivePathLength(
+    PathLength.fromPath(tsp_optimum_paths[0]),
+    PathLength.fromPath(tsp_optimum_paths[1])
+)
+tsp_fitness_func_single = tsp_fitness_func_multi.objectives[0]
 tsp_banned_nodes = [0, tsp_num_nodes-1]
 tsp_feasible_nodes = list(range(1, tsp_num_nodes - 1))
 
@@ -139,7 +149,10 @@ fs_dataset = Dataset.load_from_uci(name="Wine")
 # Preprocess the dataset
 fs_dataset = fs_dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
-fs_fitness_func = KappaNumFeats(training_data=fs_dataset)
+fs_fitness_func = FSMultiObjectiveDatasetScorer(
+    KappaIndex(training_data=fs_dataset),
+    NumFeats()
+)
 
 
 class TrainerTester(unittest.TestCase):
@@ -1226,7 +1239,7 @@ class TrainerTester(unittest.TestCase):
         # Try to generate valid first nodes
         times = 1000
         ant = trainer.solution_cls(
-            trainer.species, trainer.fitness_function.Fitness
+            trainer.species, trainer.fitness_function.fitness_cls
         )
         for _ in repeat(None, times):
             self.assertTrue(trainer._initial_choice(ant) in tsp_feasible_nodes)
@@ -1261,7 +1274,7 @@ class TrainerTester(unittest.TestCase):
         # Try with an ant with an empty path. Should fail
         ant = FSAnt(
             species,
-            fs_fitness_func.Fitness
+            fs_fitness_func.fitness_cls
         )
         with self.assertRaises(ValueError):
             trainer._feasible_neighborhood_probs(ant)
@@ -1309,7 +1322,7 @@ class TrainerTester(unittest.TestCase):
             trainer._start_iteration()
             ant = TSPAnt(
                 species,
-                tsp_fitness_func_multi.Fitness
+                tsp_fitness_func_multi.fitness_cls
             )
             choice = trainer._next_choice(ant)
 
@@ -1542,15 +1555,15 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer1 = MySingleObjTrainer(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = MySingleObjTrainer.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = MySingleObjTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -1584,16 +1597,6 @@ class TrainerTester(unittest.TestCase):
             id(trainer1.fitness_function),
             id(trainer2.fitness_function)
         )
-        self.assertNotEqual(
-            id(trainer1.fitness_function.distance),
-            id(trainer2.fitness_function.distance)
-        )
-
-        for dist1, dist2 in zip(
-            trainer1.fitness_function.distance,
-            trainer2.fitness_function.distance
-        ):
-            self.assertTrue((dist1 == dist2).all())
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
 

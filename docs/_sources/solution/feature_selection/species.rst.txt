@@ -34,10 +34,10 @@ Properties
 
 Class methods
 -------------
-.. automethod:: culebra.solution.feature_selection.Species.load_pickle
+.. automethod:: culebra.solution.feature_selection.Species.load
 .. automethod:: culebra.solution.feature_selection.Species.from_proportion
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.Species.save_pickle
+.. automethod:: culebra.solution.feature_selection.Species.dump
 .. automethod:: culebra.solution.feature_selection.Species.is_member

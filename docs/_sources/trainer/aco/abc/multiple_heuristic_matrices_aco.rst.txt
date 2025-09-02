@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.load_pickle
+.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.load
 
 Properties
 ----------
@@ -65,7 +65,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.save_pickle
+.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.dump
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.reset
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.evaluate
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO.best_solutions

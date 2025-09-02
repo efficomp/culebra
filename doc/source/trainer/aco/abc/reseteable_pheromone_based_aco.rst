@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.load_pickle
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.load
 
 Properties
 ----------
@@ -66,7 +66,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.save_pickle
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.dump
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.reset
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.evaluate
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.best_solutions

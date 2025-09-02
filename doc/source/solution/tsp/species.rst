@@ -26,7 +26,7 @@
 
 Class methods
 -------------
-.. automethod:: culebra.solution.tsp.Species.load_pickle
+.. automethod:: culebra.solution.tsp.Species.load
 
 Properties
 ----------
@@ -35,7 +35,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.tsp.Species.save_pickle
+.. automethod:: culebra.solution.tsp.Species.dump
 .. automethod:: culebra.solution.tsp.Species.is_banned
 .. automethod:: culebra.solution.tsp.Species.is_feasible
 .. automethod:: culebra.solution.tsp.Species.is_member

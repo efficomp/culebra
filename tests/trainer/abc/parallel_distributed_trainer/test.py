@@ -23,7 +23,7 @@
 """Unit test for :py:class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
 
 import unittest
-from multiprocessing.managers import DictProxy
+from multiprocess.managers import DictProxy
 
 from culebra.trainer.abc import (
     SingleSpeciesTrainer,
@@ -34,8 +34,34 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -46,13 +72,15 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # Default species for all the tests
 species = Species(num_feats=dataset.num_feats)
 
+fitness_func = KappaNumFeats(dataset)
+
 
 class MySingleSpeciesTrainer(SingleSpeciesTrainer):
     """Dummy implementation of a trainer method."""
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
-        self.sol = Solution(self.species, self.fitness_function.Fitness)
+        self.sol = Solution(self.species, self.fitness_function.fitness_cls)
         self.evaluate(self.sol)
 
 
@@ -102,7 +130,7 @@ class TrainerTester(unittest.TestCase):
         """Test the constructor."""
         # Test default params
         trainer = MyDistributedTrainer(
-            Fitness(dataset),
+            fitness_func,
             MySingleSpeciesTrainer
         )
 
@@ -112,7 +140,6 @@ class TrainerTester(unittest.TestCase):
     def test_num_evals(self):
         """Test the num_evals property."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         max_num_iters = 5
         subtrainer_cls = MySingleSpeciesTrainer
@@ -142,7 +169,6 @@ class TrainerTester(unittest.TestCase):
     def test_runtime(self):
         """Test the runtime property."""
         # Parameters for the trainer
-        fitness_func = Fitness(dataset)
         num_subtrainers = 2
         max_num_iters = 5
         subtrainer_cls = MySingleSpeciesTrainer
@@ -173,7 +199,6 @@ class TrainerTester(unittest.TestCase):
     def test_new_state(self):
         """Test _new_state."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         params = {
@@ -195,7 +220,6 @@ class TrainerTester(unittest.TestCase):
     def test_init_internals(self):
         """Test _init_internals."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         params = {
@@ -241,7 +265,6 @@ class TrainerTester(unittest.TestCase):
     def test_reset_internals(self):
         """Test _reset_internals."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         params = {
@@ -266,7 +289,6 @@ class TrainerTester(unittest.TestCase):
     def test_search(self):
         """Test _search."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         max_num_iters = 10
@@ -295,7 +317,6 @@ class TrainerTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Create a default trainer
-        fitness_func = Fitness(dataset)
         subtrainer_cls = MySingleSpeciesTrainer
         num_subtrainers = 2
         max_num_iters = 10

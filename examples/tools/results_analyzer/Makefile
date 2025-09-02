@@ -24,8 +24,10 @@ SHELL = /bin/bash
 SCRIPT = script.py
 
 # Results
-RESULTS_BASENAME = results
-RESULTS_PICKLED = $(RESULTS_BASENAME).gz
+SERIALIZED_FILE_EXTENSION = "dill.gz"
+RESULTS_BASENAME = "results"
+RESULTS_SERIALIZED = $(RESULTS_BASENAME).$(SERIALIZED_FILE_EXTENSION)
+RESULTS = $(RESULTS_SERIALIZED)
 
 # Wrapper to be compared
 WRAPPER = nsga2_ea_wrapper
@@ -37,12 +39,12 @@ TEMP = __pycache__
 PYTHON = /usr/bin/env python3
 RM = rm -rf
 
-.PHONY: compare rank effect_size
-compare rank effect_size: $(SCRIPT) $(WRAPPER)/$(RESULTS_PICKLED)
+.PHONY: compare rank effect-size
+compare rank effect-size: $(SCRIPT) $(WRAPPER)/$(RESULTS_SERIALIZED)
 	@$(PYTHON) $(SCRIPT) $@
 	@echo
 
-$(WRAPPER)/$(RESULTS_PICKLED):
+$(WRAPPER)/$(RESULTS_SERIALIZED):
 	@echo "Generating the $(WRAPPER) results ..."
 	@echo
 	@make -s -C $(WRAPPER)

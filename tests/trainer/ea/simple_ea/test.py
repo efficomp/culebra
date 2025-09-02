@@ -28,6 +28,7 @@ from os import remove
 
 from deap.base import Toolbox
 
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.ea import SimpleEA
 from culebra.solution.feature_selection import (
     Species,
@@ -192,15 +193,15 @@ class TrainerTester(unittest.TestCase):
         # Construct a parameterized trainer
         trainer1 = SimpleEA(**params)
 
-        pickle_filename = "my_pickle.gz"
-        trainer1.save_pickle(pickle_filename)
-        trainer2 = SimpleEA.load_pickle(pickle_filename)
+        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
+        trainer1.dump(serialized_filename)
+        trainer2 = SimpleEA.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
 
-        # Remove the pickle file
-        remove(pickle_filename)
+        # Remove the serialized file
+        remove(serialized_filename)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

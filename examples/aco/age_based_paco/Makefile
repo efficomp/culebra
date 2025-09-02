@@ -23,9 +23,6 @@ SHELL = /bin/bash
 # Example
 EXAMPLE = example.py
 
-# Data
-DATA = people.sc.fsu.edu
-
 # Tools
 PYTHON = /usr/bin/env python3
 RM = rm -rf
@@ -45,4 +42,4 @@ clean:
 
 .PHONY: deepclean
 deepclean: clean
-	@$(RM) checkpoint* $(DATA)
+	@$(RM) checkpoint*

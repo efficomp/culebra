@@ -29,11 +29,14 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
+DEFAULT_SIMILARITY_THRESHOLD = 0.0
+"""Default similarity threshold for fitnesses."""
+
 DEFAULT_MAX_NUM_ITERS = 100
 """Default maximum number of iterations."""
 
-PICKLE_FILE_EXTENSION = ".gz"
-"""Extension for files containing pickled objects."""
+SERIALIZED_FILE_EXTENSION = ".dill.gz"
+"""Extension for files containing serialized objects."""
 
 DEFAULT_CHECKPOINT_ENABLE = True
 """Default checkpointing enablement for a :py:class:`~culebra.abc.Trainer`."""
@@ -45,7 +48,7 @@ DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
 """Default basename for checkpointing files."""
 
 DEFAULT_CHECKPOINT_FILENAME = (
-    DEFAULT_CHECKPOINT_BASENAME + PICKLE_FILE_EXTENSION
+    DEFAULT_CHECKPOINT_BASENAME + SERIALIZED_FILE_EXTENSION
 )
 """Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`."""
 
@@ -59,8 +62,9 @@ distributed approaches.
 
 
 __all__ = [
+    'DEFAULT_SIMILARITY_THRESHOLD',
     'DEFAULT_MAX_NUM_ITERS',
-    'PICKLE_FILE_EXTENSION',
+    'SERIALIZED_FILE_EXTENSION',
     'DEFAULT_CHECKPOINT_ENABLE',
     'DEFAULT_CHECKPOINT_FREQ',
     'DEFAULT_CHECKPOINT_BASENAME',

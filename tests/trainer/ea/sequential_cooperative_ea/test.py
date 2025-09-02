@@ -26,6 +26,8 @@ import os
 import unittest
 from time import sleep
 
+from sklearn.svm import SVC
+
 from culebra.trainer.ea import ElitistEA, SequentialCooperativeEA
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
@@ -35,8 +37,32 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -66,7 +92,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeatsC(dataset),
             "subtrainer_cls": ElitistEA
         }
 
@@ -94,7 +120,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeatsC(dataset),
             "subtrainer_cls": ElitistEA,
             "pop_sizes": pop_size,
             "representation_size": 2,
@@ -136,7 +162,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeatsC(dataset),
             "subtrainer_cls": ElitistEA,
             "pop_sizes": 10,
             "representation_size": 2,
@@ -199,7 +225,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeatsC(dataset),
             "subtrainer_cls": ElitistEA,
             "pop_sizes": 10,
             "representation_size": 2,
@@ -274,7 +300,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeatsC(dataset),
             "subtrainer_cls": ElitistEA,
             "max_num_iters": 2,
             "pop_sizes": 10,
@@ -317,7 +343,7 @@ class TrainerTester(unittest.TestCase):
                 # Species for the feature selection problem
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
-            "fitness_function": Fitness(dataset),
+            "fitness_function": KappaNumFeatsC(dataset),
             "subtrainer_cls": ElitistEA,
             "max_num_iters": 2,
             "pop_sizes": 10,

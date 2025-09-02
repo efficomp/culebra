@@ -764,7 +764,7 @@ class SinglePopEA(HomogeneousEA):
             self.pop.append(
                 self.solution_cls(
                     species=self.species,
-                    fitness_cls=self.fitness_function.Fitness)
+                    fitness_cls=self.fitness_function.fitness_cls)
             )
 
     def _get_state(self) -> Dict[str, Any]:

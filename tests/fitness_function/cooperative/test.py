@@ -24,6 +24,10 @@
 
 import unittest
 
+from numpy import concatenate
+from sklearn.svm import SVC
+from sklearn.metrics import cohen_kappa_score
+
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BinarySolution as FeatureSelectionSolution
@@ -32,12 +36,18 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Solution as ClassifierOptimizationSolution
 )
-from culebra.fitness_function.cooperative import (
-    KappaNumFeatsC,
-    KappaFeatsPropC,
-    AccuracyNumFeatsC,
-    AccuracyFeatsPropC
+
+from culebra.fitness_function.feature_selection.abc import FSDatasetScorer
+from culebra.fitness_function.feature_selection import (
+    NumFeats,
+    KappaIndex as FSKappaIndex
 )
+from culebra.fitness_function.svc_optimization import (
+    C,
+    KappaIndex as SVCKappaIndex
+)
+
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.tools import Dataset
 
 
@@ -72,97 +82,143 @@ features_species2 = FeatureSelectionSpecies(
 )
 
 
-class KappaNumFeatsCTester(unittest.TestCase):
-    """Test KappaNumFeatsC."""
+class MyFSDatasetScorer(FSDatasetScorer):
+    """Dummy implementation of a fitness function."""
 
-    FitnessFunc = KappaNumFeatsC
+    @property
+    def obj_weights(self):
+        """Objective weights."""
+        return (1, )
 
-    def test_evaluate(self):
-        """Test the evaluation method."""
+    @property
+    def obj_names(self):
+        """Objective names."""
+        return ("Kappa",)
+
+    _score = cohen_kappa_score
+
+
+# Objectives
+fs_dataset_scorer = MyFSDatasetScorer(dataset)
+fs_kappa_index_nb = FSKappaIndex(dataset)
+fs_kappa_index_svc_rbf = FSKappaIndex(
+    dataset, classifier=SVC(kernel='rbf')
+)
+fs_kappa_index_svc_linear = FSKappaIndex(
+    dataset, classifier=SVC(kernel='linear')
+)
+svc_kappa_index = SVCKappaIndex(dataset)
+
+fs_num_feats = NumFeats()
+svc_c = C()
+
+
+class FSSVCScorerTester(unittest.TestCase):
+    """Test FSMultiObjectiveDatasetScorer."""
+
+    def test_init(self):
+        """Test the constructor."""
+        # Try with fs_kappa_index_nb, should fail
+        # (it does not use an SVC as classifier)
+        with self.assertRaises(ValueError):
+            FSSVCScorer(fs_kappa_index_svc_rbf, fs_kappa_index_nb)
+
+        # Try with fs_kappa_index_svc_linear, should fail
+        # (it uses an SVC as classifier, but not an RBF kernel)
+        with self.assertRaises(ValueError):
+            FSSVCScorer(fs_kappa_index_svc_linear)
+
+        # Try with fs_dataset_scorer, should fail
+        # (it is not an instance of FSClassificationScorer)
+        with self.assertRaises(ValueError):
+            FSSVCScorer(fs_dataset_scorer)
+
+        # Try with svc_kappa_index, should fail
+        # (the classification objs must be instances of FSClassificationScorer)
+        with self.assertRaises(ValueError):
+            FSSVCScorer(svc_kappa_index)
+
+        # Misplace the first objective
+        with self.assertRaises(ValueError):
+            FSSVCScorer(svc_c, fs_kappa_index_svc_rbf, fs_num_feats)
+
+        # Correct arguments
+        func = FSSVCScorer(fs_kappa_index_svc_rbf, fs_num_feats, svc_c)
+
+        self.assertEqual(func.num_obj, 3)
+        self.assertEqual(
+            func.objectives, [fs_kappa_index_svc_rbf, fs_num_feats, svc_c]
+        )
+        self.assertEqual(
+            func.obj_weights,
+            (
+                fs_kappa_index_svc_rbf.obj_weights +
+                fs_num_feats.obj_weights +
+                svc_c.obj_weights
+            )
+        )
+        self.assertEqual(
+            func.obj_names,
+            (
+                fs_kappa_index_svc_rbf.obj_names +
+                fs_num_feats.obj_names +
+                svc_c.obj_names
+            )
+        )
+        self.assertEqual(fs_kappa_index_svc_rbf.index, 0)
+        self.assertEqual(fs_num_feats.index, 1)
+        self.assertEqual(svc_c.index, 2)
+
+    def test_construct_solutions(self):
+        """Test the construct_solutions method."""
+        func = FSSVCScorer(fs_kappa_index_svc_rbf, fs_num_feats, svc_c)
+
         hyperparams_sol = ClassifierOptimizationSolution(
-            hyperparams_species, self.FitnessFunc.Fitness
+            hyperparams_species, func.fitness_cls
         )
 
         features_sol1 = FeatureSelectionSolution(
-            features_species1, self.FitnessFunc.Fitness
+            features_species1, func.fitness_cls
         )
 
         features_sol2 = FeatureSelectionSolution(
-            features_species2, self.FitnessFunc.Fitness
+            features_species2, func.fitness_cls
+        )
+        all_the_features = concatenate(
+            (features_sol1.features, features_sol2.features)
         )
 
         representatives = [hyperparams_sol, features_sol1, features_sol2]
 
-        # Fitness function to be tested
-        fitness_func = self.FitnessFunc(dataset)
-
-        # Evaluate the solutions
-        for index, sol in enumerate(representatives):
-            sol.fitness.values = fitness_func.evaluate(
-                sol, index, representatives
-            )
-
-        # Check that fitnesses match
-        self.assertEqual(
-            hyperparams_sol.fitness.values, features_sol1.fitness.values
+        (hyperparams, features) = func.construct_solutions(
+            hyperparams_sol,
+            index=0,
+            representatives=representatives
         )
-        self.assertEqual(
-            features_sol1.fitness.values, features_sol2.fitness.values
+        self.assertEqual(hyperparams_sol, hyperparams)
+        self.assertTrue(
+            (all_the_features == features.features).all()
         )
 
-        # Try wrong solution species. Should fail
-        with self.assertRaises(AttributeError):
-            fitness_func.evaluate(features_sol1, 0, representatives)
-        with self.assertRaises(AttributeError):
-            fitness_func.evaluate(hyperparams_sol, 1, representatives)
+        (hyperparams, features) = func.construct_solutions(
+            features_sol1,
+            index=1,
+            representatives=representatives
+        )
+        self.assertEqual(hyperparams_sol, hyperparams)
+        self.assertTrue(
+            (all_the_features == features.features).all()
+        )
 
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        training_data, test_data = dataset.split(0.3)
-
-        # Fitness function to be tested
-        func = self.FitnessFunc(training_data)
-
-        func.test_prop = None
-        self.assertEqual(func.is_noisy, False)
-        func.test_prop = 0.5
-        self.assertEqual(func.is_noisy, True)
-
-        func = self.FitnessFunc(training_data, test_data)
-        self.assertEqual(func.is_noisy, False)
-
-    def test_repr(self):
-        """Test the repr and str dunder methods."""
-        fitness_func = self.FitnessFunc(dataset)
-        self.assertIsInstance(repr(fitness_func), str)
-        self.assertIsInstance(str(fitness_func), str)
-
-
-class KappaFeatsPropCTester(unittest.TestCase):
-    """Test KappaFeatsPropC."""
-
-    FitnessFunc = KappaFeatsPropC
-    test_is_noisy = KappaNumFeatsCTester.test_is_noisy
-    test_evaluate = KappaNumFeatsCTester.test_evaluate
-    test_repr = KappaNumFeatsCTester.test_repr
-
-
-class AccuracyNumFeatsCTester(unittest.TestCase):
-    """Test AccuracyNumFeatsC."""
-
-    FitnessFunc = AccuracyNumFeatsC
-    test_is_noisy = KappaNumFeatsCTester.test_is_noisy
-    test_evaluate = KappaNumFeatsCTester.test_evaluate
-    test_repr = KappaNumFeatsCTester.test_repr
-
-
-class AccuracyFeatsPropCTester(unittest.TestCase):
-    """Test AccuracyFeatsPropC."""
-
-    FitnessFunc = AccuracyFeatsPropC
-    test_is_noisy = KappaNumFeatsCTester.test_is_noisy
-    test_evaluate = KappaNumFeatsCTester.test_evaluate
-    test_repr = KappaNumFeatsCTester.test_repr
+        (hyperparams, features) = func.construct_solutions(
+            features_sol2,
+            index=2,
+            representatives=representatives
+        )
+        self.assertEqual(hyperparams_sol, hyperparams)
+        self.assertTrue(
+            (all_the_features == features.features).all()
+        )
 
 
 if __name__ == '__main__':

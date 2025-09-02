@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.solution.parameter_optimization.Individual.load_pickle
+.. automethod:: culebra.solution.parameter_optimization.Individual.load
 
 Properties
 ----------
@@ -42,7 +42,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.solution.parameter_optimization.Individual.save_pickle
+.. automethod:: culebra.solution.parameter_optimization.Individual.dump
 .. automethod:: culebra.solution.parameter_optimization.Individual.crossover
 .. automethod:: culebra.solution.parameter_optimization.Individual.mutate
 .. automethod:: culebra.solution.parameter_optimization.Individual.get

@@ -31,7 +31,7 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.load_pickle
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.load
 
 Properties
 ----------
@@ -68,7 +68,7 @@ Properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.save_pickle
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.dump
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.reset
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.evaluate
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.best_solutions

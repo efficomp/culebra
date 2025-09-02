@@ -26,6 +26,7 @@ from collections import UserDict, namedtuple
 from collections.abc import Sequence
 from functools import partial
 from warnings import catch_warnings, simplefilter
+from math import isclose
 
 import numpy as np
 from pandas import Series, DataFrame, MultiIndex
@@ -844,7 +845,10 @@ class ResultsAnalyzer(UserDict, Base):
             )
 
             # Calculating Cohen's d
-            d = abs(mean1 - mean2) / pooled_std
+            if isclose(pooled_std, 0):
+                d = float('inf')
+            else:
+                d = abs(mean1 - mean2) / pooled_std
 
             return d
 

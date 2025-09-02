@@ -24,33 +24,22 @@
 
 .. autoclass:: culebra.fitness_function.svc_optimization.C
 
-Class attributes
-----------------
-.. class:: culebra.fitness_function.svc_optimization.C.Fitness
-
-    Handles the values returned by the
-    :py:meth:`~culebra.fitness_function.svc_optimization.C.evaluate` method
-    within a :py:class:`~culebra.solution.parameter_optimization.Solution`.
-
-    .. autoattribute:: culebra.fitness_function.svc_optimization.C.Fitness.weights
-    .. autoattribute:: culebra.fitness_function.svc_optimization.C.Fitness.names
-    .. autoattribute:: culebra.fitness_function.svc_optimization.C.Fitness.thresholds
-
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.svc_optimization.C.load_pickle
-.. automethod:: culebra.fitness_function.svc_optimization.C.set_fitness_thresholds
-.. automethod:: culebra.fitness_function.svc_optimization.C.get_fitness_objective_threshold
-.. automethod:: culebra.fitness_function.svc_optimization.C.set_fitness_objective_threshold
+.. automethod:: culebra.fitness_function.svc_optimization.C.load
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.is_noisy
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.num_obj
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.num_nodes
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_weights
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_names
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.fitness_cls
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.is_noisy
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.index
 
 Methods
 -------
-.. automethod:: culebra.fitness_function.svc_optimization.C.save_pickle
-.. automethod:: culebra.fitness_function.svc_optimization.C.heuristic
+.. automethod:: culebra.fitness_function.svc_optimization.C.dump
 .. automethod:: culebra.fitness_function.svc_optimization.C.evaluate
+.. automethod:: culebra.fitness_function.svc_optimization.C.is_evaluable

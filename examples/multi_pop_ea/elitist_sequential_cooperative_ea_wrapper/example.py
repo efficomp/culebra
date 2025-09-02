@@ -24,6 +24,8 @@
 
 from pandas import Series, DataFrame, MultiIndex
 
+from sklearn.svm import SVC
+
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
@@ -32,9 +34,33 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.cooperative import KappaNumFeatsC
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats
+)
+from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_function.cooperative import FSSVCScorer
 from culebra.trainer.ea import ElitistEA, SequentialCooperativeEA
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeatsC(
+    training_data, test_data=None, test_prop=None, cv_folds=None
+):
+    """Fitness Function."""
+    return FSSVCScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            classifier=SVC(kernel='rbf'),
+            cv_folds=cv_folds
+        ),
+        NumFeats(),
+        C()
+    )
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -99,7 +125,7 @@ params = {
         2.0/dataset.num_feats,
         2.0/dataset.num_feats
     ),
-    "max_num_iters": 500,
+    "max_num_iters": 100,
     "pop_sizes": dataset.num_feats,
     "checkpoint_enable": False
 }

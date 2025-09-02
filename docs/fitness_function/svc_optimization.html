@@ -13,8 +13,8 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.fitness_function.svc_optimization.C class" href="svc_optimization/c.html" />
-    <link rel="prev" title="culebra.fitness_function.feature_selection.AccuracyFeatsProp class" href="feature_selection/accuracy_feats_prop.html" /> 
+    <link rel="next" title="culebra.fitness_function.svc_optimization.abc module" href="svc_optimization/abc.html" />
+    <link rel="prev" title="culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer class" href="feature_selection/fs_multi_objective_dataset_scorer.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -26,10 +26,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="svc_optimization/c.html" title="culebra.fitness_function.svc_optimization.C class"
+          <a href="svc_optimization/abc.html" title="culebra.fitness_function.svc_optimization.abc module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="feature_selection/accuracy_feats_prop.html" title="culebra.fitness_function.feature_selection.AccuracyFeatsProp class"
+          <a href="feature_selection/fs_multi_objective_dataset_scorer.html" title="culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
@@ -44,11 +44,14 @@
   <section id="module-culebra.fitness_function.svc_optimization">
 <span id="culebra-fitness-function-svc-optimization-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.svc_optimization" title="culebra.fitness_function.svc_optimization"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.svc_optimization</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.svc_optimization" title="Link to this heading">¶</a></h1>
 <p>Fitness functions for parameter optimization problems.</p>
-<p>This sub-module provides several fitness functions intended to optimize the
-Support Vector Classifier (SVC) hyperparameters for a given dataset. The
-following fitness functions are provided:</p>
+<p>This module is composed by:</p>
 <blockquote>
 <div><ul class="simple">
+<li><p>The <a class="reference internal" href="svc_optimization/abc.html#module-culebra.fitness_function.svc_optimization.abc" title="culebra.fitness_function.svc_optimization.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module,
+where some abstract base classes are defined to support fitness functions
+developed in this module</p></li>
+<li><p>Some scoring fitness functions:</p>
+<ul>
 <li><p><a class="reference internal" href="svc_optimization/c.html#culebra.fitness_function.svc_optimization.C" title="culebra.fitness_function.svc_optimization.C"><code class="xref py py-class docutils literal notranslate"><span class="pre">C</span></code></a>: Dummy
 single-objective function that minimizes the regularization parameter <em>C</em>
 of a SVM-based classifier with RBF kernels.</p></li>
@@ -58,14 +61,8 @@ SVM-based classifier with RBF kernels.</p></li>
 <li><p><a class="reference internal" href="svc_optimization/accuracy.html#culebra.fitness_function.svc_optimization.Accuracy" title="culebra.fitness_function.svc_optimization.Accuracy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Accuracy</span></code></a>:
 Single-objective function that maximizes the Accuracy for a
 SVM-based classifier with RBF kernels.</p></li>
-<li><p><a class="reference internal" href="svc_optimization/kappa_c.html#culebra.fitness_function.svc_optimization.KappaC" title="culebra.fitness_function.svc_optimization.KappaC"><code class="xref py py-class docutils literal notranslate"><span class="pre">KappaC</span></code></a>: Bi-objective
-function that tries to both maximize the Kohen’s Kappa index and minimize
-the regularization parameter <em>C</em> of a SVM-based classifier with RBF
-kernels.</p></li>
-<li><p><a class="reference internal" href="svc_optimization/accuracy_c.html#culebra.fitness_function.svc_optimization.AccuracyC" title="culebra.fitness_function.svc_optimization.AccuracyC"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccuracyC</span></code></a>:
-Bi-objective function that tries to both maximize the accuracy and
-minimize the regularization parameter <em>C</em> of a SVM-based classifier with
-RBF kernels.</p></li>
+</ul>
+</li>
 </ul>
 </div></blockquote>
 <div class="toctree-wrapper compound">
@@ -88,10 +85,10 @@ RBF kernels.</p></li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="svc_optimization/c.html" title="culebra.fitness_function.svc_optimization.C class"
+          <a href="svc_optimization/abc.html" title="culebra.fitness_function.svc_optimization.abc module"
              >next</a> |</li>
         <li class="right" >
-          <a href="feature_selection/accuracy_feats_prop.html" title="culebra.fitness_function.feature_selection.AccuracyFeatsProp class"
+          <a href="feature_selection/fs_multi_objective_dataset_scorer.html" title="culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>

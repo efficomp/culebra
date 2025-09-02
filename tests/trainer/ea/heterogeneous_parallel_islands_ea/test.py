@@ -23,12 +23,13 @@
 """Test :py:class:`~culebra.trainer.ea.HeterogeneousParallelIslandsEA`."""
 
 import unittest
-from multiprocessing import cpu_count
+from multiprocess import cpu_count
 
 from culebra import (
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
-    DEFAULT_MAX_NUM_ITERS
+    DEFAULT_MAX_NUM_ITERS,
+    SERIALIZED_FILE_EXTENSION
 )
 from culebra.trainer import (
     DEFAULT_REPRESENTATION_SIZE,
@@ -52,8 +53,33 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
-from culebra.fitness_function.feature_selection import KappaNumFeats as Fitness
+from culebra.fitness_function.feature_selection import (
+    KappaIndex,
+    NumFeats,
+    FSMultiObjectiveDatasetScorer
+)
 from culebra.tools import Dataset
+
+
+# Fitness function
+def KappaNumFeats(
+    training_data,
+    test_data=None,
+    test_prop=None,
+    cv_folds=None,
+    classifier=None
+):
+    """Fitness Function."""
+    return FSMultiObjectiveDatasetScorer(
+        KappaIndex(
+            training_data=training_data,
+            test_data=test_data,
+            test_prop=test_prop,
+            cv_folds=cv_folds,
+            classifier=classifier
+        ),
+        NumFeats()
+    )
 
 
 # Dataset
@@ -70,7 +96,7 @@ class TrainerTester(unittest.TestCase):
         """Test __init__."""
         solution_cls = Individual
         species = Species(dataset.num_feats)
-        fitness_function = Fitness(dataset)
+        fitness_function = KappaNumFeats(dataset)
         subtrainer_cls = NSGA
         max_num_iters = 25
         num_subtrainers = 3
@@ -93,7 +119,7 @@ class TrainerTester(unittest.TestCase):
         representation_selection_func_params = {"parameter3": 15}
         checkpoint_enable = False
         checkpoint_freq = 17
-        checkpoint_filename = "my_check_file.gz"
+        checkpoint_filename = "my_check_file" + SERIALIZED_FILE_EXTENSION
         verbose = False
         random_seed = 149
         nsga3_reference_points_p = 18
@@ -278,7 +304,7 @@ class TrainerTester(unittest.TestCase):
         # Set custom params
         solution_cls = Individual
         species = Species(dataset.num_feats)
-        fitness_function = Fitness(dataset)
+        fitness_function = KappaNumFeats(dataset)
         subtrainer_cls = NSGA
         max_num_iters = 25
         num_subtrainers = 3
@@ -301,7 +327,7 @@ class TrainerTester(unittest.TestCase):
         representation_selection_func_params = {"parameter3": 15}
         checkpoint_enable = False
         checkpoint_freq = 17
-        checkpoint_filename = "my_check_file.gz"
+        checkpoint_filename = "my_check_file" + SERIALIZED_FILE_EXTENSION
         verbose = False
         random_seed = 149
         nsga3_reference_points_p = 18

@@ -26,13 +26,20 @@ from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
 from culebra.trainer.aco import CPACO
-from culebra.fitness_function.tsp import DoublePathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 # Try the KroAB100 problem
-fitness_func = DoublePathLength.fromTSPLib(
-    "https://raw.githubusercontent.com/mastqe/tsplib/master/kroA100.tsp",
-    "https://raw.githubusercontent.com/mastqe/tsplib/master/kroB100.tsp"
+fitness_func = MultiObjectivePathLength(
+    PathLength.fromTSPLib(
+       "https://raw.githubusercontent.com/mastqe/tsplib/master/kroA100.tsp"
+    ),
+    PathLength.fromTSPLib(
+       "https://raw.githubusercontent.com/mastqe/tsplib/master/kroB100.tsp"
+    )
 )
 
 # Problem graph's number of nodes
@@ -40,9 +47,6 @@ num_nodes = fitness_func.num_nodes
 
 # Species for the problem solutions
 species = Species(num_nodes)
-
-# Generate and evaluate a greedy solution for the problem
-greedy_solution = fitness_func.greedy_solution(species)
 
 initial_pheromone = 1
 max_pheromone = 5
