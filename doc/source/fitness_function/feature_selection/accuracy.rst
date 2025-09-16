@@ -35,12 +35,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.index
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.training_data
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.test_data
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.test_prop
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.cv_folds
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.classifier
 
@@ -60,5 +58,4 @@ Private methods
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy._score
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy._final_training_test_data
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_train_test
-.. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_mccv
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_kfcv

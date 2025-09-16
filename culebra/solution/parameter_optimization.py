@@ -582,6 +582,9 @@ class Individual(Solution, BaseIndividual):
         other._retype()
 
         # Return the new offspring
+        del self.fitness.values
+        del other.fitness.values
+
         return self, other
 
     def mutate(self, indpb: float) -> Tuple[Individual]:
@@ -607,6 +610,8 @@ class Individual(Solution, BaseIndividual):
         self._retype()
 
         # Return the new individual
+        del self.fitness.values
+
         return (self,)
 
 

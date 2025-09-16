@@ -99,6 +99,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._default_termination_func
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._termination_criterion
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._init_representatives
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._initial_choice
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._next_choice

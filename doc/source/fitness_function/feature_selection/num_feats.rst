@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.index
 
 Methods

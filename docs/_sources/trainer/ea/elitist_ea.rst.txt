@@ -96,5 +96,6 @@ Private methods
 .. automethod:: culebra.trainer.ea.ElitistEA._default_termination_func
 .. automethod:: culebra.trainer.ea.ElitistEA._termination_criterion
 .. automethod:: culebra.trainer.ea.ElitistEA._init_representatives
+.. automethod:: culebra.trainer.ea.ElitistEA._set_cooperative_fitness
 .. automethod:: culebra.trainer.ea.ElitistEA._generate_initial_pop
 .. automethod:: culebra.trainer.ea.ElitistEA._evaluate_pop

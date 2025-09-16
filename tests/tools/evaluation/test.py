@@ -62,15 +62,12 @@ SCRIPT_FILE_EXTENSION = ".py"
 
 
 # Fitness function
-def KappaNumFeatsC(
-    training_data, test_data=None, test_prop=None, cv_folds=None
-):
+def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             classifier=SVC(kernel='rbf'),
             cv_folds=cv_folds
         ),

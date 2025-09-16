@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.index
 
 Methods

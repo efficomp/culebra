@@ -22,11 +22,11 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from copy import deepcopy
-from typing import Tuple, Optional
+from typing import Optional
 
 from numpy import ndarray
 
-from culebra.abc import Species
+from culebra.abc import Fitness, Species
 from culebra.fitness_function.feature_selection.abc import (
     FSScorer,
     FSClassificationScorer
@@ -74,7 +74,7 @@ class NumFeats(FSScorer):
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
@@ -87,15 +87,16 @@ class NumFeats(FSScorer):
             being optimized. Only used by cooperative problems
         :type representatives: :py:class:`~collections.abc.Sequence` of
             :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
             raise ValueError("The solution is not evaluable")
 
-        # Return the solution's size
-        return (sol.num_feats,)
+        sol.fitness.update_value(sol.num_feats, self.index)
+
+        return sol.fitness
 
 
 class FeatsProportion(FSScorer):
@@ -120,7 +121,7 @@ class FeatsProportion(FSScorer):
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
@@ -133,15 +134,19 @@ class FeatsProportion(FSScorer):
             being optimized. Only used by cooperative problems
         :type representatives: :py:class:`~collections.abc.Sequence` of
             :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
             raise ValueError("The solution is not evaluable")
 
-        # Return the solution's size
-        return (float(sol.num_feats)/sol.species.num_feats,)
+        sol.fitness.update_value(
+            float(sol.num_feats)/sol.species.num_feats,
+            self.index
+        )
+
+        return sol.fitness
 
 
 class KappaIndex(FSClassificationScorer, DatasetKappaIndex):

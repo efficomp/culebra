@@ -105,3 +105,4 @@ Private methods
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._default_termination_func
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._termination_criterion
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._set_cooperative_fitness

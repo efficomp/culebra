@@ -40,8 +40,8 @@ from sklearn.base import ClassifierMixin
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 from sklearn.metrics import make_scorer
 
-from culebra.abc import Solution
-from culebra.checker import check_int, check_float, check_instance
+from culebra.abc import Fitness, Solution
+from culebra.checker import check_int, check_instance
 from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_function.dataset_score import (
     DEFAULT_CLASSIFIER,
@@ -66,27 +66,18 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         self,
         training_data: Dataset,
         test_data: Optional[Dataset] = None,
-        test_prop: Optional[float] = None,
         cv_folds: Optional[int] = None,
         index: Optional[int] = None
     ) -> None:
         """Construct the fitness function.
 
         If *test_data* are provided, the whole *training_data* are used to
-        train. Otherwise, if *test_prop* is provided, *training_data* are
-        split (stratified) into training and test data each time
-        :py:meth:`~culebra.FitnessFunction.DatasetScorer.evaluate` is
-        called and a Monte Carlo cross validation is applied. Finally, if both
-        *test_data* and *test_prop* are omitted, a *k*-fold cross-validation
-        is applied.
+        train. Otherwise, a *k*-fold cross-validation is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
         :param test_data: The test dataset, defaults to :py:data:`None`
         :type test_data: :py:class:`~culebra.tools.Dataset`, optional
-        :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
-            to :py:data:`None`
-        :type test_prop: :py:class:`float`, optional
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
             :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
@@ -98,8 +89,6 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
-        :raises TypeError: If *test_prop* is not a real number
-        :raises ValueError: If *test_prop* is not in (0, 1)
         :raises TypeError: If *cv_folds* is not an integer value
         :raises ValueError: If *cv_folds* is not positive
         :raises TypeError: If *index* is not an integer number
@@ -111,7 +100,6 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         # Set the attributes to default values
         self.training_data = training_data
         self.test_data = test_data
-        self.test_prop = test_prop
         self.cv_folds = cv_folds
 
     @property
@@ -161,32 +149,6 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         )
 
     @property
-    def test_prop(self) -> float | None:
-        """Get and set the proportion of data used to test.
-
-        :getter: Return the test data proportion
-        :setter: Set a new value for the test data porportion. A real value in
-            (0, 1) or :py:data:`None` is expected
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value which is not in (0, 1)
-        """
-        return self._test_prop
-
-    @test_prop.setter
-    def test_prop(self, value: float | None) -> None:
-        """Set a value for the proportion of data used to test.
-
-        :param value: A real value in (0, 1) or :py:data:`None`
-        :type value: :py:class:`float` or :py:data:`None`
-        :raises TypeError: If *value* is not a real number
-        :raises ValueError: If *value* is not in (0, 1)
-        """
-        self._test_prop = None if value is None else check_float(
-            value, "test proportion", gt=0, lt=1
-        )
-
-    @property
     def cv_folds(self) -> int | None:
         """Get and set the number of cross-validation folds.
 
@@ -213,14 +175,6 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         self._cv_folds = None if value is None else check_int(
             value, "number of cross-validation folds", gt=0
         )
-
-    @property
-    def is_noisy(self) -> int:
-        """Return :py:data:`True` if the fitness function is noisy."""
-        if self.test_data is None and self.test_prop is not None:
-            return True
-
-        return False
 
     @property
     @abstractmethod
@@ -271,39 +225,11 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     @abstractmethod
     def _evaluate_train_test(
         self,
+        sol: Solution,
         training_data: Dataset,
         test_data: Dataset
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
-
-        This method must be overridden by subclasses to return a correct
-        value.
-
-        :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
-        :param test_data: The test dataset
-        :type test_data: :py:class:`~culebra.tools.Dataset`
-        :raises NotImplementedError: if has not been overridden
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        raise NotImplementedError(
-            "The _evaluate_train_test method has not been implemented in the "
-            f"{self.__class__.__name__} class")
-
-    @abstractmethod
-    def _evaluate_mccv(
-        self,
-        sol: Solution,
-        training_data: Dataset
-    ) -> Tuple[float, ...]:
-        """Evaluate a solution.
-
-        The *training_data* are split (stratified) into training and test data
-        according to
-        :py:attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.test_prop`
-        each time the solution is evaluated and a Monte Carlo cross-validation
-        is applied.
 
         This method must be overridden by subclasses to return a correct
         value.
@@ -312,18 +238,22 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         :type sol: :py:class:`~culebra.abc.Solution`
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :param test_data: The test dataset
+        :type test_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
+        :raises NotImplementedError: if has not been overridden
         """
         raise NotImplementedError(
-            "The _evaluate_mccv method has not been implemented in the "
+            "The _evaluate_train_test method has not been implemented in the "
             f"{self.__class__.__name__} class")
 
     @abstractmethod
     def _evaluate_kfcv(
         self,
+        sol: Solution,
         training_data: Dataset,
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         A *k*-fold cross-validation is applied using the *training_data* with
@@ -333,11 +263,13 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         This method must be overridden by subclasses to return a correct
         value.
 
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         :raises NotImplementedError: if has not been overridden
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
         """
         raise NotImplementedError(
             "The _evaluate_kfcv method has not been implemented in the "
@@ -348,7 +280,7 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
@@ -362,8 +294,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         :type representatives: A :py:class:`~collections.abc.Sequence`
             containing instances of :py:class:`~culebra.abc.Solution`,
             optional
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
@@ -375,14 +307,9 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         # If test data are available, train with the whole training data
         # and test with the test data
         if test_data is not None:
-            return self._evaluate_train_test(training_data, test_data)
-        # If not, if a test porportion is given, apply Monte Carlo
-        # cross-validation
-        elif self.test_prop is not None:
-            return self._evaluate_mccv(sol, training_data)
-        # Else, apply k-fold cross-validation
+            return self._evaluate_train_test(sol, training_data, test_data)
         else:
-            return self._evaluate_kfcv(training_data)
+            return self._evaluate_kfcv(sol, training_data)
 
     def __copy__(self) -> DatasetScorer:
         """Shallow copy the fitness function."""
@@ -432,7 +359,6 @@ class ClassificationScorer(DatasetScorer):
         self,
         training_data: Dataset,
         test_data: Optional[Dataset] = None,
-        test_prop: Optional[float] = None,
         cv_folds: Optional[int] = None,
         classifier: Optional[ClassifierMixin] = None,
         index: Optional[int] = None
@@ -440,20 +366,12 @@ class ClassificationScorer(DatasetScorer):
         """Construct the fitness function.
 
         If *test_data* are provided, the whole *training_data* are used to
-        train. Otherwise, if *test_prop* is provided, *training_data* are
-        split (stratified) into training and test data each time
-        :py:meth:`~culebra.FitnessFunction.ClassificationScorer.evaluate`
-        is called and a Monte Carlo cross validation is applied. Finally, if
-        both *test_data* and *test_prop* are omitted, a *k*-fold
-        cross-validation is applied.
+        train. Otherwise, a *k*-fold cross-validation is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
         :param test_data: The test dataset, defaults to :py:data:`None`
         :type test_data: :py:class:`~culebra.tools.Dataset`, optional
-        :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
-            to :py:data:`None`
-        :type test_prop: :py:class:`float`, optional
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
             :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
@@ -470,8 +388,6 @@ class ClassificationScorer(DatasetScorer):
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
-        :raises TypeError: If *test_prop* is not a real number
-        :raises ValueError: If *test_prop* is not in (0, 1)
         :raises TypeError: If *cv_folds* is not an integer value
         :raises ValueError: If *cv_folds* is not positive
         :raises TypeError: If *classifier* is not a valid classifier
@@ -482,7 +398,6 @@ class ClassificationScorer(DatasetScorer):
         super().__init__(
             training_data,
             test_data,
-            test_prop,
             cv_folds,
             index
         )
@@ -517,81 +432,50 @@ class ClassificationScorer(DatasetScorer):
 
     def _evaluate_train_test(
         self,
+        sol: Solution,
         training_data: Dataset,
         test_data: Dataset
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
-
-        :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
-        :param test_data: The test dataset
-        :type test_data: :py:class:`~culebra.tools.Dataset`
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        outputs_pred = self.classifier.fit(
-            training_data.inputs,
-            training_data.outputs
-        ).predict(test_data.inputs)
-        return (self.__class__._score(test_data.outputs, outputs_pred), )
-
-    def _evaluate_mccv(
-        self,
-        sol: Solution,
-        training_data: Dataset
-    ) -> Tuple[float, ...]:
-        """Evaluate a solution.
-
-        The *training_data* are split (stratified) into training and test data
-        according to
-        :py:attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.test_prop`
-        each time the solution is evaluated and a Monte Carlo cross-validation
-        is applied.
 
         :param sol: Solution to be evaluated.
         :type sol: :py:class:`~culebra.abc.Solution`
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :param test_data: The test dataset
+        :type test_data: :py:class:`~culebra.tools.Dataset`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         """
-        # Split training data into training and test
-        training_data, test_data = training_data.split(self.test_prop)
+        outputs_pred = self.classifier.fit(
+            training_data.inputs,
+            training_data.outputs
+        ).predict(test_data.inputs)
 
-        # Score of this objective for the current evaluation
-        new_obj_score = self._evaluate_train_test(
-            training_data, test_data
-        )[0]
+        sol.fitness.update_value(
+            self.__class__._score(test_data.outputs, outputs_pred),
+            self.index
+        )
 
-        # Number of evaluations performed to this solution
-        num_evals = sol.fitness.num_evaluations[self.index]
-
-        # If previously evaluated
-        if num_evals > 0:
-            average_score = (
-                new_obj_score + sol.fitness.values[self.index] * num_evals
-            ) / (num_evals + 1)
-        else:
-            average_score = new_obj_score
-
-        sol.fitness.num_evaluations[self.index] += 1
-
-        return (average_score, )
+        return sol.fitness
 
     def _evaluate_kfcv(
         self,
+        sol: Solution,
         training_data: Dataset,
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         A *k*-fold cross-validation is applied using the *training_data* with
         :py:attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds`
         folds.
 
+        :param sol: Solution to be evaluated.
+        :type sol: :py:class:`~culebra.abc.Solution`
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         """
         scores = cross_val_score(
             self.classifier,
@@ -600,7 +484,9 @@ class ClassificationScorer(DatasetScorer):
             cv=StratifiedKFold(n_splits=self.cv_folds),
             scoring=make_scorer(self.__class__._score)
         )
-        return (scores.mean(), )
+        sol.fitness.update_value(scores.mean(), self.index)
+
+        return sol.fitness
 
 
 # Exported symbols for this module

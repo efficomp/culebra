@@ -34,13 +34,14 @@ dataset:
 
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import Optional
 from collections.abc import Sequence
 
 from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
 
 from culebra.checker import check_instance
+from culebra.abc import Fitness
 from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_function.dataset_score.abc import ClassificationScorer
 from culebra.solution.parameter_optimization import Solution
@@ -83,7 +84,6 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         self,
         training_data: Dataset,
         test_data: Optional[Dataset] = None,
-        test_prop: Optional[float] = None,
         cv_folds: Optional[int] = None,
         classifier: Optional[ClassifierMixin] = None,
         index: Optional[int] = None
@@ -91,20 +91,12 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         """Construct the fitness function.
 
         If *test_data* are provided, the whole *training_data* are used to
-        train. Otherwise, if *test_prop* is provided, *training_data* are
-        split (stratified) into training and test data each time
-        :py:meth:`~culebra.FitnessFunction.RBFSVCScorer.evaluate` is
-        called and a Monte Carlo cross validation is applied. Finally, if both
-        *test_data* and *test_prop* are omitted, a *k*-fold cross-validation
-        is applied.
+        train. Otherwise, a *k*-fold cross-validation is applied.
 
         :param training_data: The training dataset
         :type training_data: :py:class:`~culebra.tools.Dataset`
         :param test_data: The test dataset, defaults to :py:data:`None`
         :type test_data: :py:class:`~culebra.tools.Dataset`, optional
-        :param test_prop: A real value in (0, 1) or :py:data:`None`. Defaults
-            to :py:data:`None`
-        :type test_prop: :py:class:`float`, optional
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
             :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
@@ -122,8 +114,6 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
-        :raises TypeError: If *test_prop* is not a real number
-        :raises ValueError: If *test_prop* is not in (0, 1)
         :raises TypeError: If *cv_folds* is not an integer value
         :raises ValueError: If *cv_folds* is not positive
         :raises TypeError: If *classifier* is not a valid
@@ -135,7 +125,6 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         super().__init__(
             training_data,
             test_data,
-            test_prop,
             cv_folds,
             classifier,
             index
@@ -184,7 +173,7 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
@@ -198,8 +187,8 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
             being optimized. Only used by cooperative problems
         :type representatives: :py:class:`~collections.abc.Sequence` of
             :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
@@ -210,9 +199,7 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         self.classifier.C = hyperparams.C
         self.classifier.gamma = hyperparams.gamma
 
-        return ClassificationScorer.evaluate(
-            self, sol, index, representatives
-        )
+        return ClassificationScorer.evaluate(self, sol, index, representatives)
 
 
 # Exported symbols for this module

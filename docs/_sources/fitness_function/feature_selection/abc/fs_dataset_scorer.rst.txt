@@ -35,12 +35,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.index
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.training_data
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.test_data
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.test_prop
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer.cv_folds
 
 Private properties
@@ -59,5 +57,4 @@ Private methods
 .. automethod:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer._score
 .. automethod:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer._final_training_test_data
 .. automethod:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_train_test
-.. automethod:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_mccv
 .. automethod:: culebra.fitness_function.feature_selection.abc.FSDatasetScorer._evaluate_kfcv

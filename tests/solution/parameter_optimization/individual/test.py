@@ -23,32 +23,33 @@
 """Unit test for the parameter optimization individuals."""
 
 import unittest
-from numbers import Integral, Real
+from numbers import Integral
 from itertools import repeat
 
-from culebra.abc import Fitness
 from culebra.solution.parameter_optimization import Species, Individual
-
-
-DEFAULT_MAX_LENGTH = 50
-"""Default maximum number of parameters used to define the Species."""
+from culebra.fitness_function.svc_optimization import C
 
 DEFAULT_MIN_BOUND = 0
 """Default minimum bound for all the parameters."""
 
-DEFAULT_MAX_BOUND = 5
+DEFAULT_MAX_BOUND = 100000
 """Default maximum bound for all the parameters."""
 
 DEFAULT_TIMES = 1000
 """Default value for the number of times an implementation is run."""
 
+# Default species
+species = Species(
+    lower_bounds=[DEFAULT_MIN_BOUND] * 2,
+    upper_bounds=[DEFAULT_MAX_BOUND] * 2,
+    names=["C", "gamma"]
+)
 
-class MyFitness(Fitness):
-    """Dummy fitness."""
+# Default fitness function
+fitness_function = C()
 
-    weights = (1.0, 1.0)
-    names = ("obj1", "obj2")
-    thresholds = [0.001, 0.001]
+# Default fitness class
+fitness_cls = fitness_function.fitness_cls
 
 
 class IndividualTester(unittest.TestCase):
@@ -56,15 +57,6 @@ class IndividualTester(unittest.TestCase):
 
     Test extensively the generation and breeding operators.
     """
-
-    max_length = DEFAULT_MAX_LENGTH
-    """Default maximum number of parameters used to define the Species."""
-
-    min_bound = DEFAULT_MIN_BOUND
-    """Default minimum bound for all the parameters."""
-
-    max_bound = DEFAULT_MAX_BOUND
-    """Default maximum bound for all the parameters."""
 
     times = DEFAULT_TIMES
     """Times each function is executed."""
@@ -76,27 +68,6 @@ class IndividualTester(unittest.TestCase):
             type
         :raises ValueError: If any of the parameters has an incorrect value
         """
-        if not isinstance(self.max_length, Integral):
-            raise TypeError(
-                f"max_length must be an integer value: {self.max_length}")
-
-        if self.max_length <= 0:
-            raise ValueError(
-                f"max_length must greater than 0: {self.max_length}")
-
-        if not isinstance(self.min_bound, Real):
-            raise TypeError(
-                f"min_bound must be a real value: {self.min_bound}")
-
-        if not isinstance(self.max_bound, Real):
-            raise TypeError(
-                f"max_bound must be a real value: {self.max_bound}")
-
-        if self.min_bound >= self.max_bound:
-            raise ValueError(
-                f"max_bound ({self.max_bound}) must greater than "
-                f"min_bound ({self.min_bound})")
-
         if not isinstance(self.times, Integral):
             raise TypeError(
                 f"times must be an integer value: {self.times}")
@@ -109,22 +80,18 @@ class IndividualTester(unittest.TestCase):
         """Test the behavior of the crossover operator."""
         print('Testing the crossover ...', end=' ')
 
-        # For each length until max_length ...
-        for length in range(1, self.max_length + 1):
-            species = Species(
-                [self.min_bound] * length,
-                [self.max_bound] * length
-            )
+        # Execute the generator function the given number of times
+        for _ in repeat(None, self.times):
+            # Generate the two parents
+            parent1 = Individual(species, fitness_cls)
+            parent2 = Individual(species, fitness_cls)
 
-            # Execute the generator function the given number of times
-            for _ in repeat(None, self.times):
-                parent1 = Individual(species, MyFitness)
-                parent2 = Individual(species, MyFitness)
-                offspring1, offspring2 = parent1.crossover(parent2)
+            # Generate the two offspring
+            offspring1, offspring2 = parent1.crossover(parent2)
 
-                # Check that the offspring meet the species constraints
-                self.assertTrue(species.is_member(offspring1))
-                self.assertTrue(species.is_member(offspring2))
+            # Check that the offspring meet the species constraints
+            self.assertTrue(species.is_member(offspring1))
+            self.assertTrue(species.is_member(offspring2))
 
         print('Ok')
 
@@ -132,28 +99,23 @@ class IndividualTester(unittest.TestCase):
         """Test the behavior of the mutation operator."""
         print('Testing the mutation ...', end=' ')
 
-        # For each length until max_length ...
-        for length in range(1, self.max_length + 1):
-            species = Species(
-                [self.min_bound] * length,
-                [self.max_bound] * length
-            )
+        # Execute the generator function the given number of times
+        for _ in repeat(None, self.times):
+            # Generate one individual
+            ind = Individual(species, fitness_cls)
 
-            # Execute the generator function the given number of times
-            for _ in repeat(None, self.times):
-                ind = Individual(species, MyFitness)
-                mutant, = ind.mutate(indpb=1)
+            # Generate the mutant
+            mutant, = ind.mutate(indpb=1)
 
-                # Check that the offspring meet the species constraints
-                self.assertTrue(species.is_member(mutant))
+            # Check that the offspring meet the species constraints
+            self.assertTrue(species.is_member(mutant))
 
         print('Ok')
 
     def test_2_repr(self):
         """Test the repr and str dunder methods."""
         print('Testing the __repr__ and __str__ dunder methods ...', end=' ')
-        species = Species([self.min_bound], [self.max_bound])
-        individual = Individual(species, MyFitness)
+        individual = Individual(species, fitness_cls)
         self.assertIsInstance(repr(individual), str)
         self.assertIsInstance(str(individual), str)
         print('Ok')

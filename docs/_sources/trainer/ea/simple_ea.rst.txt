@@ -95,5 +95,6 @@ Private methods
 .. automethod:: culebra.trainer.ea.SimpleEA._default_termination_func
 .. automethod:: culebra.trainer.ea.SimpleEA._termination_criterion
 .. automethod:: culebra.trainer.ea.SimpleEA._init_representatives
+.. automethod:: culebra.trainer.ea.SimpleEA._set_cooperative_fitness
 .. automethod:: culebra.trainer.ea.SimpleEA._generate_initial_pop
 .. automethod:: culebra.trainer.ea.SimpleEA._evaluate_pop

@@ -40,7 +40,6 @@ from culebra.tools import Dataset
 def KappaNumFeats(
     training_data,
     test_data=None,
-    test_prop=None,
     cv_folds=None,
     classifier=None
 ):
@@ -49,7 +48,6 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             cv_folds=cv_folds,
             classifier=classifier
         ),
@@ -118,12 +116,13 @@ individuals = Series(dtype=object)
 training_kappa = Series(dtype=float)
 training_nf = Series(dtype=int)
 
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        species.loc[len(species)] = index
-        individuals.loc[len(individuals)] = ind
-        training_kappa.loc[len(training_kappa)] = ind.fitness.getValues()[0]
-        training_nf.loc[len(training_nf)] = int(ind.fitness.getValues()[1])
+        ind_idx = len(species)
+        species.loc[ind_idx] = species_idx
+        individuals.loc[ind_idx] = ind
+        training_kappa.loc[ind_idx] = ind.fitness.values[0]
+        training_nf.loc[ind_idx] = int(ind.fitness.values[1])
 
 results['Species'] = species
 results['Individual'] = individuals
@@ -136,10 +135,11 @@ wrapper.test(best_found=best_ones, fitness_func=test_fitness_function)
 # Add the test results to the dataframe
 test_kappa = Series(dtype=float)
 test_nf = Series(dtype=int)
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        test_kappa.loc[len(test_kappa)] = ind.fitness.getValues()[0]
-        test_nf.loc[len(test_nf)] = int(ind.fitness.getValues()[1])
+        ind_idx = len(test_kappa)
+        test_kappa.loc[ind_idx] = ind.fitness.values[0]
+        test_nf.loc[ind_idx] = int(ind.fitness.values[1])
 
 results['Test Kappa'] = test_kappa
 results['Test NF'] = test_nf

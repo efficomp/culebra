@@ -120,3 +120,4 @@ Private methods
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._default_termination_func
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._termination_criterion
 .. automethod:: culebra.trainer.ea.abc.CooperativeEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.CooperativeEA._set_cooperative_fitness

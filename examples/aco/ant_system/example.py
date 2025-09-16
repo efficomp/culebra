@@ -74,11 +74,12 @@ species = Series(dtype=object)
 ants = Series(dtype=object)
 path_len = Series(dtype=float)
 
-for index, col_best in enumerate(best_ones):
+for ind_col, col_best in enumerate(best_ones):
     for ant in col_best:
-        species.loc[len(species)] = index
-        ants.loc[len(ants)] = ant
-        path_len.loc[len(path_len)] = int(ant.fitness.getValues()[0])
+        ind_ant = len(species)
+        species.loc[ind_ant] = ind_col
+        ants.loc[ind_ant] = ant
+        path_len.loc[ind_ant] = int(ant.fitness.values[0])
 
 results['Species'] = species
 results['Ant'] = ants

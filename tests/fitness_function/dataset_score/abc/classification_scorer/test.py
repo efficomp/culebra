@@ -87,7 +87,6 @@ class ClassificationScorerTester(unittest.TestCase):
             (func.training_data.outputs == training_data.outputs).all()
         )
         self.assertEqual(func.test_data, None)
-        self.assertEqual(func.test_prop, None)
         self.assertTrue(isinstance(func.classifier, DEFAULT_CLASSIFIER))
         self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
         self.assertEqual(func.index, 0)
@@ -114,21 +113,6 @@ class ClassificationScorerTester(unittest.TestCase):
         )
         self.assertEqual(func.index, valid_index)
 
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        training_data, test_data = dataset.split(0.3)
-
-        # Fitness function to be tested
-        func = MyClassificationScorer(training_data)
-
-        func.test_prop = None
-        self.assertEqual(func.is_noisy, False)
-        func.test_prop = 0.5
-        self.assertEqual(func.is_noisy, True)
-
-        func = MyClassificationScorer(training_data, test_data)
-        self.assertEqual(func.is_noisy, False)
-
     def test_evaluate_train_test(self):
         """Test the _evaluate_train_test method."""
         training_data, test_data = dataset.split(0.3)
@@ -137,7 +121,15 @@ class ClassificationScorerTester(unittest.TestCase):
             test_data=test_data
         )
 
-        scores = func._evaluate_train_test(training_data, test_data)
+        species = FSSpecies(training_data.num_feats)
+        selected_feats = [0, 1, 2]
+        sol = FSSolution(species, func.fitness_cls, features=selected_feats)
+
+        fit_values = func._evaluate_train_test(
+            sol,
+            training_data,
+            test_data
+        ).values
 
         outputs_pred = func.classifier.fit(
             training_data.inputs,
@@ -146,26 +138,9 @@ class ClassificationScorerTester(unittest.TestCase):
 
         self.assertEqual(
             cohen_kappa_score(test_data.outputs, outputs_pred),
-            scores[0]
+            sol.fitness.values[0]
         )
-
-    def test_evaluate_mccv(self):
-        """Test the _evaluate_mccv method."""
-        training_data = dataset
-        func = MyClassificationScorer(
-            training_data=training_data,
-            test_prop=0.9
-        )
-
-        species = FSSpecies(training_data.num_feats)
-        selected_feats = [0, 1, 2]
-        sol = FSSolution(species, func.fitness_cls, features=selected_feats)
-
-        sol.fitness.values = func._evaluate_mccv(sol, training_data)
-        first_scores = sol.fitness.values
-        sol.fitness.values = func._evaluate_mccv(sol, training_data)
-
-        self.assertNotEqual(first_scores, sol.fitness.values)
+        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_evaluate_kfcv(self):
         """Test the _evaluate_kfcv method."""
@@ -174,7 +149,11 @@ class ClassificationScorerTester(unittest.TestCase):
             training_data=training_data,
         )
 
-        cv_scores = func._evaluate_kfcv(training_data)
+        species = FSSpecies(training_data.num_feats)
+        selected_feats = [0, 1, 2]
+        sol = FSSolution(species, func.fitness_cls, features=selected_feats)
+
+        fit_values = func._evaluate_kfcv(sol, training_data).values
 
         fold_scores = cross_val_score(
             func.classifier,
@@ -186,8 +165,9 @@ class ClassificationScorerTester(unittest.TestCase):
 
         self.assertEqual(
             fold_scores.mean(),
-            cv_scores[0]
+            sol.fitness.values[0]
         )
+        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_copy(self):
         """Test the __copy__ method."""

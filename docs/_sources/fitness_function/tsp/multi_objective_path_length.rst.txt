@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_names
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_thresholds
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.fitness_cls
-.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.is_noisy
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.num_nodes
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.objectives
 

@@ -104,6 +104,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.MMAS._default_termination_func
 .. automethod:: culebra.trainer.aco.MMAS._termination_criterion
 .. automethod:: culebra.trainer.aco.MMAS._init_representatives
+.. automethod:: culebra.trainer.aco.MMAS._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.MMAS._calculate_choice_info
 .. automethod:: culebra.trainer.aco.MMAS._initial_choice
 .. automethod:: culebra.trainer.aco.MMAS._next_choice

@@ -88,11 +88,12 @@ species = Series(dtype=object)
 individuals = Series(dtype=object)
 training_kappa = Series(dtype=int)
 
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        species.loc[len(species)] = index
-        individuals.loc[len(individuals)] = ind
-        training_kappa.loc[len(training_kappa)] = ind.fitness.getValues()[0]
+        ind_idx = len(species)
+        species.loc[ind_idx] = species_idx
+        individuals.loc[ind_idx] = ind
+        training_kappa.loc[ind_idx] = ind.fitness.values[0]
 
 results['Species'] = species
 results['Individual'] = individuals
@@ -103,9 +104,10 @@ wrapper.test(best_found=best_ones, fitness_func=test_fitness_function)
 
 # Add the test results to the dataframe
 test_kappa = Series(dtype=int)
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        test_kappa.loc[len(test_kappa)] = ind.fitness.getValues()[0]
+        ind_idx = len(test_kappa)
+        test_kappa.loc[ind_idx] = ind.fitness.values[0]
 
 results['Test Kappa'] = test_kappa
 

@@ -35,11 +35,9 @@ Properties
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_names
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_thresholds
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.fitness_cls
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.is_noisy
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.index
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.training_data
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.test_data
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.test_prop
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.cv_folds
 
 Private properties
@@ -57,5 +55,4 @@ Private methods
 .. automethod:: culebra.fitness_function.dataset_score.Accuracy._score
 .. automethod:: culebra.fitness_function.dataset_score.Accuracy._final_training_test_data
 .. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_train_test
-.. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_mccv
 .. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_kfcv

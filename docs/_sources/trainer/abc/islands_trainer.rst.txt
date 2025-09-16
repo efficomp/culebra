@@ -107,3 +107,4 @@ Private methods
 .. automethod:: culebra.trainer.abc.IslandsTrainer._default_termination_func
 .. automethod:: culebra.trainer.abc.IslandsTrainer._termination_criterion
 .. automethod:: culebra.trainer.abc.IslandsTrainer._init_representatives
+.. automethod:: culebra.trainer.abc.IslandsTrainer._set_cooperative_fitness

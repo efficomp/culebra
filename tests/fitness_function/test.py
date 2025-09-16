@@ -20,13 +20,27 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Test the abstract base feature selection fitness functions."""
+"""Test the MultiObjectiveFitnessFunction class."""
 
 import unittest
+
+from culebra.abc import Solution, Species
 
 from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
 
 from culebra.fitness_function import MultiObjectiveFitnessFunction
+
+
+class MySolution(Solution):
+    """Dummy subclass to test the :py:class:`~culebra.abc.Solution` class."""
+
+
+class MySpecies(Species):
+    """Dummy subclass to test the :py:class:`~culebra.abc.Species` class."""
+
+    def check(self, _):
+        """Check a solution."""
+        return True
 
 
 class MySingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
@@ -39,12 +53,8 @@ class MySingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
 
     def evaluate(self, sol, index, representatives):
         """Evaluate a solution."""
-        return (0,)
-
-    @property
-    def is_noisy(self) -> int:
-        """Return :py:data:`True` if the fitness function is noisy."""
-        return False
+        sol.fitness.update_value(0, self.index)
+        return sol.fitness
 
 
 class AnotherSingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
@@ -57,12 +67,8 @@ class AnotherSingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
 
     def evaluate(self, sol, index, representatives):
         """Evaluate a solution."""
-        return (1,)
-
-    @property
-    def is_noisy(self) -> int:
-        """Return :py:data:`True` if the fitness function is noisy."""
-        return True
+        sol.fitness.update_value(1, self.index)
+        return sol.fitness
 
 
 class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
@@ -141,20 +147,6 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
         with self.assertRaises(ValueError):
             func.obj_thresholds = [1]
 
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        obj0 = MySingleObjectiveFitnessFunction()
-        obj1 = AnotherSingleObjectiveFitnessFunction()
-
-        func = MultiObjectiveFitnessFunction()
-        self.assertEqual(func.is_noisy, False)
-
-        func = MultiObjectiveFitnessFunction(obj0)
-        self.assertEqual(func.is_noisy, False)
-
-        func = MultiObjectiveFitnessFunction(obj0, obj1)
-        self.assertEqual(func.is_noisy, True)
-
     def test_evaluate(self):
         """Test the evaluation method."""
         obj0 = MySingleObjectiveFitnessFunction()
@@ -162,9 +154,12 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
 
         func = MultiObjectiveFitnessFunction(obj0, obj1)
 
-        fitness_values = func.evaluate(None)
+        sol = MySolution(MySpecies(), func.fitness_cls)
 
-        self.assertEqual(fitness_values, (0, 1))
+        fit_values = func.evaluate(sol).values
+
+        self.assertEqual(sol.fitness.values, (0, 1))
+        self.assertEqual(fit_values, sol.fitness.values)
 
 
 if __name__ == '__main__':

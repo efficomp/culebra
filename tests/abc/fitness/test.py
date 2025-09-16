@@ -43,16 +43,25 @@ class FitnessTester(unittest.TestCase):
 
     def test_init(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__init__` constructor."""
+        # Try the base Fitness
+        fitness = Fitness()
+        self.assertEqual(fitness.values, ())
+        self.assertEqual(fitness.weights, ())
+        self.assertEqual(fitness.names, ())
+        self.assertEqual(fitness.thresholds, ())
+
+        fitness = Fitness([])
+        self.assertEqual(fitness.values, ())
+        self.assertEqual(fitness.weights, ())
+        self.assertEqual(fitness.names, ())
+        self.assertEqual(fitness.thresholds, ())
+
         # Check default values
         fitness = MyFitness()
-        self.assertEqual(fitness.values, ())
+        self.assertEqual(fitness.values, (None,) * fitness.num_obj)
         self.assertEqual(fitness.weights, MyFitness.weights)
         self.assertEqual(fitness.names, MyFitness.names)
         self.assertEqual(fitness.thresholds, MyFitness.thresholds)
-        self.assertEqual(
-            fitness.num_evaluations,
-            [0] * fitness.num_obj
-        )
 
         # Try initial values
         values = (2, 3)
@@ -61,22 +70,31 @@ class FitnessTester(unittest.TestCase):
 
         # Try an invalid number of initial values
         values = (2, 3, 3)
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             MyFitness(values=values)
 
-    def test_del_values(self):
-        """Test :py:meth:~culebra.abc.Fitness.delValues`."""
-        # Check default objective names
+    def test_values(self):
+        """Test :py:meth:~culebra.abc.Fitness.values`."""
         fitness = MyFitness()
-        fitness.values = (2, 3)
-        fitness.num_evaluations[1] += 1
+        self.assertEqual(fitness.values, (None,) * fitness.num_obj)
 
-        self.assertTrue(fitness.valid)
-        self.assertEqual(fitness.num_evaluations, [0, 1])
+        values = (2, 3)
+        fitness.values = values
+        self.assertEqual(fitness.values, values)
 
         del fitness.values
-        self.assertFalse(fitness.valid)
-        self.assertEqual(fitness.num_evaluations, [0, 0])
+
+    def test_vwalues(self):
+        """Test :py:meth:~culebra.abc.Fitness.wvalues`."""
+        # Check default objective names
+        fitness = MyFitness()
+        self.assertEqual(fitness.wvalues, (None, None))
+
+        values = (2, 3)
+        fitness.values = values
+
+        wvalues = tuple((v * w for (v, w) in zip(values, fitness.weights)))
+        self.assertEqual(fitness.wvalues, wvalues)
 
     def test_num_obj(self):
         """Test the :py:attr:`~culebra.abc.Fitness.num_obj` property."""
@@ -91,6 +109,30 @@ class FitnessTester(unittest.TestCase):
         # The fitness values and context should have been deleted
         self.assertEqual(fitness.pheromone_amount, (2, 1/3))
 
+    def test_update_value(self):
+        """Test the update_value method."""
+        # Construct a fitness
+        fitness = MyFitness()
+
+        # Try to update objectives with an invalid index, should fail ...
+        with self.assertRaises(TypeError):
+            fitness.update_value(4, 'a')
+        with self.assertRaises(ValueError):
+            fitness.update_value(4, -1)
+        with self.assertRaises(ValueError):
+            fitness.update_value(4, 2)
+
+        # Try to update an objective with an invalid value, should fail ...
+        with self.assertRaises(TypeError):
+            fitness.update_value('a', 0)
+
+        # Try several updates
+        times = 10
+        for i in range(times):
+            for obj_index in range(fitness.num_obj):
+                fitness.update_value(i, obj_index)
+                self.assertEqual(fitness._values[obj_index], i)
+
     def test_dominates(self):
         """Test the :py:meth:`~culebra.abc.Fitness.dominates` method."""
         weights = (1, -1)
@@ -98,25 +140,25 @@ class FitnessTester(unittest.TestCase):
         fitness_2 = MyFitness()
         fitness_1.weights = fitness_2.weights = weights
 
-        fitness_1.setValues((0.5, 0.5))
+        fitness_1.values = (0.5, 0.5)
 
         # Try with thresholds = 0
         fitness_1.thresholds = (0,) * fitness_1.num_obj
         fitness_2.thresholds = fitness_1.thresholds
 
         # fitness_1 == fitness_2 -> fitness_1 should not dominate fitness_2
-        fitness_2.setValues(fitness_1.values)
+        fitness_2.values = (fitness_1.values)
         self.assertFalse(fitness_1.dominates(fitness_2))
 
         # One objective is better and the other is worst
         # fitness_1 should not dominate fitness_2
         off = 0.1
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]+off, fitness_1.values[1]+off)
         )
         self.assertFalse(fitness_1.dominates(fitness_2))
 
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]-off, fitness_1.values[1]-off)
         )
         self.assertFalse(fitness_1.dominates(fitness_2))
@@ -124,12 +166,12 @@ class FitnessTester(unittest.TestCase):
         # One objective is equal and the other is worst
         # fitness_1 should not dominate fitness_2
         off = 0.1
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1]-off)
         )
         self.assertFalse(fitness_1.dominates(fitness_2))
 
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]+off, fitness_1.values[1])
         )
         self.assertFalse(fitness_1.dominates(fitness_2))
@@ -137,12 +179,12 @@ class FitnessTester(unittest.TestCase):
         # One objective is equal and the other is better
         # fitness_1 should dominate fitness_2
         off = 0.1
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1]+off)
         )
         self.assertTrue(fitness_1.dominates(fitness_2))
 
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]-off, fitness_1.values[1])
         )
         self.assertTrue(fitness_1.dominates(fitness_2))
@@ -150,7 +192,7 @@ class FitnessTester(unittest.TestCase):
         # The two objectives are better
         # fitness_1 should dominate fitness_2
         off = 0.1
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]-off, fitness_1.values[1]+off)
         )
         self.assertTrue(fitness_1.dominates(fitness_2))
@@ -166,19 +208,19 @@ class FitnessTester(unittest.TestCase):
         offset_eq = (0, threshold/2, -threshold/2)
         for off_eq1 in offset_eq:
             for off_eq2 in offset_eq:
-                fitness_2.setValues(
+                fitness_2.values = (
                     (fitness_1.values[0]+off_eq1, fitness_1.values[1]+off_eq2)
                 )
                 self.assertFalse(fitness_1.dominates(fitness_2))
 
         # One objective is better and the other is worst
         # fitness_1 should not dominate fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]+off, fitness_1.values[1]+off)
         )
         self.assertFalse(fitness_1.dominates(fitness_2))
 
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]-off, fitness_1.values[1]-off)
         )
         self.assertFalse(fitness_1.dominates(fitness_2))
@@ -186,31 +228,31 @@ class FitnessTester(unittest.TestCase):
         for off_eq in offset_eq:
             # One objective is within the threshold and the other is worst
             # fitness_1 should not dominate fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0]+off_eq, fitness_1.values[1]-off)
             )
             self.assertFalse(fitness_1.dominates(fitness_2))
 
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0]+off, fitness_1.values[1]+off_eq)
             )
             self.assertFalse(fitness_1.dominates(fitness_2))
 
             # One objective is within threshold  and the other is better
             # fitness_1 should dominate fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0]+off_eq, fitness_1.values[1]+off)
             )
             self.assertTrue(fitness_1.dominates(fitness_2))
 
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0]-off, fitness_1.values[1]+off_eq)
             )
             self.assertTrue(fitness_1.dominates(fitness_2))
 
         # The two objectives are better
         # fitness_1 should dominate fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0]-off,
              fitness_1.values[1]+off)
         )
@@ -223,7 +265,7 @@ class FitnessTester(unittest.TestCase):
         fitness_2 = MyFitness()
         fitness_1.weights = fitness_2.weights = weights
 
-        fitness_1.setValues((0.5, 0.5))
+        fitness_1.values = ((0.5, 0.5))
 
         # Try with thresholds = 0
         fitness_1.thresholds = (0,) * fitness_1.num_obj
@@ -234,26 +276,26 @@ class FitnessTester(unittest.TestCase):
         value_1 = fitness_1.values[0] + 0.1
         offset_2 = (0, 0.1, -0.1)
         for off in offset_2:
-            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            fitness_2.values = ((value_1, fitness_1.values[1]+off))
             self.assertTrue(fitness_1 <= fitness_2)
 
         # If the first compoment is equal, the second decides
         off = 0.1
 
         # fitness_1 > fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1] + off)
         )
         self.assertFalse(fitness_1 <= fitness_2)
 
         # fitness_1 == fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1])
         )
         self.assertTrue(fitness_1 <= fitness_2)
 
         # fitness_1 < fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1] - off)
         )
         self.assertTrue(fitness_1 <= fitness_2)
@@ -274,7 +316,7 @@ class FitnessTester(unittest.TestCase):
             -threshold*2
         )
         for off in offset_2:
-            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            fitness_2.values = ((value_1, fitness_1.values[1]+off))
             self.assertTrue(fitness_1 <= fitness_2)
 
         # If the first compoment is within the threshold, the second decides
@@ -283,20 +325,20 @@ class FitnessTester(unittest.TestCase):
         for off1 in off_eq:
 
             # fitness_1 > fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0] + off1, fitness_1.values[1] + off_ne)
             )
             self.assertFalse(fitness_1 <= fitness_2)
 
             # fitness_1 == fitness_2
             for off2 in off_eq:
-                fitness_2.setValues(
+                fitness_2.values = (
                     (fitness_1.values[0] + off1, fitness_1.values[1] + off2)
                 )
                 self.assertTrue(fitness_1 <= fitness_2)
 
             # fitness_1 < fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0] + off1, fitness_1.values[1] - off_ne)
             )
             self.assertTrue(fitness_1 <= fitness_2)
@@ -308,7 +350,7 @@ class FitnessTester(unittest.TestCase):
         fitness_2 = MyFitness()
         fitness_1.weights = fitness_2.weights = weights
 
-        fitness_1.setValues((0.5, 0.5))
+        fitness_1.values = ((0.5, 0.5))
 
         # Try with thresholds = 0
         fitness_1.thresholds = (0,) * fitness_1.num_obj
@@ -319,26 +361,26 @@ class FitnessTester(unittest.TestCase):
         value_1 = fitness_1.values[0] + 0.1
         offset_2 = (0, 0.1, -0.1)
         for off in offset_2:
-            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            fitness_2.values = ((value_1, fitness_1.values[1]+off))
             self.assertTrue(fitness_1 < fitness_2)
 
         # If the first compoment is equal, the second decides
         off = 0.1
 
         # fitness_1 > fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1] + off)
         )
         self.assertFalse(fitness_1 < fitness_2)
 
         # fitness_1 == fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1])
         )
         self.assertFalse(fitness_1 < fitness_2)
 
         # fitness_1 < fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1] - off)
         )
         self.assertTrue(fitness_1 < fitness_2)
@@ -359,7 +401,7 @@ class FitnessTester(unittest.TestCase):
             -threshold * 2
         )
         for off in offset_2:
-            fitness_2.setValues((value_1, fitness_1.values[1]+off))
+            fitness_2.values = ((value_1, fitness_1.values[1]+off))
             self.assertTrue(fitness_1 < fitness_2)
 
         # If the first compoment is within the threshold, the second decides
@@ -368,20 +410,20 @@ class FitnessTester(unittest.TestCase):
         for off1 in off_eq:
 
             # fitness_1 > fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0] + off1, fitness_1.values[1] + off_ne)
             )
             self.assertFalse(fitness_1 < fitness_2)
 
             # fitness_1 == fitness_2
             for off2 in off_eq:
-                fitness_2.setValues(
+                fitness_2.values = (
                     (fitness_1.values[0] + off1, fitness_1.values[1] + off2)
                 )
                 self.assertFalse(fitness_1 < fitness_2)
 
             # fitness_1 < fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0] + off1, fitness_1.values[1] - off_ne)
             )
             self.assertTrue(fitness_1 < fitness_2)
@@ -393,7 +435,7 @@ class FitnessTester(unittest.TestCase):
         fitness_2 = MyFitness()
         fitness_1.weights = fitness_2.weights = weights
 
-        fitness_1.setValues((0.5, 0.5))
+        fitness_1.values = ((0.5, 0.5))
 
         # Try with thresholds = 0
         fitness_1.thresholds = (0,) * fitness_1.num_obj
@@ -405,7 +447,7 @@ class FitnessTester(unittest.TestCase):
         offset_2 = (0, 0.1, -0.1)
         for off1 in offset_1:
             for off2 in offset_2:
-                fitness_2.setValues(
+                fitness_2.values = (
                     (fitness_1.values[0]+off1, fitness_1.values[1]+off2)
                 )
                 self.assertFalse(fitness_1 == fitness_2)
@@ -414,19 +456,19 @@ class FitnessTester(unittest.TestCase):
         off = 0.1
 
         # fitness_1 > fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1] + off)
         )
         self.assertFalse(fitness_1 == fitness_2)
 
         # fitness_1 == fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1])
         )
         self.assertTrue(fitness_1 == fitness_2)
 
         # fitness_1 < fitness_2
-        fitness_2.setValues(
+        fitness_2.values = (
             (fitness_1.values[0], fitness_1.values[1] - off)
         )
         self.assertFalse(fitness_1 == fitness_2)
@@ -451,7 +493,7 @@ class FitnessTester(unittest.TestCase):
         )
         for off1 in offset_1:
             for off2 in offset_2:
-                fitness_2.setValues(
+                fitness_2.values = (
                     (fitness_1.values[0]+off1, fitness_1.values[1]+off2)
                 )
                 self.assertFalse(fitness_1 == fitness_2)
@@ -462,20 +504,20 @@ class FitnessTester(unittest.TestCase):
         for off1 in off_eq:
 
             # fitness_1 > fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0] + off1, fitness_1.values[1] + off_ne)
             )
             self.assertFalse(fitness_1 == fitness_2)
 
             # fitness_1 == fitness_2
             for off2 in off_eq:
-                fitness_2.setValues(
+                fitness_2.values = (
                     (fitness_1.values[0] + off1, fitness_1.values[1] + off2)
                 )
                 self.assertTrue(fitness_1 == fitness_2)
 
             # fitness_1 < fitness_2
-            fitness_2.setValues(
+            fitness_2.values = (
                 (fitness_1.values[0] + off1, fitness_1.values[1] - off_ne)
             )
             self.assertFalse(fitness_1 == fitness_2)
@@ -489,7 +531,7 @@ class FitnessTester(unittest.TestCase):
         self.assertNotEqual(id(fitness1), id(fitness2))
 
         # The objects attributes are shared
-        self.assertEqual(id(fitness1.wvalues), id(fitness2.wvalues))
+        self.assertEqual(id(fitness1._values), id(fitness2._values))
 
     def test_deepcopy(self):
         """Test the :py:meth:`~culebra.abc.Fitness.__deepcopy__` method."""
@@ -536,7 +578,8 @@ class FitnessTester(unittest.TestCase):
         """
         # Copies all the levels
         self.assertNotEqual(id(fitness1), id(fitness2))
-        self.assertEqual(fitness1.wvalues, fitness2.wvalues)
+        self.assertNotEqual(id(fitness1._values), id(fitness2._values))
+        self.assertEqual(fitness1.values, fitness2.values)
 
 
 if __name__ == '__main__':

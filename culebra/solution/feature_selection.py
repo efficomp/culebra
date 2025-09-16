@@ -753,6 +753,8 @@ class BitVector(BinarySolution, BaseIndividual):
                 break
 
         # Return the offspring
+        del self.fitness.values
+        del other.fitness.values
         return self, other
 
     def crossover2p(self, other: BitVector) -> Tuple[BitVector, BitVector]:
@@ -765,10 +767,11 @@ class BitVector(BinarySolution, BaseIndividual):
         :return: The two offspring
         :rtype: :py:class:`tuple`
         """
+        min_feat = self.species.min_feat
+        max_feat = self.species.max_feat
+
         while True:
             # Cross points. Use randint to include also max_feat
-            min_feat = self.species.min_feat
-            max_feat = self.species.max_feat
             cross_point_0 = randint(0, max_feat - min_feat)
             cross_point_1 = randint(0, max_feat - min_feat)
             if cross_point_0 > cross_point_1:
@@ -788,6 +791,8 @@ class BitVector(BinarySolution, BaseIndividual):
                 break
 
         # Return the offspring
+        del self.fitness.values
+        del other.fitness.values
         return self, other
 
     crossover = crossover1p
@@ -823,6 +828,7 @@ class BitVector(BinarySolution, BaseIndividual):
                 break
 
         # Return the mutant
+        del self.fitness.values
         return (self,)
 
 
@@ -867,6 +873,10 @@ class IntVector(IntSolution, BaseIndividual):
         # Return the new offspring
         self._features = np.concatenate((common, uncommon[:cross_point]))
         other._features = np.concatenate((common, uncommon[cross_point:]))
+
+        del self.fitness.values
+        del other.fitness.values
+
         return self, other
 
     def mutate(self, indpb: float) -> Tuple[IntVector]:
@@ -881,11 +891,15 @@ class IntVector(IntSolution, BaseIndividual):
         :rtype: :py:class:`tuple`
         """
         # All possible features for the species
-        all_feats = np.arange(self.species.min_feat, self.species.max_feat + 1)
+        all_feats = np.arange(
+            self.species.min_feat,
+            self.species.max_feat + 1
+        )
 
         # Features to be kept
-        to_be_kept = self._features[np.random.random(self.num_feats) >=
-                                    indpb]
+        to_be_kept = self._features[
+            np.random.random(self.num_feats) >= indpb
+        ]
 
         # Features not selected by the original individual
         not_selected = np.setdiff1d(all_feats, self._features)
@@ -921,6 +935,7 @@ class IntVector(IntSolution, BaseIndividual):
             )
 
         self._features = new_features
+        del self.fitness.values
 
         # Return the new individual
         return (self,)
@@ -996,6 +1011,7 @@ class Ant(IntSolution, BaseAnt):
                 f"Feature {feature} has been previously discarded"
             )
         self._features = np.append(self.path, (feature))
+        del self.fitness.values
 
     def discard(self, feature: int) -> None:
         """Discard a feature.

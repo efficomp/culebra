@@ -35,11 +35,9 @@ Properties
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_names
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.fitness_cls
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.is_noisy
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.index
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.training_data
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.test_data
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.test_prop
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.classifier
 
 Private properties
@@ -57,5 +55,4 @@ Private methods
 .. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._score
 .. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._final_training_test_data
 .. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._evaluate_train_test
-.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._evaluate_mccv
 .. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._evaluate_kfcv

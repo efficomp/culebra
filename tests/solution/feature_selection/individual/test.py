@@ -32,7 +32,8 @@ import numpy as np
 from pandas import DataFrame
 
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.abc import Species as BaseSpecies, Fitness
+from culebra.abc import Species as BaseSpecies
+from culebra.fitness_function.feature_selection import NumFeats
 from culebra.solution.abc import Individual
 from culebra.solution.feature_selection import (
     Solution,
@@ -56,13 +57,7 @@ DEFAULT_MUT_PROB_VALUES = [0.00, 0.25, 0.50, 0.75, 1.00]
 DEFAULT_TIMES = 1000
 """Default value for the number of times an implementation is run."""
 
-
-class MyFitness(Fitness):
-    """Dummy fitness."""
-
-    weights = (1.0, 1.0)
-    names = ("obj1", "obj2")
-    thresholds = [0.001, 0.001]
+fitness_function = NumFeats()
 
 
 class IndividualTester(unittest.TestCase):
@@ -139,7 +134,7 @@ class IndividualTester(unittest.TestCase):
 
         # Check the type of arguments
         with self.assertRaises(TypeError):
-            self.individual_cls(BaseSpecies(), MyFitness)
+            self.individual_cls(BaseSpecies(), fitness_function.fitness_cls)
         with self.assertRaises(TypeError):
             self.individual_cls(Species(), Species)
 
@@ -154,7 +149,11 @@ class IndividualTester(unittest.TestCase):
                     # Check that the feature selector meets the species
                     # constraints
                     self.__check_correctness(
-                        self.individual_cls(species, MyFitness))
+                        self.individual_cls(
+                            species,
+                            fitness_function.fitness_cls
+                        )
+                    )
 
         print('Ok')
 
@@ -178,8 +177,15 @@ class IndividualTester(unittest.TestCase):
                 # Execute the crossover function the given number of times
                 for _ in repeat(None, self.times):
                     # Generate the two parents
-                    parent1 = self.individual_cls(species, MyFitness)
-                    parent2 = self.individual_cls(species, MyFitness)
+                    parent1 = self.individual_cls(
+                        species,
+                        fitness_function.fitness_cls
+                    )
+                    parent2 = self.individual_cls(
+                        species,
+                        fitness_function.fitness_cls
+                    )
+
                     # Cross the two parents
                     offspring1, offspring2 = parent1.crossover(parent2)
 
@@ -207,8 +213,9 @@ class IndividualTester(unittest.TestCase):
                 species = Species.from_proportion(num_feats, prop)
                 # Generate a feature selector
                 individual = self.individual_cls(
-                    species, MyFitness
+                    species, fitness_function.fitness_cls
                 )
+
                 # For each possible value of the independent mutation
                 # probability
                 for mut_prob in self.mut_prob_values:
@@ -228,7 +235,10 @@ class IndividualTester(unittest.TestCase):
               '__repr__ and __str__ dunder methods ...', end=' ')
         num_feats = 10
         species = Species(num_feats)
-        individual = self.individual_cls(species, MyFitness)
+        individual = self.individual_cls(
+            species,
+            fitness_function.fitness_cls
+        )
         self.assertIsInstance(repr(individual), str)
         self.assertIsInstance(str(individual), str)
         print('Ok')
@@ -240,7 +250,7 @@ class IndividualTester(unittest.TestCase):
               'dump and load methods ...', end=' ')
         num_feats = 10
         species = Species(num_feats)
-        ind1 = self.individual_cls(species, MyFitness)
+        ind1 = self.individual_cls(species, fitness_function.fitness_cls)
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         ind1.dump(serialized_filename)
         ind2 = self.individual_cls.load(serialized_filename)
@@ -450,7 +460,10 @@ class IndividualTester(unittest.TestCase):
                 # Obtain the average execution time
                 runtime += self.__runtime(
                     self.individual_cls,
-                    self.times, species=species, fitness_cls=MyFitness)
+                    self.times,
+                    species=species,
+                    fitness_cls=fitness_function.fitness_cls
+                )
             # Store it
             runtimes.append(runtime / (self.times * len(self.prop_values)))
 
@@ -484,8 +497,14 @@ class IndividualTester(unittest.TestCase):
                 # Create the species from num_feats and prop
                 species = Species.from_proportion(num_feats, prop)
                 # Generate the two parents
-                parent1 = self.individual_cls(species, MyFitness)
-                parent2 = self.individual_cls(species, MyFitness)
+                parent1 = self.individual_cls(
+                    species,
+                    fitness_function.fitness_cls
+                )
+                parent2 = self.individual_cls(
+                    species,
+                    fitness_function.fitness_cls
+                )
                 # Obtain the average execution time
                 runtime += self.__runtime(
                     self.individual_cls.crossover,
@@ -523,7 +542,7 @@ class IndividualTester(unittest.TestCase):
                 species = Species.from_proportion(num_feats, prop)
                 # Generate a feature selector
                 individual = self.individual_cls(
-                    species, MyFitness
+                    species, fitness_function.fitness_cls
                 )
                 # For each possible value of the mutation probability
                 for mut_prob in self.mut_prob_values:

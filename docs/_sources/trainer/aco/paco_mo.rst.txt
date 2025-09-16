@@ -99,6 +99,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.PACO_MO._default_termination_func
 .. automethod:: culebra.trainer.aco.PACO_MO._termination_criterion
 .. automethod:: culebra.trainer.aco.PACO_MO._init_representatives
+.. automethod:: culebra.trainer.aco.PACO_MO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.PACO_MO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.PACO_MO._initial_choice
 .. automethod:: culebra.trainer.aco.PACO_MO._next_choice

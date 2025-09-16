@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Test the SingleObjectiveFitnessFunctionTester class."""
+"""Test the SingleObjectiveFitnessFunction class."""
 
 import unittest
 
@@ -38,7 +38,8 @@ class MySingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
 
     def evaluate(self, sol, index, representatives):
         """Evaluate a solution."""
-        return (0,)
+        sol.fitness.values = (0,)
+        return sol.fitness
 
 
 class SingleObjectiveFitnessFunctionTester(unittest.TestCase):

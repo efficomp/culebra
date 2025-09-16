@@ -45,7 +45,8 @@ class MyFSScorer(FSScorer):
 
     def evaluate(self, sol, index, representatives):
         """Evaluate a solution."""
-        return (0,)
+        sol.fitness.update_value(0, self.index)
+        return sol.fitness
 
 
 class FSScorerTester(unittest.TestCase):

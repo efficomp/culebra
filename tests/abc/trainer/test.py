@@ -100,7 +100,7 @@ class MyFitnessFunction(FitnessFunction):
 
         Dummy implementation of the evaluation function.
 
-        Return the maximum of the values stored by *sol* and
+        Obtain the maximum of the values stored by *sol* and
         *representatives* (if provided)
         """
         max_val = sol.val
@@ -110,7 +110,9 @@ class MyFitnessFunction(FitnessFunction):
                     if other.val > max_val:
                         max_val = other.val
 
-        return (max_val,)
+        sol.fitness.values = (max_val,)
+
+        return sol.fitness
 
 
 class MyOtherFitnessFunction(FitnessFunction):
@@ -131,7 +133,7 @@ class MyOtherFitnessFunction(FitnessFunction):
 
         Dummy implementation of the evaluation function.
 
-        Return the double of the maximum value stored by *sol* and
+        Obtain the double of the maximum value stored by *sol* and
         *representatives* (if provided)
         """
         max_val = sol.val
@@ -141,7 +143,9 @@ class MyOtherFitnessFunction(FitnessFunction):
                     if other.val > max_val:
                         max_val = other.val
 
-        return (max_val*2,)
+        sol.fitness.values = (max_val*2,)
+
+        return sol.fitness
 
 
 class MyTrainer(Trainer):
@@ -154,7 +158,7 @@ class MyTrainer(Trainer):
         """
         species = MySpecies()
         solution = MySolution(species, MyFitnessFunction().fitness_cls)
-        solution.fitness.values = self.fitness_function.evaluate(solution)
+        self.fitness_function.evaluate(solution)
         population = (solution,)
 
         hof = HallOfFame(population)
@@ -432,7 +436,7 @@ class TrainerTester(unittest.TestCase):
         trainer.evaluate(sol2, representatives=[[sol1], [sol3]])
         self.assertEqual(
             sol2.fitness.values,
-            (sol3.val,) * sol2.fitness.num_obj
+            np.average((sol2.val, sol3.val)) * sol2.fitness.num_obj
         )
 
         trainer.evaluate(
@@ -442,7 +446,7 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(
             sol2.fitness.values,
-            (sol3.val * 2,) * sol2.fitness.num_obj
+            np.average((sol2.val*2, sol3.val*2)) * sol2.fitness.num_obj
         )
 
     def test_new_state(self):

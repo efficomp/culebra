@@ -37,7 +37,6 @@ from culebra.tools import Dataset
 def KappaNumFeats(
     training_data,
     test_data=None,
-    test_prop=None,
     cv_folds=None,
     classifier=None
 ):
@@ -46,7 +45,6 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             cv_folds=cv_folds,
             classifier=classifier
         ),
@@ -103,7 +101,7 @@ params = {
     "fitness_function": training_fitness_function,
     "subtrainer_cls": NSGA,
     "gene_ind_mutation_prob": 1.0/dataset.num_feats,
-    "max_num_iters": 200,
+    "max_num_iters": 50,
     "pop_size": dataset.num_feats,
     "checkpoint_enable": False
 
@@ -113,4 +111,4 @@ params = {
 trainer = HomogeneousParallelIslandsEA(**params)
 
 # Set the number of experiments
-num_experiments = 10
+num_experiments = 5

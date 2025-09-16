@@ -40,7 +40,9 @@ class MyFitnessFunction(FitnessFunction):
 
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution."""
-        return (0, 0)
+        sol.fitness.values = (0, 0)
+
+        return sol.fitness
 
 
 class FitnessFunctionTester(unittest.TestCase):
@@ -102,12 +104,6 @@ class FitnessFunctionTester(unittest.TestCase):
         with self.assertRaises(ValueError):
             func.obj_thresholds = valid_thresholds
 
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        # Fitness function to be tested
-        func = MyFitnessFunction()
-        self.assertEqual(func.is_noisy, False)
-
     def test_repr(self):
         """Test the repr and str dunder methods."""
         func = MyFitnessFunction()
@@ -115,17 +111,15 @@ class FitnessFunctionTester(unittest.TestCase):
         self.assertIsInstance(str(func), str)
 
     def test_fitness_serialization(self):
-        """Test the serialization of fitnesses."""
-        func = MyFitnessFunction()
-        fitness1 = func.fitness_cls(func.evaluate(None))
-
+        """Test the serialization of fitness functions."""
+        func1 = MyFitnessFunction()
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
-        fitness1.dump(serialized_filename)
-        fitness2 = fitness1.__class__.load(serialized_filename)
+        func1.dump(serialized_filename)
+        func2 = MyFitnessFunction.load(serialized_filename)
 
         # Check the serialization
-        self.assertNotEqual(id(fitness1), id(fitness2))
-        self.assertEqual(fitness1.wvalues, fitness2.wvalues)
+        self.assertNotEqual(id(func1), id(func2))
+        self.assertEqual(func1.obj_weights, func2.obj_weights)
 
         # Remove the serialized file
         remove(serialized_filename)

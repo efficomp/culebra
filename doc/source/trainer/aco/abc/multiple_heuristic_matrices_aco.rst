@@ -96,6 +96,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._init_representatives
+.. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.MultipleHeuristicMatricesACO._next_choice

@@ -96,6 +96,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._init_representatives
+.. automethod:: culebra.trainer.aco.abc.SingleObjACO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._next_choice

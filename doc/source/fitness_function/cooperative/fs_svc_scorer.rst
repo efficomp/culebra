@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_names
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.fitness_cls
-.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.is_noisy
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.num_nodes
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.objectives
 

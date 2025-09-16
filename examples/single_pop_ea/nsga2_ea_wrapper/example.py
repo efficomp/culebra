@@ -40,7 +40,6 @@ from culebra.tools import Dataset
 def KappaNumFeats(
     training_data,
     test_data=None,
-    test_prop=None,
     cv_folds=None,
     classifier=None
 ):
@@ -49,7 +48,6 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             cv_folds=cv_folds,
             classifier=classifier
         ),
@@ -90,8 +88,8 @@ params = {
     "solution_cls": IntVector,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "fitness_function": training_fitness_function,
-    "crossover_prob": 0.8,
-    "mutation_prob": 0.2,
+    "crossover_prob": 0.9,
+    "mutation_prob": 0.1,
     "gene_ind_mutation_prob": 1.0/dataset.num_feats,
     "max_num_iters": 100,
     "pop_size": dataset.num_feats,
@@ -115,12 +113,13 @@ individuals = Series(dtype=object)
 training_kappa = Series(dtype=float)
 training_nf = Series(dtype=int)
 
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        species.loc[len(species)] = index
-        individuals.loc[len(individuals)] = ind
-        training_kappa.loc[len(training_kappa)] = ind.fitness.getValues()[0]
-        training_nf.loc[len(training_nf)] = int(ind.fitness.getValues()[1])
+        ind_idx = len(species)
+        species.loc[ind_idx] = species_idx
+        individuals.loc[ind_idx] = ind
+        training_kappa.loc[ind_idx] = ind.fitness.values[0]
+        training_nf.loc[ind_idx] = int(ind.fitness.values[1])
 
 results['Species'] = species
 results['Individual'] = individuals
@@ -133,10 +132,11 @@ wrapper.test(best_found=best_ones, fitness_func=test_fitness_function)
 # Add the test results to the dataframe
 test_kappa = Series(dtype=float)
 test_nf = Series(dtype=int)
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        test_kappa.loc[len(test_kappa)] = ind.fitness.getValues()[0]
-        test_nf.loc[len(test_nf)] = int(ind.fitness.getValues()[1])
+        ind_idx = len(test_kappa)
+        test_kappa.loc[ind_idx] = ind.fitness.values[0]
+        test_nf.loc[ind_idx] = int(ind.fitness.values[1])
 
 results['Test Kappa'] = test_kappa
 results['Test NF'] = test_nf
@@ -151,5 +151,5 @@ results.columns = index
 print("\nResults ...")
 print(results)
 
-print(f"\nNum Evals: {wrapper.num_evals}")
+print(f"Num Evals: {wrapper.num_evals}")
 print(f"Runtime  : {wrapper.runtime}")

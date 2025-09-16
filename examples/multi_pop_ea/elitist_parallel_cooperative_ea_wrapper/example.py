@@ -45,15 +45,12 @@ from culebra.tools import Dataset
 
 
 # Fitness function
-def KappaNumFeatsC(
-    training_data, test_data=None, test_prop=None, cv_folds=None
-):
+def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             classifier=SVC(kernel='rbf'),
             cv_folds=cv_folds
         ),
@@ -148,13 +145,14 @@ training_kappa = Series(dtype=float)
 training_nf = Series(dtype=int)
 training_C = Series(dtype=float)
 
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        species.loc[len(species)] = index
-        individuals.loc[len(individuals)] = ind
-        training_kappa.loc[len(training_kappa)] = ind.fitness.getValues()[0]
-        training_nf.loc[len(training_nf)] = int(ind.fitness.getValues()[1])
-        training_C.loc[len(training_C)] = ind.fitness.getValues()[2]
+        ind_idx = len(species)
+        species.loc[ind_idx] = species_idx
+        individuals.loc[ind_idx] = ind
+        training_kappa.loc[ind_idx] = ind.fitness.values[0]
+        training_nf.loc[ind_idx] = int(ind.fitness.values[1])
+        training_C.loc[ind_idx] = ind.fitness.values[2]
 
 results['Species'] = species
 results['Individual'] = individuals
@@ -173,11 +171,12 @@ wrapper.test(
 test_kappa = Series(dtype=float)
 test_nf = Series(dtype=int)
 test_C = Series(dtype=float)
-for index, pop_best in enumerate(best_ones):
+for species_idx, pop_best in enumerate(best_ones):
     for ind in pop_best:
-        test_kappa.loc[len(test_kappa)] = ind.fitness.getValues()[0]
-        test_nf.loc[len(test_nf)] = int(ind.fitness.getValues()[1])
-        test_C.loc[len(test_C)] = ind.fitness.getValues()[2]
+        ind_idx = len(test_kappa)
+        test_kappa.loc[ind_idx] = ind.fitness.values[0]
+        test_nf.loc[ind_idx] = int(ind.fitness.values[1])
+        test_C.loc[ind_idx] = ind.fitness.values[2]
 
 results['Test Kappa'] = test_kappa
 results['Test NF'] = test_nf

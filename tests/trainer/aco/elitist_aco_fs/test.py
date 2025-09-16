@@ -47,7 +47,6 @@ from culebra.tools import Dataset
 def KappaNumFeats(
     training_data,
     test_data=None,
-    test_prop=None,
     cv_folds=None,
     classifier=None
 ):
@@ -56,7 +55,6 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             cv_folds=cv_folds,
             classifier=classifier
         ),
@@ -209,13 +207,13 @@ class ElitistACO_FSTester(unittest.TestCase):
         good_nf = 4
         bad_nf = 8
 
-        elite[0].fitness.setValues((good_kappa, bad_nf))
+        elite[0].fitness.values = ((good_kappa, bad_nf))
         for elite_ant in elite[1:]:
-            elite_ant.fitness.setValues((bad_kappa, bad_nf))
+            elite_ant.fitness.values = ((bad_kappa, bad_nf))
 
-        col[0].fitness.setValues((bad_kappa, good_nf))
+        col[0].fitness.valuesalues = ((bad_kappa, good_nf))
         for col_ant in col[1:]:
-            col_ant.fitness.setValues((bad_kappa, bad_nf))
+            col_ant.fitness.values = ((bad_kappa, bad_nf))
 
         # Update the elite
         trainer._update_elite()

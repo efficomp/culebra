@@ -37,7 +37,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_names
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_thresholds
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.fitness_cls
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.is_noisy
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_nodes
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.index
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.distance

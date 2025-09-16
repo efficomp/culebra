@@ -98,6 +98,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._default_termination_func
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._termination_criterion
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._init_representatives
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._calculate_choice_info
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._initial_choice
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._next_choice

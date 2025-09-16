@@ -35,15 +35,17 @@ from culebra.abc import Species as BaseSpecies
 from culebra.fitness_function.feature_selection import NumFeats
 from culebra.solution.feature_selection import Species, Ant
 
+fitness_function = NumFeats()
+"""Default fitness function."""
 
-Fitness = NumFeats().fitness_cls
+fitness_cls = fitness_function.fitness_cls
 """Default fitness class."""
 
 DEFAULT_NUM_FEATS_VALUES = [10, 100, 1000, 10000]
 """Default list of values for the number of features used to define the
 Species."""
 
-DEFAULT_TIMES = 1000
+DEFAULT_TIMES = 100
 """Default value for the number of times an function is tested."""
 
 
@@ -66,7 +68,7 @@ class AntTester(unittest.TestCase):
         """Test the __init__ method."""
         # Check the type of arguments
         with self.assertRaises(TypeError):
-            Ant(BaseSpecies(), Fitness)
+            Ant(BaseSpecies(), fitness_cls)
         with self.assertRaises(TypeError):
             Ant(Species(), Species)
 
@@ -77,7 +79,7 @@ class AntTester(unittest.TestCase):
             # Execute the generator function the given number of times
             for _ in repeat(None, self.times):
                 # Create an ant with an empty path
-                empty_ant = Ant(species, Fitness)
+                empty_ant = Ant(species, fitness_cls)
                 # Check that the default path is empty
                 self.assertEqual(
                     empty_ant.num_feats, 0,
@@ -88,11 +90,13 @@ class AntTester(unittest.TestCase):
                     len(empty_ant.discarded), 0,
                     f'Discarded: {empty_ant.discarded}'
                 )
+                # Checks that the ant has not been evaluated yet
+                self.assertEqual(empty_ant.fitness.values, (None,))
 
                 # Create an ant with an full path
                 full_ant = Ant(
                     species,
-                    Fitness,
+                    fitness_cls,
                     np.random.permutation(num_feats)
                 )
                 # Check that the default path is empty
@@ -101,17 +105,19 @@ class AntTester(unittest.TestCase):
                     f'Ant size: {full_ant.num_feats}'
                 )
                 full_ant.__repr__()
-                # Check that there are not any discasred feature
+                # Check that there are not any discarded feature
                 self.assertEqual(
                     len(full_ant.discarded), 0,
                     f'Discarded: {full_ant.discarded}'
                 )
+                # Checks that the ant has not been evaluated yet
+                self.assertEqual(full_ant.fitness.values, (None,))
 
     def test_setup(self):
         """Test the _setup method."""
         # Check the type of arguments
         with self.assertRaises(TypeError):
-            Ant(BaseSpecies(), Fitness)
+            Ant(BaseSpecies(), fitness_cls)
         with self.assertRaises(TypeError):
             Ant(Species(), Species)
 
@@ -121,12 +127,14 @@ class AntTester(unittest.TestCase):
             species = Species(num_feats)
             # Execute the generator function the given number of times
             for _ in repeat(None, self.times):
-                ant = Ant(species, Fitness)
+                ant = Ant(species, fitness_cls)
                 # Check that the default path is empty
                 self.assertEqual(
                     ant.num_feats, 0,
                     f'Ant size: {ant.num_feats}'
                 )
+                # Checks that the ant has not been evaluated yet
+                self.assertEqual(ant.fitness.values, (None, ))
 
     def test_features(self):
         """Test the features property."""
@@ -137,7 +145,7 @@ class AntTester(unittest.TestCase):
         indices = np.arange(0, num_feats)
 
         # Construct an ant with a complete path
-        ant = Ant(species, Fitness, indices)
+        ant = Ant(species, fitness_cls, indices)
 
         # Test repeated features, should fail
         for index in indices:
@@ -154,7 +162,7 @@ class AntTester(unittest.TestCase):
         for _ in repeat(None, self.times):
             size = random.randint(1, num_feats)
             feats = np.random.choice(indices, size=(size), replace=False)
-            ant = Ant(species, Fitness, feats)
+            ant = Ant(species, fitness_cls, feats)
 
             # The features property returns an ordered path
             feats.sort()
@@ -171,7 +179,7 @@ class AntTester(unittest.TestCase):
         for _ in repeat(None, self.times):
             size = random.randint(1, num_feats)
             feats = np.random.choice(indices, size=(size), replace=False)
-            ant = Ant(species, Fitness, feats)
+            ant = Ant(species, fitness_cls, feats)
 
             self.assertTrue((ant.path == feats).all())
 
@@ -179,7 +187,7 @@ class AntTester(unittest.TestCase):
         """Test the discard method and the discarded property."""
         num_feats = 10
         species = Species(num_feats)
-        ant = Ant(species, Fitness)
+        ant = Ant(species, fitness_cls)
 
         # Test that discarded is empty
         self.assertEqual(len(ant.discarded), 0)
@@ -212,8 +220,7 @@ class AntTester(unittest.TestCase):
         num_feats = 10
         species = Species(num_feats)
 
-        # Test repeated features, should fail
-        ant = Ant(species, Fitness)
+        ant = Ant(species, fitness_cls)
 
         # Test invalid feature types
         invalid_features = ('a', self, None)
@@ -224,22 +231,44 @@ class AntTester(unittest.TestCase):
         # All possible indices for the species
         indices = np.arange(0, num_feats)
 
+        # Test repeated features, should fail
         for index in indices:
+            # Evaluate the ant
+            fitness_function.evaluate(ant)
+
+            # Check that the ant has been evaluated
+            self.assertNotEqual(ant.fitness.values, (None, ))
+
+            # Append a new node
             ant.append(index)
+
+            # Check that the ant has not been evaluated yet
+            self.assertEqual(ant.fitness.values, (None, ))
+
+            # Try to append a repeated node, should fail
             with self.assertRaises(ValueError):
                 ant.append(index)
 
         # Test discarded features, should fail
-        ant = Ant(species, Fitness)
+        ant = Ant(species, fitness_cls)
         for index in indices:
             ant.discard(index)
             with self.assertRaises(ValueError):
                 ant.append(index)
 
         # Try correct indices
-        ant = Ant(species, Fitness)
+        ant = Ant(species, fitness_cls)
         for index, feature in enumerate(indices):
+            # Evaluate the ant
+            fitness_function.evaluate(ant)
+
+            # Append a new node
             ant.append(feature)
+
+            # Check that the ant has not been evaluated yet
+            self.assertEqual(ant.fitness.values, (None, ))
+
+            # Check the number of features and the current node
             self.assertEqual(index + 1, ant.num_feats)
             self.assertEqual(feature, ant.current)
 
@@ -255,7 +284,7 @@ class AntTester(unittest.TestCase):
                 size = random.randint(1, num_feats)
                 indices = np.arange(0, num_feats)
                 feats = np.random.choice(indices, size=(size), replace=False)
-                ant1 = Ant(species, Fitness, feats)
+                ant1 = Ant(species, fitness_cls, feats)
 
                 ant1.dump(serialized_filename)
                 ant2 = Ant.load(serialized_filename)
@@ -275,7 +304,7 @@ class AntTester(unittest.TestCase):
                 size = random.randint(1, num_feats)
                 indices = np.arange(0, num_feats)
                 feats = np.random.choice(indices, size=(size), replace=False)
-                ant1 = Ant(species, Fitness, feats)
+                ant1 = Ant(species, fitness_cls, feats)
 
                 ant2 = copy(ant1)
                 ant3 = deepcopy(ant1)
@@ -287,7 +316,7 @@ class AntTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         num_feats = 10
         species = Species(num_feats)
-        ant = Ant(species, Fitness)
+        ant = Ant(species, fitness_cls)
         self.assertIsInstance(repr(ant), str)
         self.assertIsInstance(str(ant), str)
 

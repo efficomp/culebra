@@ -115,3 +115,4 @@ Private methods
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_termination_func
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousIslandsEA._termination_criterion
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousIslandsEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousIslandsEA._set_cooperative_fitness

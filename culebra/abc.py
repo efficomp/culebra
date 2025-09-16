@@ -50,7 +50,6 @@ import random
 import numpy as np
 import dill
 import gzip
-from deap.base import Fitness as DeapFitness
 from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
@@ -216,66 +215,96 @@ class Base:
         return obj
 
 
-class Fitness(DeapFitness, Base):
+class Fitness(Base):
     """Define the base class for the fitness of a solution."""
 
-    weights = None
+    weights = ()
     """A :py:class:`tuple` containing an integer value for each objective
     being optimized. The weights are used in the fitness comparison. They are
     shared among all fitnesses of the same type. When subclassing
     :py:class:`~culebra.abc.Fitness`, the weights must be defined as a tuple
     where each element is associated to an objective. A negative weight element
     corresponds to the minimization of the associated objective and positive
-    weight to the maximization. This attribute is inherited from
-    :py:class:`deap.base.Fitness`.
-
-    .. note::
-        If weights is not defined during subclassing, the following error will
-        occur at instantiation of a subclass fitness object:
-
-        ``TypeError: Can't instantiate abstract <class Fitness[...]> with
-        abstract attribute weights.``
+    weight to the maximization.
     """
 
-    names = None
-    """Names of the objectives.
+    names = ()
+    """Names of the objectives."""
 
-    If not defined, generic names will be used.
-    """
-
-    thresholds = None
+    thresholds = ()
     """A list with the similarity thresholds defined for all the objectives.
     Fitness objects are compared lexicographically. The comparison applies a
     similarity threshold to assume that two fitness values are similar (if
-    their difference is lower than or equal to the similarity threshold).
-    If not defined, 0 will be used for each objective.
+    their difference is lower than or equal to the similarity threshold)
     """
 
-    def __init__(self, values: Tuple[float, ...] = ()) -> None:
+    def __init__(self, values: Optional[Sequence[float, ...]] = None) -> None:
         """Construct a default fitness object.
 
-        :param values: Initial values for the fitness, defaults to ()
-        :type values: :py:class:`tuple`, optional
+        :param values: Initial values for the fitness, optional
+        :type values: :py:class:`~collections.abc.Sequence`, optional
         """
         # Init the superclasses
-        super().__init__(values)
-        self._num_evaluations = [0] * self.num_obj
+        super().__init__()
+        if values is None:
+            del self.values
+        else:
+            self.values = values
 
     @property
-    def num_evaluations(self) -> List[float]:
-        """Get the number of times each objective has been evaluated.
+    def is_valid(self) -> bool:
+        """Return :py:data:`True` if the fitness is valid."""
+        if (
+                self._values is None or
+                len(self._values) == 0 or
+                any(val is None for val in self._values)
+        ):
+            return False
 
-        Useful to implement Monte Carlo cross-validation
+        return True
 
-        :type: :py:class:`list` of :py:class:`float`
+    @property
+    def values(self) -> Tuple[float | None]:
+        """Get and set the fitness values.
+
+        :getter: Return the current fitness values
+        :setter: Set the new fitness values. If set to :py:data:`None`, the
+            fitness is invalidated
+        :type: :py:class:`tuple` of :py:class:`float` or :py:data:`None`
+        :raises TypeError: If any value is not a real number or :py:data:`None`
         """
-        return self._num_evaluations
+        return tuple(self._values)
 
-    @DeapFitness.values.deleter
+    @values.setter
+    def values(self, fitness_values: Sequence[float]):
+        """Set the fitness values.
+
+        :param fitness_values: The new values
+        :type fitness_values: :py:class:`tuple` of :py:class:`float`
+        :raises TypeError: If any value is not a real number
+        """
+        self._values = check_sequence(
+            fitness_values,
+            "fitness values",
+            size=self.num_obj,
+            item_checker=partial(check_float)
+        )
+
+    @values.deleter
     def values(self):
-        """Update the values deletion to reset the number of evaluations."""
-        super().delValues()
-        self._num_evaluations = [0] * self.num_obj
+        """Delete the current fitness values."""
+        self._values = [None] * self.num_obj
+
+    @property
+    def wvalues(self) -> Tuple[float]:
+        """Get the fitness weighted values.
+
+        :type: :py:class:`tuple` of :py:class:`float`
+        """
+        return tuple(
+            v * w if v is not None else None
+            for (v, w) in zip(self.values, self.weights)
+        )
 
     @property
     def num_obj(self) -> int:
@@ -296,12 +325,34 @@ class Fitness(DeapFitness, Base):
         override this property.
 
         :return: The amount of pheromone to be deposited for each objective
-        :rtype: :py:class:`tuple` of py:class:`float`
+        :rtype: :py:class:`tuple` of :py:class:`float`
         """
         return tuple(
             1/self.values[i] if self.weights[i] < 0 else self.values[i]
             for i in range(len(self.wvalues))
         )
+
+    def update_value(self, value: float, obj_index: int) -> None:
+        """Update the value of a fitnes objective.
+
+        :param value: The new value
+        :type value: :py:class:`float`
+        :param obj_index: Index of the objective
+        :type obj_index: :py:class:`int`
+        :raises TypeError: If *value* is not a real number or *index* is not
+            an integer number
+        :raises ValueError: If *index* is negative or greatuer to or equal
+            than the number of objectives
+        """
+        # Check the objective ndex
+        obj_index = check_int(
+            obj_index, "objective index", ge=0, lt=self.num_obj
+        )
+
+        # Check the value
+        value = check_float(value, f"new value for objective {obj_index}")
+
+        self._values[obj_index] = value
 
     def dominates(self, other: Fitness, which: slice = slice(None)) -> bool:
         """Check if this fitness dominates another one.
@@ -332,7 +383,7 @@ class Fitness(DeapFitness, Base):
 
     def __hash__(self) -> int:
         """Return the hash number for this fitness."""
-        return hash(self.wvalues)
+        return hash(self.values)
 
     def __gt__(self, other: Fitness) -> bool:
         """Lexicographic greater than operator.
@@ -421,7 +472,7 @@ class Fitness(DeapFitness, Base):
 
     def __str__(self) -> str:
         """Return the object as a string."""
-        return DeapFitness.__str__(self)
+        return str(self.values)
 
 
 class FitnessFunction(Base):
@@ -542,18 +593,13 @@ class FitnessFunction(Base):
         )
         return fitness_class
 
-    @property
-    def is_noisy(self) -> int:
-        """Return :py:data:`True` if the fitness function is noisy."""
-        return False
-
     @abstractmethod
     def evaluate(
         self,
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         Parameters *representatives* and *index* are used only for cooperative
@@ -573,9 +619,9 @@ class FitnessFunction(Base):
         :type representatives: A :py:class:`~collections.abc.Sequence`
             containing instances of :py:class:`~culebra.abc.Solution`,
             optional
-        :raises NotImplementedError: if has not been overridden
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The evaluate method has not been implemented in the "
@@ -676,7 +722,7 @@ class Solution(Base):
 
     def delete_fitness(self) -> None:
         """Delete the solution's fitness."""
-        self._fitness = self.fitness.__class__()
+        del self._fitness.values
 
     def __hash__(self) -> int:
         """Return the hash number for this solution.
@@ -1431,34 +1477,25 @@ class Trainer(Base):
         else:
             # Select the training fitness function
             func = self.fitness_function
-            # Invalidate the last fitness
-            sol.fitness.delValues()
 
         the_index = index if index is not None else self.index
 
         # If context is not None -> cooperation
         if context_seq is not None:
+            # Different fitness trials values, one per solution in the context
+            fitness_trials_values = []
             for context in context_seq:
-                # Calculate their fitness
-                fit_values = func.evaluate(
-                    sol,
-                    index=the_index,
-                    representatives=context
+                fitness_trials_values.append(
+                    func.evaluate(
+                        sol,
+                        index=the_index,
+                        representatives=context
+                    ).values
                 )
 
-                # If it is the first trial ...
-                if sol.fitness.valid is False:
-                    sol.fitness.values = fit_values
-                else:
-                    trial_fitness = func.fitness_cls(fit_values)
-                    # If the trial fitness is better
-                    # TODO Other criteria should be tested to choose
-                    # the better fitness estimation
-                    # Average???
-                    if trial_fitness > sol.fitness:
-                        sol.fitness.values = fit_values
+            self._set_cooperative_fitness(sol, fitness_trials_values)
         else:
-            sol.fitness.values = func.evaluate(sol, index=the_index)
+            func.evaluate(sol, index=the_index)
 
         # Increase the number of evaluations performed
         if self._current_iter_evals is not None:
@@ -1467,6 +1504,26 @@ class Trainer(Base):
                     if context_seq is not None
                     else 1
                 )
+
+    def _set_cooperative_fitness(
+        self,
+        sol: Solution,
+        fitness_trials_values: [Sequence[Tuple[float]]]
+    ) -> None:
+        """Estimate a solution fitness from multiple evaluation trials.
+
+        Applies an average of the fitness trials values. Trainers requiring
+        another estimation should override this method.
+
+        :param sol: The solution
+        :type sol: :py:class:`~culebra.abc.Solution`
+        :param fitness_trials_values: Sequence of fitness trials values. Each
+            trial should be obtained with a different context in a cooperative
+            trainer approach.
+        :type fitness_trials_values: :py:class:`~collections.abc.Sequence` of
+            :py:class:`tuple` of :py:class:`float`
+        """
+        sol.fitness.values = np.average(fitness_trials_values, axis=0)
 
     @abstractmethod
     def best_solutions(self) -> Sequence[HallOfFame]:

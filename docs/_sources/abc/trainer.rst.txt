@@ -85,3 +85,4 @@ Private methods
 .. automethod:: culebra.abc.Trainer._default_termination_func
 .. automethod:: culebra.abc.Trainer._termination_criterion
 .. automethod:: culebra.abc.Trainer._init_representatives
+.. automethod:: culebra.abc.Trainer._set_cooperative_fitness

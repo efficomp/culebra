@@ -353,6 +353,7 @@ class Ant(Solution, BaseAnt):
             )
 
         self._path = np.append(self.path, (node))
+        del self.fitness.values
 
     def discard(self, node: int) -> None:
         """Discard a node.

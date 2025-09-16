@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Test the cooperative fitness functions."""
+"""Test the FSSVCScorer fitness function."""
 
 import unittest
 

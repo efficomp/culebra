@@ -25,7 +25,6 @@
 import unittest
 from os import remove
 from copy import copy, deepcopy
-from random import random
 
 from culebra import DEFAULT_SIMILARITY_THRESHOLD, SERIALIZED_FILE_EXTENSION
 from culebra.fitness_function.dataset_score import DEFAULT_CV_FOLDS
@@ -53,33 +52,15 @@ class MyDatasetScorer(DatasetScorer):
         """Objective weights."""
         return (1, )
 
-    def _evaluate_train_test(self, training_data, test_data):
+    def _evaluate_train_test(self, sol, training_data, test_data):
         """Evaluate with a training and test datasets."""
-        return (1,)
+        sol.fitness.update_value(1, self.index)
+        return sol.fitness
 
-    def _evaluate_mccv(self, sol, training_data):
-        """Perform a Monte Carlo cross-validation."""
-        # Random value in [2, 3)
-        new_fitness_value = 2 + 0.5 * random()
-
-        # Number of evaluations performed to this solution
-        num_evals = sol.fitness.num_evaluations[self.index]
-
-        # If previously evaluated
-        if num_evals > 0:
-            average_fitness_value = (
-                new_fitness_value + sol.fitness.values[self.index] * num_evals
-            ) / (num_evals + 1)
-        else:
-            average_fitness_value = new_fitness_value
-
-        sol.fitness.num_evaluations[self.index] += 1
-
-        return (average_fitness_value, )
-
-    def _evaluate_kfcv(self, training_data):
+    def _evaluate_kfcv(self, sol, training_data):
         """Perform a k-fold cross-validation."""
-        return (3,)
+        sol.fitness.update_value(3, self.index)
+        return sol.fitness
 
     def is_evaluable(self, sol):
         """Return True if the solution is evaluable."""
@@ -101,7 +82,6 @@ class DatasetScorerTester(unittest.TestCase):
             (func.training_data.outputs == training_data.outputs).all()
         )
         self.assertEqual(func.test_data, None)
-        self.assertEqual(func.test_prop, None)
         self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
         self.assertEqual(func.index, 0)
         self.assertEqual(func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD])
@@ -123,30 +103,6 @@ class DatasetScorerTester(unittest.TestCase):
             func = MyDatasetScorer(
                 training_data=training_data,
                 test_data='a'
-                )
-
-        # Try a valid value for test_prop
-        valid_test_prop = 0.5
-        func = MyDatasetScorer(
-            training_data=training_data,
-            test_prop=valid_test_prop
-        )
-        self.assertEqual(func.test_prop, valid_test_prop)
-
-        # Try an invalid type for test_prop. Should fail
-        with self.assertRaises(TypeError):
-            MyDatasetScorer(
-                training_data=training_data,
-                test_prop='a'
-            )
-
-        # Try invalid values for test_prop. Should fail
-        invalid_test_prop_values = (-0.1, 0, 1, 1.3)
-        for invalid_value in invalid_test_prop_values:
-            with self.assertRaises(ValueError):
-                MyDatasetScorer(
-                    training_data=training_data,
-                    test_prop=invalid_value
                 )
 
         # Try a valid value for cv_folds
@@ -182,21 +138,6 @@ class DatasetScorerTester(unittest.TestCase):
             index=valid_index
         )
         self.assertEqual(func.index, valid_index)
-
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        training_data, test_data = dataset.split(0.3)
-
-        # Fitness function to be tested
-        func = MyDatasetScorer(training_data)
-
-        func.test_prop = None
-        self.assertEqual(func.is_noisy, False)
-        func.test_prop = 0.5
-        self.assertEqual(func.is_noisy, True)
-
-        func = MyDatasetScorer(training_data, test_data)
-        self.assertEqual(func.is_noisy, False)
 
     def test_final_training_test_data(self):
         """Test the generation of final training and test data."""
@@ -237,20 +178,16 @@ class DatasetScorerTester(unittest.TestCase):
 
         func = MyDatasetScorer(training_data, test_data)
         sol = FSSolution(species, func.fitness_cls, features=selected_feats)
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
         self.assertEqual(sol.fitness.values, (1, ))
-        del sol.fitness.values
+        self.assertEqual(fit_values, sol.fitness.values)
 
-        func = MyDatasetScorer(training_data, test_prop=0.5)
-        sol.fitness.values = func.evaluate(sol)
-        self.assertTrue(2 < sol.fitness.values[0] < 3)
-        sol.fitness.values = func.evaluate(sol)
-        self.assertTrue(2 < sol.fitness.values[0] < 3)
         del sol.fitness.values
 
         func = MyDatasetScorer(training_data)
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
         self.assertEqual(sol.fitness.values, (3, ))
+        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_copy(self):
         """Test the __copy__ method."""

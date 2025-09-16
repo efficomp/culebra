@@ -71,16 +71,11 @@ class CTester(unittest.TestCase):
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
 
         # Check the fitness function
         self.assertEqual(sol.fitness.values[0], sol.values.C)
-
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        # Fitness function to be tested
-        func = self.FitnessFunc()
-        self.assertEqual(func.is_noisy, False)
+        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -93,20 +88,6 @@ class KappaIndexTester(unittest.TestCase):
     """Test KappaIndex."""
 
     FitnessFunc = KappaIndex
-
-    def test_is_noisy(self):
-        """Test the is_noisy property."""
-        training_data, test_data = dataset.split(0.3)
-
-        # Fitness function to be tested
-        func = self.FitnessFunc(training_data)
-        self.assertEqual(func.is_noisy, False)
-
-        func = self.FitnessFunc(training_data, test_prop=0.5)
-        self.assertEqual(func.is_noisy, True)
-
-        func = self.FitnessFunc(training_data, test_data)
-        self.assertEqual(func.is_noisy, False)
 
     def test_evaluate(self):
         """Test the evaluation method."""
@@ -121,21 +102,19 @@ class KappaIndexTester(unittest.TestCase):
         # Check that the Kappa index is in [-1, 1]
 
         # Test kfcv evaluation
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
         self.assertGreaterEqual(sol.fitness.values[0], -1)
         self.assertLessEqual(sol.fitness.values[0], 1)
+        self.assertEqual(fit_values, sol.fitness.values)
 
-        # Test mccv evaluation
-        func.test_prop = 0.5
-        sol.fitness.values = func.evaluate(sol)
-        self.assertGreaterEqual(sol.fitness.values[0], -1)
-        self.assertLessEqual(sol.fitness.values[0], 1)
+        del sol.fitness.values
 
         # Test train_test evaluation
         func = self.FitnessFunc(training_data, test_data)
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
         self.assertGreaterEqual(sol.fitness.values[0], -1)
         self.assertLessEqual(sol.fitness.values[0], 1)
+        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -162,23 +141,19 @@ class AccuracyTester(unittest.TestCase):
         # Check that the accuracy is in [0, 1]
 
         # Test kfcv evaluation
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
         self.assertGreaterEqual(sol.fitness.values[0], 0)
         self.assertLessEqual(sol.fitness.values[0], 1)
-
-        # Test mccv evaluation
-        func.test_prop = 0.5
-        sol.fitness.values = func.evaluate(sol)
-        self.assertGreaterEqual(sol.fitness.values[0], 0)
-        self.assertLessEqual(sol.fitness.values[0], 1)
+        self.assertEqual(fit_values, sol.fitness.values)
+        del sol.fitness.values
 
         # Test train_test evaluation
         func = self.FitnessFunc(training_data, test_data)
-        sol.fitness.values = func.evaluate(sol)
+        fit_values = func.evaluate(sol).values
         self.assertGreaterEqual(sol.fitness.values[0], 0)
         self.assertLessEqual(sol.fitness.values[0], 1)
+        self.assertEqual(fit_values, sol.fitness.values)
 
-    test_is_noisy = KappaIndexTester.test_is_noisy
     test_repr = KappaIndexTester.test_repr
 
 

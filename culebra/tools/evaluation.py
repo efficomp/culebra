@@ -1172,9 +1172,7 @@ class Experiment(Evaluation):
         # Evaluate each combination
         all_combinations_fitness = []
         for solution in all_combinations:
-            fitness = eval_func.fitness_cls(
-                eval_func.evaluate(solution[0], 0, solution)
-                )
+            fitness = eval_func.evaluate(solution[0], 0, solution)
             fitness.thresholds = [0] * fitness.num_obj
             all_combinations_fitness.append(fitness)
 
@@ -1211,7 +1209,7 @@ class Experiment(Evaluation):
         num_species = len(best)
 
         # Evaluate the best solution
-        fit_values = fitness_func.evaluate(best[0], 0, best)
+        fit_values = fitness_func.evaluate(best[0], 0, best).values
         for sol in best:
             sol.fitness.values = fit_values
 

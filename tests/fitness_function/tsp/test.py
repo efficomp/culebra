@@ -295,19 +295,23 @@ class PathLengthTester(unittest.TestCase):
                     fitness_func.fitness_cls,
                     np.random.permutation(fitness_func.num_nodes)
                 )
-                fitness = fitness_func.evaluate(sol)
-                self.assertIsInstance(fitness, tuple)
-                self.assertEqual(len(fitness), 1)
+                fit_values = fitness_func.evaluate(sol).values
+                self.assertIsInstance(sol.fitness.values, tuple)
+                self.assertEqual(len(sol.fitness.values), 1)
                 for i in range(fitness_func.num_obj):
-                    self.assertGreater(fitness[i], 0)
+                    self.assertGreater(sol.fitness.values[i], 0)
+
+                self.assertEqual(fit_values, sol.fitness.values)
 
         # Try an unfeasible solution
         banned_nodes = list(node for node in range(fitness_func.num_nodes))
         species = Species(fitness_func.num_nodes, banned_nodes=banned_nodes)
         sol = fitness_func.greedy_solution(species)
+        fit_values = fitness_func.evaluate(sol).values
         self.assertGreaterEqual(
-            fitness_func.evaluate(sol), (0,)
+            sol.fitness.values, (0,)
         )
+        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_from_path(self):
         """Test the fromPath class method."""

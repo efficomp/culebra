@@ -26,16 +26,21 @@ import unittest
 
 import numpy as np
 
-from culebra.abc import Fitness
 from culebra.solution.tsp import Species, Ant
+from culebra.fitness_function.tsp import PathLength
 
+# Default number of nodes
+num_nodes = 25
 
-class MyFitness(Fitness):
-    """Dummy fitness."""
+# Default species
+species = Species(num_nodes)
 
-    weights = (1.0, 1.0)
-    names = ("obj1", "obj2")
-    thresholds = [0.001, 0.001]
+# Default fitness function
+optimum_path = np.random.permutation(num_nodes)
+fitness_function = PathLength.fromPath(optimum_path)
+
+# Default fitness class
+fitness_cls = fitness_function.fitness_cls
 
 
 class AntTester(unittest.TestCase):
@@ -43,9 +48,7 @@ class AntTester(unittest.TestCase):
 
     def test_path(self):
         """Test the path property."""
-        num_nodes = 10
-        species = Species(num_nodes)
-        ant = Ant(species, MyFitness)
+        ant = Ant(species, fitness_cls)
 
         # Invalid paths
         invalid_paths = [
@@ -63,9 +66,7 @@ class AntTester(unittest.TestCase):
 
     def test_discarded(self):
         """Test the discarded property."""
-        num_nodes = 10
-        species = Species(num_nodes)
-        ant = Ant(species, MyFitness)
+        ant = Ant(species, fitness_cls)
 
         discarded_nodes = ant.discarded
 
@@ -74,9 +75,7 @@ class AntTester(unittest.TestCase):
 
     def test_append_current(self):
         """Test the append method."""
-        num_nodes = 10
-        species = Species(num_nodes)
-        ant = Ant(species, MyFitness)
+        ant = Ant(species, fitness_cls)
 
         # Test invalid feature types
         invalid_features = ('a', self, None)
@@ -89,7 +88,19 @@ class AntTester(unittest.TestCase):
 
         # Test repeated nodes, should fail
         for index in indices:
+            # Evaluate the ant
+            fitness_function.evaluate(ant)
+
+            # Check that the ant has been evaluated
+            self.assertNotEqual(ant.fitness.values, (None, ))
+
+            # Append a new node
             ant.append(index)
+
+            # Check that the ant has not been evaluated yet
+            self.assertEqual(ant.fitness.values, (None, ))
+
+            # Try to append a repeated node, should fail
             with self.assertRaises(ValueError):
                 ant.append(index)
 
@@ -100,26 +111,31 @@ class AntTester(unittest.TestCase):
             ant.append(-1)
 
         # Try correct indices
-        ant = Ant(species, MyFitness)
+        ant = Ant(species, fitness_cls)
         for index, node in enumerate(indices):
+            # Evaluate the ant
+            fitness_function.evaluate(ant)
+
+            # Append a new node
             ant.append(node)
+
+            # Check that the ant has not been evaluated yet
+            self.assertEqual(ant.fitness.values, (None, ))
+
+            # Check the number of features and the current node
             self.assertEqual(index + 1, len(ant.path))
             self.assertEqual(node, ant.current)
 
     def test_discard(self):
         """Test the append method."""
-        num_nodes = 10
-        species = Species(num_nodes)
-        ant = Ant(species, MyFitness)
+        ant = Ant(species, fitness_cls)
 
         with self.assertRaises(RuntimeError):
             ant.discard(1)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
-        num_nodes = 10
-        species = Species(num_nodes)
-        ant = Ant(species, MyFitness)
+        ant = Ant(species, fitness_cls)
         self.assertIsInstance(repr(ant), str)
         self.assertIsInstance(str(ant), str)
 

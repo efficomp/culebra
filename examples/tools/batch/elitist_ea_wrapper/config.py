@@ -35,7 +35,6 @@ from culebra.tools import Dataset
 def KappaC(
     training_data,
     test_data=None,
-    test_prop=None,
     cv_folds=None,
     classifier=None
 ):
@@ -44,7 +43,6 @@ def KappaC(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             cv_folds=cv_folds,
             classifier=classifier
         ),

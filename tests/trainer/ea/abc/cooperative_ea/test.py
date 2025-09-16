@@ -52,15 +52,12 @@ from culebra.tools import Dataset
 
 
 # Fitness function
-def KappaNumFeatsC(
-    training_data, test_data=None, test_prop=None, cv_folds=None
-):
+def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             classifier=SVC(kernel='rbf'),
             cv_folds=cv_folds
         ),
@@ -860,7 +857,7 @@ class TrainerTester(unittest.TestCase):
 
                 # Check that all the individuals have been reevaluated
                 for ind in subtrainer.pop:
-                    self.assertTrue(ind.fitness.valid)
+                    self.assertTrue(ind.fitness.is_valid)
 
     def test_copy(self):
         """Test the __copy__ method."""

@@ -60,30 +60,15 @@ class MyFSDatasetScorer(FSDatasetScorer):
         """Objective names."""
         return ("Kappa",)
 
-    def _evaluate_train_test(self, training_data, test_data):
-        return (1,)
+    def _evaluate_train_test(self, sol, training_data, test_data):
+        """Evaluate with a training and test datasets."""
+        sol.fitness.update_value(1, self.index)
+        return sol.fitness
 
-    def _evaluate_mccv(self, sol, training_data):
-        # Random value in [2, 3)
-        new_fitness_value = 2 + 0.5 * random()
-
-        # Number of evaluations performed to this solution
-        num_evals = sol.fitness.num_evaluations[self.index]
-
-        # If previously evaluated
-        if num_evals > 0:
-            average_fitness_value = (
-                new_fitness_value + sol.fitness.values[self.index] * num_evals
-            ) / (num_evals + 1)
-        else:
-            average_fitness_value = new_fitness_value
-
-        sol.fitness.num_evaluations[self.index] += 1
-
-        return (average_fitness_value, )
-
-    def _evaluate_kfcv(self, training_data):
-        return (3,)
+    def _evaluate_kfcv(self, sol, training_data):
+        """Perform a k-fold cross-validation."""
+        sol.fitness.update_value(3, self.index)
+        return sol.fitness
 
     _score = cohen_kappa_score
 
@@ -113,20 +98,15 @@ class FSDatasetScorerTester(unittest.TestCase):
 
         func = MyFSDatasetScorer(training_data, test_data)
         ind = FSIndividual(species, func.fitness_cls, features=selected_feats)
-        ind.fitness.values = func.evaluate(ind)
+        fit_values = func.evaluate(ind).values
         self.assertEqual(ind.fitness.values, (1, ))
-        del ind.fitness.values
-
-        func = MyFSDatasetScorer(training_data, test_prop=0.5)
-        ind.fitness.values = func.evaluate(ind)
-        self.assertTrue(2 < ind.fitness.values[0] < 3)
-        ind.fitness.values = func.evaluate(ind)
-        self.assertTrue(2 < ind.fitness.values[0] < 3)
+        self.assertEqual(fit_values, ind.fitness.values)
         del ind.fitness.values
 
         func = MyFSDatasetScorer(training_data)
-        ind.fitness.values = func.evaluate(ind)
+        fit_values = func.evaluate(ind).values
         self.assertEqual(ind.fitness.values, (3, ))
+        self.assertEqual(fit_values, ind.fitness.values)
 
     def test_final_training_test_data(self):
         """Test the _final_training_test_data method."""

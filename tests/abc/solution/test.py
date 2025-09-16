@@ -88,19 +88,22 @@ class SolutionTester(unittest.TestCase):
     def test_delete_fitness(self):
         """Test the :py:meth:`~culebra.abc.Solution.delete_fitness` method."""
         sol = MySolution(MySpecies(), MyFitness)
-        self.assertEqual(sol.fitness.values, ())
+        self.assertFalse(sol.fitness.is_valid)
 
         sol.fitness.values = (2, 2)
         self.assertEqual(sol.fitness.values, (2, 2))
+        self.assertTrue(sol.fitness.is_valid)
 
         sol.delete_fitness()
         self.assertIsInstance(sol.fitness, MyFitness)
-        self.assertEqual(sol.fitness.values, ())
+        self.assertFalse(sol.fitness.is_valid)
 
     def test_eq(self):
         """Test the equality operator."""
         sol1 = MySolution(MySpecies(), MyFitness)
+        sol1.fitness.values = (2, 2)
         sol2 = MySolution(MySpecies(), MyFitness)
+        sol2.fitness.values = sol1.fitness.values
 
         self.assertEqual(sol1, sol2)
 
@@ -180,6 +183,7 @@ class SolutionTester(unittest.TestCase):
     def test_copy(self):
         """Test the :py:meth:`~culebra.abc.Solution.__copy__` method."""
         sol1 = MySolution(MySpecies(), MyFitness)
+        sol1.fitness.values = (1, 2)
         sol2 = copy(sol1)
 
         # Copy only copies the first level (sol1 != sol2)
@@ -192,6 +196,7 @@ class SolutionTester(unittest.TestCase):
     def test_deepcopy(self):
         """Test the :py:meth:`~culebra.abc.Solution.__deepcopy__` method."""
         sol1 = MySolution(MySpecies(), MyFitness)
+        sol1.fitness.values = (1, 2)
         sol2 = deepcopy(sol1)
 
         # Check the copy
@@ -206,6 +211,7 @@ class SolutionTester(unittest.TestCase):
         :py:meth:`~culebra.abc.Solution.load` methods.
         """
         sol1 = MySolution(MySpecies(), MyFitness)
+        sol1.fitness.values = (1, 2)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         sol1.dump(serialized_filename)

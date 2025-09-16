@@ -39,6 +39,7 @@ from typing import Tuple, Optional
 import numpy as np
 
 from culebra.checker import check_instance
+from culebra.abc import Fitness
 from culebra.fitness_function.abc import (
     ACOFitnessFunction,
     SingleObjectiveFitnessFunction
@@ -85,7 +86,7 @@ class FSDatasetScorer(DatasetScorer, FSScorer, ACOFitnessFunction):
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
@@ -98,17 +99,19 @@ class FSDatasetScorer(DatasetScorer, FSScorer, ACOFitnessFunction):
             being optimized. Only used by cooperative problems
         :type representatives: :py:class:`~collections.abc.Sequence` of
             :py:class:`~culebra.abc.Solution`, ignored
-        :return: The fitness of *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
             raise ValueError("The solution is not evaluable")
 
         if sol.features.size > 0:
-            return super().evaluate(sol, index, representatives)
+            super().evaluate(sol, index, representatives)
         else:
-            return (self._worst_score, )
+            sol.fitness.update_value(self._worst_score, self.index)
+
+        return sol.fitness
 
     def _final_training_test_data(
         self,

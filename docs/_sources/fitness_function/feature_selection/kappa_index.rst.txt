@@ -35,12 +35,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.index
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.training_data
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.test_data
-.. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.test_prop
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.cv_folds
 .. autoproperty:: culebra.fitness_function.feature_selection.KappaIndex.classifier
 
@@ -60,5 +58,4 @@ Private methods
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex._score
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex._final_training_test_data
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex._evaluate_train_test
-.. automethod:: culebra.fitness_function.feature_selection.KappaIndex._evaluate_mccv
 .. automethod:: culebra.fitness_function.feature_selection.KappaIndex._evaluate_kfcv

@@ -47,7 +47,6 @@ from culebra.tools import Dataset
 def KappaNumFeats(
     training_data,
     test_data=None,
-    test_prop=None,
     cv_folds=None,
     classifier=None
 ):
@@ -56,7 +55,6 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             cv_folds=cv_folds,
             classifier=classifier
         ),
@@ -278,11 +276,11 @@ class PACO_FSTester(unittest.TestCase):
         good_nf = 4
         bad_nf = 8
 
-        pop[0].fitness.setValues((good_kappa, bad_nf))
-        pop[1].fitness.setValues((bad_kappa, bad_nf))
+        pop[0].fitness.values = ((good_kappa, bad_nf))
+        pop[1].fitness.values = ((bad_kappa, bad_nf))
 
-        col[0].fitness.setValues((bad_kappa, good_nf))
-        col[1].fitness.setValues((bad_kappa, bad_nf))
+        col[0].fitness.values = ((bad_kappa, good_nf))
+        col[1].fitness.values = ((bad_kappa, bad_nf))
 
         # Update the population
         trainer._update_pop()

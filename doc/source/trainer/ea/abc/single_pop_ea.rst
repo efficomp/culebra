@@ -97,3 +97,4 @@ Private methods
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._init_representatives
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._generate_initial_pop
 .. automethod:: culebra.trainer.ea.abc.SinglePopEA._evaluate_pop
+.. automethod:: culebra.trainer.ea.abc.SinglePopEA._set_cooperative_fitness

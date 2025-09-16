@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.abc.FitnessFunction.obj_names
 .. autoproperty:: culebra.abc.FitnessFunction.obj_thresholds
 .. autoproperty:: culebra.abc.FitnessFunction.fitness_cls
-.. autoproperty:: culebra.abc.FitnessFunction.is_noisy
 
 Methods
 -------

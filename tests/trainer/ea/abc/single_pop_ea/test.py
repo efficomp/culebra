@@ -58,15 +58,12 @@ from culebra.tools import Dataset
 
 
 # Fitness function
-def KappaNumFeatsC(
-    training_data, test_data=None, test_prop=None, cv_folds=None
-):
+def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            test_prop=test_prop,
             classifier=SVC(kernel='rbf'),
             cv_folds=cv_folds
         ),
@@ -461,7 +458,7 @@ class TrainerTester(unittest.TestCase):
 
         # Check that the individuals in the population are evaluated
         for ind in trainer.pop:
-            self.assertTrue(ind.fitness.valid)
+            self.assertTrue(ind.fitness.is_valid)
 
         # Check the number of evaluations performed
         self.assertEqual(trainer._current_iter_evals, trainer.pop_size)
@@ -486,7 +483,7 @@ class TrainerTester(unittest.TestCase):
 
         # Check that the individuals in the population are evaluated
         for ind in trainer.pop:
-            self.assertTrue(ind.fitness.valid)
+            self.assertTrue(ind.fitness.is_valid)
 
         # Check the number of evaluations performed
         self.assertEqual(

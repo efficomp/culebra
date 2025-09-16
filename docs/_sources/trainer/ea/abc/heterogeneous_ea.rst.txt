@@ -114,3 +114,4 @@ Private methods
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._default_termination_func
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._termination_criterion
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._set_cooperative_fitness

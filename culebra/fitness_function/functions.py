@@ -30,7 +30,7 @@ from typing import Tuple, Optional, List
 from functools import partial
 
 from culebra import DEFAULT_SIMILARITY_THRESHOLD
-from culebra.abc import FitnessFunction, Solution
+from culebra.abc import Fitness, FitnessFunction, Solution
 from culebra.checker import (
     check_float, check_instance, check_sequence
 )
@@ -170,21 +170,12 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         """
         return self._objectives
 
-    @property
-    def is_noisy(self) -> int:
-        """Return :py:data:`True` if the fitness function is noisy."""
-        for obj in self.objectives:
-            if obj.is_noisy:
-                return True
-
-        return False
-
     def evaluate(
         self,
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
         Parameters *representatives* and *index* are used only for cooperative
@@ -201,15 +192,13 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         :type representatives: A :py:class:`~collections.abc.Sequence`
             containing instances of :py:class:`~culebra.abc.Solution`,
             optional
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         """
-        obj_values = ()
-
         for obj in self.objectives:
-            obj_values += obj.evaluate(sol, index, representatives)
+            obj.evaluate(sol, index, representatives)
 
-        return obj_values
+        return sol.fitness
 
 
 # Exported symbols for this module

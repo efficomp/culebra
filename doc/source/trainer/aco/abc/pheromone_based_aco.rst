@@ -96,6 +96,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._init_representatives
+.. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._next_choice

@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer.is_noisy
 .. autoproperty:: culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer.num_nodes
 .. autoproperty:: culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer.objectives
 

@@ -111,7 +111,8 @@ class SimpleEA(SinglePopEA):
 
         # Vary the pool of individuals
         self.pop[:] = varAnd(
-            self.pop, self._toolbox, self.crossover_prob, self.mutation_prob)
+            self.pop, self._toolbox, self.crossover_prob, self.mutation_prob
+        )
 
         # Evaluate the individuals with an invalid fitness and append the
         # current iteration statistics to the logbook
@@ -689,6 +690,7 @@ class NSGA(SimpleEA):
 
         In this case, a generation of NSGA is implemented.
         """
+        # Generate the offspring
         # Generate the offspring
         offspring = varAnd(
             self.pop, self._toolbox, self.crossover_prob, self.mutation_prob

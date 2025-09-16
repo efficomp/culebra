@@ -84,7 +84,6 @@ class RBFSVCScorerTester(unittest.TestCase):
             (func.training_data.outputs == dataset.outputs).all()
         )
         self.assertEqual(func.test_data, None)
-        self.assertEqual(func.test_prop, None)
         self.assertTrue(isinstance(func.classifier, SVC))
         self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
         self.assertEqual(func.index, 0)
@@ -119,10 +118,11 @@ class RBFSVCScorerTester(unittest.TestCase):
 
         # Try a valid solution
         ind = ParamOptIndividual(species, func.fitness_cls)
-        fit_values = func.evaluate(ind)
+        fit_values = func.evaluate(ind).values
         self.assertEqual(func.classifier.C, ind.values.C)
         self.assertEqual(func.classifier.gamma, ind.values.gamma)
-        self.assertTrue(-1 <= fit_values[0] <= 1)
+        self.assertTrue(-1 <= ind.fitness.values[0] <= 1)
+        self.assertEqual(fit_values, ind.fitness.values)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

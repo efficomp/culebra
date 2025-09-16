@@ -86,3 +86,4 @@ Private methods
 .. automethod:: culebra.trainer.abc.MultiSpeciesTrainer._default_termination_func
 .. automethod:: culebra.trainer.abc.MultiSpeciesTrainer._termination_criterion
 .. automethod:: culebra.trainer.abc.MultiSpeciesTrainer._init_representatives
+.. automethod:: culebra.trainer.abc.MultiSpeciesTrainer._set_cooperative_fitness

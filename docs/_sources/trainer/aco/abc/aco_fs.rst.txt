@@ -97,6 +97,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ACO_FS._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.ACO_FS._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.ACO_FS._init_representatives
+.. automethod:: culebra.trainer.aco.abc.ACO_FS._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.abc.ACO_FS._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.ACO_FS._initial_choice
 .. automethod:: culebra.trainer.aco.abc.ACO_FS._next_choice

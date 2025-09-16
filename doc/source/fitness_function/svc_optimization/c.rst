@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_names
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_thresholds
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.fitness_cls
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.is_noisy
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.index
 
 Methods

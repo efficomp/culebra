@@ -35,7 +35,6 @@ Properties
 .. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.obj_names
 .. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.obj_thresholds
 .. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.fitness_cls
-.. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.is_noisy
 .. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.objectives
 
 Methods

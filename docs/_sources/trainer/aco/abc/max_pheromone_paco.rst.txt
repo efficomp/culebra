@@ -99,6 +99,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_representatives
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._next_choice

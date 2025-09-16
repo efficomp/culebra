@@ -35,7 +35,7 @@ from collections.abc import Sequence
 
 from sklearn.svm import SVC
 
-from culebra.abc import Solution
+from culebra.abc import Solution, Fitness
 
 from culebra.fitness_function.feature_selection.abc import (
     FSScorer,
@@ -196,7 +196,7 @@ class FSSVCScorer(FSMultiObjectiveDatasetScorer):
         sol: Solution,
         index: Optional[int] = None,
         representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[float, ...]:
+    ) -> Fitness:
         """Evaluate a solution.
 
            It is assumed that:
@@ -220,8 +220,8 @@ class FSSVCScorer(FSMultiObjectiveDatasetScorer):
         :type representatives: A :py:class:`~collections.abc.Sequence`
             containing instances of :py:class:`~culebra.abc.Solution`,
             optional
-        :return: The fitness values for *sol*
-        :rtype: :py:class:`tuple` of :py:class:`float`
+        :return: The fitness for *sol*
+        :rtype: :py:class:`~culebra.abc.Fitness`
         """
         # Assemble the solution and representatives to construct a complete
         # solution for each of the problems solved cooperatively
@@ -229,19 +229,23 @@ class FSSVCScorer(FSMultiObjectiveDatasetScorer):
             sol, index, representatives
         )
 
-        obj_values = ()
-
-        for obj in self.objectives:
+        for obj_idx, obj in enumerate(self.objectives):
             if isinstance(obj, FSScorer):
                 if isinstance(obj, FSClassificationScorer):
                     obj.classifier.C = sol_hyperparams.values.C
                     obj.classifier.gamma = sol_hyperparams.values.gamma
 
-                obj_values += obj.evaluate(sol_features)
+                obj.evaluate(sol_features)
+                sol.fitness.update_value(
+                    sol_features.fitness.values[obj_idx], obj_idx
+                )
             elif isinstance(obj, SVCScorer):
-                obj_values += obj.evaluate(sol_hyperparams)
+                obj.evaluate(sol_hyperparams)
+                sol.fitness.update_value(
+                    sol_hyperparams.fitness.values[obj_idx], obj_idx
+                )
 
-        return obj_values
+        return sol.fitness
 
 
 # Exported symbols for this module

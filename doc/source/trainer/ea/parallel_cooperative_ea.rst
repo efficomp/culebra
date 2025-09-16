@@ -119,3 +119,4 @@ Private methods
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._default_termination_func
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._termination_criterion
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_representatives
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._set_cooperative_fitness

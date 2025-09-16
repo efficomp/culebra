@@ -36,12 +36,15 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.abc.Fitness.is_valid
+.. autoproperty:: culebra.abc.Fitness.values
+.. autoproperty:: culebra.abc.Fitness.wvalues
 .. autoproperty:: culebra.abc.Fitness.num_obj
-.. autoproperty:: culebra.abc.Fitness.num_evaluations
 .. autoproperty:: culebra.abc.Fitness.pheromone_amount
 
 Methods
 -------
+.. automethod:: culebra.abc.Fitness.update_value
 .. automethod:: culebra.abc.Fitness.dump
 .. automethod:: culebra.abc.Fitness.dominates
 
