@@ -300,9 +300,15 @@ class Dataset(Base):
         :return: A clean dataset
         :rtype: :py:class:`~culebra.tools.Dataset`
         """
+        # Check the random seed
+        if random_seed is None:
+            random_state = np.random.RandomState()
+        else:
+            random_state = check_random_state(random_seed)
+
         # The outlier detectors
         detectors = [
-            IsolationForest(contamination=prop, random_state=random_seed),
+            IsolationForest(contamination=prop, random_state=random_state),
             LocalOutlierFactor(contamination=prop),
             OneClassSVM(nu=prop)
         ]
@@ -362,6 +368,12 @@ class Dataset(Base):
         :return: An oversampled dataset
         :rtype: :py:class:`~culebra.tools.Dataset`
         """
+        # Check the random seed
+        if random_seed is None:
+            random_state = np.random.RandomState()
+        else:
+            random_state = check_random_state(random_seed)
+
         # Number of samples per class
         samples_per_class = Counter(self.outputs)
 
@@ -378,7 +390,7 @@ class Dataset(Base):
             # Create a RandomOverSampler instance
             random_over_sampler = RandomOverSampler(
                 sampling_strategy=samples_per_class,
-                random_state=random_seed
+                random_state=random_state
             )
 
             # Oversample the current dataset
@@ -397,7 +409,7 @@ class Dataset(Base):
             resampled_dataset._outputs
         ) = SMOTE(
             k_neighbors=n_neighbors,
-            random_state=random_seed
+            random_state=random_state
         ).fit_resample(resampled_dataset.inputs, resampled_dataset.outputs)
 
         return resampled_dataset
@@ -444,7 +456,10 @@ class Dataset(Base):
         num_feats = check_int(num_feats, "number of features", gt=0)
 
         # Check the random seed
-        random_state = check_random_state(random_seed)
+        if random_seed is None:
+            random_state = np.random.RandomState()
+        else:
+            random_state = check_random_state(random_seed)
 
         # Create an empty dataset
         new_dataset = self.__class__()
@@ -483,7 +498,10 @@ class Dataset(Base):
         test_prop = check_float(test_prop, "test proportion", gt=0, lt=1)
 
         # Check the random seed
-        random_seed = check_random_state(random_seed)
+        if random_seed is None:
+            random_state = np.random.RandomState()
+        else:
+            random_state = check_random_state(random_seed)
 
         (
             training_inputs,
@@ -495,7 +513,7 @@ class Dataset(Base):
             self._outputs,
             test_size=test_prop,
             stratify=self._outputs,
-            random_state=random_seed,
+            random_state=random_state,
         )
         training = self.__class__()
         training._inputs = training_inputs
