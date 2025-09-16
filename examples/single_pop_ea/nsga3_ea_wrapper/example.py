@@ -59,14 +59,14 @@ def KappaNumFeats(
 dataset = Dataset.load_from_uci(name="Wine")
 
 # Preprocess the dataset
-dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
+dataset = dataset.drop_missing().scale().remove_outliers()
 
 # Split the dataset
-(training_data, test_data) = dataset.split(test_prop=0.3, random_seed=0)
+(training_data, test_data) = dataset.split(test_prop=0.3)
 
 # Oversample the training data to make all the clases have the same number
 # of samples
-training_data = training_data.oversample(random_seed=0)
+training_data = training_data.oversample()
 
 n_neighbors = 5
 """Number of neighbors for k-NN."""
@@ -77,6 +77,7 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 training_fitness_function = KappaNumFeats(
     training_data=training_data, classifier=knn_classifier, cv_folds=5
 )
+training_fitness_function.obj_thresholds = 0.01
 
 # Test fitness function
 test_fitness_function = KappaNumFeats(

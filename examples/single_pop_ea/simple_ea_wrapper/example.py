@@ -54,6 +54,7 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 training_fitness_function = KappaIndex(
     training_data=training_data, classifier=knn_classifier, cv_folds=5
 )
+training_fitness_function.obj_thresholds = 0.05
 
 # Test fitness function
 test_fitness_function = KappaIndex(
