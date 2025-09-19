@@ -1209,12 +1209,12 @@ class Experiment(Evaluation):
         num_species = len(best)
 
         # Evaluate the best solution
-        fit_values = fitness_func.evaluate(best[0], 0, best).values
-        for sol in best:
-            sol.fitness.values = fit_values
+        fitness_func.evaluate(best[0], 0, best)
+        for sol in best[1:]:
+            sol.fitness = best[0].fitness
 
         # Objective names
-        obj_names = list(best[0].fitness.names)
+        obj_names = list(fitness_func.obj_names)
 
         # Index for the dataframe
         if self.hyperparameters is not None:
