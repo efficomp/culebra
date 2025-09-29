@@ -158,7 +158,7 @@ class Base:
         result.__dict__.update(deepcopy(self.__dict__, memo))
         return result
 
-    def __setstate__(self, state: dict) -> None:
+    def __setstate__(self, state: Dict[str, Any]) -> None:
         """Set the state of the object.
 
         :param state: The state
