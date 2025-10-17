@@ -42,7 +42,6 @@ from culebra.solution.abc import Ant
 from culebra.trainer.aco.abc import (
     SingleColACO,
     SinglePheromoneMatrixACO,
-    MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
     ElitistACO,
     PACO,
@@ -62,7 +61,7 @@ __status__ = 'Development'
 class PACO_MO(
     MaxPheromonePACO,
     ElitistACO,
-    MultiplePheromoneMatricesACO,
+    SinglePheromoneMatrixACO,
     MultipleHeuristicMatricesACO
 ):
     """Implement the PACO-MO algorithm."""
@@ -192,7 +191,7 @@ class PACO_MO(
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        MultiplePheromoneMatricesACO.__init__(
+        SinglePheromoneMatrixACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -354,22 +353,19 @@ class PACO_MO(
         self._choice_info = np.zeros(self.heuristic[0].shape)
         for (
             weight,
-            pheromone,
             heuristic,
-            pheromone_influence,
             heuristic_influence
         ) in zip(
             obj_weight,
-            self.pheromone,
             self.heuristic,
-            self.pheromone_influence,
             self.heuristic_influence
         ):
             self._choice_info += (
-                np.power(pheromone, pheromone_influence) *
+                np.power(self.pheromone[0], self.pheromone_influence[0]) *
                 np.power(heuristic, heuristic_influence) *
                 weight
             )
+
 
     def _update_pop(self) -> None:
         """Generate a new population for the current iteration.

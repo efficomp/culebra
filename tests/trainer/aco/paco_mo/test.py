@@ -123,9 +123,7 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = PACO_MO(**params)
 
-        self.assertEqual(
-            trainer.num_pheromone_matrices, fitness_func.num_obj
-        )
+        self.assertEqual(trainer.num_pheromone_matrices, 1)
 
     def test_num_heuristic_matrices(self):
         """Test the num_heuristic_matrices property."""
