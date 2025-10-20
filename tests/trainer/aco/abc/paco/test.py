@@ -32,20 +32,15 @@ from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import (
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
+    SingleHeuristicMatrixACO,
     PACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import (
-    PathLength,
-    MultiObjectivePathLength
-)
+from culebra.fitness_function.tsp import PathLength
 
 
 class MyTrainer(
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
+    SingleHeuristicMatrixACO,
     PACO
 ):
     """Dummy implementation of a trainer method."""
@@ -82,10 +77,7 @@ class MyTrainer(
 
 
 num_nodes = 25
-fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(np.random.permutation(num_nodes)),
-    PathLength.fromPath(np.random.permutation(num_nodes))
-)
+fitness_func = PathLength.fromPath(np.random.permutation(num_nodes))
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -98,7 +90,7 @@ class TrainerTester(unittest.TestCase):
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
         valid_fitness_func = fitness_func
-        valid_initial_pheromone = [1, 2]
+        valid_initial_pheromone = 1
 
         # Try invalid types for pop_size. Should fail
         invalid_pop_size = (type, 'a', 1.5)

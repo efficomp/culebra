@@ -41,7 +41,6 @@ from culebra.solution.abc import Ant
 
 from culebra.trainer.aco.abc import (
     SingleColACO,
-    SinglePheromoneMatrixACO,
     MultipleHeuristicMatricesACO,
     ElitistACO,
     PACO,
@@ -61,7 +60,6 @@ __status__ = 'Development'
 class PACO_MO(
     MaxPheromonePACO,
     ElitistACO,
-    SinglePheromoneMatrixACO,
     MultipleHeuristicMatricesACO
 ):
     """Implement the PACO-MO algorithm."""
@@ -191,13 +189,6 @@ class PACO_MO(
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        SinglePheromoneMatrixACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone
-        )
         MultipleHeuristicMatricesACO.__init__(
             self,
             solution_cls=solution_cls,
@@ -458,7 +449,6 @@ class PACO_MO(
 
 class CPACO(
     PACO,
-    SinglePheromoneMatrixACO,
     MultipleHeuristicMatricesACO
 ):
     """Implement the Crowding PACO algorithm."""

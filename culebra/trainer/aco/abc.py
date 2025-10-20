@@ -1525,7 +1525,7 @@ class ReseteablePheromoneBasedACO(ElitistACO, PheromoneBasedACO):
             self._init_pheromone()
 
 
-class PACO(SingleColACO):
+class PACO(SinglePheromoneMatrixACO):
     """Base class for all the population-based single colony ACO algorithms.
 
     This kind of ACO approach relies on a population of ants that generate the
@@ -1649,8 +1649,8 @@ class PACO(SingleColACO):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclass
-        SingleColACO.__init__(
+        # Init the superclasses
+        SinglePheromoneMatrixACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -1741,7 +1741,7 @@ class PACO(SingleColACO):
         # Set the state of this class
         self._pop = state["pop"]
 
-        # Generate the pheromone matrices with the current population
+        # Generate the pheromone matrix with the current population
         self._update_pheromone()
 
     def _new_state(self) -> None:
@@ -1815,10 +1815,10 @@ class PACO(SingleColACO):
 
         The pheromone trails are updated according to the current population.
         """
-        # Init the pheromone matrices
+        # Init the pheromone matrix
         self._init_pheromone()
 
-        # Update the pheromone matrices with the current population
+        # Update the pheromone matrix with the current population
         self._deposit_pheromone(self.pop)
 
     def _do_iteration(self) -> None:
