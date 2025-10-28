@@ -44,6 +44,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.heuristic
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.max_num_iters
@@ -100,7 +101,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._next_choice
-.. automethod:: culebra.trainer.aco.abc.ElitistACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._init_pheromone

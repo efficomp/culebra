@@ -45,6 +45,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.choice_info
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_num_iters
@@ -103,7 +104,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._initial_choice
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._next_choice
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_col
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._init_pheromone

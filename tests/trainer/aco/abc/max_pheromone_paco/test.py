@@ -32,15 +32,20 @@ from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import (
-    SingleHeuristicMatrixACO,
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
     MaxPheromonePACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 class MyTrainer(
-    SingleHeuristicMatrixACO,
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
     MaxPheromonePACO
 ):
     """Dummy implementation of a trainer method."""
@@ -77,7 +82,14 @@ class MyTrainer(
 
 
 num_nodes = 25
-fitness_func = PathLength.fromPath(np.random.permutation(num_nodes))
+optimum_paths = [
+    np.random.permutation(num_nodes),
+    np.random.permutation(num_nodes)
+]
+fitness_func = MultiObjectivePathLength(
+    PathLength.fromPath(optimum_paths[0]),
+    PathLength.fromPath(optimum_paths[1])
+)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -106,7 +118,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try invalid values for max_pheromone. Should fail
         invalid_max_pheromone = [
-            (-1, ), (max, ), (0, ), (1, 2, 3), [1, 3], (3, 2), (0, 3), (3, 0)
+            (-1, ), (max, ), (0, ), (1, 2, 3), [1, 2, 3]
         ]
         for max_pheromone in invalid_max_pheromone:
             with self.assertRaises(ValueError):
@@ -127,7 +139,10 @@ class TrainerTester(unittest.TestCase):
             valid_initial_pheromone,
             max_pheromone=valid_max_pheromone
         )
-        self.assertEqual(trainer.max_pheromone, valid_max_pheromone)
+        self.assertEqual(
+            trainer.max_pheromone,
+            valid_max_pheromone * trainer.num_pheromone_matrices
+        )
 
         # Test default params
         trainer = MyTrainer(

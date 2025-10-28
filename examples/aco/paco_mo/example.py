@@ -57,6 +57,7 @@ params = {
     "species": species,
     "fitness_function": fitness_func,
     "initial_pheromone": initial_pheromone,
+    # "exploitation_prob": 0,
     "max_pheromone": max_pheromone,
     "col_size": 50,
     "pop_size": 10,

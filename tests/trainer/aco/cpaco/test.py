@@ -77,16 +77,42 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
         self.assertEqual(trainer.species, params["species"])
         self.assertEqual(trainer.fitness_function, params["fitness_function"])
+
+        self.assertEqual(trainer.pheromone, None)
         self.assertEqual(
-            trainer.initial_pheromone[0], params["initial_pheromone"]
+            len(trainer.initial_pheromone), trainer.num_pheromone_matrices
         )
-        self.assertTrue(np.all(trainer.heuristic[0] == params["heuristic"]))
+        for pher_idx in range(trainer.num_pheromone_matrices):
+            self.assertEqual(
+                trainer.initial_pheromone[pher_idx],
+                params["initial_pheromone"]
+            )
         self.assertEqual(
-            trainer.pheromone_influence[0], params["pheromone_influence"]
+            len(trainer.pheromone_influence), trainer.num_pheromone_matrices
         )
+        for pher_idx in range(trainer.num_pheromone_matrices):
+            self.assertEqual(
+                trainer.pheromone_influence[pher_idx],
+                params["pheromone_influence"]
+            )
         self.assertEqual(
-            trainer.heuristic_influence[0], params["heuristic_influence"]
+            len(trainer.heuristic), trainer.num_heuristic_matrices
         )
+        for heur_idx in range(trainer.num_heuristic_matrices):
+            self.assertTrue(
+                np.all(trainer.heuristic[heur_idx] == params["heuristic"])
+            )
+            
+            
+        self.assertEqual(
+            len(trainer.heuristic_influence), trainer.num_heuristic_matrices
+        )
+        for heur_idx in range(trainer.num_heuristic_matrices):
+            self.assertEqual(
+                trainer.heuristic_influence[heur_idx],
+                params["heuristic_influence"]
+        )
+        
         self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(
             trainer.custom_termination_func, params["custom_termination_func"]

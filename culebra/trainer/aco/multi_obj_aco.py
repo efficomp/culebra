@@ -41,6 +41,8 @@ from culebra.solution.abc import Ant
 
 from culebra.trainer.aco.abc import (
     SingleColACO,
+    SinglePheromoneMatrixACO,
+    MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
     ElitistACO,
     PACO,
@@ -60,6 +62,7 @@ __status__ = 'Development'
 class PACO_MO(
     MaxPheromonePACO,
     ElitistACO,
+    MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO
 ):
     """Implement the PACO-MO algorithm."""
@@ -77,6 +80,7 @@ class PACO_MO(
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        exploitation_prob: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -150,6 +154,11 @@ class PACO_MO(
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
+        :param exploitation_prob: Probability to make the best possible move
+            (:math:`{q_0}`). If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB` will
+            be used. Defaults to :py:data:`None`
+        :type exploitation_prob: :py:class:`float`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -189,6 +198,13 @@ class PACO_MO(
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
+        MultiplePheromoneMatricesACO.__init__(
+            self,
+            solution_cls=solution_cls,
+            species=species,
+            fitness_function=fitness_function,
+            initial_pheromone=initial_pheromone
+        )
         MultipleHeuristicMatricesACO.__init__(
             self,
             solution_cls=solution_cls,
@@ -213,6 +229,7 @@ class PACO_MO(
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
+            exploitation_prob=exploitation_prob,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -344,19 +361,35 @@ class PACO_MO(
         self._choice_info = np.zeros(self.heuristic[0].shape)
         for (
             weight,
+            pheromone,
+            pheromone_influence,
             heuristic,
             heuristic_influence
         ) in zip(
             obj_weight,
+            self.pheromone,
+            self.pheromone_influence,
             self.heuristic,
             self.heuristic_influence
         ):
-            self._choice_info += (
-                np.power(self.pheromone[0], self.pheromone_influence[0]) *
-                np.power(heuristic, heuristic_influence) *
-                weight
-            )
+            if pheromone_influence > 0:
+                if pheromone_influence == 1:
+                    pheromone_info = pheromone
+                else: 
+                    pheromone_info = np.power(pheromone, pheromone_influence)
+            else:
+                pheromone_info = np.ones(pheromone.shape)
 
+            if heuristic_influence > 0:
+                if heuristic_influence == 1:
+                    heuristic_info = heuristic
+                else: 
+                    heuristic_info = np.power(heuristic, heuristic_influence)
+            else:
+                heuristic_info = np.ones(heuristic.shape)
+            
+            
+            self._choice_info += weight * pheromone_info * heuristic_info
 
     def _update_pop(self) -> None:
         """Generate a new population for the current iteration.
@@ -449,6 +482,7 @@ class PACO_MO(
 
 class CPACO(
     PACO,
+    SinglePheromoneMatrixACO,
     MultipleHeuristicMatricesACO
 ):
     """Implement the Crowding PACO algorithm."""
@@ -514,8 +548,17 @@ class CPACO(
         since in CPACO each ant uses its own heuristic influence correction
         factors.
         """
+        self._choice_info = np.ones(self.heuristic[0].shape)
+
+        if self.pheromone_influence[0] > 0:
+            if self.pheromone_influence[0] == 1:
+                self._choice_info *= self.pheromone[0]
+            else:
+                self._choice_info *= np.power(
+                    self.pheromone[0], self.pheromone_influence[0]
+                )
+
         # Heuristic info for the current ant
-        heuristic_info = np.ones(self.heuristic[0].shape)
         for (
             heuristic,
             heuristic_influence,
@@ -526,15 +569,18 @@ class CPACO(
             self._heuristic_influence_correction
 
         ):
-            heuristic_info *= np.power(
-                heuristic,
+            heuristic_weighted_influence = (
                 heuristic_influence * heuristic_influence_correction
             )
-
-        self._choice_info = (
-            np.power(self.pheromone[0], self.pheromone_influence[0]) *
-            heuristic_info
-        )
+                
+            if heuristic_weighted_influence > 0:
+                if heuristic_weighted_influence == 1:
+                    self._choice_info *= heuristic
+                else: 
+                    self._choice_info *= np.power(
+                        heuristic,
+                        heuristic_weighted_influence
+                    )
 
     def _generate_ant(self) -> Ant:
         """Generate a new ant.

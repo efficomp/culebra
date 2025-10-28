@@ -30,6 +30,7 @@ from deap.tools import ParetoFront
 
 from culebra.trainer.aco import (
     MMAS,
+    DEFAULT_AS_EXPLOITATION_PROB,
     DEFAULT_MMAS_ITER_BEST_USE_LIMIT,
     DEFAULT_CONVERGENCE_CHECK_FREQ
 )
@@ -137,6 +138,9 @@ class TrainerTester(unittest.TestCase):
             species,
             fitness_func,
             initial_pheromone
+        )
+        self.assertEqual(
+            trainer.exploitation_prob, DEFAULT_AS_EXPLOITATION_PROB
         )
         self.assertEqual(
             trainer.iter_best_use_limit,

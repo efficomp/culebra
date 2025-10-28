@@ -44,6 +44,8 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.heuristic
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.convergence_check_freq
@@ -101,7 +103,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._next_choice
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_pheromone

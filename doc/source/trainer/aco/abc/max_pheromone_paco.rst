@@ -45,6 +45,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.max_num_iters
@@ -103,7 +104,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._next_choice
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_pheromone

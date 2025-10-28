@@ -44,6 +44,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.PACO_FS.heuristic
 .. autoproperty:: culebra.trainer.aco.PACO_FS.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.PACO_FS.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.PACO_FS.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.PACO_FS.pheromone
 .. autoproperty:: culebra.trainer.aco.PACO_FS.choice_info
 .. autoproperty:: culebra.trainer.aco.PACO_FS.max_num_iters
@@ -103,7 +104,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.PACO_FS._calculate_choice_info
 .. automethod:: culebra.trainer.aco.PACO_FS._initial_choice
 .. automethod:: culebra.trainer.aco.PACO_FS._next_choice
-.. automethod:: culebra.trainer.aco.PACO_FS._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.PACO_FS._generate_ant
 .. automethod:: culebra.trainer.aco.PACO_FS._generate_col
 .. automethod:: culebra.trainer.aco.PACO_FS._init_pheromone

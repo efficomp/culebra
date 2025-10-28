@@ -29,7 +29,8 @@ import numpy as np
 
 from culebra.trainer.aco import (
     AntSystem,
-    DEFAULT_PHEROMONE_EVAPORATION_RATE
+    DEFAULT_PHEROMONE_EVAPORATION_RATE,
+    DEFAULT_AS_EXPLOITATION_PROB
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
@@ -98,6 +99,9 @@ class TrainerTester(unittest.TestCase):
             initial_pheromone
         )
         self.assertEqual(
+            trainer.exploitation_prob, DEFAULT_AS_EXPLOITATION_PROB
+        )
+        self.assertEqual(
             trainer.pheromone_evaporation_rate,
             DEFAULT_PHEROMONE_EVAPORATION_RATE
         )
@@ -134,7 +138,6 @@ class TrainerTester(unittest.TestCase):
 
     def test_decrease_pheromone(self):
         """Test the _decrease_pheromone method."""
-        # Trainer parameters
         # Trainer parameters
         params = {
             "solution_cls": Ant,

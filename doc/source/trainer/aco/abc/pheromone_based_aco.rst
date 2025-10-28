@@ -44,6 +44,8 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.heuristic
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.choice_info
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.max_num_iters
@@ -100,7 +102,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._initial_choice
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._next_choice
-.. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO._init_pheromone

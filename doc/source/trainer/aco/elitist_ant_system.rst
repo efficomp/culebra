@@ -44,6 +44,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.heuristic
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.elite_weight
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.pheromone
@@ -102,7 +103,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._calculate_choice_info
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._initial_choice
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._next_choice
-.. automethod:: culebra.trainer.aco.ElitistAntSystem._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_ant
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_col
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._init_pheromone

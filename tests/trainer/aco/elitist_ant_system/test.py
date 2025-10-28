@@ -27,7 +27,11 @@ import unittest
 import numpy as np
 from deap.tools import ParetoFront
 
-from culebra.trainer.aco import ElitistAntSystem, DEFAULT_ELITE_WEIGHT
+from culebra.trainer.aco import (
+    ElitistAntSystem,
+    DEFAULT_AS_EXPLOITATION_PROB,
+    DEFAULT_ELITE_WEIGHT
+)
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
 
@@ -90,6 +94,9 @@ class TrainerTester(unittest.TestCase):
             species,
             fitness_func,
             initial_pheromone
+        )
+        self.assertEqual(
+            trainer.exploitation_prob, DEFAULT_AS_EXPLOITATION_PROB
         )
         self.assertEqual(trainer.elite_weight, DEFAULT_ELITE_WEIGHT)
 

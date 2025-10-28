@@ -65,6 +65,7 @@ class TrainerTester(unittest.TestCase):
             "heuristic": np.ones((num_nodes, num_nodes)),
             "pheromone_influence": 2,
             "heuristic_influence": 5,
+            "exploitation_prob": 0.8,
             "max_num_iters": 123,
             "custom_termination_func": max,
             "col_size": 6,
@@ -83,16 +84,36 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
         self.assertEqual(trainer.species, params["species"])
         self.assertEqual(trainer.fitness_function, params["fitness_function"])
+        self.assertEqual(trainer.pheromone, None)
         self.assertEqual(
-            trainer.initial_pheromone[0], params["initial_pheromone"]
+            len(trainer.initial_pheromone), trainer.num_pheromone_matrices
         )
-        self.assertEqual(trainer.max_pheromone[0], params["max_pheromone"])
-        self.assertTrue(np.all(trainer.heuristic[0] == params["heuristic"]))
+        for pher_idx in range(trainer.num_pheromone_matrices):
+            self.assertEqual(
+                trainer.initial_pheromone[pher_idx],
+                params["initial_pheromone"]
+            )
+        for pher_idx in range(trainer.num_pheromone_matrices):
+            self.assertEqual(
+                trainer.max_pheromone[pher_idx],
+                params["max_pheromone"]
+            )
+        for pher_idx in range(trainer.num_pheromone_matrices):
+            self.assertEqual(
+                trainer.pheromone_influence[pher_idx],
+                params["pheromone_influence"]
+            )
+        for heur_idx in range(trainer.num_heuristic_matrices):
+            self.assertTrue(
+                np.all(trainer.heuristic[heur_idx] == params["heuristic"])
+            )
+        for heur_idx in range(trainer.num_heuristic_matrices):
+            self.assertEqual(
+                trainer.heuristic_influence[heur_idx],
+                params["heuristic_influence"]
+            )
         self.assertEqual(
-            trainer.pheromone_influence[0], params["pheromone_influence"]
-        )
-        self.assertEqual(
-            trainer.heuristic_influence[0], params["heuristic_influence"]
+            trainer.exploitation_prob, params["exploitation_prob"]
         )
         self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(
@@ -123,7 +144,7 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = PACO_MO(**params)
 
-        self.assertEqual(trainer.num_pheromone_matrices, 1)
+        self.assertEqual(trainer.num_pheromone_matrices, fitness_func.num_obj)
 
     def test_num_heuristic_matrices(self):
         """Test the num_heuristic_matrices property."""
@@ -138,9 +159,7 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = PACO_MO(**params)
 
-        self.assertEqual(
-            trainer.num_heuristic_matrices, fitness_func.num_obj
-        )
+        self.assertEqual(trainer.num_heuristic_matrices, fitness_func.num_obj)
 
     def test_state(self):
         """Test the get_state and _set_state methods."""

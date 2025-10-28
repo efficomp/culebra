@@ -46,6 +46,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.choice_info
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.MMAS.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.MMAS.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.MMAS.pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.MMAS.convergence_check_freq
 .. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit
@@ -108,7 +109,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.MMAS._calculate_choice_info
 .. automethod:: culebra.trainer.aco.MMAS._initial_choice
 .. automethod:: culebra.trainer.aco.MMAS._next_choice
-.. automethod:: culebra.trainer.aco.MMAS._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.MMAS._generate_ant
 .. automethod:: culebra.trainer.aco.MMAS._generate_col
 .. automethod:: culebra.trainer.aco.MMAS._init_pheromone

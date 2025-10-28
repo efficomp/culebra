@@ -56,8 +56,8 @@ __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
 
-DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.1
-r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
+DEFAULT_AS_EXPLOITATION_PROB = 0
+r"""Default exploitation probability (:math:`{q_0}`) for the Ant System trainer."""
 
 DEFAULT_ELITE_WEIGHT = 0.3
 """Default weight for the elite ants (best-so-far ants) respect to the
@@ -85,6 +85,7 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        exploitation_prob: Optional[float] = None,
         pheromone_evaporation_rate: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
@@ -153,6 +154,11 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
+        :param exploitation_prob: Probability to make the best possible move
+            (:math:`{q_0}`). If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
+            be used. Defaults to :py:data:`None`
+        :type exploitation_prob: :py:class:`float`
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
@@ -194,14 +200,14 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        PheromoneBasedACO.__init__(
+        SingleObjACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone
+            initial_pheromone=initial_pheromone,
         )
-        SingleObjACO.__init__(
+        PheromoneBasedACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
@@ -210,6 +216,8 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
+            exploitation_prob=exploitation_prob,
+            pheromone_evaporation_rate=pheromone_evaporation_rate,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -219,60 +227,27 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             verbose=verbose,
             random_seed=random_seed
         )
-        self.pheromone_evaporation_rate = pheromone_evaporation_rate
 
-    @property
-    def pheromone_evaporation_rate(self) -> float:
-        r"""Get and set the pheromone evaporation rate (:math:`{\rho}`).
+    @PheromoneBasedACO.exploitation_prob.getter
+    def exploitation_prob(self) -> float:
+        """Get and set the exploitation probability (:math:`{q_0}`).
 
-        :getter: Return the pheromone evaporation rate
-        :setter: Set a value for the pheromone evaporation rate. If set to
+        :getter: Return the current exploitation probability
+        :setter: Set the new exploitation probability. If set to
             :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
-            is chosen
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a float
-        :raises ValueError: If set to value outside (0, 1]
+            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` is
+            chosen
+        :type: :py:class:`float` in [0, 1]
+        :raises TypeError: If set to a value which is not a real number
+        :raises ValueError: If set to a value which is not in [0, 1]
         """
         return (
-            DEFAULT_PHEROMONE_EVAPORATION_RATE
-            if self._pheromone_evaporation_rate is None
-            else self._pheromone_evaporation_rate
+            DEFAULT_AS_EXPLOITATION_PROB
+            if self._exploitation_prob is None
+            else self._exploitation_prob
         )
 
-    @pheromone_evaporation_rate.setter
-    def pheromone_evaporation_rate(self, value: float | None) -> None:
-        r"""Set a value for the pheromone evaporation rate (:math:`{\rho}`).
-
-        :param value: New value for the pheromone evaporation rate. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
-            is chosen
-        :type value: :py:class:`float`
-        :raises TypeError: If *value* is not a floating point number
-        :raises ValueError: If *value* is outside (0, 1]
-        """
-        # Check the value
-        self._pheromone_evaporation_rate = (
-            None if value is None else check_float(
-                value, "pheromone evaporation rate", gt=0, le=1
-            )
-        )
-
-    def _decrease_pheromone(self) -> None:
-        """Decrease the amount of pheromone."""
-        self._pheromone[0] *= (1 - self.pheromone_evaporation_rate)
-
-    def _increase_pheromone(self) -> None:
-        """Increase the amount of pheromone.
-
-        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also incremented the by same amount.
-        """
-        self._deposit_pheromone(self.col)
-
-
-class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
+class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
@@ -287,6 +262,7 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        exploitation_prob: Optional[float] = None,
         pheromone_evaporation_rate: Optional[float] = None,
         convergence_check_freq: Optional[int] = None,
         elite_weight: Optional[float] = None,
@@ -357,6 +333,11 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
+        :param exploitation_prob: Probability to make the best possible move
+            (:math:`{q_0}`). If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
+            be used. Defaults to :py:data:`None`
+        :type exploitation_prob: :py:class:`float`
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
@@ -409,13 +390,12 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        AntSystem.__init__(
+        SingleObjACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
-            pheromone_evaporation_rate=pheromone_evaporation_rate
         )
         ReseteablePheromoneBasedACO.__init__(
             self,
@@ -426,6 +406,8 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
+            exploitation_prob=exploitation_prob,
+            pheromone_evaporation_rate=pheromone_evaporation_rate,
             convergence_check_freq=convergence_check_freq,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
@@ -438,6 +420,9 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
         )
 
         self.elite_weight = elite_weight
+
+    # Copy this property
+    exploitation_prob = AntSystem.exploitation_prob
 
     @property
     def elite_weight(self) -> float:
@@ -498,7 +483,7 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, AntSystem):
             )
 
 
-class MMAS(ReseteablePheromoneBasedACO, AntSystem):
+class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
     r""":math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` Ant System algorithm."""
 
     def __init__(
@@ -513,6 +498,7 @@ class MMAS(ReseteablePheromoneBasedACO, AntSystem):
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        exploitation_prob: Optional[float] = None,
         pheromone_evaporation_rate: Optional[float] = None,
         iter_best_use_limit: Optional[int] = None,
         convergence_check_freq: Optional[int] = None,
@@ -583,6 +569,11 @@ class MMAS(ReseteablePheromoneBasedACO, AntSystem):
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
+        :param exploitation_prob: Probability to make the best possible move
+            (:math:`{q_0}`). If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
+            be used. Defaults to :py:data:`None`
+        :type exploitation_prob: :py:class:`float`
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If set to :py:data:`None`,
             :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
@@ -635,14 +626,13 @@ class MMAS(ReseteablePheromoneBasedACO, AntSystem):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclass
-        AntSystem.__init__(
+        # Init the superclasses
+        SingleObjACO.__init__(
             self,
             solution_cls=solution_cls,
             species=species,
             fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
-            pheromone_evaporation_rate=pheromone_evaporation_rate
         )
         ReseteablePheromoneBasedACO.__init__(
             self,
@@ -653,6 +643,8 @@ class MMAS(ReseteablePheromoneBasedACO, AntSystem):
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
+            exploitation_prob=exploitation_prob,
+            pheromone_evaporation_rate=pheromone_evaporation_rate,
             convergence_check_freq=convergence_check_freq,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
@@ -666,6 +658,9 @@ class MMAS(ReseteablePheromoneBasedACO, AntSystem):
         self.iter_best_use_limit = iter_best_use_limit
         self.convergence_check_freq = convergence_check_freq
 
+    # Copy this property
+    exploitation_prob = AntSystem.exploitation_prob
+    
     @property
     def iter_best_use_limit(self) -> int:
         """Get and set the iteration-best use limit.
@@ -1015,7 +1010,7 @@ __all__ = [
     'MMAS',
     'AgeBasedPACO',
     'QualityBasedPACO',
-    'DEFAULT_PHEROMONE_EVAPORATION_RATE',
+    'DEFAULT_AS_EXPLOITATION_PROB',
     'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT'
 ]

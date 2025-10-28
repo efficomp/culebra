@@ -32,15 +32,20 @@ from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import (
-    SingleHeuristicMatrixACO,
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
     PACO
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_function.tsp import (
+    PathLength,
+    MultiObjectivePathLength
+)
 
 
 class MyTrainer(
-    SingleHeuristicMatrixACO,
+    MultiplePheromoneMatricesACO,
+    MultipleHeuristicMatricesACO,
     PACO
 ):
     """Dummy implementation of a trainer method."""
@@ -77,7 +82,14 @@ class MyTrainer(
 
 
 num_nodes = 25
-fitness_func = PathLength.fromPath(np.random.permutation(num_nodes))
+optimum_paths = [
+    np.random.permutation(num_nodes),
+    np.random.permutation(num_nodes)
+]
+fitness_func = MultiObjectivePathLength(
+    PathLength.fromPath(optimum_paths[0]),
+    PathLength.fromPath(optimum_paths[1])
+)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -127,6 +139,16 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             trainer.pop_size,
             trainer.col_size
+        )
+        
+        self.assertEqual(
+            trainer.num_pheromone_matrices,
+            fitness_func.num_obj
+        )
+
+        self.assertEqual(
+            trainer.num_heuristic_matrices,
+            fitness_func.num_obj
         )
 
     def test_state(self):
@@ -239,6 +261,7 @@ class TrainerTester(unittest.TestCase):
         trainer._init_internals()
 
         # Check the pheromone matrices
+        self.assertEqual(len(trainer.pheromone), fitness_func.num_obj)
         self.assertIsInstance(trainer.pheromone, list)
         for (
             initial_pheromone,
@@ -362,6 +385,13 @@ class TrainerTester(unittest.TestCase):
 
         # The population should not be empty
         self.assertGreaterEqual(len(trainer.pop), 1)
+
+        # Check the pheromone matrices
+        for matrix, init_val in zip(
+            trainer.pheromone, trainer.initial_pheromone
+        ):
+            self.assertTrue(np.all(matrix >= init_val))
+            self.assertTrue(np.any(matrix != init_val))
 
     def test_copy(self):
         """Test the __copy__ method."""

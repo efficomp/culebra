@@ -37,15 +37,26 @@ Attributes
 
     Default heuristic influence (:math:`{\beta}`).
 
-.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
-    :annotation: = 100
+.. attribute:: DEFAULT_EXPLOITATION_PROB
+    :annotation: = 0.9
 
-    Default frequency to check if an elitist ACO has converged.
+    Default exploitation probability (:math:`{q_0}`).
 
 .. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
     :annotation: = 0.1
 
     Default pheromone evaporation rate (:math:`{\rho}`).
+
+.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
+    :annotation: = 100
+
+    Default frequency to check if an elitist ACO has converged.
+
+.. attribute:: DEFAULT_AS_EXPLOITATION_PROB
+    :annotation: = 0
+    
+    Default exploitation probability (:math:`{q_0}`) for the Ant System
+    trainer.
 
 .. attribute:: DEFAULT_ELITE_WEIGHT
     :annotation: = 0.3
@@ -61,11 +72,20 @@ Attributes
     iteration-best ant to deposit pheromone. Iterations above this limit will
     use only the global-best ant.
 
-
 .. attribute:: DEFAULT_ACO_FS_INITIAL_PHEROMONE
     :annotation: = 1
 
     Default initial pheromone.
+
+.. attribute:: DEFAULT_ACO_FS_HEURISTIC_INFLUENCE
+    :annotation: = 1
+    
+    Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches.
+
+.. attribute:: DEFAULT_ACO_FS_EXPLOITATION_PROB
+    :annotation: = 0
+    
+    Default exploitation probability (:math:`{q_0}`) for ACO-FS approaches.
 
 .. attribute:: DEFAULT_ACO_FS_DISCARD_PROB
     :annotation: = 0.5
@@ -76,11 +96,15 @@ Attributes
 ..
     .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
     .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
-    .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
+    .. autodata:: DEFAULT_EXPLOITATION_PROB
     .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
+    .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
+    .. autodata:: DEFAULT_AS_EXPLOITATION_PROB
     .. autodata:: DEFAULT_ELITE_WEIGHT
     .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
     .. autodata:: DEFAULT_ACO_FS_INITIAL_PHEROMONE
+    .. autodata:: DEFAULT_ACO_FS_HEURISTIC_INFLUENCE
+    .. autodata:: DEFAULT_ACO_FS_EXPLOITATION_PROB
     .. autodata:: DEFAULT_ACO_FS_DISCARD_PROB
 
 

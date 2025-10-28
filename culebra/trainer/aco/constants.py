@@ -21,9 +21,9 @@
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.4.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -35,21 +35,37 @@ r"""Default pheromone influence (:math:`{\alpha}`)."""
 DEFAULT_HEURISTIC_INFLUENCE = 2.0
 r"""Default heuristic influence (:math:`{\beta}`)."""
 
+DEFAULT_EXPLOITATION_PROB = 0.9
+r"""Default exploitation probability (:math:`{q_0}`)."""
+
+DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.1
+r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
+
 DEFAULT_CONVERGENCE_CHECK_FREQ = 100
 """Default frequency to check if an elitist ACO has converged."""
 
 DEFAULT_ACO_FS_INITIAL_PHEROMONE = 1
-"""Default initial pheromone."""
+"""Default initial pheromone for ACO-FS approaches."""
+
+DEFAULT_ACO_FS_HEURISTIC_INFLUENCE = 1
+"""Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches."""
+
+DEFAULT_ACO_FS_EXPLOITATION_PROB = 0
+r"""Default exploitation probability (:math:`{q_0}`) for ACO-FS approaches."""
 
 DEFAULT_ACO_FS_DISCARD_PROB = 0.5
-"""Default probability of discarding a node (feature)."""
+"""Default probability of discarding a node (feature) for ACO-FS approaches."""
 
 
 # Exported symbols for this module
 __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
+    'DEFAULT_EXPLOITATION_PROB',
+    'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
     'DEFAULT_ACO_FS_INITIAL_PHEROMONE',
+    'DEFAULT_ACO_FS_HEURISTIC_INFLUENCE',
+    'DEFAULT_ACO_FS_EXPLOITATION_PROB',
     'DEFAULT_ACO_FS_DISCARD_PROB'
 ]

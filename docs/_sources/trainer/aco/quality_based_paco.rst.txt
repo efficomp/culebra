@@ -45,6 +45,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.heuristic
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.choice_info
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.max_num_iters
@@ -103,7 +104,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._calculate_choice_info
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._initial_choice
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._next_choice
-.. automethod:: culebra.trainer.aco.AgeBasedPACO._feasible_neighborhood_probs
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_col
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._init_pheromone

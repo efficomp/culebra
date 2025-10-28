@@ -32,7 +32,8 @@ import numpy as np
 from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
-    DEFAULT_HEURISTIC_INFLUENCE
+    DEFAULT_HEURISTIC_INFLUENCE,
+    DEFAULT_EXPLOITATION_PROB
 )
 from culebra.trainer.aco.abc import SingleColACO
 from culebra.solution.tsp import (
@@ -71,8 +72,11 @@ class MySingleObjTrainer(SingleColACO):
         return 1
 
     def _calculate_choice_info(self):
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
+        """Calculate the choice info matrix."""
+        self._choice_info = (
+            np.power(self.pheromone[0], self.pheromone_influence[0]) *
+            np.power(self.heuristic[0], self.heuristic_influence[0])
+        )
 
     def _decrease_pheromone(self):
         """Decrease the amount of pheromone."""
@@ -128,6 +132,29 @@ class MyMultiObjTrainer(MySingleObjTrainer):
     def num_heuristic_matrices(self) -> int:
         """Get the number of heuristic matrices used by this trainer."""
         return self.fitness_function.num_obj
+
+    def _calculate_choice_info(self):
+        """Calculate the choice info matrix."""
+        self._choice_info = np.ones(self.heuristic[0].shape)
+        
+        for (
+            pheromone,
+            pheromone_influence
+        ) in zip(
+            self.pheromone,
+            self.pheromone_influence
+        ):
+            self._choice_info *= np.power(pheromone, pheromone_influence)
+
+        for (
+            heuristic,
+            heuristic_influence
+        ) in zip(
+            self.heuristic,
+            self.heuristic_influence
+        ):
+            self._choice_info *= np.power(heuristic, heuristic_influence)
+
 
 
 # TSP related stuff
@@ -320,6 +347,9 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(heur_infl, DEFAULT_HEURISTIC_INFLUENCE)
 
         # Check the default parameters
+        self.assertEqual(
+            singleObjTrainer.exploitation_prob, DEFAULT_EXPLOITATION_PROB
+        )
         self.assertEqual(singleObjTrainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(
             singleObjTrainer.col_size,
@@ -964,6 +994,48 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             trainer.heuristic_influence, heuristic_influence)
 
+    def test_exploitation_prob(self):
+        """Test the exploitation_prob property."""
+        ant_cls = TSPAnt
+        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        initial_pheromone = 1
+
+        # Try invalid types for exploitation_prob. Should fail
+        invalid_probs = ('a', type)
+        for prob in invalid_probs:
+            with self.assertRaises(TypeError):
+                MySingleObjTrainer(
+                    ant_cls,
+                    species,
+                    tsp_fitness_func_single,
+                    initial_pheromone,
+                    exploitation_prob=prob
+                )
+
+        # Try invalid values for exploitation_prob. Should fail
+        invalid_probs = (-1, -0.001, 1.001, 4)
+        for prob in invalid_probs:
+            with self.assertRaises(ValueError):
+                MySingleObjTrainer(
+                    ant_cls,
+                    species,
+                    tsp_fitness_func_single,
+                    initial_pheromone,
+                    exploitation_prob=prob
+                )
+
+        # Try valid values for exploitation_prob
+        valid_probs = (0, 0.5, 1)
+        for prob in valid_probs:
+            trainer = MySingleObjTrainer(
+                ant_cls,
+                species,
+                tsp_fitness_func_single,
+                initial_pheromone,
+                exploitation_prob=prob
+            )
+            self.assertEqual(trainer.exploitation_prob, prob)
+
     def test_max_num_iters(self):
         """Test the max_num_iters property."""
         ant_cls = TSPAnt
@@ -1183,6 +1255,44 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.choice_info, None)
         self.assertEqual(trainer._node_list, None)
 
+    def test_best_solutions(self):
+        """Test the best_solutions method."""
+        # Trainer parameters
+        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        initial_pheromone = [2, 4]
+        params = {
+            "solution_cls": TSPAnt,
+            "species": species,
+            "fitness_function": tsp_fitness_func_multi,
+            "initial_pheromone": initial_pheromone
+        }
+
+        # Create the trainer
+        trainer = MyMultiObjTrainer(**params)
+
+        # Try before any colony has been created
+        best_ones = trainer.best_solutions()
+        self.assertIsInstance(best_ones, list)
+        self.assertEqual(len(best_ones), 1)
+        self.assertEqual(len(best_ones[0]), 0)
+
+        # Update the elite
+        trainer._init_search()
+        trainer._start_iteration()
+        ant = trainer._generate_ant()
+        trainer.col.append(ant)
+
+        best_ones = trainer.best_solutions()
+
+        # Check that best_ones contains only one species
+        self.assertEqual(len(best_ones), 1)
+
+        # Check that the hof has only one solution
+        self.assertEqual(len(best_ones[0]), 1)
+
+        # Check that the solution in hof is sol1
+        self.assertTrue(ant in best_ones[0])
+
     def test_calculate_choice_info(self):
         """Test the _calculate_choice_info method."""
         # Trainer parameters
@@ -1207,17 +1317,20 @@ class TrainerTester(unittest.TestCase):
         trainer._start_iteration()
         choice_info = trainer.choice_info
 
-        # Check the probabilities for banned nodes. Should be 0
+        # Check the choice info for banned nodes. Should be 0
         for node in tsp_banned_nodes:
-            self.assertAlmostEqual(np.sum(choice_info[node]), 0)
+            for next_node in range(tsp_num_nodes):
+                self.assertAlmostEqual(choice_info[node, next_node], 0)
+                self.assertAlmostEqual(choice_info[next_node, node], 0)
 
         for node in tsp_feasible_nodes:
-            self.assertAlmostEqual(
-                np.sum(choice_info[node]),
-                np.sum(
-                    trainer.pheromone[0][node] * trainer.heuristic[0][node]
-                )
-            )
+            for next_node in range(tsp_num_nodes):
+                if next_node in tsp_banned_nodes or node == next_node:
+                    self.assertAlmostEqual(choice_info[node, next_node], 0)
+                    self.assertAlmostEqual(choice_info[next_node, node], 0)
+                else:
+                    self.assertGreater(choice_info[node, next_node], 0)
+                    self.assertGreater(choice_info[next_node, node], 0)
 
     def test_initial_choice(self):
         """Test the _initial_choice method."""
@@ -1249,8 +1362,30 @@ class TrainerTester(unittest.TestCase):
         trainer._start_iteration()
         self.assertEqual(trainer._initial_choice(ant), None)
 
-    def test_feasible_neighborhood_probs(self):
-        """Test the _feasible_neighborhood_probs method."""
+    def test_next_choice(self):
+        """Test the _next_choice method."""
+        def test(trainer):
+        # Try to generate valid first nodes
+            times = 1000
+            for _ in repeat(None, times):
+                trainer._start_iteration()
+                ant = FSAnt(
+                    trainer.species,
+                    trainer.fitness_function.fitness_cls
+                )
+                choice = trainer._next_choice(ant)
+                # Controls if the next node will be discarded or appended
+                discardNextNode = True
+    
+                while choice is not None:
+                    if discardNextNode:
+                        ant.discard(choice)
+                    else:
+                        ant.append(choice)
+                    discardNextNode = not discardNextNode
+    
+                    choice = trainer._next_choice(ant)
+        
         # Trainer parameters
         species = FSSpecies(
             num_feats=fs_dataset.num_feats,
@@ -1268,69 +1403,17 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = MyMultiObjTrainer(**params)
+        
+        # Test the exploitation ...
+        trainer.exploitation_prob = 1
         trainer._init_search()
-        trainer._start_iteration()
+        test(trainer)
 
-        # Try with an ant with an empty path. Should fail
-        ant = FSAnt(
-            species,
-            fs_fitness_func.fitness_cls
-        )
-        with self.assertRaises(ValueError):
-            trainer._feasible_neighborhood_probs(ant)
-
-        # Choose a first node for the ant
-        ant.append(trainer._initial_choice(ant))
-
-        # Controls if the next node will be discarded or appended
-        discardNextNode = True
-
-        # Check the choice probabilities of the ant's current node neighborhood
-        node_list = np.arange(0, species.num_feats, dtype=int)
-        probs = trainer._feasible_neighborhood_probs(ant)
-        while np.sum(probs) > 0:
-            self.assertAlmostEqual(np.sum(probs), 1)
-            next_node = np.random.choice(node_list, p=probs)
-
-            if discardNextNode:
-                ant.discard(next_node)
-            else:
-                ant.append(next_node)
-            discardNextNode = not discardNextNode
-
-            probs = trainer._feasible_neighborhood_probs(ant)
-
-    def test_next_choice(self):
-        """Test the _next_choice method."""
-        # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
-        initial_pheromone = [2]
-        params = {
-            "solution_cls": TSPAnt,
-            "species": species,
-            "fitness_function": tsp_fitness_func_multi,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyMultiObjTrainer(**params)
+        # Test the exploration ...
+        trainer.exploitation_prob = 0
         trainer._init_search()
+        test(trainer)
 
-        # Try to generate valid first nodes
-        times = 1000
-        for _ in repeat(None, times):
-            trainer._start_iteration()
-            ant = TSPAnt(
-                species,
-                tsp_fitness_func_multi.fitness_cls
-            )
-            choice = trainer._next_choice(ant)
-
-            while choice is not None:
-                ant.append(choice)
-                choice = trainer._next_choice(ant)
-
-            self.assertEqual(len(ant.path), len(tsp_feasible_nodes))
 
     def test_generate_ant(self):
         """Test the _generate_ant method."""

@@ -121,6 +121,7 @@ class PACO_FS(
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        exploitation_prob: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -189,6 +190,11 @@ class PACO_FS(
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
+        :param exploitation_prob: Probability to make the best possible move
+            (:math:`{q_0}`). If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB` will
+            be used. Defaults to :py:data:`None`
+        :type exploitation_prob: :py:class:`float`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -250,6 +256,7 @@ class PACO_FS(
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
+            exploitation_prob=exploitation_prob,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
@@ -301,6 +308,7 @@ class ElitistACO_FS(
         ] = None,
         pheromone_influence: Optional[float | Sequence[float, ...]] = None,
         heuristic_influence: Optional[float | Sequence[float, ...]] = None,
+        exploitation_prob: Optional[float] = None,
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
@@ -368,6 +376,11 @@ class ElitistACO_FS(
         :type heuristic_influence: :py:class:`float` or
             :py:class:`~collections.abc.Sequence` of :py:class:`float`,
             optional
+        :param exploitation_prob: Probability to make the best possible move
+            (:math:`{q_0}`). If omitted,
+            :py:attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB` will
+            be used. Defaults to :py:data:`None`
+        :type exploitation_prob: :py:class:`float`
         :param max_num_iters: Maximum number of iterations. If set to
             :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
             be used. Defaults to :py:data:`None`
@@ -427,6 +440,7 @@ class ElitistACO_FS(
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
+            exploitation_prob=exploitation_prob,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,

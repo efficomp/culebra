@@ -32,6 +32,8 @@ import numpy as np
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import (
     DEFAULT_ACO_FS_INITIAL_PHEROMONE,
+    DEFAULT_ACO_FS_HEURISTIC_INFLUENCE,
+    DEFAULT_ACO_FS_EXPLOITATION_PROB,
     DEFAULT_ACO_FS_DISCARD_PROB
 )
 from culebra.trainer.aco.abc import ACO_FS
@@ -120,6 +122,18 @@ class ACO_FSTester(unittest.TestCase):
                 training_fitness_function.heuristic(species)[0]
             )
         )
+        self.assertEqual(
+            trainer.heuristic_influence, [DEFAULT_ACO_FS_HEURISTIC_INFLUENCE]
+        )
+        self.assertEqual(
+            trainer.exploitation_prob, DEFAULT_ACO_FS_EXPLOITATION_PROB
+        )
+        
+        trainer.exploitation_prob = 0.5
+        self.assertEqual(
+            trainer.exploitation_prob, 0.5
+        )
+        
         self.assertEqual(trainer.col_size, species.num_feats)
         self.assertEqual(trainer.discard_prob, DEFAULT_ACO_FS_DISCARD_PROB)
 

@@ -131,6 +131,28 @@ class TrainerTester(unittest.TestCase):
             DEFAULT_CONVERGENCE_CHECK_FREQ
         )
 
+        # Test custom params
+        pheromone_evaporation_rate = 0.8
+        exploitation_prob = 0.7
+        trainer = MyTrainer(
+            valid_ant_cls,
+            valid_species,
+            valid_fitness_func,
+            valid_initial_pheromone,
+            pheromone_evaporation_rate=pheromone_evaporation_rate,
+            exploitation_prob=exploitation_prob
+        )
+
+        self.assertEqual(
+            trainer.pheromone_evaporation_rate,
+            pheromone_evaporation_rate
+        )
+        self.assertEqual(
+            trainer.exploitation_prob,
+            exploitation_prob
+        )
+
+
     def test_has_converged(self):
         """Test the _has_converged method."""
         # Trainer parameters
