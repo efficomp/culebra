@@ -1481,7 +1481,8 @@ class PheromoneBasedACO(SingleColACO):
 
     def _decrease_pheromone(self) -> None:
         """Decrease the amount of pheromone."""
-        self._pheromone[0] *= (1 - self.pheromone_evaporation_rate)
+        for pher in self._pheromone:
+            pher *= (1 - self.pheromone_evaporation_rate)
 
     def _increase_pheromone(self) -> None:
         """Increase the amount of pheromone.
@@ -2100,6 +2101,21 @@ class PACO(SingleColACO):
             f"the {self.__class__.__name__} class"
         )
 
+    def _pheromone_amount (
+        self, ant: Optional[Ant] = None
+    ) -> Tuple[float, ...]:
+        """Return the amount of pheromone to be deposited by an ant.
+
+        All the ants deposit/remove the same amount of pheromone,
+        :py:attr:`~culebra.trainer.aco.abc.PACO.initial_pheromone`.
+
+        :param ant: The ant, optional (it is ignored)
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        return tuple(self.initial_pheromone)
+
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.
 
@@ -2372,33 +2388,27 @@ class MaxPheromonePACO(PACO):
         # Reset the trainer
         self.reset()
 
-    def _deposit_pheromone(
-        self, ants: Sequence[Ant], weight: Optional[float] = 1
-    ) -> None:
-        """Make some ants deposit weighted pheromone.
+    def _pheromone_amount (
+        self, ant: Optional[Ant] = None
+    ) -> Tuple[float, ...]:
+        """Return the amount of pheromone to be deposited by an ant.
 
-        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also incremented the by same amount.
+        All the ants deposit/remove the same amount of pheromone, which
+        is obtained as
+        (:py:attr:`~culebra.trainer.aco.abc.MaxPheromonePACO.initial_pheromone` -
+        :py:attr:`~culebra.trainer.aco.abc.MaxPheromonePACO.initial_pheromone`) /
+        :py:attr:`~culebra.trainer.aco.abc.MaxPheromonePACO.pop_size`.
 
-        :param ants: The ants
-        :type ants: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.solution.abc.Ant`
-        :param weight: Weight for the pheromone. Negative weights remove
-            pheromone. Defaults to 1
-        :type weight: :py:class:`float`, optional
+        :param ant: The ant, optional (it is ignored)
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: :py:class:`tuple` of :py:class:`float`
         """
-        for ant in ants:
-            for pher_index, (init_pher, max_pher) in enumerate(
-                zip(self.initial_pheromone, self.max_pheromone)
-            ):
-                pher_delta = (
-                    (max_pher - init_pher) / self.pop_size
-                ) * weight
-                org = ant.path[-1]
-                for dest in ant.path:
-                    self._pheromone[pher_index][org][dest] += pher_delta
-                    self._pheromone[pher_index][dest][org] += pher_delta
-                    org = dest
+        return tuple(
+            max_pher - init_pher / self.pop_size
+            for (init_pher, max_pher) in
+            zip(self.initial_pheromone, self.max_pheromone)
+        )
 
     def __copy__(self) -> MaxPheromonePACO:
         """Shallow copy the trainer."""
@@ -3112,9 +3122,9 @@ class ACO_FS(
         return ant
 
     def _deposit_pheromone(
-        self, ants: Sequence[Ant], amount: Optional[float] = 1
+        self, ants: Sequence[Ant], weight: Optional[float] = 1
     ) -> None:
-        """Make some ants deposit pheromone.
+        """Make some ants deposit weighted pheromone.
 
         A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
         ant's path, arc (*j*, *i*) is also incremented the by same amount.
@@ -3122,19 +3132,24 @@ class ACO_FS(
         :param ants: The ants
         :type ants: :py:class:`~collections.abc.Sequence` of
             :py:class:`~culebra.solution.abc.Ant`
-        :param amount: Amount of pheromone. Defaults to 1
-        :type amount: :py:class:`float`, optional
+        :param weight: Weight for the pheromone. Defaults to 1
+        :type weight: :py:class:`float`, optional
         """
         for ant in ants:
             if len(ant.path) > 1:
                 # All the combinations of two features from those in the path
                 indices = combinations(ant.path, 2)
 
-                # Divide the amount of pjheromone among all the couples
-                amount_per_combination = amount / comb(len(ant.path), 2)
+                # Divide the amount of pheromone among all the couples
+                amount_per_combination = tuple(
+                    (pher_amount / comb(len(ant.path), 2)) * weight
+                    for pher_amount in self._pheromone_amount(ant)
+                )
 
                 # Deposit the pheromone
-                for pher in self.pheromone:
+                for pher, pher_amount in zip(
+                    self.pheromone, amount_per_combination
+                ):
                     for (i, j) in indices:
                         pher[i][j] += amount_per_combination
                         pher[j][i] += amount_per_combination

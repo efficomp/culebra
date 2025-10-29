@@ -27,6 +27,7 @@ from typing import (
     Callable,
     Optional,
     Sequence,
+    Tuple,
     Dict
 )
 from math import isclose
@@ -274,20 +275,35 @@ class PACO_FS(
         # procedure
         self.pop[:] = selNSGA2(self.pop[:] + self.col, self.pop_size)
 
+    def _pheromone_amount (self, ant: Ant) -> Tuple[float, ...]:
+        """Return the amount of pheromone to be deposited by an ant.
+
+        Each ant deposit an amount of pheromone according to its rank + 1.
+
+        :param ant: The ant
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        for rank, front in enumerate(self._pareto_fronts):
+            if ant in front:
+                return (rank + 1,)
+
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.
 
         The pheromone trails are updated according to the current population.
         """
-        # Sort the population into nondomination levels
-        pareto_fronts = sortNondominated(self.pop, self.pop_size)
-
         # Init the pheromone matrix
         self._init_pheromone()
 
-        # # Each ant increments pheromone according to its front
-        for front_index, front in enumerate(pareto_fronts):
-            self._deposit_pheromone(front, self.pop_size / (front_index + 1))
+        # Sort the population into nondomination levels
+        # to allow the _pheromone_amount method to assign a pheromone
+        # amount to each ant according to its rank + 1
+        self._pareto_fronts = sortNondominated(self.pop, self.pop_size)
+
+        # Update the pheromone matrices with the current population
+        self._deposit_pheromone(self.pop)
 
 
 class ElitistACO_FS(
@@ -482,6 +498,21 @@ class ElitistACO_FS(
 
         # Update the elite (and also the pheromone matrix)
         self._update_elite()
+
+    def _pheromone_amount (
+        self, ant: Optional[Ant] = None
+    ) -> Tuple[float, ...]:
+        """Return the amount of pheromone to be deposited by an ant.
+
+        All the ants deposit the same amount of pheromone,
+        :py:attr:`~culebra.trainer.aco.ElitistACO_FS.initial_pheromone`.
+
+        :param ant: The ant, optional (it is ignored)
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        return tuple(self.initial_pheromone)
 
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.

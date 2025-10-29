@@ -158,20 +158,21 @@ class TrainerTester(unittest.TestCase):
             trainer.col_size
         )
 
-    def test_deposit_pheromone(self):
-        """Test the _deposit_pheromone method."""
+    def test_pheromone_amount(self):
+        """Test the _pheromone_amount method."""
 
         def assert_path_pheromone_increment(trainer, ant, weight):
             """Check the pheromone in all the arcs of a path.
 
             All the arcs should have the same are amount of pheromone.
             """
-            for pher_index, (init_pher_val, max_pher_val) in enumerate(
+            pheromone_amount = tuple(
+                max_pher - init_pher / trainer.pop_size
+                for (init_pher, max_pher) in
                 zip(trainer.initial_pheromone, trainer.max_pheromone)
-            ):
-                pher_delta = (
-                    (max_pher_val - init_pher_val) / trainer.pop_size
-                ) * weight
+            )
+            for pher_index, pher_amount in enumerate(pheromone_amount):
+                pher_delta = pher_amount * weight
                 pheromone_value = init_pher_val + pher_delta
                 org = ant.path[-1]
                 for dest in ant.path:
@@ -209,8 +210,7 @@ class TrainerTester(unittest.TestCase):
                 np.all(trainer.pheromone[pher_index] == init_pher_val)
             )
 
-        # Try with an empty elite
-        # Only the iteration-best ant should deposit pheromone
+        # Make the ant tn the colony deposit pheromone
         trainer._generate_col()
         weight = 3
         trainer._deposit_pheromone(trainer.col, weight)

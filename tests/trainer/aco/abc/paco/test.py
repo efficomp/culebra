@@ -332,6 +332,58 @@ class TrainerTester(unittest.TestCase):
         # Check that the solution in hof is sol1
         self.assertTrue(ant in best_ones[0])
 
+    def test_pheromone_amount(self):
+        """Test the _pheromone_amount method."""
+
+        def assert_path_pheromone_increment(trainer, ant, weight):
+            """Check the pheromone in all the arcs of a path.
+
+            All the arcs should have the same are amount of pheromone.
+            """
+            pheromone_amount = trainer.initial_pheromone
+            for pher_index, pher_amount in enumerate(pheromone_amount):
+                pher_delta = pher_amount * weight
+                pheromone_value = init_pher_val + pher_delta
+                org = ant.path[-1]
+                for dest in ant.path:
+                    self.assertAlmostEqual(
+                        trainer.pheromone[pher_index][org][dest],
+                        pheromone_value
+                    )
+                    self.assertAlmostEqual(
+                        trainer.pheromone[pher_index][dest][org],
+                        pheromone_value
+                    )
+                    org = dest
+
+        # Trainer parameters
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromone = [1]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromone": initial_pheromone,
+            "col_size": 1
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Check the initial pheromone
+        for pher_index, init_pher_val in enumerate(trainer.initial_pheromone):
+            self.assertTrue(
+                np.all(trainer.pheromone[pher_index] == init_pher_val)
+            )
+
+        # Make the ant tn the colony deposit pheromone
+        trainer._generate_col()
+        weight = 3
+        trainer._deposit_pheromone(trainer.col, weight)
+        assert_path_pheromone_increment(trainer, trainer.col[0], weight)
+
     def test_update_pheromone(self):
         """Test _update_pheromone."""
         species = Species(num_nodes, banned_nodes)

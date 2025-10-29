@@ -65,6 +65,12 @@ def KappaNumFeats(
         NumFeats()
     )
 
+class MyACO_FS(ACO_FS):
+    """Dummy implementation of a trainer method."""
+
+    def _pheromone_amount (self, ant):
+        return tuple(self.initial_pheromone)
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -107,7 +113,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         # Check the parameters
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
@@ -139,7 +145,7 @@ class ACO_FSTester(unittest.TestCase):
 
         # Try a custom value for the initial pheromone
         custom_initial_pheromone = 2
-        trainer = ACO_FS(
+        trainer = MyACO_FS(
             **params,
             initial_pheromone=custom_initial_pheromone
         )
@@ -151,13 +157,13 @@ class ACO_FSTester(unittest.TestCase):
         invalid_probs = ('a', type)
         for prob in invalid_probs:
             with self.assertRaises(TypeError):
-                ACO_FS(**params, discard_prob=prob)
+                MyACO_FS(**params, discard_prob=prob)
 
         # Try invalid values for crossover_prob. Should fail
         invalid_probs = (-1, -0.001, 1.001, 4)
         for prob in invalid_probs:
             with self.assertRaises(ValueError):
-                ACO_FS(**params, discard_prob=prob)
+                MyACO_FS(**params, discard_prob=prob)
 
     def test_num_pheromone_matrices(self):
         """Test the num_pheromone_matrices property."""
@@ -169,7 +175,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         self.assertEqual(trainer.num_pheromone_matrices, 1)
 
@@ -183,7 +189,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         self.assertEqual(
             trainer.num_heuristic_matrices, 1
@@ -199,7 +205,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         # Init the trainer internal structures
         trainer._init_internals()
@@ -232,7 +238,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         # Try to get the choice info before the search initialization
         choice_info = trainer.choice_info
@@ -265,7 +271,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         # Number of nodes
         num_nodes = trainer.fitness_function.num_nodes
@@ -342,7 +348,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
         
         # Test the exploitation ...
         trainer.exploitation_prob = 1
@@ -364,7 +370,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         # Initialize the internal structures
         trainer._init_internals()
@@ -389,7 +395,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
 
         # Init the internal strcutures
         trainer._init_internals()
@@ -400,7 +406,7 @@ class ACO_FSTester(unittest.TestCase):
             trainer._init_pheromone()
 
             # Let only the first ant deposit pheromone
-            trainer._deposit_pheromone([ant], 3)
+            trainer._deposit_pheromone([ant])
 
             # All the combinations of two features from those in the path
             indices = [item for item in combinations(ant.path, 2)]
@@ -432,7 +438,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ACO_FS(**params)
+        trainer1 = MyACO_FS(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -460,7 +466,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ACO_FS(**params)
+        trainer1 = MyACO_FS(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -477,7 +483,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ACO_FS(**params)
+        trainer1 = MyACO_FS(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
@@ -500,7 +506,7 @@ class ACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ACO_FS(**params)
+        trainer = MyACO_FS(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
