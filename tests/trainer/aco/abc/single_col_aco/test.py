@@ -30,32 +30,18 @@ from os import remove
 import numpy as np
 
 from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
+from culebra.abc import Fitness
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
     DEFAULT_EXPLOITATION_PROB
 )
 from culebra.trainer.aco.abc import SingleColACO
-from culebra.solution.tsp import (
-    Species as TSPSpecies,
-    Solution as TSPSolution,
-    Ant as TSPAnt
-)
+from culebra.solution.tsp import Species, Solution, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
-
-from culebra.solution.feature_selection import (
-    Species as FSSpecies,
-    Ant as FSAnt
-)
-from culebra.fitness_function.feature_selection import (
-    KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
-)
-from culebra.tools import Dataset
 
 
 class MySingleObjTrainer(SingleColACO):
@@ -171,30 +157,20 @@ tsp_fitness_func_single = tsp_fitness_func_multi.objectives[0]
 tsp_banned_nodes = [0, tsp_num_nodes-1]
 tsp_feasible_nodes = list(range(1, tsp_num_nodes - 1))
 
-fs_dataset = Dataset.load_from_uci(name="Wine")
-
-# Preprocess the dataset
-fs_dataset = fs_dataset.drop_missing().scale().remove_outliers(random_seed=0)
-
-fs_fitness_func = FSMultiObjectiveDatasetScorer(
-    KappaIndex(training_data=fs_dataset),
-    NumFeats()
-)
-
 
 class TrainerTester(unittest.TestCase):
     """Test :py:class:`culebra.trainer.aco.abc.SingleColACO`."""
 
     def test_init(self):
         """Test __init__."""
-        valid_ant_cls = TSPAnt
-        valid_species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        valid_ant_cls = Ant
+        valid_species = Species(tsp_num_nodes, tsp_banned_nodes)
         valid_tsp_fitness_func_single = tsp_fitness_func_single
         valid_tsp_fitness_func_multi = tsp_fitness_func_multi
         valid_initial_pheromone = 1
 
         # Try invalid ant classes. Should fail
-        invalid_ant_classes = (type, None, 1, TSPSolution)
+        invalid_ant_classes = (type, None, 1, Solution)
         for solution_cls in invalid_ant_classes:
             with self.assertRaises(TypeError):
                 MySingleObjTrainer(
@@ -363,8 +339,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_initial_pheromone_single(self):
         """Test the initial_pheromone property for single-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for initial_pheromone. Should fail
@@ -412,8 +388,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_initial_pheromone_multi(self):
         """Test the initial_pheromone property for multi-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for initial_pheromone. Should fail
@@ -477,8 +453,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_heuristic_single(self):
         """Test the heuristic property for single-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
         # Try invalid types for heuristic. Should fail
         invalid_heuristic = (type, 1)
@@ -584,8 +560,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_heuristic_multi(self):
         """Test the heuristic property for multi-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
         # Try invalid types for heuristic. Should fail
         invalid_heuristic = (type, 1)
@@ -732,8 +708,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_pheromone_influence_single(self):
         """Test the pheromone_influence property for single-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for pheromone_influence. Should fail
@@ -792,8 +768,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_pheromone_influence_multi(self):
         """Test the pheromone_influence property for multi-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for pheromone_influence. Should fail
@@ -864,8 +840,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_heuristic_influence_single(self):
         """Test the heuristic_influence property for single-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for heuristic_influence. Should fail
@@ -924,8 +900,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_heuristic_influence_multi(self):
         """Test the heuristic_influence property for multi-matrix trainers."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for heuristic_influence. Should fail
@@ -996,8 +972,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_exploitation_prob(self):
         """Test the exploitation_prob property."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for exploitation_prob. Should fail
@@ -1038,8 +1014,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_max_num_iters(self):
         """Test the max_num_iters property."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for max_num_iters. Should fail
@@ -1079,8 +1055,8 @@ class TrainerTester(unittest.TestCase):
 
     def test_col_size(self):
         """Test the col_size property."""
-        ant_cls = TSPAnt
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        ant_cls = Ant
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for col_size. Should fail
@@ -1121,10 +1097,10 @@ class TrainerTester(unittest.TestCase):
     def test_state(self):
         """Test the get_state and _set_state methods."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
@@ -1158,10 +1134,10 @@ class TrainerTester(unittest.TestCase):
     def test_new_state(self):
         """Test _new_state."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 3]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
@@ -1188,10 +1164,10 @@ class TrainerTester(unittest.TestCase):
     def test_reset_state(self):
         """Test _reset_state."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = (2, )
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
@@ -1213,10 +1189,10 @@ class TrainerTester(unittest.TestCase):
     def test_init_internals(self):
         """Test the _init_internals method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
@@ -1237,10 +1213,10 @@ class TrainerTester(unittest.TestCase):
     def test_reset_internals(self):
         """Test the _init_internals method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 4]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
@@ -1258,10 +1234,10 @@ class TrainerTester(unittest.TestCase):
     def test_best_solutions(self):
         """Test the best_solutions method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 4]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
@@ -1296,10 +1272,10 @@ class TrainerTester(unittest.TestCase):
     def test_calculate_choice_info(self):
         """Test the _calculate_choice_info method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
@@ -1335,10 +1311,10 @@ class TrainerTester(unittest.TestCase):
     def test_initial_choice(self):
         """Test the _initial_choice method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
@@ -1369,40 +1345,28 @@ class TrainerTester(unittest.TestCase):
             times = 1000
             for _ in repeat(None, times):
                 trainer._start_iteration()
-                ant = FSAnt(
+                ant = Ant(
                     trainer.species,
                     trainer.fitness_function.fitness_cls
                 )
                 choice = trainer._next_choice(ant)
-                # Controls if the next node will be discarded or appended
-                discardNextNode = True
     
                 while choice is not None:
-                    if discardNextNode:
-                        ant.discard(choice)
-                    else:
-                        ant.append(choice)
-                    discardNextNode = not discardNextNode
-    
+                    ant.append(choice)    
                     choice = trainer._next_choice(ant)
         
         # Trainer parameters
-        species = FSSpecies(
-            num_feats=fs_dataset.num_feats,
-            min_size=1,
-            min_feat=1,
-            max_feat=fs_dataset.num_feats-2
-        )
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": FSAnt,
+            "solution_cls": Ant,
             "species": species,
-            "fitness_function": fs_fitness_func,
+            "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
-        trainer = MyMultiObjTrainer(**params)
+        trainer = MySingleObjTrainer(**params)
         
         # Test the exploitation ...
         trainer.exploitation_prob = 1
@@ -1414,13 +1378,12 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
         test(trainer)
 
-
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         # Trainer parameters
         params = {
-            "solution_cls": TSPAnt,
-            "species": TSPSpecies(tsp_num_nodes, tsp_banned_nodes),
+            "solution_cls": Ant,
+            "species": Species(tsp_num_nodes, tsp_banned_nodes),
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": [2]
         }
@@ -1437,7 +1400,7 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(len(ant.path), len(tsp_feasible_nodes))
 
         # Try an ant with all the nodes banned
-        params["species"] = TSPSpecies(tsp_num_nodes, range(tsp_num_nodes))
+        params["species"] = Species(tsp_num_nodes, range(tsp_num_nodes))
 
         # Create the trainer
         trainer = MySingleObjTrainer(**params)
@@ -1448,10 +1411,10 @@ class TrainerTester(unittest.TestCase):
     def test_generate_col(self):
         """Test the _generate_col_method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
@@ -1468,21 +1431,21 @@ class TrainerTester(unittest.TestCase):
         # Check the colony
         self.assertEqual(len(trainer.col), trainer.col_size)
         for ant in trainer.col:
-            self.assertIsInstance(ant, TSPAnt)
+            self.assertIsInstance(ant, Ant)
 
     def test_init_pheromone(self):
         """Test the _init_pheromone method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2]
         single_obj_params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
         multi_obj_params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
@@ -1516,6 +1479,31 @@ class TrainerTester(unittest.TestCase):
         ):
             self.assertTrue(np.all(pheromone_matrix == initial_pheromone))
 
+    def test_pheromone_amount(self):
+        """Test the _pheromone_amount method."""
+        class MyFitness(Fitness):
+            """Dummy fitness class."""
+
+            weights = (1, -1)
+            names = ("obj1", "obj2")
+            thresholds = [0.1, 0.2]
+
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": tsp_fitness_func_multi,
+            "initial_pheromone": 1
+        }
+
+        # Create the trainer
+        trainer = MyMultiObjTrainer(**params)
+
+        ant = Ant(species, MyFitness)
+        ant.fitness.values = (2, 3)
+
+        self.assertEqual(trainer._pheromone_amount(ant), (2, 1/3))
+
     def test_deposit_pheromone(self):
         """Test the _deposit_pheromone method."""
 
@@ -1524,12 +1512,14 @@ class TrainerTester(unittest.TestCase):
 
             All the arcs should have the same are amount of pheromone.
             """
+            pheromone_amount = trainer._pheromone_amount(ant)
+
             for pher_index, init_pher_val in enumerate(
                 trainer.initial_pheromone
             ):
                 pheromone_value = (
                     init_pher_val +
-                    ant.fitness.pheromone_amount[pher_index] * weight
+                    pheromone_amount[pher_index] * weight
                 )
                 org = ant.path[-1]
                 for dest in ant.path:
@@ -1544,10 +1534,10 @@ class TrainerTester(unittest.TestCase):
                     org = dest
 
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 3]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone,
@@ -1575,10 +1565,10 @@ class TrainerTester(unittest.TestCase):
     def test_copy(self):
         """Test the __copy__ method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 3]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone,
@@ -1607,10 +1597,10 @@ class TrainerTester(unittest.TestCase):
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes, tsp_banned_nodes)
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 3]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone,
@@ -1629,8 +1619,8 @@ class TrainerTester(unittest.TestCase):
         """Serialization test."""
         # Trainer parameters
         params = {
-            "solution_cls": TSPAnt,
-            "species": TSPSpecies(tsp_num_nodes, tsp_banned_nodes),
+            "solution_cls": Ant,
+            "species": Species(tsp_num_nodes, tsp_banned_nodes),
             "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": [2]
         }
@@ -1651,10 +1641,10 @@ class TrainerTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         # Trainer parameters
-        species = TSPSpecies(tsp_num_nodes)
+        species = Species(tsp_num_nodes)
         initial_pheromone = [2]
         params = {
-            "solution_cls": TSPAnt,
+            "solution_cls": Ant,
             "species": species,
             "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone

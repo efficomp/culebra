@@ -314,24 +314,6 @@ class Fitness(Base):
         """
         return len(self.weights)
 
-    @property
-    def pheromone_amount(self) -> Tuple[float, ...]:
-        """Return the amount of pheromone to be deposited.
-
-        This property is intended for ACO-based approaches. By default, the
-        reciprocal of an objective fitness will be used for minimization
-        objectives, while the objective's value will be used for maximization
-        problems. Fitness classes pretending a different behavior should
-        override this property.
-
-        :return: The amount of pheromone to be deposited for each objective
-        :rtype: :py:class:`tuple` of :py:class:`float`
-        """
-        return tuple(
-            1/self.values[i] if self.weights[i] < 0 else self.values[i]
-            for i in range(len(self.wvalues))
-        )
-
     def update_value(self, value: float, obj_index: int) -> None:
         """Update the value of a fitnes objective.
 

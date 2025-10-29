@@ -106,6 +106,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_pheromone
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._pheromone_amount
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._should_reset_pheromone
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._increase_pheromone

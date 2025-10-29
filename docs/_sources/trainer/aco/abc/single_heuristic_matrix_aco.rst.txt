@@ -104,6 +104,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._pheromone_amount
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._decrease_pheromone

@@ -366,7 +366,7 @@ class TrainerTester(unittest.TestCase):
 
         # Get the ant
         ant = trainer.col[0]
-        pheromone_increment = ant.fitness.pheromone_amount[0]
+        pheromone_increment = trainer._pheromone_amount(ant)[0]
         pheromone_value += pheromone_increment
 
         org = ant.path[-1]

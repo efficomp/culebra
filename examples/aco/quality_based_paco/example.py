@@ -41,17 +41,8 @@ num_nodes = fitness_func.num_nodes
 # Species for the problem solutions
 species = Species(num_nodes)
 
-# Generate and evaluate a greedy solution for the problem
-greedy_solution = fitness_func.greedy_solution(species)
-
-initial_pheromone = tuple(
-    1 / num_nodes
-    for pher in greedy_solution.fitness.pheromone_amount
-)
-max_pheromone = tuple(
-    5
-    for pher in greedy_solution.fitness.pheromone_amount
-)
+initial_pheromone = (1 / num_nodes,) * fitness_func.num_obj
+max_pheromone = (5,) * fitness_func.num_obj
 
 # Trainer parameters
 params = {

@@ -40,7 +40,6 @@ Properties
 .. autoproperty:: culebra.abc.Fitness.values
 .. autoproperty:: culebra.abc.Fitness.wvalues
 .. autoproperty:: culebra.abc.Fitness.num_obj
-.. autoproperty:: culebra.abc.Fitness.pheromone_amount
 
 Methods
 -------

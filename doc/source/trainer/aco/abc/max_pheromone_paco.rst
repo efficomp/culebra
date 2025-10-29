@@ -107,6 +107,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_pheromone
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._pheromone_amount
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._decrease_pheromone

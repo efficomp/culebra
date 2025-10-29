@@ -107,6 +107,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_col
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._init_pheromone
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._pheromone_amount
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._decrease_pheromone

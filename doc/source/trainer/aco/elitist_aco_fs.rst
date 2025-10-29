@@ -105,6 +105,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistACO_FS._generate_ant
 .. automethod:: culebra.trainer.aco.ElitistACO_FS._generate_col
 .. automethod:: culebra.trainer.aco.ElitistACO_FS._init_pheromone
+.. automethod:: culebra.trainer.aco.ElitistACO_FS._pheromone_amount
 .. automethod:: culebra.trainer.aco.ElitistACO_FS._deposit_pheromone
 .. automethod:: culebra.trainer.aco.ElitistACO_FS._increase_pheromone
 .. automethod:: culebra.trainer.aco.ElitistACO_FS._decrease_pheromone

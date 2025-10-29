@@ -104,6 +104,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._init_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleObjACO._pheromone_amount
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._decrease_pheromone

@@ -64,6 +64,7 @@ from abc import abstractmethod
 from typing import (
     Any,
     Sequence,
+    Tuple,
     Type,
     List,
     Callable,
@@ -986,6 +987,24 @@ class SingleColACO(SingleSpeciesTrainer):
             ) for initial_pheromone in self.initial_pheromone
         ]
 
+
+    def _pheromone_amount (self, ant: Ant) -> Tuple[float, ...]:
+        """Return the amount of pheromone to be deposited by an ant.
+
+        The reciprocal of an objective fitness value will be used for
+        minimization objectives, while the objective's fitness value is used 
+        for maximization objectives.
+
+        :param ant: The ant
+        :type ant: :py:class:`~culebra.solution.abc.Ant`
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: :py:class:`tuple` of :py:class:`float`
+        """
+        return tuple(
+            1/value if weight < 0 else value
+            for (value, weight) in zip(ant.fitness.values, ant.fitness.weights)
+        )
+        
     def _deposit_pheromone(
         self, ants: Sequence[Ant], weight: Optional[float] = 1
     ) -> None:
@@ -1002,7 +1021,7 @@ class SingleColACO(SingleSpeciesTrainer):
         """
         for ant in ants:
             for pher_index, pher_amount in enumerate(
-                ant.fitness.pheromone_amount
+                self._pheromone_amount(ant)
             ):
 
                 weighted_pher_amount = pher_amount * weight

@@ -834,7 +834,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         # If a better solution has been found
         if last_elite is None or current_elite.dominates(last_elite):
             self._max_pheromone = (
-                current_elite.fitness.pheromone_amount[0] /
+                self._pheromone_amount(current_elite)[0] /
                 self.pheromone_evaporation_rate)
             self._min_pheromone = (
                 self._max_pheromone / (

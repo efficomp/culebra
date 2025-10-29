@@ -303,6 +303,57 @@ class ACO_FSTester(unittest.TestCase):
             choice = trainer._initial_choice(ant)
             self.assertFalse(choice in ant.discarded)
 
+    def test_next_choice(self):
+        """Test the _next_choice method."""
+        def test(trainer):
+        # Try to generate valid first nodes
+            times = 1000
+            for _ in repeat(None, times):
+                trainer._start_iteration()
+                ant = trainer.solution_cls(
+                    trainer.species, trainer.fitness_function.fitness_cls
+                )
+                choice = trainer._next_choice(ant)
+                # Controls if the next node will be discarded or appended
+                discardNextNode = True
+    
+                while choice is not None:
+                    if discardNextNode:
+                        ant.discard(choice)
+                    else:
+                        ant.append(choice)
+                    discardNextNode = not discardNextNode
+    
+                    choice = trainer._next_choice(ant)
+        
+        # Trainer parameters
+        species = Species(
+            num_feats=dataset.num_feats,
+            min_size=1,
+            min_feat=1,
+            max_feat=dataset.num_feats-2
+        )
+        initial_pheromone = [2]
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": training_fitness_function,
+            "initial_pheromone": initial_pheromone
+        }
+
+        # Create the trainer
+        trainer = ACO_FS(**params)
+        
+        # Test the exploitation ...
+        trainer.exploitation_prob = 1
+        trainer._init_search()
+        test(trainer)
+
+        # Test the exploration ...
+        trainer.exploitation_prob = 0
+        trainer._init_search()
+        test(trainer)
+
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         params = {

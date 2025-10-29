@@ -106,6 +106,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.CPACO._generate_ant
 .. automethod:: culebra.trainer.aco.CPACO._generate_col
 .. automethod:: culebra.trainer.aco.CPACO._init_pheromone
+.. automethod:: culebra.trainer.aco.CPACO._pheromone_amount
 .. automethod:: culebra.trainer.aco.CPACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._decrease_pheromone

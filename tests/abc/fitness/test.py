@@ -101,14 +101,6 @@ class FitnessTester(unittest.TestCase):
         fitness = MyFitness()
         self.assertEqual(fitness.num_obj, 2)
 
-    def test_pheromone_amount(self):
-        """Test the pheromone_amount property."""
-        # Construct a fitness
-        fitness = MyFitness(values=(2, 3))
-
-        # The fitness values and context should have been deleted
-        self.assertEqual(fitness.pheromone_amount, (2, 1/3))
-
     def test_update_value(self):
         """Test the update_value method."""
         # Construct a fitness

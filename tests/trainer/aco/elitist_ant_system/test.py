@@ -254,7 +254,7 @@ class TrainerTester(unittest.TestCase):
             """
             pheromone_value = (
                 trainer.initial_pheromone[0] +
-                ant.fitness.pheromone_amount[0] * weight
+                trainer._pheromone_amount(ant)[0] * weight
             )
             org = ant.path[-1]
             for dest in ant.path:
