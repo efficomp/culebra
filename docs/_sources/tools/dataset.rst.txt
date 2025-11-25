@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.Dataset` class
-=======================================
+:class:`culebra.tools.Dataset` class
+====================================
 
 .. autoclass:: culebra.tools.Dataset
 
@@ -31,20 +31,19 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.tools.Dataset.num_feats
-.. autoproperty:: culebra.tools.Dataset.size
 .. autoproperty:: culebra.tools.Dataset.inputs
+.. autoproperty:: culebra.tools.Dataset.num_feats
 .. autoproperty:: culebra.tools.Dataset.outputs
+.. autoproperty:: culebra.tools.Dataset.size
 
 Methods
 -------
+.. automethod:: culebra.tools.Dataset.append_random_features
+.. automethod:: culebra.tools.Dataset.drop_missing
 .. automethod:: culebra.tools.Dataset.dump
 .. automethod:: culebra.tools.Dataset.normalize
-.. automethod:: culebra.tools.Dataset.scale
-.. automethod:: culebra.tools.Dataset.drop_missing
-.. automethod:: culebra.tools.Dataset.remove_outliers
 .. automethod:: culebra.tools.Dataset.oversample
+.. automethod:: culebra.tools.Dataset.remove_outliers
+.. automethod:: culebra.tools.Dataset.scale
 .. automethod:: culebra.tools.Dataset.select_features
-.. automethod:: culebra.tools.Dataset.append_random_features
 .. automethod:: culebra.tools.Dataset.split
-

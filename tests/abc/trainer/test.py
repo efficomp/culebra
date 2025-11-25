@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.abc.Trainer`."""
+"""Unit test for :class:`~culebra.abc.Trainer`."""
 
 import unittest
 import os
@@ -39,7 +39,8 @@ from culebra import (
     DEFAULT_CHECKPOINT_FILENAME,
     DEFAULT_VERBOSITY,
     DEFAULT_INDEX,
-    SERIALIZED_FILE_EXTENSION
+    SERIALIZED_FILE_EXTENSION,
+    DEFAULT_SIMILARITY_THRESHOLD
 )
 from culebra.abc import (
     FitnessFunction,
@@ -50,7 +51,7 @@ from culebra.abc import (
 
 
 class MySolution(Solution):
-    """Dummy subclass to test the :py:class:`~culebra.abc.Solution` class."""
+    """Dummy subclass to test the :class:`~culebra.abc.Solution` class."""
 
     def __init__(
         self,
@@ -61,11 +62,11 @@ class MySolution(Solution):
         """Construct a default solution.
 
         :param species: The species the solution will belong to
-        :type species: Any subclass of :py:class:`~culebra.abc.Species`
+        :type species: Any subclass of :class:`~culebra.abc.Species`
         :param fitness: The solution's fitness class
-        :type fitness: Any subclass of :py:class:`~culebra.abc.Fitness`
+        :type fitness: Any subclass of :class:`~culebra.abc.Fitness`
         :param val: A value
-        :type val: :py:class:`int`
+        :type val: int
         :raises TypeError: If *species* is not a valid species
         :raises TypeError: If *fitness_cls* is not a valid fitness class
         """
@@ -75,7 +76,7 @@ class MySolution(Solution):
 
 
 class MySpecies(Species):
-    """Dummy subclass to test the :py:class:`~culebra.abc.Species` class."""
+    """Dummy subclass to test the :class:`~culebra.abc.Species` class."""
 
     def check(self, _):
         """Check a solution."""
@@ -94,6 +95,11 @@ class MyFitnessFunction(FitnessFunction):
     def obj_names(self):
         """Objective names."""
         return ("max",)
+
+    @property
+    def obj_thresholds(self):
+        """Objective threholds."""
+        return (DEFAULT_SIMILARITY_THRESHOLD,)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution.
@@ -127,6 +133,11 @@ class MyOtherFitnessFunction(FitnessFunction):
     def obj_names(self):
         """Objective names."""
         return ("doublemax",)
+
+    @property
+    def obj_thresholds(self):
+        """Objective threholds."""
+        return (DEFAULT_SIMILARITY_THRESHOLD,)
 
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution.
@@ -171,10 +182,10 @@ class MyTrainer(Trainer):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.abc.Trainer`."""
+    """Test :class:`~culebra.abc.Trainer`."""
 
     def test_init(self):
-        """Test the :py:meth:`~culebra.abc.Trainer.__init__` constructor."""
+        """Test the :meth:`~culebra.abc.Trainer.__init__` constructor."""
         valid_fitness_func = MyFitnessFunction()
 
         # Construct a default trainer
@@ -318,13 +329,13 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.checkpoint_filename, checkpoint_filename)
 
     def test_random_seed(self):
-        """Test :py:attr:`~culebra.abc.Trainer.random_seed`."""
+        """Test :attr:`~culebra.abc.Trainer.random_seed`."""
         trainer = MyTrainer(MyFitnessFunction())
         trainer.random_seed = 18
         self.assertEqual(trainer.random_seed, 18)
 
     def test_verbose(self):
-        """Test :py:attr:`~culebra.abc.Trainer.verbose`."""
+        """Test :attr:`~culebra.abc.Trainer.verbose`."""
         trainer = MyTrainer(MyFitnessFunction())
 
         with self.assertRaises(TypeError):
@@ -450,7 +461,7 @@ class TrainerTester(unittest.TestCase):
         )
 
     def test_new_state(self):
-        """Test :py:meth:`~culebra.abc.Trainer._new_state`."""
+        """Test :meth:`~culebra.abc.Trainer._new_state`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -464,7 +475,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._representatives, None)
 
     def test_reset_state(self):
-        """Test :py:meth:`~culebra.abc.Trainer._reset_state`."""
+        """Test :meth:`~culebra.abc.Trainer._reset_state`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -478,7 +489,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._search_finished, None)
 
     def test_init_internals(self):
-        """Test :py:meth:`~culebra.abc.Trainer._init_internals`."""
+        """Test :meth:`~culebra.abc.Trainer._init_internals`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -495,7 +506,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._current_iter_start_time, None)
 
     def test_reset_internals(self):
-        """Test :py:meth:`~culebra.abc.Trainer._reset_internals`."""
+        """Test :meth:`~culebra.abc.Trainer._reset_internals`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -510,7 +521,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._current_iter_start_time, None)
 
     def test_reset(self):
-        """Test :py:meth:`~culebra.abc.Trainer.reset`."""
+        """Test :meth:`~culebra.abc.Trainer.reset`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -525,7 +536,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._stats, None)
 
     def test_init_search(self):
-        """Test :py:meth:`~culebra.abc.Trainer._init_search`."""
+        """Test :meth:`~culebra.abc.Trainer._init_search`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -716,7 +727,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.current_iter, my_max_num_iters)
 
     def test_search(self):
-        """Test :py:meth:`~culebra.abc.Trainer._search`."""
+        """Test :meth:`~culebra.abc.Trainer._search`."""
         # Construct a trainer
         trainer = MyTrainer(
             MyFitnessFunction(),
@@ -739,7 +750,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.num_evals, trainer.max_num_iters * 10)
 
     def test_train(self):
-        """Test :py:meth:`~culebra.abc.Trainer.train`."""
+        """Test :meth:`~culebra.abc.Trainer.train`."""
         # Create the trainer
         trainer = MyTrainer(MyFitnessFunction())
 
@@ -762,7 +773,7 @@ class TrainerTester(unittest.TestCase):
         os.remove(trainer.checkpoint_filename)
 
     def test_test(self):
-        """Test :py:meth:`~culebra.abc.Trainer.test`."""
+        """Test :meth:`~culebra.abc.Trainer.test`."""
         # Trainer parameters
         params = {
             "fitness_function": MyFitnessFunction(),
@@ -815,7 +826,7 @@ class TrainerTester(unittest.TestCase):
                 self.assertEqual(sol.fitness.values, (sol.val * 2,))
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.abc.Trainer.__copy__` method."""
+        """Test the :meth:`~culebra.abc.Trainer.__copy__` method."""
         # Set custom params
         params = {
             "fitness_function": MyFitnessFunction(),
@@ -844,7 +855,7 @@ class TrainerTester(unittest.TestCase):
         )
 
     def test_deepcopy(self):
-        """Test the :py:meth:`~culebra.abc.Trainer.__deepcopy__` method."""
+        """Test the :meth:`~culebra.abc.Trainer.__deepcopy__` method."""
         # Set custom params
         params = {
             "fitness_function": MyFitnessFunction(),
@@ -865,10 +876,10 @@ class TrainerTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.abc.Trainer.__setstate__` and
-        :py:meth:`~culebra.abc.Trainer.__reduce__` methods,
-        :py:meth:`~culebra.abc.Trainer.dump` and
-        :py:meth:`~culebra.abc.Trainer.load` methods.
+        Test the :meth:`~culebra.abc.Trainer.__setstate__` and
+        :meth:`~culebra.abc.Trainer.__reduce__` methods,
+        :meth:`~culebra.abc.Trainer.dump` and
+        :meth:`~culebra.abc.Trainer.load` methods.
         """
         params = {
             "fitness_function": MyFitnessFunction(),
@@ -896,9 +907,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.abc.Trainer`
+        :type trainer1: ~culebra.abc.Trainer
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.abc.Trainer`
+        :type trainer2: ~culebra.abc.Trainer
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

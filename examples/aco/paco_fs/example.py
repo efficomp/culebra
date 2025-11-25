@@ -27,12 +27,12 @@ from pandas import Series, DataFrame, MultiIndex
 from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, Ant
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
-from culebra.trainer.aco import PACO_FS, ACO_FSConvergenceDetector
+from culebra.trainer.aco import PACOFS, ACOFSConvergenceDetector
 from culebra.tools import Dataset
 
 
@@ -44,7 +44,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -84,7 +84,7 @@ test_fitness_function = KappaNumFeats(
 )
 
 # Custom termination
-convergence_detector = ACO_FSConvergenceDetector(
+convergence_detector = ACOFSConvergenceDetector(
     convergence_check_freq=100
 )
 
@@ -100,7 +100,7 @@ params = {
 }
 
 # Create the wrapper
-wrapper = PACO_FS(**params)
+wrapper = PACOFS(**params)
 
 # Train the wrapper
 print("Training ...")

@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.svc_optimization` module
-============================================================
+:mod:`culebra.fitness_function.svc_optimization` module
+=======================================================
 
 .. automodule:: culebra.fitness_function.svc_optimization
 

@@ -25,11 +25,15 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
-from culebra.trainer.aco import PACO_MO
+from culebra.trainer.aco.abc import ACOTSP
+from culebra.trainer.aco import PACOMO
 from culebra.fitness_function.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
+
+class PACOMOTSP(PACOMO, ACOTSP):
+    """PACOMO for TSP."""
 
 
 # Try the KroAB100 problem
@@ -66,7 +70,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = PACO_MO(**params)
+trainer = PACOMOTSP(**params)
 
 # Train the wrapper
 print("Training ...")

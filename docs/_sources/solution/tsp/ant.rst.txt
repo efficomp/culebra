@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.tsp.Ant` class
-==========================================
+:class:`culebra.solution.tsp.Ant` class
+=======================================
 
 .. autoclass:: culebra.solution.tsp.Ant
 
@@ -34,19 +34,19 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.tsp.Ant.species
-.. autoproperty:: culebra.solution.tsp.Ant.fitness
-.. autoproperty:: culebra.solution.tsp.Ant.path
 .. autoproperty:: culebra.solution.tsp.Ant.current
 .. autoproperty:: culebra.solution.tsp.Ant.discarded
+.. autoproperty:: culebra.solution.tsp.Ant.fitness
+.. autoproperty:: culebra.solution.tsp.Ant.path
+.. autoproperty:: culebra.solution.tsp.Ant.species
 
 Methods
 -------
-.. automethod:: culebra.solution.tsp.Ant.dump
 .. automethod:: culebra.solution.tsp.Ant.append
+.. automethod:: culebra.solution.tsp.Ant.delete_fitness
 .. automethod:: culebra.solution.tsp.Ant.discard
 .. automethod:: culebra.solution.tsp.Ant.dominates
-.. automethod:: culebra.solution.tsp.Ant.delete_fitness
+.. automethod:: culebra.solution.tsp.Ant.dump
 
 Private methods
 ---------------
@@ -54,11 +54,13 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.tsp.Ant.__hash__
+Intended to compare (lexicographically) two ants according to their fitness.
+
 .. automethod:: culebra.solution.tsp.Ant.__eq__
-.. automethod:: culebra.solution.tsp.Ant.__ne__
-.. automethod:: culebra.solution.tsp.Ant.__lt__
-.. automethod:: culebra.solution.tsp.Ant.__gt__
-.. automethod:: culebra.solution.tsp.Ant.__le__
 .. automethod:: culebra.solution.tsp.Ant.__ge__
+.. automethod:: culebra.solution.tsp.Ant.__gt__
+.. automethod:: culebra.solution.tsp.Ant.__hash__
+.. automethod:: culebra.solution.tsp.Ant.__le__
+.. automethod:: culebra.solution.tsp.Ant.__lt__
+.. automethod:: culebra.solution.tsp.Ant.__ne__
 .. automethod:: culebra.solution.tsp.Ant.__str__

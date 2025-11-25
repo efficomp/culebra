@@ -19,96 +19,97 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco.ElitistACO_FS` class
-===================================================
+:class:`culebra.trainer.aco.ElitistACOFS` class
+===============================================
 
-.. autoclass:: culebra.trainer.aco.ElitistACO_FS
+.. autoclass:: culebra.trainer.aco.ElitistACOFS
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.aco.ElitistACO_FS.stats_names
-.. autoattribute:: culebra.trainer.aco.ElitistACO_FS.objective_stats
+.. autoattribute:: culebra.trainer.aco.ElitistACOFS.objective_stats
+.. autoattribute:: culebra.trainer.aco.ElitistACOFS.stats_names
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.load
+.. automethod:: culebra.trainer.aco.ElitistACOFS.load
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.num_pheromone_matrices
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.num_heuristic_matrices
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.solution_cls
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.species
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.fitness_function
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.heuristic
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.heuristic_influence
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.pheromone
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.choice_info
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.max_num_iters
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.current_iter
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.col_size
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.checkpoint_enable
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.verbose
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.random_seed
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.logbook
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.num_evals
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.runtime
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.index
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.container
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.representatives
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.col
-.. autoproperty:: culebra.trainer.aco.ElitistACO_FS.discard_prob
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.choice_info
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.col
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.col_size
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.container
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.current_iter
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.custom_termination_func
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.discard_prob
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.fitness_function
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.heuristic
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.heuristic_shapes
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.index
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.logbook
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.max_num_iters
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.num_evals
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.num_heuristic_matrices
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.pheromone
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.pheromone_shapes
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.random_seed
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.representatives
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.runtime
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.solution_cls
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.species
+.. autoproperty:: culebra.trainer.aco.ElitistACOFS.verbose
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.dump
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.reset
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.evaluate
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.best_solutions
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.best_representatives
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.train
-.. automethod:: culebra.trainer.aco.ElitistACO_FS.test
+.. automethod:: culebra.trainer.aco.ElitistACOFS.train
+.. automethod:: culebra.trainer.aco.ElitistACOFS.test
+.. automethod:: culebra.trainer.aco.ElitistACOFS.reset
+.. automethod:: culebra.trainer.aco.ElitistACOFS.evaluate
+.. automethod:: culebra.trainer.aco.ElitistACOFS.dump
+.. automethod:: culebra.trainer.aco.ElitistACOFS.best_solutions
+.. automethod:: culebra.trainer.aco.ElitistACOFS.best_representatives
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._get_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._set_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._save_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._load_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._new_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._init_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._reset_state
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._init_internals
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._reset_internals
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._init_search
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._search
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._finish_search
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._start_iteration
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._preprocess_iteration
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._do_iteration
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._postprocess_iteration
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._finish_iteration
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._do_iteration_stats
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._default_termination_func
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._termination_criterion
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._init_representatives
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._set_cooperative_fitness
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._calculate_choice_info
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._initial_choice
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._next_choice
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._generate_ant
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._generate_col
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._init_pheromone
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._pheromone_amount
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._deposit_pheromone
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._increase_pheromone
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._decrease_pheromone
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._update_pheromone
-.. automethod:: culebra.trainer.aco.ElitistACO_FS._update_elite
-
+.. automethod:: culebra.trainer.aco.ElitistACOFS._ant_choice_info
+.. automethod:: culebra.trainer.aco.ElitistACOFS._calculate_choice_info
+.. automethod:: culebra.trainer.aco.ElitistACOFS._decrease_pheromone
+.. automethod:: culebra.trainer.aco.ElitistACOFS._default_termination_func
+.. automethod:: culebra.trainer.aco.ElitistACOFS._deposit_pheromone
+.. automethod:: culebra.trainer.aco.ElitistACOFS._do_iteration
+.. automethod:: culebra.trainer.aco.ElitistACOFS._do_iteration_stats
+.. automethod:: culebra.trainer.aco.ElitistACOFS._finish_iteration
+.. automethod:: culebra.trainer.aco.ElitistACOFS._finish_search
+.. automethod:: culebra.trainer.aco.ElitistACOFS._generate_ant
+.. automethod:: culebra.trainer.aco.ElitistACOFS._generate_col
+.. automethod:: culebra.trainer.aco.ElitistACOFS._get_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._increase_pheromone
+.. automethod:: culebra.trainer.aco.ElitistACOFS._init_internals
+.. automethod:: culebra.trainer.aco.ElitistACOFS._init_pheromone
+.. automethod:: culebra.trainer.aco.ElitistACOFS._init_representatives
+.. automethod:: culebra.trainer.aco.ElitistACOFS._init_search
+.. automethod:: culebra.trainer.aco.ElitistACOFS._init_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._load_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._new_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._next_choice
+.. automethod:: culebra.trainer.aco.ElitistACOFS._pheromone_amount
+.. automethod:: culebra.trainer.aco.ElitistACOFS._postprocess_iteration
+.. automethod:: culebra.trainer.aco.ElitistACOFS._preprocess_iteration
+.. automethod:: culebra.trainer.aco.ElitistACOFS._reset_internals
+.. automethod:: culebra.trainer.aco.ElitistACOFS._reset_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._save_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._search
+.. automethod:: culebra.trainer.aco.ElitistACOFS._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.ElitistACOFS._set_state
+.. automethod:: culebra.trainer.aco.ElitistACOFS._start_iteration
+.. automethod:: culebra.trainer.aco.ElitistACOFS._termination_criterion
+.. automethod:: culebra.trainer.aco.ElitistACOFS._update_elite
+.. automethod:: culebra.trainer.aco.ElitistACOFS._update_pheromone

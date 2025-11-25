@@ -8,7 +8,7 @@
     <title>culebra.trainer.ea.abc module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
-    <script src="../../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -33,7 +33,7 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../ea.html" accesskey="U"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../ea.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea.abc</span></code> module</a></li> 
       </ul>
     </div>  
@@ -48,43 +48,35 @@
 <p>This module provides several abstract classes for different kind of
 evolutionary trainers.</p>
 <p>Regarding the homogeneity of their operators:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/homogeneous_ea.html#culebra.trainer.ea.abc.HomogeneousEA" title="culebra.trainer.ea.abc.HomogeneousEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousEA</span></code></a>: Defines an EA model in
-which all the sub-populations have the same configuration</p></li>
+<ul class="simple">
 <li><p><a class="reference internal" href="abc/heterogeneous_ea.html#culebra.trainer.ea.abc.HeterogeneousEA" title="culebra.trainer.ea.abc.HeterogeneousEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousEA</span></code></a>: Allows a different
 configuration for each sub-population in multi-population approaches</p></li>
+<li><p><a class="reference internal" href="abc/homogeneous_ea.html#culebra.trainer.ea.abc.HomogeneousEA" title="culebra.trainer.ea.abc.HomogeneousEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousEA</span></code></a>: Defines an EA model in
+which all the sub-populations have the same configuration</p></li>
 </ul>
-</div></blockquote>
 <p>With respect to the number of populations being trained:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/single_pop_ea.html#culebra.trainer.ea.abc.SinglePopEA" title="culebra.trainer.ea.abc.SinglePopEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePopEA</span></code></a>: A base class for all
-the single population evolutionary trainers</p></li>
-<li><p><a class="reference internal" href="abc/multi_pop_ea.html#culebra.trainer.ea.abc.MultiPopEA" title="culebra.trainer.ea.abc.MultiPopEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPopEA</span></code></a>: A base class for all
-the multiple population evolutionary trainers</p></li>
+<ul class="simple">
+<li><p><a class="reference internal" href="abc/multi_pop_ea.html#culebra.trainer.ea.abc.MultiPopEA" title="culebra.trainer.ea.abc.MultiPopEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPopEA</span></code></a>: A base class for all the
+multiple population evolutionary trainers</p></li>
+<li><p><a class="reference internal" href="abc/single_pop_ea.html#culebra.trainer.ea.abc.SinglePopEA" title="culebra.trainer.ea.abc.SinglePopEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePopEA</span></code></a>: A base class for all the
+single population evolutionary trainers</p></li>
 </ul>
-</div></blockquote>
 <p>Different multi-population approaches are also provided:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/islands_ea.html#culebra.trainer.ea.abc.IslandsEA" title="culebra.trainer.ea.abc.IslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">IslandsEA</span></code></a>: Abstract base class for
-island-based evolutionary approaches</p></li>
+<ul class="simple">
 <li><p><a class="reference internal" href="abc/cooperative_ea.html#culebra.trainer.ea.abc.CooperativeEA" title="culebra.trainer.ea.abc.CooperativeEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">CooperativeEA</span></code></a>: Abstract base class
 for cooperative co-evolutionary trainers</p></li>
+<li><p><a class="reference internal" href="abc/islands_ea.html#culebra.trainer.ea.abc.IslandsEA" title="culebra.trainer.ea.abc.IslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">IslandsEA</span></code></a>: Abstract base class for
+island-based evolutionary approaches</p></li>
 </ul>
-</div></blockquote>
 <p>Finally, two types of islands-based models are also defined:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/homogeneous_islands_ea.html#culebra.trainer.ea.abc.HomogeneousIslandsEA" title="culebra.trainer.ea.abc.HomogeneousIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousIslandsEA</span></code></a>: Abstract base
-class for island-based evolutionary approaches where all the islands share
-the same hyperparameters</p></li>
+<ul class="simple">
 <li><p><a class="reference internal" href="abc/heterogeneous_islands_ea.html#culebra.trainer.ea.abc.HeterogeneousIslandsEA" title="culebra.trainer.ea.abc.HeterogeneousIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousIslandsEA</span></code></a>: Abstract base
 class for island-based evolutionary approaches where each island can have
 each own configuration</p></li>
+<li><p><a class="reference internal" href="abc/homogeneous_islands_ea.html#culebra.trainer.ea.abc.HomogeneousIslandsEA" title="culebra.trainer.ea.abc.HomogeneousIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousIslandsEA</span></code></a>: Abstract base
+class for island-based evolutionary approaches where all the islands share
+the same hyperparameters</p></li>
 </ul>
-</div></blockquote>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -112,7 +104,7 @@ each own configuration</p></li>
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../ea.html" ><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../ea.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea.abc</span></code> module</a></li> 
       </ul>
     </div>

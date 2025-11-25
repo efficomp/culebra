@@ -19,13 +19,13 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.Metrics` class
-============================================================
+:class:`culebra.solution.feature_selection.Metrics` class
+=========================================================
 
 .. autoclass:: culebra.solution.feature_selection.Metrics
 
 Static methods
 --------------
 
-.. automethod:: culebra.solution.feature_selection.Metrics.relevance
 .. automethod:: culebra.solution.feature_selection.Metrics.rank
+.. automethod:: culebra.solution.feature_selection.Metrics.relevance

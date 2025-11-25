@@ -19,48 +19,33 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.ea` module
-=====================================
+:mod:`culebra.trainer.ea` module
+================================
 
 .. automodule:: culebra.trainer.ea
 
 Attributes
 ----------
 
-.. attribute:: DEFAULT_POP_SIZE
-    :annotation: = 100
-
-    Default population size.
-
 .. attribute:: DEFAULT_CROSSOVER_PROB
     :annotation: = 0.8
 
     Default crossover probability.
 
-.. attribute:: DEFAULT_MUTATION_PROB
-    :annotation: = 0.2
+.. attribute:: DEFAULT_ELITE_SIZE
+    :annotation: = 5
 
-    Default mutation probability.
+    Default number of elite individuals.
 
 .. attribute:: DEFAULT_GENE_IND_MUTATION_PROB
     :annotation: = 0.1
 
     Default gene independent mutation probability.
 
-.. attribute:: DEFAULT_SELECTION_FUNC
-    :annotation: = <function selTournament>
+.. attribute:: DEFAULT_MUTATION_PROB
+    :annotation: = 0.2
 
-    Default selection function.
-
-.. attribute:: DEFAULT_SELECTION_FUNC_PARAMS
-    :annotation: = {'tournsize': 2}
-
-    Default selection function parameters.
-
-.. attribute:: DEFAULT_ELITE_SIZE
-    :annotation: = 5
-
-    Default number of elite individuals.
+    Default mutation probability.
 
 .. attribute:: DEFAULT_NSGA_SELECTION_FUNC
     :annotation: = <function selNSGA2>
@@ -75,20 +60,23 @@ Attributes
 .. attribute:: DEFAULT_NSGA3_REFERENCE_POINTS_P
     :annotation: = 4
 
-    Default number of divisions along each objective for the reference points of NSGA-III.
+    Default number of divisions along each objective for the reference points
+    of NSGA-III.
 
-..
-    .. autodata:: DEFAULT_POP_SIZE
-    .. autodata:: DEFAULT_CROSSOVER_PROB
-    .. autodata:: DEFAULT_MUTATION_PROB
-    .. autodata:: DEFAULT_GENE_IND_MUTATION_PROB
-    .. autodata:: DEFAULT_SELECTION_FUNC
-    .. autodata:: DEFAULT_SELECTION_FUNC_PARAMS
-    .. autodata:: DEFAULT_ELITE_SIZE
-    .. autodata:: DEFAULT_NSGA_SELECTION_FUNC
-    .. autodata:: DEFAULT_NSGA_SELECTION_FUNC_PARAMS
-    .. autodata:: DEFAULT_NSGA3_REFERENCE_POINTS_P
+.. attribute:: DEFAULT_POP_SIZE
+    :annotation: = 100
 
+    Default population size.
+
+.. attribute:: DEFAULT_SELECTION_FUNC
+    :annotation: = <function selTournament>
+
+    Default selection function.
+
+.. attribute:: DEFAULT_SELECTION_FUNC_PARAMS
+    :annotation: = {'tournsize': 2}
+
+    Default selection function parameters.
 
 .. toctree::
     :hidden:

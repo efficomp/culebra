@@ -20,9 +20,10 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
+"""Unit test for :class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
 
 import unittest
+from multiprocess import cpu_count
 from multiprocess.managers import DictProxy
 
 from culebra.trainer.abc import (
@@ -34,10 +35,10 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -50,7 +51,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -122,10 +123,40 @@ class MyDistributedTrainer(ParallelDistributedTrainer):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
+    """Test :class:`culebra.trainer.abc.ParallelDistributedTrainer`."""
 
     def test_init(self):
         """Test the constructor."""
+
+        # Try invalid types for num_subtrainers. Should fail
+        invalid_num_subtrainers = ('a', 1.5, str)
+        for num_subtrainers in invalid_num_subtrainers:
+            with self.assertRaises(TypeError):
+                MyDistributedTrainer(
+                    fitness_func,
+                    MySingleSpeciesTrainer,
+                    num_subtrainers=num_subtrainers
+                )
+
+        # Try invalid values for num_subtrainers. Should fail
+        invalid_num_subtrainers = (-1, 0)
+        for num_subtrainers in invalid_num_subtrainers:
+            with self.assertRaises(ValueError):
+                MyDistributedTrainer(
+                    fitness_func,
+                    MySingleSpeciesTrainer,
+                    num_subtrainers=num_subtrainers
+                )
+
+        # Try  a valid value for num_subtrainers
+        num_subtrainers = 123
+        trainer = MyDistributedTrainer(
+            fitness_func,
+            MySingleSpeciesTrainer,
+            num_subtrainers=num_subtrainers
+        )
+        self.assertEqual(trainer.num_subtrainers, num_subtrainers)
+
         # Test default params
         trainer = MyDistributedTrainer(
             fitness_func,
@@ -134,6 +165,7 @@ class TrainerTester(unittest.TestCase):
 
         self.assertEqual(trainer._manager, None)
         self.assertEqual(trainer._subtrainer_state_proxies, None)
+        self.assertEqual(trainer.num_subtrainers, cpu_count())
 
     def test_num_evals(self):
         """Test the num_evals property."""

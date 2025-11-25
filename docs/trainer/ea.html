@@ -8,7 +8,7 @@
     <title>culebra.trainer.ea module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -33,7 +33,7 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../trainer.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a></li> 
       </ul>
     </div>  
 
@@ -42,66 +42,56 @@
           <div class="body" role="main">
             
   <section id="module-culebra.trainer.ea">
-<span id="culebra-trainer-ea-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.ea" title="Link to this heading">¶</a></h1>
+<span id="culebra-trainer-ea-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.ea" title="Link to this heading">¶</a></h1>
 <p>Implementation of some evolutionary trainers.</p>
 <p>This module is composed by:</p>
-<blockquote>
-<div><ul>
+<ul>
 <li><p>The <a class="reference internal" href="ea/abc.html#module-culebra.trainer.ea.abc" title="culebra.trainer.ea.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module, where some abstract base
 classes are defined to support the evolutionary trainers developed in this
 module</p></li>
 <li><p>Some popular single-population evolutionary algorithms:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>The <a class="reference internal" href="ea/simple_ea.html#culebra.trainer.ea.SimpleEA" title="culebra.trainer.ea.SimpleEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleEA</span></code></a> class, which implements
-the simplest EA</p></li>
+<ul class="simple">
 <li><p>The <a class="reference internal" href="ea/elitist_ea.html#culebra.trainer.ea.ElitistEA" title="culebra.trainer.ea.ElitistEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistEA</span></code></a> class, which provides an
 elitist EA</p></li>
 <li><p>The <a class="reference internal" href="ea/nsga.html#culebra.trainer.ea.NSGA" title="culebra.trainer.ea.NSGA"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSGA</span></code></a> class, which implements a
 multi-objective EA, based on Non-dominated sorting, able to run both
 the NSGA-II and the NSGA-III algorithms</p></li>
+<li><p>The <a class="reference internal" href="ea/simple_ea.html#culebra.trainer.ea.SimpleEA" title="culebra.trainer.ea.SimpleEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleEA</span></code></a> class, which implements
+the simplest EA</p></li>
 </ul>
-</div></blockquote>
 </li>
 <li><p>Some variants of the multi-population island-based EA:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="ea/homogeneous_sequential_islands_ea.html#culebra.trainer.ea.HomogeneousSequentialIslandsEA" title="culebra.trainer.ea.HomogeneousSequentialIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousSequentialIslandsEA</span></code></a>
-class, which provides a sequential implementation of the island model
-with homogeneous hyperparameters for all the islands</p></li>
-<li><p>The <a class="reference internal" href="ea/homogeneous_parallel_islands_ea.html#culebra.trainer.ea.HomogeneousParallelIslandsEA" title="culebra.trainer.ea.HomogeneousParallelIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousParallelIslandsEA</span></code></a>
-class, which implements a parallel implementation of the homogeneous
-islands model</p></li>
+<li><p>The <a class="reference internal" href="ea/heterogeneous_parallel_islands_ea.html#culebra.trainer.ea.HeterogeneousParallelIslandsEA" title="culebra.trainer.ea.HeterogeneousParallelIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousParallelIslandsEA</span></code></a>
+class, a parallel implementation of the heterogeneous islands model</p></li>
 <li><p>The <a class="reference internal" href="ea/heterogeneous_sequential_islands_ea.html#culebra.trainer.ea.HeterogeneousSequentialIslandsEA" title="culebra.trainer.ea.HeterogeneousSequentialIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousSequentialIslandsEA</span></code></a>
 class, providing a sequential implementation of the heterogeneous
 islands model</p></li>
-<li><p>The <a class="reference internal" href="ea/heterogeneous_parallel_islands_ea.html#culebra.trainer.ea.HeterogeneousParallelIslandsEA" title="culebra.trainer.ea.HeterogeneousParallelIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeterogeneousParallelIslandsEA</span></code></a>
-class, a parallel implementation of the heterogeneous islands model</p></li>
+<li><p>The <a class="reference internal" href="ea/homogeneous_parallel_islands_ea.html#culebra.trainer.ea.HomogeneousParallelIslandsEA" title="culebra.trainer.ea.HomogeneousParallelIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousParallelIslandsEA</span></code></a>
+class, which implements a parallel implementation of the homogeneous
+islands model</p></li>
+<li><p>The <a class="reference internal" href="ea/homogeneous_sequential_islands_ea.html#culebra.trainer.ea.HomogeneousSequentialIslandsEA" title="culebra.trainer.ea.HomogeneousSequentialIslandsEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">HomogeneousSequentialIslandsEA</span></code></a>
+class, which provides a sequential implementation of the island model
+with homogeneous hyperparameters for all the islands</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p>A couple of cooperative co-evolutionary implementations:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The <a class="reference internal" href="ea/sequential_cooperative_ea.html#culebra.trainer.ea.SequentialCooperativeEA" title="culebra.trainer.ea.SequentialCooperativeEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialCooperativeEA</span></code></a> class,
-which implements a sequential implementation of the cooperative
-co-evolutionary model</p></li>
 <li><p>The <a class="reference internal" href="ea/parallel_cooperative_ea.html#culebra.trainer.ea.ParallelCooperativeEA" title="culebra.trainer.ea.ParallelCooperativeEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelCooperativeEA</span></code></a> class,
 which provides a parallel implementation of the cooperative
+co-evolutionary model</p></li>
+<li><p>The <a class="reference internal" href="ea/sequential_cooperative_ea.html#culebra.trainer.ea.SequentialCooperativeEA" title="culebra.trainer.ea.SequentialCooperativeEA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialCooperativeEA</span></code></a> class,
+which implements a sequential implementation of the cooperative
 co-evolutionary model</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
-</div></blockquote>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_POP_SIZE">
-<span class="sig-name descname"><span class="pre">DEFAULT_POP_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_POP_SIZE" title="Link to this definition">¶</a></dt>
-<dd><p>Default population size.</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_CROSSOVER_PROB">
 <span class="sig-name descname"><span class="pre">DEFAULT_CROSSOVER_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.8</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_CROSSOVER_PROB" title="Link to this definition">¶</a></dt>
@@ -109,9 +99,9 @@ co-evolutionary model</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_MUTATION_PROB">
-<span class="sig-name descname"><span class="pre">DEFAULT_MUTATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.2</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_MUTATION_PROB" title="Link to this definition">¶</a></dt>
-<dd><p>Default mutation probability.</p>
+<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_ELITE_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_ELITE_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_ELITE_SIZE" title="Link to this definition">¶</a></dt>
+<dd><p>Default number of elite individuals.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -121,21 +111,9 @@ co-evolutionary model</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_SELECTION_FUNC">
-<span class="sig-name descname"><span class="pre">DEFAULT_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selTournament&gt;</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_SELECTION_FUNC" title="Link to this definition">¶</a></dt>
-<dd><p>Default selection function.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS">
-<span class="sig-name descname"><span class="pre">DEFAULT_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">2}</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
-<dd><p>Default selection function parameters.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_ELITE_SIZE">
-<span class="sig-name descname"><span class="pre">DEFAULT_ELITE_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_ELITE_SIZE" title="Link to this definition">¶</a></dt>
-<dd><p>Default number of elite individuals.</p>
+<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_MUTATION_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_MUTATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.2</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_MUTATION_PROB" title="Link to this definition">¶</a></dt>
+<dd><p>Default mutation probability.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -153,7 +131,26 @@ co-evolutionary model</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P">
 <span class="sig-name descname"><span class="pre">DEFAULT_NSGA3_REFERENCE_POINTS_P</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P" title="Link to this definition">¶</a></dt>
-<dd><p>Default number of divisions along each objective for the reference points of NSGA-III.</p>
+<dd><p>Default number of divisions along each objective for the reference points
+of NSGA-III.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_POP_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_POP_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_POP_SIZE" title="Link to this definition">¶</a></dt>
+<dd><p>Default population size.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_SELECTION_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selTournament&gt;</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_SELECTION_FUNC" title="Link to this definition">¶</a></dt>
+<dd><p>Default selection function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">2}</span></em><a class="headerlink" href="#culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
+<dd><p>Default selection function parameters.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
@@ -184,7 +181,7 @@ co-evolutionary model</p></li>
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.ea</span></code> module</a></li> 
       </ul>
     </div>
     <div class="footer">

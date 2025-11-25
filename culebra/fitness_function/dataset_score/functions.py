@@ -20,6 +20,8 @@
 
 from __future__ import annotations
 
+from typing import Tuple
+
 from sklearn.metrics import cohen_kappa_score, accuracy_score
 
 from culebra.fitness_function.dataset_score.abc import DatasetScorer
@@ -44,26 +46,37 @@ class KappaIndex(DatasetScorer):
     """Score function to be used in the evaluation."""
 
     @property
-    def obj_weights(self):
-        """Maximize the validation Kappa index."""
+    def obj_weights(self) -> Tuple[int, ...]:
+        """Objective weights.
+
+        Maximize the validation Kappa index.
+
+        :return: (1, )
+        :rtype: tuple[int]
+        """
         return (1, )
 
     @property
-    def obj_names(self):
-        """Objective names."""
+    def obj_names(self) -> Tuple[str, ...]:
+        """Objective names.
+
+        :return: ("Kappa",)
+        :rtype: tuple[str]
+        """
         return ("Kappa",)
 
     @property
     def _worst_score(self) -> float:
         """Worst achievable score.
 
-        :type: :py:class:`float`
+        :return: -1
+        :rtype: float
         """
         return -1
 
 
 KappaIndex._score.__doc__ = """
-Use :py:func:`~sklearn.metrics.cohen_kappa_score` to score.
+Use :func:`~sklearn.metrics.cohen_kappa_score` to score.
 """
 
 
@@ -77,26 +90,37 @@ class Accuracy(DatasetScorer):
     """Score function to be used in the evaluation."""
 
     @property
-    def obj_weights(self):
-        """Maximize the validation accuracy."""
+    def obj_weights(self) -> Tuple[int, ...]:
+        """Objective weights.
+
+        Maximize the validation accuracy.
+
+        :return: (1, )
+        :rtype: tuple[int]
+        """
         return (1, )
 
     @property
-    def obj_names(self):
-        """Objective names."""
+    def obj_names(self) -> Tuple[str, ...]:
+        """Objective names.
+
+        :return: ("Accuracy",)
+        :rtype: tuple[str]
+        """
         return ("Accuracy",)
 
     @property
     def _worst_score(self) -> float:
         """Worst achievable score.
 
-        :type: :py:class:`float`
+        :return: 0
+        :rtype: float
         """
         return 0
 
 
 Accuracy._score.__doc__ = """
-Use :py:func:`~sklearn.metrics.accuracy_score` to score.
+Use :func:`~sklearn.metrics.accuracy_score` to score.
 """
 
 

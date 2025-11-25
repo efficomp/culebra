@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.abc.Ant` class
-==========================================
+:class:`culebra.solution.abc.Ant` class
+=======================================
 
 .. autoclass:: culebra.solution.abc.Ant
 
@@ -34,28 +34,28 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.abc.Ant.species
-.. autoproperty:: culebra.solution.abc.Ant.fitness
-.. autoproperty:: culebra.solution.abc.Ant.path
 .. autoproperty:: culebra.solution.abc.Ant.current
 .. autoproperty:: culebra.solution.abc.Ant.discarded
+.. autoproperty:: culebra.solution.abc.Ant.fitness
+.. autoproperty:: culebra.solution.abc.Ant.path
+.. autoproperty:: culebra.solution.abc.Ant.species
 
 Methods
 -------
-.. automethod:: culebra.solution.abc.Ant.dump
 .. automethod:: culebra.solution.abc.Ant.append
+.. automethod:: culebra.solution.abc.Ant.delete_fitness
 .. automethod:: culebra.solution.abc.Ant.discard
 .. automethod:: culebra.solution.abc.Ant.dominates
-.. automethod:: culebra.solution.abc.Ant.delete_fitness
+.. automethod:: culebra.solution.abc.Ant.dump
 
 Dunder methods
 --------------
-Intended to compare (lexicographically) two Ants according to their fitness.
+Intended to compare (lexicographically) two ants according to their fitness.
 
-.. automethod:: culebra.solution.abc.Ant.__hash__
 .. automethod:: culebra.solution.abc.Ant.__eq__
-.. automethod:: culebra.solution.abc.Ant.__ne__
-.. automethod:: culebra.solution.abc.Ant.__lt__
-.. automethod:: culebra.solution.abc.Ant.__gt__
-.. automethod:: culebra.solution.abc.Ant.__le__
 .. automethod:: culebra.solution.abc.Ant.__ge__
+.. automethod:: culebra.solution.abc.Ant.__gt__
+.. automethod:: culebra.solution.abc.Ant.__hash__
+.. automethod:: culebra.solution.abc.Ant.__le__
+.. automethod:: culebra.solution.abc.Ant.__lt__
+.. automethod:: culebra.solution.abc.Ant.__ne__

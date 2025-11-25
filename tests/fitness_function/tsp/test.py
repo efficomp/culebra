@@ -39,7 +39,7 @@ from culebra.fitness_function.feature_selection import NumFeats
 
 
 class PathLengthTester(unittest.TestCase):
-    """Test the :py:class:`~culebra.fitness_function.tsp.PathLength` class."""
+    """Test the :class:`~culebra.fitness_function.tsp.PathLength` class."""
 
     def test_init(self):
         """Test the constructor."""
@@ -220,29 +220,17 @@ class PathLengthTester(unittest.TestCase):
 
         fitness_func = PathLength(distance_matrix)
 
-        # Try an invalid species. Should fail
-        species = BaseSpecies()
-        with self.assertRaises(TypeError):
-            fitness_func.heuristic(species)
-
-        banned_nodes = [0, fitness_func.num_nodes-1]
-        species = Species(
-            fitness_func.num_nodes,
-            banned_nodes=banned_nodes
-        )
-
-        heuristic = fitness_func.heuristic(species)
+        heuristic = fitness_func.heuristic
         self.assertIsInstance(heuristic, Sequence)
 
         # Check the heuristic_matrix
-        heuristic = fitness_func.heuristic(species)[0]
-        for i in range(species.num_nodes):
-            for j in range(species.num_nodes):
-                if i == j or i in banned_nodes or j in banned_nodes:
-                    self.assertEqual(heuristic[i][j], 0)
+        for i in range(fitness_func.num_nodes):
+            for j in range(fitness_func.num_nodes):
+                if i == j:
+                    self.assertEqual(heuristic[0][i][j], 0)
                 else:
                     self.assertAlmostEqual(
-                        heuristic[i][j],
+                        heuristic[0][i][j],
                         1/distance_matrix[i][j]
                     )
 
@@ -253,7 +241,6 @@ class PathLengthTester(unittest.TestCase):
             [1, 0, 6],
             [2, 6, 0]
         ]
-
         fitness_func = PathLength(distance_matrix)
         num_nodes = fitness_func.num_nodes
         banned_nodes = [0, fitness_func.num_nodes-1]
@@ -262,12 +249,14 @@ class PathLengthTester(unittest.TestCase):
             banned_nodes=banned_nodes
         )
 
-        # Try feasible solutions
-        times = 1000
-        for _ in repeat(None, times):
-            sol = fitness_func.greedy_solution(species)
-            self.assertTrue(species.is_member(sol))
-            self.assertEqual(len(sol.path), num_nodes - len(banned_nodes))
+        # Try a wrong species. Should fail...
+        with self.assertRaises(TypeError):
+            fitness_func.greedy_solution(BaseSpecies())
+
+        # Try a feasible solution
+        sol = fitness_func.greedy_solution(species)
+        self.assertTrue(species.is_member(sol))
+        self.assertEqual(len(sol.path), num_nodes - len(banned_nodes))
 
         # Try an unfeasible solution
         banned_nodes = list(node for node in range(num_nodes))
@@ -729,9 +718,9 @@ class PathLengthTester(unittest.TestCase):
         """Check if *func1* is a deepcopy of *func2*.
 
         :param func1: The first fitness function
-        :type func1: :py:class:`~culebra.fitness_function.tsp.PathLength`
+        :type func1: ~culebra.fitness_function.tsp.PathLength
         :param func2: The second fitness function
-        :type func2: :py:class:`~culebra.fitness_function.tsp.PathLength`
+        :type func2: ~culebra.fitness_function.tsp.PathLength
         """
         # Copies all the levels
         self.assertNotEqual(id(func1), id(func2))
@@ -793,13 +782,13 @@ class MultiObjectivePathLengthTester(unittest.TestCase):
         obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
         func = MultiObjectivePathLength(obj1, obj2)
 
-        species = Species(func.num_nodes, banned_nodes=[1])
-        heur1 = obj1.heuristic(species)
-        heur2 = obj2.heuristic(species)
+        heur1 = obj1.heuristic
+        heur2 = obj2.heuristic
+        heur = func.heuristic
 
-        self.assertEqual(len(func.heuristic(species)), 2)
-        self.assertTrue((func.heuristic(species)[0] == heur1).all())
-        self.assertTrue((func.heuristic(species)[1] == heur2).all())
+        self.assertEqual(len(heur), 2)
+        self.assertTrue((heur[0] == heur1[0]).all())
+        self.assertTrue((heur[1] == heur2[0]).all())
 
 
 if __name__ == '__main__':

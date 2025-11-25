@@ -21,19 +21,17 @@
 This sub-module provides several abstract fitness functions to score
 dataset-related problems:
 
-  * :py:class:`~culebra.fitness_function.dataset_score.abc.DatasetScorer`:
-    Allows the definition of dataset-related fitness functions.
-
-  * :py:class:`~culebra.fitness_function.dataset_score.abc.ClassificationScorer`:
-    Lets defining dataset classification-related fitness functions
-
+* :class:`~culebra.fitness_function.dataset_score.abc.ClassificationScorer`:
+  Lets defining dataset classification-related fitness functions
+* :class:`~culebra.fitness_function.dataset_score.abc.DatasetScorer`:
+  Allows the definition of dataset-related fitness functions.
 """
 
 from __future__ import annotations
 
 from abc import abstractmethod
 
-from typing import Tuple, Optional, Any, Sequence
+from typing import Tuple, Optional, Sequence
 from copy import deepcopy
 
 from sklearn.base import ClassifierMixin
@@ -75,17 +73,17 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         train. Otherwise, a *k*-fold cross-validation is applied.
 
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
-        :param test_data: The test dataset, defaults to :py:data:`None`
-        :type test_data: :py:class:`~culebra.tools.Dataset`, optional
+        :type training_data: ~culebra.tools.Dataset
+        :param test_data: The test dataset, defaults to :data:`None`
+        :type test_data: ~culebra.tools.Dataset
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
-            :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
-            is used. Defaults to :py:data:`None`
-        :type cv_folds: :py:class:`int`, optional
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
+            is used. Defaults to :data:`None`
+        :type cv_folds: int
         :param index: Index of this objective when it is used for
             multi-objective fitness functions
-        :type index: :py:class:`int`, optional
+        :type index: int
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
@@ -104,11 +102,12 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
 
     @property
     def training_data(self) -> Dataset:
-        """Get and set the training dataset.
+        """Training dataset.
 
-        :getter: Return the training dataset
+        :rtype: ~culebra.tools.Dataset
         :setter: Set a new training dataset
-        :type: :py:class:`~culebra.tools.Dataset`
+        :param value: The new training dataset
+        :type value: ~culebra.tools.Dataset
         :raises TypeError: If set to an invalid dataset
         """
         return self._training_data
@@ -117,8 +116,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     def training_data(self, value: Dataset) -> None:
         """Set a new training dataset.
 
-        :param value: A new training dataset
-        :type value: :py:class:`~culebra.tools.Dataset`
+        :param value: The new training dataset
+        :type value: ~culebra.tools.Dataset
         :raises TypeError: If set to an invalid dataset
         """
         self._training_data = check_instance(
@@ -127,11 +126,15 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
 
     @property
     def test_data(self) -> Dataset | None:
-        """Get and set the test dataset.
+        """Test dataset.
 
-        :getter: Return the test dataset
+        If set to :data:`None`, a *k*-fold cross-validation is applied.
+
+        :rtype: ~culebra.tools.Dataset
+
         :setter: Set a new test dataset
-        :type: :py:class:`~culebra.tools.Dataset`
+        :param value: The new test dataset
+        :type value: ~culebra.tools.Dataset
         :raises TypeError: If set to an invalid dataset
         """
         return self._test_data
@@ -140,8 +143,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     def test_data(self, value: Dataset | None) -> None:
         """Set a new test dataset.
 
-        :param value: A new test dataset
-        :type value: :py:class:`~culebra.tools.Dataset` or :py:data:`None`
+        :param value: The new test dataset
+        :type value: ~culebra.tools.Dataset
         :raises TypeError: If set to an invalid dataset
         """
         self._test_data = None if value is None else check_instance(
@@ -150,14 +153,17 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
 
     @property
     def cv_folds(self) -> int | None:
-        """Get and set the number of cross-validation folds.
+        """Number of cross-validation folds.
 
-        :getter: Return the number of cross-validation folds
-        :setter: Set a new value for the number of cross-validation folds. A
-            positive integer value or :py:data:`None` is expected
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an integer value
-        :raises ValueError: If set to a value which is not positive
+        :rtype: int
+
+        :setter: Set a new value for the number of cross-validation folds
+        :param value: A positive integer value. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
+            is assumed
+        :type value: int
+        :raises TypeError: If *value* is not an integer value
+        :raises ValueError: If *value* is not positive
         """
         return (
             self._cv_folds if self._cv_folds is not None else DEFAULT_CV_FOLDS
@@ -167,8 +173,10 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     def cv_folds(self, value: int | None) -> None:
         """Set a value for the number of cross-validation folds.
 
-        :param value: A positive integer value in (0, 1) or :py:data:`None`
-        :type value: :py:class:`int` or :py:data:`None`
+        :param value: A positive integer value. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
+            is assumed
+        :type value: int
         :raises TypeError: If *value* is not an integer value
         :raises ValueError: If *value* is not positive
         """
@@ -184,8 +192,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overridden
-        :type: :py:class:`float`
+        :rtype: float
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The path property has not been implemented in the "
@@ -197,7 +205,7 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     def _score(
         outputs: Sequence[float],
         outputs_pred: Sequence[float],
-        **kwargs: Any
+        **kwargs: dict
     ) -> float:
         """Score function to be used in the evaluation.
 
@@ -215,10 +223,10 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
 
         :param sol: Solution to be evaluated. It may influence the final
             datasets
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
 
         :return: The final training and test datasets
-        :rtype: :py:class:`tuple` of :py:class:`~culebra.tools.Dataset`
+        :rtype: tuple[~culebra.tools.Dataset]
         """
         return self.training_data, self.test_data
 
@@ -235,14 +243,14 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         value.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :type training_data: ~culebra.tools.Dataset
         :param test_data: The test dataset
-        :type test_data: :py:class:`~culebra.tools.Dataset`
+        :type test_data: ~culebra.tools.Dataset
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
-        :raises NotImplementedError: if has not been overridden
+        :rtype: ~culebra.abc.Fitness
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The _evaluate_train_test method has not been implemented in the "
@@ -257,19 +265,19 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         """Evaluate a solution.
 
         A *k*-fold cross-validation is applied using the *training_data* with
-        :py:attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds`
+        :attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds`
         folds.
 
         This method must be overridden by subclasses to return a correct
         value.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :type training_data: ~culebra.tools.Dataset
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
-        :raises NotImplementedError: if has not been overridden
+        :rtype: ~culebra.abc.Fitness
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The _evaluate_kfcv method has not been implemented in the "
@@ -284,18 +292,16 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
             problem. Only used by cooperative problems
-        :type index: :py:class:`int`, optional
+        :type index: int
         :param representatives: Representative solutions of each species
             being optimized. Only used by cooperative problems
-        :type representatives: A :py:class:`~collections.abc.Sequence`
-            containing instances of :py:class:`~culebra.abc.Solution`,
-            optional
+        :type representatives: ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
@@ -312,7 +318,11 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
             return self._evaluate_kfcv(sol, training_data)
 
     def __copy__(self) -> DatasetScorer:
-        """Shallow copy the fitness function."""
+        """Shallow copy the fitness function.
+
+        :return: The copied fitness function
+        :rtype: ~culebra.fitness_function.dataset_score.abc.DatasetScorer
+        """
         cls = self.__class__
         result = cls(self.training_data)
         result.__dict__.update(self.__dict__)
@@ -322,10 +332,9 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         """Deepcopy the fitness function.
 
         :param memo: Fitness function attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the fitness function
-        :rtype:
-            :py:class:`~culebra.feature_selection.abc.DatasetScorer`
+        :type memo: dict
+        :return: The copied fitness function
+        :rtype: ~culebra.fitness_function.dataset_score.abc.DatasetScorer
         """
         cls = self.__class__
         result = cls(self.training_data)
@@ -336,7 +345,7 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         """Reduce the fitness function.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (self.__class__, (self.training_data,), self.__dict__)
 
@@ -344,8 +353,10 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     def __fromstate__(cls, state: dict) -> DatasetScorer:
         """Return a dataset scorer from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: ~dict
+        :return: The fitness function
+        :rtype: ~culebra.fitness_function.dataset_score.abc.DatasetScorer
         """
         obj = cls(state['_training_data'])
         obj.__setstate__(state)
@@ -369,22 +380,21 @@ class ClassificationScorer(DatasetScorer):
         train. Otherwise, a *k*-fold cross-validation is applied.
 
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
-        :param test_data: The test dataset, defaults to :py:data:`None`
-        :type test_data: :py:class:`~culebra.tools.Dataset`, optional
+        :type training_data: ~culebra.tools.Dataset
+        :param test_data: The test dataset, defaults to :data:`None`
+        :type test_data: ~culebra.tools.Dataset
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
-            :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
-            is used. Defaults to :py:data:`None`
-        :type cv_folds: :py:class:`int`, optional
-        :param classifier: The classifier. If set to :py:data:`None`,
-            :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER`
-            will be used. Defaults to :py:data:`None`
-        :type classifier: :py:class:`~sklearn.base.ClassifierMixin`,
-            optional
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
+            is used. Defaults to :data:`None`
+        :type cv_folds: int
+        :param classifier: The classifier. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER`
+            will be used. Defaults to :data:`None`
+        :type classifier: ~sklearn.base.ClassifierMixin
         :param index: Index of this objective when it is used for
-            multi-objective fitness functions
-        :type index: :py:class:`int`, optional
+            multi-objective fitness functions, optional
+        :type index: int
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
@@ -405,12 +415,15 @@ class ClassificationScorer(DatasetScorer):
 
     @property
     def classifier(self) -> ClassifierMixin:
-        """Get and set the classifier applied within this fitness function.
+        """Classifier applied within this fitness function.
 
-        :getter: Return the classifier
+        :rtype: ~sklearn.base.ClassifierMixin
         :setter: Set a new classifier
-        :type: :py:class:`~sklearn.base.ClassifierMixin`
-        :raises TypeError: If set to a value which is not a valid classifier
+        :param value: The classifier. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER`
+            is chosen
+        :type value: ~sklearn.base.ClassifierMixin
+        :raises TypeError: If *value* is not a valid classifier
         """
         return self._classifier
 
@@ -418,10 +431,10 @@ class ClassificationScorer(DatasetScorer):
     def classifier(self, value: ClassifierMixin | None) -> None:
         """Set a classifier.
 
-        :param value: The classifier. If set to :py:data:`None`,
-            :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER`
+        :param value: The classifier. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CLASSIFIER`
             is chosen
-        :type value: Any subclass of :py:class:`~sklearn.base.ClassifierMixin`
+        :type value: ~sklearn.base.ClassifierMixin
         :raises TypeError: If *value* is not a valid classifier
         """
         self._classifier = (
@@ -439,13 +452,13 @@ class ClassificationScorer(DatasetScorer):
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :type training_data: ~culebra.tools.Dataset
         :param test_data: The test dataset
-        :type test_data: :py:class:`~culebra.tools.Dataset`
+        :type test_data: ~culebra.tools.Dataset
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         """
         outputs_pred = self.classifier.fit(
             training_data.inputs,
@@ -467,15 +480,15 @@ class ClassificationScorer(DatasetScorer):
         """Evaluate a solution.
 
         A *k*-fold cross-validation is applied using the *training_data* with
-        :py:attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds`
+        :attr:`~culebra.fitness_function.dataset_score.abc.DatasetScorer.cv_folds`
         folds.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
+        :type training_data: ~culebra.tools.Dataset
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         """
         scores = cross_val_score(
             self.classifier,

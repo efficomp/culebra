@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Test for :py:class:`~culebra.trainer.abc.SequentialDistributedTrainer`."""
+"""Test for :class:`~culebra.trainer.abc.SequentialDistributedTrainer`."""
 
 import unittest
 import os
@@ -34,10 +34,10 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -50,7 +50,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -122,7 +122,7 @@ class MyDistributedTrainer(SequentialDistributedTrainer):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.abc.SequentialDistributedTrainer`."""
+    """Test :class:`~culebra.trainer.abc.SequentialDistributedTrainer`."""
 
     def test_init(self):
         """Test the constructor."""

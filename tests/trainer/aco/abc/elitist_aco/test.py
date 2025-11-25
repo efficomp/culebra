@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.abc.ElitistACO`."""
+"""Unit test for :class:`culebra.trainer.aco.abc.ElitistACO`."""
 
 import unittest
 
@@ -31,7 +31,8 @@ from deap.tools import ParetoFront
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
-    ElitistACO
+    ElitistACO,
+    ACOTSP
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
@@ -41,21 +42,12 @@ from culebra.fitness_function.tsp import (
 
 
 class MyTrainer(
+    ACOTSP,
+    ElitistACO,
     MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    ElitistACO
+    MultipleHeuristicMatricesACO
 ):
     """Dummy implementation of a trainer method."""
-
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
-
-    def _decrease_pheromone(self) -> None:
-        """Decrease the amount of pheromone."""
-
-    def _increase_pheromone(self) -> None:
-        """Increase the amount of pheromone."""
 
     def _get_state(self):
         """Return the state of this trainer."""
@@ -78,7 +70,7 @@ class MyTrainer(
     def _new_state(self):
         """Generate a new trainer state."""
         super()._new_state()
-        heuristic_shape = self._heuristic[0].shape
+        heuristic_shape = self.heuristic[0].shape
         self._pheromone = [
             np.full(
                 heuristic_shape,
@@ -103,7 +95,7 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.ElitistACO`."""
+    """Test :class:`culebra.trainer.aco.abc.ElitistACO`."""
 
     def test_state(self):
         """Test the get_state and _set_state methods."""

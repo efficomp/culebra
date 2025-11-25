@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.trainer.abc.DistributedTrainer`."""
+"""Unit test for :class:`~culebra.trainer.abc.DistributedTrainer`."""
 
 import unittest
 import os
@@ -43,10 +43,10 @@ from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -59,7 +59,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -122,10 +122,10 @@ class MyTrainer(DistributedTrainer):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.abc.DistributedTrainer`."""
+    """Test :class:`~culebra.trainer.abc.DistributedTrainer`."""
 
     def test_init(self):
-        """Test :py:meth:`~culebra.trainer.abc.DistributedTrainer.__init__`."""
+        """Test :meth:`~culebra.trainer.abc.DistributedTrainer.__init__`."""
         valid_subtrainer_cls = SingleSpeciesTrainer
 
         # Try fitness functions. Should fail
@@ -585,9 +585,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.abc.DistributedTrainer`
+        :type trainer1: ~culebra.trainer.abc.DistributedTrainer
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.abc.DistributedTrainer`
+        :type trainer2: ~culebra.trainer.abc.DistributedTrainer
         """
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(

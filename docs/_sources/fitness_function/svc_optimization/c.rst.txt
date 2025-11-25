@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.svc_optimization.C` class
-=============================================================
+:class:`culebra.fitness_function.svc_optimization.C` class
+==========================================================
 
 .. autoclass:: culebra.fitness_function.svc_optimization.C
 
@@ -30,15 +30,16 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.num_obj
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_weights
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_names
-.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_thresholds
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.C.index
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.num_obj
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_names
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.C.obj_weights
 
 Methods
 -------
 .. automethod:: culebra.fitness_function.svc_optimization.C.dump
 .. automethod:: culebra.fitness_function.svc_optimization.C.evaluate
 .. automethod:: culebra.fitness_function.svc_optimization.C.is_evaluable
+

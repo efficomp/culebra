@@ -32,11 +32,11 @@ from culebra.fitness_function import MultiObjectiveFitnessFunction
 
 
 class MySolution(Solution):
-    """Dummy subclass to test the :py:class:`~culebra.abc.Solution` class."""
+    """Dummy subclass to test the :class:`~culebra.abc.Solution` class."""
 
 
 class MySpecies(Species):
-    """Dummy subclass to test the :py:class:`~culebra.abc.Species` class."""
+    """Dummy subclass to test the :class:`~culebra.abc.Species` class."""
 
     def check(self, _):
         """Check a solution."""

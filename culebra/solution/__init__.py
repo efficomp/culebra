@@ -22,17 +22,14 @@
 This module provides several solution and species implementations for several
 problems. Currently, the following sub-modules are available:
 
-  * :py:mod:`~culebra.solution.abc`: Abstract base classes needed for each type
-    of metaheuristic developed as a culebra's :py:class:`~culebra.abc.Trainer`
-
-  * :py:mod:`~culebra.solution.feature_selection`: Solutions and species
-    defined for feature-selection problems.
-
-  * :py:mod:`~culebra.solution.parameter_optimization`: Solutions and species
-    targeted for parameter optimization problems.
-
-  * :py:mod:`~culebra.solution.tsp`: Solutions and species for the traveling
-    salesman problem.
+* :mod:`~culebra.solution.abc`: Abstract base classes needed for each type of
+  metaheuristic developed as a culebra's :class:`~culebra.abc.Trainer`
+* :mod:`~culebra.solution.feature_selection`: Solutions and species defined for
+  feature-selection problems.
+* :mod:`~culebra.solution.parameter_optimization`: Solutions and species
+  targeted for parameter optimization problems.
+* :mod:`~culebra.solution.tsp`: Solutions and species for the traveling
+  salesman problem.
 """
 
 from . import abc, feature_selection, parameter_optimization, tsp

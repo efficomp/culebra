@@ -22,49 +22,46 @@
 This module provides all the classes necessary to solve feature selection
 problems with culebra. The possible solutions to the problem are handled by:
 
-  * A :py:class:`~culebra.solution.feature_selection.Species` class to define
-    the characteristics that the desired selected features should meet.
+* A :class:`~culebra.solution.feature_selection.Solution` abstract class
+  defining the interface for feature selectors.
+* A :class:`~culebra.solution.feature_selection.Species` class to define
+  the characteristics that the desired selected features should meet.
 
-  * A :py:class:`~culebra.solution.feature_selection.Solution` abstract class
-    defining the interface for feature selectors.
-
-Two :py:class:`numpy.ndarray`-based implementations of the
-:py:class:`~culebra.solution.feature_selection.Solution` class are also
+Two :class:`~numpy.ndarray`-based implementations of the
+:class:`~culebra.solution.feature_selection.Solution` class are also
 provided:
 
-    * :py:class:`~culebra.solution.feature_selection.BinarySolution`:
-      Solutions are coded as boolean vectors of a fixed length, the number of
-      selectable features. One boolean value is associated to each selectable
-      feature. If the boolean value is :py:data:`True`, then the feature is
-      selected, otherwise the feature is ignored.
-
-    * :py:class:`~culebra.solution.feature_selection.IntSolution`: Solutions
-      are coded as vectors of feature indices. Only features whose indices are
-      present in the solution are selected. Thus, solutions may have different
-      lengths and can not contain repeated indices.
+* :class:`~culebra.solution.feature_selection.BinarySolution`:
+  Solutions are coded as boolean vectors of a fixed length, the number of
+  selectable features. One boolean value is associated to each selectable
+  feature. If the boolean value is :data:`True`, then the feature is
+  selected, otherwise the feature is ignored.
+* :class:`~culebra.solution.feature_selection.IntSolution`: Solutions
+  are coded as vectors of feature indices. Only features whose indices are
+  present in the solution are selected. Thus, solutions may have different
+  lengths and can not contain repeated indices.
 
 In order to make possible the application of evolutionary approaches to this
-problem, the following :py:class:`~culebra.solution.abc.Individual`
+problem, the following :class:`~culebra.solution.abc.Individual`
 implementations are provided:
 
-    * :py:class:`~culebra.solution.feature_selection.BitVector`: Inherits from
-      :py:class:`~culebra.solution.feature_selection.BinarySolution` and
-      :py:class:`~culebra.solution.abc.Individual` to provide crossover and
-      mutation operators to binary solutions.
-
-    * :py:class:`~culebra.solution.feature_selection.IntVector`: Inherits from
-      :py:class:`~culebra.solution.feature_selection.IntSolution` and
-      :py:class:`~culebra.solution.abc.Individual` to provide crossover and
-      mutation operators to feature index-based solutions.
+* :class:`~culebra.solution.feature_selection.BitVector`: Inherits from
+  :class:`~culebra.solution.feature_selection.BinarySolution` and
+  :class:`~culebra.solution.abc.Individual` to provide crossover and
+  mutation operators to binary solutions.
+* :class:`~culebra.solution.feature_selection.IntVector`: Inherits from
+  :class:`~culebra.solution.feature_selection.IntSolution` and
+  :class:`~culebra.solution.abc.Individual` to provide crossover and
+  mutation operators to feature index-based solutions.
 
 Ant Colony Optimization is also supported by the
-:py:class:`~culebra.solution.feature_selection.Ant` class, which inherits from
-:py:class:`~culebra.solution.feature_selection.IntSolution` and
-:py:class:`culebra.solution.abc.Ant` to add all the path handling stuff to
+:class:`~culebra.solution.feature_selection.Ant` class, which inherits from
+:class:`~culebra.solution.feature_selection.IntSolution` and
+:class:`culebra.solution.abc.Ant` to add all the path handling stuff to
 feature index-based solutions.
 
 Finally, this module also provides the
-:py:class:`~culebra.solution.feature_selection.Metrics` class, which supplies
+:class:`~culebra.solution.feature_selection.Metrics` class, which supplies
 several metrics about the selected features finally obtained.
 """
 
@@ -126,25 +123,25 @@ class Species(BaseSpecies):
 
         :param num_feats: Number of input features considered in the feature
             selection problem
-        :type num_feats: :py:class:`int`
+        :type num_feats: int
         :param min_feat: Smallest feature index considered in this species.
             Must be in the interval [0, *num_feats*). If omitted, the minimum
-            value (0) will be used. Defaults to :py:data:`None`
-        :type min_feat: :py:class:`int`, optional
+            value (0) will be used. Defaults to :data:`None`
+        :type min_feat: int
         :param min_size: Minimum size of solutions (minimum number of
             features selected by solutions in the species). Must be in the
             interval [0, *max_feat - min_feat + 1*]. If omitted, the minimum
-            value (0) will be used. Defaults to :py:data:`None`
-        :type min_size: :py:class:`int`, optional
+            value (0) will be used. Defaults to :data:`None`
+        :type min_size: int
         :param max_feat: Largest feature index considered in this species.
             Must be in the interval [*min_feat*, *num_feats*). If omitted, the
             maximum possible feature index (*num_feats* - 1) will be used.
-            Defaults to :py:data:`None`
-        :type max_feat: :py:class:`int`, optional
+            Defaults to :data:`None`
+        :type max_feat: int
         :param max_size: Maximum size of solutions. Must be in the interval
             [*min_size*, *max_feat - min_feat + 1*]. If omitted, the maximum
-            possible size is used. Defaults to :py:data:`None`
-        :type max_size: :py:class:`int`, optional
+            possible size is used. Defaults to :data:`None`
+        :type max_size: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -166,41 +163,41 @@ class Species(BaseSpecies):
 
     @property
     def num_feats(self) -> int:
-        """Get the number of features for this species.
+        """Number of features for this species.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._num_feats
 
     @property
     def min_feat(self) -> int:
-        """Get the minimum feature index for this species.
+        """Minimum feature index for this species.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._min_feat
 
     @property
     def max_feat(self) -> int:
-        """Get the maximum feature index for this species.
+        """Maximum feature index for this species.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._max_feat
 
     @property
     def min_size(self) -> int:
-        """Get the minimum subset size for this species.
+        """Minimum subset size for this species.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._min_size
 
     @property
     def max_size(self) -> int:
-        """Get the maximum subset size for this species.
+        """Maximum subset size for this species.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._max_size
 
@@ -208,7 +205,7 @@ class Species(BaseSpecies):
     def from_proportion(
         cls,
         num_feats: int,
-        prop: float = DEFAULT_PROP
+        prop: Optional[float] = None
     ) -> Species:
         """Create a parametrized species for testing purposes.
 
@@ -234,27 +231,28 @@ class Species(BaseSpecies):
         ======  ==========  ==========  ==========  ==========
 
         The maximum value for *prop* is
-        :py:attr:`~culebra.solution.feature_selection.MAX_PROP`.
+        :attr:`~culebra.solution.feature_selection.MAX_PROP`.
 
         :param num_feats: Number of input features considered in the feature
             selection problem
-        :type num_feats: :py:class:`int`
+        :type num_feats: int
         :param prop: Proportion of the number of features used to fix the
-            species parameters. Defaults to
-            :py:attr:`~culebra.solution.feature_selection.DEFAULT_PROP`. The
-            maximum allowed value is
-            :py:attr:`~culebra.solution.feature_selection.MAX_PROP`.
-        :type prop: :py:class:`float`, optional
+            species parameters. If omitted, the default proportion
+            (:attr:`~culebra.solution.feature_selection.DEFAULT_PROP`) is used
+        :type prop: float
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         :return: A Species object
-        :rtype: :py:class:`~culebra.solution.feature_selection.Species`
+        :rtype: ~culebra.solution.feature_selection.Species
         """
         # Check num_feats
         (num_feats, _, _, _, _) = cls._check_attributes(num_feats)
 
         # Check prop
-        prop = check_float(prop, "proportion", ge=0, le=MAX_PROP)
+        if prop is None:
+            prop = DEFAULT_PROP
+        else:
+            prop = check_float(prop, "proportion", ge=0, le=MAX_PROP)
 
         # Parametrize the species from num_feats and prop
         min_feat = int(num_feats * prop)
@@ -268,10 +266,10 @@ class Species(BaseSpecies):
         """Check if a solution meets the constraints imposed by the species.
 
         :param sol: The solution
-        :type sol: :py:class:`~culebra.solution.feature_selection.Solution`
-        :return: :py:data:`True` if the solution belongs to the species.
-            :py:data:`False` otherwise
-        :rtype: :py:class:`bool`
+        :type sol: ~culebra.solution.feature_selection.Solution
+        :return: :data:`True` if the solution belongs to the species.
+            :data:`False` otherwise
+        :rtype: bool
         """
         sol_is_member = True
         # Check the number of features
@@ -299,25 +297,25 @@ class Species(BaseSpecies):
 
         :param num_feats: Number of input features considered in the feature
             selection problem
-        :type num_feats: :py:class:`int`
+        :type num_feats: int
         :param min_feat: Smallest feature index considered in this species.
             Must be in the interval [0, *num_feats*). If omitted, the minimum
-            value (0) will be used. Defaults to :py:data:`None`
-        :type min_feat: :py:class:`int`, optional
+            value (0) will be used. Defaults to :data:`None`
+        :type min_feat: int
         :param min_size: Minimum size of solutions (minimum number of
             features selected by solutions in the species). Must be in the
             interval [0, *max_feat - min_feat + 1*]. If omitted, the minimum
-            value (0) will be used. Defaults to :py:data:`None`
-        :type min_size: :py:class:`int`, optional
+            value (0) will be used. Defaults to :data:`None`
+        :type min_size: int
         :param max_feat: Largest feature index considered in this species.
             Must be in the interval [*min_feat*, *num_feats*). If omitted, the
             maximum possible feature index (*num_feats* - 1) will be used.
-            Defaults to :py:data:`None`
-        :type max_feat: :py:class:`int`, optional
+            Defaults to :data:`None`
+        :type max_feat: int
         :param max_size: Maximum size of solutions. Must be in the interval
             [*min_size*, *max_feat - min_feat + 1*]. If omitted, the maximum
-            possible size is used. Defaults to :py:data:`None`
-        :type max_size: :py:class:`int`, optional
+            possible size is used. Defaults to :data:`None`
+        :type max_size: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -357,7 +355,11 @@ class Species(BaseSpecies):
         return (num_feats, min_feat, min_size, max_feat, max_size)
 
     def __copy__(self) -> Species:
-        """Shallow copy the species."""
+        """Shallow copy the species.
+
+        :return: The copied species
+        :rtype: ~culebra.solution.feature_selection.Species
+        """
         cls = self.__class__
         result = cls(self.num_feats)
         result.__dict__.update(self.__dict__)
@@ -367,9 +369,9 @@ class Species(BaseSpecies):
         """Deepcopy the species.
 
         :param memo: Species attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the species
-        :rtype: :py:class:`~culebra.solution.feature_selection.Species`
+        :type memo: dict
+        :return: The copied species
+        :rtype: ~culebra.solution.feature_selection.Species
         """
         cls = self.__class__
         result = cls(self.num_feats)
@@ -380,7 +382,7 @@ class Species(BaseSpecies):
         """Reduce the species.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (self.__class__, (self.num_feats,), self.__dict__)
 
@@ -388,8 +390,10 @@ class Species(BaseSpecies):
     def __fromstate__(cls, state: dict) -> Species:
         """Return a species from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: dict
+        :return: The object
+        :rtype: ~culebra.solution.feature_selection.Species
         """
         obj = cls(
             state['_num_feats']
@@ -403,7 +407,7 @@ class Solution(BaseSolution):
 
     species_cls = Species
     """Class for the species used by the
-    :py:class:`~culebra.solution.feature_selection.Solution` class to constrain
+    :class:`~culebra.solution.feature_selection.Solution` class to constrain
     all its instances."""
 
     def __init__(
@@ -415,13 +419,11 @@ class Solution(BaseSolution):
         """Construct a default solution.
 
         :param species: The species the solution will belong to
-        :type species:
-            :py:class:`~culebra.solution.feature_selection.Solution.species_cls`
-        :param fitness: The solution's fitness class
-        :type fitness: :py:class:`~culebra.abc.Fitness`
+        :type species: ~culebra.solution.feature_selection.Species
+        :param fitness_cls: The solution's fitness class
+        :type fitness_cls: type[~culebra.abc.Fitness]
         :param features: Initial features
-        :type features: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int`
+        :type features: ~collections.abc.Sequence[int]
         :raises TypeError: If *species* is not a valid species
         :raises TypeError: If *fitness_cls* is not a valid fitness class
         """
@@ -436,52 +438,60 @@ class Solution(BaseSolution):
     @property
     @abstractmethod
     def features(self) -> Sequence[int]:
-        """Get and set the indices of the features selected by the solution.
+        """Features selected by the solution
 
         This property must be overridden by subclasses to return a correct
         value.
 
-        :getter: Return an ordered sequence with the indices of the selected
-            features.
-        :setter: Set the new feature indices. An array-like object of
-            feature indices is expected
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :return: Return an ordered sequence with the indices of the selected
+            features
+        :rtype: ~collections.abc.Sequence[int]
 
-        :raises NotImplementedError: if has not been overridden
+        :setter: Set a new set of selected features
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
+        :raises ValueError: If set to new feature indices values which do not
+            meet the species constraints.
+        :raises NotImplementedError: If has not been overridden
         """
-        raise NotImplementedError("The features property has not been "
-                                  "implemented in the "
-                                  f"{self.__class__.__name__} class")
+        raise NotImplementedError(
+            "The features property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     @features.setter
     @abstractmethod
     def features(self, values: Sequence[int]) -> None:
-        """Set the indices of the new features selected by the solution.
+        """Set a new set of selected features.
 
         This property setter must be overridden by subclasses.
 
-        :param values: The new feature indices
-        :type values: :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises NotImplementedError: if has not been overridden
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
+        :raises ValueError: If set to new feature indices values which do not
+            meet the species constraints.
+        :raises NotImplementedError: If has not been overridden
         """
-        raise NotImplementedError("The features property seter has not been "
-                                  "implemented in the "
-                                  f"{self.__class__.__name__} class")
+        raise NotImplementedError(
+            "The features property setter has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     @property
     @abstractmethod
     def num_feats(self) -> int:
-        """Get the number of features selected by the solution.
+        """Number of features selected by the solution.
 
         This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overridden
-        :type: :py:class:`int`
+        :rtype: int
+        :raises NotImplementedError: If has not been overridden
         """
-        raise NotImplementedError("The num_feats property has not been "
-                                  "implemented in the "
-                                  f"{self.__class__.__name__} class")
+        raise NotImplementedError(
+            "The num_feats property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     @property
     @abstractmethod
@@ -491,13 +501,15 @@ class Solution(BaseSolution):
         This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overridden
-        :type: :py:class:`int` or :py:data:`None` if no feature has been
-            selected
+        :return: The minimum feature index or :data:`None` if no feature has
+            been selected
+        :rtype: int
+        :raises NotImplementedError: If has not been overridden
         """
-        raise NotImplementedError("The min_feat property has not been "
-                                  "implemented in the "
-                                  f"{self.__class__.__name__} class")
+        raise NotImplementedError(
+            "The min_feat property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     @property
     @abstractmethod
@@ -507,13 +519,15 @@ class Solution(BaseSolution):
         This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overridden
-        :type: :py:class:`int` or :py:data:`None` if no feature has been
-            selected
+        :return: The maximum feature index or :data:`None` if no feature has
+            been selected
+        :rtype: int
+        :raises NotImplementedError: If has not been overridden
         """
-        raise NotImplementedError("The max_feat property has not been "
-                                  "implemented in the "
-                                  f"{self.__class__.__name__} class")
+        raise NotImplementedError(
+            "The max_feat property has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     @abstractmethod
     def _setup(self) -> None:
@@ -521,18 +535,25 @@ class Solution(BaseSolution):
 
         This method must be overridden by subclasses.
 
-        :raises NotImplementedError: if has not been overridden
+        :raises NotImplementedError: If has not been overridden
         """
-        raise NotImplementedError("The _setup method has not been "
-                                  "implemented in the "
-                                  f"{self.__class__.__name__} class")
+        raise NotImplementedError(
+            "The _setup method has not been implemented in the "
+            f"{self.__class__.__name__} class"
+        )
 
     def __str__(self) -> str:
-        """Return the solution as a string."""
+        """Solution as a string.
+
+        :rtype: str
+        """
         return str(self.features)
 
     def __repr__(self) -> str:
-        """Return the solution representation."""
+        """Solution representation.
+
+        :rtype: str
+        """
         cls_name = self.__class__.__name__
         species_info = str(self.species)
         fitness_info = self.fitness.values
@@ -545,14 +566,16 @@ class BinarySolution(Solution):
     """Feature selector implementation based on boolean arrays."""
 
     @property
-    def features(self) -> Sequence[int]:
-        """Get and set the indices of the features selected by the solution.
+    def features(self) -> np.ndarray[int]:
+        """Features selected by the solution
 
-        :getter: Return an ordered sequence with the indices of the selected
-            features.
-        :setter: Set the new feature indices. An array-like object of
-            feature indices is expected
-        :type: :py:class:`numpy.ndarray`
+        :return: Return an ordered sequence with the indices of the selected
+            features
+        :rtype: ~numpy.ndarray[int]
+
+        :setter: Set a new set of selected features
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
         :raises ValueError: If set to new feature indices values which do not
             meet the species constraints.
         """
@@ -560,11 +583,12 @@ class BinarySolution(Solution):
 
     @features.setter
     def features(self, values: Sequence[int]) -> None:
-        """Set the indices of the new features selected by the solution.
+        """Set a new set of selected features.
 
-        :param values: The new feature indices
-        :type values: Array-like object
-        :raises ValueError: If the values do not meet the species constraints.
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
+        :raises ValueError: If set to new feature indices values which do not
+            meet the species constraints.
         """
         # Get the set of indices
         indices = np.unique(
@@ -581,9 +605,9 @@ class BinarySolution(Solution):
 
     @property
     def num_feats(self) -> int:
-        """Get the number of features selected by the solution.
+        """Number of features selected by the solution.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return np.count_nonzero(self._features)
 
@@ -591,8 +615,9 @@ class BinarySolution(Solution):
     def min_feat(self) -> int | None:
         """Minimum feature index selected by the solution.
 
-        :type: :py:class:`int` or :py:data:`None` if no feature has been
-            selected
+        :return: The minimum feature index or :data:`None` if no feature has
+            been selected
+        :rtype: int
         """
         index = None
         if self.num_feats > 0:
@@ -603,8 +628,9 @@ class BinarySolution(Solution):
     def max_feat(self) -> int | None:
         """Maximum feature index selected by the solution.
 
-        :type: :py:class:`int` or :py:data:`None` if no feature has been
-            selected
+        :return: The maximum feature index or :data:`None` if no feature has
+            been selected
+        :rtype: int
         """
         index = None
         if self.num_feats > 0:
@@ -649,14 +675,16 @@ class IntSolution(Solution):
     """Feature selector implementation based on arrays of indices."""
 
     @property
-    def features(self) -> Sequence[int]:
-        """Get and set the indices of the features selected by the solution.
+    def features(self) -> np.ndarray[int]:
+        """Features selected by the solution
 
-        :getter: Return an ordered sequence with the indices of the selected
-            features.
-        :setter: Set the new feature indices. An array-like object of
-            feature indices is expected
-        :type: :py:class:`numpy.ndarray`
+        :return: Return an ordered sequence with the indices of the selected
+            features
+        :rtype: ~numpy.ndarray[int]
+
+        :setter: Set a new set of selected features
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
         :raises ValueError: If set to new feature indices values which do not
             meet the species constraints.
         """
@@ -666,11 +694,12 @@ class IntSolution(Solution):
 
     @features.setter
     def features(self, values: Sequence[int]) -> None:
-        """Set the indices of the new features selected by the solution.
+        """Set a new set of selected features.
 
-        :param values: The new feature indices
-        :type values: Array-like object
-        :raises ValueError: If the values do not meet the species constraints.
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
+        :raises ValueError: If set to new feature indices values which do not
+            meet the species constraints.
         """
         # Get the set of indices
         self._features = np.unique(np.asarray(values, dtype=int))
@@ -682,9 +711,9 @@ class IntSolution(Solution):
 
     @property
     def num_feats(self) -> int:
-        """Get the number of features selected by the solution.
+        """Number of features selected by the solution.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._features.size
 
@@ -692,8 +721,9 @@ class IntSolution(Solution):
     def min_feat(self) -> int | None:
         """Minimum feature index selected by the solution.
 
-        :type: :py:class:`int` or :py:data:`None` if no feature has been
-            selected
+        :return: The minimum feature index or :data:`None` if no feature has
+            been selected
+        :rtype: int
         """
         return min(self._features) if self.num_feats > 0 else None
 
@@ -701,8 +731,9 @@ class IntSolution(Solution):
     def max_feat(self) -> int | None:
         """Maximum feature index selected by the solution.
 
-        :type: :py:class:`int` or :py:data:`None` if no feature has been
-            selected
+        :return: The maximum feature index or :data:`None` if no feature has
+            been selected
+        :rtype: int
         """
         return max(self._features) if self.num_feats > 0 else None
 
@@ -729,9 +760,9 @@ class BitVector(BinarySolution, BaseIndividual):
         This method implements the single-point crossover.
 
         :param other: The other individual
-        :type other: :py:class:`~culebra.solution.feature_selection.BitVector`
+        :type other: ~culebra.solution.feature_selection.BitVector
         :return: The two offspring
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.feature_selection.BitVector]
         """
         while True:
             # Cross point. Use randint to include also max_feat
@@ -763,9 +794,9 @@ class BitVector(BinarySolution, BaseIndividual):
         This method implements the two-points crossover.
 
         :param other: The other individual
-        :type other: :py:class:`~culebra.solution.feature_selection.BitVector`
+        :type other: ~culebra.solution.feature_selection.BitVector
         :return: The two offspring
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.feature_selection.BitVector]
         """
         min_feat = self.species.min_feat
         max_feat = self.species.max_feat
@@ -801,9 +832,9 @@ class BitVector(BinarySolution, BaseIndividual):
     Implemented as the single-point crossover.
 
     :param other: The other individual
-    :type other: :py:class:`~culebra.solution.feature_selection.BitVector`
+    :type other: ~culebra.solution.feature_selection.BitVector
     :return: The two offspring
-    :rtype: :py:class:`tuple`
+    :rtype: tuple[~culebra.solution.feature_selection.BitVector]
     """
 
     def mutate(self, indpb: float) -> Tuple[BitVector]:
@@ -813,9 +844,9 @@ class BitVector(BinarySolution, BaseIndividual):
         probability.
 
         :param indpb: Independent probability for each feature to be mutated.
-        :type indpb: :py:class:`float`
+        :type indpb: float
         :return: The mutant
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.feature_selection.BitVector]
         """
         while True:
             # Mask to select the features that will be flipped
@@ -843,9 +874,9 @@ class IntVector(IntSolution, BaseIndividual):
         individuals.
 
         :param other: The other individual
-        :type other: :py:class:`~culebra.solution.feature_selection.IntVector`
+        :type other: ~culebra.solution.feature_selection.IntVector
         :return: The two offspring
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.feature_selection.IntVector]
         """
         # Common features to both individuals
         common = np.intersect1d(
@@ -886,9 +917,9 @@ class IntVector(IntSolution, BaseIndividual):
         probability.
 
         :param indpb: Independent probability for each feature to be mutated.
-        :type indpb: :py:class:`float`
+        :type indpb: float
         :return: The mutant
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.feature_selection.IntVector]
         """
         # All possible features for the species
         all_feats = np.arange(
@@ -953,13 +984,11 @@ class Ant(IntSolution, BaseAnt):
         """Construct a default solution.
 
         :param species: The species the solution will belong to
-        :type species:
-            :py:class:`~culebra.solution.feature_selection.Solution.species_cls`
-        :param fitness: The solution's fitness class
-        :type fitness: :py:class:`~culebra.abc.Fitness`
+        :type species: ~culebra.solution.feature_selection.Species
+        :param fitness_cls: The solution's fitness class
+        :type fitness_cls: type[~culebra.abc.Fitness]
         :param features: Initial features
-        :type features: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int`
+        :type features: ~collections.abc.Sequence[int]
         :raises TypeError: If *species* is not a valid species
         :raises TypeError: If *fitness_cls* is not a valid fitness class
         """
@@ -975,24 +1004,26 @@ class Ant(IntSolution, BaseAnt):
         self._features = np.empty(shape=(0,), dtype=int)
 
     @property
-    def path(self) -> Sequence[int]:
+    def path(self) -> np.ndarray[int]:
         """Path traveled by the ant.
 
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :rtype: ~numpy.ndarray[int]
         """
         return self._features
 
     @property
-    def discarded(self) -> Sequence[int]:
+    def discarded(self) -> np.ndarray[int]:
         """Nodes discarded by the ant.
 
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :rtype: ~numpy.ndarray[int]
         """
         return self._discarded
 
     def append(self, feature: int) -> None:
         """Append a new feature to the ant's path.
 
+        :param feature: The feature index
+        :type feature: int
         :raises TypeError: If *feature* is not an integer number
         :raises ValueError: If *feature* does not meet the species
             constraints.
@@ -1018,6 +1049,8 @@ class Ant(IntSolution, BaseAnt):
 
         The discarded feature is not appended to the ant's path.
 
+        :param feature: The feature index
+        :type feature: int
         :raises TypeError: If *feature* is not an integer number
         :raises ValueError: If *feature* is already in the path or has been
             previously discarded
@@ -1036,18 +1069,19 @@ class Ant(IntSolution, BaseAnt):
         self._discarded = np.append(self.discarded, (feature))
 
     @property
-    def features(self) -> Sequence[int]:
-        """Get and set the features path traveled by the ant.
+    def features(self) -> np.ndarray[int]:
+        """Features selected by the ant
 
-        :getter: Return an ordered sequence with the indices of the selected
-            features. Use
-            :py:attr:`~culebra.solution.feature_selection.Ant.path` to get the
-            path in the order the ant traveled it
-        :setter: Set a new path. An array-like object of feature indices is
-            expected
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises ValueError: If any feature in the path does not meet the
-            species constraints.
+        :return: Return an ordered sequence with the indices of the selected
+            features. Use :attr:`~culebra.solution.feature_selection.Ant.path`
+            to get the path in the order the ant traveled it
+        :rtype: ~numpy.ndarray[int]
+
+        :setter: Set a new set of selected features
+        :param values: The indices of the new features
+        :type values: ~collections.abc.Sequence[int]
+        :raises ValueError: If set to new feature indices values which do not
+            meet the species constraints.
         """
         # Sort the array
         the_features = copy(self.path)
@@ -1059,7 +1093,7 @@ class Ant(IntSolution, BaseAnt):
         """Set a new traveled features path for the ant.
 
         :param path: The new features path
-        :type path: Array-like object
+        :type path: ~collections.abc.Sequence[int]
         :raises ValueError: If any feature in *path* does not meet the species
             constraints.
         :raises ValueError: If any feature in *path* is visited more than once.
@@ -1080,14 +1114,17 @@ class Ant(IntSolution, BaseAnt):
             )
 
     def __repr__(self) -> str:
-        """Return the ant representation."""
+        """Return the ant representation.
+
+        :rtype: str
+        """
         return BaseAnt.__repr__(self)
 
 
 class Metrics(Base):
     """Provide some metrics about the selected features finally obtained.
 
-    Evaluate the set of solutions found by a :py:class:`~culebra.abc.Trainer`
+    Evaluate the set of solutions found by a :class:`~culebra.abc.Trainer`
     and calculate some metrics about the frequency of each selected feature.
     More information about such metrics can be found in [Gonzalez2019]_.
     """
@@ -1106,13 +1143,14 @@ class Metrics(Base):
         """Return the relevance of the features finally selected.
 
         The relevance is calculated according to the method proposed in
-        [Gonzalez2019]_
+        [Gonzalez2019]_.
 
         :param solutions: Best solutions returned by the
-            :py:class:`~culebra.abc.Trainer`.
-        :type solutions: :py:class:`~collections.abc.Sequence`
-        :return: The relevance of each feature appearing in the solutions.
-        :rtype: :py:class:`~pandas.Series`
+            :class:`~culebra.abc.Trainer`
+        :type solutions:
+            ~collections.abc.Sequence[~culebra.solution.feature_selection.Solution]
+        :return: The relevance of each feature appearing in the solutions
+        :rtype: ~pandas.Series
         """
         # all relevances are initialized to 0
         relevances = dict(
@@ -1142,13 +1180,14 @@ class Metrics(Base):
         """Return the rank of the features finally selected.
 
         The rank is calculated according to the method proposed in
-        [Gonzalez2019]_
+        [Gonzalez2019]_.
 
         :param solutions: Best solutions returned by the
-            :py:class:`~culebra.abc.Trainer`.
-        :type solutions: :py:class:`~collections.abc.Sequence`
+            :class:`~culebra.abc.Trainer`.
+        :type solutions:
+            ~collections.abc.Sequence[~culebra.solution.feature_selection.Solution]
         :return: The relevance of each feature appearing in the solutions.
-        :rtype: :py:class:`~pandas.Series`
+        :rtype: ~pandas.Series
         """
         # Obtain the relevance of each feature. The series is sorted, starting
         # with the most relevant feature

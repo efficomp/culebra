@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.abc.Solution` class
-======================================
+:class:`culebra.abc.Solution` class
+===================================
 
 .. autoclass:: culebra.abc.Solution
 
@@ -34,24 +34,24 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.abc.Solution.species
 .. autoproperty:: culebra.abc.Solution.fitness
+.. autoproperty:: culebra.abc.Solution.species
 
 Methods
 -------
-.. automethod:: culebra.abc.Solution.dump
-.. automethod:: culebra.abc.Solution.dominates
 .. automethod:: culebra.abc.Solution.delete_fitness
+.. automethod:: culebra.abc.Solution.dominates
+.. automethod:: culebra.abc.Solution.dump
 
 Dunder methods
 --------------
 Intended to compare (lexicographically) two solutions according to their
 fitness.
 
-.. automethod:: culebra.abc.Solution.__hash__
 .. automethod:: culebra.abc.Solution.__eq__
-.. automethod:: culebra.abc.Solution.__ne__
-.. automethod:: culebra.abc.Solution.__lt__
-.. automethod:: culebra.abc.Solution.__gt__
-.. automethod:: culebra.abc.Solution.__le__
 .. automethod:: culebra.abc.Solution.__ge__
+.. automethod:: culebra.abc.Solution.__gt__
+.. automethod:: culebra.abc.Solution.__hash__
+.. automethod:: culebra.abc.Solution.__le__
+.. automethod:: culebra.abc.Solution.__lt__
+.. automethod:: culebra.abc.Solution.__ne__

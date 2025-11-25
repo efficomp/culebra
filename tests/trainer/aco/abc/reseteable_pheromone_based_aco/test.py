@@ -33,7 +33,8 @@ from culebra.trainer.aco import DEFAULT_CONVERGENCE_CHECK_FREQ
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
-    ReseteablePheromoneBasedACO
+    ReseteablePheromoneBasedACO,
+    ACOTSP
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
@@ -43,21 +44,12 @@ from culebra.fitness_function.tsp import (
 
 
 class MyTrainer(
+    ACOTSP,
+    ReseteablePheromoneBasedACO,    
     MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    ReseteablePheromoneBasedACO
+    MultipleHeuristicMatricesACO
 ):
     """Dummy implementation of a trainer method."""
-
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
-
-    def _decrease_pheromone(self) -> None:
-        """Decrease the amount of pheromone."""
-
-    def _increase_pheromone(self) -> None:
-        """Increase the amount of pheromone."""
 
 
 num_nodes = 25
@@ -70,7 +62,7 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`."""
+    """Test :class:`culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -210,10 +202,10 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
 
         # Simulate convergence
-        heuristic_shape = trainer._heuristic[0].shape
+        pheromone_shape = trainer.pheromone[0].shape
         trainer._pheromone = [
             np.zeros(
-                heuristic_shape,
+                pheromone_shape,
                 dtype=float
             )
         ] * trainer.num_pheromone_matrices
@@ -240,7 +232,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
-
+        
         # Create the trainer
         trainer = MyTrainer(**params)
         trainer._init_search()
@@ -257,19 +249,29 @@ class TrainerTester(unittest.TestCase):
 
         # Simulate convergence
         trainer._current_iter = trainer.convergence_check_freq
-        heuristic_shape = trainer._heuristic[0].shape
+        pheromone_shape = trainer.pheromone[0].shape
         trainer._pheromone = [
             np.zeros(
-                heuristic_shape,
+                pheromone_shape,
                 dtype=float
             )
         ] * trainer.num_pheromone_matrices
+        feasible_nodes = np.setdiff1d(
+            np.arange(species.num_nodes),
+            species.banned_nodes
+        )
 
-        # Check the pheromone
-        for pher in trainer.pheromone:
-            self.assertTrue(np.all(pher == 0))
-
+        for pher, init_pher in zip(
+            trainer.pheromone, trainer.initial_pheromone
+        ):
+            for i in range(len(feasible_nodes)):
+                org = feasible_nodes[i-1]
+                dest = feasible_nodes[i]
+                pher[org][dest] = init_pher
+                pher[dest][org] = init_pher
+        
         # Do an interation
+        trainer._start_iteration()
         trainer._do_iteration()
 
         # Check if the pheromone have been reset
@@ -373,10 +375,10 @@ class TrainerTester(unittest.TestCase):
 
         :param trainer1: The first trainer
         :type trainer1:
-            :py:class:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`
+            :class:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`
         :param trainer2: The second trainer
         :type trainer2:
-            :py:class:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`
+            :class:`~culebra.trainer.aco.abc.ReseteablePheromoneBasedACO`
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

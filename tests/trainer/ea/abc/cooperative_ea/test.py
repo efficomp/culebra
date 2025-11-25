@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.trainer.ea.abc.CooperativeEA`."""
+"""Unit test for :class:`~culebra.trainer.ea.abc.CooperativeEA`."""
 
 import unittest
 from os import remove
@@ -99,10 +99,10 @@ class MyCooperativeEA(CooperativeEA):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.ea.abc.CooperativeEA`."""
+    """Test :class:`~culebra.trainer.ea.abc.CooperativeEA`."""
 
     def test_init(self):
-        """Test :py:meth:`~culebra.trainer.ea.abc.CooperativeEA.__init__`."""
+        """Test :meth:`~culebra.trainer.ea.abc.CooperativeEA.__init__`."""
         valid_solution_classes = [
             ClassifierOptimizationIndividual,
             FeatureSelectionIndividual
@@ -1013,9 +1013,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.ea.abc.CooperativeEA`
+        :type trainer1: ~culebra.trainer.ea.abc.CooperativeEA
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.ea.abc.CooperativeEA`
+        :type trainer2: ~culebra.trainer.ea.abc.CooperativeEA
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

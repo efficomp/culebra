@@ -114,7 +114,7 @@ svc_c = C()
 
 
 class FSSVCScorerTester(unittest.TestCase):
-    """Test FSMultiObjectiveDatasetScorer."""
+    """Test FSSVCScorer."""
 
     def test_init(self):
         """Test the constructor."""
@@ -137,10 +137,6 @@ class FSSVCScorerTester(unittest.TestCase):
         # (the classification objs must be instances of FSClassificationScorer)
         with self.assertRaises(ValueError):
             FSSVCScorer(svc_kappa_index)
-
-        # Misplace the first objective
-        with self.assertRaises(ValueError):
-            FSSVCScorer(svc_c, fs_kappa_index_svc_rbf, fs_num_feats)
 
         # Correct arguments
         func = FSSVCScorer(fs_kappa_index_svc_rbf, fs_num_feats, svc_c)

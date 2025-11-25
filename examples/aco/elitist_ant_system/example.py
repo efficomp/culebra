@@ -25,11 +25,16 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import (
     ElitistAntSystem,
     DEFAULT_PHEROMONE_EVAPORATION_RATE
 )
 from culebra.fitness_function.tsp import PathLength
+
+
+class ElitistAntSystemTSP(ACOTSP, ElitistAntSystem):
+    """Elitist ant system for TSP."""
 
 
 # Load the GR17 distances matrix from TSPLIB
@@ -63,7 +68,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = ElitistAntSystem(**params)
+trainer = ElitistAntSystemTSP(**params)
 
 # Train the wrapper
 print("Training ...")

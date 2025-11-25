@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.ea.abc.HeterogeneousEA` class
-========================================================
+:class:`culebra.trainer.ea.abc.HeterogeneousEA` class
+=====================================================
 
 .. autoclass:: culebra.trainer.ea.abc.HeterogeneousEA
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.ea.abc.HeterogeneousEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.HeterogeneousEA.objective_stats
+.. autoattribute:: culebra.trainer.ea.abc.HeterogeneousEA.stats_names
 
 Class methods
 -------------
@@ -35,41 +35,40 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_cls
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.container
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.crossover_funcs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.crossover_probs
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.current_iter
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.custom_termination_func
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.pop_sizes
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.crossover_funcs
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.mutation_funcs
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.selection_funcs
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.crossover_probs
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.mutation_probs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.fitness_function
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.gene_ind_mutation_probs
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.selection_funcs_params
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.index
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.logbook
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.mutation_funcs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.mutation_probs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.num_evals
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.num_subtrainers
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_size
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.pop_sizes
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.random_seed
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_freq
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_topology_func
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_topology_func_params
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_selection_func
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_selection_func_params
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_enable
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_freq
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_filename
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.verbose
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.random_seed
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.logbook
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.num_evals
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.runtime
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.index
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.container
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_size
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_topology_func
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representation_topology_func_params
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.representatives
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.runtime
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.selection_funcs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.selection_funcs_params
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_cls
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainers
-
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.verbose
 
 Private properties
 ------------------
@@ -82,36 +81,36 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.dump
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.reset
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.evaluate
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.best_solutions
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.best_representatives
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.train
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.best_solutions
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.dump
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.evaluate
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.reset
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.test
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA.train
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._default_termination_func
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._do_iteration
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._do_iteration_stats
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._finish_iteration
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._finish_search
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._get_state
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._set_state
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._save_state
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_internals
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_search
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._load_state
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._new_state
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_state
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._reset_state
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_internals
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._reset_internals
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_search
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._search
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._finish_search
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._start_iteration
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._preprocess_iteration
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._do_iteration
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._postprocess_iteration
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._finish_iteration
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._do_iteration_stats
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._default_termination_func
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._termination_criterion
-.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._preprocess_iteration
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._reset_internals
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._reset_state
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._save_state
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._search
 .. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._set_cooperative_fitness
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._set_state
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._start_iteration
+.. automethod:: culebra.trainer.ea.abc.HeterogeneousEA._termination_criterion

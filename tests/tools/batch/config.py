@@ -17,7 +17,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Configuration file to test the :py:class:`culebra.tools.Batch` class."""
+"""Configuration file to test the :class:`culebra.tools.Batch` class."""
 
 from collections import Counter
 

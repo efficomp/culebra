@@ -19,7 +19,7 @@
 """Fitness functions.
 
 This sub-module provides the class
-:py:class:`~culebra.fitness_function.abc.MultiObjectiveFitnessFunction`,
+:class:`~culebra.fitness_function.MultiObjectiveFitnessFunction`,
 which allows the aggregation of several single-objective fitness functions.
 """
 
@@ -51,13 +51,13 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
 
     def __init__(
         self,
-        *objectives
+        *objectives: Tuple[SingleObjectiveFitnessFunction, ...]
     ) -> None:
         """Construct a multi-objective fitness function.
 
         :param objectives: Objectives for this fitness function
         :type objectives:
-            :py:class:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction`
+            tuple[~culebra.fitness_function.abc.SingleObjectiveFitnessFunction]
         """
         # Init the objective list
         self._objectives = check_sequence(
@@ -75,9 +75,9 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
 
     @property
     def obj_weights(self) -> Tuple[int, ...]:
-        """Get the objective weights.
+        """Objective weights.
 
-        :type: :py:class:`tuple` of :py:class:`int`
+        :rtype: tuple[int]
         """
         weights = ()
 
@@ -88,9 +88,9 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
 
     @property
     def obj_names(self) -> Tuple[str, ...]:
-        """Get the objective names.
+        """Objective names.
 
-        :type: :py:class:`tuple` of :py:class:`str`
+        :rtype: tuple[str]
         """
         names = ()
 
@@ -101,18 +101,19 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
 
     @property
     def obj_thresholds(self) -> List[float]:
-        """Get and set new objective similarity thresholds.
+        """Objective similarity thresholds.
 
-        :getter: Return the current thresholds
-        :setter: Set new thresholds. If only a single value is provided, the
+        :rtype: list[float]
+        :setter: Set new thresholds.
+        :param values: The new values. If only a single value is provided, the
             same threshold will be used for all the objectives. Different
-            thresholds can be provided in a
-            :py:class:`~collections.abc.Sequence`.
-        :type thresholds: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+            thresholds can be provided in a :class:`~collections.abc.Sequence`.
+            If set to :data:`None`, all the thresholds are set to
+            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :type values: float | ~collections.abc.Sequence[float] | None
         :raises TypeError: If neither a real number nor a
-            :py:class:`~collections.abc.Sequence` of real numbers id provided
-        :raises ValueError: If any threshold is negative
+            :class:`~collections.abc.Sequence` of real numbers is provided
+        :raises ValueError: If any value is negative
         :raises ValueError: If the length of the thresholds sequence does not
             match the number of objectives
         """
@@ -127,18 +128,17 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
     def obj_thresholds(
         self, values: float | Sequence[float] | None
     ) -> None:
-        """Get and set new objective similarity thresholds.
+        """Set new objective similarity thresholds.
 
-        :getter: Return the current thresholds
-        :setter: Set new thresholds. If only a single value is provided, the
+        :param values: The new values. If only a single value is provided, the
             same threshold will be used for all the objectives. Different
-            thresholds can be provided in a
-            :py:class:`~collections.abc.Sequence`.
-        :type thresholds: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+            thresholds can be provided in a :class:`~collections.abc.Sequence`.
+            If set to :data:`None`, all the thresholds are set to
+            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :type values: float | ~collections.abc.Sequence[float] | None
         :raises TypeError: If neither a real number nor a
-            :py:class:`~collections.abc.Sequence` of real numbers id provided
-        :raises ValueError: If any threshold is negative
+            :class:`~collections.abc.Sequence` of real numbers is provided
+        :raises ValueError: If any value is negative
         :raises ValueError: If the length of the thresholds sequence does not
             match the number of objectives
         """
@@ -162,11 +162,11 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
             obj.obj_thresholds = th
 
     @property
-    def objectives(self) -> Sequence[SingleObjectiveFitnessFunction]:
-        """Return the list of objectives.
+    def objectives(self) -> List[SingleObjectiveFitnessFunction]:
+        """List of objectives.
 
-        :type: :py:class:`list` of`
-            :py:class:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction`
+        :rtype:
+            list[~culebra.fitness_function.abc.SingleObjectiveFitnessFunction]
         """
         return self._objectives
 
@@ -182,18 +182,17 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         evaluations
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
-            problem
-        :type index: :py:class:`int`, optional
+            problem, optional
+        :type index: int
         :param representatives: Representative solutions of each species
-            being optimized
-        :type representatives: A :py:class:`~collections.abc.Sequence`
-            containing instances of :py:class:`~culebra.abc.Solution`,
-            optional
+            being optimized, optional
+        :type representatives:
+            ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         """
         for obj in self.objectives:
             obj.evaluate(sol, index, representatives)

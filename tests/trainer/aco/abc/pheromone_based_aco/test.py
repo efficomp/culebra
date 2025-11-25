@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.abc.PheromoneBasedACO`."""
+"""Unit test for :class:`culebra.trainer.aco.abc.PheromoneBasedACO`."""
 
 import unittest
 
@@ -29,6 +29,7 @@ import numpy as np
 from culebra.trainer.aco import DEFAULT_PHEROMONE_EVAPORATION_RATE
 from culebra.trainer.aco.abc import (
     PheromoneBasedACO,
+    ACOTSP,
     SinglePheromoneMatrixACO,
     SingleHeuristicMatrixACO,
     MultiplePheromoneMatricesACO,
@@ -41,12 +42,9 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(PheromoneBasedACO):
+class MyTrainer(ACOTSP, PheromoneBasedACO):
     """Dummy implementation of a pheromone-based trainer."""
 
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
 
 class MySinglePheromoneTrainer(
         SinglePheromoneMatrixACO,
@@ -77,7 +75,7 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.PheromoneBasedACO`."""
+    """Test :class:`culebra.trainer.aco.abc.PheromoneBasedACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -227,81 +225,6 @@ class TrainerTester(unittest.TestCase):
 
         # Check the pheromone
         self.assertEqual(trainer.pheromone, None)
-
-    def test_best_solutions(self):
-        """Test the best_solutions method."""
-        # Trainer parameters
-        species = Species(num_nodes)
-        initial_pheromone = (2, )
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": single_obj_fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MySinglePheromoneTrainer(**params)
-
-        # Try before the colony has been created
-        best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
-        self.assertEqual(len(best_ones), 1)
-        self.assertEqual(len(best_ones[0]), 0)
-
-        # Generate some ants
-        ant1 = Ant(
-            species,
-            single_obj_fitness_func.fitness_cls,
-            path=optimum_paths[0]
-        )
-        worse_path = np.concatenate(
-            (
-                optimum_paths[0][:5],
-                optimum_paths[0][-1:],
-                optimum_paths[0][5:-2])
-        )
-        ant2 = Ant(
-            species,
-            single_obj_fitness_func.fitness_cls,
-            path=worse_path
-        )
-
-        # Init the search
-        trainer._init_search()
-
-        # Try a colony with different fitnesses
-        trainer._col = [ant1, ant2]
-
-        for ant in trainer.col:
-            trainer.evaluate(ant)
-
-        best_ones = trainer.best_solutions()
-
-        # Check that best_ones contains only one species
-        self.assertEqual(len(best_ones), 1)
-
-        # Check that the hof has only one solution
-        self.assertEqual(len(best_ones[0]), 1)
-
-        # Check that the solution in hof is ant1
-        self.assertTrue(ant1 in best_ones[0])
-
-        # Set the same fitness for both solutions
-        for sol in trainer.col:
-            sol.fitness.values = (18, )
-
-        best_ones = trainer.best_solutions()
-
-        # Check that best_ones contains only one species
-        self.assertEqual(len(best_ones), 1)
-
-        # Check that the hof has two solutions
-        self.assertEqual(len(best_ones[0]), 2)
-
-        # Check that ant1 and ant2 are the solutions in hof
-        self.assertTrue(ant1 in best_ones[0])
-        self.assertTrue(ant2 in best_ones[0])
 
     def test_decrease_pheromone(self):
         """Test the _decrease_pheromone method."""

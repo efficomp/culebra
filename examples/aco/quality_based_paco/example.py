@@ -24,6 +24,7 @@
 
 from pandas import Series, DataFrame
 
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.solution.tsp import Species, Ant
 from culebra.trainer.aco import QualityBasedPACO
 from culebra.fitness_function.tsp import PathLength
@@ -44,6 +45,10 @@ species = Species(num_nodes)
 initial_pheromone = (1 / num_nodes,) * fitness_func.num_obj
 max_pheromone = (5,) * fitness_func.num_obj
 
+class QualityBasedPACOTSP(ACOTSP, QualityBasedPACO):
+    """Quality Based PACO for TSP."""
+
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
@@ -59,7 +64,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = QualityBasedPACO(**params)
+trainer = QualityBasedPACOTSP(**params)
 
 # Train the wrapper
 print("Training ...")

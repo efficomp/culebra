@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.NSGA`."""
+"""Unit test for :class:`culebra.trainer.ea.NSGA`."""
 
 import unittest
 from os import remove
@@ -40,10 +40,10 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -56,7 +56,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -75,10 +75,10 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.NSGA`."""
+    """Test :class:`culebra.trainer.ea.NSGA`."""
 
     def test_init(self):
-        """Test :py:meth:`~culebra.trainer.ea.NSGA.__init__`."""
+        """Test :meth:`~culebra.trainer.ea.NSGA.__init__`."""
         # Test the default parameters
         params = {
             "solution_cls": Individual,
@@ -117,7 +117,7 @@ class TrainerTester(unittest.TestCase):
             params["nsga3_reference_points_scaling"])
 
     def test_pop_size(self):
-        """Test :py:meth:`~culebra.trainer.ea.NSGA.pop_size` getter."""
+        """Test :meth:`~culebra.trainer.ea.NSGA.pop_size` getter."""
         # Try with the default pop_size for NSGA2
         params = {
             "solution_cls": Individual,
@@ -156,7 +156,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.pop_size, pop_size)
 
     def test_selection_func(self):
-        """Test :py:meth:`~culebra.trainer.ea.NSGA.selection_func` getter."""
+        """Test :meth:`~culebra.trainer.ea.NSGA.selection_func` getter."""
         # Try with the default selection function
         params = {
             "solution_cls": Individual,
@@ -174,7 +174,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.selection_func, selNSGA3)
 
     def test_selection_func_params(self):
-        """Test :py:meth:`~culebra.trainer.ea.NSGA.selection_func_params`."""
+        """Test :meth:`~culebra.trainer.ea.NSGA.selection_func_params`."""
         # Try with the default selection function
         params = {
             "solution_cls": Individual,
@@ -363,9 +363,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.ea.NSGA`
+        :type trainer1: ~culebra.trainer.ea.NSGA
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.ea.NSGA`
+        :type trainer2: ~culebra.trainer.ea.NSGA
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

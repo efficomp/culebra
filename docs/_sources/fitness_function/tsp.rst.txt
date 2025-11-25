@@ -19,13 +19,14 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.tsp` module
-===============================================
+:mod:`culebra.fitness_function.tsp` module
+==========================================
 
 .. automodule:: culebra.fitness_function.tsp
 
 .. toctree::
     :hidden:
 
+    abc <tsp/abc>
     PathLength <tsp/path_length>
     MultiObjectivePathLength <tsp/multi_objective_path_length>

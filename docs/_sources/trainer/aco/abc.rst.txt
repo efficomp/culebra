@@ -19,11 +19,10 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.trainer.aco.abc` module
-========================================
+:mod:`culebra.trainer.aco.abc` module
+=====================================
 
 .. automodule:: culebra.trainer.aco.abc
-
 
 .. toctree::
     :hidden:
@@ -42,4 +41,5 @@
     PACO <abc/paco>
     MaxPheromonePACO <abc/max_pheromone_paco>
     SingleObjPACO <abc/single_obj_paco>
-    ACO_FS <abc/aco_fs>
+    ACOTSP <abc/aco_tsp>
+    ACOFS <abc/aco_fs>

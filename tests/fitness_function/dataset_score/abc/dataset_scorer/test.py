@@ -236,10 +236,10 @@ class DatasetScorerTester(unittest.TestCase):
 
         :param func1: The first fitness function
         :type func1:
-            :py:class:`~culebra.fitness_function.dataset_score.abc.DatasetScorer`
+            :class:`~culebra.fitness_function.dataset_score.abc.DatasetScorer`
         :param func2: The second fitness function
         :type func2:
-            :py:class:`~culebra.fitness_function.dataset_score.abc.DatasetScorer`
+            :class:`~culebra.fitness_function.dataset_score.abc.DatasetScorer`
         """
         # Copies all the levels
         self.assertNotEqual(id(func1), id(func2))

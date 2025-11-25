@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.parameter_optimization.Species` class
-=================================================================
+:class:`culebra.solution.parameter_optimization.Species` class
+==============================================================
 
 .. autoclass:: culebra.solution.parameter_optimization.Species
 
@@ -31,12 +31,13 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.solution.parameter_optimization.Species.lower_bounds
-.. autoproperty:: culebra.solution.parameter_optimization.Species.upper_bounds
-.. autoproperty:: culebra.solution.parameter_optimization.Species.types
 .. autoproperty:: culebra.solution.parameter_optimization.Species.names
 .. autoproperty:: culebra.solution.parameter_optimization.Species.num_params
+.. autoproperty:: culebra.solution.parameter_optimization.Species.types
+.. autoproperty:: culebra.solution.parameter_optimization.Species.upper_bounds
 
 Methods
 -------
 .. automethod:: culebra.solution.parameter_optimization.Species.dump
 .. automethod:: culebra.solution.parameter_optimization.Species.is_member
+

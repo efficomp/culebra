@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.abc.MaxPheromonePACO`."""
+"""Unit test for :class:`culebra.trainer.aco.abc.MaxPheromonePACO`."""
 
 import unittest
 from copy import copy, deepcopy
@@ -34,7 +34,8 @@ from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
-    MaxPheromonePACO
+    MaxPheromonePACO,
+    ACOTSP
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
@@ -44,15 +45,12 @@ from culebra.fitness_function.tsp import (
 
 
 class MyTrainer(
+    ACOTSP,
+    MaxPheromonePACO,
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
-    MaxPheromonePACO
 ):
     """Dummy implementation of a trainer method."""
-
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
 
     def _update_pop(self) -> None:
         """Update the population."""
@@ -95,7 +93,7 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.MaxPheromonePACO`."""
+    """Test :class:`culebra.trainer.aco.abc.MaxPheromonePACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -324,9 +322,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.aco.abc.MaxPheromonePACO`
+        :type trainer1: ~culebra.trainer.aco.abc.MaxPheromonePACO
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.aco.abc.MaxPheromonePACO`
+        :type trainer2: ~culebra.trainer.aco.abc.MaxPheromonePACO
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

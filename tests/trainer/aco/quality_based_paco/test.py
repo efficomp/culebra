@@ -20,12 +20,13 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.QualityBasedPACO`."""
+"""Unit test for :class:`culebra.trainer.aco.QualityBasedPACO`."""
 
 import unittest
 
 import numpy as np
 
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import QualityBasedPACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
@@ -63,8 +64,12 @@ num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
 
 
+class QualityBasedPACOTSP(ACOTSP, QualityBasedPACO):
+    """Quality Based PACO for TSP."""
+
+
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.QualityBasedPACO`."""
+    """Test :class:`culebra.trainer.aco.QualityBasedPACO`."""
 
     def test_update_pop(self):
         """Test the _update_pop method."""
@@ -85,7 +90,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the minimization trainer
-        minimization_trainer = QualityBasedPACO(**minimization_params)
+        minimization_trainer = QualityBasedPACOTSP(**minimization_params)
         minimization_trainer._init_search()
 
         # The initial population should be empty
@@ -140,7 +145,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the minimization trainer
-        maximization_trainer = QualityBasedPACO(**maximization_params)
+        maximization_trainer = QualityBasedPACOTSP(**maximization_params)
         maximization_trainer._init_search()
 
         # The initial population should be empty
@@ -202,7 +207,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = QualityBasedPACO(**params)
+        trainer = QualityBasedPACOTSP(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

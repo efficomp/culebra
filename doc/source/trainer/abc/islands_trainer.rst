@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.abc.IslandsTrainer` class
-====================================================
+:class:`culebra.trainer.abc.IslandsTrainer` class
+=================================================
 
 .. autoclass:: culebra.trainer.abc.IslandsTrainer
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.abc.IslandsTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.IslandsTrainer.objective_stats
+.. autoattribute:: culebra.trainer.abc.IslandsTrainer.stats_names
 
 Class methods
 -------------
@@ -35,34 +35,34 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.solution_cls
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.species
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.fitness_function
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_cls
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.max_num_iters
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.checkpoint_enable
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.checkpoint_filename
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.checkpoint_freq
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.container
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.current_iter
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.custom_termination_func
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.fitness_function
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.index
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.logbook
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.max_num_iters
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.num_evals
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.num_subtrainers
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_size
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.random_seed
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_freq
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_topology_func
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_topology_func_params
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_selection_func
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_selection_func_params
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.checkpoint_enable
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.checkpoint_freq
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.checkpoint_filename
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.verbose
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.random_seed
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.logbook
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.num_evals
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.runtime
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.index
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.container
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_size
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_topology_func
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.representation_topology_func_params
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.representatives
-.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_params
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.runtime
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.solution_cls
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.species
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_cls
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainer_params
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.subtrainers
+.. autoproperty:: culebra.trainer.abc.IslandsTrainer.verbose
 
 Private properties
 ------------------
@@ -75,36 +75,36 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.IslandsTrainer.reset
-.. automethod:: culebra.trainer.abc.IslandsTrainer.evaluate
-.. automethod:: culebra.trainer.abc.IslandsTrainer.best_solutions
 .. automethod:: culebra.trainer.abc.IslandsTrainer.best_representatives
-.. automethod:: culebra.trainer.abc.IslandsTrainer.train
+.. automethod:: culebra.trainer.abc.IslandsTrainer.best_solutions
+.. automethod:: culebra.trainer.abc.IslandsTrainer.dump
+.. automethod:: culebra.trainer.abc.IslandsTrainer.evaluate
+.. automethod:: culebra.trainer.abc.IslandsTrainer.reset
 .. automethod:: culebra.trainer.abc.IslandsTrainer.test
+.. automethod:: culebra.trainer.abc.IslandsTrainer.train
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.abc.IslandsTrainer.dump
+.. automethod:: culebra.trainer.abc.IslandsTrainer._default_termination_func
+.. automethod:: culebra.trainer.abc.IslandsTrainer._do_iteration
+.. automethod:: culebra.trainer.abc.IslandsTrainer._do_iteration_stats
+.. automethod:: culebra.trainer.abc.IslandsTrainer._finish_iteration
+.. automethod:: culebra.trainer.abc.IslandsTrainer._finish_search
 .. automethod:: culebra.trainer.abc.IslandsTrainer._generate_subtrainers
 .. automethod:: culebra.trainer.abc.IslandsTrainer._get_state
-.. automethod:: culebra.trainer.abc.IslandsTrainer._set_state
-.. automethod:: culebra.trainer.abc.IslandsTrainer._save_state
+.. automethod:: culebra.trainer.abc.IslandsTrainer._init_internals
+.. automethod:: culebra.trainer.abc.IslandsTrainer._init_representatives
+.. automethod:: culebra.trainer.abc.IslandsTrainer._init_search
+.. automethod:: culebra.trainer.abc.IslandsTrainer._init_state
 .. automethod:: culebra.trainer.abc.IslandsTrainer._load_state
 .. automethod:: culebra.trainer.abc.IslandsTrainer._new_state
-.. automethod:: culebra.trainer.abc.IslandsTrainer._init_state
-.. automethod:: culebra.trainer.abc.IslandsTrainer._reset_state
-.. automethod:: culebra.trainer.abc.IslandsTrainer._init_internals
-.. automethod:: culebra.trainer.abc.IslandsTrainer._reset_internals
-.. automethod:: culebra.trainer.abc.IslandsTrainer._init_search
-.. automethod:: culebra.trainer.abc.IslandsTrainer._search
-.. automethod:: culebra.trainer.abc.IslandsTrainer._finish_search
-.. automethod:: culebra.trainer.abc.IslandsTrainer._start_iteration
-.. automethod:: culebra.trainer.abc.IslandsTrainer._preprocess_iteration
-.. automethod:: culebra.trainer.abc.IslandsTrainer._do_iteration
 .. automethod:: culebra.trainer.abc.IslandsTrainer._postprocess_iteration
-.. automethod:: culebra.trainer.abc.IslandsTrainer._finish_iteration
-.. automethod:: culebra.trainer.abc.IslandsTrainer._do_iteration_stats
-.. automethod:: culebra.trainer.abc.IslandsTrainer._default_termination_func
-.. automethod:: culebra.trainer.abc.IslandsTrainer._termination_criterion
-.. automethod:: culebra.trainer.abc.IslandsTrainer._init_representatives
+.. automethod:: culebra.trainer.abc.IslandsTrainer._preprocess_iteration
+.. automethod:: culebra.trainer.abc.IslandsTrainer._reset_internals
+.. automethod:: culebra.trainer.abc.IslandsTrainer._reset_state
+.. automethod:: culebra.trainer.abc.IslandsTrainer._save_state
+.. automethod:: culebra.trainer.abc.IslandsTrainer._search
 .. automethod:: culebra.trainer.abc.IslandsTrainer._set_cooperative_fitness
+.. automethod:: culebra.trainer.abc.IslandsTrainer._set_state
+.. automethod:: culebra.trainer.abc.IslandsTrainer._start_iteration
+.. automethod:: culebra.trainer.abc.IslandsTrainer._termination_criterion

@@ -19,16 +19,16 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.trainer.topology` module
-=========================================
+:mod:`culebra.trainer.topology` module
+======================================
 
 .. automodule:: culebra.trainer.topology
 
 Functions
 ---------
 
-.. autofunction:: culebra.trainer.topology.ring_destinations
 .. autofunction:: culebra.trainer.topology.full_connected_destinations
+.. autofunction:: culebra.trainer.topology.ring_destinations
 
 Attributes
 ----------
@@ -37,6 +37,3 @@ Attributes
     :annotation: = 1
 
     Default offset for the ring topology.
-
-..
-    .. autodata:: DEFAULT_RING_OFFSET

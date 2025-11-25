@@ -64,16 +64,15 @@ class Results(UserDict, Base):
         """Load some results from several csv files.
 
         :param files: Sequence of files containing the results
-        :type files: :py:class:`~collections.abc.Sequence` of :py:class:`str`,
-            path objects or file-like objects
+        :type files: ~collections.abc.Sequence[str]
         :param keys: Keys for the different results. One key for each csv file.
             If omitted, the basename of each file in *files* (without
-            extension) is used. Defaults to :py:data:`None`
-        :type keys: :py:class:`~collections.abc.Sequence` of :py:class:`str`
-        :param sep: Separator. If :py:data:`None` is provided,
-            :py:attr:`~culebra.tools.DEFAULT_SEP` is used. Defaults to
-            :py:data:`None`
-        :type sep: :py:class:`str`, optional
+            extension) is used. Defaults to :data:`None`
+        :type keys: ~collections.abc.Sequence[str]
+        :param sep: Separator. If :data:`None` is provided,
+            :attr:`~culebra.tools.DEFAULT_SEP` is used. Defaults to
+            :data:`None`
+        :type sep: str
         :raises TypeError: If *sep* is not a string
         :raises ValueError: If *files* and *keys* have different lengths
         :raises ValueError: If any key in *keys* is not a string
@@ -108,10 +107,10 @@ class Results(UserDict, Base):
         """Save the results to a Excel file.
 
         :param filename: File path
-        :type filename: :py:class:`str`
+        :type filename: str
         :raises TypeError: If *filename* is not a valid file name
         :raises ValueError: If the *filename* extension is not
-            :py:attr:`~culebra.tools.EXCEL_FILE_EXTENSION`
+            :attr:`~culebra.tools.EXCEL_FILE_EXTENSION`
         """
         filename = check_filename(
             filename,
@@ -127,15 +126,15 @@ class Results(UserDict, Base):
     def __setitem__(self, key: str, data: DataFrame) -> DataFrame:
         """Overridden to verify the key and value.
 
-        Assure that the key is a :py:class:`str` and the value is a
-        :py:class:`~pandas.DataFrame`.
+        Assure that the key is a :class:`str` and the value is a
+        :class:`~pandas.DataFrame`.
 
         :param key: Key for the results
-        :type key: :py:class:`str`
+        :type key: str
         :param data: The data
-        :type data: :py:class:`~pandas.DataFrame`
+        :type data: ~pandas.DataFrame
         :return: The data inserted
-        :rtype: :py:class:`~pandas.DataFrame`
+        :rtype: ~pandas.DataFrame
         """
         return super().__setitem__(
             check_instance(key, "key for the results", str),

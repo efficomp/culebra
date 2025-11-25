@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.tools.ResultsAnalyzer`."""
+"""Unit test for :class:`culebra.tools.ResultsAnalyzer`."""
 
 import unittest
 import random
@@ -43,7 +43,7 @@ CSV_FILE_EXTENSION = ".csv"
 
 
 class ResultsAnalyzerTester(unittest.TestCase):
-    """Test the :py:class:`~culebra.tools.ResultsAnalyzer` class."""
+    """Test the :class:`~culebra.tools.ResultsAnalyzer` class."""
 
     def test_init(self):
         """Test the constructor."""

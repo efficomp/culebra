@@ -8,12 +8,12 @@
     <title>culebra.fitness_function.tsp module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="culebra.fitness_function.tsp.PathLength class" href="tsp/path_length.html" />
+    <link rel="next" title="culebra.fitness_function.tsp.abc module" href="tsp/abc.html" />
     <link rel="prev" title="culebra.fitness_function.cooperative.FSSVCScorer class" href="cooperative/fs_svc_scorer.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
@@ -26,14 +26,14 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tsp/path_length.html" title="culebra.fitness_function.tsp.PathLength class"
+          <a href="tsp/abc.html" title="culebra.fitness_function.tsp.abc module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="cooperative/fs_svc_scorer.html" title="culebra.fitness_function.cooperative.FSSVCScorer class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code> module</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code> module</a></li> 
       </ul>
     </div>  
 
@@ -42,17 +42,22 @@
           <div class="body" role="main">
             
   <section id="module-culebra.fitness_function.tsp">
-<span id="culebra-fitness-function-tsp-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.tsp" title="culebra.fitness_function.tsp"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.tsp" title="Link to this heading">¶</a></h1>
-<p>Traveling salesman problem related fitness functions.</p>
-<p>This sub-module provides fitness functions to solve TSP problems. Currently:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="tsp/path_length.html#culebra.fitness_function.tsp.PathLength" title="culebra.fitness_function.tsp.PathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathLength</span></code></a>: Single objective
-fitness function for TSP problems.</p></li>
+<span id="culebra-fitness-function-tsp-module"></span><h1><a class="reference internal" href="#module-culebra.fitness_function.tsp" title="culebra.fitness_function.tsp"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code></a> module<a class="headerlink" href="#module-culebra.fitness_function.tsp" title="Link to this heading">¶</a></h1>
+<p>Fitness functions for the TSP problem.</p>
+<p>This module is composed by:</p>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="tsp/abc.html#module-culebra.fitness_function.tsp.abc" title="culebra.fitness_function.tsp.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module,
+where some abstract base classes are defined to support fitness functions
+developed in this module</p></li>
+<li><p>Some scoring fitness functions:</p>
+<ul>
 <li><p><a class="reference internal" href="tsp/multi_objective_path_length.html#culebra.fitness_function.tsp.MultiObjectivePathLength" title="culebra.fitness_function.tsp.MultiObjectivePathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiObjectivePathLength</span></code></a>:
 Multi-objective fitness function for TSP problems.</p></li>
+<li><p><a class="reference internal" href="tsp/path_length.html#culebra.fitness_function.tsp.PathLength" title="culebra.fitness_function.tsp.PathLength"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathLength</span></code></a>: Single objective
+fitness function for TSP problems.</p></li>
 </ul>
-</div></blockquote>
+</li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -73,14 +78,14 @@ Multi-objective fitness function for TSP problems.</p></li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tsp/path_length.html" title="culebra.fitness_function.tsp.PathLength class"
+          <a href="tsp/abc.html" title="culebra.fitness_function.tsp.abc module"
              >next</a> |</li>
         <li class="right" >
           <a href="cooperative/fs_svc_scorer.html" title="culebra.fitness_function.cooperative.FSSVCScorer class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../fitness_function.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code> module</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.fitness_function.tsp</span></code> module</a></li> 
       </ul>
     </div>
     <div class="footer">

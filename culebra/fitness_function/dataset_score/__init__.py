@@ -21,17 +21,15 @@
 
 This module is composed by:
 
-  * The :py:mod:`~culebra.fitness_function.dataset_score.abc` sub-module,
-    where some abstract base classes are defined to support fitness functions
-    developed in this module
+* The :mod:`~culebra.fitness_function.dataset_score.abc` sub-module,
+  where some abstract base classes are defined to support fitness functions
+  developed in this module
+* Some popular scoring fitness functions:
 
-  * Some popular scoring fitness functions:
-
-    * :py:class:`~culebra.fitness_function.dataset_score.KappaIndex`:
-      Single-objective function that maximizes the Kohen's Kappa index.
-
-    * :py:class:`~culebra.fitness_function.dataset_score.Accuracy`:
-      Single-objective function that maximizes the Accuracy.
+  * :class:`~culebra.fitness_function.dataset_score.Accuracy`:
+    Single-objective function that maximizes the Accuracy.
+  * :class:`~culebra.fitness_function.dataset_score.KappaIndex`:
+    Single-objective function that maximizes the Kohen's Kappa index.
 """
 
 from .constants import (

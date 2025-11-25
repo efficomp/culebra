@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.ResultsAnalyzer` class
-===============================================
+:class:`culebra.tools.ResultsAnalyzer` class
+============================================
 
 .. autoclass:: culebra.tools.ResultsAnalyzer
 
@@ -30,17 +30,17 @@ Class methods
 
 Methods
 -------
-.. automethod:: culebra.tools.ResultsAnalyzer.dump
-.. automethod:: culebra.tools.ResultsAnalyzer.normality_test
-.. automethod:: culebra.tools.ResultsAnalyzer.homoscedasticity_test
-.. automethod:: culebra.tools.ResultsAnalyzer.parametric_test
-.. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_test
-.. automethod:: culebra.tools.ResultsAnalyzer.parametric_pairwise_test
-.. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test
-.. automethod:: culebra.tools.ResultsAnalyzer.effect_size
 .. automethod:: culebra.tools.ResultsAnalyzer.compare
-.. automethod:: culebra.tools.ResultsAnalyzer.rank
+.. automethod:: culebra.tools.ResultsAnalyzer.dump
+.. automethod:: culebra.tools.ResultsAnalyzer.effect_size
+.. automethod:: culebra.tools.ResultsAnalyzer.homoscedasticity_test
 .. automethod:: culebra.tools.ResultsAnalyzer.multiple_rank
+.. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test
+.. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_test
+.. automethod:: culebra.tools.ResultsAnalyzer.normality_test
+.. automethod:: culebra.tools.ResultsAnalyzer.parametric_pairwise_test
+.. automethod:: culebra.tools.ResultsAnalyzer.parametric_test
+.. automethod:: culebra.tools.ResultsAnalyzer.rank
 
 Dunder methods
 --------------

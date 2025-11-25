@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco.abc.MaxPheromonePACO` class
-==========================================================
+:class:`culebra.trainer.aco.abc.MaxPheromonePACO` class
+=======================================================
 
 .. autoclass:: culebra.trainer.aco.abc.MaxPheromonePACO
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.aco.abc.MaxPheromonePACO.stats_names
 .. autoattribute:: culebra.trainer.aco.abc.MaxPheromonePACO.objective_stats
+.. autoattribute:: culebra.trainer.aco.abc.MaxPheromonePACO.stats_names
 
 Class methods
 -------------
@@ -35,82 +35,83 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_pheromone_matrices
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_heuristic_matrices
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.solution_cls
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.species
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.max_pheromone
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic_influence
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.choice_info
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.col
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.col_size
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.container
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.current_iter
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.col_size
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pop_size
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_enable
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.verbose
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.random_seed
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.logbook
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_evals
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.runtime
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.fitness_function
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.heuristic_shapes
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.index
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.container
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.representatives
-.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.col
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.logbook
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_evals
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_heuristic_matrices
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pheromone_shapes
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pop
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.pop_size
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.random_seed
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.representatives
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.runtime
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.solution_cls
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.species
+.. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.verbose
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.dump
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.reset
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.evaluate
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.best_solutions
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.best_representatives
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.train
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.best_solutions
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.dump
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.evaluate
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.reset
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.test
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.train
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._get_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._set_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._save_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._load_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._new_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._reset_state
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_internals
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._reset_internals
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_search
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._search
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._finish_search
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._start_iteration
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._preprocess_iteration
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._do_iteration
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._postprocess_iteration
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._finish_iteration
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._do_iteration_stats
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._default_termination_func
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._termination_criterion
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_representatives
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._ant_choice_info
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._calculate_choice_info
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._initial_choice
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._next_choice
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._default_termination_func
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._do_iteration
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._do_iteration_stats
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._finish_iteration
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._finish_search
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_pheromone
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._pheromone_amount
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._get_state
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._increase_pheromone
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_internals
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_pheromone
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_representatives
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_search
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._init_state
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._load_state
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._new_state
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._next_choice
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._pheromone_amount
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._postprocess_iteration
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._preprocess_iteration
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._reset_internals
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._reset_state
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._save_state
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._search
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._set_state
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._start_iteration
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._update_pheromone
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._update_pop
-

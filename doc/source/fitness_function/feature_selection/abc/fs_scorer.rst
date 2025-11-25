@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.feature_selection.abc.FSScorer` class
-=========================================================================
+:class:`culebra.fitness_function.feature_selection.abc.FSScorer` class
+======================================================================
 
 .. autoclass:: culebra.fitness_function.feature_selection.abc.FSScorer
 
@@ -30,12 +30,12 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.num_obj
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_weights
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_names
-.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.fitness_cls
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.index
+.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.num_obj
+.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_names
+.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_thresholds
+.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_weights
 
 Methods
 -------

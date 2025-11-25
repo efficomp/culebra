@@ -22,14 +22,13 @@
 This module provides all the classes necessary to solve the traveling salesman
 problem with culebra. The possible solutions to the problem are handled by:
 
-  * A :py:class:`~culebra.solution.tsp.Species` class to define
-    the constraints that the desired paths should meet.
-
-  * A :py:class:`~culebra.solution.tsp.Solution` abstract class
-    defining the interface for solutions to the problem.
+* A :class:`~culebra.solution.tsp.Solution` abstract class defining the
+  interface for solutions to the problem.
+* A :class:`~culebra.solution.tsp.Species` class to define the constraints
+  that the desired paths should meet.
 
 In order to make possible the application of ACO approaches to this
-problem, the :py:class:`~culebra.solution.tsp.Ant` class is provided.
+problem, the :class:`~culebra.solution.tsp.Ant` class is provided.
 """
 
 from __future__ import annotations
@@ -70,12 +69,11 @@ class Species(BaseSpecies):
         """Create a new species.
 
         :param num_nodes: Number of nodes considered
-        :type num_nodes: :py:class:`int`
+        :type num_nodes: int
         :param banned_nodes: Sequence of banned nodes. If provided, each node
             index in the sequence must be in the interval [0, *num_nodes*).
-            Defaults to :py:data:`None`
-        :type banned_nodes: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int`, optional
+            Defaults to :data:`None`
+        :type banned_nodes: ~collections.abc.Sequence[int]
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -86,26 +84,33 @@ class Species(BaseSpecies):
 
     @property
     def num_nodes(self) -> int:
-        """Get the number of nodes for this species.
+        """Number of nodes.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._num_nodes
 
     @property
-    def banned_nodes(self) -> Sequence[int]:
-        """Get and set the sequence of banned nodes.
+    def banned_nodes(self) -> np.ndarray[int]:
+        """Banned nodes.
 
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :rtype: ~numpy.ndarray[int]
+        :setter: Set new banned nodes
+        :param values: The new banned nodes or :data:`None` if all the nodes
+            are allowed
+        :type values: ~collections.abc.Sequence[int]
+        :raises TypeError: If *values* is not a Sequence
+        :raises ValueError: If any item in *values* is not a valid node index
         """
         return self._banned_nodes
 
     @banned_nodes.setter
     def banned_nodes(self, values: Sequence[int] | None) -> None:
-        """Set a new number of nodes.
+        """Set new banned nodes.
 
-        :type values: :py:class:`~collections.abc.Sequence` of :py:class:`int`
-            ot :pt:data:`None`
+        :param values: The new banned nodes or :data:`None` if all the nodes
+            are allowed
+        :type values: ~collections.abc.Sequence[int]
         :raises TypeError: If *values* is not a Sequence
         :raises ValueError: If any item in *values* is not a valid node index
         """
@@ -122,18 +127,22 @@ class Species(BaseSpecies):
             raise ValueError("Invalid index for banned_nodes")
 
     def is_banned(self, node: int) -> bool:
-        """Return :py:data:`True` if the node index provided is banned.
+        """Check if a node is banned.
 
         :param node: The node index
-        :type node: :py:class:`int`
+        :type node: int
+        :return: :data:`True` if the node index provided is banned
+        :rtype: bool
         """
         return node in self._banned_nodes
 
     def is_feasible(self, node: int) -> bool:
-        """Return :py:data:`True` if the node index provided is feasible.
+        """Check if a node is feasible.
 
         :param node: The node index
-        :type node: :py:class:`int`
+        :type node: int
+        :return: :data:`True` if the node index provided is feasible.
+        :rtype: bool
         """
         if node < 0 or node >= self.num_nodes or self.is_banned(node):
             return False
@@ -143,10 +152,10 @@ class Species(BaseSpecies):
         """Check if a solution meets the constraints imposed by the species.
 
         :param sol: The solution
-        :type sol: :py:class:`~culebra.solution.tsp.Solution`
-        :return: :py:data:`True` if the solution belongs to the species.
-            :py:data:`False` otherwise
-        :rtype: :py:class:`bool`
+        :type sol: ~culebra.solution.tsp.Solution
+        :return: :data:`True` if the solution belongs to the species.
+            :data:`False` otherwise
+        :rtype: bool
         """
         for node in sol.path:
             if not self.is_feasible(node):
@@ -155,7 +164,11 @@ class Species(BaseSpecies):
         return True
 
     def __copy__(self) -> Species:
-        """Shallow copy the species."""
+        """Shallow copy the species.
+
+        :return: The copied species
+        :rtype: ~culebra.solution.tsp.Species
+        """
         cls = self.__class__
         result = cls(self.num_nodes)
         result.__dict__.update(self.__dict__)
@@ -165,9 +178,9 @@ class Species(BaseSpecies):
         """Deepcopy the species.
 
         :param memo: Species attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the species
-        :rtype: :py:class:`~culebra.solution.tsp.Species`
+        :type memo: dict
+        :return: The copied species
+        :rtype: ~culebra.solution.tsp.Species
         """
         cls = self.__class__
         result = cls(self.num_nodes)
@@ -178,7 +191,7 @@ class Species(BaseSpecies):
         """Reduce the species.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (self.__class__, (self.num_nodes,), self.__dict__)
 
@@ -186,8 +199,10 @@ class Species(BaseSpecies):
     def __fromstate__(cls, state: dict) -> Species:
         """Return a species from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: dict
+        :return: The species
+        :rtype: ~culebra.solution.tsp.Species
         """
         obj = cls(
             state['_num_nodes']
@@ -201,7 +216,7 @@ class Solution(BaseSolution):
 
     species_cls = Species
     """Class for the species used by the
-    :py:class:`~culebra.solution.tsp.Solution` class to constrain
+    :class:`~culebra.solution.tsp.Solution` class to constrain
     all its instances."""
 
     def __init__(
@@ -213,13 +228,11 @@ class Solution(BaseSolution):
         """Construct a default solution.
 
         :param species: The species the solution will belong to
-        :type species:
-            :py:class:`~culebra.solution.tsp.Solution.species_cls`
-        :param fitness: The solution's fitness class
-        :type fitness: :py:class:`~culebra.abc.Fitness`
+        :type species: ~culebra.solution.tsp.Species
+        :param fitness_cls: The solution's fitness class
+        :type fitness_cls: type[~culebra.abc.Fitness]
         :param path: Initial path
-        :type path: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int`
+        :type path: ~collections.abc.Sequence[int]
         :raises TypeError: If *species* is not a valid species
         :raises TypeError: If *fitness_cls* is not a valid fitness class
         """
@@ -237,7 +250,7 @@ class Solution(BaseSolution):
 
         This method must be overridden by subclasses.
 
-        :raises NotImplementedError: if has not been overridden
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The _setup method has not been implemented in the "
@@ -246,14 +259,12 @@ class Solution(BaseSolution):
 
     @property
     def path(self) -> Sequence[int]:
-        """Get and set the path.
+        """Path.
 
-        :getter: Return the path.
-        :setter: Set the new path. An array-like object of node indices is
-            expected
-        :type: :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises ValueError: If the new path does not meet the species
-            constraints.
+        :setter: Set a new path
+        :param value: The new path
+        :type value: ~collections.abc.Sequence[int]
+        :raises ValueError: If *value* does not meet the species constraints.
         """
         return self._path
 
@@ -262,7 +273,7 @@ class Solution(BaseSolution):
         """Set a new path.
 
         :param value: The new path
-        :type value: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :type value: ~collections.abc.Sequence[int]
         :raises ValueError: If *value* does not meet the species constraints.
         """
         # Get the new path
@@ -281,12 +292,14 @@ class Solution(BaseSolution):
             )
 
     def __str__(self) -> str:
-        """Return the solution as a string.
+        """Solution as a string.
 
         A symmetric tsp problem is assumed. Thus, all rotations of paths
         [0, 1, ..., *n*] and [*n*, ..., 1, 0] are considered the same path.
 
         The path is rolled to start with the node with smallest index.
+
+        :rtype: str
         """
         if len(self.path) > 0:
             offset = np.argwhere(self.path == np.min(self.path)).flatten()[0]
@@ -299,7 +312,10 @@ class Solution(BaseSolution):
         return str(the_path)
 
     def __repr__(self) -> str:
-        """Return the solution representation."""
+        """Solution representation.
+
+        :rtype: str
+        """
         cls_name = self.__class__.__name__
         species_info = str(self.species)
         fitness_info = self.fitness.values
@@ -321,22 +337,23 @@ class Ant(Solution, BaseAnt):
         self._path = np.empty(shape=(0,), dtype=int)
 
     @property
-    def discarded(self) -> Sequence[int]:
+    def discarded(self) -> np.ndarray[int]:
         """Nodes discarded by the ant.
 
-        Return an empty sequence since all nodes must be visited for the TSP
+        Return an empty array since all nodes must be visited for the TSP
         problem.
 
-        :type: :py:class:`~collections.abc.Sequence`
+        :rtype: ~numpy.ndarray[int]
         """
         return np.empty(shape=(0,), dtype=int)
 
     def append(self, node: int) -> None:
         """Append a new node to the ant's path.
 
+        :param node: The node
+        :type node: int
         :raises TypeError: If *node* is not an integer number
-        :raises ValueError: If *node* does not meet the species
-            constraints.
+        :raises ValueError: If *node* does not meet the species constraints
         :raises ValueError: If *node* is already in the path.
         """
         # Check the node type
@@ -362,7 +379,7 @@ class Ant(Solution, BaseAnt):
         the TSP problem.
 
         :param node: The node
-        :type node: :py:class:`int`
+        :type node: int
         :raises RuntimeError: If called
         """
         raise RuntimeError(

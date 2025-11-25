@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.Batch` class
-=====================================
+:class:`culebra.tools.Batch` class
+==================================
 
 .. autoclass:: culebra.tools.Batch
 
@@ -31,36 +31,36 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Batch.load
 .. automethod:: culebra.tools.Batch.from_config
 .. automethod:: culebra.tools.Batch.generate_run_script
+.. automethod:: culebra.tools.Batch.load
 
 Properties
 ----------
-.. autoproperty:: culebra.tools.Batch.trainer
-.. autoproperty:: culebra.tools.Batch.untie_best_fitness_function
-.. autoproperty:: culebra.tools.Batch.test_fitness_function
-.. autoproperty:: culebra.tools.Batch.results_base_filename
-.. autoproperty:: culebra.tools.Batch.serialized_results_filename
 .. autoproperty:: culebra.tools.Batch.excel_results_filename
-.. autoproperty:: culebra.tools.Batch.hyperparameters
-.. autoproperty:: culebra.tools.Batch.results
-.. autoproperty:: culebra.tools.Batch.num_experiments
 .. autoproperty:: culebra.tools.Batch.experiment_basename
 .. autoproperty:: culebra.tools.Batch.experiment_labels
+.. autoproperty:: culebra.tools.Batch.hyperparameters
+.. autoproperty:: culebra.tools.Batch.num_experiments
+.. autoproperty:: culebra.tools.Batch.results
+.. autoproperty:: culebra.tools.Batch.results_base_filename
+.. autoproperty:: culebra.tools.Batch.serialized_results_filename
+.. autoproperty:: culebra.tools.Batch.test_fitness_function
+.. autoproperty:: culebra.tools.Batch.trainer
+.. autoproperty:: culebra.tools.Batch.untie_best_fitness_function
 
 Methods
 -------
 .. automethod:: culebra.tools.Batch.dump
 .. automethod:: culebra.tools.Batch.reset
-.. automethod:: culebra.tools.Batch.setup
 .. automethod:: culebra.tools.Batch.run
+.. automethod:: culebra.tools.Batch.setup
 
 Private methods
 ---------------
-.. automethod:: culebra.tools.Batch._append_data
 .. automethod:: culebra.tools.Batch._add_execution_metrics_stats
 .. automethod:: culebra.tools.Batch._add_feature_metrics_stats
 .. automethod:: culebra.tools.Batch._add_fitness_stats
+.. automethod:: culebra.tools.Batch._append_data
 .. automethod:: culebra.tools.Batch._execute
 .. automethod:: culebra.tools.Batch._is_reserved

@@ -8,7 +8,7 @@
     <title>culebra.trainer.abc module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -46,35 +46,29 @@
 <p>Abstract base classes for different trainers.</p>
 <p>This module provides several abstract classes for different kind of trainers.</p>
 <p>Regarding the number of species that are simultaneously being trained:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/single_species_trainer.html#culebra.trainer.abc.SingleSpeciesTrainer" title="culebra.trainer.abc.SingleSpeciesTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleSpeciesTrainer</span></code></a>: Provides a base
-class for trainers for solutions of only a single species</p></li>
-<li><p><a class="reference internal" href="abc/multi_species_trainer.html#culebra.trainer.abc.MultiSpeciesTrainer" title="culebra.trainer.abc.MultiSpeciesTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesTrainer</span></code></a>: Provides a base
-class for trainers that find solutions for multiple species</p></li>
+<ul class="simple">
+<li><p><a class="reference internal" href="abc/multi_species_trainer.html#culebra.trainer.abc.MultiSpeciesTrainer" title="culebra.trainer.abc.MultiSpeciesTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesTrainer</span></code></a>: Provides a base class for
+trainers that find solutions for multiple species</p></li>
+<li><p><a class="reference internal" href="abc/single_species_trainer.html#culebra.trainer.abc.SingleSpeciesTrainer" title="culebra.trainer.abc.SingleSpeciesTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleSpeciesTrainer</span></code></a>: Provides a base class
+for trainers for solutions of only a single species</p></li>
 </ul>
-</div></blockquote>
 <p>Trainers can also be distributed. The
-<a class="reference internal" href="abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer" title="culebra.trainer.abc.DistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedTrainer</span></code></a> class provides a base
-support to distribute a trainer making use a several subtrainers. Two
-implementations of this class are also provided:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/sequential_distributed_trainer.html#culebra.trainer.abc.SequentialDistributedTrainer" title="culebra.trainer.abc.SequentialDistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialDistributedTrainer</span></code></a>: Abstract
-base class for sequential distributed trainers</p></li>
+<a class="reference internal" href="abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer" title="culebra.trainer.abc.DistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedTrainer</span></code></a> class provides a base support
+to distribute a trainer making use a several subtrainers. Two implementations
+of this class are also provided:</p>
+<ul class="simple">
 <li><p><a class="reference internal" href="abc/parallel_distributed_trainer.html#culebra.trainer.abc.ParallelDistributedTrainer" title="culebra.trainer.abc.ParallelDistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelDistributedTrainer</span></code></a>: Abstract base
 class for parallel distributed trainers</p></li>
+<li><p><a class="reference internal" href="abc/sequential_distributed_trainer.html#culebra.trainer.abc.SequentialDistributedTrainer" title="culebra.trainer.abc.SequentialDistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequentialDistributedTrainer</span></code></a>: Abstract base
+class for sequential distributed trainers</p></li>
 </ul>
-</div></blockquote>
 <p>Finally, some usual distributed approaches are also provided:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
+<li><p><a class="reference internal" href="abc/cooperative_trainer.html#culebra.trainer.abc.CooperativeTrainer" title="culebra.trainer.abc.CooperativeTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CooperativeTrainer</span></code></a>: Abstract base class for
+cooperative trainers</p></li>
 <li><p><a class="reference internal" href="abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer" title="culebra.trainer.abc.IslandsTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">IslandsTrainer</span></code></a>: Abstract base class for
 island-based approaches</p></li>
-<li><p><a class="reference internal" href="abc/cooperative_trainer.html#culebra.trainer.abc.CooperativeTrainer" title="culebra.trainer.abc.CooperativeTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CooperativeTrainer</span></code></a>: Abstract base class
-for cooperative trainers</p></li>
 </ul>
-</div></blockquote>
 <div class="toctree-wrapper compound">
 </div>
 </section>

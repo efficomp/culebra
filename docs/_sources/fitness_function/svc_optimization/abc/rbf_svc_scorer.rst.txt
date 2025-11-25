@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.svc_optimization.abc.RBFSVCScorer` class
-============================================================================
+:class:`culebra.fitness_function.svc_optimization.abc.RBFSVCScorer` class
+=========================================================================
 
 .. autoclass:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer
 
@@ -30,15 +30,15 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.num_obj
-.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.obj_weights
-.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.obj_names
-.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.classifier
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.index
-.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.training_data
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.num_obj
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.obj_names
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.obj_weights
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.test_data
-.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.training_data
 
 Private properties
 ------------------
@@ -52,7 +52,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._score
-.. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._final_training_test_data
-.. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._evaluate_train_test
 .. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._evaluate_kfcv
+.. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._evaluate_train_test
+.. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._final_training_test_data
+.. automethod:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._score

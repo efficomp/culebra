@@ -8,7 +8,7 @@
     <title>culebra.trainer.aco.abc module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
-    <script src="../../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -34,7 +34,7 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../aco.html" accesskey="U"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../aco.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco.abc</span></code> module</a></li> 
       </ul>
     </div>  
@@ -45,45 +45,65 @@
             
   <section id="module-culebra.trainer.aco.abc">
 <span id="culebra-trainer-aco-abc-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.aco.abc" title="culebra.trainer.aco.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco.abc</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.aco.abc" title="Link to this heading">¶</a></h1>
-<p>Abstract base classes for different ACO-based trainers.</p>
+<p>Abstract base classes for the ACO-based trainers.</p>
 <p>This module provides several abstract classes for different kind of
-Ant Colony Optimization based trainers.</p>
-<p>By the moment:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="abc/single_col_aco.html#culebra.trainer.aco.abc.SingleColACO" title="culebra.trainer.aco.abc.SingleColACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleColACO</span></code></a>: A base class for all
-the single colony ACO-based trainers</p></li>
-<li><p><a class="reference internal" href="abc/single_pheromone_matrix_aco.html#culebra.trainer.aco.abc.SinglePheromoneMatrixACO" title="culebra.trainer.aco.abc.SinglePheromoneMatrixACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePheromoneMatrixACO</span></code></a>: A base class
-for all the single colony ACO-based trainers which rely on a single
-pheromone matrix</p></li>
+Ant Colony Optimization based trainers. The base class for all the single
+colony ACO-based trainers is <a class="reference internal" href="abc/single_col_aco.html#culebra.trainer.aco.abc.SingleColACO" title="culebra.trainer.aco.abc.SingleColACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleColACO</span></code></a>.
+Elitism is also supported via the <a class="reference internal" href="abc/elitist_aco.html#culebra.trainer.aco.abc.ElitistACO" title="culebra.trainer.aco.abc.ElitistACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACO</span></code></a>.</p>
+<ul class="simple">
+<li><p>Regarding the matrices structure of the ACO-based approach:</p>
+<ul>
+<li><p><a class="reference internal" href="abc/multiple_heuristic_matrices_aco.html#culebra.trainer.aco.abc.MultipleHeuristicMatricesACO" title="culebra.trainer.aco.abc.MultipleHeuristicMatricesACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleHeuristicMatricesACO</span></code></a>: A base
+class for all the single colony ACO-based trainers which use multiple
+heuristic matrices</p></li>
+<li><p><a class="reference internal" href="abc/multiple_pheromone_matrices_aco.html#culebra.trainer.aco.abc.MultiplePheromoneMatricesACO" title="culebra.trainer.aco.abc.MultiplePheromoneMatricesACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplePheromoneMatricesACO</span></code></a>: A base
+class for all the single colony ACO-based trainers which use multiple
+phermone matrices</p></li>
 <li><p><a class="reference internal" href="abc/single_heuristic_matrix_aco.html#culebra.trainer.aco.abc.SingleHeuristicMatrixACO" title="culebra.trainer.aco.abc.SingleHeuristicMatrixACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleHeuristicMatrixACO</span></code></a>: A base class
 for all the single colony ACO-based trainers which rely on a single
 heuristic matrix</p></li>
-<li><p><a class="reference internal" href="abc/multiple_pheromone_matrices_aco.html#culebra.trainer.aco.abc.MultiplePheromoneMatricesACO" title="culebra.trainer.aco.abc.MultiplePheromoneMatricesACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplePheromoneMatricesACO</span></code></a>: A base
-class for all the single colony ACO-based trainers which use multiple</p></li>
-<li><p><a class="reference internal" href="abc/multiple_heuristic_matrices_aco.html#culebra.trainer.aco.abc.MultipleHeuristicMatricesACO" title="culebra.trainer.aco.abc.MultipleHeuristicMatricesACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleHeuristicMatricesACO</span></code></a>: A base
-class for all the single colony ACO-based trainers which use multiple
-pheromone matrices</p></li>
 <li><p><a class="reference internal" href="abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO" title="culebra.trainer.aco.abc.SingleObjACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleObjACO</span></code></a>: A base class for all
-the single objective ACO-based trainers</p></li>
+the single colony ACO-based trainers which optimize only a single
+objective, that is, with a single pheromone matrix and also a single
+heuristic matrix</p></li>
+<li><p><a class="reference internal" href="abc/single_pheromone_matrix_aco.html#culebra.trainer.aco.abc.SinglePheromoneMatrixACO" title="culebra.trainer.aco.abc.SinglePheromoneMatrixACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePheromoneMatrixACO</span></code></a>: A base class
+for all the single colony ACO-based trainers which rely on a single
+pheromone matrix</p></li>
+</ul>
+</li>
+<li><p>With respect to the pheromone updating procedure:</p>
+<ul>
+<li><p>Approaches relying on pheromone evaporation:</p>
+<ul>
 <li><p><a class="reference internal" href="abc/pheromone_based_aco.html#culebra.trainer.aco.abc.PheromoneBasedACO" title="culebra.trainer.aco.abc.PheromoneBasedACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PheromoneBasedACO</span></code></a>: A base class for
 all pheromone-based single objective ACO trainers</p></li>
-<li><p><a class="reference internal" href="abc/elitist_aco.html#culebra.trainer.aco.abc.ElitistACO" title="culebra.trainer.aco.abc.ElitistACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACO</span></code></a>: A base class for all
-the elitist single colony ACO-based trainers</p></li>
 <li><p><a class="reference internal" href="abc/reseteable_pheromone_based_aco.html#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO" title="culebra.trainer.aco.abc.ReseteablePheromoneBasedACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReseteablePheromoneBasedACO</span></code></a>: A base
 class for all the elitist, pheromone-based, and reseteable single colony
 ACO trainers</p></li>
-<li><p><a class="reference internal" href="abc/paco.html#culebra.trainer.aco.abc.PACO" title="culebra.trainer.aco.abc.PACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACO</span></code></a>: A base class for all
-the population-based single colony ACO trainers</p></li>
+</ul>
+</li>
+<li><p>Population-based approaches:</p>
+<ul>
 <li><p><a class="reference internal" href="abc/max_pheromone_paco.html#culebra.trainer.aco.abc.MaxPheromonePACO" title="culebra.trainer.aco.abc.MaxPheromonePACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaxPheromonePACO</span></code></a>: A base class for all
 the population-based single colony ACO trainers using a maximum pheromone
 amount</p></li>
+<li><p><a class="reference internal" href="abc/paco.html#culebra.trainer.aco.abc.PACO" title="culebra.trainer.aco.abc.PACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACO</span></code></a>: A base class for all
+the population-based single colony ACO trainers</p></li>
 <li><p><a class="reference internal" href="abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO" title="culebra.trainer.aco.abc.SingleObjPACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleObjPACO</span></code></a>: A base class for all
 the population-based single colony and single objective ACO trainers</p></li>
-<li><p><a class="reference internal" href="abc/aco_fs.html#culebra.trainer.aco.abc.ACO_FS" title="culebra.trainer.aco.abc.ACO_FS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACO_FS</span></code></a>: A base class for all
-the ACO-base approaches for FS</p></li>
 </ul>
-</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p>Finally, regarding the kind of problem:</p>
+<ul>
+<li><p><a class="reference internal" href="abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS" title="culebra.trainer.aco.abc.ACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFS</span></code></a>: A base class for all the
+ACO-based approaches for FS</p></li>
+<li><p><a class="reference internal" href="abc/aco_tsp.html#culebra.trainer.aco.abc.ACOTSP" title="culebra.trainer.aco.abc.ACOTSP"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOTSP</span></code></a>: A base class for all the
+ACO-based approaches for TSP</p></li>
+</ul>
+</li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -111,7 +131,7 @@ the ACO-base approaches for FS</p></li>
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../aco.html" ><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../aco.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco.abc</span></code> module</a></li> 
       </ul>
     </div>

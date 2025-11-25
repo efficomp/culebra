@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.feature_selection` module
-=============================================================
+:mod:`culebra.fitness_function.feature_selection` module
+========================================================
 
 .. automodule:: culebra.fitness_function.feature_selection
 
@@ -32,4 +32,3 @@
     FeatsProportion <feature_selection/feats_proportion>
     KappaIndex <feature_selection/kappa_index>
     Accuracy <feature_selection/accuracy>
-    FSMultiObjectiveDatasetScorer <feature_selection/fs_multi_objective_dataset_scorer>

@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.tools.Dataset`."""
+"""Unit test for :class:`culebra.tools.Dataset`."""
 
 import unittest
 from os import remove
@@ -54,10 +54,10 @@ WINE_SIZE = 178
 
 
 class DatasetTester(unittest.TestCase):
-    """Test :py:class:`culebra.tools.Dataset`."""
+    """Test :class:`culebra.tools.Dataset`."""
 
     def test_init(self):
-        """Test the :py:meth:`~culebra.tools.Dataset.__init__` constructor."""
+        """Test the :meth:`~culebra.tools.Dataset.__init__` constructor."""
         # Empty dataset
         dataset = Dataset()
 
@@ -302,7 +302,7 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(clean_data._outputs.shape[0], size)
 
     def test_oversample(self):
-        """Test the :py:meth:`~culebra.tools.Dataset.oversample` method."""
+        """Test the :meth:`~culebra.tools.Dataset.oversample` method."""
         dataset1 = Dataset("numeric_1.dat", output_index=0)
         samples_per_class_dataset1 = Counter(dataset1.outputs)
         samples_majority_class = max(samples_per_class_dataset1.values())
@@ -384,7 +384,7 @@ class DatasetTester(unittest.TestCase):
             dataset.split(invalid_test_prop_value)
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.tools.Dataset.__copy__` method."""
+        """Test the :meth:`~culebra.tools.Dataset.__copy__` method."""
         dataset1 = Dataset("numeric_1.dat", output_index=0)
         dataset2 = copy(dataset1)
 
@@ -396,7 +396,7 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(id(dataset1._outputs), id(dataset2._outputs))
 
     def test_deepcopy(self):
-        """Test the :py:meth:`~culebra.abc.Base.__deepcopy__` method."""
+        """Test the :meth:`~culebra.abc.Base.__deepcopy__` method."""
         dataset1 = Dataset("numeric_1.dat", output_index=0)
         dataset2 = deepcopy(dataset1)
 
@@ -406,8 +406,8 @@ class DatasetTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.abc.Base.__setstate__` and
-        :py:meth:`~culebra.abc.Base.__reduce__` methods.
+        Test the :meth:`~culebra.abc.Base.__setstate__` and
+        :meth:`~culebra.abc.Base.__reduce__` methods.
         """
         dataset1 = Dataset("numeric_1.dat", output_index=0)
 
@@ -425,9 +425,9 @@ class DatasetTester(unittest.TestCase):
         """Check if *dataset1* is a deepcopy of *dataset2*.
 
         :param dataset1: The first dataset
-        :type dataset1: :py:class:`~culebra.tools.Dataset`
+        :type dataset1: ~culebra.tools.Dataset
         :param dataset2: The second dataset
-        :type dataset2: :py:class:`~culebra.tools.Dataset`
+        :type dataset2: ~culebra.tools.Dataset
         """
         # Copies all the levels
         self.assertNotEqual(id(dataset1), id(dataset2))

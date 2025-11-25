@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.ea.ParallelCooperativeEA` class
-==========================================================
+:class:`culebra.trainer.ea.ParallelCooperativeEA` class
+=======================================================
 
 .. autoclass:: culebra.trainer.ea.ParallelCooperativeEA
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.ea.ParallelCooperativeEA.stats_names
 .. autoattribute:: culebra.trainer.ea.ParallelCooperativeEA.objective_stats
+.. autoattribute:: culebra.trainer.ea.ParallelCooperativeEA.stats_names
 
 Class methods
 -------------
@@ -35,42 +35,42 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.solution_classes
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.species
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_cls
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.max_num_iters
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.container
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.crossover_funcs
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.crossover_probs
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.current_iter
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.custom_termination_func
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.pop_sizes
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.crossover_funcs
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.mutation_funcs
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.selection_funcs
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.crossover_probs
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.mutation_probs
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.fitness_function
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.gene_ind_mutation_probs
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.selection_funcs_params
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.index
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.logbook
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.max_num_iters
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.mutation_funcs
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.mutation_probs
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.num_evals
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.num_subtrainers
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_size
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.pop_sizes
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.random_seed
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_freq
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_topology_func
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_topology_func_params
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_selection_func
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_selection_func_params
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.checkpoint_enable
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.checkpoint_freq
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.checkpoint_filename
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.verbose
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.random_seed
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.logbook
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.num_evals
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.runtime
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.index
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.container
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_size
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_topology_func
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representation_topology_func_params
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.representatives
-.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.runtime
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.selection_funcs
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.selection_funcs_params
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.solution_classes
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.species
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_cls
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.subtrainers
+.. autoproperty:: culebra.trainer.ea.ParallelCooperativeEA.verbose
 
 Private properties
 ------------------
@@ -87,36 +87,36 @@ Private static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA..dump
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.reset
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.evaluate
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.best_solutions
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA.best_representatives
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.train
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.best_solutions
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.dump
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.evaluate
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.reset
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA.test
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA.train
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._default_termination_func
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._do_iteration
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._do_iteration_stats
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._finish_iteration
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._finish_search
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._get_state
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._set_state
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._save_state
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_internals
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_representatives
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_search
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_state
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._load_state
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._new_state
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_state
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._reset_state
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_internals
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._reset_internals
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_search
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._search
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._finish_search
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._start_iteration
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._preprocess_iteration
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._do_iteration
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._postprocess_iteration
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._finish_iteration
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._do_iteration_stats
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._default_termination_func
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._termination_criterion
-.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._init_representatives
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._preprocess_iteration
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._reset_internals
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._reset_state
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._save_state
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._search
 .. automethod:: culebra.trainer.ea.ParallelCooperativeEA._set_cooperative_fitness
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._set_state
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._start_iteration
+.. automethod:: culebra.trainer.ea.ParallelCooperativeEA._termination_criterion

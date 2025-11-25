@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.BinarySolution` class
-===================================================================
+:class:`culebra.solution.feature_selection.BinarySolution` class
+================================================================
 
 .. autoclass:: culebra.solution.feature_selection.BinarySolution
 
@@ -34,19 +34,19 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.feature_selection.BinarySolution.species
-.. autoproperty:: culebra.solution.feature_selection.BinarySolution.fitness
 .. autoproperty:: culebra.solution.feature_selection.BinarySolution.features
-.. autoproperty:: culebra.solution.feature_selection.BinarySolution.num_feats
-.. autoproperty:: culebra.solution.feature_selection.BinarySolution.min_feat
+.. autoproperty:: culebra.solution.feature_selection.BinarySolution.fitness
 .. autoproperty:: culebra.solution.feature_selection.BinarySolution.max_feat
+.. autoproperty:: culebra.solution.feature_selection.BinarySolution.min_feat
+.. autoproperty:: culebra.solution.feature_selection.BinarySolution.num_feats
+.. autoproperty:: culebra.solution.feature_selection.BinarySolution.species
 
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.BinarySolution.dump
-.. automethod:: culebra.solution.feature_selection.BinarySolution.dominates
 .. automethod:: culebra.solution.feature_selection.BinarySolution.delete_fitness
+.. automethod:: culebra.solution.feature_selection.BinarySolution.dominates
+.. automethod:: culebra.solution.feature_selection.BinarySolution.dump
 
 Private methods
 ---------------
@@ -54,11 +54,14 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.feature_selection.BinarySolution.__hash__
+Intended to compare (lexicographically) two solutions according to their
+fitness.
+
 .. automethod:: culebra.solution.feature_selection.BinarySolution.__eq__
-.. automethod:: culebra.solution.feature_selection.BinarySolution.__ne__
-.. automethod:: culebra.solution.feature_selection.BinarySolution.__lt__
-.. automethod:: culebra.solution.feature_selection.BinarySolution.__gt__
-.. automethod:: culebra.solution.feature_selection.BinarySolution.__le__
 .. automethod:: culebra.solution.feature_selection.BinarySolution.__ge__
+.. automethod:: culebra.solution.feature_selection.BinarySolution.__gt__
+.. automethod:: culebra.solution.feature_selection.BinarySolution.__hash__
+.. automethod:: culebra.solution.feature_selection.BinarySolution.__le__
+.. automethod:: culebra.solution.feature_selection.BinarySolution.__lt__
+.. automethod:: culebra.solution.feature_selection.BinarySolution.__ne__
 .. automethod:: culebra.solution.feature_selection.BinarySolution.__str__

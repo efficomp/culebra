@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.checker` module
-================================
+:mod:`culebra.checker` module
+=============================
 
 .. automodule:: culebra.checker
 
@@ -28,14 +28,14 @@ Functions
 ---------
 
 .. autofunction:: culebra.checker.check_bool
-.. autofunction:: culebra.checker.check_str
-.. autofunction:: culebra.checker.check_limits
-.. autofunction:: culebra.checker.check_int
+.. autofunction:: culebra.checker.check_filename
 .. autofunction:: culebra.checker.check_float
-.. autofunction:: culebra.checker.check_instance
-.. autofunction:: culebra.checker.check_subclass
 .. autofunction:: culebra.checker.check_func
 .. autofunction:: culebra.checker.check_func_params
-.. autofunction:: culebra.checker.check_sequence
-.. autofunction:: culebra.checker.check_filename
+.. autofunction:: culebra.checker.check_instance
+.. autofunction:: culebra.checker.check_int
+.. autofunction:: culebra.checker.check_limits
 .. autofunction:: culebra.checker.check_matrix
+.. autofunction:: culebra.checker.check_sequence
+.. autofunction:: culebra.checker.check_str
+.. autofunction:: culebra.checker.check_subclass

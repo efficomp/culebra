@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.IntSolution` class
-================================================================
+:class:`culebra.solution.feature_selection.IntSolution` class
+=============================================================
 
 .. autoclass:: culebra.solution.feature_selection.IntSolution
 
@@ -34,30 +34,33 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.feature_selection.IntSolution.species
-.. autoproperty:: culebra.solution.feature_selection.IntSolution.fitness
 .. autoproperty:: culebra.solution.feature_selection.IntSolution.features
-.. autoproperty:: culebra.solution.feature_selection.IntSolution.num_feats
-.. autoproperty:: culebra.solution.feature_selection.IntSolution.min_feat
+.. autoproperty:: culebra.solution.feature_selection.IntSolution.fitness
 .. autoproperty:: culebra.solution.feature_selection.IntSolution.max_feat
+.. autoproperty:: culebra.solution.feature_selection.IntSolution.min_feat
+.. autoproperty:: culebra.solution.feature_selection.IntSolution.num_feats
+.. autoproperty:: culebra.solution.feature_selection.IntSolution.species
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.IntSolution.dominates
 .. automethod:: culebra.solution.feature_selection.IntSolution.delete_fitness
+.. automethod:: culebra.solution.feature_selection.IntSolution.dominates
+.. automethod:: culebra.solution.feature_selection.IntSolution.dump
 
 Private methods
 ---------------
-.. automethod:: culebra.solution.feature_selection.IntSolution.dump
 .. automethod:: culebra.solution.feature_selection.IntSolution._setup
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.feature_selection.IntSolution.__hash__
+Intended to compare (lexicographically) two solutions according to their
+fitness.
+
 .. automethod:: culebra.solution.feature_selection.IntSolution.__eq__
-.. automethod:: culebra.solution.feature_selection.IntSolution.__ne__
-.. automethod:: culebra.solution.feature_selection.IntSolution.__lt__
-.. automethod:: culebra.solution.feature_selection.IntSolution.__gt__
-.. automethod:: culebra.solution.feature_selection.IntSolution.__le__
 .. automethod:: culebra.solution.feature_selection.IntSolution.__ge__
+.. automethod:: culebra.solution.feature_selection.IntSolution.__gt__
+.. automethod:: culebra.solution.feature_selection.IntSolution.__hash__
+.. automethod:: culebra.solution.feature_selection.IntSolution.__le__
+.. automethod:: culebra.solution.feature_selection.IntSolution.__lt__
+.. automethod:: culebra.solution.feature_selection.IntSolution.__ne__
 .. automethod:: culebra.solution.feature_selection.IntSolution.__str__

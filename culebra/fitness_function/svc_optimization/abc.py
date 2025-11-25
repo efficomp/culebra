@@ -23,13 +23,12 @@ This sub-module provides several abstract fitness functions intended to
 optimize the Support Vector Classifier (SVC) hyperparameters for a given
 dataset:
 
-  * :py:class:`~culebra.fitness_function.svc_optimization.abc.SVCScorer`:
-    Abstract fitness function for thehyperparameters optimization of SVM-based
-    classifiers.
-
-  * :py:class:`~culebra.fitness_function.svc_optimization.abc.RBFSVCScorer`:
-    Is centered on the hyperparameters optimization of SVM-based classifiers
-    with RBF kernels.
+* :class:`~culebra.fitness_function.svc_optimization.abc.RBFSVCScorer`:
+  Is centered on the hyperparameters optimization of SVM-based classifiers
+  with RBF kernels.
+* :class:`~culebra.fitness_function.svc_optimization.abc.SVCScorer`:
+  Abstract fitness function for the hyperparameters optimization of SVM-based
+  classifiers.
 """
 
 from __future__ import annotations
@@ -61,11 +60,13 @@ class SVCScorer(SingleObjectiveFitnessFunction):
     """Single objective function for SVC optimization problems."""
 
     def is_evaluable(self, sol: Solution) -> bool:
-        """Return :py:data:`True` if the solution can be evaluated.
+        """Assess the evaluability of a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol:
-            :py:class:`~culebra.solution.parameter_optimization.Solution`
+        :type sol: ~culebra.solution.parameter_optimization.Solution
+        :return: :data:`True` if the solution can be evaluated
+        :rtype: bool
+        :raises NotImplementedError: If has not been overridden
         """
         if not isinstance(sol, Solution):
             return False
@@ -90,26 +91,28 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
     ) -> None:
         """Construct the fitness function.
 
+        The *classifier* must be an instance of :class:`~sklearn.svm.SVC` with
+        RBF kernels.
+
         If *test_data* are provided, the whole *training_data* are used to
         train. Otherwise, a *k*-fold cross-validation is applied.
 
         :param training_data: The training dataset
-        :type training_data: :py:class:`~culebra.tools.Dataset`
-        :param test_data: The test dataset, defaults to :py:data:`None`
-        :type test_data: :py:class:`~culebra.tools.Dataset`, optional
+        :type training_data: ~culebra.tools.Dataset
+        :param test_data: The test dataset, defaults to :data:`None`
+        :type test_data: ~culebra.tools.Dataset
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
-            :py:attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
-            is used. Defaults to :py:data:`None`
-        :type cv_folds: :py:class:`int`, optional
-        :param classifier: The classifier. If set to :py:data:`None`,
-            a :py:class:`~sklearn.svm.SVC` with RBF kernels will be used.
-            Defaults to :py:data:`None`
-        :type classifier: :py:class:`~sklearn.svm.SVC` with
-            RBF kernels, optional
+            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
+            is used. Defaults to :data:`None`
+        :type cv_folds: int
+        :param classifier: The classifier. If set to :data:`None`,
+            a :class:`~sklearn.svm.SVC` with RBF kernels will be used.
+            Defaults to :data:`None`
+        :type classifier: ~sklearn.svm.SVC
         :param index: Index of this objective when it is used for
-            multi-objective fitness functions
-        :type index: :py:class:`int`, optional
+            multi-objective fitness functions, optional
+        :type index: int
 
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
@@ -117,7 +120,7 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         :raises TypeError: If *cv_folds* is not an integer value
         :raises ValueError: If *cv_folds* is not positive
         :raises TypeError: If *classifier* is not a valid
-            :py:class:`~sklearn.svm.SVC` instance
+            :class:`~sklearn.svm.SVC` instance
         :raises TypeError: If *index* is not an integer number
         :raises ValueError: If *index* is not positive
         """
@@ -132,13 +135,18 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
 
     @property
     def classifier(self) -> SVC:
-        """Get and set the classifier applied within this fitness function.
+        """Classifier applied within this fitness function.
 
-        :getter: Return the classifier
+        The classifier must be an instance of :class:`~sklearn.svm.SVC` with
+        RBF kernels.
+
+        :rtype: ~sklearn.svm.SVC
         :setter: Set a new classifier
-        :type: Any subclass of :py:class:`~sklearn.svm.SVC` with RBF kernels
+        :param value: The classifier. If set to :data:`None`,
+            :class:`~sklearn.svm.SVC` with RBF kernels is chosen
+        :type value: ~sklearn.svm.SVC
         :raises TypeError: If set to a value which is not a valid
-            :py:class:`~sklearn.svm.SVC` instance
+            :class:`~sklearn.svm.SVC` instance
         :raises ValueError: If the classifier has not RBF kernels
         """
         return self._classifier
@@ -147,11 +155,14 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
     def classifier(self, value: ClassifierMixin | None) -> None:
         """Set a classifier.
 
-        :param value: The classifier. If set to :py:data:`None`,
-            :py:class:`~sklearn.svm.SVC with RBF kernels is chosen
-        :type: Any subclass of :py:class:`~sklearn.svm.SVC` with RBF kernels
+        The classifier must be an instance of :class:`~sklearn.svm.SVC` with
+        RBF kernels.
+
+        :param value: The classifier. If set to :data:`None`,
+            :class:`~sklearn.svm.SVC` with RBF kernels is chosen
+        :type value: ~sklearn.svm.SVC
         :raises TypeError: If set to a value which is not a valid
-            :py:class:`~sklearn.svm.SVC` instance
+            :class:`~sklearn.svm.SVC` instance
         :raises ValueError: If the classifier has not RBF kernels
         """
         if value is not None:
@@ -177,18 +188,17 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol:
-            :py:class:`~culebra.solution.parameter_optimization.Solution`
+        :type sol: ~culebra.solution.parameter_optimization.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
             problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
+        :type index: int
         :param representatives: Representative solutions of each species
             being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
+        :type representatives:
+            ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):

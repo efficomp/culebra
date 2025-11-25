@@ -19,18 +19,15 @@
 
 """Abstract base classes for solutions for different metaheuristics.
 
-The :py:mod:`~culebra.solution.abc` module provides solutions targeted for
+The :mod:`~culebra.solution.abc` module provides solutions targeted for
 different metaheuristics. Currently, the following are defined:
 
-      * An :py:class:`~culebra.solution.abc.Individual` class, which adds the
-        crossover and mutation operators to the
-        :py:class:`~culebra.abc.Solution` class to support the implementation
-        of evolutionary trainers.
-
-      * An :py:class:`~culebra.solution.abc.Ant` class, which adds the path
-        handling stuff to the :py:class:`~culebra.abc.Solution` class to
-        support the implementation of ant colony trainers.
-
+* An :class:`~culebra.solution.abc.Ant` class, which adds the path handling
+  stuff to the :class:`~culebra.abc.Solution` class to support the
+  implementation of ant colony trainers.
+* An :class:`~culebra.solution.abc.Individual` class, which adds the crossover
+  and mutation operators to the :class:`~culebra.abc.Solution` class to support
+  the implementation of evolutionary trainers.
 """
 
 from __future__ import annotations
@@ -54,7 +51,7 @@ class Individual(Solution):
     """Abstract base class for individuals.
 
     Add the crossover and mutation operators to the
-    :py:class:`~culebra.abc.Solution` class.
+    :class:`~culebra.abc.Solution` class.
     """
 
     @abstractmethod
@@ -65,10 +62,10 @@ class Individual(Solution):
         value.
 
         :param other: The other individual
-        :type other: :py:class:`~culebra.solution.abc.Individual`
-        :raises NotImplementedError: if has not been overridden
+        :type other: ~culebra.solution.abc.Individual
         :return: The two offspring
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.abc.Individual]
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The crossover operator has not been implemented in the "
@@ -83,10 +80,10 @@ class Individual(Solution):
         value.
 
         :param indpb: Independent probability for each gene to be mutated.
-        :type indpb: :py:class:`float`
-        :raises NotImplementedError: if has not been overridden
+        :type indpb: float
         :return: The mutant
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.abc.Individual]
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The mutation operator has not been implemented in the "
@@ -97,7 +94,7 @@ class Individual(Solution):
 class Ant(Solution):
     """Abstract base class for ants.
 
-    Add the path handling stuff to the :py:class:`~culebra.abc.Solution` class.
+    Add the path handling stuff to the :class:`~culebra.abc.Solution` class.
     """
 
     @property
@@ -108,8 +105,8 @@ class Ant(Solution):
         This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overridden
-        :type: :py:class:`~collections.abc.Sequence`
+        :rtype: ~collections.abc.Sequence[int]
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The path property has not been implemented in the "
@@ -118,9 +115,9 @@ class Ant(Solution):
 
     @property
     def current(self) -> int:
-        """Return the current node in the path.
+        """Current node in the path.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self.path[-1] if len(self.path) > 0 else None
 
@@ -132,8 +129,8 @@ class Ant(Solution):
         This property must be overridden by subclasses to return a correct
         value.
 
-        :raises NotImplementedError: if has not been overridden
-        :type: :py:class:`~collections.abc.Sequence`
+        :rtype: ~collections.abc.Sequence[int]
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The discarded property has not been implemented in the "
@@ -148,8 +145,8 @@ class Ant(Solution):
         value.
 
         :param node: The node
-        :type node: :py:class:`int`
-        :raises NotImplementedError: if has not been overridden
+        :type node: int
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The append method has not been implemented in the "
@@ -166,8 +163,8 @@ class Ant(Solution):
         value.
 
         :param node: The node
-        :type node: :py:class:`int`
-        :raises NotImplementedError: if has not been overridden
+        :type node: int
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The discard method has not been implemented in the "
@@ -175,11 +172,17 @@ class Ant(Solution):
         )
 
     def __str__(self) -> str:
-        """Return the ant as a string."""
+        """Ant as a string.
+
+        :rtype: str
+        """
         return str(self.path)
 
     def __repr__(self) -> str:
-        """Return the ant representation."""
+        """Ant representation.
+
+        :rtype: str
+        """
         cls_name = self.__class__.__name__
         species_info = str(self.species)
         fitness_info = self.fitness.values

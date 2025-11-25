@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.svc_optimization.Accuracy` class
-====================================================================
+:class:`culebra.fitness_function.svc_optimization.Accuracy` class
+=================================================================
 
 .. autoclass:: culebra.fitness_function.svc_optimization.Accuracy
 
@@ -30,15 +30,15 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.num_obj
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_weights
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_names
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.classifier
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.index
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.training_data
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.num_obj
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_names
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.obj_weights
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.test_data
-.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.training_data
 
 Private properties
 ------------------
@@ -52,7 +52,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy._score
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy._final_training_test_data
-.. automethod:: culebra.fitness_function.svc_optimization.Accuracy._evaluate_train_test
 .. automethod:: culebra.fitness_function.svc_optimization.Accuracy._evaluate_kfcv
+.. automethod:: culebra.fitness_function.svc_optimization.Accuracy._evaluate_train_test
+.. automethod:: culebra.fitness_function.svc_optimization.Accuracy._final_training_test_data
+.. automethod:: culebra.fitness_function.svc_optimization.Accuracy._score

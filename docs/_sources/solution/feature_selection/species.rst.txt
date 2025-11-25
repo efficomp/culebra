@@ -19,23 +19,23 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.Species` class
-============================================================
+:class:`culebra.solution.feature_selection.Species` class
+=========================================================
 
 .. autoclass:: culebra.solution.feature_selection.Species
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.feature_selection.Species.num_feats
-.. autoproperty:: culebra.solution.feature_selection.Species.min_feat
 .. autoproperty:: culebra.solution.feature_selection.Species.max_feat
-.. autoproperty:: culebra.solution.feature_selection.Species.min_size
 .. autoproperty:: culebra.solution.feature_selection.Species.max_size
+.. autoproperty:: culebra.solution.feature_selection.Species.min_feat
+.. autoproperty:: culebra.solution.feature_selection.Species.min_size
+.. autoproperty:: culebra.solution.feature_selection.Species.num_feats
 
 Class methods
 -------------
-.. automethod:: culebra.solution.feature_selection.Species.load
 .. automethod:: culebra.solution.feature_selection.Species.from_proportion
+.. automethod:: culebra.solution.feature_selection.Species.load
 
 Methods
 -------

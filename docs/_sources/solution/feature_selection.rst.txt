@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.solution.feature_selection` module
-===================================================
+:mod:`culebra.solution.feature_selection` module
+================================================
 
 .. automodule:: culebra.solution.feature_selection
 
@@ -36,10 +36,6 @@ Attributes
     :annotation: = 0.25
 
     Maximum proportion for the generation of a species
-
-..
-    .. autodata:: DEFAULT_PROP
-    .. autodata:: MAX_PROP
 
 
 .. toctree::

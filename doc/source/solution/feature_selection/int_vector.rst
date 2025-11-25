@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.IntVector` class
-==============================================================
+:class:`culebra.solution.feature_selection.IntVector` class
+===========================================================
 
 .. autoclass:: culebra.solution.feature_selection.IntVector
 
@@ -34,20 +34,20 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.feature_selection.IntVector.species
-.. autoproperty:: culebra.solution.feature_selection.IntVector.fitness
 .. autoproperty:: culebra.solution.feature_selection.IntVector.features
-.. autoproperty:: culebra.solution.feature_selection.IntVector.num_feats
-.. autoproperty:: culebra.solution.feature_selection.IntVector.min_feat
+.. autoproperty:: culebra.solution.feature_selection.IntVector.fitness
 .. autoproperty:: culebra.solution.feature_selection.IntVector.max_feat
+.. autoproperty:: culebra.solution.feature_selection.IntVector.min_feat
+.. autoproperty:: culebra.solution.feature_selection.IntVector.num_feats
+.. autoproperty:: culebra.solution.feature_selection.IntVector.species
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.IntVector.dump
 .. automethod:: culebra.solution.feature_selection.IntVector.crossover
-.. automethod:: culebra.solution.feature_selection.IntVector.mutate
-.. automethod:: culebra.solution.feature_selection.IntVector.dominates
 .. automethod:: culebra.solution.feature_selection.IntVector.delete_fitness
+.. automethod:: culebra.solution.feature_selection.IntVector.dominates
+.. automethod:: culebra.solution.feature_selection.IntVector.dump
+.. automethod:: culebra.solution.feature_selection.IntVector.mutate
 
 Private methods
 ---------------
@@ -55,11 +55,14 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.feature_selection.IntVector.__hash__
+Intended to compare (lexicographically) two int vectors according to their
+fitness.
+
 .. automethod:: culebra.solution.feature_selection.IntVector.__eq__
-.. automethod:: culebra.solution.feature_selection.IntVector.__ne__
-.. automethod:: culebra.solution.feature_selection.IntVector.__lt__
-.. automethod:: culebra.solution.feature_selection.IntVector.__gt__
-.. automethod:: culebra.solution.feature_selection.IntVector.__le__
 .. automethod:: culebra.solution.feature_selection.IntVector.__ge__
+.. automethod:: culebra.solution.feature_selection.IntVector.__gt__
+.. automethod:: culebra.solution.feature_selection.IntVector.__hash__
+.. automethod:: culebra.solution.feature_selection.IntVector.__le__
+.. automethod:: culebra.solution.feature_selection.IntVector.__lt__
+.. automethod:: culebra.solution.feature_selection.IntVector.__ne__
 .. automethod:: culebra.solution.feature_selection.IntVector.__str__

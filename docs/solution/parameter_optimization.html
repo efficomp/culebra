@@ -8,7 +8,7 @@
     <title>culebra.solution.parameter_optimization module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -47,14 +47,12 @@
 <p>Species and solutions for parameter optimization problems.</p>
 <p>This module supports parameter optimization problems. The possible solutions
 to the problem are handled by:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>A <a class="reference internal" href="parameter_optimization/species.html#culebra.solution.parameter_optimization.Species" title="culebra.solution.parameter_optimization.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to
-define the characteristics that the desired parameter values should meet.</p></li>
+<ul class="simple">
 <li><p>A <a class="reference internal" href="parameter_optimization/solution.html#culebra.solution.parameter_optimization.Solution" title="culebra.solution.parameter_optimization.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> class
 containing all the parameter values found for the problem.</p></li>
+<li><p>A <a class="reference internal" href="parameter_optimization/species.html#culebra.solution.parameter_optimization.Species" title="culebra.solution.parameter_optimization.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to
+define the characteristics that the desired parameter values should meet.</p></li>
 </ul>
-</div></blockquote>
 <p>In order to make possible the application of evolutionary approaches, the
 <a class="reference internal" href="parameter_optimization/solution.html#culebra.solution.parameter_optimization.Solution" title="culebra.solution.parameter_optimization.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> class has been
 extended by the <a class="reference internal" href="parameter_optimization/individual.html#culebra.solution.parameter_optimization.Individual" title="culebra.solution.parameter_optimization.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>
@@ -66,16 +64,16 @@ and mutation operators to the
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.solution.parameter_optimization.DEFAULT_PARAMETER_NAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_PARAMETER_NAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'param'</span></em><a class="headerlink" href="#culebra.solution.parameter_optimization.DEFAULT_PARAMETER_NAME" title="Link to this definition">¶</a></dt>
-<dd><p>Default parameter name.</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.solution.parameter_optimization.DEFAULT_ETA">
 <span class="sig-name descname"><span class="pre">DEFAULT_ETA</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.solution.parameter_optimization.DEFAULT_ETA" title="Link to this definition">¶</a></dt>
 <dd><p>Default value for <span class="math notranslate nohighlight">\({\eta}\)</span> (eta), which controls the probability
 distribution used in SBX and polynomial mutation.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.solution.parameter_optimization.DEFAULT_PARAMETER_NAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_PARAMETER_NAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'param'</span></em><a class="headerlink" href="#culebra.solution.parameter_optimization.DEFAULT_PARAMETER_NAME" title="Link to this definition">¶</a></dt>
+<dd><p>Default parameter name.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">

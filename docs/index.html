@@ -8,7 +8,7 @@
     <title>Welcome to culebra’s documentation! &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=37f418d5"></script>
+    <script src="_static/documentation_options.js?v=c87aa342"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -49,42 +49,27 @@ classes, both in the <a class="reference internal" href="tools.html#module-culeb
 the <a class="reference internal" href="tools/results.html#culebra.tools.Results" title="culebra.tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> is also provided by the
 <a class="reference internal" href="tools/results_analyzer.html#culebra.tools.ResultsAnalyzer" title="culebra.tools.ResultsAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsAnalyzer</span></code></a> class.</p>
 <p>Culebra is structured in the following modules:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>The <a class="reference internal" href="abc.html#module-culebra.abc" title="culebra.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module, which defines the abstract base classes
-that support culebra</p></li>
-<li><p>The <a class="reference internal" href="checker.html#module-culebra.checker" title="culebra.checker"><code class="xref py py-mod docutils literal notranslate"><span class="pre">checker</span></code></a> module, which provides several checker
-functions used within culebra to prevent wrong arguments to functions
-and methods</p></li>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="abc.html#module-culebra.abc" title="culebra.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module, which defines the abstract base classes that
+support culebra</p></li>
+<li><p>The <a class="reference internal" href="checker.html#module-culebra.checker" title="culebra.checker"><code class="xref py py-mod docutils literal notranslate"><span class="pre">checker</span></code></a> module, which provides several checker functions
+used within culebra to prevent wrong arguments to functions and methods</p></li>
+<li><p>The <a class="reference internal" href="fitness_function.html#module-culebra.fitness_function" title="culebra.fitness_function"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitness_function</span></code></a> module, which provides fitness functions
+for several problems</p></li>
 <li><p>The <a class="reference internal" href="solution.html#module-culebra.solution" title="culebra.solution"><code class="xref py py-mod docutils literal notranslate"><span class="pre">solution</span></code></a> module, which define solutions and solution
 species for several problems</p></li>
-<li><p>The <a class="reference internal" href="fitness_function.html#module-culebra.fitness_function" title="culebra.fitness_function"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fitness_function</span></code></a> module, which provides fitness
-functions for several problems</p></li>
+<li><p>The <a class="reference internal" href="tools.html#module-culebra.tools" title="culebra.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> module, which implements several tools to handle
+data and make easier the experimentation and the analysis of the obtained
+results</p></li>
 <li><p>The <a class="reference internal" href="trainer.html#module-culebra.trainer" title="culebra.trainer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">trainer</span></code></a> module, which implement several training
 algorithms</p></li>
-<li><p>The <a class="reference internal" href="tools.html#module-culebra.tools" title="culebra.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> module, which implements several tools to
-handle data and make easier the experimentation and the analysis of the
-obtained results</p></li>
 </ul>
-</div></blockquote>
 <section id="attributes">
 <h2>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.DEFAULT_SIMILARITY_THRESHOLD">
-<span class="sig-name descname"><span class="pre">DEFAULT_SIMILARITY_THRESHOLD</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.0</span></em><a class="headerlink" href="#culebra.DEFAULT_SIMILARITY_THRESHOLD" title="Link to this definition">¶</a></dt>
-<dd><p>Default similarity threshold for fitnesses.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.DEFAULT_MAX_NUM_ITERS">
-<span class="sig-name descname"><span class="pre">DEFAULT_MAX_NUM_ITERS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.DEFAULT_MAX_NUM_ITERS" title="Link to this definition">¶</a></dt>
-<dd><p>Default maximum number of iterations.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.SERIALIZED_FILE_EXTENSION">
-<span class="sig-name descname"><span class="pre">SERIALIZED_FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'.dill.gz'</span></em><a class="headerlink" href="#culebra.SERIALIZED_FILE_EXTENSION" title="Link to this definition">¶</a></dt>
-<dd><p>Extension for files containing serialized objects.</p>
+<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_BASENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_BASENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'checkpoint'</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_BASENAME" title="Link to this definition">¶</a></dt>
+<dd><p>Default basename for checkpointing files.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -94,21 +79,34 @@ obtained results</p></li>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'checkpoint.dill.gz'</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_FILENAME" title="Link to this definition">¶</a></dt>
+<dd><p>Default checkpointing file name for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_FREQ">
 <span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_FREQ" title="Link to this definition">¶</a></dt>
 <dd><p>Default checkpointing frequency for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_BASENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_BASENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'checkpoint'</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_BASENAME" title="Link to this definition">¶</a></dt>
-<dd><p>Default basename for checkpointing files.</p>
+<dt class="sig sig-object py" id="culebra.DEFAULT_INDEX">
+<span class="sig-name descname"><span class="pre">DEFAULT_INDEX</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#culebra.DEFAULT_INDEX" title="Link to this definition">¶</a></dt>
+<dd><p>Default <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a> index. Only used within a
+distributed approaches.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.DEFAULT_CHECKPOINT_FILENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'checkpoint.dill.gz'</span></em><a class="headerlink" href="#culebra.DEFAULT_CHECKPOINT_FILENAME" title="Link to this definition">¶</a></dt>
-<dd><p>Default checkpointing file name for a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+<dt class="sig sig-object py" id="culebra.DEFAULT_MAX_NUM_ITERS">
+<span class="sig-name descname"><span class="pre">DEFAULT_MAX_NUM_ITERS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.DEFAULT_MAX_NUM_ITERS" title="Link to this definition">¶</a></dt>
+<dd><p>Default maximum number of iterations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.DEFAULT_SIMILARITY_THRESHOLD">
+<span class="sig-name descname"><span class="pre">DEFAULT_SIMILARITY_THRESHOLD</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.0</span></em><a class="headerlink" href="#culebra.DEFAULT_SIMILARITY_THRESHOLD" title="Link to this definition">¶</a></dt>
+<dd><p>Default similarity threshold for fitnesses.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -118,10 +116,9 @@ obtained results</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.DEFAULT_INDEX">
-<span class="sig-name descname"><span class="pre">DEFAULT_INDEX</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#culebra.DEFAULT_INDEX" title="Link to this definition">¶</a></dt>
-<dd><p>Default <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a> index. Only used within a
-distributed approaches.</p>
+<dt class="sig sig-object py" id="culebra.SERIALIZED_FILE_EXTENSION">
+<span class="sig-name descname"><span class="pre">SERIALIZED_FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'.dill.gz'</span></em><a class="headerlink" href="#culebra.SERIALIZED_FILE_EXTENSION" title="Link to this definition">¶</a></dt>
+<dd><p>Extension for files containing serialized objects.</p>
 </dd></dl>
 
 </section>

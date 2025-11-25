@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.feature_selection.Accuracy` class
-=====================================================================
+:class:`culebra.fitness_function.feature_selection.Accuracy` class
+==================================================================
 
 .. autoclass:: culebra.fitness_function.feature_selection.Accuracy
 
@@ -30,17 +30,16 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.classifier
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.cv_folds
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.fitness_cls
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.index
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.num_obj
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.obj_weights
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.obj_names
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.obj_thresholds
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.fitness_cls
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.num_nodes
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.index
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.training_data
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.obj_weights
 .. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.test_data
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.cv_folds
-.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.classifier
+.. autoproperty:: culebra.fitness_function.feature_selection.Accuracy.training_data
 
 Private properties
 ------------------
@@ -51,11 +50,10 @@ Methods
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy.dump
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy.evaluate
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy.is_evaluable
-.. automethod:: culebra.fitness_function.feature_selection.Accuracy.heuristic
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.feature_selection.Accuracy._score
-.. automethod:: culebra.fitness_function.feature_selection.Accuracy._final_training_test_data
-.. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_train_test
 .. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_kfcv
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._evaluate_train_test
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._final_training_test_data
+.. automethod:: culebra.fitness_function.feature_selection.Accuracy._score

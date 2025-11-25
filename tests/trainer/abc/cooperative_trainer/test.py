@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.abc.CooperativeTrainer`."""
+"""Unit test for :class:`culebra.trainer.abc.CooperativeTrainer`."""
 
 import unittest
 from os import remove
@@ -147,20 +147,20 @@ class MyTrainer(CooperativeTrainer):
         """Generate the subtrainers.
 
         Also assign an
-        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.index` and a
-        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.container` to each
-        subtrainer :py:class:`~culebra.trainer.abc.SingleSpeciesTrainer`
+        :attr:`~culebra.trainer.abc.SingleSpeciesTrainer.index` and a
+        :attr:`~culebra.trainer.abc.SingleSpeciesTrainer.container` to each
+        subtrainer :class:`~culebra.trainer.abc.SingleSpeciesTrainer`
         trainer, change the subtrainers'
-        :py:attr:`~culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_filename`
+        :attr:`~culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_filename`
         according to the container checkpointing file name and each
         subtrainer index.
 
         Finally, the
-        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration`
+        :meth:`~culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration`
         and
-        :py:meth:`~culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration`
+        :meth:`~culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration`
         methods of the
-        :py:attr:`~culebra.trainer.abc.DistributedTrainer.subtrainer_cls` class
+        :attr:`~culebra.trainer.abc.DistributedTrainer.subtrainer_cls` class
         are dynamically overridden, in order to allow individuals exchange
         between subtrainers, if necessary
 
@@ -175,7 +175,7 @@ class MyTrainer(CooperativeTrainer):
                 does not match the number of subtrainers.
 
             :return: The properties of each subtrainer.
-            :rtype: :py:class:`list`
+            :rtype: list
             """
             # Get the common attributes from the container trainer
             cls = self.subtrainer_cls
@@ -258,10 +258,10 @@ class MyTrainer(CooperativeTrainer):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.abc.CooperativeTrainer`."""
+    """Test :class:`~culebra.trainer.abc.CooperativeTrainer`."""
 
     def test_init(self):
-        """Test :py:meth:`~culebra.trainer.abc.CooperativeTrainer.__init__`."""
+        """Test :meth:`~culebra.trainer.abc.CooperativeTrainer.__init__`."""
         valid_solution_classes = [
             ClassifierOptimizationSolution,
             FeatureSelectionSolution
@@ -706,9 +706,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.abc.CooperativeTrainer`
+        :type trainer1: ~culebra.trainer.abc.CooperativeTrainer
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.abc.CooperativeTrainer`
+        :type trainer2: ~culebra.trainer.abc.CooperativeTrainer
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

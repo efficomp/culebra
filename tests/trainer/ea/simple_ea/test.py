@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.SimpleEA`."""
+"""Unit test for :class:`culebra.trainer.ea.SimpleEA`."""
 
 import unittest
 from copy import copy, deepcopy
@@ -46,7 +46,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.SimpleEA`."""
+    """Test :class:`culebra.trainer.ea.SimpleEA`."""
 
     def test_init(self):
         """Test __init__."""
@@ -223,9 +223,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.ea.SimpleEA`
+        :type trainer1: ~culebra.trainer.ea.SimpleEA
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.ea.SimpleEA`
+        :type trainer2: ~culebra.trainer.ea.SimpleEA
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

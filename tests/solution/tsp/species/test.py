@@ -33,7 +33,7 @@ from culebra.solution.tsp import Species
 
 
 class SpeciesTester(unittest.TestCase):
-    """Test :py:class:`~culebra.solution.tsp.Species`."""
+    """Test :class:`~culebra.solution.tsp.Species`."""
 
     def test_init(self):
         """Test the constructor."""
@@ -139,9 +139,9 @@ class SpeciesTester(unittest.TestCase):
         """Check if *species1* is a deepcopy of *species2*.
 
         :param species1: The first species
-        :type species1: :py:class:`~culebra.solution.tsp.Species`
+        :type species1: ~culebra.solution.tsp.Species
         :param species2: The second species
-        :type species2: :py:class:`~culebra.solution.tsp.Species`
+        :type species2: ~culebra.solution.tsp.Species
         """
         # Copies all the levels
         self.assertNotEqual(id(species1), id(species2))

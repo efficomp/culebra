@@ -23,9 +23,8 @@ This sub-module provides fitness functions designed to the cooperative solving
 of a feature selection problem while the classifier hyperparamters are also
 being optimized. It provides the following fitness functions:
 
-  * :py:class:`~culebra.fitness_function.cooperative.FSSVCScorer`:
-    Abstract base class for all the fitness functions of cooperative FS
-    problems.
+* :class:`~culebra.fitness_function.cooperative.FSSVCScorer`: Abstract base
+  class for all the fitness functions of cooperative FS problems.
 """
 
 from __future__ import annotations
@@ -42,9 +41,8 @@ from culebra.fitness_function.feature_selection.abc import (
     FSDatasetScorer,
     FSClassificationScorer
 )
-from culebra.fitness_function.feature_selection import (
-    FSMultiObjectiveDatasetScorer
-)
+from culebra.fitness_function import MultiObjectiveFitnessFunction
+from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_function.svc_optimization.abc import (
     SVCScorer,
     RBFSVCScorer
@@ -60,41 +58,28 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class FSSVCScorer(FSMultiObjectiveDatasetScorer):
+class FSSVCScorer(MultiObjectiveFitnessFunction):
     """Abstract base class fitness function for cooperative FS problems."""
 
     def __init__(
         self,
-        fs_classification_scorer,
-        *remaining_objectives
+        *objectives: Tuple[SingleObjectiveFitnessFunction, ...]
     ) -> None:
         """Construct a cooperative multi-objective fitness function.
 
         All the objectives that analyze a dataset *must* be
-        :py:class:`~culebra.fitness_function.feature_selection.abc.FSClassificationScorer`
+        :class:`~culebra.fitness_function.feature_selection.abc.FSClassificationScorer`
         instances using an
-        :py:class:`~sklearn.svm.SVC` with RBF kernels. That is, no
-        :py:class:`~culebra.fitness_function.svc_optimization.abc.RBFSVCScorer`
+        :class:`~sklearn.svm.SVC` with RBF kernels. That is, no
+        :class:`~culebra.fitness_function.svc_optimization.abc.RBFSVCScorer`
         objectives are allowed.
 
-        :param fs_classification_scorer: A classification FS objective
-            responsible of the
-            :py:attr:`~culebra.fitness_function.cooperative.FSSVCScorer.num_nodes`
-            property and the
-            :py:meth:`~culebra.fitness_function.cooperative.FSSVCScorer.heuristic`
-            implementations
-        :type fs_classification_scorer:
-            :py:class:`~culebra.fitness_function.feature_selection.abc.FSClassificationScorer`
-
-        :param remaining_objectives: Remaining objectives for this fitness
-            function
-        :type remaining_objectives:
-            :py:class:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction`
+        :param objectives: Objectives for this fitness function
+        :type objectives:
+            tuple[~culebra.fitness_function.abc.SingleObjectiveFitnessFunction]
         """
         # Check the objectives
-        for obj_idx, obj in enumerate(
-            (fs_classification_scorer, *remaining_objectives)
-        ):
+        for obj_idx, obj in enumerate(objectives):
             if isinstance(obj, FSScorer):
                 if isinstance(obj, FSClassificationScorer):
                     if not isinstance(obj.classifier, SVC):
@@ -115,7 +100,7 @@ class FSSVCScorer(FSMultiObjectiveDatasetScorer):
                             f"Objective {obj_idx} is not allowed"
                         )
 
-        super().__init__(fs_classification_scorer, *remaining_objectives)
+        super().__init__(*objectives)
 
     def construct_solutions(
         self,
@@ -129,24 +114,23 @@ class FSSVCScorer(FSMultiObjectiveDatasetScorer):
 
              * *representatives[0]*: Codes the SVC hyperparameters
                (C and gamma). Thus, it is an instance of
-               :py:class:`culebra.solution.parameter_optimization.Solution`
+               :class:`culebra.solution.parameter_optimization.Solution`
              * *representatives[1:]*: The remaining solutions code the
                features selected, each solution a different range of
                features. All of them are instances of
-               :py:class:`culebra.solution.feature_selection.Solution`
+               :class:`culebra.solution.feature_selection.Solution`
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
             problem
-        :type index: :py:class:`int`
+        :type index: int
         :param representatives: Representative solutions of each species
-            being optimized
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
+            being optimized, ignored
+        :type representatives: ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The solutions to the different problems solved cooperatively
-        :rtype: :py:class:`tuple` of py:class:`culebra.abc.Solution`
+        :rtype: tuple[culebra.abc.Solution]
         """
         # Number of representatives
         num_representatives = len(representatives)
@@ -203,25 +187,24 @@ class FSSVCScorer(FSMultiObjectiveDatasetScorer):
 
              * *representatives[0]*: Codes the SVC hyperparameters
                (C and gamma). Thus, it is an instance of
-               :py:class:`culebra.solution.parameter_optimization.Solution`
+               :class:`culebra.solution.parameter_optimization.Solution`
              * *representatives[1:]*: The remaining solutions code the
                features selected, each solution a different range of
                features. All of them are instances of
-               :py:class:`culebra.solution.feature_selection.Solution`
+               :class:`culebra.solution.feature_selection.Solution`
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
-            problem
-        :type index: :py:class:`int`, optional
+            problem, optional
+        :type index: int
         :param representatives: Representative solutions of each species
-            being optimized
-        :type representatives: A :py:class:`~collections.abc.Sequence`
-            containing instances of :py:class:`~culebra.abc.Solution`,
-            optional
+            being optimized, optional
+        :type representatives:
+            ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         """
         # Assemble the solution and representatives to construct a complete
         # solution for each of the problems solved cooperatively

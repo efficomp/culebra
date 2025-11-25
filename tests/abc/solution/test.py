@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.abc.Solution`."""
+"""Unit test for :class:`culebra.abc.Solution`."""
 
 import unittest
 from os import remove
@@ -31,11 +31,11 @@ from culebra.abc import Solution, Species, Fitness
 
 
 class MySolution(Solution):
-    """Dummy subclass to test the :py:class:`~culebra.abc.Solution` class."""
+    """Dummy subclass to test the :class:`~culebra.abc.Solution` class."""
 
 
 class MySpecies(Species):
-    """Dummy subclass to test the :py:class:`~culebra.abc.Species` class."""
+    """Dummy subclass to test the :class:`~culebra.abc.Species` class."""
 
     def check(self, _):
         """Check a solution."""
@@ -51,10 +51,10 @@ class MyFitness(Fitness):
 
 
 class SolutionTester(unittest.TestCase):
-    """Test the :py:class:`~culebra.abc.Solution` class."""
+    """Test the :class:`~culebra.abc.Solution` class."""
 
     def test_init(self):
-        """Test the :py:meth:`~culebra.abc.Solution.__init__` constructor."""
+        """Test the :meth:`~culebra.abc.Solution.__init__` constructor."""
         # Invalid species
         invalid_species = (None, 'a', 1)
 
@@ -86,7 +86,7 @@ class SolutionTester(unittest.TestCase):
         self.assertIsInstance(sol.fitness, MyFitness)
 
     def test_delete_fitness(self):
-        """Test the :py:meth:`~culebra.abc.Solution.delete_fitness` method."""
+        """Test the :meth:`~culebra.abc.Solution.delete_fitness` method."""
         sol = MySolution(MySpecies(), MyFitness)
         self.assertFalse(sol.fitness.is_valid)
 
@@ -181,7 +181,7 @@ class SolutionTester(unittest.TestCase):
         self.assertTrue(sol1 >= sol2)
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.abc.Solution.__copy__` method."""
+        """Test the :meth:`~culebra.abc.Solution.__copy__` method."""
         sol1 = MySolution(MySpecies(), MyFitness)
         sol1.fitness.values = (1, 2)
         sol2 = copy(sol1)
@@ -194,7 +194,7 @@ class SolutionTester(unittest.TestCase):
         self.assertEqual(id(sol1.fitness), id(sol2.fitness))
 
     def test_deepcopy(self):
-        """Test the :py:meth:`~culebra.abc.Solution.__deepcopy__` method."""
+        """Test the :meth:`~culebra.abc.Solution.__deepcopy__` method."""
         sol1 = MySolution(MySpecies(), MyFitness)
         sol1.fitness.values = (1, 2)
         sol2 = deepcopy(sol1)
@@ -205,10 +205,10 @@ class SolutionTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.abc.Solution.__setstate__` and
-        :py:meth:`~culebra.abc.Solution.__reduce__` methods,
-        :py:meth:`~culebra.abc.Solution.dump` and
-        :py:meth:`~culebra.abc.Solution.load` methods.
+        Test the :meth:`~culebra.abc.Solution.__setstate__` and
+        :meth:`~culebra.abc.Solution.__reduce__` methods,
+        :meth:`~culebra.abc.Solution.dump` and
+        :meth:`~culebra.abc.Solution.load` methods.
         """
         sol1 = MySolution(MySpecies(), MyFitness)
         sol1.fitness.values = (1, 2)
@@ -227,9 +227,9 @@ class SolutionTester(unittest.TestCase):
         """Check if *sol1* is a deepcopy of *sol2*.
 
         :param sol1: The first solution
-        :type sol1: :py:class:`~culebra.abc.Solution`
+        :type sol1: ~culebra.abc.Solution
         :param sol2: The second solution
-        :type sol2: :py:class:`~culebra.abc.Solution`
+        :type sol2: ~culebra.abc.Solution
         """
         # Copies all the levels
         self.assertNotEqual(id(sol1), id(sol2))

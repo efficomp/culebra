@@ -25,11 +25,16 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import CPACO
 from culebra.fitness_function.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
+
+
+class CPACOTSP(CPACO, ACOTSP):
+    """CPACO for TSP."""
 
 
 # Try the KroAB100 problem
@@ -51,6 +56,7 @@ species = Species(num_nodes)
 initial_pheromone = 1
 max_pheromone = 5
 
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
@@ -64,7 +70,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = CPACO(**params)
+trainer = CPACOTSP(**params)
 
 # Train the wrapper
 print("Training ...")

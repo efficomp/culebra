@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.abc.Base`."""
+"""Unit test for :class:`culebra.abc.Base`."""
 
 import unittest
 from os import remove
@@ -47,7 +47,7 @@ class BaseSubclass(Base):
         """Set my_list.
 
         :param value: New value for my_list
-        :type value: :py:class:`list`
+        :type value: list
         """
         self._my_list = value
 
@@ -56,10 +56,10 @@ the_list = [[1, 2, 3], [4, 5, 6]]
 
 
 class BaseTester(unittest.TestCase):
-    """Test the :py:class:`~culebra.abc.Base` class."""
+    """Test the :class:`~culebra.abc.Base` class."""
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.abc.Base.__copy__` method."""
+        """Test the :meth:`~culebra.abc.Base.__copy__` method."""
         base1 = BaseSubclass(the_list)
         base2 = copy(base1)
 
@@ -70,7 +70,7 @@ class BaseTester(unittest.TestCase):
         self.assertEqual(id(base1._my_list), id(base2._my_list))
 
     def test_deepcopy(self):
-        """Test the :py:meth:`~culebra.abc.Base.__deepcopy__` method."""
+        """Test the :meth:`~culebra.abc.Base.__deepcopy__` method."""
         base1 = BaseSubclass(the_list)
         base2 = deepcopy(base1)
 
@@ -80,10 +80,10 @@ class BaseTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.abc.Base.__setstate__`,
-        :py:meth:`~culebra.abc.Base.__reduce__`,
-        :py:meth:`~culebra.abc.Base.dump` and
-        :py:meth:`~culebra.abc.Base.load` methods.
+        Test the :meth:`~culebra.abc.Base.__setstate__`,
+        :meth:`~culebra.abc.Base.__reduce__`,
+        :meth:`~culebra.abc.Base.dump` and
+        :meth:`~culebra.abc.Base.load` methods.
         """
         base1 = BaseSubclass(the_list)
 
@@ -98,7 +98,7 @@ class BaseTester(unittest.TestCase):
         remove(serialized_filename)
 
     def test_repr(self):
-        """Test the: py:meth:`~culebra.abc.Base.__repr__` method."""
+        """Test the: meth:`~culebra.abc.Base.__repr__` method."""
         lists = [[], the_list]
 
         for value in lists:
@@ -111,9 +111,9 @@ class BaseTester(unittest.TestCase):
         """Check if *obj1* is a deepcopy of *obj2*.
 
         :param obj1: The first object
-        :type obj1: :py:class:`BaseSubclass`
+        :type obj1: BaseSubclass
         :param obj2: The second object
-        :type obj2: :py:class:`BaseSubclass`
+        :type obj2: BaseSubclass
         """
         # Copies all the levels
         self.assertTrue(obj1.__class__, obj2.__class__)

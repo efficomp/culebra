@@ -8,7 +8,7 @@
     <title>culebra.solution.feature_selection.Metrics class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
-    <script src="../../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -47,7 +47,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="culebra.solution.feature_selection.Metrics">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Metrics</span></span><a class="headerlink" href="#culebra.solution.feature_selection.Metrics" title="Link to this definition">¶</a></dt>
-<dd><p>Provide some metrics about the selected features finally obtained.</p>
+<dd><p>Bases: <a class="reference internal" href="../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Provide some metrics about the selected features finally obtained.</p>
 <p>Evaluate the set of solutions found by a <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>
 and calculate some metrics about the frequency of each selected feature.
 More information about such metrics can be found in <a class="reference internal" href="../../index.html#gonzalez2019" id="id1"><span>[Gonzalez2019]</span></a>.</p>
@@ -56,41 +57,41 @@ More information about such metrics can be found in <a class="reference internal
 <section id="static-methods">
 <h2>Static methods<a class="headerlink" href="#static-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.solution.feature_selection.Metrics.relevance">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">relevance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#culebra.solution.feature_selection.Metrics.relevance" title="Link to this definition">¶</a></dt>
-<dd><p>Return the relevance of the features finally selected.</p>
-<p>The relevance is calculated according to the method proposed in
-<a class="reference internal" href="../../index.html#gonzalez2019" id="id2"><span>[Gonzalez2019]</span></a></p>
+<dt class="sig sig-object py" id="culebra.solution.feature_selection.Metrics.rank">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#culebra.solution.feature_selection.Metrics.rank" title="Link to this definition">¶</a></dt>
+<dd><p>Return the rank of the features finally selected.</p>
+<p>The rank is calculated according to the method proposed in
+<a class="reference internal" href="../../index.html#gonzalez2019" id="id2"><span>[Gonzalez2019]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>solutions</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Best solutions returned by the
+<dd class="field-odd"><p><strong>solutions</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><em>Solution</em></a><em>]</em>) – Best solutions returned by the
 <a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The relevance of each feature appearing in the solutions.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><em>Series</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.solution.feature_selection.Metrics.rank">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#culebra.solution.feature_selection.Metrics.rank" title="Link to this definition">¶</a></dt>
-<dd><p>Return the rank of the features finally selected.</p>
-<p>The rank is calculated according to the method proposed in
-<a class="reference internal" href="../../index.html#gonzalez2019" id="id3"><span>[Gonzalez2019]</span></a></p>
+<dt class="sig sig-object py" id="culebra.solution.feature_selection.Metrics.relevance">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Metrics.</span></span><span class="sig-name descname"><span class="pre">relevance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#culebra.solution.feature_selection.Metrics.relevance" title="Link to this definition">¶</a></dt>
+<dd><p>Return the relevance of the features finally selected.</p>
+<p>The relevance is calculated according to the method proposed in
+<a class="reference internal" href="../../index.html#gonzalez2019" id="id3"><span>[Gonzalez2019]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>solutions</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Best solutions returned by the
-<a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a>.</p>
+<dd class="field-odd"><p><strong>solutions</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><em>Solution</em></a><em>]</em>) – Best solutions returned by the
+<a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The relevance of each feature appearing in the solutions.</p>
+<dd class="field-even"><p>The relevance of each feature appearing in the solutions</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><em>Series</em></a></p>
 </dd>
 </dl>
 </dd></dl>

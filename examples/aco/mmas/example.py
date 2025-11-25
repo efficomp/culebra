@@ -25,6 +25,7 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import (
     MMAS,
     DEFAULT_PHEROMONE_EVAPORATION_RATE
@@ -51,6 +52,10 @@ initial_pheromone = 1 / (
     greedy_solution.fitness.values[0] * DEFAULT_PHEROMONE_EVAPORATION_RATE
 )
 
+class MMASTSP(ACOTSP, MMAS):
+    """MMAS for TSP."""
+
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
@@ -62,7 +67,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = MMAS(**params)
+trainer = MMASTSP(**params)
 
 # Train the wrapper
 print("Training ...")

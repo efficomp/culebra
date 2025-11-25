@@ -8,7 +8,7 @@
     <title>culebra.solution.feature_selection module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -46,19 +46,16 @@
 <p>Species and solutions for feature selection problems.</p>
 <p>This module provides all the classes necessary to solve feature selection
 problems with culebra. The possible solutions to the problem are handled by:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>A <a class="reference internal" href="feature_selection/species.html#culebra.solution.feature_selection.Species" title="culebra.solution.feature_selection.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to define
-the characteristics that the desired selected features should meet.</p></li>
+<ul class="simple">
 <li><p>A <a class="reference internal" href="feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> abstract class
 defining the interface for feature selectors.</p></li>
+<li><p>A <a class="reference internal" href="feature_selection/species.html#culebra.solution.feature_selection.Species" title="culebra.solution.feature_selection.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to define
+the characteristics that the desired selected features should meet.</p></li>
 </ul>
-</div></blockquote>
-<p>Two <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>-based implementations of the
+<p>Two <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>-based implementations of the
 <a class="reference internal" href="feature_selection/solution.html#culebra.solution.feature_selection.Solution" title="culebra.solution.feature_selection.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> class are also
 provided:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p><a class="reference internal" href="feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution" title="culebra.solution.feature_selection.BinarySolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinarySolution</span></code></a>:
 Solutions are coded as boolean vectors of a fixed length, the number of
 selectable features. One boolean value is associated to each selectable
@@ -69,12 +66,10 @@ are coded as vectors of feature indices. Only features whose indices are
 present in the solution are selected. Thus, solutions may have different
 lengths and can not contain repeated indices.</p></li>
 </ul>
-</div></blockquote>
 <p>In order to make possible the application of evolutionary approaches to this
 problem, the following <a class="reference internal" href="abc/individual.html#culebra.solution.abc.Individual" title="culebra.solution.abc.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a>
 implementations are provided:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p><a class="reference internal" href="feature_selection/bit_vector.html#culebra.solution.feature_selection.BitVector" title="culebra.solution.feature_selection.BitVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">BitVector</span></code></a>: Inherits from
 <a class="reference internal" href="feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution" title="culebra.solution.feature_selection.BinarySolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinarySolution</span></code></a> and
 <a class="reference internal" href="abc/individual.html#culebra.solution.abc.Individual" title="culebra.solution.abc.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> to provide crossover and
@@ -84,7 +79,6 @@ mutation operators to binary solutions.</p></li>
 <a class="reference internal" href="abc/individual.html#culebra.solution.abc.Individual" title="culebra.solution.abc.Individual"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individual</span></code></a> to provide crossover and
 mutation operators to feature index-based solutions.</p></li>
 </ul>
-</div></blockquote>
 <p>Ant Colony Optimization is also supported by the
 <a class="reference internal" href="feature_selection/ant.html#culebra.solution.feature_selection.Ant" title="culebra.solution.feature_selection.Ant"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ant</span></code></a> class, which inherits from
 <a class="reference internal" href="feature_selection/int_solution.html#culebra.solution.feature_selection.IntSolution" title="culebra.solution.feature_selection.IntSolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntSolution</span></code></a> and

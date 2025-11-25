@@ -18,22 +18,22 @@
 
 """Base classes of culebra.
 
-Fundamental classes to solve optimization problems. The :py:mod:`~culebra.abc`
+Fundamental classes to solve optimization problems. The :mod:`~culebra.abc`
 module defines:
 
-  * A :py:class:`~culebra.abc.Base` class from which all the classes of culebra
-    inherit
-  * A :py:class:`~culebra.abc.Species` class to define the characteristics of
-    solutions belonging to a given domain
-  * A :py:class:`~culebra.abc.Solution` class, which will be used within the
-    :py:class:`~culebra.abc.Trainer` class to seek the best solution(s) for a
-    problem
-  * A :py:class:`~culebra.abc.Fitness` class to store the fitness values for
-    each :py:class:`~culebra.abc.Solution`
-  * A :py:class:`~culebra.abc.FitnessFunction` class to evaluate a
-    :py:class:`~culebra.abc.Solution` during the training process and assign
-    it values for its :py:class:`~culebra.abc.Fitness`
-  * A :py:class:`~culebra.abc.Trainer` class to find solutions for a problem
+* A :class:`~culebra.abc.Base` class from which all the classes of culebra
+  inherit
+* A :class:`~culebra.abc.Fitness` class to store the fitness values for each
+  :class:`~culebra.abc.Solution`
+* A :class:`~culebra.abc.FitnessFunction` class to evaluate a
+  :class:`~culebra.abc.Solution` during the training process and assign it
+  values for its :class:`~culebra.abc.Fitness`
+* A :class:`~culebra.abc.Solution` class, which will be used within the
+  :class:`~culebra.abc.Trainer` class to seek the best solution(s) for a
+  problem
+* A :class:`~culebra.abc.Species` class to define the characteristics of
+  solutions belonging to a given domain
+* A :class:`~culebra.abc.Trainer` class to find solutions for a problem
 """
 
 from __future__ import annotations
@@ -53,7 +53,6 @@ import gzip
 from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
-    DEFAULT_SIMILARITY_THRESHOLD,
     DEFAULT_MAX_NUM_ITERS,
     SERIALIZED_FILE_EXTENSION,
     DEFAULT_CHECKPOINT_ENABLE,
@@ -84,7 +83,7 @@ __status__ = 'Development'
 
 TRAINER_STATS_NAMES = ('Iter', 'NEvals')
 """Statistics calculated for each iteration of the
-:py:class:`~culebra.abc.Trainer`.
+:class:`~culebra.abc.Trainer`.
 """
 
 TRAINER_OBJECTIVE_STATS = {
@@ -94,7 +93,7 @@ TRAINER_OBJECTIVE_STATS = {
     "Max": np.max,
 }
 """Statistics calculated for each objective within a
-:py:class:`~culebra.abc.Trainer`.
+:class:`~culebra.abc.Trainer`.
 """
 
 
@@ -105,10 +104,10 @@ class Base:
         """Serialize this object and save it to a file.
 
         :param filename: The file name.
-        :type filename: :py:class:`~str`
+        :type filename: str
         :raises TypeError: If *filename* is not a valid file name
         :raises ValueError: If the *filename* extension is not
-            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
+            :attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         filename = check_filename(
             filename,
@@ -124,10 +123,11 @@ class Base:
         """Load a serialized object from a file.
 
         :param filename: The file name.
-        :type filename: :py:class:`~str`
+        :type filename: str
+        :return: The loaded object
         :raises TypeError: If *filename* is not a valid file name
         :raises ValueError: If the *filename* extension is not
-            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
+            :attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         filename = check_filename(
             filename,
@@ -139,7 +139,11 @@ class Base:
             return cls.__fromstate__(dill.load(f).__dict__)
 
     def __copy__(self) -> Base:
-        """Shallow copy the object."""
+        """Shallow copy the object.
+
+        :return: The copied object
+        :rtype: ~culebra.abc.Base
+        """
         cls = self.__class__
         result = cls()
         result.__dict__.update(self.__dict__)
@@ -149,9 +153,9 @@ class Base:
         """Deepcopy the object.
 
         :param memo: Object attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the object
-        :rtype: The same than the original object
+        :type memo: dict
+        :return:  The copied object
+        :rtype: ~culebra.abc.Base
         """
         cls = self.__class__
         result = cls()
@@ -162,7 +166,7 @@ class Base:
         """Set the state of the object.
 
         :param state: The state
-        :type state: :py:class:`dict`
+        :type state: dict
         """
         self.__dict__.update(state)
 
@@ -170,12 +174,15 @@ class Base:
         """Reduce the object.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (self.__class__, (), self.__dict__)
 
     def __repr__(self) -> str:
-        """Return the object representation."""
+        """Object representation.
+
+        :rtype: str
+        """
         cls = self.__class__
         cls_name = cls.__name__
 
@@ -207,8 +214,10 @@ class Base:
     def __fromstate__(cls, state: dict) -> Base:
         """Return an object from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: dict
+        :return: The object
+        :rtype: ~culebra.abc.Base
         """
         obj = cls()
         obj.__setstate__(state)
@@ -219,10 +228,10 @@ class Fitness(Base):
     """Define the base class for the fitness of a solution."""
 
     weights = ()
-    """A :py:class:`tuple` containing an integer value for each objective
+    """A :class:`tuple` containing an integer value for each objective
     being optimized. The weights are used in the fitness comparison. They are
     shared among all fitnesses of the same type. When subclassing
-    :py:class:`~culebra.abc.Fitness`, the weights must be defined as a tuple
+    :class:`~culebra.abc.Fitness`, the weights must be defined as a tuple
     where each element is associated to an objective. A negative weight element
     corresponds to the minimization of the associated objective and positive
     weight to the maximization.
@@ -242,7 +251,7 @@ class Fitness(Base):
         """Construct a default fitness object.
 
         :param values: Initial values for the fitness, optional
-        :type values: :py:class:`~collections.abc.Sequence`, optional
+        :type values: ~collections.abc.Sequence[float]
         """
         # Init the superclasses
         super().__init__()
@@ -253,7 +262,11 @@ class Fitness(Base):
 
     @property
     def is_valid(self) -> bool:
-        """Return :py:data:`True` if the fitness is valid."""
+        """Validness of the fitness.
+
+        :return: :data:`True` if the fitness is valid
+        :rtype: bool
+        """
         if (
                 self._values is None or
                 len(self._values) == 0 or
@@ -265,26 +278,27 @@ class Fitness(Base):
 
     @property
     def values(self) -> Tuple[float | None]:
-        """Get and set the fitness values.
+        """Fitness values.
 
-        :getter: Return the current fitness values
-        :setter: Set the new fitness values. If set to :py:data:`None`, the
-            fitness is invalidated
-        :type: :py:class:`tuple` of :py:class:`float` or :py:data:`None`
-        :raises TypeError: If any value is not a real number or :py:data:`None`
+        :rtype: tuple[float | None]
+
+        :setter: Set the new fitness values
+        :param fit_values: The new values
+        :type fit_values: tuple[float]
+        :raises TypeError: If any element in *fit_values* is not a real number
         """
         return tuple(self._values)
 
     @values.setter
-    def values(self, fitness_values: Sequence[float]):
+    def values(self, fit_values: Sequence[float]):
         """Set the fitness values.
 
-        :param fitness_values: The new values
-        :type fitness_values: :py:class:`tuple` of :py:class:`float`
-        :raises TypeError: If any value is not a real number
+        :param fit_values: The new values
+        :type fit_values: tuple[float]
+        :raises TypeError: If any element in *fit_values* is not a real number
         """
         self._values = check_sequence(
-            fitness_values,
+            fit_values,
             "fitness values",
             size=self.num_obj,
             item_checker=partial(check_float)
@@ -297,9 +311,9 @@ class Fitness(Base):
 
     @property
     def wvalues(self) -> Tuple[float]:
-        """Get the fitness weighted values.
+        """Fitness weighted values.
 
-        :type: :py:class:`tuple` of :py:class:`float`
+        :rtype: tuple[float | None]
         """
         return tuple(
             v * w if v is not None else None
@@ -308,9 +322,9 @@ class Fitness(Base):
 
     @property
     def num_obj(self) -> int:
-        """Get the number of objectives.
+        """Number of objectives.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return len(self.weights)
 
@@ -318,9 +332,9 @@ class Fitness(Base):
         """Update the value of a fitnes objective.
 
         :param value: The new value
-        :type value: :py:class:`float`
+        :type value: float
         :param obj_index: Index of the objective
-        :type obj_index: :py:class:`int`
+        :type obj_index: int
         :raises TypeError: If *value* is not a real number or *index* is not
             an integer number
         :raises ValueError: If *index* is negative or greatuer to or equal
@@ -340,15 +354,15 @@ class Fitness(Base):
         """Check if this fitness dominates another one.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
         :param which: Slice indicating on which objectives the domination is
-            tested. The default value is :py:class:`slice` (:py:data:`None`),
+            tested. The default value is :class:`slice` (:data:`None`),
             representing every objective
-        :type which: :py:class:`slice`
-        :return: :py:data:`True` if each objective of this fitness is not
+        :type which: slice
+        :return: :data:`True` if each objective of this fitness is not
             strictly worse than the corresponding objective of the *other* and
             at least one objective is strictly better
-        :rtype: :py:class:`bool`
+        :rtype: bool
         """
         not_equal = False
 
@@ -364,14 +378,18 @@ class Fitness(Base):
         return not_equal
 
     def __hash__(self) -> int:
-        """Return the hash number for this fitness."""
+        """Return the hash number for this fitness.
+
+        :rtype: int
+        """
         return hash(self.values)
 
     def __gt__(self, other: Fitness) -> bool:
         """Lexicographic greater than operator.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
+        :rtype: bool
         """
         return not self.__le__(other)
 
@@ -379,7 +397,8 @@ class Fitness(Base):
         """Lexicographic greater than or equal to operator.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
+        :rtype: bool
         """
         return not self.__lt__(other)
 
@@ -387,7 +406,8 @@ class Fitness(Base):
         """Lexicographic less than or equal to operator.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
+        :rtype: bool
         """
         le = True
 
@@ -407,7 +427,8 @@ class Fitness(Base):
         """Lexicographic less than operator.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
+        :rtype: bool
         """
         lt = False
 
@@ -427,7 +448,8 @@ class Fitness(Base):
         """Lexicographic equal to operator.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
+        :rtype: bool
         """
         eq = True
 
@@ -444,124 +466,123 @@ class Fitness(Base):
         """Lexicographic not equal to operator.
 
         :param other: The other fitness
-        :type other: :py:class:`~culebra.abc.Fitness`
+        :type other: ~culebra.abc.Fitness
+        :rtype: bool
         """
         return not self.__eq__(other)
 
     def __repr__(self) -> str:
-        """Return the object representation."""
+        """Object representation.
+
+        :rtype: str
+        """
         return Base.__repr__(self)
 
     def __str__(self) -> str:
-        """Return the object as a string."""
+        """Object as a string.
+
+        :rtype: str
+        """
         return str(self.values)
 
 
 class FitnessFunction(Base):
     """Base fitness function."""
 
-    def __init__(
-        self
-    ) -> None:
-        """Create the fitness function."""
-        super().__init__()
-        self.obj_thresholds = None
-
     @property
     @abstractmethod
     def obj_weights(self) -> Tuple[int, ...]:
-        """Get the objective weights.
+        """Objective weights.
 
         This property must be overridden by subclasses to return a correct
         value.
 
-        :type: :py:class:`tuple` of :py:class:`int`
-        :raises NotImplementedError: if has not been overridden
+        :rtype: tuple[int]
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The obj_weights property has not been implemented in the "
             f"{self.__class__.__name__} class")
 
     @property
+    @abstractmethod
     def obj_names(self) -> Tuple[str, ...]:
-        """Get the objective names.
+        """Objective names.
 
-        :type: :py:class:`tuple` of :py:class:`str`
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :rtype: tuple[str]
         """
-        suffix_len = len(str(self.num_obj-1))
+        raise NotImplementedError(
+            "The obj_names property has not been implemented in the "
+            f"{self.__class__.__name__} class")
 
-        return tuple(
-            f"obj_{i:0{suffix_len}d}" for i in range(self.num_obj)
-        )
+    @property
+    @abstractmethod
+    def obj_thresholds(self) -> List[float]:
+        """Objective similarity thresholds.
+
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :rtype: list[float]
+        :setter: Set new thresholds
+        :param values: The new values. If only a single value is provided, the
+            same threshold will be used for all the objectives. Different
+            thresholds can be provided in a :class:`~collections.abc.Sequence`.
+            If set to :data:`None`, all the thresholds are set to
+            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :type values: float | ~collections.abc.Sequence[float]
+        :raises TypeError: If neither a real number nor a
+            :class:`~collections.abc.Sequence` of real numbers is provided
+        :raises ValueError: If any value is negative
+        :raises ValueError: If the length of the thresholds sequence does not
+            match the number of objectives
+        """
+        raise NotImplementedError(
+            "The obj_thresholds property has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    @obj_thresholds.setter
+    @abstractmethod
+    def obj_thresholds(
+        self, values: float | Sequence[float] | None
+    ) -> None:
+        """Set new objective similarity thresholds.
+
+        This property setter must be overridden by subclasses to return a
+        correct value.
+
+        :param values: The new values. If only a single value is provided, the
+            same threshold will be used for all the objectives. Different
+            thresholds can be provided in a :class:`~collections.abc.Sequence`.
+            If set to :data:`None`, all the thresholds are set to
+            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :type values: float | ~collections.abc.Sequence[float]
+        :raises TypeError: If neither a real number nor a
+            :class:`~collections.abc.Sequence` of real numbers is provided
+        :raises ValueError: If any value is negative
+        :raises ValueError: If the length of the thresholds sequence does not
+            match the number of objectives
+        """
+        raise NotImplementedError(
+            "The obj_thresholds property setter has not been implemented in "
+            f"the {self.__class__.__name__} class")
 
     @property
     def num_obj(self) -> int:
-        """Get the number of objectives.
+        """Number of objectives.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return len(self.obj_weights)
 
     @property
-    def obj_thresholds(self) -> List[float]:
-        """Get and set new objective similarity thresholds.
+    def fitness_cls(self) -> Type[Fitness]:
+        """Fitness class.
 
-        :getter: Return the current thresholds
-        :setter: Set new thresholds. If only a single value is provided, the
-            same threshold will be used for all the objectives. Different
-            thresholds can be provided in a
-            :py:class:`~collections.abc.Sequence`.
-        :type thresholds: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
-        :raises TypeError: If neither a real number nor a
-            :py:class:`~collections.abc.Sequence` of real numbers id provided
-        :raises ValueError: If any threshold is negative
-        :raises ValueError: If the length of the thresholds sequence does not
-            match the number of objectives
-        """
-        return self._obj_thresholds
-
-    @obj_thresholds.setter
-    def obj_thresholds(
-        self, values: float | Sequence[float] | None
-    ) -> None:
-        """Get and set new objective similarity thresholds.
-
-        :getter: Return the current thresholds
-        :setter: Set new thresholds. If only a single value is provided, the
-            same threshold will be used for all the objectives. Different
-            thresholds can be provided in a
-            :py:class:`~collections.abc.Sequence`.
-        :type thresholds: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
-        :raises TypeError: If neither a real number nor a
-            :py:class:`~collections.abc.Sequence` of real numbers id provided
-        :raises ValueError: If any threshold is negative
-        :raises ValueError: If the length of the thresholds sequence does not
-            match the number of objectives
-        """
-        if isinstance(values, Sequence):
-            self._obj_thresholds = check_sequence(
-                values,
-                "objective similarity thresholds",
-                size=self.num_obj,
-                item_checker=partial(check_float, ge=0)
-            )
-        elif values is not None:
-            self._obj_thresholds = [
-                check_float(values, "objective similarity threshold", ge=0)
-            ] * self.num_obj
-        else:
-            self._obj_thresholds = (
-                [DEFAULT_SIMILARITY_THRESHOLD] * self.num_obj
-            )
-
-    @property
-    def fitness_cls(self):
-        """Return the fitness class for the fitness function.
-
-        Subclasses must override this property to generate an adequate fitness
-        class.
+        :rtype: type[~culebra.abc.Fitness]
         """
         fitness_class_name = f"{self.__class__.__name__}.Fitness"
         fitness_class = type(
@@ -591,18 +612,17 @@ class FitnessFunction(Base):
         value.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
-            problem
-        :type index: :py:class:`int`, optional
+            problem, optional
+        :type index: int
         :param representatives: Representative solutions of each species
-            being optimized
-        :type representatives: A :py:class:`~collections.abc.Sequence`
-            containing instances of :py:class:`~culebra.abc.Solution`,
-            optional
+            being optimized, optional
+        :type representatives:
+            ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
@@ -613,7 +633,7 @@ class FitnessFunction(Base):
 class Species(Base):
     """Base class for all the species in culebra.
 
-    Each solution returned by a :py:class:`~culebra.abc.Trainer` must belong
+    Each solution returned by a :class:`~culebra.abc.Trainer` must belong
     to a species which constraints its parameter values.
     """
 
@@ -625,10 +645,10 @@ class Species(Base):
         value.
 
         :param sol: The solution
-        :type sol: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if the solution belongs to the species, or
-            :py:data:`False` otherwise
-        :rtype: :py:class:`bool`
+        :type sol: ~culebra.abc.Solution
+        :return: :data:`True` if the solution belongs to the species, or
+            :data:`False` otherwise
+        :rtype: bool
         """
         raise NotImplementedError(
             "The check method has not been implemented in the "
@@ -641,14 +661,14 @@ class Solution(Base):
 
     All the solutions have the following attributes:
 
-    * :py:attr:`~culebra.abc.Solution.species`: A species with the constraints
+    * :attr:`~culebra.abc.Solution.species`: A species with the constraints
       that the solution must meet.
-    * :py:attr:`~culebra.abc.Solution.fitness`: A
-      :py:class:`~culebra.abc.Fitness` class for the solution.
+    * :attr:`~culebra.abc.Solution.fitness`: A
+      :class:`~culebra.abc.Fitness` class for the solution.
     """
 
     species_cls = Species
-    """Class for the species used by the :py:class:`~culebra.abc.Solution`
+    """Class for the species used by the :class:`~culebra.abc.Solution`
     class to constrain all its instances."""
 
     def __init__(
@@ -659,9 +679,9 @@ class Solution(Base):
         """Construct a default solution.
 
         :param species: The species the solution will belong to
-        :type species: :py:class:`~culebra.abc.Solution.species_cls`
-        :param fitness: The solutions's fitness class
-        :type fitness: Any subclass of :py:class:`~culebra.abc.Fitness`
+        :type species: ~culebra.abc.Species
+        :param fitness_cls: The solutions's fitness class
+        :type fitness_cls: type[~culebra.abc.Fitness]
         :raises TypeError: If *species* is not a valid species
         :raises TypeError: If *fitness_cls* is not a valid fitness class
         """
@@ -676,20 +696,21 @@ class Solution(Base):
 
     @property
     def species(self) -> Species:
-        """Get the solution's species.
+        """Solution's species.
 
-        :return: The species
-        :rtype: :py:class:`~culebra.abc.Species`
+        :rtype: ~culebra.abc.Species
         """
         return self._species
 
     @property
     def fitness(self) -> Fitness:
-        """Get and set the solution's fitness.
+        """Solution's fitness.
 
-        :getter: Return the current fitness
+        :rtype: ~culebra.abc.Fitness
+
         :setter: Set a new Fitness
-        :type: :py:class:`~culebra.abc.Fitness`
+        :param value: The new fitness
+        :type value: ~culebra.abc.Fitness
         """
         return self._fitness
 
@@ -698,7 +719,7 @@ class Solution(Base):
         """Set a new fitness for the solution.
 
         :param value: The new fitness
-        :type value: :py:class:`~culebra.abc.Fitness`
+        :type value: ~culebra.abc.Fitness
         """
         self._fitness = check_instance(value, "fitness class", cls=Fitness)
 
@@ -711,6 +732,8 @@ class Solution(Base):
 
         The hash number is used for equality comparisons. Currently is
         implemented as the hash of the solution's string representation.
+
+        :rtype: int
         """
         return hash(str(self))
 
@@ -718,11 +741,11 @@ class Solution(Base):
         """Dominate operator.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if each objective of the solution is not
+        :type other: ~culebra.abc.Solution
+        :return: :data:`True` if each objective of the solution is not
             strictly worse than the corresponding objective of *other* and at
             least one objective is strictly better.
-        :rtype: :py:class:`bool`
+        :rtype: bool
         """
         return self.fitness.dominates(other.fitness)
 
@@ -730,10 +753,10 @@ class Solution(Base):
         """Equality test.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if *other* codes the same solution, or
-            :py:data:`False` otherwise
-        :rtype: :py:class:`bool`
+        :type other: ~culebra.abc.Solution
+        :return: :data:`True` if *other* codes the same solution, or
+            :data:`False` otherwise
+        :rtype: bool
         """
         return hash(self) == hash(other)
 
@@ -741,10 +764,10 @@ class Solution(Base):
         """Not equality test.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`False` if *other* codes the same solutions, or
-            :py:data:`True` otherwise
-        :rtype: :py:class:`bool`
+        :type other: ~culebra.abc.Solution
+        :return: :data:`False` if *other* codes the same solutions, or
+            :data:`True` otherwise
+        :rtype: bool
         """
         return not self.__eq__(other)
 
@@ -752,10 +775,10 @@ class Solution(Base):
         """Less than operator.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if the solution's fitness is less than the
+        :type other: ~culebra.abc.Solution
+        :return: :data:`True` if the solution's fitness is less than the
             *other*'s fitness
-        :rtype: :py:class:`bool`
+        :rtype: bool
         """
         return self.fitness < other.fitness
 
@@ -763,10 +786,10 @@ class Solution(Base):
         """Greater than operator.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if the solution's fitness is greater than
+        :type other: ~culebra.abc.Solution
+        :return: :data:`True` if the solution's fitness is greater than
             the *other*'s fitness
-        :rtype: :py:class:`bool`
+        :rtype: bool
         """
         return self.fitness > other.fitness
 
@@ -774,10 +797,10 @@ class Solution(Base):
         """Less than or equal to operator.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if the solution's fitness is less than or
+        :type other: ~culebra.abc.Solution
+        :return: :data:`True` if the solution's fitness is less than or
             equal to the *other*'s fitness
-        :rtype: :py:class:`bool`
+        :rtype: bool
         """
         return self.fitness <= other.fitness
 
@@ -785,15 +808,19 @@ class Solution(Base):
         """Greater than or equal to operator.
 
         :param other: Other solution
-        :type other: :py:class:`~culebra.abc.Solution`
-        :return: :py:data:`True` if the solution's fitness is greater than
+        :type other: ~culebra.abc.Solution
+        :return: :data:`True` if the solution's fitness is greater than
             or equal to the *other*'s fitness
-        :rtype: :py:class:`bool`
+        :rtype: bool
         """
         return self.fitness >= other.fitness
 
     def __copy__(self) -> Solution:
-        """Shallow copy the solution."""
+        """Shallow copy the solution.
+
+        :return: The copied object
+        :rtype: ~culebra.abc.Solution
+        """
         cls = self.__class__
         result = cls(self.species, self.fitness.__class__)
         result.__dict__.update(self.__dict__)
@@ -802,10 +829,10 @@ class Solution(Base):
     def __deepcopy__(self, memo: dict) -> Solution:
         """Deepcopy the solution.
 
-        :param memo: solution attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the solution
-        :rtype: :py:class:`~culebra.abc.Solution`
+        :param memo: Solution attributes
+        :type memo: dict
+        :return:  The copied solution
+        :rtype: ~culebra.abc.Solution
         """
         cls = self.__class__
         result = cls(self.species, self.fitness.__class__)
@@ -816,7 +843,7 @@ class Solution(Base):
         """Reduce the solution.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (
             self.__class__,
@@ -827,8 +854,10 @@ class Solution(Base):
     def __fromstate__(cls, state: dict) -> Solution:
         """Return a solution from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: dict
+        :return: The solution
+        :rtype: ~culebra.abc.Solution
         """
         obj = cls(state['_species'], state['_fitness'].__class__)
         obj.__setstate__(state)
@@ -860,36 +889,35 @@ class Trainer(Base):
         """Create a new trainer.
 
         :param fitness_function: The training fitness function
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :type fitness_function: ~culebra.abc.FitnessFunction
         :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`,
-            :py:meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
+            :data:`None`,
+            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
+            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
         :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_enable: bool
         :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_freq: int
         :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
-            Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
+            :data:`None`,
+            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
+            Defaults to :data:`None`
+        :type checkpoint_filename: str
         :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`, :data:`__debug__` will be used. Defaults to
+            :data:`None`
+        :type verbose: bool
+        :param random_seed: The seed, defaults to :data:`None`
+        :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -924,24 +952,26 @@ class Trainer(Base):
     def _get_fitness_values(sol: Solution) -> Tuple[float, ...]:
         """Return the fitness values of a solution.
 
-        DEAP's :py:class:`~deap.tools.Statistics` class needs a function to
+        DEAP's :class:`~deap.tools.Statistics` class needs a function to
         obtain the fitness values of a solution.
 
         :param sol: The solution
-        :type sol: Any subclass of :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :return: The fitness values of *sol*
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return sol.fitness.values
 
     @property
     def fitness_function(self) -> FitnessFunction:
-        """Get and set the training fitness function.
+        """Training fitness function.
 
-        :getter: Return the fitness function
+        :rtype: ~culebra.abc.FitnessFunction
+
         :setter: Set a new fitness function
-        :type: :py:class:`~culebra.abc.FitnessFunction`
-        :raises TypeError: If set to a value which is not a fitness function
+        :param func: The new training fitness function
+        :type func: ~culebra.abc.FitnessFunction
+        :raises TypeError: If *func* is not a valid fitness function
         """
         return self._fitness_function
 
@@ -949,9 +979,9 @@ class Trainer(Base):
     def fitness_function(self, func: FitnessFunction) -> None:
         """Set a new training fitness function.
 
-        :param func: New training fitness function
-        :type func: :py:class:`~culebra.abc.FitnessFunction`
-        :raises TypeError: If set to a value which is not a fitness function
+        :param func: The new training fitness function
+        :type func: ~culebra.abc.FitnessFunction
+        :raises TypeError: If *func* is not a valid fitness function
         """
         # Check the function
         self._fitness_function = check_instance(
@@ -963,15 +993,17 @@ class Trainer(Base):
 
     @property
     def max_num_iters(self) -> int:
-        """Get and set the maximum number of iterations.
+        """Maximum number of iterations.
 
-        :getter: Return the current maximum number of iterations
-        :setter: Set a new value for the maximum number of iterations. If set
-            to :py:data:`None`, the default maximum number of iterations,
-            :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS`, is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an integer
-        :raises ValueError: If set to a value which is not a positive number
+        :rtype: int
+
+        :setter: Set a new value for the maximum number of iterations
+        :param value: The new maximum number of iterations. If set to
+            :data:`None`, the default maximum number of iterations,
+            :attr:`~culebra.DEFAULT_MAX_NUM_ITERS`, is chosen
+        :type value: int
+        :raises TypeError: If *value* is not an integer
+        :raises ValueError: If *value* is not a positive number
         """
         return (
             DEFAULT_MAX_NUM_ITERS
@@ -984,9 +1016,9 @@ class Trainer(Base):
         """Set the maximum number of iterations.
 
         :param value: The new maximum number of iterations. If set to
-            :py:data:`None`, the default maximum number of iterations,
-            :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS`, is chosen
-        :type value: An integer value or :py:data:`None`
+            :data:`None`, the default maximum number of iterations,
+            :attr:`~culebra.DEFAULT_MAX_NUM_ITERS`, is chosen
+        :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
@@ -1002,9 +1034,9 @@ class Trainer(Base):
 
     @property
     def current_iter(self) -> int:
-        """Return the current iteration.
+        """Current iteration.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._current_iter
 
@@ -1013,15 +1045,15 @@ class Trainer(Base):
             [Trainer],
             bool
     ]:
-        """Get and set the custom termination criterion.
+        """Custom termination criterion.
 
         The custom termination criterion must be a function which receives
         the trainer as its unique argument and returns a boolean value,
-        :py:data:`True` if the search should terminate or :py:data:`False`
+        :data:`True` if the search should terminate or :data:`False`
         otherwise.
 
         If more than one arguments are needed to define the termniation
-        condition, :py:func:`functools.partial` can be used:
+        condition, :func:`functools.partial` can be used:
 
         .. code-block:: python
 
@@ -1034,12 +1066,12 @@ class Trainer(Base):
 
             trainer.custom_termination_func = partial(my_crit, max_iters=10)
 
-        :getter: Return the current custom termination criterion
-        :setter: Set a new custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type: :py:class:`~collections.abc.Callable`
-        :raises TypeError: If set to a value which is not callable
+        :setter: Set a new custom termination criterion
+        :param func: The new custom termination criterion. If set to
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type func: ~collections.abc.Callable
+        :raises TypeError: If *func* is not callable
         """
         return self._custom_termination_func
 
@@ -1055,13 +1087,13 @@ class Trainer(Base):
 
         The custom termination criterion must be a function which receives
         the trainer as its unique argument and returns a boolean value,
-        :py:data:`True` if the search should terminate or :py:data:`False`
+        :data:`True` if the search should terminate or :data:`False`
         otherwise.
 
         :param func: The new custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type func: :py:class:`~collections.abc.Callable`
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
         # Check func
@@ -1076,15 +1108,17 @@ class Trainer(Base):
 
     @property
     def checkpoint_enable(self) -> bool:
-        """Enable or disable checkpointing.
+        """Checkpointing enablement.
 
-        :getter: Return :py:data:`True` if checkpoinitng is enabled, or
-            :py:data:`False` otherwise
-        :setter: New value for the checkpoint enablement. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+        :return: :data:`True` if checkpoinitng is enabled, or
+            :data:`False` otherwise
+        :rtype: bool
+        :setter: Modify the checkpointing enablement
+        :param value: New value for the checkpoint enablement. If set to
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
             is chosen
-        :type: :py:class:`bool`
-        :raises TypeError: If set to a value which is not boolean
+        :type value: bool
+        :raises TypeError: If *value* is not a boolean value
         """
         return (
             DEFAULT_CHECKPOINT_ENABLE if self._checkpoint_enable is None
@@ -1093,12 +1127,12 @@ class Trainer(Base):
 
     @checkpoint_enable.setter
     def checkpoint_enable(self, value: bool | None) -> None:
-        """Enable or disable checkpointing.
+        """Modify the checkpointing enablement.
 
         :param value: New value for the checkpoint enablement. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
             is chosen
-        :type value: :py:class:`bool`
+        :type value: bool
         :raises TypeError: If *value* is not a boolean value
         """
         self._checkpoint_enable = (
@@ -1109,15 +1143,17 @@ class Trainer(Base):
 
     @property
     def checkpoint_freq(self) -> int:
-        """Get and set the checkpoint frequency.
+        """Checkpoint frequency.
 
-        :getter: Return the checkpoint frequency
-        :setter: Set a value for the checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+        :rtype: int
+
+        :setter: Modify the checkpoint frequency
+        :param value: New value for the checkpoint frequency. If set to
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
             is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an integer
-        :raises ValueError: If set to a value which is not a positive number
+        :type value: int
+        :raises TypeError: If *value* is not an integer
+        :raises ValueError: If *value* is not a positive number
         """
         return (
             DEFAULT_CHECKPOINT_FREQ if self._checkpoint_freq is None
@@ -1129,9 +1165,9 @@ class Trainer(Base):
         """Set a value for the checkpoint frequency.
 
         :param value: New value for the checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
             is chosen
-        :type value: :py:class:`int`
+        :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
@@ -1144,16 +1180,18 @@ class Trainer(Base):
 
     @property
     def checkpoint_filename(self) -> str:
-        """Get and set the checkpoint file path.
+        """Checkpoint file path.
 
-        :getter: Return the checkpoint file path
-        :setter: Set a new value for the checkpoint file path. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
-        :type: :py:class:`str`
-        :raises TypeError: If set to a value which is not a a valid file name
-        :raises ValueError: If set to a value whose extension is not
-            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
+        :rtype: str
+
+        :setter: Modify the checkpoint file path
+        :param value: New value for the checkpoint file path. If set to
+            :data:`None`,
+            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
+        :type value: str
+        :raises TypeError: If *value* is not a valid file name
+        :raises ValueError: If the *value* extension is not
+            :attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         return (
             DEFAULT_CHECKPOINT_FILENAME if self._checkpoint_filename is None
@@ -1165,12 +1203,12 @@ class Trainer(Base):
         """Set a value for the checkpoint file path.
 
         :param value: New value for the checkpoint file path. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
-        :type value: :py:class:`str`
+            :data:`None`,
+            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
+        :type value: str
         :raises TypeError: If *value* is not a valid file name
         :raises ValueError: If the *value* extension is not
-            :py:attr:`~culebra.SERIALIZED_FILE_EXTENSION`
+            :attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
         # Check the value
         self._checkpoint_filename = (
@@ -1183,13 +1221,15 @@ class Trainer(Base):
 
     @property
     def verbose(self) -> bool:
-        """Get and set the verbosity of this trainer.
+        """Verbosity of this trainer.
 
-        :getter: Return the verbosity
-        :setter: Set a new value for the verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` is chosen
-        :type: :py:class:`bool`
-        :raises TypeError: If set to a value which is not boolean
+        :rtype: bool
+
+        :setter: Set a new value for the verbosity
+        :param value: The verbosity. If set to :data:`None`, :data:`__debug__`
+            is chosen
+        :type value: bool
+        :raises TypeError: If *value* is not boolean
         """
         return (
             DEFAULT_VERBOSITY if self._verbose is None
@@ -1200,9 +1240,9 @@ class Trainer(Base):
     def verbose(self, value: bool) -> None:
         """Set the verbosity of this trainer.
 
-        :param value: The verbosity. If set to :py:data:`None`,
-            :py:data:`__debug__` is chosen
-        :type value: :py:class:`bool`
+        :param value: The verbosity. If set to :data:`None`, :data:`__debug__`
+            is chosen
+        :type value: bool
         :raises TypeError: If *value* is not boolean
         """
         self._verbose = (
@@ -1211,11 +1251,12 @@ class Trainer(Base):
 
     @property
     def random_seed(self) -> int:
-        """Get and set the initial random seed used by this trainer.
+        """Random seed used by this trainer.
 
-        :getter: Return the seed
+        :rtype: int
         :setter: Set a new value for the random seed
-        :type: :py:class:`int`
+        :param value: New value
+        :type value: int
         """
         return self._random_seed
 
@@ -1224,7 +1265,7 @@ class Trainer(Base):
         """Set the random seed for this trainer.
 
         :param value: Random seed for the random generator
-        :type value: :py:class:`int`
+        :type value: int
         """
         self._random_seed = value
         random.seed(self._random_seed)
@@ -1235,50 +1276,49 @@ class Trainer(Base):
 
     @property
     def logbook(self) -> Logbook | None:
-        """Get the training logbook.
+        """Trainer logbook.
 
-        Return a logbook with the statistics of the search or :py:data:`None`
-        if the search has not been done yet.
-
-        :type: :py:class:`~deap.tools.Logbook`
+        :return: A logbook with the statistics of the search or :data:`None`
+            if the search has not been done yet
+        :rtype: ~deap.tools.Logbook
         """
         return self._logbook
 
     @property
     def num_evals(self) -> int | None:
-        """Get the number of evaluations performed while training.
+        """Number of evaluations performed while training.
 
-        Return the number of evaluations or :py:data:`None` if the search has
-        not been done yet.
-
-        :type: :py:class:`int`
+        :return: The number of evaluations or :data:`None` if the search has
+            not been done yet
+        :rtype: int
         """
         return self._num_evals
 
     @property
     def runtime(self) -> float | None:
-        """Get the training runtime.
+        """Training runtime.
 
-        Return the training runtime or :py:data:`None` if the search has not
-        been done yet.
+        :return: The training runtime or :data:`None` if the search has not
+            been done yet.
 
-        :type: :py:class:`float`
+        :rtype: float
         """
         return self._runtime
 
     @property
     def index(self) -> int:
-        """Get and set the trainer index.
+        """Trainer index.
 
         The trainer index is only used by distributed trainers. For the rest
-        of trainers :py:attr:`~culebra.DEFAULT_INDEX` is used.
+        of trainers :attr:`~culebra.DEFAULT_INDEX` is used.
 
-        :getter: Return the trainer index
-        :setter: Set a new value for trainer index. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_INDEX` is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an integer
-        :raises ValueError: If set to a value which is a negative number
+        :rtype: int
+        :setter: Set a new value for trainer index.
+        :param value: New value for the trainer index. If set to
+            :data:`None`, :attr:`~culebra.DEFAULT_INDEX` is chosen
+        :type value: int
+        :raises TypeError: If *value* is not an integer
+        :raises ValueError: If *value* is a negative number
         """
         return (
             DEFAULT_INDEX if self._index is None
@@ -1290,11 +1330,11 @@ class Trainer(Base):
         """Set a value for trainer index.
 
         The trainer index is only used by distributed trainers. For the rest
-        of trainers :py:attr:`~culebra.DEFAULT_INDEX` is used.
+        of trainers :attr:`~culebra.DEFAULT_INDEX` is used.
 
         :param value: New value for the trainer index. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_INDEX` is chosen
-        :type value: :py:class:`int`
+            :data:`None`, :attr:`~culebra.DEFAULT_INDEX` is chosen
+        :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is a negative number
         """
@@ -1305,15 +1345,16 @@ class Trainer(Base):
 
     @property
     def container(self) -> Trainer | None:
-        """Get and set the container of this trainer.
+        """Container of this trainer.
 
         The trainer container is only used by distributed trainers. For the
-        rest of trainers defaults to :py:data:`None`.
+        rest of trainers defaults to :data:`None`.
 
-        :getter: Return the container
+        :rtype: ~culebra.abc.Trainer
         :setter: Set a new value for container of this trainer
-        :type: :py:class:`~culebra.abc.Trainer`
-        :raises TypeError: If set to a value which is not a valid trainer
+        :param value: New value for the container or :data:`None`
+        :type value: ~culebra.abc.Trainer
+        :raises TypeError: If *value* is not a valid trainer
         """
         return self._container
 
@@ -1322,10 +1363,10 @@ class Trainer(Base):
         """Set a container for this trainer.
 
         The trainer container is only used by distributed trainers. For the
-        rest of trainers defaults to :py:data:`None`.
+        rest of trainers defaults to :data:`None`.
 
-        :param value: New value for the container or :py:data:`None`
-        :type value: :py:class:`~culebra.abc.Trainer`
+        :param value: New value for the container or :data:`None`
+        :type value: ~culebra.abc.Trainer
         :raises TypeError: If *value* is not a valid trainer
         """
         # Check the value
@@ -1337,10 +1378,13 @@ class Trainer(Base):
 
     @property
     def representatives(self) -> Sequence[Sequence[Solution | None]] | None:
-        """Return the representatives of the other species.
+        """Representatives of the other species.
 
         Only used by cooperative trainers. If the trainer does not use
-        representatives, :py:data:`None` is returned.
+        representatives, :data:`None` is returned.
+
+        :rtype:
+            ~collections.abc.Sequence[~collections.abc.Sequence[~culebra.abc.Solution]]
         """
         return self._representatives
 
@@ -1348,21 +1392,21 @@ class Trainer(Base):
         """Return the state of this trainer.
 
         Default state is a dictionary composed of the values of the
-        :py:attr:`~culebra.abc.Trainer.logbook`,
-        :py:attr:`~culebra.abc.Trainer.num_evals`,
-        :py:attr:`~culebra.abc.Trainer.runtime`,
-        :py:attr:`~culebra.abc.Trainer.current_iter`, and
-        :py:attr:`~culebra.abc.Trainer.representatives`
+        :attr:`~culebra.abc.Trainer.logbook`,
+        :attr:`~culebra.abc.Trainer.num_evals`,
+        :attr:`~culebra.abc.Trainer.runtime`,
+        :attr:`~culebra.abc.Trainer.current_iter`, and
+        :attr:`~culebra.abc.Trainer.representatives`
         trainer properties, along with a private boolean attribute that informs
-        if the search has finished and also the states of the :py:mod:`random`
-        and :py:mod:`numpy.random` modules.
+        if the search has finished and also the states of the :mod:`random`
+        and :mod:`numpy.random` modules.
 
         If subclasses use any more properties to keep their state, the
-        :py:meth:`~culebra.abc.Trainer._get_state` and
-        :py:meth:`~culebra.abc.Trainer._set_state` methods must be
+        :meth:`~culebra.abc.Trainer._get_state` and
+        :meth:`~culebra.abc.Trainer._set_state` methods must be
         overridden to take into account such properties.
 
-        :type: :py:class:`dict`
+        :rtype: dict
         """
         # Fill in the dictionary with the trainer state
         return dict(logbook=self._logbook,
@@ -1378,12 +1422,12 @@ class Trainer(Base):
         """Set the state of this trainer.
 
         If subclasses use any more properties to keep their state, the
-        :py:meth:`~culebra.abc.Trainer._get_state` and
-        :py:meth:`~culebra.abc.Trainer._set_state` methods must be
+        :meth:`~culebra.abc.Trainer._get_state` and
+        :meth:`~culebra.abc.Trainer._set_state` methods must be
         overridden to take into account such properties.
 
         :param state: The last loaded state
-        :type state: :py:class:`dict`
+        :type state: dict
         """
         self._logbook = state["logbook"]
         self._num_evals = state["num_evals"]
@@ -1398,9 +1442,9 @@ class Trainer(Base):
         """Reset the trainer.
 
         Delete the state of the trainer (with
-        :py:meth:`~culebra.abc.Trainer._reset_state`) and also all the internal
+        :meth:`~culebra.abc.Trainer._reset_state`) and also all the internal
         data structures needed to perform the search
-        (with :py:meth:`~culebra.abc.Trainer._reset_internals`).
+        (with :meth:`~culebra.abc.Trainer._reset_internals`).
 
         This method should be invoqued each time a hyper parameter is
         modified.
@@ -1425,22 +1469,21 @@ class Trainer(Base):
         will be also updated.
 
         :param sol: The solution
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param fitness_func: The fitness function. If omitted, the default
             training fitness function
-            (:py:attr:`~culebra.abc.Trainer.fitness_function`) is used
-        :type fitness_func: :py:class:`~culebra.abc.FitnessFunction`, optional
+            (:attr:`~culebra.abc.Trainer.fitness_function`) is used
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param index: Index where *sol* should be inserted in the
             *representatives* sequence to form a complete solution for the
-            problem. If omitted, :py:attr:`~culebra.abc.Trainer.index` is used
-        :type index: :py:class:`int`, optional
+            problem. If omitted, :attr:`~culebra.abc.Trainer.index` is used
+        :type index: int
         :param representatives: Sequence of representatives of other species
-            or :py:data:`None` (if no representatives are needed to evaluate
+            or :data:`None` (if no representatives are needed to evaluate
             *sol*). If omitted, the current value of
-            :py:attr:`~culebra.abc.Trainer.representatives` is used
-        :type representatives: :py:class:`~collections.abc.Sequence`
-            of :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution` or :py:data:`None`, optional
+            :attr:`~culebra.abc.Trainer.representatives` is used
+        :type representatives:
+            ~collections.abc.Sequence[~collections.abc.Sequence[~culebra.abc.Solution]]
         """
         # Select the representatives to be used
         context_seq = (
@@ -1498,12 +1541,11 @@ class Trainer(Base):
         another estimation should override this method.
 
         :param sol: The solution
-        :type sol: :py:class:`~culebra.abc.Solution`
+        :type sol: ~culebra.abc.Solution
         :param fitness_trials_values: Sequence of fitness trials values. Each
             trial should be obtained with a different context in a cooperative
             trainer approach.
-        :type fitness_trials_values: :py:class:`~collections.abc.Sequence` of
-            :py:class:`tuple` of :py:class:`float`
+        :type fitness_trials_values: ~collections.abc.Sequence[tuple[float]]
         """
         sol.fitness.values = np.average(fitness_trials_values, axis=0)
 
@@ -1514,9 +1556,8 @@ class Trainer(Base):
         This method must be overridden by subclasses to return a correct
         value.
 
-        :return: A list containing :py:class:`~deap.tools.HallOfFame` of
-            solutions. One hof for each species
-        :rtype: :py:class:`list` of :py:class:`~deap.tools.HallOfFame`
+        :return: One Hall of Fame for each species
+        :rtype: ~collections.abc.Sequence[~deap.tools.HallOfFame]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
@@ -1530,9 +1571,8 @@ class Trainer(Base):
         Only used for cooperative trainers.
 
         :return: A list of representatives lists if the trainer is
-            cooperative or :py:data:`None` in other cases.
-        :rtype: :py:class:`list` of :py:class:`list` of
-            :py:class:`~culebra.abc.Solution` or :py:data:`None`
+            cooperative or :data:`None` in other cases.
+        :rtype: list[list[~culebra.abc.Solution]]
         """
         return None
 
@@ -1541,9 +1581,8 @@ class Trainer(Base):
 
         :param state_proxy: Dictionary proxy to copy the output state of the
             trainer procedure. Only used if train is executed within a
-            :py:class:`multiprocess.Process`. Defaults to :py:data:`None`
-        :type state_proxy: :py:class:`~multiprocess.managers.DictProxy`,
-            optional
+            :class:`multiprocess.Process`. Defaults to :data:`None`
+        :type state_proxy: ~multiprocess.managers.DictProxy
         """
         # Check state_proxy
         if state_proxy is not None:
@@ -1576,20 +1615,18 @@ class Trainer(Base):
         Update the solutions in *best_found* with their test fitness.
 
         :param best_found: The best solutions found for each species.
-            One :py:class:`~deap.tools.HallOfFame` for each species
-        :type best_found: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~deap.tools.HallOfFame`
+            One :class:`~deap.tools.HallOfFame` for each species
+        :type best_found: ~collections.abc.Sequence[~deap.tools.HallOfFame]
         :param fitness_func: Fitness function used to evaluate the final
             solutions. If ommited, the default training fitness function
-            (:py:attr:`~culebra.abc.Trainer.fitness_function`) will be used
-        :type fitness_func: :py:class:`~culebra.abc.FitnessFunction`, optional
+            (:attr:`~culebra.abc.Trainer.fitness_function`) will be used
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param representatives: Sequence of representatives of other species
-            or :py:data:`None` (if no representatives are needed). If omitted,
+            or :data:`None` (if no representatives are needed). If omitted,
             the current value of
-            :py:attr:`~culebra.abc.Trainer.representatives` is used
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`
+            :attr:`~culebra.abc.Trainer.representatives` is used
+        :type representatives:
+            ~collections.abc.Sequence[~collections.abc.Sequence[~culebra.abc.Solution]]
         :raises TypeError: If any parameter has a wrong type
         :raises ValueError: If any parameter has an invalid value.
         """
@@ -1685,9 +1722,9 @@ class Trainer(Base):
         """Init the trainer state.
 
         If there is any checkpoint file, the state is initialized from it with
-        the :py:meth:`~culebra.abc.Trainer._load_state` method. Otherwise a new
+        the :meth:`~culebra.abc.Trainer._load_state` method. Otherwise a new
         initial state is generated with the
-        :py:meth:`~culebra.abc.Trainer._new_state` method.
+        :meth:`~culebra.abc.Trainer._new_state` method.
         """
         # Init the trainer state
         create_new_state = True
@@ -1706,7 +1743,7 @@ class Trainer(Base):
     def _reset_state(self) -> None:
         """Reset the trainer state.
 
-        If subclasses overwrite the :py:meth:`~culebra.abc.Trainer._new_state`
+        If subclasses overwrite the :meth:`~culebra.abc.Trainer._new_state`
         method to add any new property to keep their state, this method should
         also be overridden to reset the full state of the trainer.
         """
@@ -1721,8 +1758,8 @@ class Trainer(Base):
         """Set up the trainer internal data structures to start searching.
 
         Create all the internal objects, functions and data structures needed
-        to run the search process. For the :py:class:`~culebra.abc.Trainer`
-        class, only a :py:class:`~deap.tools.Statistics` object is created.
+        to run the search process. For the :class:`~culebra.abc.Trainer`
+        class, only a :class:`~deap.tools.Statistics` object is created.
         Subclasses which need more objects or data structures should override
         this method.
         """
@@ -1740,7 +1777,7 @@ class Trainer(Base):
         """Reset the internal structures of the trainer.
 
         If subclasses overwrite the
-        :py:meth:`~culebra.abc.Trainer._init_internals` method to add any new
+        :meth:`~culebra.abc.Trainer._init_internals` method to add any new
         internal object, this method should also be overridden to reset all the
         internal objects of the trainer.
         """
@@ -1752,9 +1789,9 @@ class Trainer(Base):
         """Init the search process.
 
         Initialize the state of the trainer (with
-        :py:meth:`~culebra.abc.Trainer._init_state`) and all the internal data
+        :meth:`~culebra.abc.Trainer._init_state`) and all the internal data
         structures needed
-        (with :py:meth:`~culebra.abc.Trainer._init_internals`) to perform the
+        (with :meth:`~culebra.abc.Trainer._init_internals`) to perform the
         search.
         """
         # Init the trainer internals
@@ -1769,12 +1806,12 @@ class Trainer(Base):
         Execute the trainer until the termination condition is met. Each
         iteration is composed by the following steps:
 
-            * :py:meth:`~culebra.abc.Trainer._start_iteration`
-            * :py:meth:`~culebra.abc.Trainer._preprocess_iteration`
-            * :py:meth:`~culebra.abc.Trainer._do_iteration`
-            * :py:meth:`~culebra.abc.Trainer._postprocess_iteration`
-            * :py:meth:`~culebra.abc.Trainer._finish_iteration`
-            * :py:meth:`~culebra.abc.Trainer._do_iteration_stats`
+        * :meth:`~culebra.abc.Trainer._start_iteration`
+        * :meth:`~culebra.abc.Trainer._preprocess_iteration`
+        * :meth:`~culebra.abc.Trainer._do_iteration`
+        * :meth:`~culebra.abc.Trainer._postprocess_iteration`
+        * :meth:`~culebra.abc.Trainer._finish_iteration`
+        * :meth:`~culebra.abc.Trainer._do_iteration_stats`
         """
         # Run all the iterations
         while not self._termination_criterion():
@@ -1852,10 +1889,11 @@ class Trainer(Base):
         """
 
     def _default_termination_func(self) -> bool:
-        """Set the default termination criterion.
+        """Default termination criterion.
 
-        Return :py:data:`True` if :py:attr:`~culebra.abc.Trainer.max_num_iters`
-        iterations have been run.
+        :return: :data:`True` if :attr:`~culebra.abc.Trainer.max_num_iters`
+            iterations have been run
+        :rtype: bool
         """
         if self._current_iter < self.max_num_iters:
             return False
@@ -1863,14 +1901,15 @@ class Trainer(Base):
         return True
 
     def _termination_criterion(self) -> bool:
-        """Return true if the search should terminate.
+        """Control the search termination.
 
-        Returns :py:data:`True` if either the default termination criterion or
-        a custom termination criterion is met. The default termination
-        criterion is implemented by the
-        :py:meth:`~culebra.abc.Trainer._default_termination_func` method.
-        Another custom termination criterion can be set with
-        :py:attr:`~culebra.abc.Trainer.custom_termination_func` method.
+        :return: :data:`True` if either the default termination criterion or
+            a custom termination criterion is met. The default termination
+            criterion is implemented by the
+            :meth:`~culebra.abc.Trainer._default_termination_func` method.
+            Another custom termination criterion can be set with
+            :attr:`~culebra.abc.Trainer.custom_termination_func` method.
+        :rtype: bool
         """
         ret_val = False
         # Try the default termination
@@ -1888,14 +1927,18 @@ class Trainer(Base):
 
         Only used for cooperative approaches, which need representatives of
         all the species to form a complete solution for the problem.
-        Cooperative subclasses of the :py:class:`~culebra.abc.Trainer` class
+        Cooperative subclasses of the :class:`~culebra.abc.Trainer` class
         should override this method to get the representatives of the other
         species initialized.
         """
         self._representatives = None
 
     def __copy__(self) -> Trainer:
-        """Shallow copy the trainer."""
+        """Shallow copy the trainer.
+
+        :return: The copied triner
+        :rtype: ~culebra.abc.Trainer
+        """
         cls = self.__class__
         result = cls(self.fitness_function)
         result.__dict__.update(self.__dict__)
@@ -1905,9 +1948,9 @@ class Trainer(Base):
         """Deepcopy the trainer.
 
         :param memo: Trainer attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the trainer
-        :rtype: :py:class:`~culebra.abc.Trainer`
+        :type memo: dict
+        :return: The copied triner
+        :rtype: ~culebra.abc.Trainer
         """
         cls = self.__class__
         result = cls(self.fitness_function)
@@ -1918,7 +1961,7 @@ class Trainer(Base):
         """Reduce the trainer.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (self.__class__, (self.fitness_function,), self.__dict__)
 
@@ -1926,8 +1969,10 @@ class Trainer(Base):
     def __fromstate__(cls, state: dict) -> Trainer:
         """Return a trainer from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: dict
+        :return: The triner
+        :rtype: ~culebra.abc.Trainer
         """
         obj = cls(state['_fitness_function'])
         obj.__setstate__(state)

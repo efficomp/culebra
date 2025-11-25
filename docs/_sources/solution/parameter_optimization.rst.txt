@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.solution.parameter_optimization` module
-========================================================
+:mod:`culebra.solution.parameter_optimization` module
+=====================================================
 
 .. automodule:: culebra.solution.parameter_optimization
 
@@ -28,21 +28,17 @@
 Attributes
 ----------
 
-.. attribute:: DEFAULT_PARAMETER_NAME
-    :annotation: = 'param'
-
-    Default parameter name.
-
 .. attribute:: DEFAULT_ETA
     :annotation: = 5
 
     Default value for :math:`{\eta}` (eta), which controls the probability
     distribution used in SBX and polynomial mutation.
 
+.. attribute:: DEFAULT_PARAMETER_NAME
+    :annotation: = 'param'
 
-..
-    .. autodata:: DEFAULT_PARAMETER_NAME
-    .. autodata:: DEFAULT_ETA
+    Default parameter name.
+
 
 .. toctree::
     :hidden:

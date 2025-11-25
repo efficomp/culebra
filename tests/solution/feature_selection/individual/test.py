@@ -64,8 +64,8 @@ class IndividualTester(unittest.TestCase):
     """Tester for the feature selector individuals.
 
     Test extensively the generation and breeding operators for any subclass
-    of :py:class:`~culebra.solution.feature_selection.Solution` and
-    :py:class:`~culebra.solution.abc.Individual`
+    of :class:`~culebra.solution.feature_selection.Solution` and
+    :class:`~culebra.solution.abc.Individual`
     """
 
     individual_cls = Solution
@@ -74,21 +74,21 @@ class IndividualTester(unittest.TestCase):
     num_feats_values = DEFAULT_NUM_FEATS_VALUES
     """List of different values for the number of features.
 
-    A :py:class:`~culebra.solution.feature_selection.Species` will be generated
+    A :class:`~culebra.solution.feature_selection.Species` will be generated
     combining each one of these values for the number of features with each
     one of the different proportions to test the feature selector
     implementation (see
-    :py:meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
+    :meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
 
     prop_values = DEFAULT_PROP_VALUES
     """List of proportions to generate the different
-    :py:class:`~culebra.solution.feature_selection.Species`.
+    :class:`~culebra.solution.feature_selection.Species`.
 
-    A :py:class:`~culebra.solution.feature_selection.Species` species will be
+    A :class:`~culebra.solution.feature_selection.Species` species will be
     generated combining each one of these proportions with each one of the
     different values for the number of features values to test the featue
     selector implementation (see
-    :py:meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
+    :meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
 
     mut_prob_values = DEFAULT_MUT_PROB_VALUES
     """List of values for the mutation probability.
@@ -278,12 +278,12 @@ class IndividualTester(unittest.TestCase):
 
         :param ind1: The first individual
         :type ind1: Any subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution` and
-            :py:class:`~culebra.solution.abc.Individual`
+            :class:`~culebra.solution.feature_selection.Solution` and
+            :class:`~culebra.solution.abc.Individual`
         :param ind2: The second individual
         :type ind2: Any subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution` and
-            :py:class:`~culebra.solution.abc.Individual`
+            :class:`~culebra.solution.feature_selection.Solution` and
+            :class:`~culebra.solution.abc.Individual`
         """
         # Copies all the levels
         self.assertNotEqual(id(ind1), id(ind2))
@@ -295,12 +295,12 @@ class IndividualTester(unittest.TestCase):
         """Check if the feature selector class is correct.
 
         :param individual_cls: Feature selector class to be tested.
-        :type individual_cls: Any subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution` and
-            :py:class:`~culebra.solution.abc.Individual`
+        :type individual_cls:
+            type[~culebra.solution.feature_selection.Solution] &
+            type[~culebra.solution.abc.Individual]
         :raises TypeError: If *individual_cls* is not a subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution` and
-            :py:class:`~culebra.solution.abc.Individual`
+            :class:`~culebra.solution.feature_selection.Solution` and
+            :class:`~culebra.solution.abc.Individual`
         """
         if not (
             isinstance(individual_cls, type) and
@@ -315,15 +315,15 @@ class IndividualTester(unittest.TestCase):
         """Check if all the numbers in a sequence are of a given type.
 
         :param sequence: Sequence of numbers.
-        :type sequence: :py:class:`~collections.abc.Sequence`
+        :type sequence: ~collections.abc.Sequence
         :param number_type: The type of number that the sequence should contain
-        :type number_type: :py:class:`int` or :py:class:`float`
+        :type number_type: int | float
         :param name: Name of the sequence
-        :type name: :py:class:`str`
+        :type name: str
         :param desc: Description of the sequence
-        :type desc: :py:class:`str`
+        :type desc: str
         :raises TypeError: If the given object is not a
-            :py:class:`~collections.abc.Sequence` or if any of its components
+            :class:`~collections.abc.Sequence` or if any of its components
             is not of *number_type*
         :raises ValueError: If the sequence is empty
         """
@@ -348,7 +348,7 @@ class IndividualTester(unittest.TestCase):
         """Check if the given value is a positive integer.
 
         :param value: An integer value
-        :type value: :py:class:`int`
+        :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not positive
         """
@@ -369,8 +369,8 @@ class IndividualTester(unittest.TestCase):
 
         :param individual: Feature selector to be checked
         :type individual: subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution` and
-            :py:class:`~culebra.solution.abc.Individual`
+            :class:`~culebra.solution.feature_selection.Solution` and
+            :class:`~culebra.solution.abc.Individual`
         """
         # Checks that feature selector's size is lower than or equal to the
         # maximum allowed size fixed in its species
@@ -407,16 +407,16 @@ class IndividualTester(unittest.TestCase):
         """Estimate the __runtime of a function.
 
         :param func: The function whose __runtime will be estimated
-        :type func: :py:obj:`function`
+        :type func: ~collections.abc.Callable
         :param times: Number of execution times for func, defaults to
-            :py:attr:`DEFAULT_TIMES`
-        :type times: :py:class:`int`, optional
+            :attr:`DEFAULT_TIMES`
+        :type times: int
         :param args: Unnamed arguments for *func*
-        :type args: :py:class:`tuple`
+        :type args: tuple
         :param kwargs: Named arguments for func
-        :type kwargs: :py:class:`dict`
+        :type kwargs: dict
         :return: Total __runtime of all the executions of the function
-        :rtype: :py:class:`float`
+        :rtype: float
         """
         # Measure time just before executing the function
         start_time = perf_counter()
@@ -439,7 +439,7 @@ class IndividualTester(unittest.TestCase):
 
         :return: Average execution time of the feature selector constructor for
             each value of number of features
-        :rtype: :py:class:`list`
+        :rtype: list
         """
         print('Calculating the scalability of the',
               self.individual_cls.__name__,
@@ -478,7 +478,7 @@ class IndividualTester(unittest.TestCase):
 
         :return: Average execution time of the feature selector crossover
             method for each value of number of features.
-        :rtype: :py:class:`list`
+        :rtype: list
         """
         print('Calculating the scalability of the',
               self.individual_cls.__name__,
@@ -523,7 +523,7 @@ class IndividualTester(unittest.TestCase):
 
         :return: Average execution time of the feature selector mutation method
             for each value of number of features.
-        :rtype: :py:class:`list`
+        :rtype: list
         """
         print('Calculating the scalability of the',
               self.individual_cls.__name__,

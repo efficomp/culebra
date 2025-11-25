@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Test for :py:class:`~culebra.trainer.ea.HomogeneousSequentialIslandsEA`."""
+"""Test for :class:`~culebra.trainer.ea.HomogeneousSequentialIslandsEA`."""
 
 import unittest
 
@@ -53,10 +53,10 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -69,7 +69,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -88,7 +88,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.ea.HomogeneousSequentialIslandsEA`."""
+    """Test :class:`~culebra.trainer.ea.HomogeneousSequentialIslandsEA`."""
 
     def test_init(self):
         """Test __init__."""

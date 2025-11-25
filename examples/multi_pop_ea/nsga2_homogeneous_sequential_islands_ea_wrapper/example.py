@@ -30,10 +30,10 @@ from deap.tools import selTournament
 from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, IntVector
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.trainer.topology import ring_destinations
 from culebra.trainer.ea import NSGA, HomogeneousSequentialIslandsEA
@@ -48,7 +48,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,

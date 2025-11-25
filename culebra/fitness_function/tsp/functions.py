@@ -16,20 +16,12 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Traveling salesman problem related fitness functions.
-
-This sub-module provides fitness functions to solve TSP problems. Currently:
-
-  * :py:class:`~culebra.fitness_function.tsp.PathLength`: Single objective
-    fitness function for TSP problems.
-  * :py:class:`~culebra.fitness_function.tsp.MultiObjectivePathLength`:
-    Multi-objective fitness function for TSP problems.
-"""
+"""Traveling salesman problem related fitness functions."""
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from typing import Tuple, Optional, Union, TextIO
+from collections.abc import Sequence
 from copy import deepcopy
 from os import PathLike
 import random
@@ -42,15 +34,12 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 from culebra.abc import Fitness
-from culebra.fitness_function.abc import (
-    SingleObjectiveFitnessFunction,
-    ACOFitnessFunction
-)
+from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_function import MultiObjectiveFitnessFunction
-
+from culebra.fitness_function.tsp.abc import TSPFitnessFunction
 from culebra.checker import (
-    check_sequence,
     check_instance,
+    check_sequence,
     check_matrix,
     check_int
 )
@@ -69,23 +58,24 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
+class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
     """Base fitness function for TSP problems.
 
     Evaluate the length of the path encoded by a solution.
     """
 
     def __init__(
-        self, distance_matrix: Sequence[float],
+        self, distance_matrix: Sequence[Sequence[float]],
         index: Optional[int] = None
     ) -> None:
         """Construct a fitness function.
 
         :param distance_matrix: Distance matrix.
-        :type distance_matrix: A two-dimensional array-like object
+        :type distance_matrix:
+            ~collections.abc.Sequence[~collections.abc.Sequence[float]]
         :param index: Index of this objective when it is used for
-            multi-objective fitness functions
-        :type index: :py:class:`int`, optional
+            multi-objective fitness functions, optional
+        :type index: int
 
         :raises ValueError: If any element in *distance_matrix* is not a
             float number
@@ -102,29 +92,40 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         self.distance = distance_matrix
 
     @property
-    def obj_weights(self):
-        """Minimize the number of features that a solution has selected."""
+    def obj_weights(self) -> Tuple[int, ...]:
+        """Objective weights.
+
+        Minimize the path length.
+
+        :return: (-1, )
+        :rtype: tuple[int]
+        """
         return (-1.0, )
 
     @property
-    def obj_names(self):
-        """Name of the objective."""
+    def obj_names(self) -> Tuple[str, ...]:
+        """Objective names.
+
+        :return: ("Len",)
+        :rtype: tuple[str]
+        """
         return ("Len",)
 
     @property
     def distance(self) -> np.ndarray:
-        """Get and set the distance matrix.
+        """Distance matrix.
+        
+        :rtype: ~numpy.ndarray
 
-        :getter: Return the distance matrix
         :setter: Set an array-like object as the new distance matrix
-        :type: :py:class:`~numpy.ndarray`
-        :raises ValueError: If any element in the array-like object is not a
-            float number
-        :raises ValueError: If the array-like object has not an homogeneous
-            shape
-        :raises ValueError: If the array-like object has not two dimensions
-        :raises ValueError: If the array-like object is not square
-        :raises ValueError: If any element in the array-like object is negative
+        :param value: The new distance matrix
+        :type value:
+            ~collections.abc.Sequence[~collections.abc.Sequence[float]]
+        :raises ValueError: If any element in *value* is not a float number
+        :raises ValueError: If *value* has not an homogeneous shape
+        :raises ValueError: If *value* has not two dimensions
+        :raises ValueError: If *value* is not square
+        :raises ValueError: If any element in *value* is negative
         """
         return self._distance
 
@@ -136,7 +137,8 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         """Set new distance matrix.
 
         :param value: New distance matrix
-        :type: A two-dimensional array-like object
+        :type value:
+            ~collections.abc.Sequence[~collections.abc.Sequence[float]]
         :raises ValueError: If any element in *value* is not a float number
         :raises ValueError: If *value* has not an homogeneous shape
         :raises ValueError: If *value* has not two dimensions
@@ -155,30 +157,22 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
 
     @property
     def num_nodes(self) -> int:
-        """Return the problem graph's number of nodes.
+        """Number of nodes of the problem graph.
 
-        :return: The problem graph's number of nodes
-        :rtype: :py:class:`int`
+        :rtype: int
         """
         return self.distance.shape[0]
 
-    def heuristic(self, species: Species) -> Sequence[np.ndarray]:
-        """Get the heuristic matrices for ACO-based trainers.
-
-        :param species: Species constraining the problem solutions
-        :type species: :py:class:`~culebra.solution.tsp.Species`
-        :raises TypeError: If *species* is not an instance of
-            :py:class:`~culebra.solution.tsp.Species`
+    @property
+    def heuristic(self) -> Sequence[np.ndarray, ...]:
+        """Heuristic matrices.
 
         :return: A sequence of heuristic matrices. One for each objective.
-            Arcs involving any banned node or arcs from a node to itself have
-            a heuristic value of 0. For the rest of arcs, the reciprocal of
-            their nodes distance is used as heuristic
-        :rtype: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~numpy.ndarray`
+            Arcs from a node to itself have a heuristic value of 0. For the
+            rest of arcs, the reciprocal of their nodes distance is used as
+            heuristic
+        :rtype: ~collections.abc.Sequence[~numpy.ndarray]
         """
-        check_instance(species, "species", cls=Species)
-
         with np.errstate(divide='ignore'):
             heur = np.where(
                 self.distance != 0.,
@@ -186,12 +180,8 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
                 0.
             )
 
-        # Ignore banned nodes and arcs from a node to itself
-        for node in range(species.num_nodes):
+        for node in range(self.num_nodes):
             heur[node][node] = 0
-            for ignored in species.banned_nodes:
-                heur[node][ignored] = 0
-                heur[ignored][node] = 0
 
         return (heur,)
 
@@ -199,13 +189,16 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         """Return a greddy solution for the problem.
 
         :param species: Species constraining the problem solutions
-        :type species: :py:class:`~culebra.solution.tsp.Species`
+        :type species: ~culebra.solution.tsp.Species
         :raises TypeError: If *species* is not an instance of
-            :py:class:`~culebra.solution.tsp.Species`
+            :class:`~culebra.solution.tsp.Species`
 
         :return: The greddy solution
-        :rtype: :py:class:`~culebra.solution.tsp.Solution`
+        :rtype: ~culebra.solution.tsp.Solution
         """
+        # Check the species
+        species = check_instance(species, "species", Species)
+        
         # Maximum solution's length
         max_len = species.num_nodes - len(species.banned_nodes)
 
@@ -214,7 +207,15 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
 
         # If the path can be constructed ...
         if max_len > 0:
-            the_heuristic = self.heuristic(species)[0]
+            # Get the heuristic matrix
+            the_heuristic = self.heuristic[0]
+
+           # Ignore banned nodes and arcs from a node to itself
+            for node in range(species.num_nodes):
+                the_heuristic[node][node] = 0
+                for ignored in species.banned_nodes:
+                    the_heuristic[node][ignored] = 0
+                    the_heuristic[ignored][node] = 0
 
             # Start with a feasible node
             current_node = random.randint(0, species.num_nodes-1)
@@ -245,17 +246,17 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.solution.tsp.Solution`
+        :type sol: ~culebra.solution.tsp.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
             problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
+        :type index: int
         :param representatives: Representative solutions of each species
             being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
+        :type representatives:
+            ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         """
         path_len = 0
         if (len(sol.path) > 0):
@@ -276,10 +277,12 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         This class method has been designed for testing purposes.
 
         :param path: An optimum path (a node permutation)
-        :type path: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :type path: ~collections.abc.Sequence[int]
+        :return: The fitness function
+        :rtype: ~culebra.fitness_function.tsp.PathLength
         :raises ValueError: If *path* is not a
-            :py:class:`~collections.abc.Sequence` of :py:class:`int`
-        :raises ValueError: If *path* has any not :py:class:`int` element
+            :class:`~collections.abc.Sequence` of :class:`int`
+        :raises ValueError: If *path* has any not int element
         :raises ValueError: If *path* is empty
         :raises ValueError: If *path* has negative values
         :raises ValueError: If *path* has loops
@@ -336,8 +339,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         """Generate a fitness function from a TSPLib file.
 
         :param filepath_or_buffer: File path, url or buffer
-        :type filepath_or_buffer: path-like object, url or file-like object
-
+        :type filepath_or_buffer: str | ~os.PathLike[str] | ~typing.TextIO
+        :return: The fitness function
+        :rtype: ~culebra.fitness_function.tsp.PathLength
         :raises RuntimeError: If the filepath or buffer can not be open
         :raises RuntimeError: If an unsupported or incorrect feature is found
             while parsing the filepath or buffer
@@ -347,10 +351,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Open the TSPLib file.
 
             :param filepath_or_buffer: A file path, url or buffer
-            :type filepath_or_buffer: path-like object, url or file-like
-                object
+            :type filepath_or_buffer: str | ~os.PathLike[str] | ~typing.TextIO
             :return: A file-like object
-            :rtype: :py:class:`TextIO`
+            :rtype: ~typing.TextIO
             :raises RuntimeError: If the filepath or buffer can not be open
             """
             # Check if file is a file-like object
@@ -379,9 +382,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             Only 'TSP' problems are supported by the moment.
 
             :param current_line: Current line
-            :type current_line: :py:class:`str`
+            :type current_line: str
             :return: The problem type
-            :rtype: :py:class:`str`
+            :rtype: str
             :raises RuntimeError: If an unsupported problem type is found
             """
             supported_types = ('TSP', )
@@ -398,9 +401,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse the dimension (number of nodes).
 
             :param current_line: Current line
-            :type current_line: :py:class:`str`
+            :type current_line: str
             :return: The problem's dimension
-            :rtype: :py:class:`int`
+            :rtype: int
             """
             parts = current_line.split(":")
             try:
@@ -418,9 +421,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             supported by the moment.
 
             :param current_line: Current line
-            :type current_line: :py:class:`str`
+            :type current_line: str
             :return: The problem's edge weight type
-            :rtype: :py:class:`str`
+            :rtype: str
             :raises RuntimeError: If an unsupported edge weight type is found
             """
             supported_edge_weight_types = (
@@ -443,9 +446,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             'LOWER_DIAG_COL' are supported by the moment.
 
             :param current_line: Current line
-            :type current_line: :py:class:`str`
+            :type current_line: str
             :return: The problem's edge weight format
-            :rtype: :py:class:`str`
+            :rtype: str
             :raises RuntimeError: If an unsupported edge weight format is found
             """
             supported_edge_weight_formats = (
@@ -468,11 +471,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse the node coordinates section.
 
             :param problem_params: Problem parameters
-            :type problem_params: :py:class:`dict`
+            :type problem_params: dict
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             supported_distance_metrics = {
                 "EUC_2D": "euclidean",
@@ -526,15 +529,17 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
                 )
             )
 
-        def parse_matrix_values(expected_num_values: int, buffer: TextIO):
+        def parse_matrix_values(
+            expected_num_values: int, buffer: TextIO
+        ) -> np.ndarray:
             """Parse the values of a distane matrix.
 
             :param expected_num_values: Expected number of values
-            :type expected_num_values: :py:class:`int`
+            :type expected_num_values: int
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: The values
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             num_values = 0
             matrix_values = []
@@ -569,11 +574,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse a full matrix.
 
             :param dimension: Matrix dimension
-            :type dimesion: :py:class:`int`
+            :type dimesion: int
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             expected_num_values = dimension * dimension
             matrix_values = parse_matrix_values(expected_num_values, buffer)
@@ -585,11 +590,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse an upper row matrix.
 
             :param dimension: Matrix dimension
-            :type dimesion: :py:class:`int`
+            :type dimesion: int
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             the_distances = np.zeros((dimension, dimension))
             expected_num_values = dimension * (dimension - 1) / 2
@@ -604,11 +609,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse an upper row matrix with diagonal.
 
             :param dimension: Matrix dimension
-            :type dimesion: :py:class:`int`
+            :type dimesion: int
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             the_distances = np.zeros((dimension, dimension))
             expected_num_values = dimension * (dimension + 1) / 2
@@ -626,11 +631,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse a lower row matrix.
 
             :param dimension: Matrix dimension
-            :type dimesion: :py:class:`int`
+            :type dimesion: int
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             the_distances = np.zeros((dimension, dimension))
             expected_num_values = dimension * (dimension - 1) / 2
@@ -645,11 +650,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse a lower row matrix with diagonal.
 
             :param dimension: Matrix dimension
-            :type dimesion: :py:class:`int`
+            :type dimesion: int
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             the_distances = np.zeros((dimension, dimension))
             expected_num_values = dimension * (dimension + 1) / 2
@@ -667,11 +672,11 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
             """Parse the edge weight section.
 
             :param problem_params: Problem parameters
-            :type problem_params: :py:class:`dict`
+            :type problem_params: dict
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             supported_matrix_formats = {
                 'FULL_MATRIX': parse_full_matrix,
@@ -697,13 +702,13 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
                     f"Unsupported EDGE_WEIGHT_FORMAT: {edge_weight_format}"
                 )
 
-        def parse_file(buffer: TextIO) -> dict:
+        def parse_file(buffer: TextIO) -> np.ndarray:
             """Parse a TSPLib file.
 
             :param buffer: A file-like object
-            :type buffer: :py:class:`TextIO`
+            :type buffer: ~typing.TextIO
             :return: A distance matrix
-            :rtype: :py:class:`numpy.ndarray`
+            :rtype: ~numpy.ndarray
             """
             parameter_subparsers = {
                 "TYPE": parse_type,
@@ -813,7 +818,10 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         return cls(distance)
 
     def __copy__(self) -> PathLength:
-        """Shallow copy the fitness function."""
+        """Shallow copy the fitness function.
+        :return:  The copied fitness function
+        :rtype: ~culebra.fitness_function.tsp.PathLength
+        """
         cls = self.__class__
         result = cls(self.distance)
         result.__dict__.update(self.__dict__)
@@ -823,10 +831,9 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         """Deepcopy the fitness function.
 
         :param memo: Fitness function attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the fitness function
-        :rtype:
-            :py:class::py:class:`~culebra.fitness_function.tsp.PathLength`
+        :type memo: dict
+        :return:  The copied fitness function
+        :rtype: ~culebra.fitness_function.tsp.PathLength
         """
         cls = self.__class__
         result = cls(self.distance)
@@ -837,7 +844,7 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
         """Reduce the fitness function.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (self.__class__, (self.distance, ), self.__dict__)
 
@@ -845,8 +852,10 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
     def __fromstate__(cls, state: dict) -> PathLength:
         """Return a path length from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: ~dict
+        :return: The object
+        :rtype: ~culebra.fitness_function.tsp.PathLength
         """
         obj = cls(state['_distance'])
         obj.__setstate__(state)
@@ -855,7 +864,7 @@ class PathLength(SingleObjectiveFitnessFunction, ACOFitnessFunction):
 
 class MultiObjectivePathLength(
     MultiObjectiveFitnessFunction,
-    ACOFitnessFunction
+    TSPFitnessFunction
 ):
     """Base fitness function for multi-objctive TSP problems.
 
@@ -864,14 +873,13 @@ class MultiObjectivePathLength(
 
     def __init__(
         self,
-        *objectives
+        *objectives: Tuple[PathLength, ...]
     ) -> None:
         """Construct a multi-objective TSP fitness function.
 
         :param objectives: Different objectives for this fitness
             function
-        :type objectives:
-            :py:class:`~culebra.fitness_function.tsp.PathLength`
+        :type objectives: tuple[~culebra.fitness_function.tsp.PathLength]
         """
         for obj in objectives:
             if not isinstance(obj, PathLength):
@@ -890,9 +898,9 @@ class MultiObjectivePathLength(
 
     @property
     def obj_names(self) -> Tuple[str, ...]:
-        """Get the objective names.
+        """Objective names.
 
-        :type: :py:class:`tuple` of :py:class:`str`
+        :rtype: tuple[str]
         """
         suffix_len = len(str(self.num_obj-1))
 
@@ -903,32 +911,26 @@ class MultiObjectivePathLength(
 
     @property
     def num_nodes(self) -> int:
-        """Return the problem graph's number of nodes for ACO-based trainers.
+        """Number of nodes of the problem graph.
 
-        :return: The problem graph's number of nodes
-        :rtype: :py:class:`int`
+        :rtype: int
         """
         return self.objectives[0].num_nodes
 
-    def heuristic(self, species: Species) -> Sequence[np.ndarray, ...]:
-        """Get the heuristic matrices for ACO-based trainers.
+    @property
+    def heuristic(self) -> Sequence[np.ndarray, ...]:
+        """Heuristic matrices.
 
-        :param species: Species constraining the problem solutions
-        :type species: :py:class:`~culebra.solution.feature_selection.Species`
-        :raises TypeError: If *species* is not an instance of
-            :py:class:`~culebra.solution.feature_selection.Species`
-
-        :return: A tuple with only one heuristic matrix. Arcs between
-            selectable features have a heuristic value of 1, while arcs
-            involving any non-selectable feature or arcs from a feature to
-            itself have a heuristic value of 0.
-        :rtype: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~numpy.ndarray`
+        :return: A sequence of heuristic matrices. One for each objective.
+            Arcs from a node to itself have a heuristic value of 0. For the
+            rest of arcs, the reciprocal of their nodes distance is used as
+            heuristic
+        :rtype: ~collections.abc.Sequence[~numpy.ndarray]
         """
         heuristics = ()
 
         for obj in self.objectives:
-            heuristics += obj.heuristic(species)
+            heuristics += obj.heuristic
 
         return heuristics
 

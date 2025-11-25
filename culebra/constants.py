@@ -39,10 +39,10 @@ SERIALIZED_FILE_EXTENSION = ".dill.gz"
 """Extension for files containing serialized objects."""
 
 DEFAULT_CHECKPOINT_ENABLE = True
-"""Default checkpointing enablement for a :py:class:`~culebra.abc.Trainer`."""
+"""Default checkpointing enablement for a :class:`~culebra.abc.Trainer`."""
 
 DEFAULT_CHECKPOINT_FREQ = 10
-"""Default checkpointing frequency for a :py:class:`~culebra.abc.Trainer`."""
+"""Default checkpointing frequency for a :class:`~culebra.abc.Trainer`."""
 
 DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
 """Default basename for checkpointing files."""
@@ -50,13 +50,13 @@ DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
 DEFAULT_CHECKPOINT_FILENAME = (
     DEFAULT_CHECKPOINT_BASENAME + SERIALIZED_FILE_EXTENSION
 )
-"""Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`."""
+"""Default checkpointing file name for a :class:`~culebra.abc.Trainer`."""
 
 DEFAULT_VERBOSITY = __debug__
-"""Default verbosity for a :py:class:`~culebra.abc.Trainer`."""
+"""Default verbosity for a :class:`~culebra.abc.Trainer`."""
 
 DEFAULT_INDEX = 0
-"""Default :py:class:`~culebra.abc.Trainer` index. Only used within a
+"""Default :class:`~culebra.abc.Trainer` index. Only used within a
 distributed approaches.
 """
 

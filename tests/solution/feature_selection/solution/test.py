@@ -62,7 +62,7 @@ class SolutionTester(unittest.TestCase):
     """Tester for the feature selector solutions.
 
     Test extensively the generation of any subclass
-    of :py:class:`~culebra.solution.feature_selection.Solution`
+    of :class:`~culebra.solution.feature_selection.Solution`
     """
 
     solution_cls = Solution
@@ -71,21 +71,21 @@ class SolutionTester(unittest.TestCase):
     num_feats_values = DEFAULT_NUM_FEATS_VALUES
     """List of different values for the number of features.
 
-    A :py:class:`~culebra.solution.feature_selection..Species` will be
+    A :class:`~culebra.solution.feature_selection..Species` will be
     generated combining each one of these values for the number of features
     with each one of the different proportions to test the feature selector
     implementation (see
-    :py:meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
+    :meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
 
     prop_values = DEFAULT_PROP_VALUES
     """List of proportions to generate the different
-    :py:class:`~culebra.solution.feature_selection.Species`.
+    :class:`~culebra.solution.feature_selection.Species`.
 
-    A :py:class:`~culebra.solution.feature_selection..Species` species will be
+    A :class:`~culebra.solution.feature_selection..Species` species will be
     generated combining each one of these proportions with each one of the
     different values for the number of features values to test the featue
     selector implementation (see
-    :py:meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
+    :meth:`~culebra.solution.feature_selection.Species.from_proportion`)."""
 
     times = DEFAULT_TIMES
     """Times each function is executed."""
@@ -323,10 +323,9 @@ class SolutionTester(unittest.TestCase):
         """Check if the feature selector class is correct.
 
         :param solution_cls: Feature selector class to be tested.
-        :type solution_cls: Any subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution`
+        :type solution_cls: type[~culebra.solution.feature_selection.Solution]
         :raises TypeError: If *solution_cls* is not a subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution`
+            :class:`~culebra.solution.feature_selection.Solution`
         """
         if not (isinstance(solution_cls, type) and
                 issubclass(solution_cls, Solution)):
@@ -338,15 +337,15 @@ class SolutionTester(unittest.TestCase):
         """Check if all the numbers in a sequence are of a given type.
 
         :param sequence: Sequence of numbers.
-        :type sequence: :py:class:`~collections.abc.Sequence`
+        :type sequence: ~collections.abc.Sequence
         :param number_type: The type of number that the sequence should contain
-        :type number_type: :py:class:`int` or :py:class:`float`
+        :type number_type: int | float
         :param name: Name of the sequence
-        :type name: :py:class:`str`
+        :type name: str
         :param desc: Description of the sequence
-        :type desc: :py:class:`str`
+        :type desc: str
         :raises TypeError: If the given object is not a
-            :py:class:`~collections.abc.Sequence` or if any of its components
+            :class:`~collections.abc.Sequence` or if any of its components
             is not of *number_type*
         :raises ValueError: If the sequence is empty
         """
@@ -371,7 +370,7 @@ class SolutionTester(unittest.TestCase):
         """Check if the given value is a positive integer.
 
         :param value: An integer value
-        :type value: :py:class:`int`
+        :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not positive
         """
@@ -392,7 +391,7 @@ class SolutionTester(unittest.TestCase):
 
         :param solution: Feature selector to be checked
         :type solution: subclass of
-            :py:class:`~culebra.solution.feature_selection.Solution`
+            :class:`~culebra.solution.feature_selection.Solution`
         """
         # Checks that feature selector's size is lower than or equal to the
         # maximum allowed size fixed in its species

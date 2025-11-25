@@ -20,38 +20,27 @@
 """Fitness functions related to feature selection.
 
 This module is composed by:
-
-  * The :py:mod:`~culebra.fitness_function.feature_selection.abc` sub-module,
-    where some abstract base classes are defined to support fitness functions
-    developed in this module
-
-  * Some single-objective scoring fitness functions:
-
-    * :py:class:`~culebra.fitness_function.feature_selection.NumFeats`: Dummy
-      single-objective function that minimizes the number of selected features
-      from a :py:class:`~culebra.tools.Dataset`.
-
-    * :py:class:`~culebra.fitness_function.feature_selection.FeatsProportion`:
-      Dummy single-objective function that minimizes the number of selected
-      features from a :py:class:`~culebra.tools.Dataset`. The difference with
-      :py:class:`~culebra.fitness_function.feature_selection.NumFeats` is just
-      that
-      :py:class:`~culebra.fitness_function.feature_selection.FeatsProportion`
-      returns a normalized number in [0, 1].
-
-    * :py:class:`~culebra.fitness_function.feature_selection.KappaIndex`:
-      Single-objective function that maximizes the Kohen's Kappa index for
-      classification problems.
-
-    * :py:class:`~culebra.fitness_function.feature_selection.Accuracy`:
-      Single-objective function that maximizes the Accuracy for classification
-      problems.
-
-  * A multi-objective fitness function that can aggregate several objectives:
-
-    * :py:class:`~culebra.fitness_function.feature_selection.FSMultiObjectiveDatasetScorer`:
-      Supports multi-objective FS on dataset-related problems
-
+    
+* The :mod:`~culebra.fitness_function.feature_selection.abc` sub-module,
+  where some abstract base classes are defined to support fitness functions
+  developed in this module
+* Some single-objective scoring fitness functions:
+      
+  * :class:`~culebra.fitness_function.feature_selection.Accuracy`:
+    Single-objective function that maximizes the Accuracy for classification
+    problems.
+  * :class:`~culebra.fitness_function.feature_selection.FeatsProportion`:
+    Dummy single-objective function that minimizes the number of selected
+    features from a :class:`~culebra.tools.Dataset`. The difference with
+    :class:`~culebra.fitness_function.feature_selection.NumFeats` is just that
+    :class:`~culebra.fitness_function.feature_selection.FeatsProportion`
+    returns a normalized number in [0, 1].
+  * :class:`~culebra.fitness_function.feature_selection.KappaIndex`:
+    Single-objective function that maximizes the Kohen's Kappa index for
+    classification problems.
+  * :class:`~culebra.fitness_function.feature_selection.NumFeats`: Dummy
+    single-objective function that minimizes the number of selected features
+    from a :class:`~culebra.tools.Dataset`.
 """
 
 from . import abc
@@ -60,8 +49,7 @@ from .functions import (
     NumFeats,
     FeatsProportion,
     KappaIndex,
-    Accuracy,
-    FSMultiObjectiveDatasetScorer
+    Accuracy
 )
 
 
@@ -80,6 +68,5 @@ __all__ = [
     'NumFeats',
     'FeatsProportion',
     'KappaIndex',
-    'Accuracy',
-    'FSMultiObjectiveDatasetScorer'
+    'Accuracy'
 ]

@@ -19,22 +19,20 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.EffectSize` class
-==========================================
+:class:`culebra.tools.EffectSize` class
+=======================================
 
 .. autoclass:: culebra.tools.EffectSize
 
-
 Attributes
 ----------
-.. autoattribute:: culebra.tools.EffectSize.test
-.. autoattribute:: culebra.tools.EffectSize.data
-.. autoattribute:: culebra.tools.EffectSize.column
 .. autoattribute:: culebra.tools.EffectSize.batches
+.. autoattribute:: culebra.tools.EffectSize.column
+.. autoattribute:: culebra.tools.EffectSize.data
+.. autoattribute:: culebra.tools.EffectSize.test
 .. autoattribute:: culebra.tools.EffectSize.value
-
 
 Dunder methods
 --------------
-.. automethod:: culebra.tools.EffectSize.__str__
 .. automethod:: culebra.tools.EffectSize.__repr__
+.. automethod:: culebra.tools.EffectSize.__str__

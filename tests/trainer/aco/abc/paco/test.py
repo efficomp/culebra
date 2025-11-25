@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.abc.PACO`."""
+"""Unit test for :class:`culebra.trainer.aco.abc.PACO`."""
 
 import unittest
 from copy import copy, deepcopy
@@ -34,7 +34,8 @@ from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import (
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
-    PACO
+    PACO,
+    ACOTSP
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
@@ -44,15 +45,12 @@ from culebra.fitness_function.tsp import (
 
 
 class MyTrainer(
+    ACOTSP,
+    PACO,
     MultiplePheromoneMatricesACO,
     MultipleHeuristicMatricesACO,
-    PACO
 ):
     """Dummy implementation of a trainer method."""
-
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
 
     def _update_pop(self) -> None:
         """Update the population."""
@@ -95,7 +93,7 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.PACO`."""
+    """Test :class:`culebra.trainer.aco.abc.PACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -541,9 +539,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.aco.abc.PACO`
+        :type trainer1: ~culebra.trainer.aco.abc.PACO
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.aco.abc.PACO`
+        :type trainer2: ~culebra.trainer.aco.abc.PACO
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

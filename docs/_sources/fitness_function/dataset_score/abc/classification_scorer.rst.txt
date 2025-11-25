@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.dataset_score.abc.ClassificationScorer` class
-=================================================================================
+:class:`culebra.fitness_function.dataset_score.abc.ClassificationScorer` class
+==============================================================================
 
 .. autoclass:: culebra.fitness_function.dataset_score.abc.ClassificationScorer
 
@@ -30,15 +30,15 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.num_obj
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_weights
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_names
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_thresholds
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.classifier
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.fitness_cls
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.index
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.training_data
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.num_obj
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_names
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_thresholds
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.obj_weights
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.test_data
-.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.classifier
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.training_data
 
 Private properties
 ------------------
@@ -52,7 +52,8 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._score
-.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._final_training_test_data
-.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._evaluate_train_test
 .. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._evaluate_kfcv
+.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._evaluate_train_test
+.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._final_training_test_data
+.. automethod:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._score
+

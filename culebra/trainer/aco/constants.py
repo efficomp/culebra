@@ -38,22 +38,25 @@ r"""Default heuristic influence (:math:`{\beta}`)."""
 DEFAULT_EXPLOITATION_PROB = 0.9
 r"""Default exploitation probability (:math:`{q_0}`)."""
 
+DEFAULT_PHEROMONE_DEPOSIT_WEIGHT = 1.0
+"""Default pheromone deposit weight."""
+
 DEFAULT_PHEROMONE_EVAPORATION_RATE = 0.1
 r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
 
 DEFAULT_CONVERGENCE_CHECK_FREQ = 100
 """Default frequency to check if an elitist ACO has converged."""
 
-DEFAULT_ACO_FS_INITIAL_PHEROMONE = 1
+DEFAULT_ACOFS_INITIAL_PHEROMONE = 1
 """Default initial pheromone for ACO-FS approaches."""
 
-DEFAULT_ACO_FS_HEURISTIC_INFLUENCE = 1
+DEFAULT_ACOFS_HEURISTIC_INFLUENCE = 0
 """Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches."""
 
-DEFAULT_ACO_FS_EXPLOITATION_PROB = 0
+DEFAULT_ACOFS_EXPLOITATION_PROB = 0
 r"""Default exploitation probability (:math:`{q_0}`) for ACO-FS approaches."""
 
-DEFAULT_ACO_FS_DISCARD_PROB = 0.5
+DEFAULT_ACOFS_DISCARD_PROB = 0.5
 """Default probability of discarding a node (feature) for ACO-FS approaches."""
 
 
@@ -62,10 +65,11 @@ __all__ = [
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_EXPLOITATION_PROB',
+    'DEFAULT_PHEROMONE_DEPOSIT_WEIGHT',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
-    'DEFAULT_ACO_FS_INITIAL_PHEROMONE',
-    'DEFAULT_ACO_FS_HEURISTIC_INFLUENCE',
-    'DEFAULT_ACO_FS_EXPLOITATION_PROB',
-    'DEFAULT_ACO_FS_DISCARD_PROB'
+    'DEFAULT_ACOFS_INITIAL_PHEROMONE',
+    'DEFAULT_ACOFS_HEURISTIC_INFLUENCE',
+    'DEFAULT_ACOFS_EXPLOITATION_PROB',
+    'DEFAULT_ACOFS_DISCARD_PROB'
 ]

@@ -8,7 +8,7 @@
     <title>culebra.tools.ResultsAnalyzer class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -46,7 +46,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResultsAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer" title="Link to this definition">¶</a></dt>
-<dd><p>Perform statistical analyses over the results of several batches.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.UserDict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserDict</span></code></a>, <a class="reference internal" href="../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Perform statistical analyses over the results of several batches.</p>
 </dd></dl>
 
 <section id="class-methods">
@@ -57,10 +58,13 @@
 <dd><p>Load a serialized object from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file name.</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded object</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
 <a class="reference internal" href="../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
@@ -73,12 +77,56 @@
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.compare">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="results_comparison.html#culebra.tools.ResultsComparison" title="culebra.tools.results_analyzer.ResultsComparison"><span class="pre">ResultsComparison</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.compare" title="Link to this definition">¶</a></dt>
+<dd><p>Pairwise comparison the results of several batches.</p>
+<p>Data should be independent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Normality test to be applied, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
+<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Homoscedasticity test to be applied,
+defaults to <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
+<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Method for adjusting the p-values, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results of the comparison</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="results_comparison.html#culebra.tools.ResultsComparison" title="culebra.tools.ResultsComparison"><em>ResultsComparison</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>normality_test</em> is not a valid normality test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>homoscedasticity_test</em> is not a valid
+homoscedasticity test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
+p-value adjustment method.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.dump">
 <span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.dump" title="Link to this definition">¶</a></dt>
 <dd><p>Serialize this object and save it to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The file name.</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file name.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -91,54 +139,46 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.normality_test">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">normality_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.normality_test" title="Link to this definition">¶</a></dt>
-<dd><p>Assess the normality of the same results for several batches.</p>
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.effect_size">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">effect_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.effect_size" title="Link to this definition">¶</a></dt>
+<dd><p>Effect size calculation for several batches.</p>
+<p>The effect size is calculated with the Cohen’s d index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
 of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
 from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-<li><p><strong>test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Normality test to be applied, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the normality test</p>
+<dd class="field-even"><p>The results of the effect sizes estimation</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="effect_size.html#culebra.tools.EffectSize" title="culebra.tools.EffectSize"><em>EffectSize</em></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>test</em> is not a valid normality test</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t any data in the analyzed results
-with such dataframe key and column label</p></li>
-</ul>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.homoscedasticity_test">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">homoscedasticity_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.homoscedasticity_test" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">homoscedasticity_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.homoscedasticity_test" title="Link to this definition">¶</a></dt>
 <dd><p>Assess the homoscedasticity of the same results for several batches.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
 of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
 from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-<li><p><strong>test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Homoscedasticity test to be applied, defaults to
+<li><p><strong>test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Homoscedasticity test to be applied, defaults to
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
 </ul>
 </dd>
@@ -146,7 +186,7 @@ from the results of all the batches</p></li>
 <dd class="field-even"><p>The results of the homoscedasticity test</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><em>TestOutcome</em></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -161,282 +201,11 @@ results with such dataframe key and column label</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.parametric_test">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">parametric_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.parametric_test" title="Link to this definition">¶</a></dt>
-<dd><p>Compare the results of several batches.</p>
-<p>Data should be independent, follow a normal distribution and also be
-homoscedastic. If only two results are analyzed, the T-test
-(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html#scipy.stats.ttest_ind" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">ttest_ind()</span></code></a>) is applied. For more
-results, the one-way ANOVA test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html#scipy.stats.f_oneway" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">f_oneway()</span></code></a>) is
-used instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the comparison</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.non_parametric_test">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">non_parametric_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.non_parametric_test" title="Link to this definition">¶</a></dt>
-<dd><p>Compare the results of several batches.</p>
-<p>Data should be independent. If only two results are analyzed,
-the Mann-Whitney U-test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html#scipy.stats.mannwhitneyu" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">mannwhitneyu()</span></code></a>) is
-applied. For more results, the Kruskal-Wallis H-test
-(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kruskal.html#scipy.stats.kruskal" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">kruskal()</span></code></a>) is used instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the comparison</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.parametric_pairwise_test">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">parametric_pairwise_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.parametric_pairwise_test" title="Link to this definition">¶</a></dt>
-<dd><p>Pairwise comparison the results of several batches.</p>
-<p>Data should be independent, follow a normal distribution and also be
-homoscedastic.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the comparison</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">non_parametric_pairwise_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_adjust</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fdr_tsbky'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test" title="Link to this definition">¶</a></dt>
-<dd><p>Pairwise comparison the results of several batches.</p>
-<p>Data should be independent.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, optional) – Method for adjusting the p-values, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the comparison</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
-p-value adjustment method.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.effect_size">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">effect_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.effect_size" title="Link to this definition">¶</a></dt>
-<dd><p>Effect size calculation for several batches.</p>
-<p>The effect size is calculated with the Cohen’s d index.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the effect sizes estimation</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="effect_size.html#culebra.tools.EffectSize" title="culebra.tools.EffectSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">EffectSize</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.compare">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="results_comparison.html#culebra.tools.ResultsComparison" title="culebra.tools.results_analyzer.ResultsComparison"><span class="pre">ResultsComparison</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.compare" title="Link to this definition">¶</a></dt>
-<dd><p>Pairwise comparison the results of several batches.</p>
-<p>Data should be independent.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Normality test to be applied, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
-<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>,
-optional) – Homoscedasticity test to be applied,
-defaults to <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
-<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, optional) – Method for adjusting the p-values, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The results of the comparison</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="results_comparison.html#culebra.tools.ResultsComparison" title="culebra.tools.ResultsComparison"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsComparison</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>normality_test</em> is not a valid normality test</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>homoscedasticity_test</em> is not a valid
-homoscedasticity test</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
-p-value adjustment method.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.rank">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">weight:</span> <span class="pre">int,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.rank" title="Link to this definition">¶</a></dt>
-<dd><p>Rank the batches according to a concrete result.</p>
-<p>Batches are ranked according to the procedure proposed in
-<a class="reference internal" href="../index.html#gonzalez2021" id="id1"><span>[Gonzalez2021]</span></a>. The rank of each batch is calculated as the number of
-batches whose result is better (with a statistical significative
-difference) than that of it. Batches with a statistically similar
-result share the same rank.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to select a dataframe from the results
-of all the batches</p></li>
-<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Column label to be analyzed in the selected dataframes
-from the results of all the batches</p></li>
-<li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Used for the comparison of the batches results
-selected by the <em>dataframe_key</em> and <em>column</em> provided. A negative
-value implies minimization (lower values are better), while a
-positive weight implies maximization.</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Normality test to be applied, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
-<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>,
-optional) – Homoscedasticity test to be applied,
-defaults to <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
-<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, optional) – Method for adjusting the p-values, defaults to
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The ranked batches</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>weight</em> is not an integer number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>weight</em> is 0</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>normality_test</em> is not a valid normality test</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>homoscedasticity_test</em> is not a valid
-homoscedasticity test</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
-p-value adjustment method.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
-results with such dataframe key and column label</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.multiple_rank">
-<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">multiple_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_keys:</span> <span class="pre">~collections.abc.Sequence[str],</span> <span class="pre">columns:</span> <span class="pre">~collections.abc.Sequence[str],</span> <span class="pre">weights:</span> <span class="pre">~collections.abc.Sequence[int],</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~typing.Callable[[~collections.abc.Sequence],</span> <span class="pre">~collections.namedtuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><span class="pre">DataFrame</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.multiple_rank" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">multiple_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_keys:</span> <span class="pre">~collections.abc.Sequence[str],</span> <span class="pre">columns:</span> <span class="pre">~collections.abc.Sequence[str],</span> <span class="pre">weights:</span> <span class="pre">~collections.abc.Sequence[int],</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><span class="pre">DataFrame</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.multiple_rank" title="Link to this definition">¶</a></dt>
 <dd><p>Rank the batches according to multiple results.</p>
 <p>Batches are ranked according to the procedure proposed in
-<a class="reference internal" href="../index.html#gonzalez2021" id="id2"><span>[Gonzalez2021]</span></a>. The rank of each batch is calculated as the number of
+<a class="reference internal" href="../index.html#gonzalez2021" id="id1"><span>[Gonzalez2021]</span></a>. The rank of each batch is calculated as the number of
 batches whose result is better (with a statistical significative
 difference) than that of it. Batches with a statistically similar
 result share the same rank.</p>
@@ -445,22 +214,20 @@ length, and will be used to obtain different ranks for the results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe_keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Sequence of dataframe keys to select the
+<li><p><strong>dataframe_keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>) – Sequence of dataframe keys to select the
 different results of the batches</p></li>
-<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Sequence of column labels to select the different
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>) – Sequence of column labels to select the different
 results of the batches</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Sequence of weights to be applied to the different
+<li><p><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – Sequence of weights to be applied to the different
 results of the batches. Negative values imply minimization (lower
 values are better), while a positive weights imply maximization.</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – Significance level, defaults to
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
-<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>, optional) – Normality test to be applied, defaults to
+<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Normality test to be applied, defaults to
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
-<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>,
-optional) – Homoscedasticity test to be applied,
+<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Homoscedasticity test to be applied,
 defaults to <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
-<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, optional) – Method for adjusting the p-values, defaults to
+<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Method for adjusting the p-values, defaults to
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
 </ul>
 </dd>
@@ -468,7 +235,7 @@ defaults to <a class="reference internal" href="../tools.html#culebra.tools.DEFA
 <dd class="field-even"><p>The ranked batches</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><em>DataFrame</em></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -488,6 +255,239 @@ results with any given dataframe key and column label</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">non_parametric_pairwise_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_adjust</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fdr_tsbky'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test" title="Link to this definition">¶</a></dt>
+<dd><p>Pairwise comparison the results of several batches.</p>
+<p>Data should be independent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Method for adjusting the p-values, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results of the comparison</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><em>TestOutcome</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
+p-value adjustment method.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.non_parametric_test">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">non_parametric_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.non_parametric_test" title="Link to this definition">¶</a></dt>
+<dd><p>Compare the results of several batches.</p>
+<p>Data should be independent. If only two results are analyzed,
+the Mann-Whitney U-test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mannwhitneyu.html#scipy.stats.mannwhitneyu" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">mannwhitneyu()</span></code></a>) is
+applied. For more results, the Kruskal-Wallis H-test
+(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kruskal.html#scipy.stats.kruskal" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">kruskal()</span></code></a>) is used instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results of the comparison</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><em>TestOutcome</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.normality_test">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">normality_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.normality_test" title="Link to this definition">¶</a></dt>
+<dd><p>Assess the normality of the same results for several batches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+<li><p><strong>test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Normality test to be applied, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results of the normality test</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><em>TestOutcome</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>test</em> is not a valid normality test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t any data in the analyzed results
+with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.parametric_pairwise_test">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">parametric_pairwise_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.parametric_pairwise_test" title="Link to this definition">¶</a></dt>
+<dd><p>Pairwise comparison the results of several batches.</p>
+<p>Data should be independent, follow a normal distribution and also be
+homoscedastic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results of the comparison</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><em>TestOutcome</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.parametric_test">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">parametric_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.results_analyzer.TestOutcome"><span class="pre">TestOutcome</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.parametric_test" title="Link to this definition">¶</a></dt>
+<dd><p>Compare the results of several batches.</p>
+<p>Data should be independent, follow a normal distribution and also be
+homoscedastic. If only two results are analyzed, the T-test
+(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html#scipy.stats.ttest_ind" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">ttest_ind()</span></code></a>) is applied. For more
+results, the one-way ANOVA test (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html#scipy.stats.f_oneway" title="(in SciPy v1.16.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">f_oneway()</span></code></a>) is
+used instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results of the comparison</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><em>TestOutcome</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.ResultsAnalyzer.rank">
+<span class="sig-prename descclassname"><span class="pre">ResultsAnalyzer.</span></span><span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataframe_key:</span> <span class="pre">str,</span> <span class="pre">column:</span> <span class="pre">str,</span> <span class="pre">weight:</span> <span class="pre">int,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">normality_test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;,</span> <span class="pre">homoscedasticity_test:</span> <span class="pre">~collections.abc.Callable[[~collections.abc.Sequence],</span> <span class="pre">~typing.NamedTuple]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;,</span> <span class="pre">p_adjust:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><span class="pre">Series</span></a></span></span><a class="headerlink" href="#culebra.tools.ResultsAnalyzer.rank" title="Link to this definition">¶</a></dt>
+<dd><p>Rank the batches according to a concrete result.</p>
+<p>Batches are ranked according to the procedure proposed in
+<a class="reference internal" href="../index.html#gonzalez2021" id="id2"><span>[Gonzalez2021]</span></a>. The rank of each batch is calculated as the number of
+batches whose result is better (with a statistical significative
+difference) than that of it. Batches with a statistically similar
+result share the same rank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to select a dataframe from the results
+of all the batches</p></li>
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Column label to be analyzed in the selected dataframes
+from the results of all the batches</p></li>
+<li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Used for the comparison of the batches results
+selected by the <em>dataframe_key</em> and <em>column</em> provided. A negative
+value implies minimization (lower values are better), while a
+positive weight implies maximization.</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Significance level, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_ALPHA" title="culebra.tools.DEFAULT_ALPHA"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ALPHA</span></code></a></p></li>
+<li><p><strong>normality_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Normality test to be applied, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NORMALITY_TEST" title="culebra.tools.DEFAULT_NORMALITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_NORMALITY_TEST</span></code></a></p></li>
+<li><p><strong>homoscedasticity_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Homoscedasticity test to be applied,
+defaults to <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></code></a></p></li>
+<li><p><strong>p_adjust</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Method for adjusting the p-values, defaults to
+<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_P_ADJUST" title="culebra.tools.DEFAULT_P_ADJUST"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_P_ADJUST</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ranked batches</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.3.3)"><em>Series</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>weight</em> is not an integer number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>weight</em> is 0</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>alpha</em> is not a real number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>alpha</em> is not in [0, 1]</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>normality_test</em> is not a valid normality test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>homoscedasticity_test</em> is not a valid
+homoscedasticity test</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>p_adjust</em> is not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> or any valid
+p-value adjustment method.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there aren’t sufficient data in the analyzed
+results with such dataframe key and column label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="dunder-methods">
 <h2>Dunder methods<a class="headerlink" href="#dunder-methods" title="Link to this heading">¶</a></h2>
@@ -500,16 +500,16 @@ results with any given dataframe key and column label</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>batch_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Key to identify the <em>batch_results</em> within the
+<li><p><strong>batch_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Key to identify the <em>batch_results</em> within the
 analyzer</p></li>
-<li><p><strong>batch_results</strong> (<a class="reference internal" href="results.html#culebra.tools.Results" title="culebra.tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a>) – The results of a batch of experiments</p></li>
+<li><p><strong>batch_results</strong> (<a class="reference internal" href="results.html#culebra.tools.Results" title="culebra.tools.Results"><em>Results</em></a>) – The results of a batch of experiments</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The inserted results</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="results.html#culebra.tools.Results" title="culebra.tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="results.html#culebra.tools.Results" title="culebra.tools.Results"><em>Results</em></a></p>
 </dd>
 </dl>
 </dd></dl>

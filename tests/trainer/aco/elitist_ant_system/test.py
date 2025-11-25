@@ -20,13 +20,14 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.ElitistAntSystem`."""
+"""Unit test for :class:`culebra.trainer.aco.ElitistAntSystem`."""
 
 import unittest
 
 import numpy as np
 from deap.tools import ParetoFront
 
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import (
     ElitistAntSystem,
     DEFAULT_AS_EXPLOITATION_PROB,
@@ -43,8 +44,12 @@ banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
 
+class ElitistAntSystemTSP(ACOTSP, ElitistAntSystem):
+    """Elitist ant system for TSP."""
+
+
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.ElitistAntSystem`."""
+    """Test :class:`culebra.trainer.aco.ElitistAntSystem`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -56,7 +61,7 @@ class TrainerTester(unittest.TestCase):
         invalid_elite_weight_types = (type, 'a')
         for elite_weight in invalid_elite_weight_types:
             with self.assertRaises(TypeError):
-                ElitistAntSystem(
+                ElitistAntSystemTSP(
                     ant_cls,
                     species,
                     fitness_func,
@@ -68,7 +73,7 @@ class TrainerTester(unittest.TestCase):
         invalid_elite_weight_values = (-0.5, 1.5)
         for elite_weight in invalid_elite_weight_values:
             with self.assertRaises(ValueError):
-                ElitistAntSystem(
+                ElitistAntSystemTSP(
                     ant_cls,
                     species,
                     fitness_func,
@@ -79,7 +84,7 @@ class TrainerTester(unittest.TestCase):
         # Try a valid value for elite_weight
         valid_elite_weight_values = (0.0, 0.5, 1.0)
         for elite_weight in valid_elite_weight_values:
-            trainer = ElitistAntSystem(
+            trainer = ElitistAntSystemTSP(
                 ant_cls,
                 species,
                 fitness_func,
@@ -89,7 +94,7 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(elite_weight, trainer.elite_weight)
 
         # Test default params
-        trainer = ElitistAntSystem(
+        trainer = ElitistAntSystemTSP(
             ant_cls,
             species,
             fitness_func,
@@ -113,7 +118,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -157,7 +162,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -191,7 +196,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -219,7 +224,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
 
         # Try before any colony has been created
         best_ones = trainer.best_solutions()
@@ -282,7 +287,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -329,7 +334,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -355,7 +360,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistAntSystem(**params)
+        trainer = ElitistAntSystemTSP(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

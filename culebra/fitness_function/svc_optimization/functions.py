@@ -21,7 +21,7 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Tuple
 from collections.abc import Sequence
 
 from culebra.abc import Fitness
@@ -49,13 +49,23 @@ class C(SVCScorer):
     """Minimization of the C hyperparameter of RBF SVCs."""
 
     @property
-    def obj_weights(self):
-        """Minimize C."""
+    def obj_weights(self) -> Tuple[int, ...]:
+        """Objective weights.
+
+        Minimize C.
+
+        :return: (-1, )
+        :rtype: tuple[int]
+        """
         return (-1, )
 
     @property
-    def obj_names(self):
-        """Name of the objective."""
+    def obj_names(self) -> Tuple[str, ...]:
+        """Objective names.
+
+        :return: ("C",)
+        :rtype: tuple[str]
+        """
         return ("C",)
 
     def evaluate(
@@ -67,18 +77,17 @@ class C(SVCScorer):
         """Evaluate a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol:
-            :py:class:`~culebra.solution.parameter_optimization.Solution`
+        :type sol: ~culebra.solution.parameter_optimization.Solution
         :param index: Index where *sol* should be inserted in the
             representatives sequence to form a complete solution for the
             problem. Only used by cooperative problems
-        :type index: :py:class:`int`, ignored
+        :type index: int
         :param representatives: Representative solutions of each species
             being optimized. Only used by cooperative problems
-        :type representatives: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~culebra.abc.Solution`, ignored
+        :type representatives:
+            ~collections.abc.Sequence[~culebra.abc.Solution]
         :return: The fitness for *sol*
-        :rtype: :py:class:`~culebra.abc.Fitness`
+        :rtype: ~culebra.abc.Fitness
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):

@@ -8,7 +8,7 @@
     <title>culebra.trainer.aco module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -34,7 +34,7 @@
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../trainer.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a></li> 
       </ul>
     </div>  
 
@@ -43,14 +43,15 @@
           <div class="body" role="main">
             
   <section id="module-culebra.trainer.aco">
-<span id="culebra-trainer-aco-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.aco" title="culebra.trainer.aco"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.aco" title="Link to this heading">¶</a></h1>
+<span id="culebra-trainer-aco-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.aco" title="culebra.trainer.aco"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.aco" title="Link to this heading">¶</a></h1>
 <p>Implementation of some ant colony optimization trainers.</p>
 <p>This module is composed by:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>The <a class="reference internal" href="aco/abc.html#module-culebra.trainer.aco.abc" title="culebra.trainer.aco.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module, where some abstract base
 classes are defined to support the ACO trainers developed in this module</p></li>
 <li><p>Some popular single-objective ACO algorithms:</p>
+<ul>
+<li><p>Algorithms relying on pheromone evaporation:</p>
 <ul>
 <li><p>The <a class="reference internal" href="aco/ant_system.html#culebra.trainer.aco.AntSystem" title="culebra.trainer.aco.AntSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">AntSystem</span></code></a> class, which implements
 the Ant System algorithm</p></li>
@@ -58,6 +59,10 @@ the Ant System algorithm</p></li>
 implements the Elitist Ant System algorithm</p></li>
 <li><p>The <a class="reference internal" href="aco/mmas.html#culebra.trainer.aco.MMAS" title="culebra.trainer.aco.MMAS"><code class="xref py py-class docutils literal notranslate"><span class="pre">MMAS</span></code></a> class, which implements the
 <span class="math notranslate nohighlight">\({\small \mathcal{MAX}{-}\mathcal{MIN}}\)</span> Ant System algorithm</p></li>
+</ul>
+</li>
+<li><p>Population-based approaches:</p>
+<ul>
 <li><p>The <a class="reference internal" href="aco/quality_based_paco.html#culebra.trainer.aco.AgeBasedPACO" title="culebra.trainer.aco.AgeBasedPACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">AgeBasedPACO</span></code></a> class, which
 implements a PACO approach with an age-based population update strategy</p></li>
 <li><p>The <a class="reference internal" href="aco/age_based_paco.html#culebra.trainer.aco.QualityBasedPACO" title="culebra.trainer.aco.QualityBasedPACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">QualityBasedPACO</span></code></a> class, which
@@ -65,57 +70,52 @@ implements a PACO approach with a quality-based population update
 strategy</p></li>
 </ul>
 </li>
+</ul>
+</li>
 <li><p>Some multi-objective ACO algorithms:</p>
 <ul>
-<li><p>The <a class="reference internal" href="aco/paco_mo.html#culebra.trainer.aco.PACO_MO" title="culebra.trainer.aco.PACO_MO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACO_MO</span></code></a> class, which implements the
-PACO-MO algorithm</p></li>
 <li><p>The <a class="reference internal" href="aco/cpaco.html#culebra.trainer.aco.CPACO" title="culebra.trainer.aco.CPACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPACO</span></code></a> class, which implements the
 Crowding PACO algorithm</p></li>
+<li><p>The <a class="reference internal" href="aco/paco_mo.html#culebra.trainer.aco.PACOMO" title="culebra.trainer.aco.PACOMO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACOMO</span></code></a> class, which implements the
+PACO-MO algorithm</p></li>
 </ul>
 </li>
 <li><p>ACO-based wrappers for Feature Selection problems:</p>
 <ul>
-<li><p>The <a class="reference internal" href="aco/paco_fs.html#culebra.trainer.aco.PACO_FS" title="culebra.trainer.aco.PACO_FS"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACO_FS</span></code></a> class. A new
-population-based wrapper ACO approach for Feature Selection problems</p></li>
-<li><p>The <a class="reference internal" href="aco/elitist_aco_fs.html#culebra.trainer.aco.ElitistACO_FS" title="culebra.trainer.aco.ElitistACO_FS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACO_FS</span></code></a> class. A new
-elitist ACO-based wrapper for Feature Selection problems</p></li>
-<li><p>The <a class="reference internal" href="aco/aco_fs_convergence_detector.html#culebra.trainer.aco.ACO_FSConvergenceDetector" title="culebra.trainer.aco.ACO_FSConvergenceDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACO_FSConvergenceDetector</span></code></a> class,
-designed to enable stopping <a class="reference internal" href="aco/abc/aco_fs.html#culebra.trainer.aco.abc.ACO_FS" title="culebra.trainer.aco.abc.ACO_FS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACO_FS</span></code></a>
+<li><p>The <a class="reference internal" href="aco/aco_fs_convergence_detector.html#culebra.trainer.aco.ACOFSConvergenceDetector" title="culebra.trainer.aco.ACOFSConvergenceDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFSConvergenceDetector</span></code></a> class,
+designed to enable stopping <a class="reference internal" href="aco/abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS" title="culebra.trainer.aco.abc.ACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFS</span></code></a>
 trainers upon convergence</p></li>
+<li><p>The <a class="reference internal" href="aco/elitist_aco_fs.html#culebra.trainer.aco.ElitistACOFS" title="culebra.trainer.aco.ElitistACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACOFS</span></code></a> class. A new
+elitist ACO-based wrapper for Feature Selection problems</p></li>
+<li><p>The <a class="reference internal" href="aco/paco_fs.html#culebra.trainer.aco.PACOFS" title="culebra.trainer.aco.PACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACOFS</span></code></a> class. A new
+population-based wrapper ACO approach for Feature Selection problems</p></li>
 </ul>
 </li>
 </ul>
-</div></blockquote>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE">
-<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE" title="Link to this definition">¶</a></dt>
-<dd><p>Default pheromone influence (<span class="math notranslate nohighlight">\({\alpha}\)</span>).</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_ACOFS_DISCARD_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB" title="Link to this definition">¶</a></dt>
+<dd><p>Default probability of discarding a node (feature).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE">
-<span class="sig-name descname"><span class="pre">DEFAULT_HEURISTIC_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">2.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE" title="Link to this definition">¶</a></dt>
-<dd><p>Default heuristic influence (<span class="math notranslate nohighlight">\({\beta}\)</span>).</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACOFS_EXPLOITATION_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_ACOFS_EXPLOITATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACOFS_EXPLOITATION_PROB" title="Link to this definition">¶</a></dt>
+<dd><p>Default exploitation probability (<span class="math notranslate nohighlight">\({q_0}\)</span>) for ACO-FS approaches.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB">
-<span class="sig-name descname"><span class="pre">DEFAULT_EXPLOITATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.9</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB" title="Link to this definition">¶</a></dt>
-<dd><p>Default exploitation probability (<span class="math notranslate nohighlight">\({q_0}\)</span>).</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACOFS_HEURISTIC_INFLUENCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_ACOFS_HEURISTIC_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACOFS_HEURISTIC_INFLUENCE" title="Link to this definition">¶</a></dt>
+<dd><p>Default heuristic influence (<span class="math notranslate nohighlight">\({\beta}\)</span>) for ACO-FS approaches.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE">
-<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_EVAPORATION_RATE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE" title="Link to this definition">¶</a></dt>
-<dd><p>Default pheromone evaporation rate (<span class="math notranslate nohighlight">\({\rho}\)</span>).</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ">
-<span class="sig-name descname"><span class="pre">DEFAULT_CONVERGENCE_CHECK_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ" title="Link to this definition">¶</a></dt>
-<dd><p>Default frequency to check if an elitist ACO has converged.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE">
+<span class="sig-name descname"><span class="pre">DEFAULT_ACOFS_INITIAL_PHEROMONE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE" title="Link to this definition">¶</a></dt>
+<dd><p>Default initial pheromone.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -126,10 +126,28 @@ trainer.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ">
+<span class="sig-name descname"><span class="pre">DEFAULT_CONVERGENCE_CHECK_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ" title="Link to this definition">¶</a></dt>
+<dd><p>Default frequency to check if an elitist ACO has converged.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ELITE_WEIGHT">
 <span class="sig-name descname"><span class="pre">DEFAULT_ELITE_WEIGHT</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.3</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ELITE_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Default weight for the elite ant (best-so-far ant) respect to the
 iteration-best ant.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB">
+<span class="sig-name descname"><span class="pre">DEFAULT_EXPLOITATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.9</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB" title="Link to this definition">¶</a></dt>
+<dd><p>Default exploitation probability (<span class="math notranslate nohighlight">\({q_0}\)</span>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_HEURISTIC_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">2.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE" title="Link to this definition">¶</a></dt>
+<dd><p>Default heuristic influence (<span class="math notranslate nohighlight">\({\beta}\)</span>).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -142,27 +160,21 @@ use only the global-best ant.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACO_FS_INITIAL_PHEROMONE">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACO_FS_INITIAL_PHEROMONE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACO_FS_INITIAL_PHEROMONE" title="Link to this definition">¶</a></dt>
-<dd><p>Default initial pheromone.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_DEPOSIT_WEIGHT">
+<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_DEPOSIT_WEIGHT</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_DEPOSIT_WEIGHT" title="Link to this definition">¶</a></dt>
+<dd><p>Default pheromone deposit weight.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACO_FS_HEURISTIC_INFLUENCE">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACO_FS_HEURISTIC_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACO_FS_HEURISTIC_INFLUENCE" title="Link to this definition">¶</a></dt>
-<dd><p>Default heuristic influence (<span class="math notranslate nohighlight">\({\beta}\)</span>) for ACO-FS approaches.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE">
+<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_EVAPORATION_RATE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE" title="Link to this definition">¶</a></dt>
+<dd><p>Default pheromone evaporation rate (<span class="math notranslate nohighlight">\({\rho}\)</span>).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACO_FS_EXPLOITATION_PROB">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACO_FS_EXPLOITATION_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACO_FS_EXPLOITATION_PROB" title="Link to this definition">¶</a></dt>
-<dd><p>Default exploitation probability (<span class="math notranslate nohighlight">\({q_0}\)</span>) for ACO-FS approaches.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACO_FS_DISCARD_PROB">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACO_FS_DISCARD_PROB</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.5</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACO_FS_DISCARD_PROB" title="Link to this definition">¶</a></dt>
-<dd><p>Default probability of discarding a node (feature).</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_PHEROMONE_INFLUENCE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE" title="Link to this definition">¶</a></dt>
+<dd><p>Default pheromone influence (<span class="math notranslate nohighlight">\({\alpha}\)</span>).</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
@@ -193,7 +205,7 @@ use only the global-best ant.</p>
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a></li> 
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a></li> 
       </ul>
     </div>
     <div class="footer">

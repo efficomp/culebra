@@ -23,7 +23,6 @@
 """Test the abstract base feature selection fitness functions."""
 
 import unittest
-from random import random
 
 import numpy as np
 
@@ -132,47 +131,6 @@ class FSDatasetScorerTester(unittest.TestCase):
 
         self.assertEqual(final_training.num_feats, len(selected_feats))
         self.assertEqual(final_test, None)
-
-    def test_num_nodes(self):
-        """Test the num_nodes property."""
-        func = MyFSDatasetScorer(dataset)
-        self.assertEqual(func.num_nodes, dataset.num_feats)
-
-    def test_heuristic(self):
-        """Test the heuristic method."""
-        func = MyFSDatasetScorer(dataset)
-
-        # Try an invalid species. Should fail
-        species = ParamOptSpecies(
-            lower_bounds=[0, 0],
-            upper_bounds=[100000, 100000],
-            names=["C", "gamma"]
-        )
-        with self.assertRaises(TypeError):
-            func.heuristic(species)
-
-        # Try a valid species
-        num_feats = 10
-        min_feat = 2
-        max_feat = 8
-        species = FSSpecies(
-            num_feats=num_feats, min_feat=min_feat, max_feat=max_feat
-        )
-        (heuristic, ) = func.heuristic(species)
-        self.assertIsInstance(heuristic, np.ndarray)
-        self.assertEqual(heuristic.shape, (num_feats, num_feats))
-        for row in range(num_feats):
-            for column in range(num_feats):
-                self.assertEqual(
-                    heuristic[row][column],
-                    0 if (
-                        row == column or
-                        row < min_feat or
-                        row > max_feat or
-                        column < min_feat or
-                        column > max_feat
-                    ) else 1
-                )
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

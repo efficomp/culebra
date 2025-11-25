@@ -25,8 +25,13 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import AntSystem
 from culebra.fitness_function.tsp import PathLength
+
+
+class AntSystemTSP(ACOTSP, AntSystem):
+    """Ant system for TSP."""
 
 
 # Load the GR17 distances matrix from TSPLIB
@@ -58,7 +63,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = AntSystem(**params)
+trainer = AntSystemTSP(**params)
 
 # Train the wrapper
 print("Training ...")

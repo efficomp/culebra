@@ -17,7 +17,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Configuration file for the :py:class:`~culebra.tools.Evaluation` class."""
+"""Configuration file for the :class:`~culebra.tools.Evaluation` class."""
 
 from collections import Counter
 

@@ -27,10 +27,10 @@ from deap.tools import selNSGA3
 from sklearn.neighbors import KNeighborsClassifier
 
 from culebra.solution.feature_selection import Species, IntVector
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.trainer.ea import NSGA
 from culebra.tools import Dataset
@@ -44,7 +44,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,

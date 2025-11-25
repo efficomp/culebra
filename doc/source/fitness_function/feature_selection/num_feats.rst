@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.feature_selection.NumFeats` class
-=====================================================================
+:class:`culebra.fitness_function.feature_selection.NumFeats` class
+==================================================================
 
 .. autoclass:: culebra.fitness_function.feature_selection.NumFeats
 
@@ -30,12 +30,12 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_obj
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_weights
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_names
-.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.fitness_cls
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.index
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.num_obj
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_names
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_thresholds
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_weights
 
 Methods
 -------

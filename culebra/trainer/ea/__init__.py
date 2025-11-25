@@ -21,49 +21,42 @@
 
 This module is composed by:
 
-  * The :py:mod:`~culebra.trainer.ea.abc` sub-module, where some abstract base
-    classes are defined to support the evolutionary trainers developed in this
-    module
+* The :mod:`~culebra.trainer.ea.abc` sub-module, where some abstract base
+  classes are defined to support the evolutionary trainers developed in this
+  module
 
-  * Some popular single-population evolutionary algorithms:
+* Some popular single-population evolutionary algorithms:
 
-      * The :py:class:`~culebra.trainer.ea.SimpleEA` class, which implements
-        the simplest EA
+  * The :class:`~culebra.trainer.ea.ElitistEA` class, which provides an
+    elitist EA
+  * The :class:`~culebra.trainer.ea.NSGA` class, which implements a
+    multi-objective EA, based on Non-dominated sorting, able to run both
+    the NSGA-II and the NSGA-III algorithms
+  * The :class:`~culebra.trainer.ea.SimpleEA` class, which implements
+    the simplest EA
 
-      * The :py:class:`~culebra.trainer.ea.ElitistEA` class, which provides an
-        elitist EA
+* Some variants of the multi-population island-based EA:
 
-      * The :py:class:`~culebra.trainer.ea.NSGA` class, which implements a
-        multi-objective EA, based on Non-dominated sorting, able to run both
-        the NSGA-II and the NSGA-III algorithms
+    * The :class:`~culebra.trainer.ea.HeterogeneousParallelIslandsEA`
+      class, a parallel implementation of the heterogeneous islands model
+    * The :class:`~culebra.trainer.ea.HeterogeneousSequentialIslandsEA`
+      class, providing a sequential implementation of the heterogeneous
+      islands model
+    * The :class:`~culebra.trainer.ea.HomogeneousParallelIslandsEA`
+      class, which implements a parallel implementation of the homogeneous
+      islands model
+    * The :class:`~culebra.trainer.ea.HomogeneousSequentialIslandsEA`
+      class, which provides a sequential implementation of the island model
+      with homogeneous hyperparameters for all the islands
 
-  * Some variants of the multi-population island-based EA:
+* A couple of cooperative co-evolutionary implementations:
 
-        * The :py:class:`~culebra.trainer.ea.HomogeneousSequentialIslandsEA`
-          class, which provides a sequential implementation of the island model
-          with homogeneous hyperparameters for all the islands
-
-        * The :py:class:`~culebra.trainer.ea.HomogeneousParallelIslandsEA`
-          class, which implements a parallel implementation of the homogeneous
-          islands model
-
-        * The :py:class:`~culebra.trainer.ea.HeterogeneousSequentialIslandsEA`
-          class, providing a sequential implementation of the heterogeneous
-          islands model
-
-        * The :py:class:`~culebra.trainer.ea.HeterogeneousParallelIslandsEA`
-          class, a parallel implementation of the heterogeneous islands model
-
-
-  * A couple of cooperative co-evolutionary implementations:
-
-        * The :py:class:`~culebra.trainer.ea.SequentialCooperativeEA` class,
-          which implements a sequential implementation of the cooperative
-          co-evolutionary model
-
-        * The :py:class:`~culebra.trainer.ea.ParallelCooperativeEA` class,
-          which provides a parallel implementation of the cooperative
-          co-evolutionary model
+    * The :class:`~culebra.trainer.ea.ParallelCooperativeEA` class,
+      which provides a parallel implementation of the cooperative
+      co-evolutionary model         
+    * The :class:`~culebra.trainer.ea.SequentialCooperativeEA` class,
+      which implements a sequential implementation of the cooperative
+      co-evolutionary model
 """
 
 from .constants import (

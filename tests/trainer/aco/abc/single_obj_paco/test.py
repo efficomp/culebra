@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.abc.SingleObjPACO`."""
+"""Unit test for :class:`culebra.trainer.aco.abc.SingleObjPACO`."""
 
 import unittest
 
@@ -28,17 +28,13 @@ import numpy as np
 
 from deap.tools import ParetoFront
 
-from culebra.trainer.aco.abc import SingleObjPACO
+from culebra.trainer.aco.abc import SingleObjPACO, ACOTSP
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
 
 
-class MyTrainer(SingleObjPACO):
+class MyTrainer(ACOTSP, SingleObjPACO):
     """Dummy implementation of a trainer method."""
-
-    def _calculate_choice_info(self) -> None:
-        """Calculate a dummy choice info matrix."""
-        self._choice_info = self.pheromone[0] * self.heuristic[0]
 
     def _update_pop(self) -> None:
         """Update the population.
@@ -49,9 +45,9 @@ class MyTrainer(SingleObjPACO):
         *_pop_outgoing* list.
 
         These lists will be used later within the
-        :py:meth:`~culebra.trainer.aco.abc.SingleObjPACO._increase_pheromone`
+        :meth:`~culebra.trainer.aco.abc.SingleObjPACO._increase_pheromone`
         and
-        :py:meth:`~culebra.trainer.aco.abc.SingleObjPACO._decrease_pheromone`
+        :meth:`~culebra.trainer.aco.abc.SingleObjPACO._decrease_pheromone`
         methods, respectively.
         """
         # Ingoing ants
@@ -91,7 +87,7 @@ feasible_nodes = list(range(1, num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.abc.SingleObjPACO`."""
+    """Test :class:`culebra.trainer.aco.abc.SingleObjPACO`."""
 
     def test_init(self):
         """Test __init__`."""

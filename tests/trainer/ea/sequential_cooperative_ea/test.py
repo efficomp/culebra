@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.trainer.ea.SequentialCooperativeEA`."""
+"""Unit test for :class:`~culebra.trainer.ea.SequentialCooperativeEA`."""
 
 import os
 import unittest
@@ -69,7 +69,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.ea.SequentialCooperativeEA`."""
+    """Test :class:`~culebra.trainer.ea.SequentialCooperativeEA`."""
 
     def test_init(self):
         """Test the constructor."""

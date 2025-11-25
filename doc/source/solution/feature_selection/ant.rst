@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.Ant` class
-========================================================
+:class:`culebra.solution.feature_selection.Ant` class
+=====================================================
 
 .. autoclass:: culebra.solution.feature_selection.Ant
 
@@ -34,24 +34,24 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.feature_selection.Ant.species
-.. autoproperty:: culebra.solution.feature_selection.Ant.fitness
-.. autoproperty:: culebra.solution.feature_selection.Ant.path
 .. autoproperty:: culebra.solution.feature_selection.Ant.current
 .. autoproperty:: culebra.solution.feature_selection.Ant.discarded
 .. autoproperty:: culebra.solution.feature_selection.Ant.features
-.. autoproperty:: culebra.solution.feature_selection.Ant.num_feats
-.. autoproperty:: culebra.solution.feature_selection.Ant.min_feat
+.. autoproperty:: culebra.solution.feature_selection.Ant.fitness
 .. autoproperty:: culebra.solution.feature_selection.Ant.max_feat
+.. autoproperty:: culebra.solution.feature_selection.Ant.min_feat
+.. autoproperty:: culebra.solution.feature_selection.Ant.num_feats
+.. autoproperty:: culebra.solution.feature_selection.Ant.path
+.. autoproperty:: culebra.solution.feature_selection.Ant.species
 
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.Ant.dump
 .. automethod:: culebra.solution.feature_selection.Ant.append
+.. automethod:: culebra.solution.feature_selection.Ant.delete_fitness
 .. automethod:: culebra.solution.feature_selection.Ant.discard
 .. automethod:: culebra.solution.feature_selection.Ant.dominates
-.. automethod:: culebra.solution.feature_selection.Ant.delete_fitness
+.. automethod:: culebra.solution.feature_selection.Ant.dump
 
 Private methods
 ---------------
@@ -59,11 +59,13 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.feature_selection.Ant.__hash__
+Intended to compare (lexicographically) two ants according to their fitness.
+
 .. automethod:: culebra.solution.feature_selection.Ant.__eq__
-.. automethod:: culebra.solution.feature_selection.Ant.__ne__
-.. automethod:: culebra.solution.feature_selection.Ant.__lt__
-.. automethod:: culebra.solution.feature_selection.Ant.__gt__
-.. automethod:: culebra.solution.feature_selection.Ant.__le__
 .. automethod:: culebra.solution.feature_selection.Ant.__ge__
+.. automethod:: culebra.solution.feature_selection.Ant.__gt__
+.. automethod:: culebra.solution.feature_selection.Ant.__hash__
+.. automethod:: culebra.solution.feature_selection.Ant.__le__
+.. automethod:: culebra.solution.feature_selection.Ant.__lt__
+.. automethod:: culebra.solution.feature_selection.Ant.__ne__
 .. automethod:: culebra.solution.feature_selection.Ant.__str__

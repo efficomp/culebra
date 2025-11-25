@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.fitness_function` module
-=========================================
+:mod:`culebra.fitness_function` module
+======================================
 
 .. automodule:: culebra.fitness_function
 

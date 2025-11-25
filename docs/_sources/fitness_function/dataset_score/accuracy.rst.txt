@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.dataset_score.Accuracy` class
-=================================================================
+:class:`culebra.fitness_function.dataset_score.Accuracy` class
+==============================================================
 
 .. autoclass:: culebra.fitness_function.dataset_score.Accuracy
 

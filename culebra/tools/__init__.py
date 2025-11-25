@@ -20,32 +20,38 @@
 """Tools to automate the execution of experiments.
 
 Since many interesting problems are based on data processing, this module
-provides the :py:class:`~culebra.tools.Dataset` class to hold and manage the
+provides the :class:`~culebra.tools.Dataset` class to hold and manage the
 data samples.
 
-Bresides, since automated experimentation is also a quite valuable
-characteristic when a :py:class:`~culebra.abc.Trainer` method has to be run
+Besides, since automated experimentation is also a quite valuable
+characteristic when a :class:`~culebra.abc.Trainer` method has to be run
 many times, culebra provides this features by means of the following classes:
 
-  * The :py:class:`~culebra.tools.Evaluation` class, a base class for the
-    evaluation of trainers
-  * The :py:class:`~culebra.tools.Experiment` class, designed to run a single
-    experiment with a :py:class:`~culebra.abc.Trainer`
-  * The :py:class:`~culebra.tools.Batch` class, which allows to run a batch of
-    experiments with the same configuration
-  * The :py:class:`~culebra.tools.Results` class, to manage the results
-    provided by the evaluation of any :py:class:`~culebra.abc.Trainer`
-  * The :py:class:`~culebra.tools.ResultsAnalyzer` class, to perform
-    statistical analysis over the results of several experimtent batchs
-  * The :py:class:`~culebra.tools.TestOutcome` class, to keep the outcome of a
-    statistical test
-  * The :py:class:`~culebra.tools.ResultsComparison` class, to keep the outcome
-    of a comparison of several batches results
-  * The :py:class:`~culebra.tools.EffectSize` class, to keep the outcome
-    of an effect size estimation of several batches results
+* The :class:`~culebra.tools.Batch` class, which allows to run a batch of
+  experiments with the same configuration
+* The :class:`~culebra.tools.EffectSize` class, to keep the outcome
+  of an effect size estimation of several batches results
+* The :class:`~culebra.tools.Evaluation` class, a base class for the
+  evaluation of trainers
+* The :class:`~culebra.tools.Experiment` class, designed to run a single
+  experiment with a :class:`~culebra.abc.Trainer`
+* The :class:`~culebra.tools.Results` class, to manage the results
+  provided by the evaluation of any :class:`~culebra.abc.Trainer`
+* The :class:`~culebra.tools.ResultsAnalyzer` class, to perform
+  statistical analysis over the results of several experimtent batchs
+* The :class:`~culebra.tools.ResultsComparison` class, to keep the outcome
+  of a comparison of several batches results
+* The :class:`~culebra.tools.TestOutcome` class, to keep the outcome of a
+  statistical test
 """
 
-from .dataset import Dataset, DEFAULT_SEP
+from .dataset import (
+    Dataset,
+    DEFAULT_SEP,
+    DEFAULT_OUTLIER_PROPORTION,
+    DEFAULT_SMOTE_NUM_NEIGHBORS
+)
+
 from .results import Results, EXCEL_FILE_EXTENSION
 from .results_analyzer import (
     TestOutcome,
@@ -91,6 +97,8 @@ __all__ = [
     'Experiment',
     'Batch',
     'DEFAULT_SEP',
+    'DEFAULT_OUTLIER_PROPORTION',
+    'DEFAULT_SMOTE_NUM_NEIGHBORS',
     'EXCEL_FILE_EXTENSION',
     'DEFAULT_ALPHA',
     'DEFAULT_NORMALITY_TEST',

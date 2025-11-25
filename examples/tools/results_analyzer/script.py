@@ -39,11 +39,11 @@ def init_analyzer(batches_results, csv_batches_results):
     """Load the results of several approaches.
 
     :param batches_results: Results from a culebra's batch
-    :type batches_results: Sequence of folders containing the results
+    :type batches_results: list[~culebra.tools.Batch]
     :param csv_batches_results: Results in csv format
-    :type csv_batches_results: Sequence of folders containing the results
+    :type csv_batches_results: list[str]
     :return: A results analyzer for the loaded results
-    :rtype: :py:class:`~culebra.tools.ResultsAnalyzer
+    :rtype: ~culebra.tools.ResultsAnalyzer
     """
     # Create a results analyzer
     analyzer = ResultsAnalyzer()
@@ -78,7 +78,7 @@ def print_valid_commands(valid_commands):
     """Print the valid commands.
 
     :param valid_commands: List of valid commands.
-    :type valid_commands: Sequence of commands
+    :type valid_commands: str
     """
     print("Valid commands:", end=" ")
     first_command = True

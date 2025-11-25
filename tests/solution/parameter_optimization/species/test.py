@@ -53,7 +53,7 @@ class MySolution(Solution):
 
 
 class SpeciesTester(unittest.TestCase):
-    """Test :py:class:`~culebra.solution.parameter_optimization.Species`."""
+    """Test :class:`~culebra.solution.parameter_optimization.Species`."""
 
     def test_init(self):
         """Test the __init__ method."""
@@ -356,10 +356,10 @@ class SpeciesTester(unittest.TestCase):
 
         :param species1: The first species
         :type species1:
-            :py:class:`~culebra.solution.parameter_optimization.Species`
+            :class:`~culebra.solution.parameter_optimization.Species`
         :param species2: The second species
         :type species2:
-            :py:class:`~culebra.solution.parameter_optimization.Species`
+            :class:`~culebra.solution.parameter_optimization.Species`
         """
         # Copies all the levels
         self.assertNotEqual(id(species1), id(species2))

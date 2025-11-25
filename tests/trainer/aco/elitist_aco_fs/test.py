@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.ElitistACO_FS`."""
+"""Unit test for :class:`culebra.trainer.aco.ElitistACOFS`."""
 
 import unittest
 from copy import copy, deepcopy
@@ -29,16 +29,12 @@ from os import remove
 import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.trainer.aco import (
-    ElitistACO_FS,
-    DEFAULT_ACO_FS_INITIAL_PHEROMONE,
-    DEFAULT_ACO_FS_DISCARD_PROB
-)
+from culebra.trainer.aco import ElitistACOFS
 from culebra.solution.feature_selection import Species, Ant
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -51,7 +47,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -90,58 +86,8 @@ banned_nodes = [0, dataset.num_feats-1]
 feasible_nodes = list(range(1, dataset.num_feats-1))
 
 
-class ElitistACO_FSTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.ElitistACO_FS`."""
-
-    def test_init(self):
-        """Test __init__."""
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": training_fitness_function,
-            "verbose": False
-        }
-
-        # Create the trainer
-        trainer = ElitistACO_FS(**params)
-
-        # Check the parameters
-        self.assertEqual(trainer.solution_cls, params["solution_cls"])
-        self.assertEqual(trainer.species, species)
-        self.assertEqual(trainer.fitness_function, training_fitness_function)
-        self.assertEqual(
-            trainer.initial_pheromone[0], DEFAULT_ACO_FS_INITIAL_PHEROMONE
-        )
-        self.assertTrue(
-            np.all(
-                trainer.heuristic[0] ==
-                training_fitness_function.heuristic(species)[0]
-            )
-        )
-        self.assertEqual(trainer.col_size, species.num_feats)
-        self.assertEqual(trainer.discard_prob, DEFAULT_ACO_FS_DISCARD_PROB)
-
-        # Try a custom value for the initial pheromone
-        custom_initial_pheromone = 2
-        trainer = ElitistACO_FS(
-            **params,
-            initial_pheromone=custom_initial_pheromone
-        )
-        self.assertEqual(
-            trainer.initial_pheromone[0], custom_initial_pheromone
-        )
-
-        # Try invalid types for discard_prob. Should fail
-        invalid_probs = ('a', type)
-        for prob in invalid_probs:
-            with self.assertRaises(TypeError):
-                ElitistACO_FS(**params, discard_prob=prob)
-
-        # Try invalid values for crossover_prob. Should fail
-        invalid_probs = (-1, -0.001, 1.001, 4)
-        for prob in invalid_probs:
-            with self.assertRaises(ValueError):
-                ElitistACO_FS(**params, discard_prob=prob)
+class ElitistACOFSTester(unittest.TestCase):
+    """Test :class:`culebra.trainer.aco.ElitistACOFS`."""
 
     def test_state(self):
         """Test the get_state and _set_state methods."""
@@ -153,7 +99,7 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACO_FS(**params)
+        trainer = ElitistACOFS(**params)
         trainer._init_search()
         trainer._new_state()
 
@@ -191,7 +137,7 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACO_FS(**params)
+        trainer = ElitistACOFS(**params)
 
         # Try to update the elite
         trainer._init_search()
@@ -222,6 +168,27 @@ class ElitistACO_FSTester(unittest.TestCase):
         self.assertTrue(elite[0] in trainer._elite)
         self.assertTrue(col[0] in trainer._elite)
 
+    def test_pheromone_amount(self):
+        """Test _pheromone_amount."""
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": training_fitness_function,
+            "verbose": False
+        }
+
+        # Create the trainer
+        trainer = ElitistACOFS(**params)
+
+        # Init the search
+        trainer._init_search()
+
+        ant = trainer._generate_ant()
+        
+        self.assertTrue(
+            list(trainer._pheromone_amount(ant)) == trainer.initial_pheromone
+        )
+
     def test_update_pheromone(self):
         """Test _update_pheromone."""
         params = {
@@ -232,7 +199,7 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACO_FS(**params)
+        trainer = ElitistACOFS(**params)
 
         # Init the search
         trainer._init_search()
@@ -266,7 +233,7 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ElitistACO_FS(**params)
+        trainer1 = ElitistACOFS(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -294,7 +261,7 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ElitistACO_FS(**params)
+        trainer1 = ElitistACOFS(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -311,11 +278,11 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ElitistACO_FS(**params)
+        trainer1 = ElitistACOFS(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = ElitistACO_FS.load(serialized_filename)
+        trainer2 = ElitistACOFS.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -334,7 +301,7 @@ class ElitistACO_FSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACO_FS(**params)
+        trainer = ElitistACOFS(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
@@ -343,9 +310,9 @@ class ElitistACO_FSTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.aco.ElitistACO_FS`
+        :type trainer1: ~culebra.trainer.aco.ElitistACOFS
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.aco.ElitistACO_FS`
+        :type trainer2: ~culebra.trainer.aco.ElitistACOFS
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

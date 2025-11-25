@@ -8,7 +8,7 @@
     <title>culebra.abc module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=37f418d5"></script>
+    <script src="_static/documentation_options.js?v=c87aa342"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -45,23 +45,21 @@
 <p>Base classes of culebra.</p>
 <p>Fundamental classes to solve optimization problems. The <a class="reference internal" href="#module-culebra.abc" title="culebra.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a>
 module defines:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>A <a class="reference internal" href="abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> class from which all the classes of culebra
 inherit</p></li>
-<li><p>A <a class="reference internal" href="abc/species.html#culebra.abc.Species" title="culebra.abc.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to define the characteristics of
-solutions belonging to a given domain</p></li>
+<li><p>A <a class="reference internal" href="abc/fitness.html#culebra.abc.Fitness" title="culebra.abc.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> class to store the fitness values for each
+<a class="reference internal" href="abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a></p></li>
+<li><p>A <a class="reference internal" href="abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a> class to evaluate a
+<a class="reference internal" href="abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> during the training process and assign it
+values for its <a class="reference internal" href="abc/fitness.html#culebra.abc.Fitness" title="culebra.abc.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a></p></li>
 <li><p>A <a class="reference internal" href="abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> class, which will be used within the
 <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a> class to seek the best solution(s) for a
 problem</p></li>
-<li><p>A <a class="reference internal" href="abc/fitness.html#culebra.abc.Fitness" title="culebra.abc.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a> class to store the fitness values for
-each <a class="reference internal" href="abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a></p></li>
-<li><p>A <a class="reference internal" href="abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitnessFunction</span></code></a> class to evaluate a
-<a class="reference internal" href="abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solution</span></code></a> during the training process and assign
-it values for its <a class="reference internal" href="abc/fitness.html#culebra.abc.Fitness" title="culebra.abc.Fitness"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fitness</span></code></a></p></li>
+<li><p>A <a class="reference internal" href="abc/species.html#culebra.abc.Species" title="culebra.abc.Species"><code class="xref py py-class docutils literal notranslate"><span class="pre">Species</span></code></a> class to define the characteristics of
+solutions belonging to a given domain</p></li>
 <li><p>A <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a> class to find solutions for a problem</p></li>
 </ul>
-</div></blockquote>
 <div class="toctree-wrapper compound">
 </div>
 </section>

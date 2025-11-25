@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.PACO_MO`."""
+"""Unit test for :class:`culebra.trainer.aco.PACOMO`."""
 
 import unittest
 from copy import copy, deepcopy
@@ -31,7 +31,8 @@ import numpy as np
 from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.trainer.aco import PACO_MO
+from culebra.trainer.aco.abc import ACOTSP
+from culebra.trainer.aco import PACOMO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
@@ -50,9 +51,25 @@ fitness_func = MultiObjectivePathLength(
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
+class PACOMOTSP(PACOMO, ACOTSP):
+    """PACOMO for TSP."""
+
+class InvalidPACOMO(PACOMO):
+    """Invalid PACOMO subclass."""
+
+    @property
+    def pheromone_shapes(self):
+        """Return the shape of the pheromone matrices."""
+        return [(3, ) * 2] * self.num_pheromone_matrices
+
+    @property
+    def heuristic_shapes(self):
+        """Return the shape of the heuristic matrices."""
+        return [(2, ) * 2] * self.num_heuristic_matrices
+
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.PACO_MO`."""
+    """Test :class:`culebra.trainer.aco.PACOMO`."""
 
     def test_init(self):
         """Test __init__."""
@@ -77,8 +94,12 @@ class TrainerTester(unittest.TestCase):
             "random_seed": 15
         }
 
+        # Try an invalid subclass. Should fail...
+        with self.assertRaises(RuntimeError):
+            InvalidPACOMO(**params)
+
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Check the parameters
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
@@ -142,7 +163,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         self.assertEqual(trainer.num_pheromone_matrices, fitness_func.num_obj)
 
@@ -157,7 +178,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         self.assertEqual(trainer.num_heuristic_matrices, fitness_func.num_obj)
 
@@ -172,7 +193,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -213,7 +234,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -234,7 +255,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -257,7 +278,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Try before any colony has been created
         best_ones = trainer.best_solutions()
@@ -293,7 +314,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -313,7 +334,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -337,7 +358,7 @@ class TrainerTester(unittest.TestCase):
         elite_size = 10
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Init the search
         trainer._init_search()
@@ -358,8 +379,10 @@ class TrainerTester(unittest.TestCase):
         # Calculate the choice_info for the next iteration
         trainer._calculate_choice_info()
 
-        # Check tha the coince info has been calculated
-        self.assertEqual(trainer.choice_info.shape, trainer.heuristic[0].shape)
+        # Check that the coince info has been calculated
+        self.assertEqual(
+            trainer.choice_info.shape, trainer.heuristic_shapes[0]
+        )
 
     def test_update_pop(self):
         """Test _update_pop."""
@@ -373,7 +396,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Try to update the population with an empty elite
         trainer._init_search()
@@ -422,7 +445,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
 
         # Init the search
         trainer._init_search()
@@ -452,7 +475,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = PACO_MO(**params)
+        trainer1 = PACOMOTSP(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -483,7 +506,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = PACO_MO(**params)
+        trainer1 = PACOMOTSP(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -502,11 +525,11 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = PACO_MO(**params)
+        trainer1 = PACOMOTSP(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = PACO_MO.load(serialized_filename)
+        trainer2 = PACOMOTSP.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -526,7 +549,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACO_MO(**params)
+        trainer = PACOMOTSP(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
@@ -535,9 +558,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.aco.PACO_MO`
+        :type trainer1: ~culebra.trainer.aco.PACOMO
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.aco.PACO_MO`
+        :type trainer2: ~culebra.trainer.aco.PACOMO
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.abc.CooperativeTrainer` class
-========================================================
+:class:`culebra.trainer.abc.CooperativeTrainer` class
+=====================================================
 
 .. autoclass:: culebra.trainer.abc.CooperativeTrainer
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.abc.CooperativeTrainer.stats_names
 .. autoattribute:: culebra.trainer.abc.CooperativeTrainer.objective_stats
+.. autoattribute:: culebra.trainer.abc.CooperativeTrainer.stats_names
 
 Class methods
 -------------
@@ -35,34 +35,34 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.solution_classes
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.species
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.fitness_function
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_cls
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.max_num_iters
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.checkpoint_enable
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.checkpoint_filename
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.checkpoint_freq
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.container
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.current_iter
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.custom_termination_func
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.fitness_function
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.index
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.logbook
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.max_num_iters
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.num_evals
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.num_subtrainers
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_size
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.random_seed
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_freq
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_topology_func
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_topology_func_params
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_selection_func
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_selection_func_params
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.checkpoint_enable
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.checkpoint_freq
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.checkpoint_filename
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.verbose
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.random_seed
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.logbook
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.num_evals
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.runtime
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.index
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.container
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_size
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_topology_func
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representation_topology_func_params
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.representatives
-.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_params
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.runtime
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.solution_classes
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.species
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_cls
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainer_params
 .. autoproperty:: culebra.trainer.abc.CooperativeTrainer.subtrainers
+.. autoproperty:: culebra.trainer.abc.CooperativeTrainer.verbose
 
 Private properties
 ------------------
@@ -79,36 +79,36 @@ Private static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.dump
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.reset
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.evaluate
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.best_solutions
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.best_representatives
-.. automethod:: culebra.trainer.abc.CooperativeTrainer.train
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.best_solutions
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.dump
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.evaluate
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.reset
 .. automethod:: culebra.trainer.abc.CooperativeTrainer.test
+.. automethod:: culebra.trainer.abc.CooperativeTrainer.train
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._default_termination_func
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._do_iteration
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._do_iteration_stats
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._finish_iteration
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._finish_search
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._generate_subtrainers
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._get_state
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._set_state
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._save_state
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_internals
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_representatives
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_search
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_state
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._load_state
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._new_state
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_state
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._reset_state
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_internals
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._reset_internals
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_search
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._search
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._finish_search
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._start_iteration
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._preprocess_iteration
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._do_iteration
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._postprocess_iteration
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._finish_iteration
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._do_iteration_stats
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._default_termination_func
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._termination_criterion
-.. automethod:: culebra.trainer.abc.CooperativeTrainer._init_representatives
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._preprocess_iteration
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._reset_internals
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._reset_state
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._save_state
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._search
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._set_cooperative_fitness
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._set_state
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._start_iteration
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._termination_criterion

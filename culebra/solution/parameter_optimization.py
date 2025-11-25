@@ -22,20 +22,19 @@
 This module supports parameter optimization problems. The possible solutions
 to the problem are handled by:
 
-  * A :py:class:`~culebra.solution.parameter_optimization.Species` class to
-    define the characteristics that the desired parameter values should meet.
-
-  * A :py:class:`~culebra.solution.parameter_optimization.Solution` class
-    containing all the parameter values found for the problem.
+* A :class:`~culebra.solution.parameter_optimization.Solution` class
+  containing all the parameter values found for the problem.
+* A :class:`~culebra.solution.parameter_optimization.Species` class to
+  define the characteristics that the desired parameter values should meet.
 
 In order to make possible the application of evolutionary approaches, the
-:py:class:`~culebra.solution.parameter_optimization.Solution` class has been
-extended by the :py:class:`~culebra.solution.parameter_optimization.Individual`
+:class:`~culebra.solution.parameter_optimization.Solution` class has been
+extended by the :class:`~culebra.solution.parameter_optimization.Individual`
 class, which inherits from both
-:py:class:`~culebra.solution.parameter_optimization.Solution` and
-:py:class:`~culebra.solution.abc.Individual` classes to provide the crossover
+:class:`~culebra.solution.parameter_optimization.Solution` and
+:class:`~culebra.solution.abc.Individual` classes to provide the crossover
 and mutation operators to the
-:py:class:`~culebra.solution.parameter_optimization.Solution` class.
+:class:`~culebra.solution.parameter_optimization.Solution` class.
 
 """
 
@@ -93,11 +92,11 @@ class Species(BaseSpecies):
 
     Species instances have the following attributes:
 
-        * :py:attr:`~culebra.solution.parameter_optimization.Species.lower_bounds`:
+        * :attr:`~culebra.solution.parameter_optimization.Species.lower_bounds`:
           Lower bound for each parameter
-        * :py:attr:`~culebra.solution.parameter_optimization.Species.upper_bounds`:
+        * :attr:`~culebra.solution.parameter_optimization.Species.upper_bounds`:
           Upper bound for each parameter
-        * :py:attr:`~culebra.solution.parameter_optimization.Species.types`:
+        * :attr:`~culebra.solution.parameter_optimization.Species.types`:
           Type of each parameter
     """
 
@@ -111,28 +110,23 @@ class Species(BaseSpecies):
         """Create a new species.
 
         :param lower_bounds: Lower bound for each parameter
-        :type lower_bounds: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int` or :py:class:`float` values
+        :type lower_bounds: ~collections.abc.Sequence[int | float]
         :param upper_bounds: Upper bound for each parameter
-        :type upper_bounds: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int` or :py:class:`float` values
-        :param types: Type of each parameter. All the parameters will
-            be treated as :py:class:`float` if omitted. Defaults to
-            :py:data:`None`
-        :type types: :py:class:`~collections.abc.Sequence` of
-            :py:class:`type` (:py:class:`int` or :py:class:`float`), optional
-        :param names: Name of each parameter. Defaults to :py:data:`None`
-        :type names: :py:class:`~collections.abc.Sequence` of
-            :py:class:`str`, optional
+        :type upper_bounds: ~collections.abc.Sequence[int | float]
+        :param types: Type of each parameter. If omited, all the parameters
+            will be treated as :class:`float`. Defaults to :data:`None`
+        :type types: ~collections.abc.Sequence[type]
+        :param names: Name of each parameter. Defaults to :data:`None`
+        :type names: ~collections.abc.Sequence[str]
         :raises TypeError: If any of the attributes is not a
-            :py:class:`~collections.abc.Sequence`
+            :class:`~collections.abc.Sequence`
         :raises ValueError: If the sequences have different lengths
         :raises ValueError: If the sequences are empty
         :raises ValueError: If the type of any bound does not match with its
             corresponding type in *types*
         :raises ValueError: If any lower bound is greater to or equal than its
             corresponding upper bound
-        :raises ValueError: If any name is not an instance of :py:class:`str`
+        :raises ValueError: If any name is not an instance of :class:`str`
         :raises ValueError: If there is any repeated name
         """
         super().__init__()
@@ -146,43 +140,41 @@ class Species(BaseSpecies):
 
     @property
     def lower_bounds(self) -> Tuple[int | float, ...]:
-        """Get the lower bound for each parameter.
+        """Lower bound for each parameter.
 
-        :type: :py:class:`tuple` of :py:class:`int` or :py:class:`float`
-            values
+        :rtype: tuple[int | float]
         """
         return self._lower_bounds
 
     @property
     def upper_bounds(self) -> Tuple[int | float, ...]:
-        """Get the upper bound for each parameter.
+        """Upper bound for each parameter.
 
-        :type: :py:class:`tuple` of :py:class:`int` or :py:class:`float`
-            values
+        :rtype: tuple[int | float]
         """
         return self._upper_bounds
 
     @property
     def types(self) -> Tuple[Type[int] | Type[float], ...]:
-        """Get the type of each parameter.
+        """Type of each parameter.
 
-        :type: :py:class:`tuple` of :py:class:`int` or :py:class:`float`
+        :rtype: tuple[type]
         """
         return self._types
 
     @property
     def names(self) -> Tuple[str, ...]:
-        """Get the name of each parameter.
+        """Name of each parameter.
 
-        :type: :py:class:`tuple` of :py:class:`str`
+        :rtype: tuple[str]
         """
         return self._names
 
     @property
     def num_params(self) -> int:
-        """Get the number of parameters to be optimized.
+        """Number of parameters to be optimized.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return len(self.lower_bounds)
 
@@ -190,11 +182,10 @@ class Species(BaseSpecies):
         """Check if a solution meets the constraints imposed by the species.
 
         :param sol: The solution
-        :type sol:
-            :py:class:`~culebra.solution.parameter_optimization.Solution`
-        :return: :py:data:`True` if the solution belongs to the species.
-            :py:data:`False` otherwise
-        :rtype: :py:class:`bool`
+        :type sol: ~culebra.solution.parameter_optimization.Solution
+        :return: :data:`True` if the solution belongs to the species.
+            :data:`False` otherwise
+        :rtype: bool
         """
         sol_is_member = True
 
@@ -230,12 +221,11 @@ class Species(BaseSpecies):
         """Retype the input values to the types provided.
 
         :param values: The values
-        :type values: :py:class:`~collections.abc.Sequence` of numbers
+        :type values: ~collections.abc.Sequence[float]
         :param types: The types
-        :type types: :py:class:`~collections.abc.Sequence` of types
+        :type types: ~collections.abc.Sequence[type]
         :return: A tuple of retyped values according to *types*
-        :rtype: :py:class:`tuple` of :py:class:`int` or :py:class:`float`
-            values
+        :rtype: tuple[int | floattype]
         """
         return tuple(
             int(val) if t is int else float(val)
@@ -257,29 +247,27 @@ class Species(BaseSpecies):
         """Check the species attributes.
 
         :param lower_bounds: Proposed lower bound for each parameter
-        :type lower_bounds: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int` or :py:class:`float`
+        :type lower_bounds: ~collections.abc.Sequence[int | float]
         :param upper_bounds: Proposed upper bound for each parameter
-        :type upper_bounds: :py:class:`~collections.abc.Sequence` of
-            :py:class:`int` or :py:class:`float`
-        :param types: Proposed type of each parameter. All the
-            parameters will be treated as :py:class:`float` if omitted.
-            Defaults to :py:data:`None`
-        :type types: :py:class:`~collections.abc.Sequence` of
-            :py:class:`type` (:py:class:`int` or :py:class:`float`)
-        :param names: Name of each parameter. Defaults to :py:data:`None`
-        :type names: :py:class:`~collections.abc.Sequence` of
+        :type upper_bounds: ~collections.abc.Sequence[int | float]
+        :param types: Proposed type of each parameter. If omitted, all the
+            parameters will be treated as :class:`float`. Defaults to
+            :data:`None`
+        :type types: ~collections.abc.Sequence[type]
+        :param names: Name of each parameter. Defaults to :data:`None`
+        :type names: ~collections.abc.Sequence[str]
         :return: A tuple of valid values for the attributes
-        :rtype: :py:class:`tuple`
+        :rtype:
+            tuple[tuple[int|float], tuple[int|float], tuple[type], tuple[str]]
         :raises TypeError: If any of the attributes is not a
-            :py:class:`~collections.abc.Sequence`
+            :class:`~collections.abc.Sequence`
         :raises ValueError: If the sequences have different lengths
         :raises ValueError: If the sequences are empty
         :raises ValueError: If the type of any bound does not match with its
             corresponding type in *types*
         :raises ValueError: If any lower bound is greater or equal than its
             corresponding upper bound
-        :raises ValueError: If name is not an instance of :py:class:`str`
+        :raises ValueError: If name is not an instance of :class:`str`
         :raises ValueError: If name contains invalid characters
         :raises ValueError: If there is any repeated name
         """
@@ -365,7 +353,11 @@ class Species(BaseSpecies):
         )
 
     def __copy__(self) -> Species:
-        """Shallow copy the species."""
+        """Shallow copy the species.
+
+        :return: The copied object
+        :rtype: ~culebra.solution.parameter_optimization.Species
+        """
         cls = self.__class__
         result = cls(self.lower_bounds, self.upper_bounds)
         result.__dict__.update(self.__dict__)
@@ -375,9 +367,9 @@ class Species(BaseSpecies):
         """Deepcopy the species.
 
         :param memo: Species attributes
-        :type memo: :py:class:`dict`
-        :return: A deep copy of the species
-        :rtype: :py:class:`~culebra.solution.parameter_optimization.Species`
+        :type memo: dict
+        :return: The copied object
+        :rtype: ~culebra.solution.parameter_optimization.Species
         """
         cls = self.__class__
         result = cls(self.lower_bounds, self.upper_bounds)
@@ -388,7 +380,7 @@ class Species(BaseSpecies):
         """Reduce the species.
 
         :return: The reduction
-        :rtype: :py:class:`tuple`
+        :rtype: tuple
         """
         return (
             self.__class__,
@@ -400,8 +392,10 @@ class Species(BaseSpecies):
     def __fromstate__(cls, state: dict) -> Species:
         """Return a species from a state.
 
-        :param state: The state.
-        :type state: :py:class:`~dict`
+        :param state: The state
+        :type state: dict
+        :return: The species
+        :rtype: ~culebra.solution.parameter_optimization.Species
         """
         obj = cls(
             state['_lower_bounds'],
@@ -416,7 +410,7 @@ class Solution(BaseSolution):
 
     species_cls = Species
     """Class for the species used by the
-    :py:class:`~culebra.solution.parameter_optimization.Solution` class to
+    :class:`~culebra.solution.parameter_optimization.Solution` class to
     constrain all its instances."""
 
     def __init__(
@@ -428,14 +422,11 @@ class Solution(BaseSolution):
         """Construct a default solution.
 
         :param species: The species the solution will belong to
-        :type species:
-            :py:class:`~culebra.solution.parameter_optimization.Solution.species_cls`
-        :param fitness: The solution's fitness class
-        :type fitness: :py:class:`~culebra.abc.Fitness`
-        :param values: Initial values
-        :type values:
-            :py:class:`~collections.abc.Sequence` of :py:class:`int` or
-            :py:class:`float` values, optional
+        :type species: ~culebra.solution.parameter_optimization.Species
+        :param fitness_cls: The solution's fitness class
+        :type fitness_cls: type[~culebra.abc.Fitness]
+        :param values: Initial values, optional
+        :type values: ~collections.abc.Sequence[int | float]
         :raises TypeError: If *species* is not a valid species
         :raises TypeError: If *fitness_cls* is not a valid fitness class
         """
@@ -449,19 +440,23 @@ class Solution(BaseSolution):
 
     @property
     def named_values_cls(self) -> Type[NamedTuple]:
-        """Return the named tuple class to hold the parameter values."""
+        """Named tuple class to hold the parameter values.
+        
+        :rtype: type[~typing.NamedTuple]
+        """
         return namedtuple("NamedValues", self.species.names)
 
     @property
     def values(self) -> NamedTuple[int | float, ...]:
-        """Get and set the parameter values evolved by the solution.
+        """Parameter values evolved by the solution.
+        
+        :rtype:
+            :attr:`~culebra.solution.parameter_optimization.Solution.named_values_cls`
 
-        :getter: Return the parameter values
-        :setter: Set the new parameter values.
-        :type:
-            :py:class:`~culebra.solution.parameter_optimization.Solution.named_values_cls`
-        :raises ValueError: If set to new parameter values which do not
-            meet the species constraints.
+        :setter: Set new parameter values.
+        :param values: The new parameters values
+        :type values: ~collections.abc.Sequence[int | float]
+        :raises ValueError: If the values do not meet the species constraints
         """
         return self.named_values_cls(
             *[
@@ -475,8 +470,8 @@ class Solution(BaseSolution):
         """Set new values for the parameter values.
 
         :param values: The new parameters values
-        :type values: :py:class:`~collections.abc.Sequence`
-        :raises ValueError: If the values do not meet the species constraints.
+        :type values: ~collections.abc.Sequence[int | float]
+        :raises ValueError: If the values do not meet the species constraints
         """
         # Values are stored as float
         self._values = values
@@ -492,7 +487,9 @@ class Solution(BaseSolution):
         """Get the value of the parameter with the given name.
 
         :param name: Name of the parameter
-        :type name: :py:class:`str`
+        :type name: str
+        :return: The value of the parameter
+        :rtype: int | float
         """
         try:
             index = self.species.names.index(name)
@@ -514,7 +511,7 @@ class Solution(BaseSolution):
         # Round the int values
         self._retype()
 
-    def _retype(self):
+    def _retype(self) -> None:
         """Round values of int parameters."""
         self._values = [
             float(round(val)) if issubclass(t, Integral) else float(val)
@@ -522,7 +519,10 @@ class Solution(BaseSolution):
         ]
 
     def __str__(self) -> str:
-        """Return the solution as a string."""
+        """Solution as a string.
+
+        :rtype: str
+        """
         values = self.values
 
         msg = ''
@@ -540,7 +540,10 @@ class Solution(BaseSolution):
         return msg
 
     def __repr__(self) -> str:
-        """Return the solution representation."""
+        """Solution representation.
+
+        :rtype: str
+        """
         cls_name = self.__class__.__name__
         species_info = self.species.__str__()
         fitness_info = self.fitness.values
@@ -563,10 +566,9 @@ class Individual(Solution, BaseIndividual):
         SBX is used.
 
         :param other: The other individual
-        :type other:
-            :py:class:`~culebra.solution.parameter_optimization.Individual`
+        :type other: ~culebra.solution.parameter_optimization.Individual
         :return: The two offspring
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.parameter_optimization.Individual]
         """
         # Apply SBX
         self._values, other._values = cxSimulatedBinaryBounded(
@@ -593,9 +595,9 @@ class Individual(Solution, BaseIndividual):
         Polynomial mutation is used.
 
         :param indpb: Independent probability for each parameter to be mutated.
-        :type indpb: :py:class:`float`
+        :type indpb: float
         :return: The mutant
-        :rtype: :py:class:`tuple`
+        :rtype: tuple[~culebra.solution.parameter_optimization.Individual]
         """
         # Apply mutation
         (self._values,) = mutPolynomialBounded(

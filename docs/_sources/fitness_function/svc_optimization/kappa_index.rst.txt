@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.svc_optimization.KappaIndex` class
-======================================================================
+:class:`culebra.fitness_function.svc_optimization.KappaIndex` class
+===================================================================
 
 .. autoclass:: culebra.fitness_function.svc_optimization.KappaIndex
 
@@ -30,15 +30,15 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.num_obj
-.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.obj_weights
-.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.obj_names
-.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.classifier
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.index
-.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.training_data
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.num_obj
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.obj_names
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.obj_thresholds
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.obj_weights
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.test_data
-.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.training_data
 
 Private properties
 ------------------
@@ -52,7 +52,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._score
-.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._final_training_test_data
-.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._evaluate_train_test
 .. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._evaluate_kfcv
+.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._evaluate_train_test
+.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._final_training_test_data
+.. automethod:: culebra.fitness_function.svc_optimization.KappaIndex._score

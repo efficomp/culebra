@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.tools.Batch`."""
+"""Unit test for :class:`culebra.tools.Batch`."""
 
 import unittest
 from os import remove
@@ -161,10 +161,10 @@ my_num_experiments = 3
 
 
 class BatchTester(unittest.TestCase):
-    """Test :py:class:`~culebra.tools.Batch`."""
+    """Test :class:`~culebra.tools.Batch`."""
 
     def test_init(self):
-        """Test the :py:meth:`~culebra.tools.Batch.__init__` constructor."""
+        """Test the :meth:`~culebra.tools.Batch.__init__` constructor."""
         # Try default params
         batch = Batch(my_trainer)
 
@@ -322,7 +322,7 @@ class BatchTester(unittest.TestCase):
         remove(batch.excel_results_filename)
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.tools.Batch.__copy__` method."""
+        """Test the :meth:`~culebra.tools.Batch.__copy__` method."""
         batch1 = Batch(
             trainer=my_trainer,
             untie_best_fitness_function=my_untie_best_fitness_function,
@@ -353,7 +353,7 @@ class BatchTester(unittest.TestCase):
         remove(batch1.excel_results_filename)
 
     def test_deepcopy(self):
-        """Test :py:meth:`~culebra.tools.Batch.__deepcopy__`."""
+        """Test :meth:`~culebra.tools.Batch.__deepcopy__`."""
         batch1 = Batch(
             trainer=my_trainer,
             untie_best_fitness_function=my_untie_best_fitness_function,
@@ -380,8 +380,8 @@ class BatchTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.tools.Batch.__setstate__` and
-        :py:meth:`~culebra.tools.Batch.__reduce__` methods.
+        Test the :meth:`~culebra.tools.Batch.__setstate__` and
+        :meth:`~culebra.tools.Batch.__reduce__` methods.
         """
         batch1 = Batch(
             trainer=my_trainer,
@@ -415,9 +415,9 @@ class BatchTester(unittest.TestCase):
         """Check if *batch1* is a deepcopy of *batch2*.
 
         :param batch1: The first batch
-        :type batch1: :py:class:`~culebra.tools.Batch`
+        :type batch1: ~culebra.tools.Batch
         :param batch2: The second batch
-        :type batch2: :py:class:`~culebra.tools.Batch`
+        :type batch2: ~culebra.tools.Batch
         """
         # Copies all the levels
         self.assertNotEqual(id(batch1), id(batch2))

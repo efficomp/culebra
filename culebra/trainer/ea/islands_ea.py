@@ -72,7 +72,7 @@ class HomogeneousSequentialIslandsEA(
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [HomogeneousSequentialIslandsEA],
                 bool]
         ] = None,
         pop_size: Optional[int] = None,
@@ -172,7 +172,7 @@ class HomogeneousParallelIslandsEA(
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [HomogeneousParallelIslandsEA],
                 bool]
         ] = None,
         pop_size: Optional[int] = None,
@@ -258,7 +258,7 @@ class HomogeneousParallelIslandsEA(
     # number of subpopulations is the number of CPU cores for parallel
     # multi-population approaches
     __init__.__doc__ = HomogeneousIslandsEA.__init__.__doc__.replace(
-        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
+        ':attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
         'the number of CPU cores'
     )
 
@@ -278,7 +278,7 @@ class HeterogeneousSequentialIslandsEA(
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [HeterogeneousSequentialIslandsEA],
                 bool]
         ] = None,
         pop_sizes: Optional[int | Sequence[int]] = None,
@@ -408,7 +408,7 @@ class HeterogeneousParallelIslandsEA(
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [HeterogeneousParallelIslandsEA],
                 bool]
         ] = None,
         pop_sizes: Optional[int | Sequence[int]] = None,
@@ -523,7 +523,7 @@ class HeterogeneousParallelIslandsEA(
     # number of subpopulations is the number of CPU cores for parallel
     # multi-population approaches
     __init__.__doc__ = HeterogeneousIslandsEA.__init__.__doc__.replace(
-        ':py:attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
+        ':attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
         'the number of CPU cores'
     )
 

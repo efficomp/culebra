@@ -45,14 +45,14 @@ def ring_destinations(
     """Return the destinations reachable from *origin*.
 
     :param origin: The index of the origin subpopulation trainer
-    :type origin: :py:class:`int`
+    :type origin: int
     :param num_subtrainers: The number of subpopulations
-    :type num_subtrainers: :py:class:`int`
+    :type num_subtrainers: int
     :param offset: Offset applied to *origin*, defaults to
-        :py:attr:`~culebra.trainer.topology.DEFAULT_RING_OFFSET`
-    :type offset: :py:class:`int`, optional
+        :attr:`~culebra.trainer.topology.DEFAULT_RING_OFFSET`
+    :type offset: int
     :return: The direct destinations from *origin*
-    :rtype: :py:class:`list` of subpopulation trainer indexes
+    :rtype: list[int]
     """
     return [(origin + offset) % num_subtrainers]
 
@@ -64,11 +64,11 @@ def full_connected_destinations(
     """Return the destinations reachable from *origin*.
 
     :param origin: The index of the origin subpopulation trainer
-    :type origin: :py:class:`int`
+    :type origin: int
     :param num_subtrainers: The number of subpopulations
-    :type num_subtrainers: :py:class:`int`
+    :type num_subtrainers: int
     :return: The direct destinations from *origin*
-    :rtype: :py:class:`list` of subpopulation trainer indexes
+    :rtype: list[int]
     """
     destinations = list(range(num_subtrainers))
     destinations.remove(origin)

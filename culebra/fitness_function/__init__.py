@@ -22,26 +22,25 @@
 This module provides several fitness functions, all related to the feature
 selection problem. Currently:
 
-  * The :py:mod:`~culebra.fitness_function.abc` sub-module provides abstract
-    classes to define the remaining fitness functions.
+* The :mod:`~culebra.fitness_function.abc` sub-module provides abstract
+  classes to define the remaining fitness functions.
+* The :mod:`~culebra.fitness_function.cooperative` sub-module provides
+  fitness functions designed to the cooperative solving of a feature
+  selection problem while the classifier hyperparamters are also being
+  optimized.
+* The :mod:`~culebra.fitness_function.dataset_score` sub-module provides
+  abstract classes to score dataset-related problems.
+* The :mod:`~culebra.fitness_function.feature_selection` sub-module is
+  centered in datasets dimensionality reduction.
+* The :mod:`~culebra.fitness_function.svc_optimization` sub-module
+  provides several fitness functions intended to optimize the Support Vector
+  Classifier (SVC) hyperparameters for a given dataset.
+* The :mod:`~culebra.fitness_function.tsp` sub-module offers fitness
+  functions for the traveling salesman problem.
 
-  * The :py:mod:`~culebra.fitness_function.dataset_score` sub-module provides
-    abstract classes to score dataset-related problems.
-
-  * The :py:mod:`~culebra.fitness_function.feature_selection` sub-module is
-    centered in datasets dimensionality reduction.
-
-  * The :py:mod:`~culebra.fitness_function.svc_optimization` sub-module
-    provides several fitness functions intended to optimize the Support Vector
-    Classifier (SVC) hyperparameters for a given dataset.
-
-  * The :py:mod:`~culebra.fitness_function.cooperative` sub-module provides
-    fitness functions designed to the cooperative solving of a feature
-    selection problem while the classifier hyperparamters are also being
-    optimized.
-
-  * The :py:mod:`~culebra.fitness_function.tsp` sub-module offers fitness
-    functions for the traveling salesman problem.
+Finally, the :class:`~culebra.fitness_function.MultiObjectiveFitnessFunction`
+allows the aggregation of several single-objective fitness functions to define
+custom multi-objective functions.
 """
 
 __author__ = 'Jesús González'

@@ -27,9 +27,11 @@ from typing import (
     Callable,
     List,
     Dict,
-    Sequence,
-    Type)
+    Type
+)
+from collections.abc import Sequence
 from numbers import Integral, Real
+from os import PathLike
 from os.path import normcase, normpath
 
 import numpy as np
@@ -48,11 +50,11 @@ def check_bool(value: bool, name: str) -> bool:
     """Check if the given value is a valid boolean.
 
     :param value: The value
-    :type value: :py:class:`bool`
+    :type value: bool
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :return: A valid boolean
-    :rtype: :py:class:`bool`
+    :rtype: bool
     :raises TypeError: If *value* is not a boolean value
     """
     # Check that value is a bool
@@ -73,16 +75,15 @@ def check_str(
     """Check if the given value is a valid string.
 
     :param value: The value
-    :type value: :py:class:`str`
+    :type value: str
     :param name: The value name
-    :type name: :py:class:`str`
-    :param valid_chars: If provided, contains the valid chars for the string
-    :type valid_chars: :py:class:`str`, optional
-    :param invalid_chars: If provided, contains the forbiden chars for the
-        string
-    :type invalid_chars: :py:class:`str`, optional
+    :type name: str
+    :param valid_chars: Valid chars for the string, optional
+    :type valid_chars: str
+    :param invalid_chars: Forbiden chars for the string, optional
+    :type invalid_chars: str
     :return: A valid string
-    :rtype: :py:class:`str`
+    :rtype: str
     :raises TypeError: If *value* is not a string
     """
     # Check that value is a string
@@ -117,21 +118,21 @@ def check_limits(
     """Check if the given value meets the limits.
 
     :param value: The value
-    :type value: :py:class:`~numbers.Real`
+    :type value: ~numbers.Real
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param gt: Inferior limit. If provided, *value* must be greater than *gt*
-    :type gt: :py:class:`~numbers.Real`, optional
+    :type gt: ~numbers.Real
     :param ge: Inferior limit. If provided, *value* must be greater than or
         equal to *ge*
-    :type ge: :py:class:`~numbers.Real`, optional
+    :type ge: ~numbers.Real
     :param lt: Superior limit. If provided, *value* must be lower than *lt*
-    :type lt: :py:class:`~numbers.Real`, optional
+    :type lt: ~numbers.Real
     :param le: Superior limit. If provided, *value* must be lower than or
         equal to *le*
-    :type le: :py:class:`~numbers.Real`, optional
+    :type le: ~numbers.Real
     :return: A valid integer
-    :rtype: :py:class:`~numbers.Real`
+    :rtype: ~numbers.Real
     :raises ValueError: If *value* does not meet any imposed limit
     """
     # Check the limits
@@ -167,23 +168,23 @@ def check_int(
     """Check if the given value is a valid integer.
 
     :param value: The value
-    :type value: :py:class:`int`
+    :type value: int
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param gt: Inferior limit. If provided, *value* must be greater than *gt*
-    :type gt: :py:class:`int`, optional
+    :type gt: int
     :param ge: Inferior limit. If provided, *value* must be greater than or
         equal to *ge*
-    :type ge: :py:class:`int`, optional
+    :type ge: int
     :param lt: Superior limit. If provided, *value* must be lower than *lt*
-    :type lt: :py:class:`int`, optional
+    :type lt: int
     :param le: Superior limit. If provided, *value* must be lower than or
         equal to *le*
-    :type le: :py:class:`int`, optional
+    :type le: int
     :param ne: Not equal. If provided, *value* can not be equal to *ne*
-    :type ne: :py:class:`int`, optional
+    :type ne: int
     :return: A valid integer
-    :rtype: :py:class:`int`
+    :rtype: int
     :raises TypeError: If *value* is not an integer number
     :raises ValueError: If *value* does not meet any imposed constraint
     """
@@ -217,21 +218,21 @@ def check_float(
     """Check if the given value is a valid float.
 
     :param value: The value
-    :type value: :py:class:`float`
+    :type value: float
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param gt: Inferior limit. If provided, *value* must be greater than *gt*
-    :type gt: :py:class:`float`, optional
+    :type gt: float
     :param ge: Inferior limit. If provided, *value* must be greater than or
         equal to *ge*
-    :type ge: :py:class:`float`, optional
+    :type ge: float
     :param lt: Superior limit. If provided, *value* must be lower than *lt*
-    :type lt: :py:class:`float`, optional
+    :type lt: float
     :param le: Superior limit. If provided, *value* must be lower than or
         equal to *le*
-    :type le: :py:class:`float`, optional
+    :type le: float
     :return: A valid float
-    :rtype: :py:class:`float`
+    :rtype: float
     :raises TypeError: If *value* is not a floating point number
     """
     # Check that value is a float
@@ -247,11 +248,11 @@ def check_instance(value: object, name: str, cls: type) -> object:
     """Check if the given value is an instance of *cls*.
 
     :param value: An object
-    :type value: :py:class:`object`
+    :type value: object
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param cls: A class
-    :type cls: :py:class:`type`
+    :type cls: type
     :raises TypeError: If *value* is not instance of *cls*
     """
     if not isinstance(value, cls):
@@ -266,11 +267,11 @@ def check_subclass(value: type, name: str, cls: type) -> type:
     """Check if the given value is subclass of *cls*.
 
     :param value: A class
-    :type value: :py:class:`type`
+    :type value: type
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param cls: Another class
-    :type cls: :py:class:`type`
+    :type cls: type
     :raises TypeError: If *value* is not subclass of *cls*
     """
     if not (isinstance(value, type) and issubclass(value, cls)):
@@ -288,9 +289,9 @@ def check_func(
     """Check if the given value is a valid function.
 
     :param value: A function
-    :type value: :py:class:`~collections.abc.Callable`
+    :type value: ~collections.abc.Callable
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :raises TypeError: If *value* is not callable
     """
     # Check that func is callable
@@ -304,9 +305,9 @@ def check_func_params(value: Dict[str, Any], name: str) -> Dict[str, Any]:
     """Check if the given value is a valid set of function parameters.
 
     :param value: A dictionary
-    :type value: A :py:class:`dict`
+    :type value: dict
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :raises TypeError: If *value* is not a dictionary
     :raises ValueError: If the keys in *value* are not strings
     """
@@ -332,18 +333,18 @@ def check_sequence(
     """Check a sequence of items.
 
     :param seq: The sequence.
-    :type seq: :py:class:`~collections.abc.Sequence`
+    :type seq: ~collections.abc.Sequence
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param size: Length of the sequence. If omitted, sequences of any
         length are allowed
-    :type size: :py:class:`int`, optional
+    :type size: int
     :param item_checker: Function to check the sequence items. If omitted,
         no restrictions are applied to the sequence items
-    :type item_checker: :py:class:`~collections.abc.Callable`, optional
+    :type item_checker: ~collections.abc.Callable
     :return: The checked sequence
-    :rtype: A :py:class:`list`
-    :raises TypeError: If *seq* is not a :py:class:`~collections.abc.Sequence`
+    :rtype: list
+    :raises TypeError: If *seq* is not a :class:`~collections.abc.Sequence`
     :raises ValueError: If the number of items in the sequence does not match
         *size*
     :raises ValueError: If any item fails the *item_checker* function
@@ -373,20 +374,20 @@ def check_sequence(
 
 
 def check_filename(
-    value: str,
+    value: str | PathLike,
     name: str,
     ext: Optional[str] = None
 ) -> str:
     """Check if the given value is a valid filename.
 
     :param value: The value
-    :type value: :py:class:`str`, bytes or os.PathLike object
+    :type value: str | ~os.PathLike
     :param name: The value name
-    :type name: :py:class:`str`
-    :param ext: Required file extension
-    :type ext: :py:class:`str`, bytes or os.PathLike object, optional
+    :type name: str
+    :param ext: Required file extension, optional
+    :type ext: str
     :return: A valid filename
-    :rtype: :py:class:`str`
+    :rtype: str
     :raises TypeError: If *value* is not a valid file name
     :raises ValueError: If *value* does not meet the constraints
     :raises ValueError: If *ext* does not begin with a dot
@@ -435,32 +436,31 @@ def check_matrix(
     """Check if the given values define a correct two-dimensional matrix.
 
     :param values: The values
-    :type value: Two-dimensional array-like object
+    :type values: ~collections.abc.Sequence[~collections.abc.Sequence[object]]
     :param name: The value name
-    :type name: :py:class:`str`
+    :type name: str
     :param dtype: Data type. If provided, all *values* must be of this type,
         optional
-    :type dtype: :py:class:`str` or :py:class:`type`
-    :param square: If :py:data:`True` the matrix is required to be square.
-        Defaults to :py:data:`False`
-    :type square: :py:class:`bool`
-    :type gt: :py:class:`float`, optional
+    :type dtype: str | type
+    :param square: If :data:`True` the matrix is required to be square.
+        Defaults to :data:`False`
+    :type square: bool
     :param gt: Inferior limit. If provided, all *values*  must be greater than
         *gt*
-    :type gt: :py:class:`float`, optional
+    :type gt: float
     :param ge: Inferior limit. If provided, all *values*  must be greater than
         or equal to *ge*
-    :type ge: :py:class:`float`, optional
+    :type ge: float
     :param lt: Superior limit. If provided, all *values*  must be lower than
         *lt*
-    :type lt: :py:class:`float`, optional
+    :type lt: float
     :param le: Superior limit. If provided, all *values*  must be lower than or
         equal to *le*
-    :type le: :py:class:`float`, optional
+    :type le: float
     :return: A valid float
-    :rtype: :py:class:`float`
+    :rtype: float
     :return: A valid matrix
-    :rtype: :py:class:`numpy.ndarray`
+    :rtype: ~numpy.ndarray
 
     :raises TypeError: If *values* is not an array-like object
     :raises ValueError: If *values* do not conform the provided *dtype*

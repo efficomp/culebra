@@ -31,7 +31,7 @@ from culebra.solution.feature_selection import Species, MAX_PROP
 
 
 class SpeciesTester(unittest.TestCase):
-    """Test :py:class:`~culebra.solution.feature_selection.Species`."""
+    """Test :class:`~culebra.solution.feature_selection.Species`."""
 
     def test_init(self):
         """Test the constructor."""
@@ -240,9 +240,9 @@ class SpeciesTester(unittest.TestCase):
         """Check if *species1* is a deepcopy of *species2*.
 
         :param species1: The first species
-        :type species1: :py:class:`~culebra.solution.feature_selection.Species`
+        :type species1: ~culebra.solution.feature_selection.Species
         :param species2: The second species
-        :type species2: :py:class:`~culebra.solution.feature_selection.Species`
+        :type species2: ~culebra.solution.feature_selection.Species
         """
         # Copies all the levels
         self.assertNotEqual(id(species1), id(species2))

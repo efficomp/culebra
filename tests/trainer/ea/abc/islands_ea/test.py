@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.trainer.ea.abc.IslandsEA`."""
+"""Unit test for :class:`~culebra.trainer.ea.abc.IslandsEA`."""
 
 import unittest
 from time import sleep
@@ -29,10 +29,10 @@ from culebra.solution.feature_selection import BitVector
 from culebra.trainer.abc import SingleSpeciesTrainer
 from culebra.trainer.ea.abc import SinglePopEA, IslandsEA
 from culebra.solution.feature_selection import Species
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -45,7 +45,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -99,20 +99,20 @@ class MyIslandsEA(IslandsEA):
     def _generate_subtrainers(self) -> None:
         """Generate the subtrainers.
 
-        Also assign an :py:attr:`~culebra.trainer.ea.abc.SinglePopEA.index`
-        and a :py:attr:`~culebra.trainer.ea.abc.SinglePopEA.container` to each
-        subpopulation :py:class:`~culebra.trainer.ea.abc.SinglePopEA` trainer,
+        Also assign an :attr:`~culebra.trainer.ea.abc.SinglePopEA.index`
+        and a :attr:`~culebra.trainer.ea.abc.SinglePopEA.container` to each
+        subpopulation :class:`~culebra.trainer.ea.abc.SinglePopEA` trainer,
         change the subpopulation trainers'
-        :py:attr:`~culebra.trainer.ea.abc.SinglePopEA.checkpoint_filename`
+        :attr:`~culebra.trainer.ea.abc.SinglePopEA.checkpoint_filename`
         according to the container checkpointing file name and each
         subpopulation index.
 
         Finally, the
-        :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._preprocess_iteration`
+        :meth:`~culebra.trainer.ea.abc.SinglePopEA._preprocess_iteration`
         and
-        :py:meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
+        :meth:`~culebra.trainer.ea.abc.SinglePopEA._postprocess_iteration`
         methods of the
-        :py:attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_cls`
+        :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_cls`
         class are dynamically overridden, in order to allow individuals
         exchange between subpopulation trainers, if necessary
         """
@@ -156,7 +156,7 @@ class MyIslandsEA(IslandsEA):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.ea.abc.IslandsEA`."""
+    """Test :class:`~culebra.trainer.ea.abc.IslandsEA`."""
 
     def test_subtrainer_cls(self):
         """Test the subtrainer_cls property."""

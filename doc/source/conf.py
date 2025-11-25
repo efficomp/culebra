@@ -41,7 +41,7 @@ copyright = '2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>'
 author = 'Jesús González'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1'
+release = '0.4.1'
 
 # -- General configuration ---------------------------------------------------
 
@@ -67,15 +67,15 @@ master_doc = 'index'
 # Select only the documentation of the init function
 autoclass_content = 'init'
 
-# Autodoc flags
-autodoc_default_flags = [
-    'members',
-    'undoc-members',
-    'private-members',
-    'special-members',
-    'inherited-members',
-    'show-inheritance'
-]
+# Autodoc default options
+autodoc_default_options = {
+    "members": False,
+    "private-members": False,
+    "special-members": False,
+    "inherited-members": False,
+    "show-inheritance": False,
+    "member-order": "alphabetical"
+}
 
 add_module_names = False
 
@@ -95,6 +95,13 @@ intersphinx_mapping = {
         'https://multiprocess.readthedocs.io/en/latest/', None
                         )
 }
+
+# Check all the references
+nitpicky = True
+
+nitpick_ignore = [
+    ('py:class', 'multiprocess.managers.DictProxy'),
+]
 
 # -- Options for HTML output -------------------------------------------------
 

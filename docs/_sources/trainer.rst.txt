@@ -19,25 +19,28 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.trainer` module
-================================
+:mod:`culebra.trainer` module
+=============================
 
 .. automodule:: culebra.trainer
 
-
 Attributes
 ----------
+
+.. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
+    :annotation: = <function ring_destinations>
+
+    Default topology function for the islands model.
+
+.. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+    :annotation: = {}
+
+    Parameters for the default topology function in the islands model.
 
 .. attribute:: DEFAULT_NUM_SUBTRAINERS
     :annotation: = 1
 
     Default number of subtrainers.
-
-.. attribute:: DEFAULT_REPRESENTATION_SIZE
-    :annotation: = 5
-
-    Default value for the number of representatives sent to the other
-    subtrainers.
 
 .. attribute:: DEFAULT_REPRESENTATION_FREQ
     :annotation: = 10
@@ -55,25 +58,12 @@ Attributes
 
     Default parameters for the representatives selection policy function.
 
-.. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
-    :annotation: = <function ring_destinations>
+.. attribute:: DEFAULT_REPRESENTATION_SIZE
+    :annotation: = 5
 
-    Default topology function for the islands model.
+    Default value for the number of representatives sent to the other
+    subtrainers.
 
-.. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-    :annotation: = {}
-
-    Parameters for the default topology function in the islands model.
-
-
-..
-    .. autodata:: DEFAULT_NUM_SUBTRAINERS
-    .. autodata:: DEFAULT_REPRESENTATION_SIZE
-    .. autodata:: DEFAULT_REPRESENTATION_FREQ
-    .. autodata:: DEFAULT_REPRESENTATION_SELECTION_FUNC
-    .. autodata:: DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
-    .. autodata:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
-    .. autodata:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 
 .. toctree::
     :hidden:

@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.abc.Fitness`."""
+"""Unit test for :class:`culebra.abc.Fitness`."""
 
 import unittest
 from os import remove
@@ -39,10 +39,10 @@ class MyFitness(Fitness):
 
 
 class FitnessTester(unittest.TestCase):
-    """Test :py:class:`culebra.abc.Fitness`."""
+    """Test :class:`culebra.abc.Fitness`."""
 
     def test_init(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.__init__` constructor."""
+        """Test the :meth:`~culebra.abc.Fitness.__init__` constructor."""
         # Try the base Fitness
         fitness = Fitness()
         self.assertEqual(fitness.values, ())
@@ -74,7 +74,7 @@ class FitnessTester(unittest.TestCase):
             MyFitness(values=values)
 
     def test_values(self):
-        """Test :py:meth:~culebra.abc.Fitness.values`."""
+        """Test :meth:~culebra.abc.Fitness.values`."""
         fitness = MyFitness()
         self.assertEqual(fitness.values, (None,) * fitness.num_obj)
 
@@ -85,7 +85,7 @@ class FitnessTester(unittest.TestCase):
         del fitness.values
 
     def test_vwalues(self):
-        """Test :py:meth:~culebra.abc.Fitness.wvalues`."""
+        """Test :meth:~culebra.abc.Fitness.wvalues`."""
         # Check default objective names
         fitness = MyFitness()
         self.assertEqual(fitness.wvalues, (None, None))
@@ -97,7 +97,7 @@ class FitnessTester(unittest.TestCase):
         self.assertEqual(fitness.wvalues, wvalues)
 
     def test_num_obj(self):
-        """Test the :py:attr:`~culebra.abc.Fitness.num_obj` property."""
+        """Test the :attr:`~culebra.abc.Fitness.num_obj` property."""
         fitness = MyFitness()
         self.assertEqual(fitness.num_obj, 2)
 
@@ -126,7 +126,7 @@ class FitnessTester(unittest.TestCase):
                 self.assertEqual(fitness._values[obj_index], i)
 
     def test_dominates(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.dominates` method."""
+        """Test the :meth:`~culebra.abc.Fitness.dominates` method."""
         weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -251,7 +251,7 @@ class FitnessTester(unittest.TestCase):
         self.assertTrue(fitness_1.dominates(fitness_2))
 
     def test_le(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.__le__` method."""
+        """Test the :meth:`~culebra.abc.Fitness.__le__` method."""
         weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -336,7 +336,7 @@ class FitnessTester(unittest.TestCase):
             self.assertTrue(fitness_1 <= fitness_2)
 
     def test_lt(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.__lt__` method."""
+        """Test the :meth:`~culebra.abc.Fitness.__lt__` method."""
         weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -421,7 +421,7 @@ class FitnessTester(unittest.TestCase):
             self.assertTrue(fitness_1 < fitness_2)
 
     def test_eq(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.__eq__` method."""
+        """Test the :meth:`~culebra.abc.Fitness.__eq__` method."""
         weights = (1, -1)
         fitness_1 = MyFitness()
         fitness_2 = MyFitness()
@@ -515,7 +515,7 @@ class FitnessTester(unittest.TestCase):
             self.assertFalse(fitness_1 == fitness_2)
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.__copy__` method."""
+        """Test the :meth:`~culebra.abc.Fitness.__copy__` method."""
         fitness1 = MyFitness((1, 2))
         fitness2 = copy(fitness1)
 
@@ -526,7 +526,7 @@ class FitnessTester(unittest.TestCase):
         self.assertEqual(id(fitness1._values), id(fitness2._values))
 
     def test_deepcopy(self):
-        """Test the :py:meth:`~culebra.abc.Fitness.__deepcopy__` method."""
+        """Test the :meth:`~culebra.abc.Fitness.__deepcopy__` method."""
         fitness1 = MyFitness((1, 2))
         fitness2 = deepcopy(fitness1)
 
@@ -536,10 +536,10 @@ class FitnessTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.abc.Fitness.__setstate__` and
-        :py:meth:`~culebra.abc.Fitness.__reduce__` methods,
-        :py:meth:`~culebra.abc.Fitness.dump` and
-        :py:meth:`~culebra.abc.Fitness.load` methods.
+        Test the :meth:`~culebra.abc.Fitness.__setstate__` and
+        :meth:`~culebra.abc.Fitness.__reduce__` methods,
+        :meth:`~culebra.abc.Fitness.dump` and
+        :meth:`~culebra.abc.Fitness.load` methods.
         """
         fitness1 = MyFitness((1, 2))
 
@@ -564,9 +564,9 @@ class FitnessTester(unittest.TestCase):
         """Check if *fitness1* is a deepcopy of *fitness2*.
 
         :param fitness1: The first fitness
-        :type fitness1: :py:class:`~culebra.abc.Fitness`
+        :type fitness1: ~culebra.abc.Fitness
         :param fitness2: The second fitness
-        :type fitness2: :py:class:`~culebra.abc.Fitness`
+        :type fitness2: ~culebra.abc.Fitness
         """
         # Copies all the levels
         self.assertNotEqual(id(fitness1), id(fitness2))

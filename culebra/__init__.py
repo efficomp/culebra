@@ -23,32 +23,26 @@ However, it has been redesigned to support different kind of problems and also
 different metaheuristics.
 
 Experiments and experiment batchs are automatized by means of the
-:py:class:`~culebra.tools.Experiment` and :py:class:`~culebra.tools.Batch`
-classes, both in the :py:mod:`~culebra.tools` module. Statistical analysis of
-the :py:class:`~culebra.tools.Results` is also provided by the
-:py:class:`~culebra.tools.ResultsAnalyzer` class.
+:class:`~culebra.tools.Experiment` and :class:`~culebra.tools.Batch`
+classes, both in the :mod:`~culebra.tools` module. Statistical analysis of
+the :class:`~culebra.tools.Results` is also provided by the
+:class:`~culebra.tools.ResultsAnalyzer` class.
 
 Culebra is structured in the following modules:
 
-  * The :py:mod:`~culebra.abc` module, which defines the abstract base classes
-    that support culebra
-
-  * The :py:mod:`~culebra.checker` module, which provides several checker
-    functions used within culebra to prevent wrong arguments to functions
-    and methods
-
-  * The :py:mod:`~culebra.solution` module, which define solutions and solution
-    species for several problems
-
-  * The :py:mod:`~culebra.fitness_function` module, which provides fitness
-    functions for several problems
-
-  * The :py:mod:`~culebra.trainer` module, which implement several training
-    algorithms
-
-  * The :py:mod:`~culebra.tools` module, which implements several tools to
-    handle data and make easier the experimentation and the analysis of the
-    obtained results
+* The :mod:`~culebra.abc` module, which defines the abstract base classes that
+  support culebra
+* The :mod:`~culebra.checker` module, which provides several checker functions
+  used within culebra to prevent wrong arguments to functions and methods
+* The :mod:`~culebra.fitness_function` module, which provides fitness functions
+  for several problems
+* The :mod:`~culebra.solution` module, which define solutions and solution
+  species for several problems
+* The :mod:`~culebra.tools` module, which implements several tools to handle
+  data and make easier the experimentation and the analysis of the obtained
+  results
+* The :mod:`~culebra.trainer` module, which implement several training
+  algorithms
 """
 
 from .constants import (

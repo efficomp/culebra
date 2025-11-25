@@ -53,7 +53,7 @@ species = Species(
 
 
 class CTester(unittest.TestCase):
-    """Test :py:class:`~culebra.fitness_function.svc_optimization.C`."""
+    """Test :class:`~culebra.fitness_function.svc_optimization.C`."""
 
     FitnessFunc = C
 

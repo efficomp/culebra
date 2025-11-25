@@ -5,16 +5,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>culebra.trainer.aco.ACO_FSConvergenceDetector class &#8212; culebra</title>
+    <title>culebra.trainer.aco.ACOFSConvergenceDetector class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
-    <script src="../../_static/documentation_options.js?v=37f418d5"></script>
+    <script src="../../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="culebra.trainer.topology module" href="../topology.html" />
-    <link rel="prev" title="culebra.trainer.aco.ElitistACO_FS class" href="elitist_aco_fs.html" /> 
+    <link rel="prev" title="culebra.trainer.aco.ElitistACOFS class" href="elitist_aco_fs.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -29,12 +29,12 @@
           <a href="../topology.html" title="culebra.trainer.topology module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="elitist_aco_fs.html" title="culebra.trainer.aco.ElitistACO_FS class"
+          <a href="elitist_aco_fs.html" title="culebra.trainer.aco.ElitistACOFS class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../aco.html" accesskey="U"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco.ACO_FSConvergenceDetector</span></code> class</a></li> 
+          <li class="nav-item nav-item-2"><a href="../aco.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco.ACOFSConvergenceDetector</span></code> class</a></li> 
       </ul>
     </div>  
 
@@ -42,15 +42,16 @@
       <div class="documentwrapper">
           <div class="body" role="main">
             
-  <section id="culebra-trainer-aco-aco-fsconvergencedetector-class">
-<h1><a class="reference internal" href="#culebra.trainer.aco.ACO_FSConvergenceDetector" title="culebra.trainer.aco.ACO_FSConvergenceDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco.ACO_FSConvergenceDetector</span></code></a> class<a class="headerlink" href="#culebra-trainer-aco-aco-fsconvergencedetector-class" title="Link to this heading">¶</a></h1>
+  <section id="culebra-trainer-aco-acofsconvergencedetector-class">
+<h1><a class="reference internal" href="#culebra.trainer.aco.ACOFSConvergenceDetector" title="culebra.trainer.aco.ACOFSConvergenceDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco.ACOFSConvergenceDetector</span></code></a> class<a class="headerlink" href="#culebra-trainer-aco-acofsconvergencedetector-class" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="culebra.trainer.aco.ACO_FSConvergenceDetector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ACO_FSConvergenceDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">convergence_check_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.trainer.aco.ACO_FSConvergenceDetector" title="Link to this definition">¶</a></dt>
-<dd><p>Create a convergence detector.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.ACOFSConvergenceDetector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ACOFSConvergenceDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">convergence_check_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.trainer.aco.ACOFSConvergenceDetector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Create a convergence detector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>convergence_check_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, optional) – Convergence assessment frequency. If
+<dd class="field-odd"><p><strong>convergence_check_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Convergence assessment frequency. If
 set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
 <a class="reference internal" href="../aco.html#culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ" title="culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONVERGENCE_CHECK_FREQ</span></code></a>
 will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
@@ -61,19 +62,18 @@ will be used. Defaults to <a class="reference external" href="https://docs.pytho
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
-<dt class="sig sig-object py" id="culebra.trainer.aco.ACO_FSConvergenceDetector.has_converged">
-<span class="sig-prename descclassname"><span class="pre">ACO_FSConvergenceDetector.</span></span><span class="sig-name descname"><span class="pre">has_converged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.ACO_FSConvergenceDetector.has_converged" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.trainer.aco.ACOFSConvergenceDetector.has_converged">
+<span class="sig-prename descclassname"><span class="pre">ACOFSConvergenceDetector.</span></span><span class="sig-name descname"><span class="pre">has_converged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#culebra.trainer.aco.ACOFSConvergenceDetector.has_converged" title="Link to this definition">¶</a></dt>
 <dd><p>Detect if the trainer has converged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>trainer</strong> (An <a class="reference internal" href="abc/aco_fs.html#culebra.trainer.aco.abc.ACO_FS" title="culebra.trainer.aco.abc.ACO_FS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ACO_FS</span></code></a>
-instance) – The trainer</p>
+<dd class="field-odd"><p><strong>trainer</strong> (<a class="reference internal" href="abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS" title="culebra.trainer.aco.abc.ACOFS"><em>ACOFS</em></a>) – The trainer</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if the trainer has converged</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -100,12 +100,12 @@ instance) – The trainer</p>
           <a href="../topology.html" title="culebra.trainer.topology module"
              >next</a> |</li>
         <li class="right" >
-          <a href="elitist_aco_fs.html" title="culebra.trainer.aco.ElitistACO_FS class"
+          <a href="elitist_aco_fs.html" title="culebra.trainer.aco.ElitistACOFS class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../aco.html" ><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco.ACO_FSConvergenceDetector</span></code> class</a></li> 
+          <li class="nav-item nav-item-2"><a href="../aco.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.aco.ACOFSConvergenceDetector</span></code> class</a></li> 
       </ul>
     </div>
     <div class="footer">

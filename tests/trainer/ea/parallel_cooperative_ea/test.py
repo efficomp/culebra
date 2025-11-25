@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.trainer.ea.ParallelCooperativeEA`."""
+"""Unit test for :class:`~culebra.trainer.ea.ParallelCooperativeEA`."""
 
 import unittest
 
@@ -67,7 +67,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.ea.ParallelCooperativeEA`."""
+    """Test :class:`~culebra.trainer.ea.ParallelCooperativeEA`."""
 
     def test_init(self):
         """Test __init__."""

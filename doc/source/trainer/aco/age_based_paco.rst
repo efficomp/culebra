@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco.QualityBasedPACO` class
-======================================================
+:class:`culebra.trainer.aco.QualityBasedPACO` class
+===================================================
 
 .. autoclass:: culebra.trainer.aco.QualityBasedPACO
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.aco.QualityBasedPACO.stats_names
 .. autoattribute:: culebra.trainer.aco.QualityBasedPACO.objective_stats
+.. autoattribute:: culebra.trainer.aco.QualityBasedPACO.stats_names
 
 Class methods
 -------------
@@ -35,82 +35,83 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_pheromone_matrices
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_heuristic_matrices
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.solution_cls
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.species
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_pheromone
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic_influence
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.choice_info
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.col
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.col_size
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.container
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.current_iter
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.col_size
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_size
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_enable
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.verbose
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.random_seed
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.logbook
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_evals
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.runtime
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.fitness_function
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic_shapes
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.index
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.container
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.representatives
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.col
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.logbook
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_evals
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_heuristic_matrices
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_shapes
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_size
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.random_seed
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.representatives
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.runtime
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.solution_cls
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.species
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.verbose
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.dump
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.reset
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.evaluate
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.best_solutions
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.best_representatives
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.train
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.best_solutions
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.dump
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.evaluate
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.reset
 .. automethod:: culebra.trainer.aco.QualityBasedPACO.test
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.train
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._get_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._set_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._save_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._load_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._new_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._reset_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_internals
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._reset_internals
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_search
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._search
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._finish_search
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._start_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._preprocess_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._do_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._postprocess_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._finish_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._do_iteration_stats
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._default_termination_func
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._termination_criterion
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_representatives
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._ant_choice_info
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._calculate_choice_info
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._initial_choice
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._next_choice
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._default_termination_func
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._do_iteration
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._do_iteration_stats
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._finish_iteration
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._finish_search
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_ant
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_col
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._pheromone_amount
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._get_state
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._increase_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_internals
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_pheromone
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_representatives
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_search
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_state
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._load_state
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._new_state
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._next_choice
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._pheromone_amount
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._postprocess_iteration
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._preprocess_iteration
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._reset_internals
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._reset_state
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._save_state
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._search
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._set_state
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._start_iteration
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._termination_criterion
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._update_pop
-

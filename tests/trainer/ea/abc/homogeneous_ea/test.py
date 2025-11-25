@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.abc.HomogeneousEA`."""
+"""Unit test for :class:`culebra.trainer.ea.abc.HomogeneousEA`."""
 
 import unittest
 
@@ -58,7 +58,7 @@ class MyTrainer(HomogeneousEA):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.abc.HomogeneousEA`."""
+    """Test :class:`culebra.trainer.ea.abc.HomogeneousEA`."""
 
     def test_init(self):
         """Test __init__`."""

@@ -44,7 +44,7 @@ fitness_cls = fitness_function.fitness_cls
 
 
 class AntTester(unittest.TestCase):
-    """Test :py:class:`culebra.solution.tsp.Ant`."""
+    """Test :class:`culebra.solution.tsp.Ant`."""
 
     def test_path(self):
         """Test the path property."""

@@ -25,10 +25,10 @@ from typing import (
     Type,
     Callable,
     Optional,
-    Sequence,
     Dict,
     Any
 )
+from collections.abc import Sequence
 from math import ceil
 import bisect
 
@@ -103,99 +103,91 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
     ) -> None:
         r"""Create a new Ant System trainer.
 
-        :param solution_cls: The ant class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
-            subclass
+        :param solution_cls: The solution class
+        :type solution_cls: type[~culebra.solution.abc.Ant]
         :param species: The species for all the ants
-        :type species: :py:class:`~culebra.abc.Species`
+        :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function. Since the
             original Ant System algorithm was proposed to solve
             single-objective problems, only the first objective of the
             function is taken into account.
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.AntSystem.num_pheromone_matrices`
+            :attr:`~culebra.trainer.aco.AntSystem.num_pheromone_matrices`
             pheromone matrices.
-        :type initial_pheromone: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :type initial_pheromone: float | ~collections.abc.Sequence[float]
         :param heuristic: Heuristic matrices. Both a single matrix or a
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
-            :py:attr:`~culebra.trainer.aco.abc.AntSystem.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
-        :type heuristic: A two-dimensional array-like object or a
-            :py:class:`~collections.abc.Sequence` of two-dimensional array-like
-            objects, optional
+            :attr:`~culebra.trainer.aco.AntSystem.num_heuristic_matrices`
+            heuristic matrices. If omitted, the default heuristic matrices,
+            according to the kind of problem being solved, are assumed.
+            Defaults to :data:`None`
+        :type heuristic:
+            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
+            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.AntSystem.num_pheromone_matrices`
+            :attr:`~culebra.trainer.aco.AntSystem.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
+            be used for all the pheromone matrices. Defaults to :data:`None`
+        :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.AntSystem.num_heuristic_matrices`
+            :attr:`~culebra.trainer.aco.AntSystem.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
+            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used for all the heuristic matrices. Defaults to
-            :py:data:`None`
-        :type heuristic_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
+            :data:`None`
+        :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
-            be used. Defaults to :py:data:`None`
-        :type exploitation_prob: :py:class:`float`
+            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
+            be used. Defaults to :data:`None`
+        :type exploitation_prob: float
         :param pheromone_evaporation_rate: Pheromone evaluation rate
-            (:math:`{\rho}`). If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
-            will be used. Defaults to :py:data:`None`
-        :type pheromone_evaporation_rate: :py:class:`float`, optional
+            (:math:`{\rho}`). If set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
+            will be used. Defaults to :data:`None`
+        :type pheromone_evaporation_rate: float
         :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param col_size: The colony size. If set to :py:data:`None`,
-            *fitness_function*'s
-            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
-            will be used. Defaults to :py:data:`None`
-        :type col_size: :py:class:`int`, greater than zero, optional
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param col_size: The colony size. If omitted, the default size,
+            according to the kind of problem being solved, is assumed. Defaults
+            to :data:`None`
+        :type col_size: int
         :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :data:`None`
+        :type checkpoint_enable: bool
         :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :data:`None`
+        :type checkpoint_freq: int
         :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_filename: str
         :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`, :data:`__debug__` will be used. Defaults to
+            :data:`None`
+        :type verbose: bool
+        :param random_seed: The seed, defaults to :data:`None`
+        :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -230,16 +222,16 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
 
     @PheromoneBasedACO.exploitation_prob.getter
     def exploitation_prob(self) -> float:
-        """Get and set the exploitation probability (:math:`{q_0}`).
+        """Exploitation probability (:math:`{q_0}`).
 
-        :getter: Return the current exploitation probability
-        :setter: Set the new exploitation probability. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` is
+        :rtype: float
+        :setter: Set a new value for the exploitation probability
+        :param prob: The new probability. If set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` is
             chosen
-        :type: :py:class:`float` in [0, 1]
-        :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value which is not in [0, 1]
+        :type prob: float
+        :raises TypeError: If *prob* is not a real number
+        :raises ValueError: If *prob* is not in [0, 1]
         """
         return (
             DEFAULT_AS_EXPLOITATION_PROB
@@ -282,110 +274,102 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
     ) -> None:
         r"""Create a new Elitist Ant System trainer.
 
-        :param solution_cls: The ant class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
-            subclass
+        :param solution_cls: The solution class
+        :type solution_cls: type[~culebra.solution.abc.Ant]
         :param species: The species for all the ants
-        :type species: :py:class:`~culebra.abc.Species`
+        :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function. Since the
             original Ant System algorithm was proposed to solve
             single-objective problems, only the first objective of the
             function is taken into account.
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistAntSystem.num_pheromone_matrices`
+            :attr:`~culebra.trainer.aco.ElitistAntSystem.num_pheromone_matrices`
             pheromone matrices.
-        :type initial_pheromone: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :type initial_pheromone: float | ~collections.abc.Sequence[float]
         :param heuristic: Heuristic matrices. Both a single matrix or a
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistAntSystem.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
-        :type heuristic: A two-dimensional array-like object or a
-            :py:class:`~collections.abc.Sequence` of two-dimensional array-like
-            objects, optional
+            :attr:`~culebra.trainer.aco.ElitistAntSystem.num_heuristic_matrices`
+            heuristic matrices. If omitted, the default heuristic matrices,
+            according to the kind of problem being solved, are assumed.
+            Defaults to :data:`None`
+        :type heuristic:
+            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
+            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistAntSystem.num_pheromone_matrices`
+            :attr:`~culebra.trainer.aco.ElitistAntSystem.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
+            be used for all the pheromone matrices. Defaults to :data:`None`
+        :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.ElitistAntSystem.num_heuristic_matrices`
+            :attr:`~culebra.trainer.aco.ElitistAntSystem.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
+            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used for all the heuristic matrices. Defaults to
-            :py:data:`None`
-        :type heuristic_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
+            :data:`None`
+        :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
-            be used. Defaults to :py:data:`None`
-        :type exploitation_prob: :py:class:`float`
+            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
+            be used. Defaults to :data:`None`
+        :type exploitation_prob: float
         :param pheromone_evaporation_rate: Pheromone evaluation rate
-            (:math:`{\rho}`). If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
-            will be used. Defaults to :py:data:`None`
-        :type pheromone_evaporation_rate: :py:class:`float`, optional
+            (:math:`{\rho}`). If set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
+            will be used. Defaults to :data:`None`
+        :type pheromone_evaporation_rate: float
         :param convergence_check_freq: Convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type convergence_check_freq: :py:class:`int`, optional
+            set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            will be used. Defaults to :data:`None`
+        :type convergence_check_freq: int
         :param elite_weight: Weight for the elite ant (best-so-far ant)
             respect to the iteration-best ant.
-            If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` will be used.
-            Defaults to :py:data:`None`
-        :type elite_weight: :py:class:`float` in [0, 1], optional
+            If set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` will be used.
+            Defaults to :data:`None`
+        :type elite_weight: float
         :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param col_size: The colony size. If set to :py:data:`None`,
-            *fitness_function*'s
-            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
-            will be used. Defaults to :py:data:`None`
-        :type col_size: :py:class:`int`, greater than zero, optional
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param col_size: The colony size. If omitted, the default size,
+            according to the kind of problem being solved, is assumed. Defaults
+            to :data:`None`
+        :type col_size: int
         :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :data:`None`
+        :type checkpoint_enable: bool
         :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :data:`None`
+        :type checkpoint_freq: int
         :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_filename: str
         :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`, :data:`__debug__` will be used. Defaults to
+            :data:`None`
+        :type verbose: bool
+        :param random_seed: The seed, defaults to :data:`None`
+        :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -426,14 +410,15 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
 
     @property
     def elite_weight(self) -> float:
-        """Get and set the elite weigth.
+        """Elite weigth.
 
-        :getter: Return the current elite weigth
-        :setter: Set the new elite weigth.  If set to :py:data:`None`,
-         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
-        :type: :py:class:`float`
-        :raises TypeError: If set to a value which is not a real number
-        :raises ValueError: If set to a value outside [0, 1]
+        :rtype: float
+        :setter: Set a new elite weigth
+        :param weight: The new weight. If set to :data:`None`,
+         :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
+        :type weight: float
+        :raises TypeError: If *weight* is not a real number
+        :raises ValueError: If *weight* is outside [0, 1]
         """
         return (
             DEFAULT_ELITE_WEIGHT
@@ -444,9 +429,9 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
     def elite_weight(self, weight: float | None) -> None:
         """Set a new elite weigth.
 
-        :param weight: The new weight. If set to :py:data:`None`,
-         :py:attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
-        :type weight: :py:class:`float`
+        :param weight: The new weight. If set to :data:`None`,
+         :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
+        :type weight: float
         :raises TypeError: If *weight* is not a real number
         :raises ValueError: If *weight* is outside [0, 1]
         """
@@ -461,11 +446,7 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
         self.reset()
 
     def _increase_pheromone(self) -> None:
-        """Increase the amount of pheromone.
-
-        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also incremented the by same amount.
-        """
+        """Increase the amount of pheromone."""
         # Iteration-best ants
         iter_best = ParetoFront()
         iter_best.update(self.col)
@@ -518,111 +499,103 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
     ) -> None:
         r"""Create a new :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS trainer.
 
-        :param solution_cls: The ant class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Ant`
-            subclass
+        :param solution_cls: The solution class
+        :type solution_cls: type[~culebra.solution.abc.Ant]
         :param species: The species for all the ants
-        :type species: :py:class:`~culebra.abc.Species`
+        :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function. Since the
             original Ant System algorithm was proposed to solve
             single-objective problems, only the first objective of the
             function is taken into account.
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.MMAS.num_pheromone_matrices`
+            :attr:`~culebra.trainer.aco.MMAS.num_pheromone_matrices`
             pheromone matrices.
-        :type initial_pheromone: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`
+        :type initial_pheromone: float | ~collections.abc.Sequence[float]
         :param heuristic: Heuristic matrices. Both a single matrix or a
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
-            :py:attr:`~culebra.trainer.aco.abc.MMAS.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices
-            provided by *fitness_function* are assumed. Defaults to
-            :py:data:`None`
-        :type heuristic: A two-dimensional array-like object or a
-            :py:class:`~collections.abc.Sequence` of two-dimensional array-like
-            objects, optional
+            :attr:`~culebra.trainer.aco.MMAS.num_heuristic_matrices`
+            heuristic matrices. If omitted, the default heuristic matrices,
+            according to the kind of problem being solved, are assumed.
+            Defaults to :data:`None`
+        :type heuristic:
+            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
+            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.MMAS.num_pheromone_matrices`
+            :attr:`~culebra.trainer.aco.MMAS.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :py:data:`None`
-        :type pheromone_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
+            be used for all the pheromone matrices. Defaults to :data:`None`
+        :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
-            :py:attr:`~culebra.trainer.aco.abc.MMAS.num_heuristic_matrices`
+            :attr:`~culebra.trainer.aco.MMAS.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
+            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
             be used for all the heuristic matrices. Defaults to
-            :py:data:`None`
-        :type heuristic_influence: :py:class:`float` or
-            :py:class:`~collections.abc.Sequence` of :py:class:`float`,
-            optional
+            :data:`None`
+        :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
-            be used. Defaults to :py:data:`None`
-        :type exploitation_prob: :py:class:`float`
+            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
+            be used. Defaults to :data:`None`
+        :type exploitation_prob: float
         :param pheromone_evaporation_rate: Pheromone evaluation rate
-            (:math:`{\rho}`). If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
-            will be used. Defaults to :py:data:`None`
-        :type pheromone_evaporation_rate: :py:class:`float`, optional
+            (:math:`{\rho}`). If set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
+            will be used. Defaults to :data:`None`
+        :type pheromone_evaporation_rate: float
         :param iter_best_use_limit: Limit for the number of iterations to give
             up using the iteration-best ant to deposit pheromone. Iterations
             above this limit will use only the global-best ant. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
-            will be used. Defaults to :py:data:`None`
-        :type iter_best_use_limit: :py:class:`int`, optional
+            :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+            will be used. Defaults to :data:`None`
+        :type iter_best_use_limit: int
         :param convergence_check_freq: Convergence assessment frequency. If
-            set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type convergence_check_freq: :py:class:`int`, optional
+            set to :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            will be used. Defaults to :data:`None`
+        :type convergence_check_freq: int
         :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param col_size: The colony size. If set to :py:data:`None`,
-            *fitness_function*'s
-            :py:attr:`~culebra.abc.FitnessFunction.num_nodes`
-            will be used. Defaults to :py:data:`None`
-        :type col_size: :py:class:`int`, greater than zero, optional
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param col_size: The colony size. If omitted, the default size,
+            according to the kind of problem being solved, is assumed. Defaults
+            to :data:`None`
+        :type col_size: int
         :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
+            be used. Defaults to :data:`None`
+        :type checkpoint_enable: bool
         :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
+            be used. Defaults to :data:`None`
+        :type checkpoint_freq: int
         :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_filename: str
         :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`, :data:`__debug__` will be used. Defaults to
+            :data:`None`
+        :type verbose: bool
+        :param random_seed: The seed, defaults to :data:`None`
+        :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -660,21 +633,22 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
     # Copy this property
     exploitation_prob = AntSystem.exploitation_prob
-    
+
     @property
     def iter_best_use_limit(self) -> int:
-        """Get and set the iteration-best use limit.
+        """Iteration-best use limit.
 
         Iterations above this limit will use only the global-best ant.
 
-        :getter: Return the iteration-best limit
-        :setter: Set a value for the iteration-best limit. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+        :rtype: int
+        :setter: Set a value for the iteration-best use limit
+        :param value: New value for the iteration-best limit. If set to
+            :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
             is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an int
-        :raises ValueError: If set to a non-positive value
+        :type value: int
+        :raises TypeError: If *value* is not an integer number
+        :raises ValueError: If *value* is non-positive
         """
         return (
             DEFAULT_MMAS_ITER_BEST_USE_LIMIT
@@ -689,10 +663,10 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         Iterations above this limit will use only the global-best ant.
 
         :param value: New value for the iteration-best limit. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+            :data:`None`,
+            :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
             is chosen
-        :type value: :py:class:`int`
+        :type value: int
         :raises TypeError: If *value* is not an integer number
         :raises ValueError: If *value* is non-positive
         """
@@ -704,19 +678,19 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         )
 
     @property
-    def _global_best_freq(self):
+    def _global_best_freq(self) -> int:
         """Use frequency of the global-best solution to deposit pheromone.
 
         Implement the schedule to choose between the iteration-best and the
         global-best ant. The global-best use frequency will vary according to
-        :py:attr:`~culebra.trainer.aco.MMAS._current_iter` and
-        :py:attr:`~culebra.trainer.aco.MMAS.iter_best_use_limit`.
+        :attr:`~culebra.trainer.aco.MMAS.current_iter` and
+        :attr:`~culebra.trainer.aco.MMAS.iter_best_use_limit`.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         freq = self.iter_best_use_limit
-        if self._current_iter is not None:
-            freq = ceil(self.iter_best_use_limit / (self._current_iter + 1))
+        if self.current_iter is not None:
+            freq = ceil(self.iter_best_use_limit / (self.current_iter + 1))
 
         return freq
 
@@ -726,7 +700,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         Overridden to add the pheromone limits and the last iteration number
         when the elite was updated to the trainer's state.
 
-        :type: :py:class:`dict`
+        :rtype: dict
         """
         # Get the state of the superclass
         state = super()._get_state()
@@ -745,7 +719,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         when the elite was updated to the trainer's state.
 
         :param state: The last loaded state
-        :type state: :py:class:`dict`
+        :type state: dict
         """
         # Set the state of the superclass
         super()._set_state(state)
@@ -762,10 +736,9 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         number when the elite was updated.
         """
         # Init the pheromone limits
+        dimension = self.pheromone_shapes[0][0]
         self._max_pheromone = self.initial_pheromone[0]
-        self._min_pheromone = (
-            self._max_pheromone / (2 * self.fitness_function.num_nodes)
-        )
+        self._min_pheromone = self._max_pheromone / (2 * dimension)
 
         super()._new_state()
 
@@ -786,11 +759,8 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         """Increase the amount of pheromone.
 
         Overridden to choose between the iteration-best and global-best ant
-        depending on the :py:attr:`~culebra.trainer.aco.MMAS._global_best_freq`
+        depending on the :attr:`~culebra.trainer.aco.MMAS._global_best_freq`
         frequency.
-
-        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also incremented the by same amount.
         """
         if (self._current_iter + 1) % self._global_best_freq == 0:
             # Use the global-best ant
@@ -812,11 +782,9 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         """
         super()._update_pheromone()
 
-        # Check the max and min limits
         self.pheromone[0][
             self.pheromone[0] < self._min_pheromone
         ] = self._min_pheromone
-
         self.pheromone[0][
             self.pheromone[0] > self._max_pheromone
         ] = self._max_pheromone
@@ -833,35 +801,34 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
         # If a better solution has been found
         if last_elite is None or current_elite.dominates(last_elite):
+            dimension = self.pheromone_shapes[0][0]
             self._max_pheromone = (
                 self._pheromone_amount(current_elite)[0] /
-                self.pheromone_evaporation_rate)
+                self.pheromone_evaporation_rate
+            )
             self._min_pheromone = (
                 self._max_pheromone / (
-                    2 * self.fitness_function.num_nodes
+                    2 * dimension
                 )
             )
             self._last_elite_iter = self._current_iter
 
-    def _has_converged(self) -> None:
+    def _has_converged(self) -> bool:
         """Detect if the trainer has converged.
 
-        :return: :py:data:`True` if the trainer has converged
-        :rtype: :py:class:`bool`
+        :return: :data:`True` if the trainer has converged
+        :rtype: bool
         """
         convergence = True
-        # Check the pheromone matrix
-        for row in range(len(self.pheromone[0])):
-            max_pher_count = np.isclose(
-                self.pheromone[0][row], self._max_pheromone
-            ).sum()
-            min_pher_count = np.isclose(
-                self.pheromone[0][row], self._min_pheromone
-            ).sum()
+
+        num_rows = self.pheromone[0].shape[0]
+        for row in self.pheromone[0]:
+            max_pher_count = np.isclose(row, self._max_pheromone).sum()
+            min_pher_count = np.isclose(row, self._min_pheromone).sum()
 
             if (
                 (max_pher_count != 0 and max_pher_count != 2) or
-                max_pher_count + min_pher_count != self.species.num_nodes
+                max_pher_count + min_pher_count != num_rows
             ):
                 convergence = False
                 break
@@ -878,13 +845,12 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
     def _init_pheromone(self) -> None:
         """Init the pheromone matrix."""
-        shape = self._heuristic[0].shape
         self._pheromone = [
             np.full(
                 shape,
                 self._max_pheromone,
                 dtype=float
-            )
+            ) for shape in self.pheromone_shapes
         ]
 
 
@@ -896,7 +862,7 @@ class AgeBasedPACO(SingleObjPACO):
 
         Create all the internal objects, functions and data structures needed
         to run the search process. For the
-        :py:class:`~culebra.trainer.aco.AgeBasedPACO` class, the youngest
+        :class:`~culebra.trainer.aco.AgeBasedPACO` class, the youngest
         ant index is created. Subclasses which need more objects or data
         structures should override this method.
         """
@@ -907,7 +873,7 @@ class AgeBasedPACO(SingleObjPACO):
         """Reset the internal structures of the trainer.
 
         Overridden to reset the youngest ant index. If subclasses overwrite the
-        :py:meth:`~culebra.trainer.aco.AgeBasedPACO._init_internals`
+        :meth:`~culebra.trainer.aco.AgeBasedPACO._init_internals`
         method to add any new internal object, this method should also be
         overridden to reset all the internal objects of the trainer.
         """
@@ -923,9 +889,9 @@ class AgeBasedPACO(SingleObjPACO):
         *_pop_outgoing* list.
 
         These lists will be used later within the
-        :py:meth:`~culebra.trainer.aco.AgeBasedPACO._increase_pheromone`
+        :meth:`~culebra.trainer.aco.AgeBasedPACO._increase_pheromone`
         and
-        :py:meth:`~culebra.trainer.aco.AgeBasedPACO._decrease_pheromone`
+        :meth:`~culebra.trainer.aco.AgeBasedPACO._decrease_pheromone`
         methods, respectively.
         """
         # Ingoing ants
@@ -970,9 +936,9 @@ class QualityBasedPACO(SingleObjPACO):
 
         These lists will be used later within
         the
-        :py:meth:`~culebra.trainer.aco.QualityBasedPACO._increase_pheromone`
+        :meth:`~culebra.trainer.aco.QualityBasedPACO._increase_pheromone`
         and
-        :py:meth:`~culebra.trainer.aco.QualityBasedPACO._decrease_pheromone`
+        :meth:`~culebra.trainer.aco.QualityBasedPACO._decrease_pheromone`
         methods, respectively.
         """
         # Best ant in current colony

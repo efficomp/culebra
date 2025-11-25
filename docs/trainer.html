@@ -8,7 +8,7 @@
     <title>culebra.trainer module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=37f418d5"></script>
+    <script src="_static/documentation_options.js?v=c87aa342"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -45,31 +45,34 @@
 <span id="culebra-trainer-module"></span><h1><a class="reference internal" href="#module-culebra.trainer" title="culebra.trainer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code></a> module<a class="headerlink" href="#module-culebra.trainer" title="Link to this heading">¶</a></h1>
 <p>Implementation of some trainers.</p>
 <p>This module is composed by:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>The <a class="reference internal" href="trainer/abc.html#module-culebra.trainer.abc" title="culebra.trainer.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module, which defines some abstract base
 classes to implement several types of trainers.</p></li>
-<li><p>The <a class="reference internal" href="trainer/ea.html#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ea</span></code></a> module, which implements several
-evolutionary algorithms-based trainers.</p></li>
 <li><p>The <a class="reference internal" href="trainer/aco.html#module-culebra.trainer.aco" title="culebra.trainer.aco"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aco</span></code></a> module, which supports several ant
 colony optimization approaches.</p></li>
+<li><p>The <a class="reference internal" href="trainer/ea.html#module-culebra.trainer.ea" title="culebra.trainer.ea"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ea</span></code></a> module, which implements several
+evolutionary algorithms-based trainers.</p></li>
 <li><p>The <a class="reference internal" href="trainer/topology.html#module-culebra.trainer.topology" title="culebra.trainer.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">topology</span></code></a> sub-module, which provides several
-tolpologies for distributed trainers.</p></li>
+topologies for distributed trainers.</p></li>
 </ul>
-</div></blockquote>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">ring_destinations&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC" title="Link to this definition">¶</a></dt>
+<dd><p>Default topology function for the islands model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
+<dd><p>Parameters for the default topology function in the islands model.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.trainer.DEFAULT_NUM_SUBTRAINERS">
 <span class="sig-name descname"><span class="pre">DEFAULT_NUM_SUBTRAINERS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_NUM_SUBTRAINERS" title="Link to this definition">¶</a></dt>
 <dd><p>Default number of subtrainers.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SIZE">
-<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SIZE" title="Link to this definition">¶</a></dt>
-<dd><p>Default value for the number of representatives sent to the other
-subtrainers.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -92,15 +95,10 @@ sending.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC">
-<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">ring_destinations&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC" title="Link to this definition">¶</a></dt>
-<dd><p>Default topology function for the islands model.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
-<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
-<dd><p>Parameters for the default topology function in the islands model.</p>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SIZE">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SIZE" title="Link to this definition">¶</a></dt>
+<dd><p>Default value for the number of representatives sent to the other
+subtrainers.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">

@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.abc.FitnessFunction` class
-=============================================
+:class:`culebra.abc.FitnessFunction` class
+==========================================
 
 .. autoclass:: culebra.abc.FitnessFunction
 
@@ -30,11 +30,11 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.abc.FitnessFunction.fitness_cls
 .. autoproperty:: culebra.abc.FitnessFunction.num_obj
-.. autoproperty:: culebra.abc.FitnessFunction.obj_weights
 .. autoproperty:: culebra.abc.FitnessFunction.obj_names
 .. autoproperty:: culebra.abc.FitnessFunction.obj_thresholds
-.. autoproperty:: culebra.abc.FitnessFunction.fitness_cls
+.. autoproperty:: culebra.abc.FitnessFunction.obj_weights
 
 Methods
 -------

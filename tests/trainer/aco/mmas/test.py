@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.MMAS`."""
+"""Unit test for :class:`culebra.trainer.aco.MMAS`."""
 
 import unittest
 from math import ceil
@@ -28,6 +28,7 @@ from math import ceil
 import numpy as np
 from deap.tools import ParetoFront
 
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import (
     MMAS,
     DEFAULT_AS_EXPLOITATION_PROB,
@@ -38,6 +39,7 @@ from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
 
 
+
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
 fitness_func = PathLength.fromPath(optimum_path)
@@ -45,8 +47,12 @@ banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
 
+class MMASTSP(ACOTSP, MMAS):
+    """MMAS for TSP."""
+
+
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.MMAS`."""
+    """Test :class:`culebra.trainer.aco.MMAS`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -58,7 +64,7 @@ class TrainerTester(unittest.TestCase):
         invalid_iter_best_use_limit = (type, 'a', 1.5)
         for iter_best_use_limit in invalid_iter_best_use_limit:
             with self.assertRaises(TypeError):
-                MMAS(
+                MMASTSP(
                     ant_cls,
                     species,
                     fitness_func,
@@ -70,7 +76,7 @@ class TrainerTester(unittest.TestCase):
         invalid_iter_best_use_limit = (-1, 0)
         for iter_best_use_limit in invalid_iter_best_use_limit:
             with self.assertRaises(ValueError):
-                MMAS(
+                MMASTSP(
                     ant_cls,
                     species,
                     fitness_func,
@@ -81,7 +87,7 @@ class TrainerTester(unittest.TestCase):
         # Try valid values for iter_best_use_limit
         valid_iter_best_use_limit = (1, 10)
         for iter_best_use_limit in valid_iter_best_use_limit:
-            trainer = MMAS(
+            trainer = MMASTSP(
                 ant_cls,
                 species,
                 fitness_func,
@@ -97,7 +103,7 @@ class TrainerTester(unittest.TestCase):
         invalid_convergence_check_freq = (type, 'a', 1.5)
         for convergence_check_freq in invalid_convergence_check_freq:
             with self.assertRaises(TypeError):
-                MMAS(
+                MMASTSP(
                     ant_cls,
                     species,
                     fitness_func,
@@ -109,7 +115,7 @@ class TrainerTester(unittest.TestCase):
         invalid_convergence_check_freq = (-1, 0)
         for convergence_check_freq in invalid_convergence_check_freq:
             with self.assertRaises(ValueError):
-                MMAS(
+                MMASTSP(
                     ant_cls,
                     species,
                     fitness_func,
@@ -120,7 +126,7 @@ class TrainerTester(unittest.TestCase):
         # Try valid values for convergence_check_freq
         valid_convergence_check_freq = (1, 10)
         for convergence_check_freq in valid_convergence_check_freq:
-            trainer = MMAS(
+            trainer = MMASTSP(
                 ant_cls,
                 species,
                 fitness_func,
@@ -133,7 +139,7 @@ class TrainerTester(unittest.TestCase):
             )
 
         # Test default params
-        trainer = MMAS(
+        trainer = MMASTSP(
             ant_cls,
             species,
             fitness_func,
@@ -171,7 +177,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
 
         for i in range(300):
             trainer._current_iter = i
@@ -193,7 +199,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
 
         # Check before initialization
         # Save the trainer's state
@@ -257,7 +263,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -288,7 +294,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -355,7 +361,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -397,7 +403,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
         trainer._max_pheromone = 4
@@ -424,7 +430,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -470,7 +476,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
         trainer._do_iteration()
@@ -515,11 +521,11 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
         trainer._init_search()
 
         # Simulate convergence
-        heuristic_shape = trainer._heuristic[0].shape
+        heuristic_shape = trainer.heuristic[0].shape
         trainer._pheromone = [
             np.zeros(
                 heuristic_shape,
@@ -551,7 +557,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MMAS(**params)
+        trainer = MMASTSP(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

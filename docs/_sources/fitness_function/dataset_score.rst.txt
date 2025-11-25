@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.dataset_score` module
-=========================================================
+:mod:`culebra.fitness_function.dataset_score` module
+====================================================
 
 .. automodule:: culebra.fitness_function.dataset_score
 
@@ -35,11 +35,6 @@ Attributes:
     :annotation: = 5
 
     Default number of folds for cross-validation.
-
-..
-    .. autodata:: DEFAULT_CLASSIFIER
-    .. autodata:: DEFAULT_CV_FOLDS
-
 
 
 .. toctree::

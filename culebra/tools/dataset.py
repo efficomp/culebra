@@ -58,21 +58,27 @@ __status__ = 'Development'
 DEFAULT_SEP = '\\s+'
 """Default column separator used within dataset files."""
 
+DEFAULT_OUTLIER_PROPORTION = 0.05
+"""Expected outlier proportion por class."""
+
+DEFAULT_SMOTE_NUM_NEIGHBORS = 5
+"""Default number of neighbors for :class:`~imblearn.over_sampling.SMOTE`"""
+
 
 class Dataset(Base):
     """Dataset handler.
 
     Datasets can be loaded from local files or URLs. Their attributes are:
 
-      * :py:attr:`~culebra.tools.Dataset.num_feats`: Number of input features
-      * :py:attr:`~culebra.tools.Dataset.size`: Number of samples
-      * :py:attr:`~culebra.tools.Dataset.inputs`: Input data
-      * :py:attr:`~culebra.tools.Dataset.outputs`: Output data
+    * :attr:`~culebra.tools.Dataset.num_feats`: Number of input features
+    * :attr:`~culebra.tools.Dataset.size`: Number of samples
+    * :attr:`~culebra.tools.Dataset.inputs`: Input data
+    * :attr:`~culebra.tools.Dataset.outputs`: Output data
     """
 
     def __init__(
         self,
-        *files: FilePath | Url | TextIO,
+        *files: Tuple[FilePath | Url | TextIO],
         output_index: Optional[int] = None,
         sep: str = DEFAULT_SEP
     ) -> None:
@@ -81,7 +87,7 @@ class Dataset(Base):
         Datasets can be organized in only one file or in two files. If one
         file per dataset is used, then *output_index* must be used to indicate
         which column stores the output values. If *output_index* is set to
-        :py:data:`None` (its default value), it will be assumed that the
+        :data:`None` (its default value), it will be assumed that the
         dataset is composed by two consecutive files, the first one containing
         the input columns and the second one storing the output column. Only
         the first column of the second file will be loaded in this case (just
@@ -90,33 +96,32 @@ class Dataset(Base):
         If no files are provided, an empty dataset is returned.
 
         :param files: Files containing the dataset. If *output_index* is
-            :py:data:`None`, two files are necessary, the first one containing
+            :data:`None`, two files are necessary, the first one containing
             the input columns and the second one containing the output column.
             Otherwise, only one file will be used to access to the whole
             dataset (input and output columns)
-        :type files: Sequence of path-like objects, urls or file-like objects,
-            optional
+        :type files: tuple[str | ~os.PathLike[str] | ~typing.TextIO]
         :param output_index: If the dataset is provided with only one file,
             this parameter indicates which column in the file does contain the
             output values. Otherwise this parameter must be set to
-            :py:data:`None` to express that inputs and ouputs are stored in
-            two different files. Its default value is :py:data:`None`
-        :type output_index: :py:class:`int`, optional
+            :data:`None` to express that inputs and ouputs are stored in
+            two different files. Its default value is :data:`None`
+        :type output_index: int
         :param sep: Column separator used within the files. Defaults to
-            :py:attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: :py:class:`str`, optional
-        :raises TypeError: If *output_index* is not :py:data:`None` or
-            :py:class:`int`
+            :attr:`~culebra.tools.DEFAULT_SEP`
+        :type sep: str
+        :raises TypeError: If *output_index* is not :data:`None` or
+            :class:`int`
         :raises TypeError: If *sep* is not a string
         :raises IndexError: If *output_index* is out of range
-        :raises RuntimeError: If *output_index* is :py:data:`None` and only
+        :raises RuntimeError: If *output_index* is :data:`None` and only
             one file is provided
         :raises RuntimeError: When loading a dataset composed of two files, if
             the file containing the input columns and the file containing the
             output column do not have the same number of rows.
         :raises RuntimeError: If any file is empty
         :return: The dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         # Init the superclass
         super().__init__()
@@ -148,33 +153,33 @@ class Dataset(Base):
 
     @property
     def num_feats(self) -> int:
-        """Get the number of features in the dataset.
+        """Number of features in the dataset.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return 0 if self.size == 0 else self._inputs.shape[1]
 
     @property
     def size(self) -> int:
-        """Get the number of samples in the dataset.
+        """Number of samples in the dataset.
 
-        :type: :py:class:`int`
+        :rtype: int
         """
         return self._inputs.shape[0]
 
     @property
     def inputs(self) -> np.ndarray:
-        """Get the input data of the dataset.
+        """Input data of the dataset.
 
-        :type: :py:class:`numpy.ndarray`
+        :rtype: ~numpy.ndarray
         """
         return self._inputs
 
     @property
     def outputs(self) -> np.ndarray:
-        """Get the output data of the dataset.
+        """Output data of the dataset.
 
-        :type: :py:class:`numpy.ndarray`
+        :rtype: ~numpy.ndarray
         """
         return self._outputs
 
@@ -192,13 +197,13 @@ class Dataset(Base):
         If the dataset has more than one output column, only the first column
         is considered.
 
-        :param name: Dataset name, or substring of name
-        :type name: :py:class:`str`
-        :param id: Dataset ID for UCI ML Repository
-        :type id: :py:class:`int`
+        :param name: Dataset name, or substring of name, optional
+        :type name: str
+        :param id: Dataset ID for UCI ML Repository, optional
+        :type id: int
         :raises RuntimeError: If the dataset can not be loaded
         :return: The dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         dataset = None
 
@@ -232,7 +237,7 @@ class Dataset(Base):
         """Normalize the dataset between 0 and 1.
 
         :return: A normalized dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         normalized_dataset = Dataset()
         normalized_dataset._inputs = MinMaxScaler().fit(
@@ -245,7 +250,7 @@ class Dataset(Base):
         """Scale features robust to outliers.
 
         :return: A scaled dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         scaled_dataset = Dataset()
         scaled_dataset._inputs = RobustScaler().fit(
@@ -258,7 +263,7 @@ class Dataset(Base):
         """Drop samples with missing values.
 
         :return: A clean dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         clean_dataset = Dataset()
 
@@ -287,18 +292,19 @@ class Dataset(Base):
 
     def remove_outliers(
         self,
-        prop: float = 0.05,
+        prop: float = DEFAULT_OUTLIER_PROPORTION,
         random_seed: Optional[int] = None
     ) -> Dataset:
         """Remove the outliers.
 
-        :param prop: Expected outlier proportion por class, defaults to 0.05
-        :type prop: :py:class:`float`
+        :param prop: Expected outlier proportion por class, defaults to
+            :attr:`~culebra.tools.DEFAULT_OUTLIER_PROPORTION`
+        :type prop: float
         :param random_seed: Random seed for the random generator, defaults to
-            :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`
+        :type random_seed: int
         :return: A clean dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         # Check the random seed
         if random_seed is None:
@@ -348,25 +354,26 @@ class Dataset(Base):
 
     def oversample(
         self,
-        n_neighbors: Optional[int] = 5,
+        n_neighbors: int = DEFAULT_SMOTE_NUM_NEIGHBORS,
         random_seed: Optional[int] = None
     ) -> Dataset:
         """Oversample all classes but the majority class.
 
         All classes but the majority class are oversampled to equal the number
         of samples of the majority class.
-        :py:class:`~imblearn.over_sampling.SMOTE` is used for oversampling, but
+        :class:`~imblearn.over_sampling.SMOTE` is used for oversampling, but
         if any class has less than *n_neighbors* samples,
-        :py:class:`~imblearn.over_sampling.RandomOverSampler` is first applied
+        :class:`~imblearn.over_sampling.RandomOverSampler` is first applied
 
         :param n_neighbors: Number of neighbors for
-            :py:class:`~imblearn.over_sampling.SMOTE`, defaults to 5.
-        :type n_neighbors: :py:class:`int`, optional
+            :class:`~imblearn.over_sampling.SMOTE`, defaults to
+            :attr:`~culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS`
+        :type n_neighbors: int
         :param random_seed: Random seed for the random generator, defaults to
-            :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`
+        :type random_seed: int
         :return: An oversampled dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         # Check the random seed
         if random_seed is None:
@@ -418,9 +425,9 @@ class Dataset(Base):
         """Return a new dataset only with some selected features.
 
         :param feats: Indices of the selected features
-        :type feats: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :type feats: ~collections.abc.Sequence[int]
         :return: The new dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         feats = check_sequence(
             feats,
@@ -441,16 +448,17 @@ class Dataset(Base):
     ) -> Dataset:
         """Return a new dataset with some random features appended.
 
-        :param num_feats: Number of random features to be appended
-        :type num_feats: An :py:class:`int` greater than 0
+        :param num_feats: Number of random features to be appended (greater
+            than 0)
+        :type num_feats: int
         :param random_seed: Random seed for the random generator, defaults to
-            :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`
+        :type random_seed: int
         :raises TypeError: If the number of random features is not an integer
         :raises ValueError: If the number of random features not greater than
             0
         :return: The new dataset
-        :rtype: :py:class:`~culebra.tools.Dataset`
+        :rtype: ~culebra.tools.Dataset
         """
         # Check num_feats
         num_feats = check_int(num_feats, "number of features", gt=0)
@@ -484,15 +492,15 @@ class Dataset(Base):
 
         :param test_prop: Proportion of the dataset used as test data.
             The remaining samples will be returned as training data
-        :type test_prop: :py:class:`float`
+        :type test_prop: float
         :param random_seed: Random seed for the random generator, defaults to
-            :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
-        :raises TypeError: If *test_prop* is not :py:data:`None` or
-            :py:class:`float`
+            :data:`None`
+        :type random_seed: int
+        :raises TypeError: If *test_prop* is not :data:`None` or
+            :class:`float`
         :raises ValueError: If *test_prop* is not in (0, 1)
         :return: The training and test datasets
-        :rtype: :py:class:`tuple` of :py:class:`~culebra.tools.Dataset`
+        :rtype: tuple[~culebra.tools.Dataset]
         """
         # Check test_prop
         test_prop = check_float(test_prop, "test proportion", gt=0, lt=1)
@@ -529,9 +537,9 @@ class Dataset(Base):
         """Replace categorical values by numeric values.
 
         :param dataframe: A dataframe
-        :type dataframe: :py:class:`~pandas.DataFrame`
+        :type dataframe: ~pandas.DataFrame
         :return: A dataframe with numerical values
-        :rtype: :py:class:`~pandas.DataFrame`
+        :rtype: ~pandas.DataFrame
         """
         output_df = DataFrame()
         for col_name in dataframe:
@@ -555,15 +563,14 @@ class Dataset(Base):
         """Split a dataframe into input and output data.
 
         :param data: A dataframe containing input and output data
-        :type data: :py:class:`~pandas.DataFrame`
+        :type data: ~pandas.DataFrame
         :param output_index: Index of the column containing the outuput data
-        :type output_index: :py:class:`int`
+        :type output_index: int
         :raises TypeError: If *output_index* is not an integer value
         :raises IndexError: If *output_index* is out of range
-        :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
-            input columns and a :py:class:`~pandas.Series` with the output
-            column
-        :rtype: :py:class:`tuple`
+        :return: A :class:`~pandas.DataFrame` with the input columns and a
+            :class:`~pandas.Series` with the output column
+        :rtype: tuple[~pandas.DataFrame, ~pandas.Series]
         """
         # Check the type of output_index
         output_index = check_int(
@@ -589,9 +596,11 @@ class Dataset(Base):
         Also replace categorical data by numerical data.
 
         :param path: Path to the file contining the data
-        :type path: Path-like object, urls or file-like object
+        :type path: str | ~os.PathLike[str] | ~typing.TextIO
         :param sep: Separator between columns
-        :type sep: :py:class:`str`
+        :type sep: str
+        :return: The dataframe
+        :rtype: ~pandas.DataFrame
         """
         # Check sep
         sep = check_str(sep, "separator")
@@ -618,17 +627,16 @@ class Dataset(Base):
         Inputs and output are in the same file.
 
         :param file: Name of the file containing the input and output data
-        :type file: Path-like object, url or file-like object
+        :type file: str | ~os.PathLike[str] | ~typing.TextIO
         :param output_index: Index of the column containing the outuput data
-        :type output_index: :py:class:`int`
+        :type output_index: int
         :param sep: Separator between columns, defaults to
-            :py:attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: :py:class:`str`, optional
+            :attr:`~culebra.tools.DEFAULT_SEP`
+        :type sep: str
         :raises TypeError: If *sep* is not a string
-        :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
-            input columns and a :py:class:`~pandas.Series` with the output
-            column
-        :rtype: :py:class:`tuple`
+        :return: A :class:`~pandas.DataFrame` with the input columns and a
+            :class:`~pandas.Series` with the output column
+        :rtype: tuple[~pandas.DataFrame, ~pandas.Series]
         """
         # Load the data
         dataframe = Dataset.__load_dataframe(file, sep)
@@ -642,7 +650,7 @@ class Dataset(Base):
 
     @staticmethod
     def __load_split_dataset(
-            *files: FilePath | Url | TextIO,
+            *files: Tuple[FilePath | Url | TextIO],
             sep: str = DEFAULT_SEP
     ) -> Tuple[DataFrame, Series]:
         """Load a separated data set.
@@ -652,17 +660,16 @@ class Dataset(Base):
 
         :param files: Tuple of files containing the dataset. The first file
             contains the input columns and the second one the output column
-        :type files: Sequence of path-like objects, urls or file-like objects
+        :type files: tuple[str | ~os.PathLike[str] | ~typing.TextIO]
         :param sep: Separator between columns, defaults to
-            :py:attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: :py:class:`str`, optional
+            :attr:`~culebra.tools.DEFAULT_SEP`
+        :type sep: str
         :raises TypeError: If *sep* is not a string
         :raises RuntimeError: If the *files* do not have the same number of
             rows
-        :return: A tuple containing a :py:class:`~pandas.DataFrame` with the
-            input columns and a :py:class:`~pandas.Series` with the output
-            column
-        :rtype: :py:class:`tuple`
+        :return: A :class:`~pandas.DataFrame` with the input columns and a
+            :class:`~pandas.Series` with the output column
+        :rtype: tuple[~pandas.DataFrame, ~pandas.Series]
         """
         # Load the input data
         inputs_df = Dataset.__load_dataframe(files[0], sep)
@@ -684,5 +691,7 @@ class Dataset(Base):
 # Exported symbols for this module
 __all__ = [
     'Dataset',
-    'DEFAULT_SEP'
+    'DEFAULT_SEP',
+    'DEFAULT_OUTLIER_PROPORTION',
+    'DEFAULT_SMOTE_NUM_NEIGHBORS'
 ]

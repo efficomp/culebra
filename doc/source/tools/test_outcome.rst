@@ -19,21 +19,19 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.TestOutcome` class
-===========================================
+:class:`culebra.tools.TestOutcome` class
+========================================
 
 .. autoclass:: culebra.tools.TestOutcome
 
-
 Attributes
 ----------
-.. autoattribute:: culebra.tools.TestOutcome.test
-.. autoattribute:: culebra.tools.TestOutcome.data
-.. autoattribute:: culebra.tools.TestOutcome.column
 .. autoattribute:: culebra.tools.TestOutcome.alpha
 .. autoattribute:: culebra.tools.TestOutcome.batches
+.. autoattribute:: culebra.tools.TestOutcome.column
+.. autoattribute:: culebra.tools.TestOutcome.data
 .. autoattribute:: culebra.tools.TestOutcome.pvalue
-
+.. autoattribute:: culebra.tools.TestOutcome.test
 
 Properties
 ----------
@@ -41,5 +39,5 @@ Properties
 
 Dunder methods
 --------------
-.. automethod:: culebra.tools.TestOutcome.__str__
 .. automethod:: culebra.tools.TestOutcome.__repr__
+.. automethod:: culebra.tools.TestOutcome.__str__

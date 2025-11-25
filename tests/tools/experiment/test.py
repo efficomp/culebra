@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.tools.Experiment`."""
+"""Unit test for :class:`~culebra.tools.Experiment`."""
 
 import unittest
 from os import remove
@@ -143,7 +143,7 @@ trainer = ParallelCooperativeEA(**params)
 
 
 class ExperimentTester(unittest.TestCase):
-    """Test :py:class:`~culebra.tools.Experiment`."""
+    """Test :class:`~culebra.tools.Experiment`."""
 
     def test_reset(self):
         """Test the reset method."""

@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.tsp.MultiObjectivePathLength` class
-=======================================================================
+:class:`culebra.fitness_function.tsp.MultiObjectivePathLength` class
+====================================================================
 
 .. autoclass:: culebra.fitness_function.tsp.MultiObjectivePathLength
 
@@ -30,16 +30,16 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.fitness_cls
+.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.heuristic
+.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.num_nodes
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.num_obj
-.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_weights
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_names
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_thresholds
-.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.fitness_cls
-.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.num_nodes
+.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_weights
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.objectives
 
 Methods
 -------
 .. automethod:: culebra.fitness_function.tsp.MultiObjectivePathLength.dump
 .. automethod:: culebra.fitness_function.tsp.MultiObjectivePathLength.evaluate
-.. automethod:: culebra.fitness_function.tsp.MultiObjectivePathLength.heuristic

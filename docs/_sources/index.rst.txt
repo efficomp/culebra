@@ -28,62 +28,51 @@ Welcome to culebra's documentation!
 
 Attributes:
 -----------
-.. attribute:: DEFAULT_SIMILARITY_THRESHOLD
-    :annotation: = 0.0
+.. attribute:: DEFAULT_CHECKPOINT_BASENAME
+     :annotation: = 'checkpoint'
 
-    Default similarity threshold for fitnesses.
+     Default basename for checkpointing files.
+
+.. attribute:: DEFAULT_CHECKPOINT_ENABLE
+    :annotation: = True
+
+    Default checkpointing enablement for a :class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_CHECKPOINT_FILENAME
+    :annotation: = 'checkpoint.dill.gz'
+
+    Default checkpointing file name for a :class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_CHECKPOINT_FREQ
+    :annotation: = 10
+
+    Default checkpointing frequency for a :class:`~culebra.abc.Trainer`.
+
+.. attribute:: DEFAULT_INDEX
+    :annotation: = 0
+
+    Default :class:`~culebra.abc.Trainer` index. Only used within a
+    distributed approaches.
 
 .. attribute:: DEFAULT_MAX_NUM_ITERS
     :annotation: = 100
 
     Default maximum number of iterations.
 
-.. attribute:: SERIALIZED_FILE_EXTENSION
-    :annotation: = '.dill.gz'
+.. attribute:: DEFAULT_SIMILARITY_THRESHOLD
+    :annotation: = 0.0
 
-    Extension for files containing serialized objects.
-
-.. attribute:: DEFAULT_CHECKPOINT_ENABLE
-    :annotation: = True
-
-    Default checkpointing enablement for a :py:class:`~culebra.abc.Trainer`.
-
-.. attribute:: DEFAULT_CHECKPOINT_FREQ
-    :annotation: = 10
-
-    Default checkpointing frequency for a :py:class:`~culebra.abc.Trainer`.
-
-.. attribute:: DEFAULT_CHECKPOINT_BASENAME
-     :annotation: = 'checkpoint'
-
-     Default basename for checkpointing files.
-
-.. attribute:: DEFAULT_CHECKPOINT_FILENAME
-    :annotation: = 'checkpoint.dill.gz'
-
-    Default checkpointing file name for a :py:class:`~culebra.abc.Trainer`.
+    Default similarity threshold for fitnesses.
 
 .. attribute:: DEFAULT_VERBOSITY
     :annotation: = True
 
-    Default verbosity for a :py:class:`~culebra.abc.Trainer`.
+    Default verbosity for a :class:`~culebra.abc.Trainer`.
 
-.. attribute:: DEFAULT_INDEX
-    :annotation: = 0
+.. attribute:: SERIALIZED_FILE_EXTENSION
+    :annotation: = '.dill.gz'
 
-    Default :py:class:`~culebra.abc.Trainer` index. Only used within a
-    distributed approaches.
-
-..
-    .. autodata:: DEFAULT_SIMILARITY_THRESHOLD
-    .. autodata:: DEFAULT_MAX_NUM_ITERS
-    .. autodata:: SERIALIZED_FILE_EXTENSION
-    .. autodata:: DEFAULT_CHECKPOINT_ENABLE
-    .. autodata:: DEFAULT_CHECKPOINT_FREQ
-    .. autodata:: DEFAULT_CHECKPOINT_BASENAME
-    .. autodata:: DEFAULT_CHECKPOINT_FILENAME
-    .. autodata:: DEFAULT_VERBOSITY
-    .. autodata:: DEFAULT_INDEX
+    Extension for files containing serialized objects.
 
 
 Indices and tables

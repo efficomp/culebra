@@ -21,23 +21,20 @@
 
 This module is composed by:
 
-  * The :py:mod:`~culebra.fitness_function.svc_optimization.abc` sub-module,
-    where some abstract base classes are defined to support fitness functions
-    developed in this module
+* The :mod:`~culebra.fitness_function.svc_optimization.abc` sub-module,
+  where some abstract base classes are defined to support fitness functions
+  developed in this module
+* Some scoring fitness functions:
 
-  * Some scoring fitness functions:
-
-    * :py:class:`~culebra.fitness_function.svc_optimization.C`: Dummy
-      single-objective function that minimizes the regularization parameter *C*
-      of a SVM-based classifier with RBF kernels.
-
-    * :py:class:`~culebra.fitness_function.svc_optimization.KappaIndex`:
-      Single-objective function that maximizes the Kohen's Kappa index for a
-      SVM-based classifier with RBF kernels.
-
-    * :py:class:`~culebra.fitness_function.svc_optimization.Accuracy`:
-      Single-objective function that maximizes the Accuracy for a
-      SVM-based classifier with RBF kernels.
+  * :class:`~culebra.fitness_function.svc_optimization.Accuracy`:
+    Single-objective function that maximizes the Accuracy for a
+    SVM-based classifier with RBF kernels.
+  * :class:`~culebra.fitness_function.svc_optimization.C`: Dummy
+    single-objective function that minimizes the regularization parameter *C*
+    of a SVM-based classifier with RBF kernels.
+  * :class:`~culebra.fitness_function.svc_optimization.KappaIndex`:
+    Single-objective function that maximizes the Kohen's Kappa index for a
+    SVM-based classifier with RBF kernels.
 """
 
 from . import abc

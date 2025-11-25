@@ -19,11 +19,11 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco.ACO_FSConvergenceDetector` class
-===============================================================
+:class:`culebra.trainer.aco.ACOFSConvergenceDetector` class
+===========================================================
 
-.. autoclass:: culebra.trainer.aco.ACO_FSConvergenceDetector
+.. autoclass:: culebra.trainer.aco.ACOFSConvergenceDetector
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.ACO_FSConvergenceDetector.has_converged
+.. automethod:: culebra.trainer.aco.ACOFSConvergenceDetector.has_converged

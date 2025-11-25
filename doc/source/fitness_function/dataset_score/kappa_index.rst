@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.dataset_score.KappaIndex` class
-===================================================================
+:class:`culebra.fitness_function.dataset_score.KappaIndex` class
+================================================================
 
 .. autoclass:: culebra.fitness_function.dataset_score.KappaIndex
 

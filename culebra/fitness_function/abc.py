@@ -21,22 +21,20 @@
 This sub-module provides several abstract classes that help defining other
 fitness functions. The following classes are provided:
 
-  * :py:class:`~culebra.fitness_function.abc.ACOFitnessFunction`:
-    Abstract base class for the all the fitness functions for ACO-based
-    trainers.
-  * :py:class:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction`:
-    Abstract base class for all the single-objective fitness functions.
+* :class:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction`:
+  Abstract base class for all the single-objective fitness functions.
 """
 
 from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import Tuple, Optional
-from numpy import ndarray
+from typing import Tuple, List, Optional
+from functools import partial
 
-from culebra.abc import FitnessFunction, Species, Solution
-from culebra.checker import check_int
+from culebra import DEFAULT_SIMILARITY_THRESHOLD
+from culebra.abc import FitnessFunction, Solution
+from culebra.checker import check_int, check_float, check_sequence
 
 
 __author__ = 'Jesús González'
@@ -46,42 +44,6 @@ __version__ = '0.4.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
-
-
-class ACOFitnessFunction(FitnessFunction):
-    """Base class for fitness functions for ACO-based trainers."""
-
-    @property
-    @abstractmethod
-    def num_nodes(self) -> int:
-        """Return the problem graph's number of nodes for ACO-based trainers.
-
-        This property must be overridden by subclasses to return the problem
-        graph's number of nodes.
-
-        :return: The problem graph's number of nodes
-        :rtype: :py:class:`int`
-        :raises NotImplementedError: if has not been overridden
-        """
-        raise NotImplementedError(
-            "The num_nodes property has not been implemented in the "
-            f"{self.__class__.__name__} class")
-
-    @abstractmethod
-    def heuristic(self, species: Species) -> Sequence[ndarray, ...]:
-        """Get the heuristic matrices for ACO-based trainers.
-
-        This property must be overridden by subclasses.
-
-        :param species: Species constraining the problem solutions
-        :type species: :py:class:`~culebra.abc.Species`
-        :return: A sequence of heuristic matrices
-        :rtype: :py:class:`~collections.abc.Sequence` of
-            :py:class:`~numpy.ndarray`
-        """
-        raise NotImplementedError(
-            "The heuristic method has not been implemented in the "
-            f"{self.__class__.__name__} class")
 
 
 class SingleObjectiveFitnessFunction(FitnessFunction):
@@ -94,8 +56,8 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
         """Construct the fitness function.
 
         :param index: Index of this objective when it is used for
-            multi-objective fitness functions
-        :type index: :py:class:`int`, optional
+            multi-objective fitness functions, optional
+        :type index: int
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *index* is not an integer number
         :raises ValueError: If *index* is not positive
@@ -108,16 +70,19 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
 
         super().__init__()
         self.index = index
+        self.obj_thresholds = None
 
     @property
     def index(self) -> int:
-        """Get and set the index of this objective.
+        """Objective index.
 
-        :getter: Return the current index
+        :rtype: int
+
         :setter: Set a new index
-        :type: :py:class:`int`
-        :raises TypeError: If the index is not an integer number
-        :raises ValueError: If the index is not positive
+        :param value: The new index
+        :type value: int
+        :raises TypeError: If *value* is not an integer number
+        :raises ValueError: If *value* is not positive
         """
         return self._index
 
@@ -126,7 +91,7 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
         """Set a new index for the objective.
 
         :param value: The new index
-        :type value: :py:class:`int`
+        :type value: int
         :raises TypeError: If *value* is not an integer number
         :raises ValueError: If *value* is not positive
         """
@@ -137,23 +102,75 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
 
     @property
     def obj_names(self) -> Tuple[str, ...]:
-        """Get the objective names.
+        """Objective names.
 
-        :type: :py:class:`tuple` of :py:class:`str`
+        :rtype: tuple[str]
         """
-        suffix_len = len(str(self.num_obj-1 + self.index))
+        return (f"obj_{self.index}",)
 
-        return tuple(
-            f"obj_{i+self.index:0{suffix_len}d}" for i in range(self.num_obj)
-        )
+    @property
+    def obj_thresholds(self) -> List[float]:
+        """Objective similarity thresholds.
+
+        :rtype: list[float]
+        :setter: Set new thresholds.
+        :param values: The new values. If only a single value is provided, the
+            same threshold will be used for all the objectives. Different
+            thresholds can be provided in a :class:`~collections.abc.Sequence`.
+            If set to :data:`None`, all the thresholds are set to
+            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :type values: float | ~collections.abc.Sequence[float] | None
+        :raises TypeError: If neither a real number nor a
+            :class:`~collections.abc.Sequence` of real numbers is provided
+        :raises ValueError: If any value is negative
+        :raises ValueError: If the length of the thresholds sequence does not
+            match the number of objectives
+        """
+        return self._obj_thresholds
+
+    @obj_thresholds.setter
+    def obj_thresholds(
+        self, values: float | Sequence[float] | None
+    ) -> None:
+        """Set new objective similarity thresholds.
+
+        :param values: The new values. If only a single value is provided, the
+            same threshold will be used for all the objectives. Different
+            thresholds can be provided in a :class:`~collections.abc.Sequence`.
+            If set to :data:`None`, all the thresholds are set to
+            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :type values: float | ~collections.abc.Sequence[float] | None
+        :raises TypeError: If neither a real number nor a
+            :class:`~collections.abc.Sequence` of real numbers is provided
+        :raises ValueError: If any value is negative
+        :raises ValueError: If the length of the thresholds sequence does not
+            match the number of objectives
+        """
+        if isinstance(values, Sequence):
+            self._obj_thresholds = check_sequence(
+                values,
+                "objective similarity thresholds",
+                size=self.num_obj,
+                item_checker=partial(check_float, ge=0)
+            )
+        elif values is not None:
+            self._obj_thresholds = [
+                check_float(values, "objective similarity threshold", ge=0)
+            ] * self.num_obj
+        else:
+            self._obj_thresholds = (
+                [DEFAULT_SIMILARITY_THRESHOLD] * self.num_obj
+            )
 
     @abstractmethod
     def is_evaluable(self, sol: Solution) -> bool:
-        """Return :py:data:`True` if the solution can be evaluated.
+        """Assess the evaluability of a solution.
 
         :param sol: Solution to be evaluated.
-        :type sol: :py:class:`~culebra.abc.Solution`
-        :raises NotImplementedError: if has not been overridden
+        :type sol: ~culebra.abc.Solution
+        :return: :data:`True` if the solution can be evaluated
+        :rtype: bool
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The is_evaluable method has not been implemented in the "
@@ -162,6 +179,5 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
 
 # Exported symbols for this module
 __all__ = [
-    'ACOFitnessFunction',
     'SingleObjectiveFitnessFunction'
 ]

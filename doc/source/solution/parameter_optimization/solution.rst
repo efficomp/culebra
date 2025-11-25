@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.parameter_optimization.Solution` class
-==================================================================
+:class:`culebra.solution.parameter_optimization.Solution` class
+===============================================================
 
 .. autoclass:: culebra.solution.parameter_optimization.Solution
 
@@ -34,9 +34,9 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.parameter_optimization.Solution.species
 .. autoproperty:: culebra.solution.parameter_optimization.Solution.fitness
 .. autoproperty:: culebra.solution.parameter_optimization.Solution.named_values_cls
+.. autoproperty:: culebra.solution.parameter_optimization.Solution.species
 .. autoproperty:: culebra.solution.parameter_optimization.Solution.values
 
 
@@ -51,11 +51,14 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.parameter_optimization.Solution.__hash__
+Intended to compare (lexicographically) two solutions according to their
+fitness.
+
 .. automethod:: culebra.solution.parameter_optimization.Solution.__eq__
-.. automethod:: culebra.solution.parameter_optimization.Solution.__ne__
-.. automethod:: culebra.solution.parameter_optimization.Solution.__lt__
-.. automethod:: culebra.solution.parameter_optimization.Solution.__gt__
-.. automethod:: culebra.solution.parameter_optimization.Solution.__le__
 .. automethod:: culebra.solution.parameter_optimization.Solution.__ge__
+.. automethod:: culebra.solution.parameter_optimization.Solution.__gt__
+.. automethod:: culebra.solution.parameter_optimization.Solution.__hash__
+.. automethod:: culebra.solution.parameter_optimization.Solution.__le__
+.. automethod:: culebra.solution.parameter_optimization.Solution.__lt__
+.. automethod:: culebra.solution.parameter_optimization.Solution.__ne__
 .. automethod:: culebra.solution.parameter_optimization.Solution.__str__

@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.abc` module
-=============================
+:mod:`culebra.abc` module
+=========================
 
 .. automodule:: culebra.abc
 

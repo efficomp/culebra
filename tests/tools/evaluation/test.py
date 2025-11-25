@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.tools.Evaluation`."""
+"""Unit test for :class:`culebra.tools.Evaluation`."""
 
 import unittest
 from os import remove
@@ -166,7 +166,7 @@ class MyEvaluation(Evaluation):
 
 
 class EvaluationTester(unittest.TestCase):
-    """Test :py:class:`~culebra.tools.Evaluation`."""
+    """Test :class:`~culebra.tools.Evaluation`."""
 
     def test_init(self):
         """Test the constructor."""
@@ -385,7 +385,7 @@ class EvaluationTester(unittest.TestCase):
         remove(evaluation.excel_results_filename)
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.tools.Evaluation.__copy__` method."""
+        """Test the :meth:`~culebra.tools.Evaluation.__copy__` method."""
         evaluation1 = MyEvaluation(
             trainer,
             untie_best_fitness_function,
@@ -406,7 +406,7 @@ class EvaluationTester(unittest.TestCase):
         remove(evaluation1.excel_results_filename)
 
     def test_deepcopy(self):
-        """Test :py:meth:`~culebra.tools.Evaluation.__deepcopy__`."""
+        """Test :meth:`~culebra.tools.Evaluation.__deepcopy__`."""
         evaluation1 = MyEvaluation(
             trainer,
             untie_best_fitness_function,
@@ -425,8 +425,8 @@ class EvaluationTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :py:meth:`~culebra.tools.Evaluation.__setstate__` and
-        :py:meth:`~culebra.tools.Evaluation.__reduce__` methods.
+        Test the :meth:`~culebra.tools.Evaluation.__setstate__` and
+        :meth:`~culebra.tools.Evaluation.__reduce__` methods.
         """
         evaluation1 = MyEvaluation(
             trainer,
@@ -453,9 +453,9 @@ class EvaluationTester(unittest.TestCase):
         """Check if *evaluation1* is a deepcopy of *evaluation2*.
 
         :param evaluation1: The first evaluation
-        :type evaluation1: :py:class:`~culebra.tools.Evaluation`
+        :type evaluation1: ~culebra.tools.Evaluation
         :param evaluation2: The second evaluation
-        :type evaluation2: :py:class:`~culebra.tools.Evaluation`
+        :type evaluation2: ~culebra.tools.Evaluation
         """
         # Copies all the levels
         self.assertNotEqual(id(evaluation1), id(evaluation2))

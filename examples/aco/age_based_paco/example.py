@@ -25,6 +25,7 @@
 from pandas import Series, DataFrame
 
 from culebra.solution.tsp import Species, Ant
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import AgeBasedPACO
 from culebra.fitness_function.tsp import PathLength
 
@@ -45,6 +46,11 @@ species = Species(num_nodes)
 initial_pheromone = (1 / num_nodes,) * fitness_func.num_obj
 max_pheromone = (5,) * fitness_func.num_obj
 
+
+class AgeBasedPACOTSP(ACOTSP, AgeBasedPACO):
+    """Age Based PACO for TSP."""
+
+
 # Trainer parameters
 params = {
     "solution_cls": Ant,
@@ -60,7 +66,7 @@ params = {
 }
 
 # Create the wrapper
-trainer = AgeBasedPACO(**params)
+trainer = AgeBasedPACOTSP(**params)
 
 # Train the wrapper
 print("Training ...")

@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.abc.Species` class
-=====================================
+:class:`culebra.abc.Species` class
+==================================
 
 .. autoclass:: culebra.abc.Species
 

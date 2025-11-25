@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.cooperative.FSSVCScorer` class
-==================================================================
+:class:`culebra.fitness_function.cooperative.FSSVCScorer` class
+===============================================================
 
 .. autoclass:: culebra.fitness_function.cooperative.FSSVCScorer
 
@@ -30,17 +30,15 @@ Class methods
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.fitness_cls
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.num_obj
-.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_weights
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_names
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_thresholds
-.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.fitness_cls
-.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.num_nodes
+.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_weights
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.objectives
 
 Methods
 -------
+.. automethod:: culebra.fitness_function.cooperative.FSSVCScorer.construct_solutions
 .. automethod:: culebra.fitness_function.cooperative.FSSVCScorer.dump
 .. automethod:: culebra.fitness_function.cooperative.FSSVCScorer.evaluate
-.. automethod:: culebra.fitness_function.cooperative.FSSVCScorer.heuristic
-.. automethod:: culebra.fitness_function.cooperative.FSSVCScorer.construct_solutions

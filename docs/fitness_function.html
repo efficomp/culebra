@@ -8,7 +8,7 @@
     <title>culebra.fitness_function module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=37f418d5"></script>
+    <script src="_static/documentation_options.js?v=c87aa342"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -45,10 +45,13 @@
 <p>Fitness functions.</p>
 <p>This module provides several fitness functions, all related to the feature
 selection problem. Currently:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>The <a class="reference internal" href="fitness_function/abc.html#module-culebra.fitness_function.abc" title="culebra.fitness_function.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> sub-module provides abstract
 classes to define the remaining fitness functions.</p></li>
+<li><p>The <a class="reference internal" href="fitness_function/cooperative.html#module-culebra.fitness_function.cooperative" title="culebra.fitness_function.cooperative"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cooperative</span></code></a> sub-module provides
+fitness functions designed to the cooperative solving of a feature
+selection problem while the classifier hyperparamters are also being
+optimized.</p></li>
 <li><p>The <a class="reference internal" href="fitness_function/dataset_score.html#module-culebra.fitness_function.dataset_score" title="culebra.fitness_function.dataset_score"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataset_score</span></code></a> sub-module provides
 abstract classes to score dataset-related problems.</p></li>
 <li><p>The <a class="reference internal" href="fitness_function/feature_selection.html#module-culebra.fitness_function.feature_selection" title="culebra.fitness_function.feature_selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">feature_selection</span></code></a> sub-module is
@@ -56,14 +59,12 @@ centered in datasets dimensionality reduction.</p></li>
 <li><p>The <a class="reference internal" href="fitness_function/svc_optimization.html#module-culebra.fitness_function.svc_optimization" title="culebra.fitness_function.svc_optimization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">svc_optimization</span></code></a> sub-module
 provides several fitness functions intended to optimize the Support Vector
 Classifier (SVC) hyperparameters for a given dataset.</p></li>
-<li><p>The <a class="reference internal" href="fitness_function/cooperative.html#module-culebra.fitness_function.cooperative" title="culebra.fitness_function.cooperative"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cooperative</span></code></a> sub-module provides
-fitness functions designed to the cooperative solving of a feature
-selection problem while the classifier hyperparamters are also being
-optimized.</p></li>
 <li><p>The <a class="reference internal" href="fitness_function/tsp.html#module-culebra.fitness_function.tsp" title="culebra.fitness_function.tsp"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tsp</span></code></a> sub-module offers fitness
 functions for the traveling salesman problem.</p></li>
 </ul>
-</div></blockquote>
+<p>Finally, the <a class="reference internal" href="fitness_function/multi_objective_fitness_function.html#culebra.fitness_function.MultiObjectiveFitnessFunction" title="culebra.fitness_function.MultiObjectiveFitnessFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiObjectiveFitnessFunction</span></code></a>
+allows the aggregation of several single-objective fitness functions to define
+custom multi-objective functions.</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>

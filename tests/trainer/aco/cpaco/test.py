@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.CPACO`."""
+"""Unit test for :class:`culebra.trainer.aco.CPACO`."""
 
 import unittest
 from random import randrange
@@ -30,6 +30,7 @@ from os import remove
 import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import CPACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
@@ -46,8 +47,25 @@ banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
 
+class CPACOTSP(CPACO, ACOTSP):
+    """CPACO for TSP."""
+
+class InvalidCPACO(CPACO):
+    """Invalid CPACO subclass."""
+
+    @property
+    def pheromone_shapes(self):
+        """Return the shape of the pheromone matrices."""
+        return [(3, ) * 2] * self.num_pheromone_matrices
+
+    @property
+    def heuristic_shapes(self):
+        """Return the shape of the heuristic matrices."""
+        return [(2, ) * 2] * self.num_heuristic_matrices
+
+
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.CPACO`."""
+    """Test :class:`culebra.trainer.aco.CPACO`."""
 
     def test_init(self):
         """Test __init__."""
@@ -70,8 +88,12 @@ class TrainerTester(unittest.TestCase):
             "random_seed": 15
         }
 
+        # Try an invalid subclass. Should fail...
+        with self.assertRaises(RuntimeError):
+            InvalidCPACO(**params)
+
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Check the parameters
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
@@ -140,7 +162,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         self.assertEqual(trainer.num_pheromone_matrices, 1)
 
@@ -155,7 +177,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         self.assertEqual(
             trainer.num_heuristic_matrices, fitness_func.num_obj
@@ -172,7 +194,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
         trainer._init_search()
         trainer._start_iteration()
 
@@ -213,7 +235,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -240,7 +262,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Create new internals
         trainer._init_internals()
@@ -271,7 +293,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Init the internals
         trainer._init_internals()
@@ -280,8 +302,10 @@ class TrainerTester(unittest.TestCase):
         # Calculate the choice_info for the next iteration
         trainer._calculate_choice_info()
 
-        # Check tha the coince info has been calculated
-        self.assertEqual(trainer.choice_info.shape, trainer.heuristic[0].shape)
+        # Check that the coince info has been calculated
+        self.assertEqual(
+            trainer.choice_info.shape, trainer.heuristic_shapes[0]
+        )
 
     def test_generate_ant(self):
         """Test the _generate_ant method."""
@@ -295,7 +319,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Init the internals
         trainer._init_internals()
@@ -337,7 +361,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Try to update the population with an empty elite
         trainer._init_search()
@@ -370,17 +394,18 @@ class TrainerTester(unittest.TestCase):
 
     def test_deposit_pheromone(self):
         """Test the _deposit_pheromone method."""
+        initial_pher = 1
         params = {
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
-            "initial_pheromone": 1,
+            "initial_pheromone": initial_pher,
             "pop_size": 5,
             "verbose": False
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Try to update the population with an empty elite
         trainer._init_search()
@@ -390,13 +415,19 @@ class TrainerTester(unittest.TestCase):
         trainer._init_pheromone()
 
         # Let only the first ant deposit pheromone
-        trainer._deposit_pheromone(trainer.pop[:1], 3)
+        trainer._deposit_pheromone(trainer.pop[:1])
 
         ant = trainer.pop[0]
         org = ant.path[-1]
-        for dest in ant.path:
-            self.assertEqual(trainer.pheromone[0][org][dest], 4)
-            self.assertEqual(trainer.pheromone[0][dest][org], 4)
+        for dest in ant.path:            
+            self.assertEqual(
+                trainer.pheromone[0][org][dest],
+                initial_pher + trainer._pheromone_amount(ant)[0]
+            )
+            self.assertEqual(
+                trainer.pheromone[0][dest][org],
+                initial_pher + trainer._pheromone_amount(ant)[0]
+            )
             org = dest
 
     def test_update_pheromone(self):
@@ -411,7 +442,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
 
         # Init the search
         trainer._init_search()
@@ -447,7 +478,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = CPACO(**params)
+        trainer1 = CPACOTSP(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -477,7 +508,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = CPACO(**params)
+        trainer1 = CPACOTSP(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -496,11 +527,11 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = CPACO(**params)
+        trainer1 = CPACOTSP(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = CPACO.load(serialized_filename)
+        trainer2 = CPACOTSP.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -521,7 +552,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = CPACO(**params)
+        trainer = CPACOTSP(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
@@ -530,9 +561,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.aco.CPACO`
+        :type trainer1: ~culebra.trainer.aco.CPACO
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.aco.CPACO`
+        :type trainer2: ~culebra.trainer.aco.CPACO
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

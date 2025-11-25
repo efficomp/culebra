@@ -19,38 +19,33 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco` module
-======================================
+:mod:`culebra.trainer.aco` module
+=================================
 
 .. automodule:: culebra.trainer.aco
 
 Attributes
 ----------
 
-.. attribute:: DEFAULT_PHEROMONE_INFLUENCE
-    :annotation: = 1.0
+.. attribute:: DEFAULT_ACOFS_DISCARD_PROB
+    :annotation: = 0.5
 
-    Default pheromone influence (:math:`{\alpha}`).
+    Default probability of discarding a node (feature).
 
-.. attribute:: DEFAULT_HEURISTIC_INFLUENCE
-    :annotation: = 2.0
+.. attribute:: DEFAULT_ACOFS_EXPLOITATION_PROB
+    :annotation: = 0
+    
+    Default exploitation probability (:math:`{q_0}`) for ACO-FS approaches.
 
-    Default heuristic influence (:math:`{\beta}`).
+.. attribute:: DEFAULT_ACOFS_HEURISTIC_INFLUENCE
+    :annotation: = 0
+    
+    Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches.
 
-.. attribute:: DEFAULT_EXPLOITATION_PROB
-    :annotation: = 0.9
+.. attribute:: DEFAULT_ACOFS_INITIAL_PHEROMONE
+    :annotation: = 1
 
-    Default exploitation probability (:math:`{q_0}`).
-
-.. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
-    :annotation: = 0.1
-
-    Default pheromone evaporation rate (:math:`{\rho}`).
-
-.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
-    :annotation: = 100
-
-    Default frequency to check if an elitist ACO has converged.
+    Default initial pheromone.
 
 .. attribute:: DEFAULT_AS_EXPLOITATION_PROB
     :annotation: = 0
@@ -58,11 +53,26 @@ Attributes
     Default exploitation probability (:math:`{q_0}`) for the Ant System
     trainer.
 
+.. attribute:: DEFAULT_CONVERGENCE_CHECK_FREQ
+    :annotation: = 100
+
+    Default frequency to check if an elitist ACO has converged.
+
 .. attribute:: DEFAULT_ELITE_WEIGHT
     :annotation: = 0.3
 
     Default weight for the elite ant (best-so-far ant) respect to the
     iteration-best ant.
+
+.. attribute:: DEFAULT_EXPLOITATION_PROB
+    :annotation: = 0.9
+
+    Default exploitation probability (:math:`{q_0}`).
+
+.. attribute:: DEFAULT_HEURISTIC_INFLUENCE
+    :annotation: = 2.0
+
+    Default heuristic influence (:math:`{\beta}`).
 
 .. attribute:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
     :annotation: = 250
@@ -72,41 +82,20 @@ Attributes
     iteration-best ant to deposit pheromone. Iterations above this limit will
     use only the global-best ant.
 
-.. attribute:: DEFAULT_ACO_FS_INITIAL_PHEROMONE
-    :annotation: = 1
+.. attribute:: DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
+    :annotation: = 1.0
 
-    Default initial pheromone.
+    Default pheromone deposit weight.
 
-.. attribute:: DEFAULT_ACO_FS_HEURISTIC_INFLUENCE
-    :annotation: = 1
-    
-    Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches.
+.. attribute:: DEFAULT_PHEROMONE_EVAPORATION_RATE
+    :annotation: = 0.1
 
-.. attribute:: DEFAULT_ACO_FS_EXPLOITATION_PROB
-    :annotation: = 0
-    
-    Default exploitation probability (:math:`{q_0}`) for ACO-FS approaches.
+    Default pheromone evaporation rate (:math:`{\rho}`).
 
-.. attribute:: DEFAULT_ACO_FS_DISCARD_PROB
-    :annotation: = 0.5
+.. attribute:: DEFAULT_PHEROMONE_INFLUENCE
+    :annotation: = 1.0
 
-    Default probability of discarding a node (feature).
-
-
-..
-    .. autodata:: DEFAULT_PHEROMONE_INFLUENCE
-    .. autodata:: DEFAULT_HEURISTIC_INFLUENCE
-    .. autodata:: DEFAULT_EXPLOITATION_PROB
-    .. autodata:: DEFAULT_PHEROMONE_EVAPORATION_RATE
-    .. autodata:: DEFAULT_CONVERGENCE_CHECK_FREQ
-    .. autodata:: DEFAULT_AS_EXPLOITATION_PROB
-    .. autodata:: DEFAULT_ELITE_WEIGHT
-    .. autodata:: DEFAULT_MMAS_ITER_BEST_USE_LIMIT
-    .. autodata:: DEFAULT_ACO_FS_INITIAL_PHEROMONE
-    .. autodata:: DEFAULT_ACO_FS_HEURISTIC_INFLUENCE
-    .. autodata:: DEFAULT_ACO_FS_EXPLOITATION_PROB
-    .. autodata:: DEFAULT_ACO_FS_DISCARD_PROB
-
+    Default pheromone influence (:math:`{\alpha}`).
 
 .. toctree::
     :hidden:
@@ -118,8 +107,8 @@ Attributes
     MMAS <aco/mmas>
     AgeBasedPACO <aco/age_based_paco>
     QualityBasedPACO <aco/quality_based_paco>
-    PACO_MO <aco/paco_mo>
+    PACOMO <aco/paco_mo>
     CPACO <aco/cpaco>
-    PACO_FS <aco/paco_fs>
-    ElitistACO_FS <aco/elitist_aco_fs>
-    ACO_FSConvergenceDetector <aco/aco_fs_convergence_detector>
+    PACOFS <aco/paco_fs>
+    ElitistACOFS <aco/elitist_aco_fs>
+    ACOFSConvergenceDetector <aco/aco_fs_convergence_detector>

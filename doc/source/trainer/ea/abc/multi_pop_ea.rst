@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.ea.abc.MultiPopEA` class
-===================================================
+:class:`culebra.trainer.ea.abc.MultiPopEA` class
+================================================
 
 .. autoclass:: culebra.trainer.ea.abc.MultiPopEA
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.ea.abc.MultiPopEA.stats_names
 .. autoattribute:: culebra.trainer.ea.abc.MultiPopEA.objective_stats
+.. autoattribute:: culebra.trainer.ea.abc.MultiPopEA.stats_names
 
 Class methods
 -------------
@@ -35,32 +35,32 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.fitness_function
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_cls
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.container
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.current_iter
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.custom_termination_func
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.fitness_function
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.index
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.logbook
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.num_evals
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.num_subtrainers
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_size
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.random_seed
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_freq
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_topology_func
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_topology_func_params
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_selection_func
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_selection_func_params
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.checkpoint_enable
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.checkpoint_freq
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.checkpoint_filename
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.verbose
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.random_seed
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.logbook
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.num_evals
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.runtime
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.index
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.container
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_size
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_topology_func
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representation_topology_func_params
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.representatives
-.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_params
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.runtime
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_checkpoint_filenames
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_cls
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.subtrainers
+.. autoproperty:: culebra.trainer.ea.abc.MultiPopEA.verbose
 
 Private properties
 ------------------
@@ -73,36 +73,36 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.dump
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.reset
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.evaluate
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.best_solutions
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.best_representatives
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA.train
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.best_solutions
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.dump
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.evaluate
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.reset
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA.test
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA.train
 
 Private methods
 ---------------
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._default_termination_func
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._do_iteration
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._do_iteration_stats
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._finish_iteration
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._finish_search
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._generate_subtrainers
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._get_state
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._set_state
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._save_state
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_internals
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_search
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._load_state
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._new_state
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_state
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._reset_state
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_internals
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._reset_internals
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_search
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._search
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._finish_search
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._start_iteration
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._preprocess_iteration
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._do_iteration
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._postprocess_iteration
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._finish_iteration
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._do_iteration_stats
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._default_termination_func
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._termination_criterion
-.. automethod:: culebra.trainer.ea.abc.MultiPopEA._init_representatives
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._preprocess_iteration
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._reset_internals
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._reset_state
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._save_state
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._search
 .. automethod:: culebra.trainer.ea.abc.MultiPopEA._set_cooperative_fitness
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._set_state
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._start_iteration
+.. automethod:: culebra.trainer.ea.abc.MultiPopEA._termination_criterion

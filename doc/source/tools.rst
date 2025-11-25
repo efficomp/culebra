@@ -19,52 +19,17 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:mod:`culebra.tools` module
-==============================
+:mod:`culebra.tools` module
+===========================
 
 .. automodule:: culebra.tools
 
 Attributes
 ----------
-.. attribute:: DEFAULT_SEP
-    :annotation: = '\\s+'
-
-    Default column separator used within dataset files.
-
-.. attribute:: EXCEL_FILE_EXTENSION
-    :annotation: = '.xlsx'
-
-    File extension for Excel datasheets.
-
 .. attribute:: DEFAULT_ALPHA
     :annotation: = 0.05
 
     Default significance level for statistical tests.
-
-.. attribute:: DEFAULT_NORMALITY_TEST
-    :annotation: = <function shapiro>
-
-    Default normality test.
-
-.. attribute:: DEFAULT_HOMOSCEDASTICITY_TEST
-    :annotation: = <function bartlett>
-
-    Default homoscedasticity test.
-
-.. attribute:: DEFAULT_P_ADJUST
-    :annotation: = 'fdr_tsbky'
-
-    Default method for adjusting the p-values with the Dunn's test.
-
-.. attribute:: DEFAULT_STATS_FUNCTIONS
-    :annotation: = {'Avg': <function mean>, 'Max': <function amax>, 'Min': <function amin>, 'Std': <function std>}
-
-    Default statistics calculated for the results.
-
-.. attribute:: DEFAULT_FEATURE_METRIC_FUNCTIONS
-    :annotation: = {'Rank': <function Metrics.rank>, 'Relevance': <function Metrics.relevance>}
-
-    Default metrics calculated for the features in the set of solutions.
 
 .. attribute:: DEFAULT_BATCH_STATS_FUNCTIONS
     :annotation: = {'Avg': <function NDFrame._add_numeric_operations.<locals>.mean>, 'Max': <function NDFrame._add_numeric_operations.<locals>.max>, 'Min': <function NDFrame._add_numeric_operations.<locals>.min>, 'Std': <function NDFrame._add_numeric_operations.<locals>.std>}
@@ -72,40 +37,70 @@ Attributes
     Default statistics calculated for the results gathered from all the
     experiments.
 
+.. attribute:: DEFAULT_CONFIG_SCRIPT_FILENAME
+    :annotation: = 'config.py'
+
+    Default file name for configuration files.
+
+.. attribute:: DEFAULT_FEATURE_METRIC_FUNCTIONS
+    :annotation: = {'Rank': <function Metrics.rank>, 'Relevance': <function Metrics.relevance>}
+
+    Default metrics calculated for the features in the set of solutions.
+
+.. attribute:: DEFAULT_HOMOSCEDASTICITY_TEST
+    :annotation: = <function bartlett>
+
+    Default homoscedasticity test.
+
+.. attribute:: DEFAULT_OUTLIER_PROPORTION
+    :annotation: = 0.05
+
+    Expected outlier proportion por class.
+
+.. attribute:: DEFAULT_NORMALITY_TEST
+    :annotation: = <function shapiro>
+
+    Default normality test.
+
 .. attribute:: DEFAULT_NUM_EXPERIMENTS
     :annotation: = 1
 
     Default number of experiments in the batch.
 
-.. attribute:: DEFAULT_RUN_SCRIPT_FILENAME
-    :annotation: = 'run.py'
+.. attribute:: DEFAULT_P_ADJUST
+    :annotation: = 'fdr_tsbky'
 
-    Default file name for the script to run an evaluation.
-
-.. attribute:: DEFAULT_CONFIG_SCRIPT_FILENAME
-    :annotation: = 'config.py'
-
-    Default file name for configuration files.
+    Default method for adjusting the p-values with the Dunn's test.
 
 .. attribute:: DEFAULT_RESULTS_BASENAME
     :annotation: = 'results'
 
     Default base name for results files.
 
-..
-    .. autodata:: DEFAULT_SEP
-    .. autodata:: EXCEL_FILE_EXTENSION
-    .. autodata:: DEFAULT_ALPHA
-    .. autodata:: DEFAULT_NORMALITY_TEST
-    .. autodata:: DEFAULT_HOMOSCEDASTICITY_TEST
-    .. autodata:: DEFAULT_P_ADJUST
-    .. autodata:: DEFAULT_STATS_FUNCTIONS
-    .. autodata:: DEFAULT_FEATURE_METRIC_FUNCTIONS
-    .. autodata:: DEFAULT_BATCH_STATS_FUNCTIONS
-    .. autodata:: DEFAULT_NUM_EXPERIMENTS
-    .. autodata:: DEFAULT_RUN_SCRIPT_FILENAME
-    .. autodata:: DEFAULT_CONFIG_SCRIPT_FILENAME
-    .. autodata:: DEFAULT_RESULTS_BASENAME
+.. attribute:: DEFAULT_RUN_SCRIPT_FILENAME
+    :annotation: = 'run.py'
+
+    Default file name for the script to run an evaluation.
+
+.. attribute:: DEFAULT_SEP
+    :annotation: = '\\s+'
+
+    Default column separator used within dataset files.
+
+.. attribute:: DEFAULT_SMOTE_NUM_NEIGHBORS
+    :annotation: = 5
+
+    Default number of neighbors for :class:`~imblearn.over_sampling.SMOTE`.
+
+.. attribute:: DEFAULT_STATS_FUNCTIONS
+    :annotation: = {'Avg': <function mean>, 'Max': <function amax>, 'Min': <function amin>, 'Std': <function std>}
+
+    Default statistics calculated for the results.
+
+.. attribute:: EXCEL_FILE_EXTENSION
+    :annotation: = '.xlsx'
+
+    File extension for Excel datasheets.
 
 
 .. toctree::

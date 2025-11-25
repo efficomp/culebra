@@ -21,14 +21,14 @@
 
 This module is composed by:
 
-  * The :py:mod:`~culebra.trainer.abc` module, which defines some abstract base
-    classes to implement several types of trainers.
-  * The :py:mod:`~culebra.trainer.ea` module, which implements several
-    evolutionary algorithms-based trainers.
-  * The :py:mod:`~culebra.trainer.aco` module, which supports several ant
-    colony optimization approaches.
-  * The :py:mod:`~culebra.trainer.topology` sub-module, which provides several
-    tolpologies for distributed trainers.
+* The :mod:`~culebra.trainer.abc` module, which defines some abstract base
+  classes to implement several types of trainers.  
+* The :mod:`~culebra.trainer.aco` module, which supports several ant
+  colony optimization approaches.
+* The :mod:`~culebra.trainer.ea` module, which implements several
+  evolutionary algorithms-based trainers.
+* The :mod:`~culebra.trainer.topology` sub-module, which provides several
+  topologies for distributed trainers.
 """
 
 

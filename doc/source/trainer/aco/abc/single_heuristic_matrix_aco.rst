@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco.abc.SingleHeuristicMatrixACO` class
-==================================================================
+:class:`culebra.trainer.aco.abc.SingleHeuristicMatrixACO` class
+===============================================================
 
 .. autoclass:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.stats_names
 .. autoattribute:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.objective_stats
+.. autoattribute:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.stats_names
 
 Class methods
 -------------
@@ -35,78 +35,79 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.num_pheromone_matrices
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.num_heuristic_matrices
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.solution_cls
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.species
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.heuristic
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.heuristic_influence
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.pheromone
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.choice_info
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.col
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.col_size
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.container
 .. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.current_iter
 .. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.col_size
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.checkpoint_enable
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.verbose
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.random_seed
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.logbook
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.num_evals
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.runtime
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.fitness_function
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.heuristic
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.heuristic_shapes
 .. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.index
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.container
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.logbook
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.num_evals
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.num_heuristic_matrices
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.pheromone
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.pheromone_shapes
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.random_seed
 .. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.representatives
-.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.col
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.runtime
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.solution_cls
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.species
+.. autoproperty:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.verbose
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.dump
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.reset
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.evaluate
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.best_solutions
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.best_representatives
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.train
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.best_solutions
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.dump
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.evaluate
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.reset
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.test
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO.train
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._get_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._set_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._save_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._load_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._new_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._reset_state
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_internals
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._reset_internals
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_search
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._search
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._finish_search
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._start_iteration
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._preprocess_iteration
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._do_iteration
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._postprocess_iteration
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._finish_iteration
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._do_iteration_stats
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._default_termination_func
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._termination_criterion
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_representatives
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._ant_choice_info
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._calculate_choice_info
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._initial_choice
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._next_choice
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._default_termination_func
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._do_iteration
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._do_iteration_stats
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._finish_iteration
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._finish_search
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._generate_col
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_pheromone
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._pheromone_amount
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._get_state
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._increase_pheromone
-.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_internals
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_pheromone
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_representatives
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_search
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._init_state
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._load_state
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._new_state
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._next_choice
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._pheromone_amount
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._postprocess_iteration
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._preprocess_iteration
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._reset_internals
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._reset_state
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._save_state
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._search
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._set_state
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._start_iteration
+.. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.SingleHeuristicMatrixACO._update_pheromone
-

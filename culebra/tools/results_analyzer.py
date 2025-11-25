@@ -21,14 +21,14 @@
 
 from __future__ import annotations
 
-from typing import Callable, NamedTuple, Dict, List
+from typing import NamedTuple, Dict, List
 from collections import UserDict, namedtuple
-from collections.abc import Sequence
+from collections.abc import Sequence, Callable
 from functools import partial
 from warnings import catch_warnings, simplefilter
 from math import isclose
 
-import numpy as np
+import numpy
 from pandas import Series, DataFrame, MultiIndex
 from scipy.stats import (
     shapiro,
@@ -110,15 +110,15 @@ _P_ADJUST_NAMES = {
 """Names of p-values adjustment methods."""
 
 
-def title(text: str, underline: str = '-') -> str:
+def __title(text: str, underline: str = '-') -> str:
     """Make a title for the output report.
 
     :param text: Text to be displayed
-    :type text: :py:class:`str`
+    :type text: str
     :param underline: Symbol used to underline the title
-    :type underline: :py:class:`str`
+    :type underline: str
     :return: The formatted title
-    :rtype: :py:class:`str`
+    :rtype: str
     """
     # Check the underline char
     underline_name = "underline character"
@@ -134,10 +134,11 @@ def title(text: str, underline: str = '-') -> str:
 
 
 class TestOutcome(NamedTuple):
-    """Outcome from a statistical test."""
+
+    """Outcome from a statistical test"""
 
     test: str
-    """Name of the test."""
+    """Name of the test"""
 
     data: str
     """Key for the dataframe containing the data"""
@@ -146,17 +147,21 @@ class TestOutcome(NamedTuple):
     """Column key in the dataframe"""
 
     alpha: float
-    """Significance level."""
+    """Significance level"""
 
     batches: list
-    """Labels of all the analyzed batches."""
+    """Labels of all the analyzed batches"""
 
-    pvalue: np.ndarray
-    """p-value(s) returned by the test."""
+    pvalue: numpy.ndarray
+    """p-value(s) returned by the test"""
 
     @property
-    def success(self) -> np.ndarray:
-        """Return a boolean array showing where the null hypothesis is met."""
+    def success(self) -> numpy.ndarray:
+        """Check the success of the test.
+
+        :return: A boolean array showing where the null hypothesis is met
+        :rtype: ~numpy.ndarray[bool]
+        """
         return self.pvalue > self.alpha
 
     def __str__(self) -> str:
@@ -179,7 +184,7 @@ class TestOutcome(NamedTuple):
                     [
                         '\n'.join(self.batches),
                         self.success,
-                        np.round(self.pvalue, _DEFAULT_PRECISION)
+                        numpy.round(self.pvalue, _DEFAULT_PRECISION)
                     ]
                 ]
             else:
@@ -190,7 +195,7 @@ class TestOutcome(NamedTuple):
                 data = [
                     [
                         self.success[i],
-                        np.round(self.pvalue[i], _DEFAULT_PRECISION)
+                        numpy.round(self.pvalue[i], _DEFAULT_PRECISION)
                     ]
                     for (i, _) in sorted_batches
                 ]
@@ -218,7 +223,7 @@ class TestOutcome(NamedTuple):
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
-        output = title(self.test)
+        output = __title(self.test)
         # Add the input parameters to the output
         inputs = [
             ["Batches:", ", ".join(sorted(self.batches))]
@@ -240,24 +245,24 @@ class ResultsComparison(NamedTuple):
     """Outcome from the comparison of several results."""
 
     normality: TestOutcome
-    """Outcome of the normality test."""
+    """Outcome of the normality test"""
 
     homoscedasticity: TestOutcome | None
-    """Outcome of the homoscedasticity test. :py:data:`None` if the compared
-    results did not follow a normal distribution."""
+    """Outcome of the homoscedasticity test. :data:`None` if the compared
+    results did not follow a normal distribution"""
 
     global_comparison: TestOutcome
-    """Outcome of the global comparison of all the results."""
+    """Outcome of the global comparison of all the results"""
 
     pairwise_comparison: TestOutcome | None
     """Outcome of the pairwise comparison of the results. Only performed if
     more than two results are analyzed and not all the analyzed results follow
-    the same distribution."""
+    the same distribution"""
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
         # Title for the results analysis
-        output = title("Results comparison", '=')
+        output = __title("Results comparison", '=')
 
         # Get batches as a string
         batches = ", ".join(sorted(self.normality.batches))
@@ -278,7 +283,7 @@ class ResultsComparison(NamedTuple):
         output += tabulate(inputs, tablefmt='plain') + "\n\n\n"
 
         # Output the result of the normality test
-        output += title("Normality: " + self.normality.test, '-')
+        output += __title("Normality: " + self.normality.test, '-')
         normality_success = self.normality.success.all()
 
         output += "Results "
@@ -291,7 +296,7 @@ class ResultsComparison(NamedTuple):
         # If the results are normal, check homoscedasticity
         homoscedasticity_success = False
         if normality_success:
-            output += title(
+            output += __title(
                 "Homoscedasticity: " + self.homoscedasticity.test, '-'
             )
             homoscedasticity_success = self.homoscedasticity.success.all()
@@ -304,7 +309,7 @@ class ResultsComparison(NamedTuple):
             output += self.homoscedasticity.__str__() + "\n\n\n"
 
         # Output the global comparison results
-        output += title(
+        output += __title(
             "Global comparison: " + self.global_comparison.test, '-'
         )
         global_comparison_success = self.global_comparison.success.all()
@@ -318,7 +323,7 @@ class ResultsComparison(NamedTuple):
 
         # Output from a pairwise comparison
         if self.pairwise_comparison is not None:
-            output += title(
+            output += __title(
                 "Pairwise comparison: " +
                 self.pairwise_comparison.test +
                 f", alpha = {self.pairwise_comparison.alpha}",
@@ -349,7 +354,7 @@ class EffectSize(NamedTuple):
     batches: list
     """Labels of all the analyzed batches."""
 
-    value: np.ndarray
+    value: numpy.ndarray
     """Effect size values."""
 
     def __str__(self) -> str:
@@ -385,7 +390,7 @@ class EffectSize(NamedTuple):
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs."""
-        output = title(self.test)
+        output = __title(self.test)
         # Add the input parameters to the output
         inputs = [
             ["Batches:", ", ".join(sorted(self.batches))]
@@ -413,25 +418,25 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         test: Callable[
             [Sequence],
-            namedtuple
+            NamedTuple
         ] = DEFAULT_NORMALITY_TEST
     ) -> TestOutcome:
         """Assess the normality of the same results for several batches.
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :param test: Normality test to be applied, defaults to
-            :py:data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
-        :type test: :py:class:`~collections.abc.Callable`, optional
+            :data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
+        :type test: ~collections.abc.Callable
         :return: The results of the normality test
-        :rtype: :py:class:`~culebra.tools.TestOutcome`
+        :rtype: ~culebra.tools.TestOutcome
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
         :raises ValueError: If *test* is not a valid normality test
@@ -470,7 +475,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=np.asarray(pvalues)
+            pvalue=numpy.asarray(pvalues)
         )
 
     def homoscedasticity_test(
@@ -480,25 +485,25 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         test: Callable[
             [Sequence],
-            namedtuple
+            NamedTuple
         ] = DEFAULT_HOMOSCEDASTICITY_TEST
     ) -> TestOutcome:
         """Assess the homoscedasticity of the same results for several batches.
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :param test: Homoscedasticity test to be applied, defaults to
-            :py:data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
-        :type test: :py:class:`~collections.abc.Callable`, optional
+            :data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type test: ~collections.abc.Callable
         :return: The results of the homoscedasticity test
-        :rtype: :py:class:`~culebra.tools.TestOutcome`
+        :rtype: ~culebra.tools.TestOutcome
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
         :raises ValueError: If *test* is not a valid homoscedasticity test
@@ -535,7 +540,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=np.asarray([results.pvalue])
+            pvalue=numpy.asarray([results.pvalue])
         )
 
     def parametric_test(
@@ -548,21 +553,21 @@ class ResultsAnalyzer(UserDict, Base):
 
         Data should be independent, follow a normal distribution and also be
         homoscedastic. If only two results are analyzed, the T-test
-        (:py:func:`~scipy.stats.ttest_ind`) is applied. For more
-        results, the one-way ANOVA test (:py:func:`~scipy.stats.f_oneway`) is
+        (:func:`~scipy.stats.ttest_ind`) is applied. For more
+        results, the one-way ANOVA test (:func:`~scipy.stats.f_oneway`) is
         used instead.
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :return: The results of the comparison
-        :rtype: :py:class:`~culebra.tools.TestOutcome`
+        :rtype: ~culebra.tools.TestOutcome
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
         :raises ValueError: If there aren't sufficient data in the analyzed
@@ -605,7 +610,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=np.asarray([results.pvalue])
+            pvalue=numpy.asarray([results.pvalue])
         )
 
     def non_parametric_test(
@@ -617,21 +622,21 @@ class ResultsAnalyzer(UserDict, Base):
         """Compare the results of several batches.
 
         Data should be independent. If only two results are analyzed,
-        the Mann-Whitney U-test (:py:func:`~scipy.stats.mannwhitneyu`) is
+        the Mann-Whitney U-test (:func:`~scipy.stats.mannwhitneyu`) is
         applied. For more results, the Kruskal-Wallis H-test
-        (:py:func:`~scipy.stats.kruskal`) is used instead.
+        (:func:`~scipy.stats.kruskal`) is used instead.
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :return: The results of the comparison
-        :rtype: :py:class:`~culebra.tools.TestOutcome`
+        :rtype: ~culebra.tools.TestOutcome
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
         :raises ValueError: If there aren't sufficient data in the analyzed
@@ -669,7 +674,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=np.asarray([results.pvalue])
+            pvalue=numpy.asarray([results.pvalue])
         )
 
     def parametric_pairwise_test(
@@ -685,15 +690,15 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :return: The results of the comparison
-        :rtype: :py:class:`~culebra.tools.TestOutcome`
+        :rtype: ~culebra.tools.TestOutcome
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
         :raises ValueError: If there aren't sufficient data in the analyzed
@@ -740,21 +745,21 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :param p_adjust: Method for adjusting the p-values, defaults to
-            :py:data:`~culebra.tools.DEFAULT_P_ADJUST`
-        :type p_adjust: :py:class:`str` or :py:data:`None`, optional
+            :data:`~culebra.tools.DEFAULT_P_ADJUST`
+        :type p_adjust: str
         :return: The results of the comparison
-        :rtype: :py:class:`~culebra.tools.TestOutcome`
+        :rtype: ~culebra.tools.TestOutcome
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
-        :raises ValueError: If *p_adjust* is not :py:data:`None` or any valid
+        :raises ValueError: If *p_adjust* is not :data:`None` or any valid
             p-value adjustment method.
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with such dataframe key and column label
@@ -815,12 +820,12 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :return: The results of the effect sizes estimation
-        :rtype: :py:class:`~culebra.tools.EffectSize`
+        :rtype: ~culebra.tools.EffectSize
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with such dataframe key and column label
         """
@@ -828,11 +833,11 @@ class ResultsAnalyzer(UserDict, Base):
             """Calculate the Cohen's d index fot two groups.
 
             :param group1: The first group
-            :type group1: :py:class:`~pandas.Series`
-            :param group2: :py:class:`~pandas.Series`
-            :type group2: Ejem....
+            :type group1: ~pandas.Series
+            :param group2: The second group
+            :type group2: ~pandas.Series
             :return: The effect size
-            :rtype: :py:class:`float`
+            :rtype: float
             """
             # Calculating means of the two groups
             mean1, mean2 = group1.mean(), group2.mean()
@@ -840,7 +845,7 @@ class ResultsAnalyzer(UserDict, Base):
             # Calculating pooled standard deviation
             std1, std2 = group1.std(ddof=1), group2.std(ddof=1)
             n1, n2 = len(group1), len(group2)
-            pooled_std = np.sqrt(
+            pooled_std = numpy.sqrt(
                 ((n1 - 1) * std1 ** 2 + (n2 - 1) * std2 ** 2) / (n1 + n2 - 2)
             )
 
@@ -863,7 +868,7 @@ class ResultsAnalyzer(UserDict, Base):
                 "label"
             )
 
-        effect_size = np.zeros((num_batches, num_batches))
+        effect_size = numpy.zeros((num_batches, num_batches))
 
         batch_names = tuple(data.keys())
         for i, batch_i in enumerate(batch_names):
@@ -888,11 +893,11 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         normality_test: Callable[
             [Sequence],
-            namedtuple
+            NamedTuple
         ] = DEFAULT_NORMALITY_TEST,
         homoscedasticity_test: Callable[
                     [Sequence],
-                    namedtuple
+                    NamedTuple
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
         p_adjust: str = DEFAULT_P_ADJUST
     ) -> ResultsComparison:
@@ -902,31 +907,30 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :param normality_test: Normality test to be applied, defaults to
-            :py:data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
-        :type normality_test: :py:class:`~collections.abc.Callable`, optional
+            :data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
+        :type normality_test: ~collections.abc.Callable
         :param homoscedasticity_test: Homoscedasticity test to be applied,
-            defaults to :py:data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
-        :type homoscedasticity_test: :py:class:`~collections.abc.Callable`,
-            optional
+            defaults to :data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type homoscedasticity_test: ~collections.abc.Callable
         :param p_adjust: Method for adjusting the p-values, defaults to
-            :py:data:`~culebra.tools.DEFAULT_P_ADJUST`
-        :type p_adjust: :py:class:`str` or :py:data:`None`, optional
+            :data:`~culebra.tools.DEFAULT_P_ADJUST`
+        :type p_adjust: str
         :return: The results of the comparison
-        :rtype: :py:class:`~culebra.tools.ResultsComparison`
+        :rtype: ~culebra.tools.ResultsComparison
         :raises TypeError: If *alpha* is not a real number
         :raises ValueError: If *alpha* is not in [0, 1]
         :raises ValueError: If *normality_test* is not a valid normality test
         :raises ValueError: If *homoscedasticity_test* is not a valid
             homoscedasticity test
-        :raises ValueError: If *p_adjust* is not :py:data:`None` or any valid
+        :raises ValueError: If *p_adjust* is not :data:`None` or any valid
             p-value adjustment method.
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with such dataframe key and column label
@@ -982,7 +986,7 @@ class ResultsAnalyzer(UserDict, Base):
                 column=global_comparison_result.column,
                 alpha=global_comparison_result.alpha,
                 batches=global_comparison_result.batches,
-                pvalue=np.full(
+                pvalue=numpy.full(
                     (num_batches, num_batches),
                     global_comparison_result.pvalue[0]
                 )
@@ -1004,11 +1008,11 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         normality_test: Callable[
             [Sequence],
-            namedtuple
+            NamedTuple
         ] = DEFAULT_NORMALITY_TEST,
         homoscedasticity_test: Callable[
                     [Sequence],
-                    namedtuple
+                    NamedTuple
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
         p_adjust: str = DEFAULT_P_ADJUST
     ) -> Series:
@@ -1022,30 +1026,29 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :param weight: Used for the comparison of the batches results
             selected by the *dataframe_key* and *column* provided. A negative
             value implies minimization (lower values are better), while a
             positive weight implies maximization.
-        :type weight: :py:class:`int`
+        :type weight: int
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :param normality_test: Normality test to be applied, defaults to
-            :py:data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
-        :type normality_test: :py:class:`~collections.abc.Callable`, optional
+            :data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
+        :type normality_test: ~collections.abc.Callable
         :param homoscedasticity_test: Homoscedasticity test to be applied,
-            defaults to :py:data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
-        :type homoscedasticity_test: :py:class:`~collections.abc.Callable`,
-            optional
+            defaults to :data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type homoscedasticity_test: ~collections.abc.Callable
         :param p_adjust: Method for adjusting the p-values, defaults to
-            :py:data:`~culebra.tools.DEFAULT_P_ADJUST`
-        :type p_adjust: :py:class:`str` or :py:data:`None`, optional
+            :data:`~culebra.tools.DEFAULT_P_ADJUST`
+        :type p_adjust: str
         :return: The ranked batches
-        :rtype: :py:class:`~pandas.Series`
+        :rtype: ~pandas.Series
         :raises TypeError: If *weight* is not an integer number
         :raises ValueError: If *weight* is 0
         :raises TypeError: If *alpha* is not a real number
@@ -1053,7 +1056,7 @@ class ResultsAnalyzer(UserDict, Base):
         :raises ValueError: If *normality_test* is not a valid normality test
         :raises ValueError: If *homoscedasticity_test* is not a valid
             homoscedasticity test
-        :raises ValueError: If *p_adjust* is not :py:data:`None` or any valid
+        :raises ValueError: If *p_adjust* is not :data:`None` or any valid
             p-value adjustment method.
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with such dataframe key and column label
@@ -1062,11 +1065,11 @@ class ResultsAnalyzer(UserDict, Base):
             """Return a list of averaged ranks.
 
             :param first: The first considered rank
-            :type first: :py:class:`int`
+            :type first: int
             :param last: The last considered rank
-            :type last: :py:class:`int`
+            :type last: int
             :return: The list of averaged ranks
-            :rtype: :py:class:`list` of :py:class:`float`
+            :rtype: list[float]
             """
             if first == last:
                 ranks = [float(first)]
@@ -1162,11 +1165,11 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         normality_test: Callable[
             [Sequence],
-            namedtuple
+            NamedTuple
         ] = DEFAULT_NORMALITY_TEST,
         homoscedasticity_test: Callable[
                     [Sequence],
-                    namedtuple
+                    NamedTuple
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
         p_adjust: str = DEFAULT_P_ADJUST
     ) -> DataFrame:
@@ -1183,30 +1186,28 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_keys: Sequence of dataframe keys to select the
             different results of the batches
-        :type dataframe_keys: :py:class:`~collections.abc.Sequence` of
-            :py:class:`str`
+        :type dataframe_keys: ~collections.abc.Sequence[str]
         :param columns: Sequence of column labels to select the different
             results of the batches
-        :type columns: :py:class:`~collections.abc.Sequence` of :py:class:`str`
+        :type columns: ~collections.abc.Sequence[str]
         :param weights: Sequence of weights to be applied to the different
             results of the batches. Negative values imply minimization (lower
             values are better), while a positive weights imply maximization.
-        :type weights: :py:class:`~collections.abc.Sequence` of :py:class:`int`
+        :type weights: ~collections.abc.Sequence[int]
         :param alpha: Significance level, defaults to
-            :py:data:`~culebra.tools.DEFAULT_ALPHA`
-        :type alpha: :py:class:`float`, optional
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
         :param normality_test: Normality test to be applied, defaults to
-            :py:data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
-        :type normality_test: :py:class:`~collections.abc.Callable`, optional
+            :data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
+        :type normality_test: ~collections.abc.Callable
         :param homoscedasticity_test: Homoscedasticity test to be applied,
-            defaults to :py:data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
-        :type homoscedasticity_test: :py:class:`~collections.abc.Callable`,
-            optional
+            defaults to :data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type homoscedasticity_test: ~collections.abc.Callable
         :param p_adjust: Method for adjusting the p-values, defaults to
-            :py:data:`~culebra.tools.DEFAULT_P_ADJUST`
-        :type p_adjust: :py:class:`str` or :py:data:`None`, optional
+            :data:`~culebra.tools.DEFAULT_P_ADJUST`
+        :type p_adjust: str
         :return: The ranked batches
-        :rtype: :py:class:`~pandas.DataFrame`
+        :rtype: ~pandas.DataFrame
         :raises TypeError: If any weight is not an integer number
         :raises ValueError: If any weight is 0
         :raises TypeError: If *alpha* is not a real number
@@ -1214,7 +1215,7 @@ class ResultsAnalyzer(UserDict, Base):
         :raises ValueError: If *normality_test* is not a valid normality test
         :raises ValueError: If *homoscedasticity_test* is not a valid
             homoscedasticity test
-        :raises ValueError: If *p_adjust* is not :py:data:`None` or any valid
+        :raises ValueError: If *p_adjust* is not :data:`None` or any valid
             p-value adjustment method.
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with any given dataframe key and column label
@@ -1250,16 +1251,16 @@ class ResultsAnalyzer(UserDict, Base):
     def __setitem__(self, batch_key: str, batch_results: Results) -> Results:
         """Overridden to verify the *batch_key* and *batch_results*.
 
-        Assure that *batch_key* is a :py:class:`str` and *batch_results* is a
-        :py:class:`~culebra.tools.Results`.
+        Assure that *batch_key* is a :class:`str` and *batch_results* is a
+        :class:`~culebra.tools.Results`.
 
         :param batch_key: Key to identify the *batch_results* within the
             analyzer
-        :type batch_key: :py:class:`str`
+        :type batch_key: str
         :param batch_results: The results of a batch of experiments
-        :type batch_results: :py:class:`~culebra.tools.Results`
+        :type batch_results: ~culebra.tools.Results
         :return: The inserted results
-        :rtype: :py:class:`~culebra.tools.Results`
+        :rtype: ~culebra.tools.Results
         """
         return super().__setitem__(
             check_instance(batch_key, "key for the batch results", str),
@@ -1275,14 +1276,14 @@ class ResultsAnalyzer(UserDict, Base):
 
         :param dataframe_key: Key to select a dataframe from the results
             of all the batches
-        :type dataframe_key: :py:class:`str`
+        :type dataframe_key: str
         :param column: Column label to be analyzed in the selected dataframes
             from the results of all the batches
-        :type column: :py:class:`str`
+        :type column: str
         :return: The gathered results. One entry for each
-            :py:class:`~culebra.tools.Results` in this analyzer containing the
+            ~culebra.tools.Results in this analyzer containing the
             provided *dataframe_key* and *column*.
-        :rtype: :py:class:`dict`
+        :rtype: dict
         """
         data = {}
 

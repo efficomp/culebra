@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.Experiment` class
-==========================================
+:class:`culebra.tools.Experiment` class
+=======================================
 
 .. autoclass:: culebra.tools.Experiment
 
@@ -31,22 +31,22 @@ Class attributes
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Experiment.load
 .. automethod:: culebra.tools.Experiment.from_config
 .. automethod:: culebra.tools.Experiment.generate_run_script
+.. automethod:: culebra.tools.Experiment.load
 
 Properties
 ----------
-.. autoproperty:: culebra.tools.Experiment.trainer
-.. autoproperty:: culebra.tools.Experiment.untie_best_fitness_function
-.. autoproperty:: culebra.tools.Experiment.test_fitness_function
-.. autoproperty:: culebra.tools.Experiment.results_base_filename
-.. autoproperty:: culebra.tools.Experiment.serialized_results_filename
+.. autoproperty:: culebra.tools.Experiment.best_representatives
+.. autoproperty:: culebra.tools.Experiment.best_solutions
 .. autoproperty:: culebra.tools.Experiment.excel_results_filename
 .. autoproperty:: culebra.tools.Experiment.hyperparameters
 .. autoproperty:: culebra.tools.Experiment.results
-.. autoproperty:: culebra.tools.Experiment.best_solutions
-.. autoproperty:: culebra.tools.Experiment.best_representatives
+.. autoproperty:: culebra.tools.Experiment.results_base_filename
+.. autoproperty:: culebra.tools.Experiment.serialized_results_filename
+.. autoproperty:: culebra.tools.Experiment.test_fitness_function
+.. autoproperty:: culebra.tools.Experiment.trainer
+.. autoproperty:: culebra.tools.Experiment.untie_best_fitness_function
 
 Methods
 -------
@@ -56,12 +56,14 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.tools.Experiment._do_training
-.. automethod:: culebra.tools.Experiment._add_training_stats
-.. automethod:: culebra.tools.Experiment._add_fitness
-.. automethod:: culebra.tools.Experiment._add_fitness_stats
+.. automethod:: culebra.tools.Experiment._add_best
 .. automethod:: culebra.tools.Experiment._add_execution_metric
 .. automethod:: culebra.tools.Experiment._add_feature_metrics
+.. automethod:: culebra.tools.Experiment._add_fitness
+.. automethod:: culebra.tools.Experiment._add_fitness_stats
+.. automethod:: culebra.tools.Experiment._add_training_stats
 .. automethod:: culebra.tools.Experiment._do_test
+.. automethod:: culebra.tools.Experiment._do_training
 .. automethod:: culebra.tools.Experiment._execute
+.. automethod:: culebra.tools.Experiment._find_best_lexicographically
 .. automethod:: culebra.tools.Experiment._is_reserved

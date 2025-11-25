@@ -20,13 +20,13 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.abc.FitnessFunction`."""
+"""Unit test for :class:`culebra.abc.FitnessFunction`."""
 
 import unittest
 
 from os import remove
 
-from culebra import DEFAULT_SIMILARITY_THRESHOLD, SERIALIZED_FILE_EXTENSION
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import FitnessFunction
 
 
@@ -38,6 +38,14 @@ class MyFitnessFunction(FitnessFunction):
         """Objective weights."""
         return (1, 1)
 
+    def obj_names(self):
+        """Objective names."""
+        return ('a', 'b')
+
+    def obj_thresholds(self):
+        """Objective thresholds."""
+        return (0.01, 0.001)
+
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution."""
         sol.fitness.values = (0, 0)
@@ -46,7 +54,7 @@ class MyFitnessFunction(FitnessFunction):
 
 
 class FitnessFunctionTester(unittest.TestCase):
-    """Test :py:class:`~culebra.abc.FitnessFunction`."""
+    """Test :class:`~culebra.abc.FitnessFunction`."""
 
     def test_num_obj(self):
         """Test the num_obj property."""
@@ -54,55 +62,16 @@ class FitnessFunctionTester(unittest.TestCase):
         func = MyFitnessFunction()
         self.assertEqual(func.num_obj, len(func.obj_weights))
 
-    def test_obj_names(self):
-        """Test the obj_names property."""
+    def test_fitness_cls(self):
+        """Test the fitness_cls property."""
         # Fitness function to be tested
         func = MyFitnessFunction()
-        self.assertEqual(func.obj_names, ("obj_0", "obj_1"))
-
-    def test_obj_thresholds(self):
-        """Test the obj_thresholds property."""
-        # Try default objective similarity thresholds
-        func = MyFitnessFunction()
-
-        self.assertEqual(
-            func.obj_thresholds,
-            [DEFAULT_SIMILARITY_THRESHOLD] * func.num_obj
-            )
-
-        invalid_threshold_types = (type, {}, len)
-        invalid_threshold_value = -1
-        valid_thresholds = [0, 0.33, 0.5, 2]
-
-        # Try invalid types for the thresholds. Should fail
-        for threshold in invalid_threshold_types:
-            with self.assertRaises(TypeError):
-                func.obj_thresholds = threshold
-
-        # Try invalid values for the threshold. Should fail
-        with self.assertRaises(ValueError):
-            func.obj_thresholds = invalid_threshold_value
-
-        # Try a fixed value for all the thresholds
-        for threshold in valid_thresholds:
-            func.obj_thresholds = threshold
-            # Check the length of the sequence
-            self.assertEqual(len(func.obj_thresholds), func.num_obj)
-
-            # Check that all the values match
-            for th in func.obj_thresholds:
-                self.assertEqual(threshold, th)
-
-        # Try different values of threshold for each objective
-        func.obj_thresholds = valid_thresholds[:func.num_obj]
-        for th1, th2 in zip(
-            valid_thresholds, func.obj_thresholds
-        ):
-            self.assertEqual(th1, th2)
-
-        # Try a wrong number of thresholds
-        with self.assertRaises(ValueError):
-            func.obj_thresholds = valid_thresholds
+        
+        # Generate the fitness class
+        fitness_cls = func.fitness_cls
+        self.assertEqual(fitness_cls.weights, func.obj_weights)
+        self.assertEqual(fitness_cls.names, func.obj_names)
+        self.assertEqual(fitness_cls.thresholds, func.obj_thresholds)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

@@ -20,13 +20,14 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.aco.AgeBasedPACO`."""
+"""Unit test for :class:`culebra.trainer.aco.AgeBasedPACO`."""
 
 import unittest
 
 import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
+from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import AgeBasedPACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
@@ -39,8 +40,12 @@ banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
 
+class AgeBasedPACOTSP(ACOTSP, AgeBasedPACO):
+    """Age Based PACO for TSP."""
+
+
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.aco.AgeBasedPACO`."""
+    """Test :class:`culebra.trainer.aco.AgeBasedPACO`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -65,7 +70,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = AgeBasedPACO(**params)
+        trainer = AgeBasedPACOTSP(**params)
 
         # Check the parameters
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
@@ -113,7 +118,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = AgeBasedPACO(**params)
+        trainer = AgeBasedPACOTSP(**params)
 
         # Create new internal structures
         trainer._init_internals()
@@ -139,7 +144,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = AgeBasedPACO(**params)
+        trainer = AgeBasedPACOTSP(**params)
         trainer._init_search()
 
         # The initial population should be empty
@@ -199,7 +204,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = AgeBasedPACO(**params)
+        trainer = AgeBasedPACOTSP(**params)
         trainer._init_search()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

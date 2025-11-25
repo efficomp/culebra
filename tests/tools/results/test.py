@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.tools.Results`."""
+"""Unit test for :class:`culebra.tools.Results`."""
 
 import unittest
 from collections import UserDict
@@ -36,7 +36,7 @@ CSV_FILE_EXTENSION = ".csv"
 
 
 class ResultsTester(unittest.TestCase):
-    """Test :py:class:`~culebra.tools.Results`."""
+    """Test :class:`~culebra.tools.Results`."""
 
     def test_init(self):
         """Test the constructor."""
@@ -50,7 +50,7 @@ class ResultsTester(unittest.TestCase):
         self.assertIsInstance(results, UserDict)
 
     def test_setitem(self):
-        """Test the :py:meth:`~culebra.tools.Results.__setitem__` method."""
+        """Test the :meth:`~culebra.tools.Results.__setitem__` method."""
         results = Results()
 
         data = DataFrame()
@@ -199,7 +199,7 @@ class ResultsTester(unittest.TestCase):
         remove(good_excel_filename)
 
     def test_copy(self):
-        """Test the :py:meth:`~culebra.tools.Results.__copy__` method."""
+        """Test the :meth:`~culebra.tools.Results.__copy__` method."""
         data_filenames = (
             "test_fitness" + CSV_FILE_EXTENSION,
             "execution_metrics" + CSV_FILE_EXTENSION
@@ -217,7 +217,7 @@ class ResultsTester(unittest.TestCase):
             self.assertEqual(id(results1[key]), id(results2[key]))
 
     def test_deepcopy(self):
-        """Test :py:meth:`~culebra.tools.Results.__deepcopy__`."""
+        """Test :meth:`~culebra.tools.Results.__deepcopy__`."""
         data_filenames = (
             "test_fitness" + CSV_FILE_EXTENSION,
             "execution_metrics" + CSV_FILE_EXTENSION
@@ -234,9 +234,9 @@ class ResultsTester(unittest.TestCase):
         """Check if *results1* is a deepcopy of *results2*.
 
         :param results1: The first results
-        :type results1: :py:class:`~culebra.tools.Results`
+        :type results1: ~culebra.tools.Results
         :param results2: The second results
-        :type results2: :py:class:`~culebra.tools.Results`
+        :type results2: ~culebra.tools.Results
         """
         # Copies all the levels
         self.assertNotEqual(id(results1), id(results2))

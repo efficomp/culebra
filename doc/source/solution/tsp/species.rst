@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.tsp.Species` class
-==============================================
+:class:`culebra.solution.tsp.Species` class
+===========================================
 
 .. autoclass:: culebra.solution.tsp.Species
 
@@ -30,8 +30,8 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.tsp.Species.num_nodes
 .. autoproperty:: culebra.solution.tsp.Species.banned_nodes
+.. autoproperty:: culebra.solution.tsp.Species.num_nodes
 
 Methods
 -------

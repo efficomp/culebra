@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.tsp.Solution` class
-===============================================
+:class:`culebra.solution.tsp.Solution` class
+============================================
 
 .. autoclass:: culebra.solution.tsp.Solution
 
@@ -34,15 +34,15 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.tsp.Solution.species
 .. autoproperty:: culebra.solution.tsp.Solution.fitness
 .. autoproperty:: culebra.solution.tsp.Solution.path
+.. autoproperty:: culebra.solution.tsp.Solution.species
 
 Methods
 -------
-.. automethod:: culebra.solution.tsp.Solution.dump
-.. automethod:: culebra.solution.tsp.Solution.dominates
 .. automethod:: culebra.solution.tsp.Solution.delete_fitness
+.. automethod:: culebra.solution.tsp.Solution.dominates
+.. automethod:: culebra.solution.tsp.Solution.dump
 
 Private methods
 ---------------
@@ -50,11 +50,15 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.tsp.Solution.__hash__
+Intended to compare (lexicographically) two solutions according to their
+fitness.
+
 .. automethod:: culebra.solution.tsp.Solution.__eq__
-.. automethod:: culebra.solution.tsp.Solution.__ne__
-.. automethod:: culebra.solution.tsp.Solution.__lt__
-.. automethod:: culebra.solution.tsp.Solution.__gt__
-.. automethod:: culebra.solution.tsp.Solution.__le__
 .. automethod:: culebra.solution.tsp.Solution.__ge__
+.. automethod:: culebra.solution.tsp.Solution.__gt__
+.. automethod:: culebra.solution.tsp.Solution.__hash__
+.. automethod:: culebra.solution.tsp.Solution.__le__
+.. automethod:: culebra.solution.tsp.Solution.__lt__
+.. automethod:: culebra.solution.tsp.Solution.__ne__
 .. automethod:: culebra.solution.tsp.Solution.__str__
+

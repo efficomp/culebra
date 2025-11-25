@@ -68,7 +68,7 @@ class SequentialCooperativeEA(CooperativeEA, SequentialDistributedTrainer):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [SequentialCooperativeEA],
                 bool
             ]
         ] = None,
@@ -191,7 +191,7 @@ class ParallelCooperativeEA(CooperativeEA, ParallelDistributedTrainer):
         max_num_iters: Optional[int] = None,
         custom_termination_func: Optional[
             Callable[
-                [SinglePopEA],
+                [ParallelCooperativeEA],
                 bool
             ]
         ] = None,

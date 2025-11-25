@@ -8,7 +8,7 @@
     <title>culebra.tools module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=37f418d5"></script>
+    <script src="_static/documentation_options.js?v=c87aa342"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -46,77 +46,33 @@
 <p>Since many interesting problems are based on data processing, this module
 provides the <a class="reference internal" href="tools/dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a> class to hold and manage the
 data samples.</p>
-<p>Bresides, since automated experimentation is also a quite valuable
+<p>Besides, since automated experimentation is also a quite valuable
 characteristic when a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a> method has to be run
 many times, culebra provides this features by means of the following classes:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
+<li><p>The <a class="reference internal" href="tools/batch.html#culebra.tools.Batch" title="culebra.tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> class, which allows to run a batch of
+experiments with the same configuration</p></li>
+<li><p>The <a class="reference internal" href="tools/effect_size.html#culebra.tools.EffectSize" title="culebra.tools.EffectSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">EffectSize</span></code></a> class, to keep the outcome
+of an effect size estimation of several batches results</p></li>
 <li><p>The <a class="reference internal" href="tools/evaluation.html#culebra.tools.Evaluation" title="culebra.tools.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluation</span></code></a> class, a base class for the
 evaluation of trainers</p></li>
 <li><p>The <a class="reference internal" href="tools/experiment.html#culebra.tools.Experiment" title="culebra.tools.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> class, designed to run a single
 experiment with a <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a></p></li>
-<li><p>The <a class="reference internal" href="tools/batch.html#culebra.tools.Batch" title="culebra.tools.Batch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Batch</span></code></a> class, which allows to run a batch of
-experiments with the same configuration</p></li>
 <li><p>The <a class="reference internal" href="tools/results.html#culebra.tools.Results" title="culebra.tools.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> class, to manage the results
 provided by the evaluation of any <a class="reference internal" href="abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></a></p></li>
 <li><p>The <a class="reference internal" href="tools/results_analyzer.html#culebra.tools.ResultsAnalyzer" title="culebra.tools.ResultsAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsAnalyzer</span></code></a> class, to perform
 statistical analysis over the results of several experimtent batchs</p></li>
-<li><p>The <a class="reference internal" href="tools/test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a> class, to keep the outcome of a
-statistical test</p></li>
 <li><p>The <a class="reference internal" href="tools/results_comparison.html#culebra.tools.ResultsComparison" title="culebra.tools.ResultsComparison"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsComparison</span></code></a> class, to keep the outcome
 of a comparison of several batches results</p></li>
-<li><p>The <a class="reference internal" href="tools/effect_size.html#culebra.tools.EffectSize" title="culebra.tools.EffectSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">EffectSize</span></code></a> class, to keep the outcome
-of an effect size estimation of several batches results</p></li>
+<li><p>The <a class="reference internal" href="tools/test_outcome.html#culebra.tools.TestOutcome" title="culebra.tools.TestOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestOutcome</span></code></a> class, to keep the outcome of a
+statistical test</p></li>
 </ul>
-</div></blockquote>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_SEP">
-<span class="sig-name descname"><span class="pre">DEFAULT_SEP</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'\\s+'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_SEP" title="Link to this definition">¶</a></dt>
-<dd><p>Default column separator used within dataset files.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.EXCEL_FILE_EXTENSION">
-<span class="sig-name descname"><span class="pre">EXCEL_FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'.xlsx'</span></em><a class="headerlink" href="#culebra.tools.EXCEL_FILE_EXTENSION" title="Link to this definition">¶</a></dt>
-<dd><p>File extension for Excel datasheets.</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.DEFAULT_ALPHA">
 <span class="sig-name descname"><span class="pre">DEFAULT_ALPHA</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.05</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_ALPHA" title="Link to this definition">¶</a></dt>
 <dd><p>Default significance level for statistical tests.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_NORMALITY_TEST">
-<span class="sig-name descname"><span class="pre">DEFAULT_NORMALITY_TEST</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_NORMALITY_TEST" title="Link to this definition">¶</a></dt>
-<dd><p>Default normality test.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST">
-<span class="sig-name descname"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="Link to this definition">¶</a></dt>
-<dd><p>Default homoscedasticity test.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_P_ADJUST">
-<span class="sig-name descname"><span class="pre">DEFAULT_P_ADJUST</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_P_ADJUST" title="Link to this definition">¶</a></dt>
-<dd><p>Default method for adjusting the p-values with the Dunn’s test.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_STATS_FUNCTIONS">
-<span class="sig-name descname"><span class="pre">DEFAULT_STATS_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_STATS_FUNCTIONS" title="Link to this definition">¶</a></dt>
-<dd><p>Default statistics calculated for the results.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_FEATURE_METRIC_FUNCTIONS">
-<span class="sig-name descname"><span class="pre">DEFAULT_FEATURE_METRIC_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_FEATURE_METRIC_FUNCTIONS" title="Link to this definition">¶</a></dt>
-<dd><p>Default metrics calculated for the features in the set of solutions.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -127,9 +83,51 @@ experiments.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'config.py'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="Link to this definition">¶</a></dt>
+<dd><p>Default file name for configuration files.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_FEATURE_METRIC_FUNCTIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_FEATURE_METRIC_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_FEATURE_METRIC_FUNCTIONS" title="Link to this definition">¶</a></dt>
+<dd><p>Default metrics calculated for the features in the set of solutions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST">
+<span class="sig-name descname"><span class="pre">DEFAULT_HOMOSCEDASTICITY_TEST</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">bartlett&gt;</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST" title="Link to this definition">¶</a></dt>
+<dd><p>Default homoscedasticity test.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_OUTLIER_PROPORTION">
+<span class="sig-name descname"><span class="pre">DEFAULT_OUTLIER_PROPORTION</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">0.05</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_OUTLIER_PROPORTION" title="Link to this definition">¶</a></dt>
+<dd><p>Expected outlier proportion por class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_NORMALITY_TEST">
+<span class="sig-name descname"><span class="pre">DEFAULT_NORMALITY_TEST</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">shapiro&gt;</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_NORMALITY_TEST" title="Link to this definition">¶</a></dt>
+<dd><p>Default normality test.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.DEFAULT_NUM_EXPERIMENTS">
 <span class="sig-name descname"><span class="pre">DEFAULT_NUM_EXPERIMENTS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_NUM_EXPERIMENTS" title="Link to this definition">¶</a></dt>
 <dd><p>Default number of experiments in the batch.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_P_ADJUST">
+<span class="sig-name descname"><span class="pre">DEFAULT_P_ADJUST</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'fdr_tsbky'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_P_ADJUST" title="Link to this definition">¶</a></dt>
+<dd><p>Default method for adjusting the p-values with the Dunn’s test.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_RESULTS_BASENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_RESULTS_BASENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'results'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_RESULTS_BASENAME" title="Link to this definition">¶</a></dt>
+<dd><p>Default base name for results files.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -139,15 +137,27 @@ experiments.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'config.py'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="Link to this definition">¶</a></dt>
-<dd><p>Default file name for configuration files.</p>
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_SEP">
+<span class="sig-name descname"><span class="pre">DEFAULT_SEP</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'\\s+'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_SEP" title="Link to this definition">¶</a></dt>
+<dd><p>Default column separator used within dataset files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_RESULTS_BASENAME">
-<span class="sig-name descname"><span class="pre">DEFAULT_RESULTS_BASENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'results'</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_RESULTS_BASENAME" title="Link to this definition">¶</a></dt>
-<dd><p>Default base name for results files.</p>
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS">
+<span class="sig-name descname"><span class="pre">DEFAULT_SMOTE_NUM_NEIGHBORS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS" title="Link to this definition">¶</a></dt>
+<dd><p>Default number of neighbors for <a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_STATS_FUNCTIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_STATS_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_STATS_FUNCTIONS" title="Link to this definition">¶</a></dt>
+<dd><p>Default statistics calculated for the results.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.EXCEL_FILE_EXTENSION">
+<span class="sig-name descname"><span class="pre">EXCEL_FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'.xlsx'</span></em><a class="headerlink" href="#culebra.tools.EXCEL_FILE_EXTENSION" title="Link to this definition">¶</a></dt>
+<dd><p>File extension for Excel datasheets.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">

@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:mod:`~culebra.trainer.topology`."""
+"""Unit test for :mod:`~culebra.trainer.topology`."""
 
 import unittest
 
@@ -32,10 +32,10 @@ from culebra.trainer.topology import (
 
 
 class TopologyTester(unittest.TestCase):
-    """Test the :py:mod:`~culebra.trainer.topology` module."""
+    """Test the :mod:`~culebra.trainer.topology` module."""
 
     def test_ring_destinations(self):
-        """Test :py:func:`~culebra.trainer.topology.ring_destinations`."""
+        """Test :func:`~culebra.trainer.topology.ring_destinations`."""
         # Maximum number of islands for the test
         max_islands = 10
 

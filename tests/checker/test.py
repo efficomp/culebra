@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for the :py:mod:`culebra.checker` module."""
+"""Unit test for the :mod:`culebra.checker` module."""
 
 import unittest
 from numbers import Real
@@ -44,10 +44,10 @@ from culebra.checker import (
 
 
 class TypeCheckerTester(unittest.TestCase):
-    """Test the :py:mod:`culebra.checker` module."""
+    """Test the :mod:`culebra.checker` module."""
 
     def test_check_bool(self):
-        """Test the :py:func:`culebra.checker.check_bool` function."""
+        """Test the :func:`culebra.checker.check_bool` function."""
         # Check invalid types. Should fail
         invalid_values = ('a', 1.5, len)
         for value in invalid_values:
@@ -59,7 +59,7 @@ class TypeCheckerTester(unittest.TestCase):
             self.assertEqual(check_bool(value, "name"), value)
 
     def test_check_str(self):
-        """Test the :py:func:`culebra.checker.check_str` function."""
+        """Test the :func:`culebra.checker.check_str` function."""
         # Check invalid types. Should fail
         invalid_values = (1.5, len)
         for value in invalid_values:
@@ -82,7 +82,7 @@ class TypeCheckerTester(unittest.TestCase):
             check_str("hello", "name", valid_chars="h")
 
     def test_check_limits(self):
-        """Test :py:func:`culebra.checker.check_limits`."""
+        """Test :func:`culebra.checker.check_limits`."""
         # Check invalid values. Should fail
         with self.assertRaises(ValueError):
             check_limits(1, "name", lt=0)
@@ -102,7 +102,7 @@ class TypeCheckerTester(unittest.TestCase):
         self.assertEqual(check_limits(0, "name", ge=0), 0)
 
     def test_check_int(self):
-        """Test the :py:func:`culebra.checker.check_int` function."""
+        """Test the :func:`culebra.checker.check_int` function."""
         # Check invalid types. Should fail
         invalid_values = ('a', 1.5, len)
         for value in invalid_values:
@@ -127,7 +127,7 @@ class TypeCheckerTester(unittest.TestCase):
             check_int(value, "name", ne=value)
 
     def test_check_float(self):
-        """Test the :py:func:`culebra.checker.check_float` function."""
+        """Test the :func:`culebra.checker.check_float` function."""
         # Check invalid types. Should fail
         invalid_values = ('a', '1.5', len)
         for value in invalid_values:
@@ -147,7 +147,7 @@ class TypeCheckerTester(unittest.TestCase):
         self.assertEqual(check_limits(0, "name", ge=0), 0.0)
 
     def test_check_instance(self):
-        """Test :py:func:`culebra.checker.check_instance`."""
+        """Test :func:`culebra.checker.check_instance`."""
         # Check invalid instances. Should fail
         invalid_values = ('a', 1.5)
         for value in invalid_values:
@@ -162,7 +162,7 @@ class TypeCheckerTester(unittest.TestCase):
             )
 
     def test_check_subclass(self):
-        """Test :py:func:`culebra.checker.check_subclass`."""
+        """Test :func:`culebra.checker.check_subclass`."""
         # Check invalid classes. Should fail
         invalid_values = ('a', 1.5)
         for value in invalid_values:
@@ -183,7 +183,7 @@ class TypeCheckerTester(unittest.TestCase):
             )
 
     def test_check_func(self):
-        """Test :py:func:`culebra.checker.check_func`."""
+        """Test :func:`culebra.checker.check_func`."""
         # Check invalid types. Should fail
         invalid_values = ('a', 1.5, 1)
         for value in invalid_values:
@@ -195,7 +195,7 @@ class TypeCheckerTester(unittest.TestCase):
             self.assertEqual(check_func(value, "name"), value)
 
     def test_check_func_params(self):
-        """Test :py:func:`culebra.checker.check_func_params`."""
+        """Test :func:`culebra.checker.check_func_params`."""
         # Check invalid types. Should fail
         invalid_values = ('a', 1.5, 1)
         for value in invalid_values:
@@ -213,7 +213,7 @@ class TypeCheckerTester(unittest.TestCase):
             self.assertEqual(check_func_params(value, "name"), value)
 
     def test_check_sequence(self):
-        """Test :py:func:`culebra.checker.check_sequence`."""
+        """Test :func:`culebra.checker.check_sequence`."""
         # Check invalid sequences. Should fail
         invalid_sequences = (len, 1.5, 1)
         for seq in invalid_sequences:
@@ -253,7 +253,7 @@ class TypeCheckerTester(unittest.TestCase):
             )
 
     def test_check_filename(self):
-        """Test :py:func:`culebra.checker.check_filename`."""
+        """Test :func:`culebra.checker.check_filename`."""
         # Check an invalid filename
         invalid_filename = 1
         with self.assertRaises(TypeError):
@@ -278,7 +278,7 @@ class TypeCheckerTester(unittest.TestCase):
         check_filename(valid_filename, "filename", ext=valid_extension)
 
     def test_matrix(self):
-        """Test :py:func:`culebra.checker.check_matrix`."""
+        """Test :func:`culebra.checker.check_matrix`."""
         # Try incorrect dtypes. Should fail
         invalid_dtype_values = [len, max]
         for dtype in invalid_dtype_values:

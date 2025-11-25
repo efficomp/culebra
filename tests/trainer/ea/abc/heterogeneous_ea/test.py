@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`~culebra.trainer.ea.abc.HeterogeneousEA`."""
+"""Unit test for :class:`~culebra.trainer.ea.abc.HeterogeneousEA`."""
 
 import unittest
 
@@ -30,10 +30,10 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
+from culebra.fitness_function import MultiObjectiveFitnessFunction
 from culebra.fitness_function.feature_selection import (
     KappaIndex,
-    NumFeats,
-    FSMultiObjectiveDatasetScorer
+    NumFeats
 )
 from culebra.tools import Dataset
 
@@ -46,7 +46,7 @@ def KappaNumFeats(
     classifier=None
 ):
     """Fitness Function."""
-    return FSMultiObjectiveDatasetScorer(
+    return MultiObjectiveFitnessFunction(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
@@ -94,7 +94,7 @@ class MyTrainer(HeterogeneousEA):
                 does not match the number of subpopulations.
 
             :return: The properties of each subpopulation trainer.
-            :rtype: :py:class:`list`
+            :rtype: list
             """
             # Get the common attributes from the container trainer
             cls = self.subtrainer_cls
@@ -179,10 +179,10 @@ class MyTrainer(HeterogeneousEA):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`~culebra.trainer.ea.abc.HeterogeneousEA`."""
+    """Test :class:`~culebra.trainer.ea.abc.HeterogeneousEA`."""
 
     def test_init(self):
-        """Test :py:meth:`~culebra.trainer.ea.abc.HeterogeneousEA.__init__`."""
+        """Test :meth:`~culebra.trainer.ea.abc.HeterogeneousEA.__init__`."""
         valid_fitness_func = KappaNumFeats(dataset)
         valid_subtrainer_cls = SinglePopEA
         valid_num_subtrainers = 3

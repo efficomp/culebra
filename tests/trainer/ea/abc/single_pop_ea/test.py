@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :py:class:`culebra.trainer.ea.abc.SinglePopEA`."""
+"""Unit test for :class:`culebra.trainer.ea.abc.SinglePopEA`."""
 
 import unittest
 import os
@@ -104,14 +104,14 @@ def init_representatives(
     """Init the representatives of other species.
 
     :param individual_clases: The individual class for each species.
-    :type individual_classes: A :py:class:`~collections.abc.Sequence`
-        of :py:class:`~culebra.solution.abc.Individual` subclasses
+    :type individual_classes: A :class:`~collections.abc.Sequence`
+        of :class:`~culebra.solution.abc.Individual` subclasses
     :param species: The species to be evolved
-    :type species: A :py:class:`~collections.abc.Sequence` of
-        :py:class:`~culebra.abc.Species` instances
+    :type species: A :class:`~collections.abc.Sequence` of
+        :class:`~culebra.abc.Species` instances
     :param representation_size: Number of representative individuals
         from each species
-    :type representation_size: :py:class:`int`
+    :type representation_size: int
     """
     trainer._representatives = []
 
@@ -151,7 +151,7 @@ class MyCooperativeTrainer(MyTrainer):
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :py:class:`culebra.trainer.ea.abc.SinglePopEA`."""
+    """Test :class:`culebra.trainer.ea.abc.SinglePopEA`."""
 
     def test_init(self):
         """Test __init__`."""
@@ -661,9 +661,9 @@ class TrainerTester(unittest.TestCase):
         """Check if *trainer1* is a deepcopy of *trainer2*.
 
         :param trainer1: The first trainer
-        :type trainer1: :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
+        :type trainer1: culebra.trainer.ea.abc.SinglePopEA
         :param trainer2: The second trainer
-        :type trainer2: :py:class:`~culebra.trainer.ea.abc.SinglePopEA`
+        :type trainer2: culebra.trainer.ea.abc.SinglePopEA
         """
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))

@@ -70,7 +70,7 @@ class SimpleEA(SinglePopEA):
         """Set up the trainer internal data structures to start searching.
 
         Overridden to create and initialize the Deap's
-        :py:class:`~deap.base.Toolbox`.
+        :class:`~deap.base.Toolbox`.
         """
         super()._init_internals()
 
@@ -91,7 +91,7 @@ class SimpleEA(SinglePopEA):
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
 
-        Overridden to reset the Deap's :py:class:`~deap.base.Toolbox`.
+        Overridden to reset the Deap's :class:`~deap.base.Toolbox`.
         """
         super()._reset_internals()
         self._toolbox = None
@@ -153,84 +153,82 @@ class ElitistEA(SimpleEA):
         """Create a new trainer.
 
         :param solution_cls: The individual class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Individual`
-            subclass
+        :type solution_cls: type[~culebra.solution.abc.Individual]
         :param species: The species for all the individuals
-        :type species: :py:class:`~culebra.abc.Species`
+        :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :type fitness_function: ~culebra.abc.FitnessFunction
         :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param pop_size: The populaion size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
-            Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param pop_size: The population size. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
+            Defaults to :data:`None`
+        :type pop_size: int
         :param crossover_func: The crossover function. If set to
-            :py:data:`None`, the *solution_cls*
-            :py:meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :py:data:`None`
-        :type crossover_func: :py:class:`~collections.abc.Callable`, optional
+            :data:`None`, the *solution_cls*
+            :meth:`~culebra.solution.abc.Individual.crossover` method will
+            be used. Defaults to :data:`None`
+        :type crossover_func: ~collections.abc.Callable
         :param mutation_func: The mutation function. If set to
-            :py:data:`None`, the *solution_cls*
-            :py:meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :py:data:`None`
-        :type mutation_func: :py:class:`~collections.abc.Callable`, optional
+            :data:`None`, the *solution_cls*
+            :meth:`~culebra.solution.abc.Individual.mutate` method will be
+            used. Defaults to :data:`None`
+        :type mutation_func: ~collections.abc.Callable
         :param selection_func: The selection function. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :py:data:`None`
-        :type selection_func: :py:class:`~collections.abc.Callable`, optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
+            used. Defaults to :data:`None`
+        :type selection_func: ~collections.abc.Callable
         :param crossover_prob: The crossover probability. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :py:data:`None`
-        :type crossover_prob: :py:class:`float` in (0, 1), optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
+            used. Defaults to :data:`None`
+        :type crossover_prob: float
         :param mutation_prob: The mutation probability. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :py:data:`None`
-        :type mutation_prob: :py:class:`float` in (0, 1), optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
+            used. Defaults to :data:`None`
+        :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :py:data:`None`
-        :type gene_ind_mutation_prob: :py:class:`float` in (0, 1), optional
+            probability. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            will be used. Defaults to :data:`None`
+        :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :py:data:`None`
-        :type selection_func_params: :py:class:`dict`, optional
+            function. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            will be used. Defaults to :data:`None`
+        :type selection_func_params: dict
         :param elite_size: Number of individuals that will be preserved
-            as the elite. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` will be
-            used. Defaults to :py:data:`None`
-        :type elite_size: :py:class:`int`, optional
+            as the elite. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` will be
+            used. Defaults to :data:`None`
+        :type elite_size: int
         :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_enable: bool
         :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_freq: int
         :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
-            Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
+            :data:`None`,
+            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
+            Defaults to :data:`None`
+        :type checkpoint_filename: str
         :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`, :data:`__debug__` will be used. Defaults to
+            :data:`None`
+        :type verbose: bool
+        :param random_seed: The seed, defaults to :data:`None`
+        :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -259,14 +257,15 @@ class ElitistEA(SimpleEA):
 
     @property
     def elite_size(self) -> int:
-        """Get and set the elite size.
+        """Elite size.
 
-        :getter: Return the elite size
-        :setter: Set a new elite size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an int
-        :raises ValueError: If set to a value lower than or equal to 0
+        :rtype: int
+        :setter: Set a new value for the elite size
+        :param value: The new size. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` is chosen
+        :type value: int
+        :raises TypeError: If *value* is not an int
+        :raises ValueError: If *value* is lower than or equal to 0
         """
         return (
             DEFAULT_ELITE_SIZE if self._elite_size is None
@@ -277,10 +276,10 @@ class ElitistEA(SimpleEA):
     def elite_size(self, value: int | None) -> None:
         """Set a new value for the elite size.
 
-        :param value: New size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` is chosen
-        :type value: :py:class:`int`
-        :raises TypeError: If set to a value which is not an int
+        :param value: The new size. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` is chosen
+        :type value: int
+        :raises TypeError: If *value* is not an int
         :raises ValueError: If *value* is lower than or equal to 0
         """
         # Check the value
@@ -296,7 +295,7 @@ class ElitistEA(SimpleEA):
 
         Overridden to add the current elite to the trainer's state.
 
-        :type: :py:class:`dict`
+        :rtype: dict
         """
         # Get the state of the superclass
         state = super()._get_state()
@@ -312,7 +311,7 @@ class ElitistEA(SimpleEA):
         Overridden to add the current elite to the trainer's state.
 
         :param state: The last loaded state
-        :type state: :py:class:`dict`
+        :type state: dict
         """
         # Set the state of the superclass
         super()._set_state(state)
@@ -345,10 +344,10 @@ class ElitistEA(SimpleEA):
         """Implement an iteration of the search process.
 
         In this case, the best
-        :py:attr:`~culebra.trainer.ea.ElitistEA.elite_size` individuals of
+        :attr:`~culebra.trainer.ea.ElitistEA.elite_size` individuals of
         each iteration (the elite) are preserved for the next iteration. The
         breeding and selection are implemented as in the
-        :py:class:`~culebra.trainer.ea.SimpleEA` trainer.
+        :class:`~culebra.trainer.ea.SimpleEA` trainer.
         """
         # Generate the offspring
         offspring = varAnd(
@@ -405,89 +404,87 @@ class NSGA(SimpleEA):
         """Create a new trainer.
 
         :param solution_cls: The individual class
-        :type solution_cls: An :py:class:`~culebra.solution.abc.Individual`
-            subclass
+        :type solution_cls: type[~culebra.solution.abc.Individual]
         :param species: The species for all the individuals
-        :type species: :py:class:`~culebra.abc.Species`
+        :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
-        :type fitness_function: :py:class:`~culebra.abc.FitnessFunction`
+        :type fitness_function: ~culebra.abc.FitnessFunction
         :param max_num_iters: Maximum number of iterations. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :py:data:`None`
-        :type max_num_iters: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
+            be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If set to
-            :py:data:`None`, the default termination criterion is used.
-            Defaults to :py:data:`None`
-        :type custom_termination_func: :py:class:`~collections.abc.Callable`,
-            optional
-        :param pop_size: The population size. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
+            :data:`None`, the default termination criterion is used.
+            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param pop_size: The population size. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
             NSGA-II or the number of reference points is chosen for NSGA-III.
-            Defaults to :py:data:`None`
-        :type pop_size: :py:class:`int`, greater than zero, optional
+            Defaults to :data:`None`
+        :type pop_size: int
         :param crossover_func: The crossover function. If set to
-            :py:data:`None`, the *solution_cls*
-            :py:meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :py:data:`None`
-        :type crossover_func: :py:class:`~collections.abc.Callable`, optional
+            :data:`None`, the *solution_cls*
+            :meth:`~culebra.solution.abc.Individual.crossover` method will
+            be used. Defaults to :data:`None`
+        :type crossover_func: ~collections.abc.Callable
         :param mutation_func: The mutation function. If set to
-            :py:data:`None`, the *solution_cls*
-            :py:meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :py:data:`None`
-        :type mutation_func: :py:class:`~collections.abc.Callable`, optional
+            :data:`None`, the *solution_cls*
+            :meth:`~culebra.solution.abc.Individual.mutate` method will be
+            used. Defaults to :data:`None`
+        :type mutation_func: ~collections.abc.Callable
         :param selection_func: The selection function. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC`
-            will be used. Defaults to :py:data:`None`
-        :type selection_func: :py:class:`~collections.abc.Callable`, optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC`
+            will be used. Defaults to :data:`None`
+        :type selection_func: ~collections.abc.Callable
         :param crossover_prob: The crossover probability. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :py:data:`None`
-        :type crossover_prob: :py:class:`float` in (0, 1), optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
+            used. Defaults to :data:`None`
+        :type crossover_prob: float
         :param mutation_prob: The mutation probability. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :py:data:`None`
-        :type mutation_prob: :py:class:`float` in (0, 1), optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
+            used. Defaults to :data:`None`
+        :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :py:data:`None`
-        :type gene_ind_mutation_prob: :py:class:`float` in (0, 1), optional
+            probability. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            will be used. Defaults to :data:`None`
+        :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :py:data:`None`
-        :type selection_func_params: :py:class:`dict`, optional
+            function. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
+            will be used. Defaults to :data:`None`
+        :type selection_func_params: dict
         :param nsga3_reference_points_p: Number of divisions along each
             objective to obtain the reference points of NSGA-III. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
-            will be used. Defaults to :py:data:`None`
-        :type nsga3_reference_points_p: :py:class:`int`, optional
+            :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+            will be used. Defaults to :data:`None`
+        :type nsga3_reference_points_p: int
         :param nsga3_reference_points_scaling: Scaling factor for the reference
-            points of NSGA-III. Defaults to :py:data:`None`
-        :type nsga3_reference_points_scaling: :py:class:`float`, optional
+            points of NSGA-III. Defaults to :data:`None`
+        :type nsga3_reference_points_scaling: float
         :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_enable: :py:class:`bool`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_enable: bool
         :param checkpoint_freq: The checkpoint frequency. If set to
-            :py:data:`None`, :py:attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
-            will be used. Defaults to :py:data:`None`
-        :type checkpoint_freq: :py:class:`int`, optional
+            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_freq: int
         :param checkpoint_filename: The checkpoint file path. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
-            Defaults to :py:data:`None`
-        :type checkpoint_filename: :py:class:`str`, optional
+            :data:`None`,
+            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
+            Defaults to :data:`None`
+        :type checkpoint_filename: str
         :param verbose: The verbosity. If set to
-            :py:data:`None`, :py:data:`__debug__` will be used. Defaults to
-            :py:data:`None`
-        :type verbose: :py:class:`bool`, optional
-        :param random_seed: The seed, defaults to :py:data:`None`
-        :type random_seed: :py:class:`int`, optional
+            :data:`None`, :data:`__debug__` will be used. Defaults to
+            :data:`None`
+        :type verbose: bool
+        :param random_seed: The seed, defaults to :data:`None`
+        :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
@@ -517,16 +514,16 @@ class NSGA(SimpleEA):
 
     @SimpleEA.pop_size.getter
     def pop_size(self) -> int:
-        """Get and set the population size.
+        """Population size.
 
-        :getter: Return the current population size
-        :setter: Set a new value for the population size. If set to
-            :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
+        :rtype: int
+        :setter: Set a new population size
+        :param size: The new population size. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
             NSGA-II or the number of reference points is chosen for NSGA-III
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an :py:class:`int`
-        :raises ValueError: If set to a value which is not greater than zero
+        :type size: int
+        :raises TypeError: If *size* is not an :class:`int`
+        :raises ValueError: If *size* is not greater than zero
         """
         if self._pop_size is None and self.selection_func is selNSGA3:
             the_pop_size = len(self.nsga3_reference_points)
@@ -539,14 +536,15 @@ class NSGA(SimpleEA):
     def selection_func(
         self
     ) -> Callable[[List[Individual], int, Any], List[Individual]]:
-        """Get and set the selection function.
+        """Selection function.
 
-        :getter: Return the current selection function
-        :setter: Set the new selection function. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC` is
+        :rtype: ~collections.abc.Callable
+        :setter: Set a new selection function
+        :param func: The new selection function. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC` is
             chosen
-        :type: :py:class:`~collections.abc.Callable`
-        :raises TypeError: If set to a value which is not callable
+        :type func: ~collections.abc.Callable
+        :raises TypeError: If *func* is not callable
         """
         return (
             DEFAULT_NSGA_SELECTION_FUNC
@@ -556,14 +554,15 @@ class NSGA(SimpleEA):
 
     @SimpleEA.selection_func_params.getter
     def selection_func_params(self) -> Dict[str, Any]:
-        """Get and set the parameters of the selection function.
+        """Parameters of the selection function.
 
-        :getter: Return the current parameters for the selection function
-        :setter: Set new parameters. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
+        :rtype: dict
+        :setter: Set new parameters for the selection function
+        :param params: The new parameters. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
             is chosen
-        :type: A :py:class:`dict`
-        :raises TypeError: If set to a value which is not a :py:class:`dict`
+        :type params: dict
+        :raises TypeError: If *params* is not a :class:`dict`
         """
         func_params = (
             DEFAULT_NSGA_SELECTION_FUNC_PARAMS
@@ -579,9 +578,9 @@ class NSGA(SimpleEA):
 
     @property
     def nsga3_reference_points(self) -> Sequence:
-        """Get the set of reference points for NSGA-III.
+        """Reference points for NSGA-III.
 
-        :type: :py:class:`~collections.abc.Sequence`
+        :rtype: ~collections.abc.Sequence
         """
         if self._nsga3_ref_points is None:
             # Obtain the reference points
@@ -595,18 +594,19 @@ class NSGA(SimpleEA):
 
     @property
     def nsga3_reference_points_p(self) -> int:
-        """Get and set the *p* parameter for NSGA-III.
+        """NSGA-III's *p* parameter.
 
         The *p* parameter indicates the number of divisions to be made along
         each objective to obtain the reference points of NSGA-III.
 
-        :getter: Return the number of divisions
-        :setter: Set a new number of divisions. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+        :rtype: int
+        :setter: Set a new value for the *p* parameter for NSGA-III
+        :param value: The new number of divisions. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
             is chosen
-        :type: :py:class:`int`
-        :raises TypeError: If set to a value which is not an integer
-        :raises ValueError: If set to a value lower than 1
+        :type value: int
+        :raises TypeError: If *value* is not an integer
+        :raises ValueError: If *value* < 1
         """
         return (
             DEFAULT_NSGA3_REFERENCE_POINTS_P
@@ -621,10 +621,10 @@ class NSGA(SimpleEA):
         The *p* parameter indicates the number of divisions to be made along
         each objective to obtain the reference points of NSGA-III.
 
-        :param value: New number of divisions. If set to :py:data:`None`,
-            :py:attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+        :param value: The new number of divisions. If set to :data:`None`,
+            :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
             is chosen
-        :type value: :py:class:`int`
+        :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* < 1
         """
@@ -640,12 +640,14 @@ class NSGA(SimpleEA):
 
     @property
     def nsga3_reference_points_scaling(self) -> float | None:
-        """Get and set the scaling factor for the reference points of NSGA-III.
+        """Scaling factor for the reference points of NSGA-III.
 
-        :getter: Return the scaling factor
-        :setter: Set a new scaling factor
-        :type: :py:class:`float` or :py:data:`None`
-        :raises TypeError: If set to a value which is not a float number
+        :return: The scaling factor or :data:`None` if it is not defined
+        :rtype: float
+        :setter: Set a new scaling factor for the reference points of NSGA-III
+        :param value: New scaling factor
+        :type value: float
+        :raises TypeError: If *value* is not a float number
         """
         return self._nsga3_reference_points_scaling
 
@@ -654,7 +656,7 @@ class NSGA(SimpleEA):
         """Set a new scaling factor for the reference points of NSGA-III.
 
         :param value: New scaling factor
-        :type value: :py:class:`float` or :py:data:`None`
+        :type value: float
         :raises TypeError: If *value* is not a float number
         """
         # Check the value

@@ -19,32 +19,32 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.fitness_function.tsp.PathLength` class
-=========================================================
+:class:`culebra.fitness_function.tsp.PathLength` class
+======================================================
 
 .. autoclass:: culebra.fitness_function.tsp.PathLength
 
 Class methods
 -------------
-.. automethod:: culebra.fitness_function.tsp.PathLength.load
 .. automethod:: culebra.fitness_function.tsp.PathLength.fromPath
 .. automethod:: culebra.fitness_function.tsp.PathLength.fromTSPLib
+.. automethod:: culebra.fitness_function.tsp.PathLength.load
 
 Properties
 ----------
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.distance
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.fitness_cls
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.heuristic
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.index
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.num_nodes
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.num_obj
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_weights
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_names
 .. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_thresholds
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.fitness_cls
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.num_nodes
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.index
-.. autoproperty:: culebra.fitness_function.tsp.PathLength.distance
+.. autoproperty:: culebra.fitness_function.tsp.PathLength.obj_weights
 
 Methods
 -------
 .. automethod:: culebra.fitness_function.tsp.PathLength.dump
-.. automethod:: culebra.fitness_function.tsp.PathLength.heuristic
 .. automethod:: culebra.fitness_function.tsp.PathLength.evaluate
-.. automethod:: culebra.fitness_function.tsp.PathLength.is_evaluable
 .. automethod:: culebra.fitness_function.tsp.PathLength.greedy_solution
+.. automethod:: culebra.fitness_function.tsp.PathLength.is_evaluable

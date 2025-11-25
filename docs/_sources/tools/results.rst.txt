@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.tools.Results` class
-=======================================
+:class:`culebra.tools.Results` class
+====================================
 
 .. autoclass:: culebra.tools.Results
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Results.load
 .. automethod:: culebra.tools.Results.from_csv_files
+.. automethod:: culebra.tools.Results.load
 
 Methods
 -------

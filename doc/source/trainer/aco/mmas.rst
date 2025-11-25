@@ -19,15 +19,15 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.trainer.aco.MMAS` class
-==========================================
+:class:`culebra.trainer.aco.MMAS` class
+=======================================
 
 .. autoclass:: culebra.trainer.aco.MMAS
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.trainer.aco.MMAS.stats_names
 .. autoattribute:: culebra.trainer.aco.MMAS.objective_stats
+.. autoattribute:: culebra.trainer.aco.MMAS.stats_names
 
 Class methods
 -------------
@@ -35,37 +35,39 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.MMAS.num_pheromone_matrices
-.. autoproperty:: culebra.trainer.aco.MMAS.num_heuristic_matrices
-.. autoproperty:: culebra.trainer.aco.MMAS.solution_cls
-.. autoproperty:: culebra.trainer.aco.MMAS.species
-.. autoproperty:: culebra.trainer.aco.MMAS.fitness_function
-.. autoproperty:: culebra.trainer.aco.MMAS.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.MMAS.heuristic
-.. autoproperty:: culebra.trainer.aco.MMAS.pheromone
+.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.MMAS.choice_info
-.. autoproperty:: culebra.trainer.aco.MMAS.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.MMAS.heuristic_influence
-.. autoproperty:: culebra.trainer.aco.MMAS.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.MMAS.pheromone_evaporation_rate
+.. autoproperty:: culebra.trainer.aco.MMAS.col
+.. autoproperty:: culebra.trainer.aco.MMAS.col_size
+.. autoproperty:: culebra.trainer.aco.MMAS.container
 .. autoproperty:: culebra.trainer.aco.MMAS.convergence_check_freq
-.. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit
-.. autoproperty:: culebra.trainer.aco.MMAS.max_num_iters
 .. autoproperty:: culebra.trainer.aco.MMAS.current_iter
 .. autoproperty:: culebra.trainer.aco.MMAS.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.MMAS.col_size
-.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_enable
-.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.MMAS.verbose
-.. autoproperty:: culebra.trainer.aco.MMAS.random_seed
-.. autoproperty:: culebra.trainer.aco.MMAS.logbook
-.. autoproperty:: culebra.trainer.aco.MMAS.num_evals
-.. autoproperty:: culebra.trainer.aco.MMAS.runtime
+.. autoproperty:: culebra.trainer.aco.MMAS.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.MMAS.fitness_function
+.. autoproperty:: culebra.trainer.aco.MMAS.heuristic
+.. autoproperty:: culebra.trainer.aco.MMAS.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.MMAS.heuristic_shapes
 .. autoproperty:: culebra.trainer.aco.MMAS.index
-.. autoproperty:: culebra.trainer.aco.MMAS.container
+.. autoproperty:: culebra.trainer.aco.MMAS.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.MMAS.iter_best_use_limit
+.. autoproperty:: culebra.trainer.aco.MMAS.logbook
+.. autoproperty:: culebra.trainer.aco.MMAS.max_num_iters
+.. autoproperty:: culebra.trainer.aco.MMAS.num_evals
+.. autoproperty:: culebra.trainer.aco.MMAS.num_heuristic_matrices
+.. autoproperty:: culebra.trainer.aco.MMAS.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.MMAS.pheromone
+.. autoproperty:: culebra.trainer.aco.MMAS.pheromone_evaporation_rate
+.. autoproperty:: culebra.trainer.aco.MMAS.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.MMAS.pheromone_shapes
+.. autoproperty:: culebra.trainer.aco.MMAS.random_seed
 .. autoproperty:: culebra.trainer.aco.MMAS.representatives
-.. autoproperty:: culebra.trainer.aco.MMAS.col
+.. autoproperty:: culebra.trainer.aco.MMAS.runtime
+.. autoproperty:: culebra.trainer.aco.MMAS.solution_cls
+.. autoproperty:: culebra.trainer.aco.MMAS.species
+.. autoproperty:: culebra.trainer.aco.MMAS.verbose
 
 
 Private properties
@@ -74,49 +76,49 @@ Private properties
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.MMAS.dump
-.. automethod:: culebra.trainer.aco.MMAS.reset
-.. automethod:: culebra.trainer.aco.MMAS.evaluate
-.. automethod:: culebra.trainer.aco.MMAS.best_solutions
 .. automethod:: culebra.trainer.aco.MMAS.best_representatives
-.. automethod:: culebra.trainer.aco.MMAS.train
+.. automethod:: culebra.trainer.aco.MMAS.best_solutions
+.. automethod:: culebra.trainer.aco.MMAS.dump
+.. automethod:: culebra.trainer.aco.MMAS.evaluate
+.. automethod:: culebra.trainer.aco.MMAS.reset
 .. automethod:: culebra.trainer.aco.MMAS.test
+.. automethod:: culebra.trainer.aco.MMAS.train
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.aco.MMAS._get_state
-.. automethod:: culebra.trainer.aco.MMAS._set_state
-.. automethod:: culebra.trainer.aco.MMAS._save_state
-.. automethod:: culebra.trainer.aco.MMAS._load_state
-.. automethod:: culebra.trainer.aco.MMAS._new_state
-.. automethod:: culebra.trainer.aco.MMAS._init_state
-.. automethod:: culebra.trainer.aco.MMAS._reset_state
-.. automethod:: culebra.trainer.aco.MMAS._init_internals
-.. automethod:: culebra.trainer.aco.MMAS._reset_internals
-.. automethod:: culebra.trainer.aco.MMAS._init_search
-.. automethod:: culebra.trainer.aco.MMAS._search
-.. automethod:: culebra.trainer.aco.MMAS._finish_search
-.. automethod:: culebra.trainer.aco.MMAS._start_iteration
-.. automethod:: culebra.trainer.aco.MMAS._preprocess_iteration
-.. automethod:: culebra.trainer.aco.MMAS._do_iteration
-.. automethod:: culebra.trainer.aco.MMAS._postprocess_iteration
-.. automethod:: culebra.trainer.aco.MMAS._finish_iteration
-.. automethod:: culebra.trainer.aco.MMAS._do_iteration_stats
-.. automethod:: culebra.trainer.aco.MMAS._default_termination_func
-.. automethod:: culebra.trainer.aco.MMAS._termination_criterion
-.. automethod:: culebra.trainer.aco.MMAS._init_representatives
-.. automethod:: culebra.trainer.aco.MMAS._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.MMAS._ant_choice_info
 .. automethod:: culebra.trainer.aco.MMAS._calculate_choice_info
-.. automethod:: culebra.trainer.aco.MMAS._initial_choice
-.. automethod:: culebra.trainer.aco.MMAS._next_choice
+.. automethod:: culebra.trainer.aco.MMAS._decrease_pheromone
+.. automethod:: culebra.trainer.aco.MMAS._default_termination_func
+.. automethod:: culebra.trainer.aco.MMAS._deposit_pheromone
+.. automethod:: culebra.trainer.aco.MMAS._do_iteration
+.. automethod:: culebra.trainer.aco.MMAS._do_iteration_stats
+.. automethod:: culebra.trainer.aco.MMAS._finish_iteration
+.. automethod:: culebra.trainer.aco.MMAS._finish_search
 .. automethod:: culebra.trainer.aco.MMAS._generate_ant
 .. automethod:: culebra.trainer.aco.MMAS._generate_col
-.. automethod:: culebra.trainer.aco.MMAS._init_pheromone
-.. automethod:: culebra.trainer.aco.MMAS._pheromone_amount
-.. automethod:: culebra.trainer.aco.MMAS._deposit_pheromone
-.. automethod:: culebra.trainer.aco.MMAS._should_reset_pheromone
-.. automethod:: culebra.trainer.aco.MMAS._increase_pheromone
-.. automethod:: culebra.trainer.aco.MMAS._decrease_pheromone
-.. automethod:: culebra.trainer.aco.MMAS._update_pheromone
-.. automethod:: culebra.trainer.aco.MMAS._update_elite
+.. automethod:: culebra.trainer.aco.MMAS._get_state
 .. automethod:: culebra.trainer.aco.MMAS._has_converged
+.. automethod:: culebra.trainer.aco.MMAS._increase_pheromone
+.. automethod:: culebra.trainer.aco.MMAS._init_internals
+.. automethod:: culebra.trainer.aco.MMAS._init_pheromone
+.. automethod:: culebra.trainer.aco.MMAS._init_representatives
+.. automethod:: culebra.trainer.aco.MMAS._init_search
+.. automethod:: culebra.trainer.aco.MMAS._init_state
+.. automethod:: culebra.trainer.aco.MMAS._load_state
+.. automethod:: culebra.trainer.aco.MMAS._new_state
+.. automethod:: culebra.trainer.aco.MMAS._next_choice
+.. automethod:: culebra.trainer.aco.MMAS._pheromone_amount
+.. automethod:: culebra.trainer.aco.MMAS._postprocess_iteration
+.. automethod:: culebra.trainer.aco.MMAS._preprocess_iteration
+.. automethod:: culebra.trainer.aco.MMAS._reset_internals
+.. automethod:: culebra.trainer.aco.MMAS._reset_state
+.. automethod:: culebra.trainer.aco.MMAS._save_state
+.. automethod:: culebra.trainer.aco.MMAS._search
+.. automethod:: culebra.trainer.aco.MMAS._set_cooperative_fitness
+.. automethod:: culebra.trainer.aco.MMAS._set_state
+.. automethod:: culebra.trainer.aco.MMAS._should_reset_pheromone
+.. automethod:: culebra.trainer.aco.MMAS._start_iteration
+.. automethod:: culebra.trainer.aco.MMAS._termination_criterion
+.. automethod:: culebra.trainer.aco.MMAS._update_elite
+.. automethod:: culebra.trainer.aco.MMAS._update_pheromone

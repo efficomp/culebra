@@ -19,8 +19,8 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.solution.feature_selection.BitVector` class
-==============================================================
+:class:`culebra.solution.feature_selection.BitVector` class
+===========================================================
 
 .. autoclass:: culebra.solution.feature_selection.BitVector
 
@@ -34,22 +34,22 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.solution.feature_selection.BitVector.species
-.. autoproperty:: culebra.solution.feature_selection.BitVector.fitness
 .. autoproperty:: culebra.solution.feature_selection.BitVector.features
-.. autoproperty:: culebra.solution.feature_selection.BitVector.num_feats
-.. autoproperty:: culebra.solution.feature_selection.BitVector.min_feat
+.. autoproperty:: culebra.solution.feature_selection.BitVector.fitness
 .. autoproperty:: culebra.solution.feature_selection.BitVector.max_feat
+.. autoproperty:: culebra.solution.feature_selection.BitVector.min_feat
+.. autoproperty:: culebra.solution.feature_selection.BitVector.num_feats
+.. autoproperty:: culebra.solution.feature_selection.BitVector.species
 
 Methods
 -------
-.. automethod:: culebra.solution.feature_selection.BitVector.dump
+.. automethod:: culebra.solution.feature_selection.BitVector.crossover
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover1p
 .. automethod:: culebra.solution.feature_selection.BitVector.crossover2p
-.. automethod:: culebra.solution.feature_selection.BitVector.crossover
-.. automethod:: culebra.solution.feature_selection.BitVector.mutate
-.. automethod:: culebra.solution.feature_selection.BitVector.dominates
 .. automethod:: culebra.solution.feature_selection.BitVector.delete_fitness
+.. automethod:: culebra.solution.feature_selection.BitVector.dominates
+.. automethod:: culebra.solution.feature_selection.BitVector.dump
+.. automethod:: culebra.solution.feature_selection.BitVector.mutate
 
 Private methods
 ---------------
@@ -57,11 +57,14 @@ Private methods
 
 Dunder methods
 --------------
-.. automethod:: culebra.solution.feature_selection.BitVector.__hash__
+Intended to compare (lexicographically) two bit vectors according to their
+fitness.
+
 .. automethod:: culebra.solution.feature_selection.BitVector.__eq__
-.. automethod:: culebra.solution.feature_selection.BitVector.__ne__
-.. automethod:: culebra.solution.feature_selection.BitVector.__lt__
-.. automethod:: culebra.solution.feature_selection.BitVector.__gt__
-.. automethod:: culebra.solution.feature_selection.BitVector.__le__
 .. automethod:: culebra.solution.feature_selection.BitVector.__ge__
+.. automethod:: culebra.solution.feature_selection.BitVector.__gt__
+.. automethod:: culebra.solution.feature_selection.BitVector.__hash__
+.. automethod:: culebra.solution.feature_selection.BitVector.__le__
+.. automethod:: culebra.solution.feature_selection.BitVector.__lt__
+.. automethod:: culebra.solution.feature_selection.BitVector.__ne__
 .. automethod:: culebra.solution.feature_selection.BitVector.__str__

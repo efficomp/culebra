@@ -19,16 +19,16 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:py:class:`culebra.abc.Fitness` class
-=====================================
+:class:`culebra.abc.Fitness` class
+==================================
 
 .. autoclass:: culebra.abc.Fitness
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.abc.Fitness.weights
 .. autoattribute:: culebra.abc.Fitness.names
 .. autoattribute:: culebra.abc.Fitness.thresholds
+.. autoattribute:: culebra.abc.Fitness.weights
 
 Class methods
 -------------
@@ -37,25 +37,24 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.abc.Fitness.is_valid
+.. autoproperty:: culebra.abc.Fitness.num_obj
 .. autoproperty:: culebra.abc.Fitness.values
 .. autoproperty:: culebra.abc.Fitness.wvalues
-.. autoproperty:: culebra.abc.Fitness.num_obj
 
 Methods
 -------
-.. automethod:: culebra.abc.Fitness.update_value
-.. automethod:: culebra.abc.Fitness.dump
 .. automethod:: culebra.abc.Fitness.dominates
+.. automethod:: culebra.abc.Fitness.dump
+.. automethod:: culebra.abc.Fitness.update_value
 
 Dunder methods
 --------------
-Intended to compare (lexicographically) two individuals according to their
-fitness.
+Intended to compare (lexicographically) two fitnesses.
 
-.. automethod:: culebra.abc.Fitness.__hash__
 .. automethod:: culebra.abc.Fitness.__eq__
-.. automethod:: culebra.abc.Fitness.__ne__
-.. automethod:: culebra.abc.Fitness.__lt__
-.. automethod:: culebra.abc.Fitness.__gt__
-.. automethod:: culebra.abc.Fitness.__le__
 .. automethod:: culebra.abc.Fitness.__ge__
+.. automethod:: culebra.abc.Fitness.__gt__
+.. automethod:: culebra.abc.Fitness.__hash__
+.. automethod:: culebra.abc.Fitness.__le__
+.. automethod:: culebra.abc.Fitness.__lt__
+.. automethod:: culebra.abc.Fitness.__ne__
