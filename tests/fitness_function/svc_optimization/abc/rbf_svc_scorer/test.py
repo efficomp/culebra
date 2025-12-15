@@ -87,7 +87,9 @@ class RBFSVCScorerTester(unittest.TestCase):
         self.assertTrue(isinstance(func.classifier, SVC))
         self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
         self.assertEqual(func.index, 0)
-        self.assertEqual(func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD])
+        self.assertEqual(
+            func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD]
+        )
 
     def test_classifier(self):
         """Test the classifier property."""

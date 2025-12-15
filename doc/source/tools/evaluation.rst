@@ -46,6 +46,10 @@ Properties
 .. autoproperty:: culebra.tools.Evaluation.trainer
 .. autoproperty:: culebra.tools.Evaluation.untie_best_fitness_function
 
+Private properties
+------------------
+.. autoproperty:: culebra.tools.Evaluation._default_results_base_filename
+
 Methods
 -------
 .. automethod:: culebra.tools.Evaluation.dump

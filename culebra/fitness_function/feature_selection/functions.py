@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Optional, Tuple
 
 from culebra.abc import Fitness
 from culebra.fitness_function.feature_selection.abc import (
@@ -52,7 +51,7 @@ class NumFeats(FSScorer):
     """
 
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         Minimize the number of features that a solution has selected.
@@ -63,7 +62,7 @@ class NumFeats(FSScorer):
         return (-1, )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :return: ("NF",)
@@ -74,8 +73,8 @@ class NumFeats(FSScorer):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 
@@ -109,7 +108,7 @@ class FeatsProportion(FSScorer):
     """
 
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         Minimize the proportion of features that a solution has selected.
@@ -120,7 +119,7 @@ class FeatsProportion(FSScorer):
         return (-1, )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :return: ("FP",)
@@ -131,8 +130,8 @@ class FeatsProportion(FSScorer):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 

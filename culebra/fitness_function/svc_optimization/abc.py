@@ -33,7 +33,6 @@ dataset:
 
 from __future__ import annotations
 
-from typing import Optional
 from collections.abc import Sequence
 
 from sklearn.base import ClassifierMixin
@@ -84,10 +83,10 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
     def __init__(
         self,
         training_data: Dataset,
-        test_data: Optional[Dataset] = None,
-        cv_folds: Optional[int] = None,
-        classifier: Optional[ClassifierMixin] = None,
-        index: Optional[int] = None
+        test_data: Dataset | None = None,
+        cv_folds: int | None = None,
+        classifier: ClassifierMixin | None = None,
+        index: int | None = None
     ) -> None:
         """Construct the fitness function.
 
@@ -103,12 +102,12 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         :type test_data: ~culebra.tools.Dataset
         :param cv_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
-            :attr:`~culebra.fitness_function.dataset_score.DEFAULT_CV_FOLDS`
+            :attr:`~culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._default_cv_folds`
             is used. Defaults to :data:`None`
         :type cv_folds: int
-        :param classifier: The classifier. If set to :data:`None`,
-            a :class:`~sklearn.svm.SVC` with RBF kernels will be used.
-            Defaults to :data:`None`
+        :param classifier: The classifier. If omitted,
+            :attr:`~culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._default_classifier`
+            will be used. Defaults to :data:`None`
         :type classifier: ~sklearn.svm.SVC
         :param index: Index of this objective when it is used for
             multi-objective fitness functions, optional
@@ -134,56 +133,43 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         )
 
     @property
-    def classifier(self) -> SVC:
-        """Classifier applied within this fitness function.
+    def _default_classifier(self) -> SVC:
+        """Default classifier.
 
-        The classifier must be an instance of :class:`~sklearn.svm.SVC` with
-        RBF kernels.
-
+        :return: An SVC with RBF kernels
         :rtype: ~sklearn.svm.SVC
-        :setter: Set a new classifier
-        :param value: The classifier. If set to :data:`None`,
-            :class:`~sklearn.svm.SVC` with RBF kernels is chosen
-        :type value: ~sklearn.svm.SVC
-        :raises TypeError: If set to a value which is not a valid
-            :class:`~sklearn.svm.SVC` instance
-        :raises ValueError: If the classifier has not RBF kernels
         """
-        return self._classifier
+        return SVC(kernel='rbf')
 
-    @classifier.setter
+    @ClassificationScorer.classifier.setter
     def classifier(self, value: ClassifierMixin | None) -> None:
         """Set a classifier.
 
         The classifier must be an instance of :class:`~sklearn.svm.SVC` with
         RBF kernels.
 
-        :param value: The classifier. If set to :data:`None`,
-            :class:`~sklearn.svm.SVC` with RBF kernels is chosen
+        :param value: The classifier. If set to :data:`None`, an instance of
+            :class:`~sklearn.svm.SVC` with RBF kernels is used
         :type value: ~sklearn.svm.SVC
         :raises TypeError: If set to a value which is not a valid
             :class:`~sklearn.svm.SVC` instance
         :raises ValueError: If the classifier has not RBF kernels
         """
         if value is not None:
-            value = check_instance(
-                value, "classifier", cls=SVC
-            )
+            check_instance(value, "classifier", cls=SVC)
 
             if value.kernel != 'rbf':
                 raise ValueError(
                     f"The classifier has not RBF kernels: {value}"
                 )
-        else:
-            value = SVC(kernel='rbf')
 
-        self._classifier = value
+        ClassificationScorer.classifier.fset(self, value)
 
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 

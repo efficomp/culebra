@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.abc.Trainer.checkpoint_enable
+.. autoproperty:: culebra.abc.Trainer.checkpoint_activation
 .. autoproperty:: culebra.abc.Trainer.checkpoint_filename
 .. autoproperty:: culebra.abc.Trainer.checkpoint_freq
 .. autoproperty:: culebra.abc.Trainer.container
@@ -49,8 +49,16 @@ Properties
 .. autoproperty:: culebra.abc.Trainer.random_seed
 .. autoproperty:: culebra.abc.Trainer.representatives
 .. autoproperty:: culebra.abc.Trainer.runtime
-.. autoproperty:: culebra.abc.Trainer.verbose
+.. autoproperty:: culebra.abc.Trainer.verbosity
 
+Private properties
+------------------
+.. autoproperty:: culebra.abc.Trainer._default_checkpoint_activation
+.. autoproperty:: culebra.abc.Trainer._default_checkpoint_filename
+.. autoproperty:: culebra.abc.Trainer._default_checkpoint_freq
+.. autoproperty:: culebra.abc.Trainer._default_index
+.. autoproperty:: culebra.abc.Trainer._default_max_num_iters
+.. autoproperty:: culebra.abc.Trainer._default_verbosity
 
 Methods
 -------

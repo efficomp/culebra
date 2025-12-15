@@ -31,12 +31,7 @@ import numpy as np
 from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.trainer.aco.abc import (
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    PACO,
-    ACOTSP
-)
+from culebra.trainer.aco.abc import PACO, ACOTSP
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
@@ -44,13 +39,16 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(
-    ACOTSP,
-    PACO,
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-):
+class MyTrainer(ACOTSP, PACO):
     """Dummy implementation of a trainer method."""
+
+    @property
+    def num_pheromone_matrices(self) -> int:
+        return self.fitness_function.num_obj
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        return self.fitness_function.num_obj
 
     def _update_pop(self) -> None:
         """Update the population."""
@@ -78,6 +76,9 @@ class MyTrainer(
                     (self._youngest_index + 1) % self.pop_size
                 )
 
+    def _update_pheromone(self):
+        self._deposit_pheromone(self.pop)
+
 
 num_nodes = 25
 optimum_paths = [
@@ -85,8 +86,8 @@ optimum_paths = [
     np.random.permutation(num_nodes)
 ]
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(optimum_paths[0]),
-    PathLength.fromPath(optimum_paths[1])
+    PathLength.from_path(optimum_paths[0]),
+    PathLength.from_path(optimum_paths[1])
 )
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
@@ -138,7 +139,7 @@ class TrainerTester(unittest.TestCase):
             trainer.pop_size,
             trainer.col_size
         )
-        
+
         self.assertEqual(
             trainer.num_pheromone_matrices,
             fitness_func.num_obj
@@ -182,6 +183,7 @@ class TrainerTester(unittest.TestCase):
         trainer.reset()
 
         # Set the new state
+        trainer._init_internals()
         trainer._set_state(state)
 
         # Test if the pop has been restored
@@ -309,7 +311,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try before any colony has been created
         best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 
@@ -356,7 +358,7 @@ class TrainerTester(unittest.TestCase):
 
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [1]
+        initial_pheromone = 1
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -381,35 +383,6 @@ class TrainerTester(unittest.TestCase):
         weight = 3
         trainer._deposit_pheromone(trainer.col, weight)
         assert_path_pheromone_increment(trainer, trainer.col[0], weight)
-
-    def test_update_pheromone(self):
-        """Test _update_pheromone."""
-        species = Species(num_nodes, banned_nodes)
-        initial_pheromone = 2
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": fitness_func,
-            "initial_pheromone": initial_pheromone
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Init the search
-        trainer._init_search()
-
-        # Generate a new population and update the pheromone matrices
-        trainer._start_iteration()
-        trainer._pop.append(trainer._generate_ant())
-        trainer._update_pheromone()
-
-        # Check the pheromone matrices
-        for matrix, init_val in zip(
-            trainer.pheromone, trainer.initial_pheromone
-        ):
-            self.assertTrue(np.all(matrix >= init_val))
-            self.assertTrue(np.any(matrix != init_val))
 
     def test_do_iteration(self):
         """Test the _do_iteration method."""
@@ -521,7 +494,7 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,

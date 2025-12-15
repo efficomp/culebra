@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.MMAS.choice_info
@@ -67,11 +67,25 @@ Properties
 .. autoproperty:: culebra.trainer.aco.MMAS.runtime
 .. autoproperty:: culebra.trainer.aco.MMAS.solution_cls
 .. autoproperty:: culebra.trainer.aco.MMAS.species
-.. autoproperty:: culebra.trainer.aco.MMAS.verbose
+.. autoproperty:: culebra.trainer.aco.MMAS.verbosity
 
 
 Private properties
 ------------------
+.. autoproperty:: culebra.trainer.aco.MMAS._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.MMAS._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.MMAS._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.MMAS._default_col_size
+.. autoproperty:: culebra.trainer.aco.MMAS._default_convergence_check_freq
+.. autoproperty:: culebra.trainer.aco.MMAS._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.MMAS._default_heuristic
+.. autoproperty:: culebra.trainer.aco.MMAS._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.MMAS._default_index
+.. autoproperty:: culebra.trainer.aco.MMAS._default_iter_best_use_limit
+.. autoproperty:: culebra.trainer.aco.MMAS._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.MMAS._default_pheromone_evaporation_rate
+.. autoproperty:: culebra.trainer.aco.MMAS._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.MMAS._default_verbosity
 .. autoproperty:: culebra.trainer.aco.MMAS._global_best_freq
 
 Methods

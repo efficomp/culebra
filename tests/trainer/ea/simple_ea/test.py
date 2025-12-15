@@ -119,8 +119,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": Fitness(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
         trainer = SimpleEA(**params)
 
@@ -139,8 +139,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": Fitness(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -166,8 +166,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": Fitness(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -186,8 +186,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": Fitness(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -210,8 +210,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": Fitness(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer

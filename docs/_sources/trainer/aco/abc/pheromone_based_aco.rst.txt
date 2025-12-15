@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.choice_info
@@ -65,7 +65,22 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.runtime
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.species
-.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.verbose
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_index
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_pheromone_evaporation_rate
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_verbosity
 
 Methods
 -------

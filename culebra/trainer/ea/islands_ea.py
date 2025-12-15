@@ -24,16 +24,8 @@ Implementation of several island-based approaches.
 
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Type,
-    Optional,
-    Callable,
-    Tuple,
-    List,
-    Dict,
-    Sequence
-)
+from typing import Any
+from collections.abc import Sequence, Callable
 
 from culebra.abc import Species, FitnessFunction
 from culebra.solution.abc import Individual
@@ -65,50 +57,40 @@ class HomogeneousSequentialIslandsEA(
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [HomogeneousSequentialIslandsEA],
-                bool]
-        ] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HomogeneousSequentialIslandsEA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """."""
@@ -118,6 +100,7 @@ class HomogeneousSequentialIslandsEA(
             species,
             fitness_function,
             subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_size=pop_size,
             crossover_func=crossover_func,
             mutation_func=mutation_func,
@@ -125,11 +108,7 @@ class HomogeneousSequentialIslandsEA(
             crossover_prob=crossover_prob,
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
-            selection_func_params=selection_func_params,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            )
+            selection_func_params=selection_func_params
         )
 
         SequentialDistributedTrainer.__init__(
@@ -141,14 +120,18 @@ class HomogeneousSequentialIslandsEA(
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -165,50 +148,40 @@ class HomogeneousParallelIslandsEA(
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [HomogeneousParallelIslandsEA],
-                bool]
-        ] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HomogeneousParallelIslandsEA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """."""
@@ -219,6 +192,7 @@ class HomogeneousParallelIslandsEA(
             species,
             fitness_function,
             subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_size=pop_size,
             crossover_func=crossover_func,
             mutation_func=mutation_func,
@@ -226,11 +200,7 @@ class HomogeneousParallelIslandsEA(
             crossover_prob=crossover_prob,
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
-            selection_func_params=selection_func_params,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            )
+            selection_func_params=selection_func_params
         )
 
         ParallelDistributedTrainer.__init__(
@@ -242,25 +212,21 @@ class HomogeneousParallelIslandsEA(
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
-
-    # Change the docstring of the constructor to indicate that the default
-    # number of subpopulations is the number of CPU cores for parallel
-    # multi-population approaches
-    __init__.__doc__ = HomogeneousIslandsEA.__init__.__doc__.replace(
-        ':attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
-        'the number of CPU cores'
-    )
 
 
 class HeterogeneousSequentialIslandsEA(
@@ -271,78 +237,53 @@ class HeterogeneousSequentialIslandsEA(
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HeterogeneousSequentialIslandsEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [HeterogeneousSequentialIslandsEA],
-                bool]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """."""
@@ -361,11 +302,7 @@ class HeterogeneousSequentialIslandsEA(
             crossover_probs=crossover_probs,
             mutation_probs=mutation_probs,
             gene_ind_mutation_probs=gene_ind_mutation_probs,
-            selection_funcs_params=selection_funcs_params,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            )
+            selection_funcs_params=selection_funcs_params
         )
 
         SequentialDistributedTrainer.__init__(
@@ -377,14 +314,18 @@ class HeterogeneousSequentialIslandsEA(
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -401,78 +342,53 @@ class HeterogeneousParallelIslandsEA(
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HeterogeneousParallelIslandsEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [HeterogeneousParallelIslandsEA],
-                bool]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """."""
@@ -491,11 +407,7 @@ class HeterogeneousParallelIslandsEA(
             crossover_probs=crossover_probs,
             mutation_probs=mutation_probs,
             gene_ind_mutation_probs=gene_ind_mutation_probs,
-            selection_funcs_params=selection_funcs_params,
-            representation_topology_func=representation_topology_func,
-            representation_topology_func_params=(
-                representation_topology_func_params
-            )
+            selection_funcs_params=selection_funcs_params
         )
 
         ParallelDistributedTrainer.__init__(
@@ -507,25 +419,21 @@ class HeterogeneousParallelIslandsEA(
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
-
-    # Change the docstring of the constructor to indicate that the default
-    # number of subpopulations is the number of CPU cores for parallel
-    # multi-population approaches
-    __init__.__doc__ = HeterogeneousIslandsEA.__init__.__doc__.replace(
-        ':attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
-        'the number of CPU cores'
-    )
 
 
 __all__ = [

@@ -53,8 +53,8 @@ from culebra.tools import (
     Dataset,
     Evaluation,
     Results,
-    DEFAULT_RUN_SCRIPT_FILENAME,
-    DEFAULT_RESULTS_BASENAME
+    DEFAULT_RESULTS_BASE_FILENAME,
+    DEFAULT_RUN_SCRIPT_FILENAME
 )
 
 SCRIPT_FILE_EXTENSION = ".py"
@@ -148,8 +148,8 @@ params = {
     ),
     "max_num_iters": 3,
     "pop_sizes": 2,
-    "checkpoint_enable": False,
-    "verbose": False
+    "checkpoint_activation": False,
+    "verbosity": False
 }
 
 # Create the trainer
@@ -178,7 +178,8 @@ class EvaluationTester(unittest.TestCase):
 
         self.assertEqual(evaluation.test_fitness_function, None)
         self.assertEqual(
-            evaluation.results_base_filename, DEFAULT_RESULTS_BASENAME
+            evaluation.results_base_filename,
+            DEFAULT_RESULTS_BASE_FILENAME
         )
         self.assertEqual(evaluation.hyperparameters, None)
         self.assertEqual(evaluation.results, None)

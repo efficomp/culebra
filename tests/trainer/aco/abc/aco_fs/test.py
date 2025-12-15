@@ -24,11 +24,11 @@
 
 import unittest
 
-import numpy as np
-
 from itertools import combinations
 from copy import copy, deepcopy
 from os import remove
+
+import numpy as np
 
 from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import (
@@ -124,7 +124,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Try invalid fitness functions. Should fail
@@ -142,7 +142,7 @@ class ACOFSTester(unittest.TestCase):
         self.assertEqual(trainer.fitness_function, training_fitness_function)
         self.assertEqual(
             trainer.initial_pheromone,
-            [DEFAULT_ACOFS_INITIAL_PHEROMONE] * trainer.num_pheromone_matrices
+            (DEFAULT_ACOFS_INITIAL_PHEROMONE,) * trainer.num_pheromone_matrices
         )
         default_heuristic = (
             np.ones((species.num_feats, ) * 2) - np.identity(species.num_feats)
@@ -150,10 +150,10 @@ class ACOFSTester(unittest.TestCase):
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == default_heuristic))
         self.assertEqual(
-            trainer.pheromone_influence, [DEFAULT_PHEROMONE_INFLUENCE]
+            trainer.pheromone_influence, (DEFAULT_PHEROMONE_INFLUENCE,)
         )
         self.assertEqual(
-            trainer.heuristic_influence, [DEFAULT_ACOFS_HEURISTIC_INFLUENCE]
+            trainer.heuristic_influence, (DEFAULT_ACOFS_HEURISTIC_INFLUENCE,)
         )
         self.assertEqual(
             trainer.exploitation_prob, DEFAULT_ACOFS_EXPLOITATION_PROB
@@ -168,7 +168,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -182,7 +182,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -198,7 +198,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Try invalid types for initial_pheromone. Should fail
@@ -218,16 +218,16 @@ class ACOFSTester(unittest.TestCase):
         # Try valid values for initial_pheromone
         initial_pheromone = 3
         trainer = MyACOFS(**params, initial_pheromone=initial_pheromone)
-        self.assertEqual(trainer.initial_pheromone, [initial_pheromone])
+        self.assertEqual(trainer.initial_pheromone, (initial_pheromone,))
 
         initial_pheromone = [2]
         trainer = MyACOFS(**params, initial_pheromone=initial_pheromone)
-        self.assertEqual(trainer.initial_pheromone, initial_pheromone)
+        self.assertEqual(trainer.initial_pheromone, tuple(initial_pheromone))
 
         # Try the default value
         trainer = MyACOFS(**params)
         self.assertEqual(
-            trainer.initial_pheromone, [DEFAULT_ACOFS_INITIAL_PHEROMONE]
+            trainer.initial_pheromone, (DEFAULT_ACOFS_INITIAL_PHEROMONE,)
         )
 
     def test_heuristic(self):
@@ -236,7 +236,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Try invalid types for heuristic. Should fail
@@ -326,7 +326,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Try invalid types for heuristic_influence. Should fail
@@ -348,7 +348,7 @@ class ACOFSTester(unittest.TestCase):
         for heuristic_influence in valid_heuristic_influence:
             trainer = MyACOFS(**params, heuristic_influence=heuristic_influence)
             self.assertEqual(
-                trainer.heuristic_influence, [heuristic_influence]
+                trainer.heuristic_influence, (heuristic_influence,)
             )
 
         valid_heuristic_influence = [(0,), [2]]
@@ -358,13 +358,13 @@ class ACOFSTester(unittest.TestCase):
             )
             self.assertEqual(
                 trainer.heuristic_influence,
-                list(heuristic_influence)
+                tuple(heuristic_influence)
             )
 
         # Test the default value
         trainer = MyACOFS(**params)
         self.assertEqual(
-            trainer.heuristic_influence, [DEFAULT_ACOFS_HEURISTIC_INFLUENCE]
+            trainer.heuristic_influence, (DEFAULT_ACOFS_HEURISTIC_INFLUENCE,)
         )
 
     def test_exploitation_prob(self):
@@ -373,7 +373,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
         # Try invalid types for exploitation_prob. Should fail
         invalid_probs = ('a', type)
@@ -405,7 +405,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Try invalid types for col_size. Should fail
@@ -435,7 +435,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
         # Try invalid types for discard_prob. Should fail
         invalid_probs = ('a', type)
@@ -467,7 +467,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -500,7 +500,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -542,7 +542,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -556,13 +556,13 @@ class ACOFSTester(unittest.TestCase):
             trainer.species, trainer.fitness_function.fitness_cls
         )
 
-        discardNextFeat = True
+        discard_next_feat = True
         for feat in feasible_feats:
-            if discardNextFeat:
+            if discard_next_feat:
                 ant.discard(feat)
             else:
                 ant.append(feat)
-                discardNextFeat = not discardNextFeat
+                discard_next_feat = not discard_next_feat
 
             the_choice_info = trainer._ant_choice_info(ant)
             self.assertTrue((the_choice_info[banned_feats] == 0).all())
@@ -583,7 +583,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -608,7 +608,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -626,7 +626,7 @@ class ACOFSTester(unittest.TestCase):
             trainer._deposit_pheromone([ant])
 
             # All the combinations of two features from those in the path
-            indices = [item for item in combinations(ant.path, 2)]
+            indices = list(combinations(ant.path, 2))
             for i in range(species.num_feats):
                 for j in range(i+1, species.num_feats):
                     if (i, j) in indices or (j, i) in indices:
@@ -651,7 +651,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -679,7 +679,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -696,7 +696,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -719,7 +719,7 @@ class ACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer

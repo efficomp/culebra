@@ -29,11 +29,6 @@
 
     SingleColACO <abc/single_col_aco>
 
-    SinglePheromoneMatrixACO <abc/single_pheromone_matrix_aco>
-    SingleHeuristicMatrixACO <abc/single_heuristic_matrix_aco>
-    MultiplePheromoneMatricesACO <abc/multiple_pheromone_matrices_aco>
-    MultipleHeuristicMatricesACO <abc/multiple_heuristic_matrices_aco>
-
     SingleObjACO <abc/single_obj_aco>
     PheromoneBasedACO <abc/pheromone_based_aco>
     ElitistACO <abc/elitist_aco>

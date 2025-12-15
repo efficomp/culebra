@@ -37,6 +37,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.obj_weights
 .. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer.objectives
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.cooperative.FSSVCScorer._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.cooperative.FSSVCScorer.construct_solutions

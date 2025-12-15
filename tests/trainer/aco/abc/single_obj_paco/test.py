@@ -26,8 +26,6 @@ import unittest
 
 import numpy as np
 
-from deap.tools import ParetoFront
-
 from culebra.trainer.aco.abc import SingleObjPACO, ACOTSP
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import PathLength
@@ -36,52 +34,10 @@ from culebra.fitness_function.tsp import PathLength
 class MyTrainer(ACOTSP, SingleObjPACO):
     """Dummy implementation of a trainer method."""
 
-    def _update_pop(self) -> None:
-        """Update the population.
-
-        The population is updated with the current iteration's colony. The best
-        ants in the current colony, which are put in the *_pop_ingoing* list,
-        will replace the eldest ants in the population, put in the
-        *_pop_outgoing* list.
-
-        These lists will be used later within the
-        :meth:`~culebra.trainer.aco.abc.SingleObjPACO._increase_pheromone`
-        and
-        :meth:`~culebra.trainer.aco.abc.SingleObjPACO._decrease_pheromone`
-        methods, respectively.
-        """
-        # Ingoing ants
-        self._pop_ingoing = ParetoFront()
-        self._pop_ingoing.update(self.col)
-
-        # Outgoing ants
-        self._pop_outgoing = []
-
-        # Remaining room in the population
-        remaining_room_in_pop = self.pop_size - len(self.pop)
-
-        # For all the ants in the ingoing list
-        for ant in self._pop_ingoing:
-            # If there is still room in the population, just append it
-            if remaining_room_in_pop > 0:
-                self._pop.append(ant)
-                remaining_room_in_pop -= 1
-
-                # If the population is full, start with ants replacement
-                if remaining_room_in_pop == 0:
-                    self._youngest_index = 0
-            # The eldest ant is replaced
-            else:
-                self._pop_outgoing.append(self.pop[self._youngest_index])
-                self.pop[self._youngest_index] = ant
-                self._youngest_index = (
-                    (self._youngest_index + 1) % self.pop_size
-                )
-
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = PathLength.fromPath(optimum_path)
+fitness_func = PathLength.from_path(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -131,7 +87,7 @@ class TrainerTester(unittest.TestCase):
             valid_initial_pheromone,
             max_pheromone=valid_max_pheromone
         )
-        self.assertEqual(trainer.max_pheromone, [valid_max_pheromone])
+        self.assertEqual(trainer.max_pheromone, (valid_max_pheromone,))
 
         # Try invalid types for pop_size. Should fail
         invalid_pop_size = (type, 'a', 1.5)
@@ -173,6 +129,10 @@ class TrainerTester(unittest.TestCase):
             trainer.col_size
         )
 
+        # Check the internal structures
+        self.assertEqual(trainer.pop_ingoing, None)
+        self.assertEqual(trainer.pop_outgoing, None)
+
     def test_init_internals(self):
         """Test _init_internals."""
         # Trainer parameters
@@ -205,10 +165,10 @@ class TrainerTester(unittest.TestCase):
             self.assertTrue(np.all(pheromone_matrix == initial_pheromone))
 
         # Check the internal structures
-        self.assertIsInstance(trainer._pop_ingoing, list)
-        self.assertIsInstance(trainer._pop_outgoing, list)
-        self.assertEqual(len(trainer._pop_ingoing), 0)
-        self.assertEqual(len(trainer._pop_outgoing), 0)
+        self.assertIsInstance(trainer.pop_ingoing, list)
+        self.assertIsInstance(trainer.pop_outgoing, list)
+        self.assertEqual(len(trainer.pop_ingoing), 0)
+        self.assertEqual(len(trainer.pop_outgoing), 0)
 
     def test_reset_internals(self):
         """Test _reset_internals."""
@@ -234,11 +194,46 @@ class TrainerTester(unittest.TestCase):
 
         # Check the internal strucures
         self.assertEqual(trainer.pheromone, None)
-        self.assertEqual(trainer._pop_ingoing, None)
-        self.assertEqual(trainer._pop_outgoing, None)
+        self.assertEqual(trainer.pop_ingoing, None)
+        self.assertEqual(trainer.pop_outgoing, None)
 
-    def test_increase_decrease_pheromone(self):
-        """Test the _increase_pheromone and _decrease_pheromone methods."""
+    def test_start_iteration(self):
+        """Test the _start_iteration method."""
+        species = Species(num_nodes, banned_nodes)
+        initial_pheromone = 2
+        max_pheromone = 3
+        params = {
+            "solution_cls": Ant,
+            "species": species,
+            "fitness_function": fitness_func,
+            "initial_pheromone": initial_pheromone,
+            "max_pheromone": max_pheromone
+        }
+
+        # Create the trainer
+        trainer = MyTrainer(**params)
+
+        # Init the search ans start a new iteration
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Append an ant in the ingoing and outgoung lists
+        trainer.pop_ingoing.append(trainer._generate_ant())
+        trainer.pop_outgoing.append(trainer._generate_ant())
+
+        # Check that lists length has increased
+        self.assertEqual(len(trainer.pop_ingoing), 1)
+        self.assertEqual(len(trainer.pop_outgoing), 1)
+
+        # Start the itreration
+        trainer._start_iteration()
+
+        # The lists should be empty
+        self.assertEqual(len(trainer.pop_ingoing), 0)
+        self.assertEqual(len(trainer.pop_outgoing), 0)
+
+    def test_update_pheromone(self):
+        """Test the _update_pheromone method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 1
@@ -259,11 +254,10 @@ class TrainerTester(unittest.TestCase):
 
         # Use the same ant to increase an decrease pheromone
         ant = trainer._generate_ant()
-        trainer._pop_ingoing.append(ant)
-        trainer._pop_outgoing.append(ant)
+        trainer.pop_ingoing.append(ant)
+        trainer.pop_outgoing.append(ant)
 
-        trainer._increase_pheromone()
-        trainer._decrease_pheromone()
+        trainer._update_pheromone()
 
         # pheromone should not be altered
         for pher, init_pher_val in zip(

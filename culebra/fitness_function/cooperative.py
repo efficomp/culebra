@@ -29,7 +29,6 @@ being optimized. It provides the following fitness functions:
 
 from __future__ import annotations
 
-from typing import Optional, Tuple
 from collections.abc import Sequence
 
 from sklearn.svm import SVC
@@ -63,7 +62,7 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
 
     def __init__(
         self,
-        *objectives: Tuple[SingleObjectiveFitnessFunction, ...]
+        *objectives: tuple[SingleObjectiveFitnessFunction, ...]
     ) -> None:
         """Construct a cooperative multi-objective fitness function.
 
@@ -105,9 +104,9 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
     def construct_solutions(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
-    ) -> Tuple[Solution, ...]:
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
+    ) -> tuple[Solution, ...]:
         """Assemble the solution and representatives.
 
            This fitness function assumes that:
@@ -178,8 +177,8 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 

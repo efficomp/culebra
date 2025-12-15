@@ -70,7 +70,7 @@ class AntTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             Ant(BaseSpecies(), fitness_cls)
         with self.assertRaises(TypeError):
-            Ant(Species(), Species)
+            Ant(Species(num_feats=10), Species)
 
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:
@@ -85,12 +85,12 @@ class AntTester(unittest.TestCase):
                     empty_ant.num_feats, 0,
                     f'Ant size: {empty_ant.num_feats}'
                 )
-                # Check that there are not any discasred feature
+                # Check that there is not any discarded feature
                 self.assertEqual(
                     len(empty_ant.discarded), 0,
                     f'Discarded: {empty_ant.discarded}'
                 )
-                # Checks that the ant has not been evaluated yet
+                # Check that the ant has not been evaluated yet
                 self.assertEqual(empty_ant.fitness.values, (None,))
 
                 # Create an ant with an full path
@@ -99,13 +99,12 @@ class AntTester(unittest.TestCase):
                     fitness_cls,
                     np.random.permutation(num_feats)
                 )
-                # Check that the default path is empty
+                # Check that the default path is full
                 self.assertEqual(
                     full_ant.num_feats, num_feats,
                     f'Ant size: {full_ant.num_feats}'
                 )
-                full_ant.__repr__()
-                # Check that there are not any discarded feature
+                # Check that there is not any discarded feature
                 self.assertEqual(
                     len(full_ant.discarded), 0,
                     f'Discarded: {full_ant.discarded}'
@@ -119,7 +118,7 @@ class AntTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             Ant(BaseSpecies(), fitness_cls)
         with self.assertRaises(TypeError):
-            Ant(Species(), Species)
+            Ant(Species(num_feats=10), Species)
 
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:

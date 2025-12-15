@@ -95,7 +95,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -133,7 +133,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "col_size": 50,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -174,7 +174,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -184,9 +184,9 @@ class ElitistACOFSTester(unittest.TestCase):
         trainer._init_search()
 
         ant = trainer._generate_ant()
-        
+
         self.assertTrue(
-            list(trainer._pheromone_amount(ant)) == trainer.initial_pheromone
+            trainer._pheromone_amount(ant) == trainer.initial_pheromone
         )
 
     def test_update_pheromone(self):
@@ -195,7 +195,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -229,7 +229,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -257,7 +257,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -274,7 +274,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -297,7 +297,7 @@ class ElitistACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer

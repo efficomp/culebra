@@ -49,6 +49,11 @@ Properties
 .. autoproperty:: culebra.tools.Batch.trainer
 .. autoproperty:: culebra.tools.Batch.untie_best_fitness_function
 
+Private properties
+------------------
+.. autoproperty:: culebra.tools.Batch._default_num_experiments
+.. autoproperty:: culebra.tools.Batch._default_results_base_filename
+
 Methods
 -------
 .. automethod:: culebra.tools.Batch.dump

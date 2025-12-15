@@ -92,7 +92,7 @@ multi-objective fitness functions, optional</p>
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.NumFeats.fitness_cls">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">fitness_cls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.14)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/fitness.html#culebra.abc.Fitness" title="culebra.abc.Fitness"><span class="pre">Fitness</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.fitness_cls" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">fitness_cls</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/fitness.html#culebra.abc.Fitness" title="culebra.abc.Fitness"><span class="pre">Fitness</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.fitness_cls" title="Link to this definition">¶</a></dt>
 <dd><p>Fitness class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -113,12 +113,14 @@ multi-objective fitness functions, optional</p>
 <dd class="field-even"><p>Set a new index</p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The new index</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The new index. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="../abc/single_objective_fitness_function.html#culebra.fitness_function.abc.SingleObjectiveFitnessFunction._default_index" title="culebra.fitness_function.abc.SingleObjectiveFitnessFunction._default_index"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_index</span></code></a>
+is chosen</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>value</em> is not an integer number</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>value</em> is not positive</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>value</em> is a negative number</p></li>
 </ul>
 </dd>
 </dl>
@@ -137,7 +139,7 @@ multi-objective fitness functions, optional</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.NumFeats.obj_names">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">obj_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.obj_names" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">obj_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.obj_names" title="Link to this definition">¶</a></dt>
 <dd><p>Objective names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -151,7 +153,7 @@ multi-objective fitness functions, optional</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.NumFeats.obj_thresholds">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">obj_thresholds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.obj_thresholds" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">obj_thresholds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.obj_thresholds" title="Link to this definition">¶</a></dt>
 <dd><p>Objective similarity thresholds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -161,11 +163,11 @@ multi-objective fitness functions, optional</p>
 <dd class="field-even"><p>Set new thresholds.</p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – The new values. If only a single value is provided, the
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – The new values. If only a single value is provided, the
 same threshold will be used for all the objectives. Different
 thresholds can be provided in a <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>.
 If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, all the thresholds are set to
-<a class="reference internal" href="../../index.html#culebra.DEFAULT_SIMILARITY_THRESHOLD" title="culebra.DEFAULT_SIMILARITY_THRESHOLD"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SIMILARITY_THRESHOLD</span></code></a></p>
+<a class="reference internal" href="../../abc/fitness_function.html#culebra.abc.FitnessFunction._default_similarity_threshold" title="culebra.abc.FitnessFunction._default_similarity_threshold"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_similarity_threshold</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -181,7 +183,7 @@ match the number of objectives</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.NumFeats.obj_weights">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">obj_weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.obj_weights" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">obj_weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats.obj_weights" title="Link to this definition">¶</a></dt>
 <dd><p>Objective weights.</p>
 <p>Minimize the number of features that a solution has selected.</p>
 <dl class="field-list simple">
@@ -190,6 +192,37 @@ match the number of objectives</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="private-properties">
+<h2>Private properties<a class="headerlink" href="#private-properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.NumFeats._default_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">_default_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats._default_index" title="Link to this definition">¶</a></dt>
+<dd><p>Default index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../index.html#culebra.DEFAULT_INDEX" title="culebra.DEFAULT_INDEX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_INDEX</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.fitness_function.feature_selection.NumFeats._default_similarity_threshold">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">NumFeats.</span></span><span class="sig-name descname"><span class="pre">_default_similarity_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#culebra.fitness_function.feature_selection.NumFeats._default_similarity_threshold" title="Link to this definition">¶</a></dt>
+<dd><p>Default similarity threshold for fitnesses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../index.html#culebra.DEFAULT_SIMILARITY_THRESHOLD" title="culebra.DEFAULT_SIMILARITY_THRESHOLD"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SIMILARITY_THRESHOLD</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -39,6 +39,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.obj_weights
 .. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength.objectives
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.tsp.MultiObjectivePathLength._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.tsp.MultiObjectivePathLength.dump

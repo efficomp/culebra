@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.choice_info
@@ -61,13 +61,30 @@ Properties
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone_shapes
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop_ingoing
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop_outgoing
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop_size
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.random_seed
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.representatives
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.runtime
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.species
-.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.verbose
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_index
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_pop_size
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_verbosity
 
 Methods
 -------

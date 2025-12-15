@@ -39,27 +39,28 @@ module defines:
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Any, Tuple, List, Optional, Dict, Type, Callable
-from collections.abc import Sequence
+from typing import Any
+from collections.abc import Sequence, Callable
+import random
+import gzip
 from copy import deepcopy
 from functools import partial
 from time import perf_counter
-from multiprocess.managers import DictProxy
-import random
 
+from multiprocess.managers import DictProxy
 import numpy as np
 import dill
-import gzip
 from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
     DEFAULT_MAX_NUM_ITERS,
     SERIALIZED_FILE_EXTENSION,
-    DEFAULT_CHECKPOINT_ENABLE,
+    DEFAULT_CHECKPOINT_ACTIVATION,
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
     DEFAULT_VERBOSITY,
     DEFAULT_INDEX,
+    DEFAULT_SIMILARITY_THRESHOLD
 )
 from culebra.checker import (
     check_bool,
@@ -162,7 +163,7 @@ class Base:
         result.__dict__.update(deepcopy(self.__dict__, memo))
         return result
 
-    def __setstate__(self, state: Dict[str, Any]) -> None:
+    def __setstate__(self, state: dict[str, Any]) -> None:
         """Set the state of the object.
 
         :param state: The state
@@ -247,7 +248,7 @@ class Fitness(Base):
     their difference is lower than or equal to the similarity threshold)
     """
 
-    def __init__(self, values: Optional[Sequence[float, ...]] = None) -> None:
+    def __init__(self, values: Sequence[float, ...] | None = None) -> None:
         """Construct a default fitness object.
 
         :param values: Initial values for the fitness, optional
@@ -277,7 +278,7 @@ class Fitness(Base):
         return True
 
     @property
-    def values(self) -> Tuple[float | None]:
+    def values(self) -> tuple[float | None]:
         """Fitness values.
 
         :rtype: tuple[float | None]
@@ -310,7 +311,7 @@ class Fitness(Base):
         self._values = [None] * self.num_obj
 
     @property
-    def wvalues(self) -> Tuple[float]:
+    def wvalues(self) -> tuple[float]:
         """Fitness weighted values.
 
         :rtype: tuple[float | None]
@@ -489,9 +490,17 @@ class Fitness(Base):
 class FitnessFunction(Base):
     """Base fitness function."""
 
+    def __init__(self) -> None:
+        """Construct the fitness function."""
+        # Init the superclasses
+        super().__init__()
+
+        # Set the default similarity thresholds
+        self.obj_thresholds = None
+
     @property
     @abstractmethod
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         This property must be overridden by subclasses to return a correct
@@ -506,7 +515,7 @@ class FitnessFunction(Base):
 
     @property
     @abstractmethod
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         This property must be overridden by subclasses to return a correct
@@ -519,20 +528,25 @@ class FitnessFunction(Base):
             f"{self.__class__.__name__} class")
 
     @property
-    @abstractmethod
-    def obj_thresholds(self) -> List[float]:
+    def _default_similarity_threshold(self) -> float:
+        """Default similarity threshold for fitnesses.
+
+        :return: :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+        :rtype: float
+        """
+        return DEFAULT_SIMILARITY_THRESHOLD
+
+    @property
+    def obj_thresholds(self) -> list[float]:
         """Objective similarity thresholds.
 
-        This property must be overridden by subclasses to return a correct
-        value.
-
         :rtype: list[float]
-        :setter: Set new thresholds
+        :setter: Set new thresholds.
         :param values: The new values. If only a single value is provided, the
             same threshold will be used for all the objectives. Different
             thresholds can be provided in a :class:`~collections.abc.Sequence`.
             If set to :data:`None`, all the thresholds are set to
-            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+            :attr:`~culebra.abc.FitnessFunction._default_similarity_threshold`
         :type values: float | ~collections.abc.Sequence[float]
         :raises TypeError: If neither a real number nor a
             :class:`~collections.abc.Sequence` of real numbers is provided
@@ -540,25 +554,19 @@ class FitnessFunction(Base):
         :raises ValueError: If the length of the thresholds sequence does not
             match the number of objectives
         """
-        raise NotImplementedError(
-            "The obj_thresholds property has not been implemented in the "
-            f"{self.__class__.__name__} class")
+        return self._obj_thresholds
 
     @obj_thresholds.setter
-    @abstractmethod
     def obj_thresholds(
         self, values: float | Sequence[float] | None
     ) -> None:
         """Set new objective similarity thresholds.
 
-        This property setter must be overridden by subclasses to return a
-        correct value.
-
         :param values: The new values. If only a single value is provided, the
             same threshold will be used for all the objectives. Different
             thresholds can be provided in a :class:`~collections.abc.Sequence`.
             If set to :data:`None`, all the thresholds are set to
-            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
+            :attr:`~culebra.abc.FitnessFunction._default_similarity_threshold`
         :type values: float | ~collections.abc.Sequence[float]
         :raises TypeError: If neither a real number nor a
             :class:`~collections.abc.Sequence` of real numbers is provided
@@ -566,9 +574,21 @@ class FitnessFunction(Base):
         :raises ValueError: If the length of the thresholds sequence does not
             match the number of objectives
         """
-        raise NotImplementedError(
-            "The obj_thresholds property setter has not been implemented in "
-            f"the {self.__class__.__name__} class")
+        if isinstance(values, Sequence):
+            self._obj_thresholds = check_sequence(
+                values,
+                "objective similarity thresholds",
+                size=self.num_obj,
+                item_checker=partial(check_float, ge=0)
+            )
+        elif values is not None:
+            self._obj_thresholds = [
+                check_float(values, "objective similarity threshold", ge=0)
+            ] * self.num_obj
+        else:
+            self._obj_thresholds = [
+                self._default_similarity_threshold
+            ] * self.num_obj
 
     @property
     def num_obj(self) -> int:
@@ -579,7 +599,7 @@ class FitnessFunction(Base):
         return len(self.obj_weights)
 
     @property
-    def fitness_cls(self) -> Type[Fitness]:
+    def fitness_cls(self) -> type[Fitness]:
         """Fitness class.
 
         :rtype: type[~culebra.abc.Fitness]
@@ -600,8 +620,8 @@ class FitnessFunction(Base):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 
@@ -674,7 +694,7 @@ class Solution(Base):
     def __init__(
         self,
         species: Species,
-        fitness_cls: Type[Fitness]
+        fitness_cls: type[Fitness]
     ) -> None:
         """Construct a default solution.
 
@@ -876,47 +896,43 @@ class Trainer(Base):
     def __init__(
         self,
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[[Trainer], bool]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[Trainer], bool] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new trainer.
 
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.abc.Trainer._default_max_num_iters` will be used.
+            Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted, :meth:`~culebra.abc.Trainer._default_termination_func` is
+            used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
-            will be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
-            will be used. Defaults to :data:`None`
-        :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`,
-            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_activation` will be
+            used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_freq` will be used.
             Defaults to :data:`None`
+        :type checkpoint_freq: int
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_filename` will be
+            used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.abc.Trainer._default_verbosity` will be used.
+            Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -934,10 +950,10 @@ class Trainer(Base):
         self.custom_termination_func = custom_termination_func
 
         # Configure checkpointing, random seed and verbosity
-        self.checkpoint_enable = checkpoint_enable
+        self.checkpoint_activation = checkpoint_activation
         self.checkpoint_freq = checkpoint_freq
         self.checkpoint_filename = checkpoint_filename
-        self.verbose = verbose
+        self.verbosity = verbosity
         self.random_seed = random_seed
 
         # Container trainer, in case of being used in a distributed
@@ -949,7 +965,7 @@ class Trainer(Base):
         self.index = None
 
     @staticmethod
-    def _get_fitness_values(sol: Solution) -> Tuple[float, ...]:
+    def _get_fitness_values(sol: Solution) -> tuple[float, ...]:
         """Return the fitness values of a solution.
 
         DEAP's :class:`~deap.tools.Statistics` class needs a function to
@@ -992,6 +1008,15 @@ class Trainer(Base):
         self.reset()
 
     @property
+    def _default_max_num_iters(self) -> int:
+        """Default maximum number of iterations.
+
+        :return: :attr:`~culebra.DEFAULT_MAX_NUM_ITERS`
+        :rtype: int
+        """
+        return DEFAULT_MAX_NUM_ITERS
+
+    @property
     def max_num_iters(self) -> int:
         """Maximum number of iterations.
 
@@ -1000,16 +1025,12 @@ class Trainer(Base):
         :setter: Set a new value for the maximum number of iterations
         :param value: The new maximum number of iterations. If set to
             :data:`None`, the default maximum number of iterations,
-            :attr:`~culebra.DEFAULT_MAX_NUM_ITERS`, is chosen
+            :attr:`~culebra.abc.Trainer._default_max_num_iters`, is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
-        return (
-            DEFAULT_MAX_NUM_ITERS
-            if self._max_num_iters is None
-            else self._max_num_iters
-        )
+        return self._max_num_iters
 
     @max_num_iters.setter
     def max_num_iters(self, value: int | None) -> None:
@@ -1017,14 +1038,14 @@ class Trainer(Base):
 
         :param value: The new maximum number of iterations. If set to
             :data:`None`, the default maximum number of iterations,
-            :attr:`~culebra.DEFAULT_MAX_NUM_ITERS`, is chosen
+            :attr:`~culebra.abc.Trainer._default_max_num_iters`, is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
         # Check the value
         self._max_num_iters = (
-            None if value is None else check_int(
+            self._default_max_num_iters if value is None else check_int(
                 value, "maximum number of iterations", gt=0
             )
         )
@@ -1033,9 +1054,11 @@ class Trainer(Base):
         self.reset()
 
     @property
-    def current_iter(self) -> int:
+    def current_iter(self) -> int | None:
         """Current iteration.
 
+        :return: The current iteration or :data:`None` if the search has
+            not been done yet
         :rtype: int
         """
         return self._current_iter
@@ -1044,15 +1067,18 @@ class Trainer(Base):
     def custom_termination_func(self) -> Callable[
             [Trainer],
             bool
-    ]:
+    ] | None:
         """Custom termination criterion.
 
-        The custom termination criterion must be a function which receives
-        the trainer as its unique argument and returns a boolean value,
-        :data:`True` if the search should terminate or :data:`False`
+        Although the trainer will always stop when the
+        :attr:`~culebra.abc.Trainer.max_num_iters` are reached, a custom
+        termination criterion can be set to detect convergente and stop the
+        trainer earlier. This custom termination criterion must be a function
+        which receives the trainer as its unique argument and returns a boolean
+        value, :data:`True` if the search should terminate or :data:`False`
         otherwise.
 
-        If more than one arguments are needed to define the termniation
+        If more than one arguments are needed to define the termination
         condition, :func:`functools.partial` can be used:
 
         .. code-block:: python
@@ -1068,8 +1094,7 @@ class Trainer(Base):
 
         :setter: Set a new custom termination criterion
         :param func: The new custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+            :data:`None`, the default termination criterion is used
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
@@ -1085,14 +1110,8 @@ class Trainer(Base):
     ) -> None:
         """Set the custom termination criterion.
 
-        The custom termination criterion must be a function which receives
-        the trainer as its unique argument and returns a boolean value,
-        :data:`True` if the search should terminate or :data:`False`
-        otherwise.
-
         :param func: The new custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+            :data:`None`, the default termination criterion is used
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
@@ -1107,39 +1126,57 @@ class Trainer(Base):
         self.reset()
 
     @property
-    def checkpoint_enable(self) -> bool:
-        """Checkpointing enablement.
+    def _default_checkpoint_activation(self) -> bool:
+        """Default checkpointing activation.
 
-        :return: :data:`True` if checkpoinitng is enabled, or
-            :data:`False` otherwise
+        :return: :attr:`~culebra.DEFAULT_CHECKPOINT_ACTIVATION`
         :rtype: bool
-        :setter: Modify the checkpointing enablement
-        :param value: New value for the checkpoint enablement. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
-            is chosen
+        """
+        return DEFAULT_CHECKPOINT_ACTIVATION
+
+    @property
+    def checkpoint_activation(self) -> bool:
+        """Checkpointing activation.
+
+        :return: :data:`True` if checkpointing is active, or :data:`False`
+            otherwise
+        :rtype: bool
+        :setter: Modify the checkpointing activation
+        :param value: New value for the checkpoint activation. If set to
+            :data:`None`,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_activation` is
+            chosen
         :type value: bool
         :raises TypeError: If *value* is not a boolean value
         """
-        return (
-            DEFAULT_CHECKPOINT_ENABLE if self._checkpoint_enable is None
-            else self._checkpoint_enable
-        )
+        return self._checkpoint_activation
 
-    @checkpoint_enable.setter
-    def checkpoint_enable(self, value: bool | None) -> None:
-        """Modify the checkpointing enablement.
+    @checkpoint_activation.setter
+    def checkpoint_activation(self, value: bool | None) -> None:
+        """Modify the checkpointing activation.
 
-        :param value: New value for the checkpoint enablement. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
-            is chosen
+        :param value: New value for the checkpoint activation. If set to
+            :data:`None`,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_activation` is
+            chosen
         :type value: bool
         :raises TypeError: If *value* is not a boolean value
         """
-        self._checkpoint_enable = (
-            None if value is None else check_bool(
-                value, "checkpoint enablement"
+        self._checkpoint_activation = (
+            self._default_checkpoint_activation
+            if value is None else check_bool(
+                value, "checkpoint activation"
             )
         )
+
+    @property
+    def _default_checkpoint_freq(self) -> int:
+        """Default checkpointing frequency.
+
+        :return: :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+        :rtype: int
+        """
+        return DEFAULT_CHECKPOINT_FREQ
 
     @property
     def checkpoint_freq(self) -> int:
@@ -1149,34 +1186,40 @@ class Trainer(Base):
 
         :setter: Modify the checkpoint frequency
         :param value: New value for the checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
-            is chosen
+            :data:`None`,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_freq` is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
-        return (
-            DEFAULT_CHECKPOINT_FREQ if self._checkpoint_freq is None
-            else self._checkpoint_freq
-        )
+        return self._checkpoint_freq
 
     @checkpoint_freq.setter
     def checkpoint_freq(self, value: int | None) -> None:
         """Set a value for the checkpoint frequency.
 
         :param value: New value for the checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
-            is chosen
+            :data:`None`,
+            :attr:`~culebra.abc.Trainer._default_checkpoint_freq` is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
         # Check the value
         self._checkpoint_freq = (
-            None if value is None else check_int(
+            self._default_checkpoint_freq if value is None else check_int(
                 value, "checkpoint frequency", gt=0
             )
         )
+
+    @property
+    def _default_checkpoint_filename(self) -> str:
+        """Default checkpointing file name.
+
+        :return: :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :rtype: str
+        """
+        return DEFAULT_CHECKPOINT_FILENAME
 
     @property
     def checkpoint_filename(self) -> str:
@@ -1187,16 +1230,13 @@ class Trainer(Base):
         :setter: Modify the checkpoint file path
         :param value: New value for the checkpoint file path. If set to
             :data:`None`,
-            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
+            :attr:`~culebra.abc.Trainer._default_checkpoint_filename` is chosen
         :type value: str
         :raises TypeError: If *value* is not a valid file name
         :raises ValueError: If the *value* extension is not
             :attr:`~culebra.SERIALIZED_FILE_EXTENSION`
         """
-        return (
-            DEFAULT_CHECKPOINT_FILENAME if self._checkpoint_filename is None
-            else self._checkpoint_filename
-        )
+        return self._checkpoint_filename
 
     @checkpoint_filename.setter
     def checkpoint_filename(self, value: str | None) -> None:
@@ -1204,7 +1244,7 @@ class Trainer(Base):
 
         :param value: New value for the checkpoint file path. If set to
             :data:`None`,
-            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` is chosen
+            :attr:`~culebra.abc.Trainer._default_checkpoint_filename` is chosen
         :type value: str
         :raises TypeError: If *value* is not a valid file name
         :raises ValueError: If the *value* extension is not
@@ -1212,7 +1252,8 @@ class Trainer(Base):
         """
         # Check the value
         self._checkpoint_filename = (
-            None if value is None else check_filename(
+            self._default_checkpoint_filename
+            if value is None else check_filename(
                 value,
                 name="checkpoint file name",
                 ext=SERIALIZED_FILE_EXTENSION
@@ -1220,33 +1261,40 @@ class Trainer(Base):
         )
 
     @property
-    def verbose(self) -> bool:
+    def _default_verbosity(self) -> bool:
+        """Default verbosity.
+
+        :return: :attr:`~culebra.DEFAULT_VERBOSITY`
+        :rtype: bool
+        """
+        return DEFAULT_VERBOSITY
+
+    @property
+    def verbosity(self) -> bool:
         """Verbosity of this trainer.
 
         :rtype: bool
 
         :setter: Set a new value for the verbosity
-        :param value: The verbosity. If set to :data:`None`, :data:`__debug__`
-            is chosen
+        :param value: The verbosity. If set to :data:`None`,
+            :attr:`~culebra.abc.Trainer._default_verbosity` is chosen
         :type value: bool
         :raises TypeError: If *value* is not boolean
         """
-        return (
-            DEFAULT_VERBOSITY if self._verbose is None
-            else self._verbose
-        )
+        return self._verbosity
 
-    @verbose.setter
-    def verbose(self, value: bool) -> None:
+    @verbosity.setter
+    def verbosity(self, value: bool) -> None:
         """Set the verbosity of this trainer.
 
-        :param value: The verbosity. If set to :data:`None`, :data:`__debug__`
-            is chosen
+        :param value: The verbosity. If set to :data:`None`,
+            :attr:`~culebra.abc.Trainer._default_verbosity` is chosen
         :type value: bool
         :raises TypeError: If *value* is not boolean
         """
-        self._verbose = (
-            None if value is None else check_bool(value, "verbosity")
+        self._verbosity = (
+            self._default_verbosity
+            if value is None else check_bool(value, "verbosity")
         )
 
     @property
@@ -1306,41 +1354,45 @@ class Trainer(Base):
         return self._runtime
 
     @property
+    def _default_index(self) -> int:
+        """Default index.
+
+        :return: :attr:`~culebra.DEFAULT_INDEX`
+        :rtype: int
+        """
+        return DEFAULT_INDEX
+
+    @property
     def index(self) -> int:
         """Trainer index.
 
         The trainer index is only used by distributed trainers. For the rest
-        of trainers :attr:`~culebra.DEFAULT_INDEX` is used.
+        of trainers :attr:`~culebra.abc.Trainer._default_index` is used.
 
         :rtype: int
         :setter: Set a new value for trainer index.
         :param value: New value for the trainer index. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_INDEX` is chosen
+            :data:`None`, :attr:`~culebra.abc.Trainer._default_index` is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is a negative number
         """
-        return (
-            DEFAULT_INDEX if self._index is None
-            else self._index
-        )
+        return self._index
 
     @index.setter
     def index(self, value: int | None) -> None:
         """Set a value for trainer index.
 
-        The trainer index is only used by distributed trainers. For the rest
-        of trainers :attr:`~culebra.DEFAULT_INDEX` is used.
-
         :param value: New value for the trainer index. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_INDEX` is chosen
+            :data:`None`, :attr:`~culebra.abc.Trainer._default_index` is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is a negative number
         """
         # Check the value
         self._index = (
-            None if value is None else check_int(value, "index", ge=0)
+            self._default_index
+            if value is None else check_int(value, "index", ge=0)
         )
 
     @property
@@ -1377,18 +1429,17 @@ class Trainer(Base):
         )
 
     @property
-    def representatives(self) -> Sequence[Sequence[Solution | None]] | None:
+    def representatives(self) -> list[list[Solution | None]] | None:
         """Representatives of the other species.
 
         Only used by cooperative trainers. If the trainer does not use
         representatives, :data:`None` is returned.
 
-        :rtype:
-            ~collections.abc.Sequence[~collections.abc.Sequence[~culebra.abc.Solution]]
+        :rtype: list[list[~culebra.abc.Solution]]
         """
         return self._representatives
 
-    def _get_state(self) -> Dict[str, Any]:
+    def _get_state(self) -> dict[str, Any]:
         """Return the state of this trainer.
 
         Default state is a dictionary composed of the values of the
@@ -1409,16 +1460,18 @@ class Trainer(Base):
         :rtype: dict
         """
         # Fill in the dictionary with the trainer state
-        return dict(logbook=self._logbook,
-                    num_evals=self._num_evals,
-                    runtime=self._runtime,
-                    current_iter=self._current_iter,
-                    representatives=self._representatives,
-                    search_finished=self._search_finished,
-                    rnd_state=random.getstate(),
-                    np_rnd_state=np.random.get_state())
+        return {
+            "logbook": self._logbook,
+            "num_evals": self._num_evals,
+            "runtime": self._runtime,
+            "current_iter": self._current_iter,
+            "representatives": self._representatives,
+            "search_finished": self._search_finished,
+            "rnd_state": random.getstate(),
+            "np_rnd_state": np.random.get_state()
+        }
 
-    def _set_state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         If subclasses use any more properties to keep their state, the
@@ -1458,9 +1511,9 @@ class Trainer(Base):
     def evaluate(
         self,
         sol: Solution,
-        fitness_func: Optional[FitnessFunction] = None,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Sequence[Solution | None]]] = None
+        fitness_func: FitnessFunction | None = None,
+        index: int | None = None,
+        representatives: Sequence[Sequence[Solution | None]] | None = None
     ) -> None:
         """Evaluate one solution.
 
@@ -1533,7 +1586,7 @@ class Trainer(Base):
     def _set_cooperative_fitness(
         self,
         sol: Solution,
-        fitness_trials_values: [Sequence[Tuple[float]]]
+        fitness_trials_values: [Sequence[tuple[float]]]
     ) -> None:
         """Estimate a solution fitness from multiple evaluation trials.
 
@@ -1550,14 +1603,14 @@ class Trainer(Base):
         sol.fitness.values = np.average(fitness_trials_values, axis=0)
 
     @abstractmethod
-    def best_solutions(self) -> Sequence[HallOfFame]:
+    def best_solutions(self) -> tuple[HallOfFame]:
         """Get the best solutions found for each species.
 
         This method must be overridden by subclasses to return a correct
         value.
 
         :return: One Hall of Fame for each species
-        :rtype: ~collections.abc.Sequence[~deap.tools.HallOfFame]
+        :rtype: tuple[~deap.tools.HallOfFame]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
@@ -1565,7 +1618,7 @@ class Trainer(Base):
             f"{self.__class__.__name__} class"
         )
 
-    def best_representatives(self) -> List[List[Solution]] | None:
+    def best_representatives(self) -> list[list[Solution]] | None:
         """Return a list of representatives from each species.
 
         Only used for cooperative trainers.
@@ -1576,10 +1629,10 @@ class Trainer(Base):
         """
         return None
 
-    def train(self, state_proxy: Optional[DictProxy] = None) -> None:
+    def train(self, state_proxy: DictProxy | None = None) -> None:
         """Perform the training process.
 
-        :param state_proxy: Dictionary proxy to copy the output state of the
+        :param state_proxy: dictionary proxy to copy the output state of the
             trainer procedure. Only used if train is executed within a
             :class:`multiprocess.Process`. Defaults to :data:`None`
         :type state_proxy: ~multiprocess.managers.DictProxy
@@ -1600,15 +1653,14 @@ class Trainer(Base):
         # Copy the ouput state (if needed)
         if state_proxy is not None:
             state = self._get_state()
-            for key in state:
-                # state_proxy[key] = deepcopy(state[key])
-                state_proxy[key] = state[key]
+            for key, val in state.items():
+                state_proxy[key] = val
 
     def test(
         self,
         best_found: Sequence[HallOfFame],
-        fitness_func: Optional[FitnessFunction] = None,
-        representatives: Optional[Sequence[Sequence[Solution]]] = None
+        fitness_func: FitnessFunction | None = None,
+        representatives: Sequence[Sequence[Solution]] | None = None
     ) -> None:
         """Apply the test fitness function to the solutions found.
 
@@ -1728,7 +1780,7 @@ class Trainer(Base):
         """
         # Init the trainer state
         create_new_state = True
-        if self.checkpoint_enable:
+        if self.checkpoint_activation:
             # Try to load the state of the last checkpoint
             try:
                 self._load_state()
@@ -1832,7 +1884,7 @@ class Trainer(Base):
         self._search_finished = True
 
         # Save the last state
-        if self.checkpoint_enable:
+        if self.checkpoint_activation:
             self._save_state()
 
     def _start_iteration(self) -> None:
@@ -1877,7 +1929,7 @@ class Trainer(Base):
         self._num_evals += self._current_iter_evals
 
         # Save the trainer state at each checkpoint
-        if (self.checkpoint_enable and
+        if (self.checkpoint_activation and
                 self._current_iter % self.checkpoint_freq == 0):
             self._save_state()
 

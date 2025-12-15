@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.container
@@ -59,7 +59,24 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.selection_func_params
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.solution_cls
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.species
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.verbose
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_index
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousEA._default_verbosity
 
 Methods
 -------

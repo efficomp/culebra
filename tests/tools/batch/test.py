@@ -54,9 +54,9 @@ from culebra.tools import (
     Dataset,
     Batch,
     Results,
-    DEFAULT_NUM_EXPERIMENTS,
-    DEFAULT_RESULTS_BASENAME,
-    DEFAULT_RUN_SCRIPT_FILENAME
+    DEFAULT_RESULTS_BASE_FILENAME,
+    DEFAULT_RUN_SCRIPT_FILENAME,
+    DEFAULT_NUM_EXPERIMENTS
 )
 
 
@@ -150,8 +150,8 @@ params = {
     ),
     "max_num_iters": 3,
     "pop_sizes": 2,
-    "checkpoint_enable": False,
-    "verbose": False
+    "checkpoint_activation": False,
+    "verbosity": False
 }
 
 # Create the trainer
@@ -174,7 +174,7 @@ class BatchTester(unittest.TestCase):
         self.assertEqual(batch.results, None)
         self.assertEqual(
             batch.results_base_filename,
-            DEFAULT_RESULTS_BASENAME
+            DEFAULT_RESULTS_BASE_FILENAME
         )
         self.assertEqual(batch.hyperparameters, None)
         self.assertEqual(batch.num_experiments, DEFAULT_NUM_EXPERIMENTS)

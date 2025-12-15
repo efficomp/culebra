@@ -21,8 +21,8 @@
 
 from __future__ import annotations
 
-from typing import Optional, Sequence
 from collections import UserDict
+from collections.abc import Sequence
 from os.path import basename, splitext
 
 from pandas import DataFrame, read_csv, ExcelWriter
@@ -59,7 +59,7 @@ class Results(UserDict, Base):
         cls,
         files: Sequence[str],
         keys: Sequence[str] = None,
-        sep: Optional[str] = None
+        sep: str | None = None
     ) -> None:
         """Load some results from several csv files.
 
@@ -69,9 +69,8 @@ class Results(UserDict, Base):
             If omitted, the basename of each file in *files* (without
             extension) is used. Defaults to :data:`None`
         :type keys: ~collections.abc.Sequence[str]
-        :param sep: Separator. If :data:`None` is provided,
-            :attr:`~culebra.tools.DEFAULT_SEP` is used. Defaults to
-            :data:`None`
+        :param sep: Separator. If omitted, :attr:`~culebra.tools.DEFAULT_SEP`
+            is used. Defaults to :data:`None`
         :type sep: str
         :raises TypeError: If *sep* is not a string
         :raises ValueError: If *files* and *keys* have different lengths

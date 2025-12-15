@@ -143,7 +143,7 @@ class FSSVCScorerTester(unittest.TestCase):
 
         self.assertEqual(func.num_obj, 3)
         self.assertEqual(
-            func.objectives, [fs_kappa_index_svc_rbf, fs_num_feats, svc_c]
+            func.objectives, (fs_kappa_index_svc_rbf, fs_num_feats, svc_c)
         )
         self.assertEqual(
             func.obj_weights,

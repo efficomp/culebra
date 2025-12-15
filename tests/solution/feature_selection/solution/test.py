@@ -123,7 +123,7 @@ class SolutionTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.solution_cls(BaseSpecies(), MyFitness)
         with self.assertRaises(TypeError):
-            self.solution_cls(Species(), Species)
+            self.solution_cls(Species(num_feats=10), Species)
 
         # For each value for the number of features ...
         for num_feats in self.num_feats_values:
@@ -379,9 +379,8 @@ class SolutionTester(unittest.TestCase):
         except Exception as excep:
             raise TypeError(
                 f"times must be an integer value: {value}") from excep
-        else:
-            if val <= 0:
-                raise ValueError(f"times must be greater than 0: {val}")
+        if val <= 0:
+            raise ValueError(f"times must be greater than 0: {val}")
 
     def __check_correctness(self, solution):
         """Check the correctness of a feature selector implementation.

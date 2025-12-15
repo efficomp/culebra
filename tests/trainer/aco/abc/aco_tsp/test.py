@@ -71,7 +71,7 @@ class MySinglePathTrainer(ACOTSP):
         """Reset the trainer state."""
         super()._reset_state()
         self._pheromone = None
-        
+
 
 class MyMultiPathTrainer(MySinglePathTrainer):
     """Dummy implementation of a trainer method."""
@@ -94,8 +94,8 @@ tsp_optimum_paths = [
     np.random.permutation(tsp_num_nodes)
 ]
 tsp_fitness_func_multi = MultiObjectivePathLength(
-    PathLength.fromPath(tsp_optimum_paths[0]),
-    PathLength.fromPath(tsp_optimum_paths[1])
+    PathLength.from_path(tsp_optimum_paths[0]),
+    PathLength.from_path(tsp_optimum_paths[1])
 )
 tsp_fitness_func_single = tsp_fitness_func_multi.objectives[0]
 tsp_banned_nodes = [0, tsp_num_nodes-1]
@@ -147,451 +147,120 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Test default params
-        singlePathTrainer = MySinglePathTrainer(
+        single_path_trainer = MySinglePathTrainer(
             valid_ant_cls,
             valid_species,
             valid_tsp_fitness_func_single,
             valid_initial_pheromone
         )
-        multiPathTrainer = MyMultiPathTrainer(
+        multi_path_trainer = MyMultiPathTrainer(
             valid_ant_cls,
             valid_species,
             valid_tsp_fitness_func_multi,
             valid_initial_pheromone
         )
 
-        self.assertEqual(singlePathTrainer.solution_cls, valid_ant_cls)
-        self.assertEqual(multiPathTrainer.solution_cls, valid_ant_cls)
+        self.assertEqual(single_path_trainer.solution_cls, valid_ant_cls)
+        self.assertEqual(multi_path_trainer.solution_cls, valid_ant_cls)
 
-        self.assertEqual(singlePathTrainer.species, valid_species)
-        self.assertEqual(multiPathTrainer.species, valid_species)
+        self.assertEqual(single_path_trainer.species, valid_species)
+        self.assertEqual(multi_path_trainer.species, valid_species)
 
         self.assertEqual(
-            singlePathTrainer.fitness_function,
+            single_path_trainer.fitness_function,
             valid_tsp_fitness_func_single
         )
         self.assertEqual(
-            multiPathTrainer.fitness_function,
+            multi_path_trainer.fitness_function,
             valid_tsp_fitness_func_multi
         )
 
         self.assertEqual(
-            singlePathTrainer.initial_pheromone, [valid_initial_pheromone]
+            single_path_trainer.initial_pheromone, (valid_initial_pheromone,)
         )
         self.assertEqual(
-            multiPathTrainer.initial_pheromone,
-            [valid_initial_pheromone] * valid_tsp_fitness_func_multi.num_obj
+            multi_path_trainer.initial_pheromone,
+            (valid_initial_pheromone,) * valid_tsp_fitness_func_multi.num_obj
         )
 
-        self.assertIsInstance(singlePathTrainer.heuristic, list)
-        self.assertIsInstance(multiPathTrainer.heuristic, list)
+        self.assertIsInstance(single_path_trainer.heuristic, tuple)
+        self.assertIsInstance(multi_path_trainer.heuristic, tuple)
 
-        self.assertEqual(len(singlePathTrainer.heuristic), 1)
+        self.assertEqual(len(single_path_trainer.heuristic), 1)
         self.assertEqual(
-            len(multiPathTrainer.heuristic),
+            len(multi_path_trainer.heuristic),
             valid_tsp_fitness_func_multi.num_obj
         )
 
-        for matrix in singlePathTrainer.heuristic:
+        for matrix in single_path_trainer.heuristic:
             self.assertEqual(
                 matrix.shape, (tsp_num_nodes, tsp_num_nodes)
             )
-        for matrix in multiPathTrainer.heuristic:
+        for matrix in multi_path_trainer.heuristic:
             self.assertEqual(
                 matrix.shape, (tsp_num_nodes, tsp_num_nodes)
             )
 
         # Check the heuristic
         for (
-            optimum_path,
-            heuristic
+            heuristic1,
+            heuristic2
         ) in zip(
-            tsp_optimum_paths[:1] + tsp_optimum_paths,
-            singlePathTrainer.heuristic + multiPathTrainer.heuristic
+            tsp_fitness_func_single.heuristic +
+            tsp_fitness_func_multi.heuristic,
+            single_path_trainer.heuristic + multi_path_trainer.heuristic
         ):
-            for org_idx, org in enumerate(optimum_path):
-                dest_1 = optimum_path[org_idx - 1]
-                dest_2 = optimum_path[(org_idx + 1) % tsp_num_nodes]
-
-                for node in range(tsp_num_nodes):
-                    if node == org:
-                        self.assertEqual(
-                            heuristic[org][node], 0
-                        )
-                    elif node == dest_1 or node == dest_2:
-                        self.assertGreaterEqual(
-                            heuristic[org][node], 1
-                        )
-                    else:
-                        self.assertGreaterEqual(
-                            heuristic[org][node], 0.1
-                        )
-                        self.assertLess(
-                            heuristic[org][node], 1
-                        )
+            self.assertTrue((heuristic1==heuristic2).all())
 
         # Check the pheromone influence
-        self.assertIsInstance(singlePathTrainer.pheromone_influence, list)
-        self.assertIsInstance(multiPathTrainer.pheromone_influence, list)
+        self.assertIsInstance(single_path_trainer.pheromone_influence, tuple)
+        self.assertIsInstance(multi_path_trainer.pheromone_influence, tuple)
 
-        self.assertEqual(len(singlePathTrainer.pheromone_influence), 1)
+        self.assertEqual(len(single_path_trainer.pheromone_influence), 1)
         self.assertEqual(
-            len(multiPathTrainer.pheromone_influence),
+            len(multi_path_trainer.pheromone_influence),
             valid_tsp_fitness_func_multi.num_obj
         )
 
         for pher_infl in (
-            singlePathTrainer.pheromone_influence +
-            multiPathTrainer.pheromone_influence
+            single_path_trainer.pheromone_influence +
+            multi_path_trainer.pheromone_influence
         ):
             self.assertEqual(pher_infl, DEFAULT_PHEROMONE_INFLUENCE)
 
         # Check the heuristic influence
-        self.assertIsInstance(singlePathTrainer.heuristic_influence, list)
-        self.assertIsInstance(multiPathTrainer.heuristic_influence, list)
+        self.assertIsInstance(single_path_trainer.heuristic_influence, tuple)
+        self.assertIsInstance(multi_path_trainer.heuristic_influence, tuple)
 
-        self.assertEqual(len(singlePathTrainer.heuristic_influence), 1)
+        self.assertEqual(len(single_path_trainer.heuristic_influence), 1)
         self.assertEqual(
-            len(multiPathTrainer.heuristic_influence),
+            len(multi_path_trainer.heuristic_influence),
             valid_tsp_fitness_func_multi.num_obj
         )
 
         for heur_infl in (
-            singlePathTrainer.heuristic_influence +
-            multiPathTrainer.heuristic_influence
+            single_path_trainer.heuristic_influence +
+            multi_path_trainer.heuristic_influence
         ):
             self.assertEqual(heur_infl, DEFAULT_HEURISTIC_INFLUENCE)
 
         # Check the default parameters
         self.assertEqual(
-            singlePathTrainer.exploitation_prob, DEFAULT_EXPLOITATION_PROB
+            single_path_trainer.exploitation_prob, DEFAULT_EXPLOITATION_PROB
         )
-        self.assertEqual(singlePathTrainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
-        self.assertEqual(singlePathTrainer.current_iter, None)
-        self.assertEqual(multiPathTrainer.col, None)
-        self.assertEqual(singlePathTrainer.pheromone, None)
-        self.assertEqual(multiPathTrainer.choice_info, None)
-
-    def test_heuristic_single(self):
-        """Test the heuristic property for single-matrix trainers."""
-        ant_cls = Ant
-        species = Species(tsp_num_nodes, tsp_banned_nodes)
-        initial_pheromone = 1
-        # Try invalid types for heuristic. Should fail
-        invalid_heuristic = (type, 1)
-        for heuristic in invalid_heuristic:
-            with self.assertRaises(TypeError):
-                MySinglePathTrainer(
-                    ant_cls,
-                    species,
-                    tsp_fitness_func_single,
-                    initial_pheromone,
-                    heuristic=heuristic
-                )
-
-        # Try invalid values for heuristic. Should fail
-        invalid_heuristic = (
-            # Empty
-            (),
-            # Wrong shape
-            (
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes + 1),
-                    dtype=float
-                ),
-            ),
-            np.ones(
-                shape=(tsp_num_nodes, tsp_num_nodes + 1),
-                dtype=float
-            ),
-            np.ones(
-                shape=(tsp_num_nodes + 1, tsp_num_nodes + 1),
-                dtype=float
-            ),
-            [[1, 2, 3], [4, 5, 6]],
-            ([[1, 2, 3], [4, 5, 6]], ),
-            [[1, 2], [3, 4], [5, 6]],
-            ([[1, 2], [3, 4], [5, 6]], ),
-            # Negative values
-            [
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes),
-                    dtype=float) * -1
-            ],
-            np.ones(
-                shape=(tsp_num_nodes, tsp_num_nodes), dtype=float
-            ) * -1,
-            # Empty matrix
-            (np.ones(shape=(0, 0), dtype=float), ),
-            np.ones(shape=(0, 0), dtype=float),
-            # Wrong number of matrices
-            (
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes), dtype=float
-                ),
-            ) * 3,
+        self.assertEqual(
+            single_path_trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS
         )
-        for heuristic in invalid_heuristic:
-            with self.assertRaises(ValueError):
-                MySinglePathTrainer(
-                    ant_cls,
-                    species,
-                    tsp_fitness_func_single,
-                    initial_pheromone,
-                    heuristic=heuristic
-                )
-
-        # Try a single two-dimensional array-like object
-        valid_heuristic = np.full(
-            shape=(tsp_num_nodes, tsp_num_nodes),
-            fill_value=4,
-            dtype=float
-        )
-        trainer = MySinglePathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_single,
-            initial_pheromone,
-            heuristic=valid_heuristic
-        )
-        for heur in trainer.heuristic:
-            self.assertTrue(np.all(heur == np.asarray(valid_heuristic)))
-
-        # Try sequences of single two-dimensional array-like objects
-        valid_heuristic = [
-            np.ones(
-                shape=(tsp_num_nodes, tsp_num_nodes),
-                dtype=float
-            )
-        ]
-        trainer = MySinglePathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_single,
-            initial_pheromone,
-            heuristic=valid_heuristic
-        )
-        for heur in trainer.heuristic:
-            self.assertTrue(np.all(heur == np.asarray(valid_heuristic[0])))
-        
-        # Try the default heuristic
-        trainer = MySinglePathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_single,
-            initial_pheromone
-        )
-        for heur1, heur2 in zip(
-            tsp_fitness_func_single.heuristic, trainer.heuristic
-        ):
-            self.assertTrue(np.all(heur1 == heur2))
-
-    def test_heuristic_multi(self):
-        """Test the heuristic property for multi-matrix trainers."""
-        ant_cls = Ant
-        species = Species(tsp_num_nodes, tsp_banned_nodes)
-        initial_pheromone = 1
-        # Try invalid types for heuristic. Should fail
-        invalid_heuristic = (type, 1)
-        for heuristic in invalid_heuristic:
-            with self.assertRaises(TypeError):
-                MyMultiPathTrainer(
-                    ant_cls,
-                    species,
-                    tsp_fitness_func_multi,
-                    initial_pheromone,
-                    heuristic=heuristic
-                )
-
-        # Try invalid values for heuristic. Should fail
-        invalid_heuristic = (
-            # Empty
-            (),
-            # Wrong shape
-            (
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes + 1),
-                    dtype=float
-                ),
-            ),
-            np.ones(
-                shape=(tsp_num_nodes, tsp_num_nodes + 1),
-                dtype=float
-            ),
-            np.ones(
-                shape=(tsp_num_nodes + 1, tsp_num_nodes + 1),
-                dtype=float
-            ),
-            [[1, 2, 3], [4, 5, 6]],
-            ([[1, 2, 3], [4, 5, 6]], ),
-            [[1, 2], [3, 4], [5, 6]],
-            ([[1, 2], [3, 4], [5, 6]], ),
-            # Negative values
-            [
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes),
-                    dtype=float
-                ) * -1
-            ],
-            np.ones(
-                shape=(tsp_num_nodes, tsp_num_nodes),
-                dtype=float
-            ) * -1,
-            # Different shapes
-            (
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes),
-                    dtype=float
-                ),
-                np.ones(
-                    shape=(tsp_num_nodes+1, tsp_num_nodes+1),
-                    dtype=float
-                ),
-            ),
-            # Empty matrix
-            (np.ones(shape=(0, 0), dtype=float), ),
-            np.ones(shape=(0, 0), dtype=float),
-            # Wrong number of matrices
-            (
-                np.ones(
-                    shape=(tsp_num_nodes, tsp_num_nodes),
-                    dtype=float
-                ),
-            ) * 3,
-        )
-        for heuristic in invalid_heuristic:
-            with self.assertRaises(ValueError):
-                # print(heuristic)
-                MyMultiPathTrainer(
-                    ant_cls,
-                    species,
-                    tsp_fitness_func_multi,
-                    initial_pheromone,
-                    heuristic=heuristic
-                )
-
-        # Try single two-dimensional array-like objects
-        valid_heuristic = np.full(
-            shape=(
-                tsp_num_nodes, tsp_num_nodes
-            ),
-            fill_value=4,
-            dtype=float
-        )
-        trainer = MyMultiPathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_multi,
-            initial_pheromone,
-            heuristic=valid_heuristic
-        )
-        for heur in trainer.heuristic:
-            self.assertTrue(np.all(heur == np.asarray(valid_heuristic)))
-
-        # Try sequences of one single two-dimensional array-like object
-        valid_heuristic = [
-            np.ones(
-                shape=(tsp_num_nodes, tsp_num_nodes),
-                dtype=float
-            )
-        ]
-        
-        trainer = MyMultiPathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_multi,
-            initial_pheromone,
-            heuristic=valid_heuristic
-        )
-        for heur in trainer.heuristic:
-            self.assertTrue(np.all(heur == np.asarray(valid_heuristic[0])))
-
-        # Try sequences of various single two-dimensional array-like objects
-        valid_heuristic = [
-            np.ones(shape=(tsp_num_nodes, tsp_num_nodes), dtype=float),
-            np.full(
-                shape=(tsp_num_nodes, tsp_num_nodes),
-                fill_value=4,
-                dtype=float
-            )
-        ]
-        trainer = MyMultiPathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_multi,
-            initial_pheromone,
-            heuristic=valid_heuristic
-        )
-        for h1, h2 in zip(trainer.heuristic, valid_heuristic):
-            self.assertTrue(np.all(h1 == np.asarray(h2)))
-
-        # Try the default heuristic
-        trainer = MyMultiPathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_single,
-            initial_pheromone
-        )
-        for heur1, heur2 in zip(
-            tsp_fitness_func_single.heuristic, trainer.heuristic
-        ):
-            self.assertTrue(np.all(heur1 == heur2))
-
-    def test_col_size(self):
-        """Test the col_size property."""
-        ant_cls = Ant
-        species = Species(tsp_num_nodes, tsp_banned_nodes)
-        initial_pheromone = 1
-
-        # Try invalid types for col_size. Should fail
-        invalid_col_size = (type, 'a', 1.5)
-        for col_size in invalid_col_size:
-            with self.assertRaises(TypeError):
-                MySinglePathTrainer(
-                    ant_cls,
-                    species,
-                    tsp_fitness_func_single,
-                    initial_pheromone,
-                    col_size=col_size
-                )
-
-        # Try invalid values for col_size. Should fail
-        invalid_col_size = (-1, 0)
-        for col_size in invalid_col_size:
-            with self.assertRaises(ValueError):
-                MyMultiPathTrainer(
-                    ant_cls,
-                    species,
-                    tsp_fitness_func_multi,
-                    initial_pheromone,
-                    col_size=col_size
-                )
-
-        # Try a valid value for col_size
-        col_size = 233
-        trainer = MySinglePathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_single,
-            initial_pheromone,
-            col_size=col_size
-        )
-        self.assertEqual(col_size, trainer.col_size)
-        
-        # Try the default value for col_size
-        trainer = MySinglePathTrainer(
-            ant_cls,
-            species,
-            tsp_fitness_func_single,
-            initial_pheromone
-        )
-        self.assertEqual(trainer.col_size, trainer.species.num_nodes)
+        self.assertEqual(single_path_trainer.current_iter, None)
+        self.assertEqual(multi_path_trainer.col, None)
+        self.assertEqual(single_path_trainer.pheromone, None)
+        self.assertEqual(multi_path_trainer.choice_info, None)
 
     def test_calculate_choice_info(self):
         """Test the _calculate_choice_info method."""
         # Trainer parameters
         species = Species(tsp_num_nodes, tsp_banned_nodes)
-        initial_pheromone = [2]
+        initial_pheromone = 2
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -608,7 +277,7 @@ class TrainerTester(unittest.TestCase):
         # Try to get the choice_info after initializing the search
         trainer._init_search()
         trainer._start_iteration()
-                    
+
         the_choice_info = np.ones((species.num_nodes,) * 2)
         for (pher, pher_inf, heur, heur_inf) in zip(
             trainer.pheromone,
@@ -623,7 +292,7 @@ class TrainerTester(unittest.TestCase):
             for next_node in range(tsp_num_nodes):
                 self.assertEqual(
                     trainer.choice_info[node, next_node],
-                    the_choice_info[node, next_node]               
+                    the_choice_info[node, next_node]
                 )
                 self.assertEqual(
                     trainer.choice_info[next_node, node],

@@ -95,7 +95,7 @@ params = {
     "max_num_iters": 100,
     "selection_func": selNSGA3,
     "nsga3_reference_points_p": dataset.num_feats - 1,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

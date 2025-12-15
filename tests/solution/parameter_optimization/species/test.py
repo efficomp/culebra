@@ -191,7 +191,7 @@ class SpeciesTester(unittest.TestCase):
 
             # Check names
             names = species.names
-            index_len = len((length-1).__str__())
+            index_len = len(str(length-1))
             for index, name in enumerate(names):
                 self.assertEqual(
                     name,

@@ -125,10 +125,10 @@ class MyIslandsTrainer(IslandsTrainer):
             "species": species,
             "fitness_function": self.fitness_function,
             "max_num_iters": self.max_num_iters,
-            "checkpoint_enable": self.checkpoint_enable,
+            "checkpoint_activation": self.checkpoint_activation,
             "checkpoint_freq": self.checkpoint_freq,
             "checkpoint_filename": self.checkpoint_filename,
-            "verbose": self.verbose,
+            "verbosity": self.verbosity,
             "random_seed": self.random_seed
         }
 
@@ -254,8 +254,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -287,8 +287,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -313,8 +313,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -342,8 +342,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer

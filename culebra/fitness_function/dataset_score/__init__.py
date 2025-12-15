@@ -32,10 +32,7 @@ This module is composed by:
     Single-objective function that maximizes the Kohen's Kappa index.
 """
 
-from .constants import (
-    DEFAULT_CLASSIFIER,
-    DEFAULT_CV_FOLDS
-)
+from .constants import DEFAULT_CV_FOLDS
 
 from . import abc
 
@@ -59,6 +56,5 @@ __all__ = [
     'abc',
     'KappaIndex',
     'Accuracy',
-    'DEFAULT_CLASSIFIER',
     'DEFAULT_CV_FOLDS'
 ]

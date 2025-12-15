@@ -20,8 +20,6 @@
 
 from __future__ import annotations
 
-from typing import Tuple
-
 from sklearn.metrics import cohen_kappa_score, accuracy_score
 
 from culebra.fitness_function.dataset_score.abc import DatasetScorer
@@ -46,7 +44,7 @@ class KappaIndex(DatasetScorer):
     """Score function to be used in the evaluation."""
 
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         Maximize the validation Kappa index.
@@ -57,7 +55,7 @@ class KappaIndex(DatasetScorer):
         return (1, )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :return: ("Kappa",)
@@ -90,7 +88,7 @@ class Accuracy(DatasetScorer):
     """Score function to be used in the evaluation."""
 
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         Maximize the validation accuracy.
@@ -101,7 +99,7 @@ class Accuracy(DatasetScorer):
         return (1, )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :return: ("Accuracy",)

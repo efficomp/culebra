@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.PACOFS.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.PACOFS.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.PACOFS.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.PACOFS.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.PACOFS.choice_info
@@ -67,7 +67,24 @@ Properties
 .. autoproperty:: culebra.trainer.aco.PACOFS.runtime
 .. autoproperty:: culebra.trainer.aco.PACOFS.solution_cls
 .. autoproperty:: culebra.trainer.aco.PACOFS.species
-.. autoproperty:: culebra.trainer.aco.PACOFS.verbose
+.. autoproperty:: culebra.trainer.aco.PACOFS.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_col_size
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_discard_prob
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_heuristic
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_index
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_initial_pheromone
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_pop_size
+.. autoproperty:: culebra.trainer.aco.PACOFS._default_verbosity
 
 Methods
 -------
@@ -83,7 +100,6 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.aco.PACOFS._ant_choice_info
 .. automethod:: culebra.trainer.aco.PACOFS._calculate_choice_info
-.. automethod:: culebra.trainer.aco.PACOFS._decrease_pheromone
 .. automethod:: culebra.trainer.aco.PACOFS._default_termination_func
 .. automethod:: culebra.trainer.aco.PACOFS._deposit_pheromone
 .. automethod:: culebra.trainer.aco.PACOFS._do_iteration
@@ -93,7 +109,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.PACOFS._generate_ant
 .. automethod:: culebra.trainer.aco.PACOFS._generate_col
 .. automethod:: culebra.trainer.aco.PACOFS._get_state
-.. automethod:: culebra.trainer.aco.PACOFS._increase_pheromone
 .. automethod:: culebra.trainer.aco.PACOFS._init_internals
 .. automethod:: culebra.trainer.aco.PACOFS._init_pheromone
 .. automethod:: culebra.trainer.aco.PACOFS._init_representatives

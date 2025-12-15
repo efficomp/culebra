@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.choice_info
@@ -61,13 +61,30 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.pheromone_shapes
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.pop
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.pop_ingoing
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.pop_outgoing
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.pop_size
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.random_seed
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.representatives
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.runtime
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.species
-.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.verbose
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_index
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_pop_size
+.. autoproperty:: culebra.trainer.aco.abc.SingleObjPACO._default_verbosity
 
 Methods
 -------

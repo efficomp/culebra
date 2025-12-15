@@ -96,7 +96,7 @@ params = {
     "col_size": dataset.num_feats,
     "max_num_iters": 1000,
     "custom_termination_func": convergence_detector.has_converged,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

@@ -80,7 +80,7 @@ class TrainerTester(unittest.TestCase):
         minimization_params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": MyMinimizationFitnessFunc.fromPath(
+            "fitness_function": MyMinimizationFitnessFunc.from_path(
                 optimum_path
             ),
             "initial_pheromone": initial_pheromone,
@@ -99,7 +99,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try several colonies with the same fitness
         initial_fit_values = (3.0, )
-        for col_index in range(5):
+        for _ in range(5):
             # Generate the colony
             minimization_trainer._start_iteration()
             minimization_trainer._generate_col()
@@ -119,7 +119,7 @@ class TrainerTester(unittest.TestCase):
             minimization_trainer._update_pop()
 
         # Try more colonies with worse ants
-        for col_index in range(5):
+        for _ in range(5):
             # Generate the colony
             minimization_trainer._start_iteration()
             minimization_trainer._generate_col()
@@ -135,7 +135,7 @@ class TrainerTester(unittest.TestCase):
         maximization_params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": MyMaximizationFitnessFunc.fromPath(
+            "fitness_function": MyMaximizationFitnessFunc.from_path(
                 optimum_path
             ),
             "initial_pheromone": initial_pheromone,
@@ -154,7 +154,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try several colonies with the same fitness
         initial_fit_values = (3.0, )
-        for col_index in range(5):
+        for _ in range(5):
             # Generate the colony
             maximization_trainer._start_iteration()
             maximization_trainer._generate_col()
@@ -174,7 +174,7 @@ class TrainerTester(unittest.TestCase):
             maximization_trainer._update_pop()
 
         # Try more colonies with worse ants
-        for col_index in range(5):
+        for _ in range(5):
             # Generate the colony
             maximization_trainer._start_iteration()
             maximization_trainer._generate_col()
@@ -197,7 +197,7 @@ class TrainerTester(unittest.TestCase):
         params = {
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": MyMinimizationFitnessFunc.fromPath(
+            "fitness_function": MyMinimizationFitnessFunc.from_path(
                 optimum_path
             ),
             "initial_pheromone": initial_pheromone,

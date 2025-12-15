@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.ElitistEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.ElitistEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.ElitistEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.ElitistEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.ElitistEA.container
@@ -61,7 +61,25 @@ Properties
 .. autoproperty:: culebra.trainer.ea.ElitistEA.selection_func_params
 .. autoproperty:: culebra.trainer.ea.ElitistEA.solution_cls
 .. autoproperty:: culebra.trainer.ea.ElitistEA.species
-.. autoproperty:: culebra.trainer.ea.ElitistEA.verbose
+.. autoproperty:: culebra.trainer.ea.ElitistEA.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_elite_size
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_index
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.ElitistEA._default_verbosity
 
 Methods
 -------

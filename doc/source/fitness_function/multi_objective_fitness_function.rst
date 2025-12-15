@@ -37,6 +37,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.obj_weights
 .. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction.objectives
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.MultiObjectiveFitnessFunction._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.MultiObjectiveFitnessFunction.dump

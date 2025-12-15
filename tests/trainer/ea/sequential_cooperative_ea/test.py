@@ -121,8 +121,8 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": ElitistEA,
             "pop_sizes": pop_size,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -163,7 +163,7 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": ElitistEA,
             "pop_sizes": 10,
             "representation_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -226,8 +226,8 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": ElitistEA,
             "pop_sizes": 10,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -302,8 +302,8 @@ class TrainerTester(unittest.TestCase):
             "max_num_iters": 2,
             "pop_sizes": 10,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -345,8 +345,8 @@ class TrainerTester(unittest.TestCase):
             "max_num_iters": 2,
             "pop_sizes": 10,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer

@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.NSGA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.NSGA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.NSGA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.NSGA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.NSGA.container
@@ -63,7 +63,25 @@ Properties
 .. autoproperty:: culebra.trainer.ea.NSGA.selection_func_params
 .. autoproperty:: culebra.trainer.ea.NSGA.solution_cls
 .. autoproperty:: culebra.trainer.ea.NSGA.species
-.. autoproperty:: culebra.trainer.ea.NSGA.verbose
+.. autoproperty:: culebra.trainer.ea.NSGA.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.ea.NSGA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.NSGA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.NSGA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.NSGA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.NSGA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.NSGA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.NSGA._default_index
+.. autoproperty:: culebra.trainer.ea.NSGA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.NSGA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.NSGA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.NSGA._default_nsga3_reference_points_p
+.. autoproperty:: culebra.trainer.ea.NSGA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.NSGA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.NSGA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.NSGA._default_verbosity
 
 Methods
 -------

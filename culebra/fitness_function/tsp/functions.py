@@ -20,7 +20,7 @@
 
 from __future__ import annotations
 
-from typing import Tuple, Optional, Union, TextIO
+from typing import TextIO
 from collections.abc import Sequence
 from copy import deepcopy
 from os import PathLike
@@ -45,7 +45,7 @@ from culebra.checker import (
 )
 from culebra.solution.tsp import Species, Solution
 
-FilePath = Union[str, "PathLike[str]"]
+FilePath = str | PathLike[str]
 Url = str
 
 
@@ -66,7 +66,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
 
     def __init__(
         self, distance_matrix: Sequence[Sequence[float]],
-        index: Optional[int] = None
+        index: int | None = None
     ) -> None:
         """Construct a fitness function.
 
@@ -92,7 +92,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         self.distance = distance_matrix
 
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         Minimize the path length.
@@ -103,7 +103,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         return (-1.0, )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :return: ("Len",)
@@ -164,14 +164,14 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         return self.distance.shape[0]
 
     @property
-    def heuristic(self) -> Sequence[np.ndarray, ...]:
+    def heuristic(self) -> tuple[np.ndarray[float], ...]:
         """Heuristic matrices.
 
         :return: A sequence of heuristic matrices. One for each objective.
             Arcs from a node to itself have a heuristic value of 0. For the
             rest of arcs, the reciprocal of their nodes distance is used as
             heuristic
-        :rtype: ~collections.abc.Sequence[~numpy.ndarray]
+        :rtype: tuple[~numpy.ndarray[float]]
         """
         with np.errstate(divide='ignore'):
             heur = np.where(
@@ -198,7 +198,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         """
         # Check the species
         species = check_instance(species, "species", Species)
-        
+
         # Maximum solution's length
         max_len = species.num_nodes - len(species.banned_nodes)
 
@@ -219,7 +219,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
 
             # Start with a feasible node
             current_node = random.randint(0, species.num_nodes-1)
-            while (current_node in species.banned_nodes):
+            while current_node in species.banned_nodes:
                 current_node = random.randint(0, species.num_nodes-1)
             current_path.append(current_node)
 
@@ -240,8 +240,8 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 
@@ -259,7 +259,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         :rtype: ~culebra.abc.Fitness
         """
         path_len = 0
-        if (len(sol.path) > 0):
+        if len(sol.path) > 0:
             org = sol.path[-1]
             for dest in sol.path:
                 path_len += self.distance[org][dest]
@@ -271,7 +271,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         return sol.fitness
 
     @classmethod
-    def fromPath(cls, path: Sequence[int, ...]) -> PathLength:
+    def from_path(cls, path: Sequence[int, ...]) -> PathLength:
         """Create an instance from an optimum path.
 
         This class method has been designed for testing purposes.
@@ -333,7 +333,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         return cls(distance)
 
     @classmethod
-    def fromTSPLib(
+    def from_tsplib(
         cls, filepath_or_buffer: FilePath | Url | TextIO
     ) -> PathLength:
         """Generate a fitness function from a TSPLib file.
@@ -369,8 +369,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
             try:
                 if bool(split_url.scheme and split_url.netloc):
                     return urlopen(filepath_or_buffer)
-                else:
-                    return open(filepath_or_buffer, 'rt')
+                return open(filepath_or_buffer, 'rt', encoding='utf-8')
             except Exception as exc:
                 raise RuntimeError(
                     f'Failed to open {filepath_or_buffer}'
@@ -412,7 +411,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
                     raise RuntimeError(f"Invalid DIMENSION: {num_nodes}")
                 return num_nodes
             except Exception as e:
-                raise RuntimeError(e.args[0])
+                raise RuntimeError(e.args[0]) from e
 
         def parse_edge_weight_type(current_line: str) -> str:
             """Parse the edge weight type.
@@ -697,10 +696,9 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
                     dimension,
                     buffer
                 )
-            else:
-                raise RuntimeError(
-                    f"Unsupported EDGE_WEIGHT_FORMAT: {edge_weight_format}"
-                )
+            raise RuntimeError(
+                f"Unsupported EDGE_WEIGHT_FORMAT: {edge_weight_format}"
+            )
 
         def parse_file(buffer: TextIO) -> np.ndarray:
             """Parse a TSPLib file.
@@ -734,7 +732,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
             try:
                 while True:
                     # Read the next line
-                    line = buffer.__next__()
+                    line = next(buffer)
 
                     # Convert the line to a string if necesary
                     if isinstance(line, bytes):
@@ -794,7 +792,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
                         raise StopIteration
 
                     # Read the next line
-                    line = buffer.__next__()
+                    line = next(buffer)
 
                     # Convert the line to a string if necesary
                     if isinstance(line, bytes):
@@ -802,11 +800,11 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
 
                     # Strip the line
                     line = line.strip()
-            except StopIteration:
+            except StopIteration as e:
                 if section_found is False:
                     raise RuntimeError(
                         f"Missing {section_name} section"
-                    )
+                    ) from e
 
             # Parse the section
             return section_subparsers[section_name](problem_params, buffer)
@@ -873,7 +871,7 @@ class MultiObjectivePathLength(
 
     def __init__(
         self,
-        *objectives: Tuple[PathLength, ...]
+        *objectives: tuple[PathLength, ...]
     ) -> None:
         """Construct a multi-objective TSP fitness function.
 
@@ -897,7 +895,7 @@ class MultiObjectivePathLength(
         super().__init__(*objectives)
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :rtype: tuple[str]
@@ -918,14 +916,14 @@ class MultiObjectivePathLength(
         return self.objectives[0].num_nodes
 
     @property
-    def heuristic(self) -> Sequence[np.ndarray, ...]:
+    def heuristic(self) -> tuple[np.ndarray[float], ...]:
         """Heuristic matrices.
 
         :return: A sequence of heuristic matrices. One for each objective.
             Arcs from a node to itself have a heuristic value of 0. For the
             rest of arcs, the reciprocal of their nodes distance is used as
             heuristic
-        :rtype: ~collections.abc.Sequence[~numpy.ndarray]
+        :rtype: tuple[~numpy.ndarray[float]]
         """
         heuristics = ()
 

@@ -34,18 +34,14 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(SingleObjACO):
-    """Dummy implementation of a trainer method."""
-
-
 num_nodes = 25
 optimum_paths = [
     np.random.permutation(num_nodes),
     np.random.permutation(num_nodes)
 ]
 fitness_func_multi = MultiObjectivePathLength(
-    PathLength.fromPath(optimum_paths[0]),
-    PathLength.fromPath(optimum_paths[1])
+    PathLength.from_path(optimum_paths[0]),
+    PathLength.from_path(optimum_paths[1])
 )
 fitness_func_single = fitness_func_multi.objectives[0]
 banned_nodes = [0, num_nodes-1]
@@ -65,7 +61,7 @@ class TrainerTester(unittest.TestCase):
         invalid_fitness_functions = (type, 'a')
         for invalid_fitness_func in invalid_fitness_functions:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                SingleObjACO(
                     ant_cls,
                     species,
                     invalid_fitness_func,
@@ -75,7 +71,7 @@ class TrainerTester(unittest.TestCase):
         # Try invalid values for fitness function. Should fail
         invalid_fitness_func = fitness_func_multi
         with self.assertRaises(ValueError):
-            MyTrainer(
+            SingleObjACO(
                 ant_cls,
                 species,
                 invalid_fitness_func,

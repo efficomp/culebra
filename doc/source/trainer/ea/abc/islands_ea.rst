@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.IslandsEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA.container
@@ -62,10 +62,23 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA.subtrainers
-.. autoproperty:: culebra.trainer.ea.abc.IslandsEA.verbose
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA.verbosity
 
 Private properties
 ------------------
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_index
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_num_subtrainers
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_representation_freq
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_representation_selection_func
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_representation_selection_func_params
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_representation_size
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_representation_topology_func
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_representation_topology_func_params
+.. autoproperty:: culebra.trainer.ea.abc.IslandsEA._default_verbosity
 .. autoproperty:: culebra.trainer.ea.abc.IslandsEA._subtrainer_suffixes
 
 Static methods

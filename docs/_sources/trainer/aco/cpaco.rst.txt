@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.CPACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.CPACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.CPACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.CPACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.CPACO.choice_info
@@ -66,7 +66,22 @@ Properties
 .. autoproperty:: culebra.trainer.aco.CPACO.runtime
 .. autoproperty:: culebra.trainer.aco.CPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.CPACO.species
-.. autoproperty:: culebra.trainer.aco.CPACO.verbose
+.. autoproperty:: culebra.trainer.aco.CPACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.CPACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.CPACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.CPACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.CPACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.CPACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.CPACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.CPACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.CPACO._default_index
+.. autoproperty:: culebra.trainer.aco.CPACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.CPACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.CPACO._default_pop_size
+.. autoproperty:: culebra.trainer.aco.CPACO._default_verbosity
 
 Methods
 -------
@@ -82,7 +97,6 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.aco.CPACO._ant_choice_info
 .. automethod:: culebra.trainer.aco.CPACO._calculate_choice_info
-.. automethod:: culebra.trainer.aco.CPACO._decrease_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._default_termination_func
 .. automethod:: culebra.trainer.aco.CPACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._do_iteration
@@ -92,7 +106,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.CPACO._generate_ant
 .. automethod:: culebra.trainer.aco.CPACO._generate_col
 .. automethod:: culebra.trainer.aco.CPACO._get_state
-.. automethod:: culebra.trainer.aco.CPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._init_internals
 .. automethod:: culebra.trainer.aco.CPACO._init_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._init_representatives

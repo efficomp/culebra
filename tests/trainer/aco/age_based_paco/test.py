@@ -35,7 +35,7 @@ from culebra.fitness_function.tsp import PathLength
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = PathLength.fromPath(optimum_path)
+fitness_func = PathLength.from_path(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -62,10 +62,10 @@ class TrainerTester(unittest.TestCase):
             "custom_termination_func": max,
             "col_size": 6,
             "pop_size": 5,
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 13,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
-            "verbose": False,
+            "verbosity": False,
             "random_seed": 15
         }
 
@@ -94,13 +94,13 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.col_size, params["col_size"])
         self.assertEqual(trainer.pop_size, params["pop_size"])
         self.assertEqual(
-            trainer.checkpoint_enable, params["checkpoint_enable"]
+            trainer.checkpoint_activation, params["checkpoint_activation"]
         )
         self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
         self.assertEqual(
             trainer.checkpoint_filename, params["checkpoint_filename"]
         )
-        self.assertEqual(trainer.verbose, params["verbose"])
+        self.assertEqual(trainer.verbosity, params["verbosity"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
 
     def test_internals(self):
@@ -179,15 +179,15 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(trainer.pop[pop_index], trainer.col[0])
 
             # The ant should also be in the ingoing list
-            self.assertEqual(len(trainer._pop_ingoing), 1)
-            self.assertEqual(trainer._pop_ingoing[0], trainer.col[0])
+            self.assertEqual(len(trainer.pop_ingoing), 1)
+            self.assertEqual(trainer.pop_ingoing[0], trainer.col[0])
 
             # Check the outgoing ant, if any
             if col_index < trainer.pop_size:
-                self.assertEqual(len(trainer._pop_outgoing), 0)
+                self.assertEqual(len(trainer.pop_outgoing), 0)
             else:
                 self.assertEqual(len(trainer._pop_outgoing), 1)
-                self.assertEqual(trainer._pop_outgoing[0], outgoing_ant)
+                self.assertEqual(trainer.pop_outgoing[0], outgoing_ant)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

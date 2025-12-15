@@ -21,14 +21,8 @@
 
 from __future__ import annotations
 
-from typing import (
-    Type,
-    Callable,
-    Optional,
-    Dict,
-    Any
-)
-from collections.abc import Sequence
+from typing import Any
+from collections.abc import Sequence, Callable
 from math import ceil
 import bisect
 
@@ -75,31 +69,25 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
 
     def __init__(
         self,
-        solution_cls: Type[Ant],
+        solution_cls: type[Ant],
         species: Species,
         fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        exploitation_prob: Optional[float] = None,
-        pheromone_evaporation_rate: Optional[float] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [AntSystem],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        heuristic:
+            np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
+        pheromone_influence: float | Sequence[float, ...] | None = None,
+        heuristic_influence: float | Sequence[float, ...] | None = None,
+        exploitation_prob: float | None = None,
+        pheromone_evaporation_rate: float | None = None,
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[AntSystem], bool] | None = None,
+        col_size: int | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         r"""Create a new Ant System trainer.
 
@@ -123,20 +111,20 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
             :attr:`~culebra.trainer.aco.AntSystem.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices,
-            according to the kind of problem being solved, are assumed.
-            Defaults to :data:`None`
+            heuristic matrices. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_heuristic`
+            will be used. Defaults to :data:`None`
         :type heuristic:
-            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
-            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
+            ~numpy.ndarray[float] |
+            ~collections.abc.Sequence[~numpy.ndarray[float], ...]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
             :attr:`~culebra.trainer.aco.AntSystem.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.AntSystem._default_pheromone_influence`
+            will be used. Defaults to :data:`None`
         :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
@@ -144,49 +132,49 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             for all the
             :attr:`~culebra.trainer.aco.AntSystem.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :data:`None`
+            :attr:`~culebra.trainer.aco.AntSystem._default_heuristic_influence`
+            will be used. Defaults to :data:`None`
         :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
-            be used. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.AntSystem._default_exploitation_prob`
+            will be used. Defaults to :data:`None`
         :type exploitation_prob: float
         :param pheromone_evaporation_rate: Pheromone evaluation rate
-            (:math:`{\rho}`). If set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
+            (:math:`{\rho}`). If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_pheromone_evaporation_rate`
             will be used. Defaults to :data:`None`
         :type pheromone_evaporation_rate: float
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.AntSystem._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted, the default size,
-            according to the kind of problem being solved, is assumed. Defaults
-            to :data:`None`
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_col_size` will be
+            used. Defaults to :data:`None`
         :type col_size: int
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -213,64 +201,47 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
+    @property
+    def _default_exploitation_prob(self) -> float:
+        r"""Default exploitation probability (:math:`{q_0}`).
 
-    @PheromoneBasedACO.exploitation_prob.getter
-    def exploitation_prob(self) -> float:
-        """Exploitation probability (:math:`{q_0}`).
-
+        :return: attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB`
         :rtype: float
-        :setter: Set a new value for the exploitation probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` is
-            chosen
-        :type prob: float
-        :raises TypeError: If *prob* is not a real number
-        :raises ValueError: If *prob* is not in [0, 1]
         """
-        return (
-            DEFAULT_AS_EXPLOITATION_PROB
-            if self._exploitation_prob is None
-            else self._exploitation_prob
-        )
+        return DEFAULT_AS_EXPLOITATION_PROB
 
 class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
     """Implement the Ant System algorithm."""
 
     def __init__(
         self,
-        solution_cls: Type[Ant],
+        solution_cls: type[Ant],
         species: Species,
         fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        exploitation_prob: Optional[float] = None,
-        pheromone_evaporation_rate: Optional[float] = None,
-        convergence_check_freq: Optional[int] = None,
-        elite_weight: Optional[float] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [ElitistAntSystem],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        heuristic:
+            np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
+        pheromone_influence: float | Sequence[float, ...] | None = None,
+        heuristic_influence: float | Sequence[float, ...] | None = None,
+        exploitation_prob: float | None = None,
+        pheromone_evaporation_rate: float | None = None,
+        convergence_check_freq: int | None = None,
+        elite_weight: float | None = None,
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[ElitistAntSystem], bool] | None = None,
+        col_size: int | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         r"""Create a new Elitist Ant System trainer.
 
@@ -294,20 +265,20 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
             :attr:`~culebra.trainer.aco.ElitistAntSystem.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices,
-            according to the kind of problem being solved, are assumed.
-            Defaults to :data:`None`
+            heuristic matrices. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_heuristic`
+            will be used. Defaults to :data:`None`
         :type heuristic:
-            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
-            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
+            ~numpy.ndarray[float] |
+            ~collections.abc.Sequence[~numpy.ndarray[float], ...]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
             :attr:`~culebra.trainer.aco.ElitistAntSystem.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_pheromone_influence`
+            will be used. Defaults to :data:`None`
         :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
@@ -315,60 +286,59 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
             for all the
             :attr:`~culebra.trainer.aco.ElitistAntSystem.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :data:`None`
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_heuristic_influence`
+            will be used. Defaults to :data:`None`
         :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
-            be used. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_exploitation_prob`
+            will be used. Defaults to :data:`None`
         :type exploitation_prob: float
         :param pheromone_evaporation_rate: Pheromone evaluation rate
-            (:math:`{\rho}`). If set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
+            (:math:`{\rho}`). If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_pheromone_evaporation_rate`
             will be used. Defaults to :data:`None`
         :type pheromone_evaporation_rate: float
         :param convergence_check_freq: Convergence assessment frequency. If
-            set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_convergence_check_freq`
             will be used. Defaults to :data:`None`
         :type convergence_check_freq: int
         :param elite_weight: Weight for the elite ant (best-so-far ant)
-            respect to the iteration-best ant.
-            If set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` will be used.
-            Defaults to :data:`None`
+            respect to the iteration-best ant. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_elite_weight`
+            will be used. Defaults to :data:`None`
         :type elite_weight: float
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.ElitistAntSystem._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted, the default size,
-            according to the kind of problem being solved, is assumed. Defaults
-            to :data:`None`
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_col_size`
+            will be used. Defaults to :data:`None`
         :type col_size: int
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -396,17 +366,26 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
         self.elite_weight = elite_weight
 
     # Copy this property
-    exploitation_prob = AntSystem.exploitation_prob
+    _default_exploitation_prob = AntSystem._default_exploitation_prob
+
+    @property
+    def _default_elite_weight(self) -> float:
+        """Default elite weigth.
+
+        :return: attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT`
+        :rtype: float
+        """
+        return DEFAULT_ELITE_WEIGHT
 
     @property
     def elite_weight(self) -> float:
@@ -415,31 +394,30 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
         :rtype: float
         :setter: Set a new elite weigth
         :param weight: The new weight. If set to :data:`None`,
-         :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_elite_weight`
+            is chosen
         :type weight: float
         :raises TypeError: If *weight* is not a real number
         :raises ValueError: If *weight* is outside [0, 1]
         """
-        return (
-            DEFAULT_ELITE_WEIGHT
-            if self._elite_weight is None
-            else self._elite_weight)
+        return self._elite_weight
 
     @elite_weight.setter
     def elite_weight(self, weight: float | None) -> None:
         """Set a new elite weigth.
 
         :param weight: The new weight. If set to :data:`None`,
-         :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT` is chosen
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_elite_weight`
+            is chosen
         :type weight: float
         :raises TypeError: If *weight* is not a real number
         :raises ValueError: If *weight* is outside [0, 1]
         """
         # Check prob
         self._elite_weight = (
-            None if weight is None else check_float(
-                weight, "elite weigth", ge=0, le=1
-            )
+            self._default_elite_weight
+            if weight is None
+            else check_float(weight, "elite weigth", ge=0, le=1)
         )
 
         # Reset the trainer
@@ -469,33 +447,27 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
     def __init__(
         self,
-        solution_cls: Type[Ant],
+        solution_cls: type[Ant],
         species: Species,
         fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        exploitation_prob: Optional[float] = None,
-        pheromone_evaporation_rate: Optional[float] = None,
-        iter_best_use_limit: Optional[int] = None,
-        convergence_check_freq: Optional[int] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [MMAS],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        heuristic:
+            np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
+        pheromone_influence: float | Sequence[float, ...] | None = None,
+        heuristic_influence: float | Sequence[float, ...] | None = None,
+        exploitation_prob: float | None = None,
+        pheromone_evaporation_rate: float | None = None,
+        iter_best_use_limit: int| None = None,
+        convergence_check_freq: int | None = None,
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[MMAS], bool] | None = None,
+        col_size: int | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         r"""Create a new :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS trainer.
 
@@ -519,20 +491,20 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
             :attr:`~culebra.trainer.aco.MMAS.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices,
-            according to the kind of problem being solved, are assumed.
-            Defaults to :data:`None`
+            heuristic matrices. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_heuristic`
+            will be used. Defaults to :data:`None`
         :type heuristic:
-            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
-            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
+            ~numpy.ndarray[float] |
+            ~collections.abc.Sequence[~numpy.ndarray[float], ...]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
             :attr:`~culebra.trainer.aco.MMAS.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.MMAS._default_pheromone_influence`
+            will be used. Defaults to :data:`None`
         :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
@@ -540,61 +512,60 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             for all the
             :attr:`~culebra.trainer.aco.MMAS.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :data:`None`
+            :attr:`~culebra.trainer.aco.MMAS._default_heuristic_influence`
+            will be used. Defaults to :data:`None`
         :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB` will
-            be used. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.MMAS._default_exploitation_prob`
+            will be used. Defaults to :data:`None`
         :type exploitation_prob: float
         :param pheromone_evaporation_rate: Pheromone evaluation rate
-            (:math:`{\rho}`). If set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_EVAPORATION_RATE`
+            (:math:`{\rho}`). If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_pheromone_evaporation_rate`
             will be used. Defaults to :data:`None`
         :type pheromone_evaporation_rate: float
         :param iter_best_use_limit: Limit for the number of iterations to give
             up using the iteration-best ant to deposit pheromone. Iterations
-            above this limit will use only the global-best ant. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+            above this limit will use only the global-best ant. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_iter_best_use_limit`
             will be used. Defaults to :data:`None`
         :type iter_best_use_limit: int
         :param convergence_check_freq: Convergence assessment frequency. If
-            set to :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_CONVERGENCE_CHECK_FREQ`
+            omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_convergence_check_freq`
             will be used. Defaults to :data:`None`
         :type convergence_check_freq: int
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.MMAS._default_termination_func` is
+            used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted, the default size,
-            according to the kind of problem being solved, is assumed. Defaults
-            to :data:`None`
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_col_size` will be
+            used. Defaults to :data:`None`
         :type col_size: int
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -622,17 +593,26 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
             col_size=col_size,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
         self.iter_best_use_limit = iter_best_use_limit
         self.convergence_check_freq = convergence_check_freq
 
     # Copy this property
-    exploitation_prob = AntSystem.exploitation_prob
+    _default_exploitation_prob = AntSystem._default_exploitation_prob
+
+    @property
+    def _default_iter_best_use_limit(self) -> int:
+        """Default iteration-best use limit.
+
+        :return: attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+        :rtype: int
+        """
+        return DEFAULT_MMAS_ITER_BEST_USE_LIMIT
 
     @property
     def iter_best_use_limit(self) -> int:
@@ -644,17 +624,13 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         :setter: Set a value for the iteration-best use limit
         :param value: New value for the iteration-best limit. If set to
             :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+            :attr:`~culebra.trainer.aco.MMAS._default_iter_best_use_limit`
             is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer number
         :raises ValueError: If *value* is non-positive
         """
-        return (
-            DEFAULT_MMAS_ITER_BEST_USE_LIMIT
-            if self._iter_best_use_limit is None
-            else self._iter_best_use_limit
-        )
+        return self._iter_best_use_limit
 
     @iter_best_use_limit.setter
     def iter_best_use_limit(self, value: int | None) -> None:
@@ -664,7 +640,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
         :param value: New value for the iteration-best limit. If set to
             :data:`None`,
-            :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+            :attr:`~culebra.trainer.aco.MMAS._default_iter_best_use_limit`
             is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer number
@@ -672,7 +648,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         """
         # Check the value
         self._iter_best_use_limit = (
-            None if value is None else check_int(
+            self._default_iter_best_use_limit if value is None else check_int(
                 value, "iteration-best use limit", gt=0
             )
         )
@@ -694,7 +670,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
         return freq
 
-    def _get_state(self) -> Dict[str, Any]:
+    def _get_state(self) -> dict[str, Any]:
         """Return the state of this trainer.
 
         Overridden to add the pheromone limits and the last iteration number
@@ -712,7 +688,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
         return state
 
-    def _set_state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the pheromone limits and the last iteration number
@@ -827,7 +803,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             min_pher_count = np.isclose(row, self._min_pheromone).sum()
 
             if (
-                (max_pher_count != 0 and max_pher_count != 2) or
+                max_pher_count not in (0, 2) or
                 max_pher_count + min_pher_count != num_rows
             ):
                 convergence = False
@@ -884,28 +860,26 @@ class AgeBasedPACO(SingleObjPACO):
         """Update the population.
 
         The population is updated with the current iteration's colony. The best
-        ants in the current colony, which are put in the *_pop_ingoing* list,
-        will replace the eldest ants in the population, put in the
-        *_pop_outgoing* list.
+        ants in the current colony, which are put in the
+        :attr:`~culebra.trainer.aco.AgeBasedPACO.pop_ingoing` list, will
+        replace the eldest ants in the population, put in the
+        :attr:`~culebra.trainer.aco.AgeBasedPACO.pop_outgoing` list.
 
         These lists will be used later within the
-        :meth:`~culebra.trainer.aco.AgeBasedPACO._increase_pheromone`
-        and
-        :meth:`~culebra.trainer.aco.AgeBasedPACO._decrease_pheromone`
-        methods, respectively.
+        :meth:`~culebra.trainer.aco.AgeBasedPACO._increase_pheromone` and
+        :meth:`~culebra.trainer.aco.AgeBasedPACO._decrease_pheromone` methods,
+        respectively.
         """
         # Ingoing ants
-        self._pop_ingoing = ParetoFront()
-        self._pop_ingoing.update(self.col)
-
-        # Outgoing ants
-        self._pop_outgoing = []
+        best_ones = ParetoFront()
+        best_ones.update(self.col)
+        self.pop_ingoing.extend(best_ones)
 
         # Remaining room in the population
         remaining_room_in_pop = self.pop_size - len(self.pop)
 
         # For all the ants in the ingoing list
-        for ant in self._pop_ingoing:
+        for ant in self.pop_ingoing:
             # If there is still room in the population, just append it
             if remaining_room_in_pop > 0:
                 self._pop.append(ant)
@@ -916,7 +890,7 @@ class AgeBasedPACO(SingleObjPACO):
                     self._youngest_index = 0
             # The eldest ant is replaced
             else:
-                self._pop_outgoing.append(self.pop[self._youngest_index])
+                self.pop_outgoing.append(self.pop[self._youngest_index])
                 self.pop[self._youngest_index] = ant
                 self._youngest_index = (
                     (self._youngest_index + 1) % self.pop_size
@@ -930,21 +904,19 @@ class QualityBasedPACO(SingleObjPACO):
         """Update the population.
 
         The population now keeps the best ants found ever. The best ant in the
-        current colony will enter the population (and also the *_pop_ingoing*
-        list) only if is better than the worst ant in the population, which
-        will be put in the *_pop_outgoing* list).
+        current colony will enter the population (and also the
+        :attr:`~culebra.trainer.aco.QualityBasedPACO.pop_ingoing` list) only
+        if is better than the worst ant in the population, which will be put
+        in the
+        :attr:`~culebra.trainer.aco.QualityBasedPACO.pop_outgoing` list).
 
-        These lists will be used later within
-        the
-        :meth:`~culebra.trainer.aco.QualityBasedPACO._increase_pheromone`
-        and
+        These lists will be used later within the
+        :meth:`~culebra.trainer.aco.QualityBasedPACO._increase_pheromone` and
         :meth:`~culebra.trainer.aco.QualityBasedPACO._decrease_pheromone`
         methods, respectively.
         """
         # Best ant in current colony
         [best_in_col] = selBest(self.col, 1)
-        self._pop_ingoing = []
-        self._pop_outgoing = []
 
         # If the best ant in the current colony
         # is better than the worst ant in the population
@@ -953,12 +925,12 @@ class QualityBasedPACO(SingleObjPACO):
             best_in_col.fitness > self.pop[-1].fitness
         ):
             # The best ant in the current colony will enter the population
-            self._pop_ingoing.append(best_in_col)
+            self.pop_ingoing.append(best_in_col)
 
             # If there isn't room in the population,
             # the worst ant in the population must go out
             if len(self.pop) == self.pop_size:
-                self._pop_outgoing.append(self.pop[-1])
+                self.pop_outgoing.append(self.pop[-1])
                 self.pop.pop()
 
             # Insert the best ant keeping the population sorted

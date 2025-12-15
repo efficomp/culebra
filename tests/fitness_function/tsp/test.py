@@ -303,7 +303,7 @@ class PathLengthTester(unittest.TestCase):
         self.assertEqual(fit_values, sol.fitness.values)
 
     def test_from_path(self):
-        """Test the fromPath class method."""
+        """Test the from_path class method."""
         # Try invalid path sequence lengths. Should fail
         invalid_path_sequence_lengths = [
             [],
@@ -318,7 +318,7 @@ class PathLengthTester(unittest.TestCase):
         ]
         for path in invalid_path_sequence_lengths:
             with self.assertRaises(ValueError):
-                PathLength.fromPath(path)
+                PathLength.from_path(path)
 
         # Try invalid path types. Should fail
         invalid_path_types = [
@@ -334,7 +334,7 @@ class PathLengthTester(unittest.TestCase):
         ]
         for path in invalid_path_types:
             with self.assertRaises(ValueError):
-                PathLength.fromPath(path)
+                PathLength.from_path(path)
 
         # Try invalid path values. Should fail
         invalid_path_values = [
@@ -353,7 +353,7 @@ class PathLengthTester(unittest.TestCase):
         ]
         for path in invalid_path_values:
             with self.assertRaises(ValueError):
-                PathLength.fromPath(path)
+                PathLength.from_path(path)
 
         # Try invalid paths. Should fail
         invalid_paths = [
@@ -372,7 +372,7 @@ class PathLengthTester(unittest.TestCase):
         ]
         for path in invalid_paths:
             with self.assertRaises(ValueError):
-                PathLength.fromPath(path)
+                PathLength.from_path(path)
 
         # Try valid permutations
         times = 100
@@ -380,7 +380,7 @@ class PathLengthTester(unittest.TestCase):
         for _ in repeat(None, times):
             path = np.random.permutation(num_nodes)
 
-            fitness_func = PathLength.fromPath(path)
+            fitness_func = PathLength.from_path(path)
 
             # Check the distance
             dist = fitness_func.distance
@@ -389,7 +389,7 @@ class PathLengthTester(unittest.TestCase):
                 dest_2 = path[(org_idx + 1) % num_nodes]
 
                 for node in range(num_nodes):
-                    if node == dest_1 or node == dest_2:
+                    if node in (dest_1, dest_2):
                         self.assertEqual(
                             dist[org][node], 1
                         )
@@ -403,7 +403,7 @@ class PathLengthTester(unittest.TestCase):
                         )
 
     def test_from_tsplib_parameters(self):
-        """Test the parameter parsing part of the fromTSPLib class method."""
+        """Test the parameter parsing part of the from_tsplib class method."""
         # Try invalid buffer types. Should fail
         invalid_buffer_types = [
             len,
@@ -412,7 +412,7 @@ class PathLengthTester(unittest.TestCase):
         ]
         for buffer in invalid_buffer_types:
             with self.assertRaises(AttributeError):
-                PathLength.fromTSPLib(buffer)
+                PathLength.from_tsplib(buffer)
 
         # Try invalid file paths. Should fail
         invalid_paths = [
@@ -422,12 +422,12 @@ class PathLengthTester(unittest.TestCase):
         ]
         for path in invalid_paths:
             with self.assertRaises(RuntimeError):
-                PathLength.fromTSPLib(path)
+                PathLength.from_tsplib(path)
 
         # Try an invalid problem type. Should fail
         buffer = """TYPE: new"""
         with self.assertRaises(RuntimeError):
-            PathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try invalid dimensions. Should fail
         invalid_buffers = [
@@ -438,24 +438,24 @@ class PathLengthTester(unittest.TestCase):
             ]
         for buffer in invalid_buffers:
             with self.assertRaises(RuntimeError):
-                PathLength.fromTSPLib(io.StringIO(buffer))
+                PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try an invalid edge weight type. Should fail
         buffer = "EDGE_WEIGHT_TYPE: new"
         with self.assertRaises(RuntimeError):
-            PathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try an invalid edge weight format. Should fail
         buffer = "EDGE_WEIGHT_FORMAT: new"
         with self.assertRaises(RuntimeError):
-            PathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.from_tsplib(io.StringIO(buffer))
 
     def test_from_tsplib_node_coord_section(self):
-        """Test the node coord section parsing of fromTSPLib."""
+        """Test the node coord section parsing of from_tsplib."""
         # Try a buffer with missing DIMENSION. Should fail
         buffer = "NODE_COORD_SECTION"
         with self.assertRaises(RuntimeError):
-            PathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try buffers with missing nodes. Should fail
         invalid_buffers = [
@@ -475,7 +475,7 @@ class PathLengthTester(unittest.TestCase):
             ]
         for buffer in invalid_buffers:
             with self.assertRaises(RuntimeError):
-                PathLength.fromTSPLib(io.StringIO(buffer))
+                PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try a valid buffer
         buffer = (
@@ -487,7 +487,7 @@ class PathLengthTester(unittest.TestCase):
             "2 1 1\n"
             "3 2 2\n"
         )
-        fitness_func = PathLength.fromTSPLib(io.StringIO(buffer))
+        fitness_func = PathLength.from_tsplib(io.StringIO(buffer))
         self.assertEqual(fitness_func.num_nodes, 3)
         self.assertTrue(
             np.all(
@@ -503,7 +503,7 @@ class PathLengthTester(unittest.TestCase):
         )
 
         # Try a valid local file
-        fitness_func = PathLength.fromTSPLib("test.tsp")
+        fitness_func = PathLength.from_tsplib("test.tsp")
         self.assertEqual(fitness_func.num_nodes, 5)
         self.assertTrue(
             np.all(
@@ -521,7 +521,7 @@ class PathLengthTester(unittest.TestCase):
         )
 
         # Try a valid url
-        fitness_func = PathLength.fromTSPLib(
+        fitness_func = PathLength.from_tsplib(
             "https://raw.githubusercontent.com/mastqe/tsplib/master/"
             "kroA100.tsp"
         )
@@ -533,7 +533,7 @@ class PathLengthTester(unittest.TestCase):
         )
 
     def test_from_tsplib_edge_weight_section(self):
-        """Test the edge weight section parsing of fromTSPLib."""
+        """Test the edge weight section parsing of from_tsplib."""
         # Try a full matrix with missing values. Should fail
         buffer = (
             "TYPE: TSP\n"
@@ -545,15 +545,15 @@ class PathLengthTester(unittest.TestCase):
             "2 1 1\n"
         )
         with self.assertRaises(RuntimeError):
-            PathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try a full matrix with an excessive number of values. Should fail
         buffer += "1 2 3 4"
         with self.assertRaises(RuntimeError):
-            PathLength.fromTSPLib(io.StringIO(buffer))
+            PathLength.from_tsplib(io.StringIO(buffer))
 
         # Try a correct full matrix
-        fitness_func = PathLength.fromTSPLib(
+        fitness_func = PathLength.from_tsplib(
             "https://raw.githubusercontent.com/mastqe/tsplib/master/bays29.tsp"
         )
         expected_num_nodes = 29
@@ -575,7 +575,7 @@ class PathLengthTester(unittest.TestCase):
             "    8 9 \n"
             "      1 \n"
         )
-        upper_row_fitness_func = PathLength.fromTSPLib(
+        upper_row_fitness_func = PathLength.from_tsplib(
             io.StringIO(upper_row_buffer)
         )
         expected_num_nodes = 5
@@ -600,7 +600,7 @@ class PathLengthTester(unittest.TestCase):
             "3 6 8   \n"
             "4 7 9 1 \n"
         )
-        lower_row_fitness_func = PathLength.fromTSPLib(
+        lower_row_fitness_func = PathLength.from_tsplib(
             io.StringIO(lower_row_buffer)
         )
         self.assertEqual(
@@ -631,7 +631,7 @@ class PathLengthTester(unittest.TestCase):
             "      9 1 \n"
             "        9 \n"
         )
-        upper_diag_row_fitness_func = PathLength.fromTSPLib(
+        upper_diag_row_fitness_func = PathLength.from_tsplib(
             io.StringIO(upper_diag_row_buffer)
         )
         expected_num_nodes = 5
@@ -657,7 +657,7 @@ class PathLengthTester(unittest.TestCase):
             "3 6 8 9   \n"
             "4 7 9 1 9 \n"
         )
-        lower_diag_row_fitness_func = PathLength.fromTSPLib(
+        lower_diag_row_fitness_func = PathLength.from_tsplib(
             io.StringIO(lower_diag_row_buffer)
         )
         self.assertEqual(
@@ -678,7 +678,7 @@ class PathLengthTester(unittest.TestCase):
     def test_copy(self):
         """Test the __copy__ method."""
         num_nodes = 5
-        func1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        func1 = PathLength.from_path(np.random.permutation(num_nodes))
         func2 = copy(func1)
 
         # Copy only copies the first level (func1 != func2)
@@ -690,7 +690,7 @@ class PathLengthTester(unittest.TestCase):
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
         num_nodes = 5
-        func1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        func1 = PathLength.from_path(np.random.permutation(num_nodes))
         func2 = deepcopy(func1)
 
         # Check the copy
@@ -702,7 +702,7 @@ class PathLengthTester(unittest.TestCase):
         Test the __setstate__ and __reduce__ methods.
         """
         num_nodes = 5
-        func1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        func1 = PathLength.from_path(np.random.permutation(num_nodes))
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         func1.dump(serialized_filename)
@@ -731,7 +731,7 @@ class PathLengthTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         num_nodes = 5
-        fitness_func = PathLength.fromPath(np.random.permutation(num_nodes))
+        fitness_func = PathLength.from_path(np.random.permutation(num_nodes))
         self.assertIsInstance(repr(fitness_func), str)
         self.assertIsInstance(str(fitness_func), str)
 
@@ -744,14 +744,14 @@ class MultiObjectivePathLengthTester(unittest.TestCase):
         num_nodes = 5
 
         # Try an invalid objective. Should fail ...
-        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj1 = PathLength.from_path(np.random.permutation(num_nodes))
         obj2 = NumFeats()
         with self.assertRaises(ValueError):
             MultiObjectivePathLength(obj1, obj2)
 
         # Try objectives with different number of nodes. Should fail ...
-        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
-        obj2 = PathLength.fromPath(np.random.permutation(num_nodes + 1))
+        obj1 = PathLength.from_path(np.random.permutation(num_nodes))
+        obj2 = PathLength.from_path(np.random.permutation(num_nodes + 1))
         with self.assertRaises(ValueError):
             MultiObjectivePathLength(obj1, obj2)
 
@@ -760,8 +760,8 @@ class MultiObjectivePathLengthTester(unittest.TestCase):
         self.assertEqual(func.num_obj, 0)
 
         # Try a function with  two objectives
-        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
-        obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj1 = PathLength.from_path(np.random.permutation(num_nodes))
+        obj2 = PathLength.from_path(np.random.permutation(num_nodes))
         func = MultiObjectivePathLength(obj1, obj2)
         self.assertEqual(func.num_obj, 2)
         self.assertEqual(obj1, func.objectives[0])
@@ -770,16 +770,16 @@ class MultiObjectivePathLengthTester(unittest.TestCase):
     def test_obj_names(self):
         """Test the obj_names property."""
         num_nodes = 5
-        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
-        obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj1 = PathLength.from_path(np.random.permutation(num_nodes))
+        obj2 = PathLength.from_path(np.random.permutation(num_nodes))
         func = MultiObjectivePathLength(obj1, obj2)
         self.assertEqual(func.obj_names, ('Len_0', 'Len_1'))
 
     def test_heuristic(self):
         """Test the heuristic method."""
         num_nodes = 5
-        obj1 = PathLength.fromPath(np.random.permutation(num_nodes))
-        obj2 = PathLength.fromPath(np.random.permutation(num_nodes))
+        obj1 = PathLength.from_path(np.random.permutation(num_nodes))
+        obj2 = PathLength.from_path(np.random.permutation(num_nodes))
         func = MultiObjectivePathLength(obj1, obj2)
 
         heur1 = obj1.heuristic

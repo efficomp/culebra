@@ -21,9 +21,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Type, Callable, Tuple, List, Dict, Optional
-from collections.abc import Sequence
-from copy import copy
+from typing import Any
+from collections.abc import Callable
+
+from numpy import ndarray
 
 from deap.base import Toolbox
 from deap.algorithms import varAnd
@@ -124,31 +125,30 @@ class ElitistEA(SimpleEA):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[Callable[[ElitistEA], bool]] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        elite_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[ElitistEA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        elite_size: int | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new trainer.
 
@@ -158,76 +158,71 @@ class ElitistEA(SimpleEA):
         :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.ElitistEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param pop_size: The population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
-            Defaults to :data:`None`
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_pop_size`
+            is used. Defaults to :data:`None`
         :type pop_size: int
-        :param crossover_func: The crossover function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :data:`None`
+        :param crossover_func: The crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_crossover_func`
+            is used. Defaults to :data:`None`
         :type crossover_func: ~collections.abc.Callable
-        :param mutation_func: The mutation function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :data:`None`
+        :param mutation_func: The mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_mutation_func`
+            is used. Defaults to :data:`None`
         :type mutation_func: ~collections.abc.Callable
-        :param selection_func: The selection function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :data:`None`
+        :param selection_func: The selection function. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_selection_func`
+            is used. Defaults to :data:`None`
         :type selection_func: ~collections.abc.Callable
-        :param crossover_prob: The crossover probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+        :param crossover_prob: The crossover probability. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_crossover_prob`
+            is used. Defaults to :data:`None`
         :type crossover_prob: float
-        :param mutation_prob: The mutation probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+        :param mutation_prob: The mutation probability. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_mutation_prob`
+            is used. Defaults to :data:`None`
         :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :data:`None`
+            probability. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_gene_ind_mutation_prob`
+            is used. Defaults to :data:`None`
         :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :data:`None`
+            function. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_selection_func_params`
+            is used. Defaults to :data:`None`
         :type selection_func_params: dict
         :param elite_size: Number of individuals that will be preserved
-            as the elite. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` will be
-            used. Defaults to :data:`None`
-        :type elite_size: int
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+            as the elite. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_elite_size`
             will be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+        :type elite_size: int
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`,
-            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
-            Defaults to :data:`None`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_checkpoint_filename`
+            will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -246,14 +241,23 @@ class ElitistEA(SimpleEA):
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
             selection_func_params=selection_func_params,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
         self.elite_size = elite_size
+
+    @property
+    def _default_elite_size(self) -> int:
+        """Default elite size.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE`
+        :rtype: int
+        """
+        return DEFAULT_ELITE_SIZE
 
     @property
     def elite_size(self) -> int:
@@ -261,36 +265,34 @@ class ElitistEA(SimpleEA):
 
         :rtype: int
         :setter: Set a new value for the elite size
-        :param value: The new size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` is chosen
+        :param value: The new size. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_elite_size` is chosen
         :type value: int
         :raises TypeError: If *value* is not an int
         :raises ValueError: If *value* is lower than or equal to 0
         """
-        return (
-            DEFAULT_ELITE_SIZE if self._elite_size is None
-            else self._elite_size
-        )
+        return self._elite_size
 
     @elite_size.setter
     def elite_size(self, value: int | None) -> None:
         """Set a new value for the elite size.
 
-        :param value: The new size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_ELITE_SIZE` is chosen
+        :param value: The new size. If omitted,
+            :attr:`~culebra.trainer.ea.ElitistEA._default_elite_size` is chosen
         :type value: int
         :raises TypeError: If *value* is not an int
         :raises ValueError: If *value* is lower than or equal to 0
         """
         # Check the value
         self._elite_size = (
-            None if value is None else check_int(value, "elite size", gt=0)
+            self._default_elite_size
+            if value is None else check_int(value, "elite size", gt=0)
         )
 
         # Reset the algorithm
         self.reset()
 
-    def _get_state(self) -> Dict[str, Any]:
+    def _get_state(self) -> dict[str, Any]:
         """Return the state of this trainer.
 
         Overridden to add the current elite to the trainer's state.
@@ -305,7 +307,7 @@ class ElitistEA(SimpleEA):
 
         return state
 
-    def _set_state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the current elite to the trainer's state.
@@ -361,8 +363,7 @@ class ElitistEA(SimpleEA):
 
         # Select the next iteration population from offspring and elite
         self.pop[:] = self._toolbox.select(
-            offspring + [ind for ind in self._elite],
-            self.pop_size
+            offspring + list(self._elite), self.pop_size
         )
 
 
@@ -374,32 +375,31 @@ class NSGA(SimpleEA):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[Callable[[NSGA], bool]] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        nsga3_reference_points_p: Optional[int] = None,
-        nsga3_reference_points_scaling: Optional[float] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[NSGA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        nsga3_reference_points_p: int | None = None,
+        nsga3_reference_points_scaling: float | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new trainer.
 
@@ -409,85 +409,84 @@ class NSGA(SimpleEA):
         :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
-        :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
-        :type custom_termination_func: ~collections.abc.Callable
-        :param pop_size: The population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
-            NSGA-II or the number of reference points is chosen for NSGA-III.
-            Defaults to :data:`None`
-        :type pop_size: int
-        :param crossover_func: The crossover function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :data:`None`
-        :type crossover_func: ~collections.abc.Callable
-        :param mutation_func: The mutation function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :data:`None`
-        :type mutation_func: ~collections.abc.Callable
-        :param selection_func: The selection function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_max_num_iters`
             will be used. Defaults to :data:`None`
+        :type max_num_iters: int
+        :param custom_termination_func: Custom termination criterion. If
+            omitted, :meth:`~culebra.trainer.ea.NSGA._default_termination_func`
+            is used. Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_pop_size`
+            is used. Defaults to :data:`None`
+        :type pop_size: int
+        :param crossover_func: The crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_crossover_func`
+            is used. Defaults to :data:`None`
+        :type crossover_func: ~collections.abc.Callable
+        :param mutation_func: The mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_mutation_func`
+            is used. Defaults to :data:`None`
+        :type mutation_func: ~collections.abc.Callable
+        :param selection_func: The selection function. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_selection_func`
+            is used. Defaults to :data:`None`
         :type selection_func: ~collections.abc.Callable
-        :param crossover_prob: The crossover probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+        :param crossover_prob: The crossover probability. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_crossover_prob`
+            is used. Defaults to :data:`None`
         :type crossover_prob: float
-        :param mutation_prob: The mutation probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+        :param mutation_prob: The mutation probability. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_mutation_prob`
+            is used. Defaults to :data:`None`
         :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :data:`None`
+            probability. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_gene_ind_mutation_prob`
+            is used. Defaults to :data:`None`
         :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :data:`None`
+            function. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_selection_func_params`
+            is used. Defaults to :data:`None`
         :type selection_func_params: dict
         :param nsga3_reference_points_p: Number of divisions along each
-            objective to obtain the reference points of NSGA-III. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+            objective to obtain the reference points of NSGA-III. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_nsga3_reference_points_p`
             will be used. Defaults to :data:`None`
         :type nsga3_reference_points_p: int
         :param nsga3_reference_points_scaling: Scaling factor for the reference
             points of NSGA-III. Defaults to :data:`None`
         :type nsga3_reference_points_scaling: float
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_checkpoint_activation`
             will be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`,
-            :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME` will be used.
-            Defaults to :data:`None`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_checkpoint_filename`
+            will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
+        # The selection function and all the NSGA related stuff
+        # must be set before calling the superclass constructor because the
+        # _default_pop_size property depends on it
+        self.selection_func = selection_func
+        self.nsga3_reference_points_p = nsga3_reference_points_p
+        self.nsga3_reference_points_scaling = nsga3_reference_points_scaling
+
         super().__init__(
             solution_cls,
             species=species,
@@ -502,95 +501,89 @@ class NSGA(SimpleEA):
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
             selection_func_params=selection_func_params,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
+    @property
+    def _default_pop_size(self) -> int:
+        """Default population size.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` for
+            NSGA-II or the number of reference points for NSGA-III
+        :rtype: int
+        """
+        if self.selection_func is selNSGA3:
+            return len(self.nsga3_reference_points)
+        return SimpleEA._default_pop_size.fget(self)
+
+    @property
+    def _default_selection_func(
+        self
+    ) -> Callable[[list[Individual], int, Any], list[Individual]]:
+        """Default selection function.
         self.nsga3_reference_points_p = nsga3_reference_points_p
         self.nsga3_reference_points_scaling = nsga3_reference_points_scaling
 
-    @SimpleEA.pop_size.getter
-    def pop_size(self) -> int:
-        """Population size.
-
-        :rtype: int
-        :setter: Set a new population size
-        :param size: The new population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is used for
-            NSGA-II or the number of reference points is chosen for NSGA-III
-        :type size: int
-        :raises TypeError: If *size* is not an :class:`int`
-        :raises ValueError: If *size* is not greater than zero
-        """
-        if self._pop_size is None and self.selection_func is selNSGA3:
-            the_pop_size = len(self.nsga3_reference_points)
-        else:
-            the_pop_size = super().pop_size
-
-        return the_pop_size
-
-    @SimpleEA.selection_func.getter
-    def selection_func(
-        self
-    ) -> Callable[[List[Individual], int, Any], List[Individual]]:
-        """Selection function.
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC`
 
         :rtype: ~collections.abc.Callable
-        :setter: Set a new selection function
-        :param func: The new selection function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC` is
-            chosen
-        :type func: ~collections.abc.Callable
-        :raises TypeError: If *func* is not callable
         """
-        return (
-            DEFAULT_NSGA_SELECTION_FUNC
-            if self._selection_func is None
-            else self._selection_func
-        )
+        return DEFAULT_NSGA_SELECTION_FUNC
 
-    @SimpleEA.selection_func_params.getter
-    def selection_func_params(self) -> Dict[str, Any]:
-        """Parameters of the selection function.
+    @property
+    def _default_selection_func_params(self) -> dict[str, Any]:
+        """Parameters of the default selection function.
 
-        :rtype: dict
-        :setter: Set new parameters for the selection function
-        :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_NSGA_SELECTION_FUNC_PARAMS`
+        :rtype: float
+        """
+        return DEFAULT_NSGA_SELECTION_FUNC_PARAMS
+
+    @SimpleEA.selection_func_params.setter
+    def selection_func_params(self, params: dict[str, Any] | None) -> None:
+        """Set new parameters for the selection function.
+
+        The reference points are also appended in case NSGA3 is used.
+
+        :param params: The new parameters. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_selection_func_params`
             is chosen
         :type params: dict
         :raises TypeError: If *params* is not a :class:`dict`
         """
-        func_params = (
-            DEFAULT_NSGA_SELECTION_FUNC_PARAMS
-            if self._selection_func_params is None
-            else self._selection_func_params)
+        SimpleEA.selection_func_params.fset(self, params)
 
         if self.selection_func is selNSGA3:
-            func_params = copy(func_params)
-            # Assign the ref_points to the selNSGA3 parameters
-            func_params['ref_points'] = self.nsga3_reference_points
-
-        return func_params
+            self._selection_func_params['ref_points'] = (
+                self.nsga3_reference_points
+            )
 
     @property
-    def nsga3_reference_points(self) -> Sequence:
+    def nsga3_reference_points(self) -> ndarray:
         """Reference points for NSGA-III.
 
-        :rtype: ~collections.abc.Sequence
+        :rtype: ~numpy.ndarray
         """
-        if self._nsga3_ref_points is None:
-            # Obtain the reference points
-            self._nsga3_ref_points = uniform_reference_points(
+        if self._nsga3_reference_points is None:
+            self._nsga3_reference_points = uniform_reference_points(
                 nobj=self.fitness_function.num_obj,
                 p=self.nsga3_reference_points_p,
                 scaling=self.nsga3_reference_points_scaling
             )
+        return self._nsga3_reference_points
 
-        return self._nsga3_ref_points
+    @property
+    def _default_nsga3_reference_points_p(self) -> int:
+        """Default NSGA-III's *p* parameter.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+        :rtype: int
+        """
+        return DEFAULT_NSGA3_REFERENCE_POINTS_P
 
     @property
     def nsga3_reference_points_p(self) -> int:
@@ -601,28 +594,21 @@ class NSGA(SimpleEA):
 
         :rtype: int
         :setter: Set a new value for the *p* parameter for NSGA-III
-        :param value: The new number of divisions. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+        :param value: The new number of divisions. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_nsga3_reference_points_p`
             is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* < 1
         """
-        return (
-            DEFAULT_NSGA3_REFERENCE_POINTS_P
-            if self._nsga3_reference_points_p is None
-            else self._nsga3_reference_points_p
-        )
+        return self._nsga3_reference_points_p
 
     @nsga3_reference_points_p.setter
     def nsga3_reference_points_p(self, value: int | None) -> None:
         """Set a new value for the *p* parameter for NSGA-III.
 
-        The *p* parameter indicates the number of divisions to be made along
-        each objective to obtain the reference points of NSGA-III.
-
-        :param value: The new number of divisions. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_NSGA3_REFERENCE_POINTS_P`
+        :param value: The new number of divisions. If omitted,
+            :attr:`~culebra.trainer.ea.NSGA._default_nsga3_reference_points_p`
             is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
@@ -630,7 +616,8 @@ class NSGA(SimpleEA):
         """
         # Check the value
         self._nsga3_reference_points_p = (
-            None if value is None else check_int(
+            self._default_nsga3_reference_points_p
+            if value is None else check_int(
                 value, "NSGA-III p parameter", ge=1
             )
         )
@@ -677,7 +664,7 @@ class NSGA(SimpleEA):
         super()._init_internals()
 
         # Generated when property nsga3_reference_points is invoked
-        self._nsga3_ref_points = None
+        self._nsga3_reference_points = None
 
     def _reset_internals(self) -> None:
         """Reset the internal structures of the trainer.
@@ -685,14 +672,13 @@ class NSGA(SimpleEA):
         Overridden to reset the NSGA-III reference points.
         """
         super()._reset_internals()
-        self._nsga3_ref_points = None
+        self._nsga3_reference_points = None
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process.
 
         In this case, a generation of NSGA is implemented.
         """
-        # Generate the offspring
         # Generate the offspring
         offspring = varAnd(
             self.pop, self._toolbox, self.crossover_prob, self.mutation_prob
@@ -703,7 +689,7 @@ class NSGA(SimpleEA):
 
         # Select the next generation population from parents and offspring
         self.pop[:] = self._toolbox.select(
-            self.pop[:] + offspring, self.pop_size
+            self.pop + offspring, self.pop_size
         )
 
 

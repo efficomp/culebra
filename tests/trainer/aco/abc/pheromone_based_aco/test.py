@@ -28,12 +28,9 @@ import numpy as np
 
 from culebra.trainer.aco import DEFAULT_PHEROMONE_EVAPORATION_RATE
 from culebra.trainer.aco.abc import (
+    SingleObjACO,
     PheromoneBasedACO,
-    ACOTSP,
-    SinglePheromoneMatrixACO,
-    SingleHeuristicMatrixACO,
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO
+    ACOTSP
 )
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
@@ -42,22 +39,20 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(ACOTSP, PheromoneBasedACO):
-    """Dummy implementation of a pheromone-based trainer."""
-
-
-class MySinglePheromoneTrainer(
-        SinglePheromoneMatrixACO,
-        SingleHeuristicMatrixACO,
-        MyTrainer):
+class MySinglePheromoneTrainer(ACOTSP, PheromoneBasedACO, SingleObjACO):
     """Dummy implementation a trainer with a single pheromone matrix."""
 
 
-class MyMultiplePheromoneTrainer(
-        MultiplePheromoneMatricesACO,
-        MultipleHeuristicMatricesACO,
-        MyTrainer):
+class MyMultiplePheromoneTrainer(ACOTSP, PheromoneBasedACO):
     """Dummy implementation a trainer with multiple pheromone matrices."""
+
+    @property
+    def num_pheromone_matrices(self) -> int:
+        return self.fitness_function.num_obj
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        return self.fitness_function.num_obj
 
 
 num_nodes = 25
@@ -66,8 +61,8 @@ optimum_paths = [
     np.random.permutation(num_nodes)
 ]
 multiple_obj_fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(optimum_paths[0]),
-    PathLength.fromPath(optimum_paths[1])
+    PathLength.from_path(optimum_paths[0]),
+    PathLength.from_path(optimum_paths[1])
 )
 single_obj_fitness_func = multiple_obj_fitness_func.objectives[0]
 banned_nodes = [0, num_nodes-1]
@@ -83,7 +78,7 @@ class TrainerTester(unittest.TestCase):
         valid_species = Species(num_nodes, banned_nodes)
         valid_fitness_func = multiple_obj_fitness_func
         valid_initial_pheromone = [1, 2]
-        
+
         # Try invalid types for pheromone_evaporation_rate. Should fail
         invalid_pheromone_evaporation_rate = (type, 'a')
         for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
@@ -286,6 +281,81 @@ class TrainerTester(unittest.TestCase):
 
         # Evaporate pheromone
         trainer._increase_pheromone()
+
+        # Get the ant
+        ant = trainer.col[0]
+        pheromone_increment = trainer._pheromone_amount(ant)[0]
+        pheromone_value += pheromone_increment
+
+        org = ant.path[-1]
+        for dest in ant.path:
+            self.assertEqual(
+                trainer.pheromone[0][org][dest],
+                pheromone_value
+            )
+            self.assertEqual(
+                trainer.pheromone[0][dest][org],
+                pheromone_value
+            )
+            org = dest
+
+    def test_update_pheromone(self):
+        """Test the _update_pheromone method."""
+        # Trainer parameters
+        params = {
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "fitness_function": single_obj_fitness_func,
+            "initial_pheromone": 2,
+            "col_size": 1
+        }
+
+        # Create the trainer
+        trainer = MySinglePheromoneTrainer(**params)
+        trainer._init_search()
+
+        # Check the initial pheromone
+        pheromone_value = trainer.initial_pheromone[0]
+        self.assertTrue(
+            np.all(trainer.pheromone[0] == pheromone_value)
+        )
+
+        # Force an empty colony, thus, the pheromone_update method only
+        # evaporates pheromono
+        trainer._col = []
+
+        # Evaporate pheromone
+        trainer._update_pheromone()
+
+        # Check again
+        pheromone_value = (
+            trainer.initial_pheromone[0] * (
+                1 - trainer.pheromone_evaporation_rate
+            )
+        )
+        self.assertTrue(
+            np.all(trainer.pheromone[0] == pheromone_value)
+        )
+
+        trainer._init_search()
+        trainer._start_iteration()
+
+        # Check the initial pheromone
+        pheromone_value = trainer.initial_pheromone[0]
+        self.assertTrue(
+            np.all(trainer.pheromone[0] == pheromone_value)
+        )
+
+        # Generate a new colony
+        trainer._generate_col()
+
+        # Compensate the pheromone evaporation
+        for pher in trainer._pheromone:
+            pher /= (1 - trainer.pheromone_evaporation_rate)
+
+        # Update pheromone. Since the evaporation has been compensated,
+        # the pheromone matrix only  has changed by pheromone deposition
+        trainer._update_pheromone()
 
         # Get the ant
         ant = trainer.col[0]

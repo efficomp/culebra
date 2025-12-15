@@ -36,6 +36,10 @@ Properties
 .. autoproperty:: culebra.abc.FitnessFunction.obj_thresholds
 .. autoproperty:: culebra.abc.FitnessFunction.obj_weights
 
+Private properties
+------------------
+.. autoproperty:: culebra.abc.FitnessFunction._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.abc.FitnessFunction.dump

@@ -84,7 +84,9 @@ class DatasetScorerTester(unittest.TestCase):
         self.assertEqual(func.test_data, None)
         self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
         self.assertEqual(func.index, 0)
-        self.assertEqual(func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD])
+        self.assertEqual(
+            func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD]
+        )
 
         # Try an invalid training dataset, should fail
         with self.assertRaises(TypeError):

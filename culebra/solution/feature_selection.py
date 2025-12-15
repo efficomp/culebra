@@ -68,7 +68,6 @@ several metrics about the selected features finally obtained.
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Tuple, Type, Optional
 from collections.abc import Sequence
 from copy import copy, deepcopy
 from random import randint
@@ -114,10 +113,10 @@ class Species(BaseSpecies):
     def __init__(
         self,
         num_feats: int,
-        min_feat: Optional[int] = None,
-        min_size: Optional[int] = None,
-        max_feat: Optional[int] = None,
-        max_size: Optional[int] = None
+        min_feat: int | None = None,
+        min_size: int | None = None,
+        max_feat: int | None = None,
+        max_size: int | None = None
     ) -> None:
         """Create a new species.
 
@@ -205,7 +204,7 @@ class Species(BaseSpecies):
     def from_proportion(
         cls,
         num_feats: int,
-        prop: Optional[float] = None
+        prop: float | None = None
     ) -> Species:
         """Create a parametrized species for testing purposes.
 
@@ -288,11 +287,11 @@ class Species(BaseSpecies):
     @staticmethod
     def _check_attributes(
         num_feats: int,
-        min_feat: Optional[int] = None,
-        min_size: Optional[int] = None,
-        max_feat: Optional[int] = None,
-        max_size: Optional[int] = None
-    ) -> Tuple[int, ...]:
+        min_feat: int | None = None,
+        min_size: int | None = None,
+        max_feat: int | None = None,
+        max_size: int | None = None
+    ) -> tuple[int, ...]:
         """Check the species attributes.
 
         :param num_feats: Number of input features considered in the feature
@@ -413,8 +412,8 @@ class Solution(BaseSolution):
     def __init__(
         self,
         species: Species,
-        fitness_cls: Type[Fitness],
-        features: Optional[Sequence[int]] = None
+        fitness_cls: type[Fitness],
+        features: Sequence[int] | None = None
     ) -> None:
         """Construct a default solution.
 
@@ -437,7 +436,7 @@ class Solution(BaseSolution):
 
     @property
     @abstractmethod
-    def features(self) -> Sequence[int]:
+    def features(self) -> np.ndarray[int]:
         """Features selected by the solution
 
         This property must be overridden by subclasses to return a correct
@@ -445,7 +444,7 @@ class Solution(BaseSolution):
 
         :return: Return an ordered sequence with the indices of the selected
             features
-        :rtype: ~collections.abc.Sequence[int]
+        :rtype: ~numpy.ndarray[int]
 
         :setter: Set a new set of selected features
         :param values: The indices of the new features
@@ -754,7 +753,7 @@ class IntSolution(Solution):
 class BitVector(BinarySolution, BaseIndividual):
     """BitVector Individual."""
 
-    def crossover1p(self, other: BitVector) -> Tuple[BitVector, BitVector]:
+    def crossover1p(self, other: BitVector) -> tuple[BitVector, BitVector]:
         """Cross this individual with another one.
 
         This method implements the single-point crossover.
@@ -788,7 +787,7 @@ class BitVector(BinarySolution, BaseIndividual):
         del other.fitness.values
         return self, other
 
-    def crossover2p(self, other: BitVector) -> Tuple[BitVector, BitVector]:
+    def crossover2p(self, other: BitVector) -> tuple[BitVector, BitVector]:
         """Cross this individual with another one.
 
         This method implements the two-points crossover.
@@ -837,7 +836,7 @@ class BitVector(BinarySolution, BaseIndividual):
     :rtype: tuple[~culebra.solution.feature_selection.BitVector]
     """
 
-    def mutate(self, indpb: float) -> Tuple[BitVector]:
+    def mutate(self, indpb: float) -> tuple[BitVector]:
         """Mutate the individual.
 
         Each feature is independently mutated according to the given
@@ -866,7 +865,7 @@ class BitVector(BinarySolution, BaseIndividual):
 class IntVector(IntSolution, BaseIndividual):
     """Individual implementation based on arrays of indices."""
 
-    def crossover(self, other: IntVector) -> Tuple[IntVector, IntVector]:
+    def crossover(self, other: IntVector) -> tuple[IntVector, IntVector]:
         """Cross this individual with another one.
 
         All the common features will remain common in the new offspring. The
@@ -910,7 +909,7 @@ class IntVector(IntSolution, BaseIndividual):
 
         return self, other
 
-    def mutate(self, indpb: float) -> Tuple[IntVector]:
+    def mutate(self, indpb: float) -> tuple[IntVector]:
         """Mutate the individual.
 
         Each feature is independently mutated according to the given
@@ -978,8 +977,8 @@ class Ant(IntSolution, BaseAnt):
     def __init__(
         self,
         species: Species,
-        fitness_cls: Type[Fitness],
-        features: Optional[Sequence[int]] = None
+        fitness_cls: type[Fitness],
+        features: Sequence[int] | None = None
     ) -> None:
         """Construct a default solution.
 

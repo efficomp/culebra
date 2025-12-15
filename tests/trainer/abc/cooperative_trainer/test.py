@@ -33,7 +33,10 @@ from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.abc import SingleSpeciesTrainer, CooperativeTrainer
-from culebra.trainer.topology import full_connected_destinations
+from culebra.trainer import (
+    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC,
+    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+)
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BinarySolution as FeatureSelectionSolution
@@ -92,7 +95,7 @@ class MySingleSpeciesTrainer(SingleSpeciesTrainer):
         """Get the best solutions found for each species."""
         hof = ParetoFront()
         hof.update([self.sol])
-        return [hof]
+        return (hof,)
 
 
 class MyTrainer(CooperativeTrainer):
@@ -392,11 +395,11 @@ class TrainerTester(unittest.TestCase):
 
         self.assertEqual(
             trainer.representation_topology_func,
-            full_connected_destinations
+            DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
         )
         self.assertEqual(
             trainer.representation_topology_func_params,
-            {}
+            DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
         )
 
         # Create the subtrainers
@@ -427,8 +430,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "representation_size": 2,
             "subtrainer_cls": MySingleSpeciesTrainer,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -475,8 +478,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -484,7 +487,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try before the subtrainers have been created
         best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), trainer.num_subtrainers)
         for best in best_ones:
             self.assertEqual(len(best), 0)
@@ -498,7 +501,7 @@ class TrainerTester(unittest.TestCase):
         best_ones = trainer.best_solutions()
 
         # Test that a list with hof per species returned
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), trainer.num_subtrainers)
         for hof, ind_cls in zip(best_ones, trainer.solution_classes):
             for ind in hof:
@@ -525,9 +528,9 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "max_num_iters": 2,
-            "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "representation_size": 3,
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -577,8 +580,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -619,8 +622,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -654,8 +657,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -692,8 +695,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": MySingleSpeciesTrainer,
             "representation_size": 2,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer

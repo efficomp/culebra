@@ -114,6 +114,7 @@ class TrainerTester(unittest.TestCase):
             valid_species,
             valid_fitness_func
         )
+        self.assertIsInstance(trainer.solution_classes, tuple)
         for cls1, cls2 in zip(
             trainer.solution_classes, valid_solution_classes
         ):
@@ -143,6 +144,7 @@ class TrainerTester(unittest.TestCase):
             valid_species,
             valid_fitness_func
         )
+        self.assertIsInstance(trainer.species, tuple)
         for species1, species2 in zip(
             trainer.species, valid_species
         ):
@@ -167,8 +169,8 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(),
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -207,8 +209,8 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(),
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -240,8 +242,8 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(),
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -276,8 +278,8 @@ class TrainerTester(unittest.TestCase):
                 FeatureSelectionSpecies(dataset.num_feats)
             ],
             "fitness_function": FitnessFunc(),
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Construct a parameterized trainer

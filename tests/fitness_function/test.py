@@ -24,10 +24,9 @@
 
 import unittest
 
+from culebra import DEFAULT_SIMILARITY_THRESHOLD
 from culebra.abc import Solution, Species
-
 from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
-
 from culebra.fitness_function import MultiObjectiveFitnessFunction
 
 
@@ -83,14 +82,14 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
         # Try without objectives
         func = MultiObjectiveFitnessFunction()
         self.assertEqual(func.num_obj, 0)
-        self.assertEqual(func.objectives, [])
+        self.assertEqual(func.objectives, ())
         self.assertEqual(func.obj_weights, ())
         self.assertEqual(func.obj_names, ())
 
         # Try with only an objective
         func = MultiObjectiveFitnessFunction(obj0)
         self.assertEqual(func.num_obj, 1)
-        self.assertEqual(func.objectives, [obj0])
+        self.assertEqual(func.objectives, (obj0,))
         self.assertEqual(func.obj_weights, obj0.obj_weights)
         self.assertEqual(func.obj_names, obj0.obj_names)
         self.assertEqual(obj0.index, 0)
@@ -99,7 +98,7 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
         func = MultiObjectiveFitnessFunction(obj0, obj1)
 
         self.assertEqual(func.num_obj, 2)
-        self.assertEqual(func.objectives, [obj0, obj1])
+        self.assertEqual(func.objectives, (obj0, obj1))
         self.assertEqual(
             func.obj_weights, obj0.obj_weights + obj1.obj_weights
         )
@@ -115,6 +114,11 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
         obj0 = MySingleObjectiveFitnessFunction()
         obj1 = MySingleObjectiveFitnessFunction()
         func = MultiObjectiveFitnessFunction(obj0, obj1)
+
+        # Test default threshold
+        for th in func.obj_thresholds:
+            self.assertEqual(th, DEFAULT_SIMILARITY_THRESHOLD)
+
 
         # Try differnt objective similarity thresholds
         obj_thresholds = [0.1, 0.2]

@@ -26,21 +26,20 @@ import unittest
 import os
 import random
 from copy import copy, deepcopy
-from multiprocess import Manager
 from functools import partial
 
+from multiprocess import Manager
 import numpy as np
 from deap.tools import Logbook, Statistics, HallOfFame
 
 from culebra import (
     DEFAULT_MAX_NUM_ITERS,
-    DEFAULT_CHECKPOINT_ENABLE,
+    DEFAULT_CHECKPOINT_ACTIVATION,
     DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
     DEFAULT_VERBOSITY,
     DEFAULT_INDEX,
-    SERIALIZED_FILE_EXTENSION,
-    DEFAULT_SIMILARITY_THRESHOLD
+    SERIALIZED_FILE_EXTENSION
 )
 from culebra.abc import (
     FitnessFunction,
@@ -96,11 +95,6 @@ class MyFitnessFunction(FitnessFunction):
         """Objective names."""
         return ("max",)
 
-    @property
-    def obj_thresholds(self):
-        """Objective threholds."""
-        return (DEFAULT_SIMILARITY_THRESHOLD,)
-
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution.
 
@@ -113,8 +107,7 @@ class MyFitnessFunction(FitnessFunction):
         if representatives is not None:
             for other in representatives:
                 if other is not None:
-                    if other.val > max_val:
-                        max_val = other.val
+                    max_val = max(other.val, max_val)
 
         sol.fitness.values = (max_val,)
 
@@ -134,11 +127,6 @@ class MyOtherFitnessFunction(FitnessFunction):
         """Objective names."""
         return ("doublemax",)
 
-    @property
-    def obj_thresholds(self):
-        """Objective threholds."""
-        return (DEFAULT_SIMILARITY_THRESHOLD,)
-
     def evaluate(self, sol, index=None, representatives=None):
         """Evaluate one solution.
 
@@ -151,8 +139,7 @@ class MyOtherFitnessFunction(FitnessFunction):
         if representatives is not None:
             for other in representatives:
                 if other is not None:
-                    if other.val > max_val:
-                        max_val = other.val
+                    max_val = max(other.val, max_val)
 
         sol.fitness.values = (max_val*2,)
 
@@ -174,7 +161,7 @@ class MyTrainer(Trainer):
 
         hof = HallOfFame(population)
         hof.update(population)
-        return [hof]
+        return (hof,)
 
     def _do_iteration(self):
         """Implement an iteration of the search process."""
@@ -210,14 +197,13 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._stats, None)
 
         self.assertEqual(
-            trainer.checkpoint_enable, DEFAULT_CHECKPOINT_ENABLE
+            trainer.checkpoint_activation, DEFAULT_CHECKPOINT_ACTIVATION
         )
-        self.assertEqual(
-            trainer.checkpoint_freq, DEFAULT_CHECKPOINT_FREQ)
+        self.assertEqual(trainer.checkpoint_freq, DEFAULT_CHECKPOINT_FREQ)
         self.assertEqual(
             trainer.checkpoint_filename, DEFAULT_CHECKPOINT_FILENAME)
         self.assertEqual(trainer.random_seed, None)
-        self.assertEqual(trainer.verbose, DEFAULT_VERBOSITY)
+        self.assertEqual(trainer.verbosity, DEFAULT_VERBOSITY)
         self.assertEqual(trainer.index, DEFAULT_INDEX)
         self.assertEqual(trainer.container, None)
         self.assertEqual(trainer.representatives, None)
@@ -237,11 +223,11 @@ class TrainerTester(unittest.TestCase):
         # Set custom params
         params = {
             "fitness_function": MyFitnessFunction(),
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 25,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -256,12 +242,12 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer._stats, None)
 
         self.assertEqual(
-            trainer.checkpoint_enable, params["checkpoint_enable"])
+            trainer.checkpoint_activation, params["checkpoint_activation"])
         self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
         self.assertEqual(
             trainer.checkpoint_filename, params["checkpoint_filename"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
-        self.assertEqual(trainer.verbose, params["verbose"])
+        self.assertEqual(trainer.verbosity, params["verbosity"])
 
     def test_index(self):
         """Test the index property."""
@@ -307,10 +293,10 @@ class TrainerTester(unittest.TestCase):
         """Test the checkpointing management methods."""
         trainer = MyTrainer(MyFitnessFunction())
 
-        trainer.checkpoint_enable = False
-        self.assertFalse(trainer.checkpoint_enable)
-        trainer.checkpoint_enable = True
-        self.assertTrue(trainer.checkpoint_enable)
+        trainer.checkpoint_activation = False
+        self.assertFalse(trainer.checkpoint_activation)
+        trainer.checkpoint_activation = True
+        self.assertTrue(trainer.checkpoint_activation)
 
         with self.assertRaises(TypeError):
             trainer.checkpoint_freq = 'a'
@@ -334,16 +320,16 @@ class TrainerTester(unittest.TestCase):
         trainer.random_seed = 18
         self.assertEqual(trainer.random_seed, 18)
 
-    def test_verbose(self):
-        """Test :attr:`~culebra.abc.Trainer.verbose`."""
+    def test_verbosity(self):
+        """Test :attr:`~culebra.abc.Trainer.verbosity`."""
         trainer = MyTrainer(MyFitnessFunction())
 
         with self.assertRaises(TypeError):
-            trainer.verbose = "hello"
-        trainer.verbose = False
-        self.assertFalse(trainer.verbose)
-        trainer.verbose = True
-        self.assertTrue(trainer.verbose)
+            trainer.verbosity = "hello"
+        trainer.verbosity = False
+        self.assertFalse(trainer.verbosity)
+        trainer.verbosity = True
+        self.assertTrue(trainer.verbosity)
 
     def test_checkpoining(self):
         """Test checkpointing."""
@@ -624,7 +610,7 @@ class TrainerTester(unittest.TestCase):
         trainer._current_iter = trainer.checkpoint_freq
 
         # Disable checkpoining
-        trainer.checkpoint_enable = False
+        trainer.checkpoint_activation = False
 
         # Start an iteration
         trainer._start_iteration()
@@ -654,7 +640,7 @@ class TrainerTester(unittest.TestCase):
         os.remove(trainer.checkpoint_filename)
 
         # Disable checkpoining
-        trainer.checkpoint_enable = False
+        trainer.checkpoint_activation = False
 
         # Finish the search
         trainer._finish_search()
@@ -668,7 +654,7 @@ class TrainerTester(unittest.TestCase):
         # Construct a trainer
         trainer = MyTrainer(
             MyFitnessFunction(),
-            checkpoint_enable=False,
+            checkpoint_activation=False,
             max_num_iters=10
         )
 
@@ -703,7 +689,7 @@ class TrainerTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             trainer = MyTrainer(
                 MyFitnessFunction(),
-                checkpoint_enable=False,
+                checkpoint_activation=False,
                 custom_termination_func=1
             )
 
@@ -711,7 +697,7 @@ class TrainerTester(unittest.TestCase):
         my_max_num_iters = 4
         trainer = MyTrainer(
             MyFitnessFunction(),
-            checkpoint_enable=False,
+            checkpoint_activation=False,
             custom_termination_func=(
                 partial(my_criterion, my_max_num_iters=my_max_num_iters)
             )
@@ -731,7 +717,7 @@ class TrainerTester(unittest.TestCase):
         # Construct a trainer
         trainer = MyTrainer(
             MyFitnessFunction(),
-            checkpoint_enable=False
+            checkpoint_activation=False
         )
 
         # Init the search process
@@ -777,11 +763,11 @@ class TrainerTester(unittest.TestCase):
         # Trainer parameters
         params = {
             "fitness_function": MyFitnessFunction(),
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 25,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -803,7 +789,7 @@ class TrainerTester(unittest.TestCase):
 
         # Not a valid fitness function
         with self.assertRaises(TypeError):
-            trainer.test(hofs, fitness_function='a')
+            trainer.test(hofs, fitness_func='a')
 
         # Not a valid sequence of representative solutions
         with self.assertRaises(TypeError):
@@ -830,11 +816,11 @@ class TrainerTester(unittest.TestCase):
         # Set custom params
         params = {
             "fitness_function": MyFitnessFunction(),
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 25,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -859,11 +845,11 @@ class TrainerTester(unittest.TestCase):
         # Set custom params
         params = {
             "fitness_function": MyFitnessFunction(),
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 25,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -883,11 +869,11 @@ class TrainerTester(unittest.TestCase):
         """
         params = {
             "fitness_function": MyFitnessFunction(),
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 25,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -933,11 +919,11 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         params = {
             "fitness_function": MyFitnessFunction(),
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 25,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
             "random_seed": 18,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer

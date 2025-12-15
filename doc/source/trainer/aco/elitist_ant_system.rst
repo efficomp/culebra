@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.choice_info
@@ -66,7 +66,24 @@ Properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.runtime
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.solution_cls
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.species
-.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.verbose
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_col_size
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_convergence_check_freq
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_elite_weight
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_heuristic
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_index
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_pheromone_evaporation_rate
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_verbosity
 
 Methods
 -------

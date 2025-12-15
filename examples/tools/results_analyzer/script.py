@@ -26,7 +26,11 @@ from os import listdir, path
 from sys import argv, exit
 
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.tools import Results, ResultsAnalyzer, DEFAULT_RESULTS_BASENAME
+from culebra.tools import (
+    Results,
+    ResultsAnalyzer,
+    DEFAULT_RESULTS_BASE_FILENAME
+)
 
 CSV_FILE_EXTENSION = ".csv"
 """Extension for csv files."""
@@ -61,7 +65,9 @@ def init_analyzer(batches_results, csv_batches_results):
     for batch in batches_results:
         analyzer[batch] = Results.load(
             path.join(
-                batch, DEFAULT_RESULTS_BASENAME + SERIALIZED_FILE_EXTENSION
+                batch,
+                DEFAULT_RESULTS_BASE_FILENAME +
+                SERIALIZED_FILE_EXTENSION
             )
         )
 

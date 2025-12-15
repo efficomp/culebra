@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.choice_info
@@ -66,7 +66,23 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.runtime
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.species
-.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.verbose
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_convergence_check_freq
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_index
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_pheromone_evaporation_rate
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_verbosity
 
 Methods
 -------

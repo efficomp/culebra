@@ -37,6 +37,11 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer.obj_weights
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer._default_index
+.. autoproperty:: culebra.fitness_function.feature_selection.abc.FSScorer._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.feature_selection.abc.FSScorer.dump

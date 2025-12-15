@@ -48,6 +48,10 @@ Properties
 .. autoproperty:: culebra.tools.Experiment.trainer
 .. autoproperty:: culebra.tools.Experiment.untie_best_fitness_function
 
+Private properties
+------------------
+.. autoproperty:: culebra.tools.Experiment._default_results_base_filename
+
 Methods
 -------
 .. automethod:: culebra.tools.Experiment.dump

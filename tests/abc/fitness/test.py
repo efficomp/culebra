@@ -139,7 +139,7 @@ class FitnessTester(unittest.TestCase):
         fitness_2.thresholds = fitness_1.thresholds
 
         # fitness_1 == fitness_2 -> fitness_1 should not dominate fitness_2
-        fitness_2.values = (fitness_1.values)
+        fitness_2.values = fitness_1.values
         self.assertFalse(fitness_1.dominates(fitness_2))
 
         # One objective is better and the other is worst

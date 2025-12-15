@@ -42,7 +42,7 @@ from culebra.fitness_function.tsp import PathLength
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = PathLength.fromPath(optimum_path)
+fitness_func = PathLength.from_path(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 

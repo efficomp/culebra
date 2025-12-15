@@ -96,7 +96,7 @@ class PACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -129,7 +129,7 @@ class PACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -155,7 +155,7 @@ class PACOFSTester(unittest.TestCase):
             "solution_cls": Ant,
             "species": species,
             "fitness_function": training_fitness_function,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -202,7 +202,7 @@ class PACOFSTester(unittest.TestCase):
             "fitness_function": training_fitness_function,
             "pop_size": 2,
             "col_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -245,7 +245,7 @@ class PACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -261,7 +261,7 @@ class PACOFSTester(unittest.TestCase):
         while len(trainer.pop) < trainer.pop_size:
             trainer.pop.append(trainer._generate_ant())
         trainer._pareto_fronts = sortNondominated(trainer.pop, trainer.pop_size)
-        
+
         for front_index, front in enumerate(trainer._pareto_fronts):
             for ant in front:
                 self.assertEqual(
@@ -275,7 +275,7 @@ class PACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -314,7 +314,7 @@ class PACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -343,7 +343,7 @@ class PACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -361,7 +361,7 @@ class PACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -385,7 +385,7 @@ class PACOFSTester(unittest.TestCase):
             "species": species,
             "fitness_function": training_fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer

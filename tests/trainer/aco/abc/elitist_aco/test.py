@@ -28,12 +28,7 @@ import numpy as np
 
 from deap.tools import ParetoFront
 
-from culebra.trainer.aco.abc import (
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    ElitistACO,
-    ACOTSP
-)
+from culebra.trainer.aco.abc import ACOTSP, ElitistACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
@@ -41,13 +36,16 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(
-    ACOTSP,
-    ElitistACO,
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO
-):
+class MyTrainer(ACOTSP, ElitistACO):
     """Dummy implementation of a trainer method."""
+
+    @property
+    def num_pheromone_matrices(self) -> int:
+        return self.fitness_function.num_obj
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        return self.fitness_function.num_obj
 
     def _get_state(self):
         """Return the state of this trainer."""
@@ -87,8 +85,8 @@ class MyTrainer(
 
 num_nodes = 25
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(np.random.permutation(num_nodes)),
-    PathLength.fromPath(np.random.permutation(num_nodes))
+    PathLength.from_path(np.random.permutation(num_nodes)),
+    PathLength.from_path(np.random.permutation(num_nodes))
 )
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
@@ -201,7 +199,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try before any colony has been created
         best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 

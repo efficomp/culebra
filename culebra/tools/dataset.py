@@ -21,16 +21,16 @@
 
 from __future__ import annotations
 
-from collections import Counter
 from os import PathLike
 from copy import deepcopy
-from typing import Optional, Tuple, Sequence, Union, TextIO
+from typing import TextIO
+from collections import Counter
+from collections.abc import Sequence
 from functools import partial
 
 import numpy as np
 from pandas import Series, DataFrame, read_csv
 from pandas.errors import EmptyDataError
-from sklearn.utils.validation import check_random_state
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
@@ -42,7 +42,7 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE
 from culebra.abc import Base
 from culebra.checker import check_str, check_int, check_float, check_sequence
 
-FilePath = Union[str, "PathLike[str]"]
+FilePath = str | PathLike[str]
 Url = str
 
 
@@ -78,33 +78,32 @@ class Dataset(Base):
 
     def __init__(
         self,
-        *files: Tuple[FilePath | Url | TextIO],
-        output_index: Optional[int] = None,
+        *files: tuple[FilePath | Url | TextIO],
+        output_index: int | None = None,
         sep: str = DEFAULT_SEP
     ) -> None:
         """Create a dataset.
 
         Datasets can be organized in only one file or in two files. If one
         file per dataset is used, then *output_index* must be used to indicate
-        which column stores the output values. If *output_index* is set to
-        :data:`None` (its default value), it will be assumed that the
-        dataset is composed by two consecutive files, the first one containing
-        the input columns and the second one storing the output column. Only
-        the first column of the second file will be loaded in this case (just
-        one output value per sample).
+        which column stores the output values. If *output_index* is omitted,
+        it will be assumed that the dataset is composed by two consecutive
+        files, the first one containing the input columns and the second one
+        storing the output column. Only the first column of the second file
+        will be loaded in this case (just one output value per sample).
 
         If no files are provided, an empty dataset is returned.
 
         :param files: Files containing the dataset. If *output_index* is
-            :data:`None`, two files are necessary, the first one containing
+            omitted, two files are necessary, the first one containing
             the input columns and the second one containing the output column.
             Otherwise, only one file will be used to access to the whole
             dataset (input and output columns)
         :type files: tuple[str | ~os.PathLike[str] | ~typing.TextIO]
         :param output_index: If the dataset is provided with only one file,
             this parameter indicates which column in the file does contain the
-            output values. Otherwise this parameter must be set to
-            :data:`None` to express that inputs and ouputs are stored in
+            output values. Otherwise this parameter must be omitted (set to
+            :data:`None`) to express that inputs and ouputs are stored in
             two different files. Its default value is :data:`None`
         :type output_index: int
         :param sep: Column separator used within the files. Defaults to
@@ -186,21 +185,21 @@ class Dataset(Base):
     @classmethod
     def load_from_uci(
         cls,
-        name: Optional[str] = None,
-        id: Optional[int] = None,
+        name: str | None = None,
+        id_number: int | None = None,
     ) -> Dataset:
         """Load the dataset from the UCI ML repository.
 
-        The dataset can be identified by either its id or its name, but only
-        one of these should be provided.
+        The dataset can be identified by either its *id_number* or its *name*,
+        but only one of these should be provided.
 
         If the dataset has more than one output column, only the first column
         is considered.
 
         :param name: Dataset name, or substring of name, optional
         :type name: str
-        :param id: Dataset ID for UCI ML Repository, optional
-        :type id: int
+        :param id_number: Dataset ID for UCI ML Repository, optional
+        :type id_number: int
         :raises RuntimeError: If the dataset can not be loaded
         :return: The dataset
         :rtype: ~culebra.tools.Dataset
@@ -209,7 +208,7 @@ class Dataset(Base):
 
         try:
             # Fetch the dataset
-            uci_dataset = fetch_ucirepo(name, id)
+            uci_dataset = fetch_ucirepo(name, id_number)
 
             inputs_df = Dataset.__categorical_to_numeric(
                 uci_dataset.data.features
@@ -293,7 +292,7 @@ class Dataset(Base):
     def remove_outliers(
         self,
         prop: float = DEFAULT_OUTLIER_PROPORTION,
-        random_seed: Optional[int] = None
+        random_seed: int | None = None
     ) -> Dataset:
         """Remove the outliers.
 
@@ -308,13 +307,13 @@ class Dataset(Base):
         """
         # Check the random seed
         if random_seed is None:
-            random_state = np.random.RandomState()
+            random_seed = np.random.default_rng().integers(0, 2**32 - 1)
         else:
-            random_state = check_random_state(random_seed)
+            random_seed = check_int(random_seed, "random seed")
 
         # The outlier detectors
         detectors = [
-            IsolationForest(contamination=prop, random_state=random_state),
+            IsolationForest(contamination=prop, random_state=random_seed),
             LocalOutlierFactor(contamination=prop),
             OneClassSVM(nu=prop)
         ]
@@ -355,7 +354,7 @@ class Dataset(Base):
     def oversample(
         self,
         n_neighbors: int = DEFAULT_SMOTE_NUM_NEIGHBORS,
-        random_seed: Optional[int] = None
+        random_seed: int | None = None
     ) -> Dataset:
         """Oversample all classes but the majority class.
 
@@ -377,9 +376,9 @@ class Dataset(Base):
         """
         # Check the random seed
         if random_seed is None:
-            random_state = np.random.RandomState()
+            random_seed = np.random.default_rng().integers(0, 2**32 - 1)
         else:
-            random_state = check_random_state(random_seed)
+            random_seed = check_int(random_seed, "random seed")
 
         # Number of samples per class
         samples_per_class = Counter(self.outputs)
@@ -391,13 +390,13 @@ class Dataset(Base):
             # Define a sampling strategy to assure a minimum of
             # n_neighbos por class
             for key, val in samples_per_class.items():
-                if samples_per_class[key] <= n_neighbors:
+                if val <= n_neighbors:
                     samples_per_class[key] = n_neighbors + 1
 
             # Create a RandomOverSampler instance
             random_over_sampler = RandomOverSampler(
                 sampling_strategy=samples_per_class,
-                random_state=random_state
+                random_state=random_seed
             )
 
             # Oversample the current dataset
@@ -416,7 +415,7 @@ class Dataset(Base):
             resampled_dataset._outputs
         ) = SMOTE(
             k_neighbors=n_neighbors,
-            random_state=random_state
+            random_state=random_seed
         ).fit_resample(resampled_dataset.inputs, resampled_dataset.outputs)
 
         return resampled_dataset
@@ -444,7 +443,7 @@ class Dataset(Base):
     def append_random_features(
             self,
             num_feats: int,
-            random_seed: Optional[int] = None
+            random_seed: int | None = None
     ) -> Dataset:
         """Return a new dataset with some random features appended.
 
@@ -465,16 +464,17 @@ class Dataset(Base):
 
         # Check the random seed
         if random_seed is None:
-            random_state = np.random.RandomState()
+            random_generator = np.random.default_rng()
         else:
-            random_state = check_random_state(random_seed)
+            random_generator = np.random.default_rng(random_seed)
 
         # Create an empty dataset
         new_dataset = self.__class__()
 
         # Append num_feats random features to the input data
         new_dataset._inputs = np.concatenate(
-            (self._inputs, random_state.rand(self.size, num_feats)), axis=1
+            (self._inputs, random_generator.random((self.size, num_feats))),
+            axis=1
         )
 
         # Copy the output data
@@ -486,8 +486,8 @@ class Dataset(Base):
     def split(
             self,
             test_prop: float,
-            random_seed: Optional[int] = None
-    ) -> Tuple[Dataset, Dataset]:
+            random_seed: int | None = None
+    ) -> tuple[Dataset, Dataset]:
         """Split the dataset.
 
         :param test_prop: Proportion of the dataset used as test data.
@@ -507,9 +507,9 @@ class Dataset(Base):
 
         # Check the random seed
         if random_seed is None:
-            random_state = np.random.RandomState()
+            random_seed = np.random.default_rng().integers(0, 2**32 - 1)
         else:
-            random_state = check_random_state(random_seed)
+            random_seed = check_int(random_seed, "random seed")
 
         (
             training_inputs,
@@ -521,7 +521,7 @@ class Dataset(Base):
             self._outputs,
             test_size=test_prop,
             stratify=self._outputs,
-            random_state=random_state,
+            random_state=random_seed
         )
         training = self.__class__()
         training._inputs = training_inputs
@@ -559,7 +559,7 @@ class Dataset(Base):
     def __split_input_output(
             data: DataFrame,
             output_index: int
-    ) -> Tuple[DataFrame, Series]:
+    ) -> tuple[DataFrame, Series]:
         """Split a dataframe into input and output data.
 
         :param data: A dataframe containing input and output data
@@ -621,7 +621,7 @@ class Dataset(Base):
         file: FilePath | Url | TextIO,
         output_index: int,
         sep: str = DEFAULT_SEP
-    ) -> Tuple[DataFrame, Series]:
+    ) -> tuple[DataFrame, Series]:
         """Load a mixed data set.
 
         Inputs and output are in the same file.
@@ -650,9 +650,9 @@ class Dataset(Base):
 
     @staticmethod
     def __load_split_dataset(
-            *files: Tuple[FilePath | Url | TextIO],
+            *files: tuple[FilePath | Url | TextIO],
             sep: str = DEFAULT_SEP
-    ) -> Tuple[DataFrame, Series]:
+    ) -> tuple[DataFrame, Series]:
         """Load a separated data set.
 
         Inputs and output are in separated files. If the output file has more

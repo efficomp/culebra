@@ -28,7 +28,6 @@ fitness functions. The following classes are provided:
 from __future__ import annotations
 
 from abc import abstractmethod
-from collections.abc import Sequence
 
 from numpy import ndarray
 
@@ -64,7 +63,7 @@ class TSPFitnessFunction(FitnessFunction):
 
     @property
     @abstractmethod
-    def heuristic(self) -> Sequence[ndarray, ...]:
+    def heuristic(self) -> tuple[ndarray[float], ...]:
         """Heuristic matrices.
 
         This property must be overridden by subclasses.
@@ -73,7 +72,7 @@ class TSPFitnessFunction(FitnessFunction):
             Arcs from a node to itself have a heuristic value of 0. For the
             rest of arcs, the reciprocal of their nodes distance is used as
             heuristic
-        :rtype: ~collections.abc.Sequence[~numpy.ndarray]
+        :rtype: tuple[~numpy.ndarray[float]]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(

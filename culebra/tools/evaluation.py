@@ -22,7 +22,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Any, Tuple, List, Optional
+from typing import Any
 from collections.abc import Sequence
 from copy import deepcopy
 from os import chmod, makedirs, chdir
@@ -168,6 +168,9 @@ experiments."""
 SCRIPT_FILE_EXTENSION = ".py"
 """File extension for python scripts."""
 
+DEFAULT_RESULTS_BASE_FILENAME = "results"
+"""Default base name for results files."""
+
 DEFAULT_NUM_EXPERIMENTS = 1
 """Default number of experiments in the batch."""
 
@@ -186,9 +189,6 @@ DEFAULT_CONFIG_SCRIPT_FILENAME = (
     DEFAULT_CONFIG_SCRIPT_BASENAME + SCRIPT_FILE_EXTENSION
 )
 """Default file name for configuration scripts."""
-
-DEFAULT_RESULTS_BASENAME = "results"
-"""Default base name for results files."""
 
 
 class Evaluation(Base):
@@ -236,10 +236,10 @@ for res, val in {var_name}.results.items():
     def __init__(
         self,
         trainer: Trainer,
-        untie_best_fitness_function: Optional[FitnessFunction] = None,
-        test_fitness_function: Optional[FitnessFunction] = None,
-        results_base_filename: Optional[str] = None,
-        hyperparameters: Optional[dict] = None
+        untie_best_fitness_function: FitnessFunction | None = None,
+        test_fitness_function: FitnessFunction | None = None,
+        results_base_filename: str | None = None,
+        hyperparameters: dict | None = None
     ) -> None:
         """Set a trainer evaluation.
 
@@ -247,17 +247,17 @@ for res, val in {var_name}.results.items():
         :type trainer: ~culebra.abc.Trainer
         :param untie_best_fitness_function: The fitness function used to
             select the best solution from those found by the trainer in case
-            of a tie. If set to :data:`None`, the training fitness function
-            will be used. Defaults to :data:`None`
+            of a tie. If omitted, the training fitness function will be used.
+            Defaults to :data:`None`
         :type untie_best_fitness_function: ~culebra.abc.FitnessFunction
         :param test_fitness_function: The fitness function used to test. If
-            set to :data:`None`, the training fitness function will be used
-            Defaults to :data:`None`
+            omitted, the training fitness function will be used. Defaults to
+            :data:`None`
         :type test_fitness_function: ~culebra.abc.FitnessFunction
-        :param results_base_filename: The base filename to save the results
-            If set to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used
-            Defaults to :data:`None`
+        :param results_base_filename: The base filename to save the results.
+            If omitted,
+            :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
+            used. Defaults to :data:`None`
         :type results_base_filename: str
         :param hyperparameters: Hyperparameter values used in this evaluation,
             optional
@@ -373,6 +373,15 @@ for res, val in {var_name}.results.items():
         self.reset()
 
     @property
+    def _default_results_base_filename(self) -> str:
+        """Default base name for results files.
+
+        :return: :attr:`~culebra.tools.DEFAULT_RESULTS_BASE_FILENAME`
+        :rtype: str
+        """
+        return DEFAULT_RESULTS_BASE_FILENAME
+
+    @property
     def results_base_filename(self) -> str | None:
         """Results base filename.
 
@@ -380,27 +389,27 @@ for res, val in {var_name}.results.items():
         :setter: Set a new results base filename.
 
         :param filename: New results base filename. If set to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used
+            :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
+            used
         :type filename: str
         :raises TypeError: If *filename* is not a valid file name
         """
-        return (
-            DEFAULT_RESULTS_BASENAME if self._results_base_filename is None
-            else self._results_base_filename
-        )
+        return self._results_base_filename
 
     @results_base_filename.setter
     def results_base_filename(self, filename: str | None) -> None:
         """Set a new results base filename.
 
         :param filename: New results base filename. If set to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used
+            :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
+            used
         :type filename: str
         :raises TypeError: If *filename* is not a valid file name
         """
         # Check the filename
         self._results_base_filename = (
-            None if filename is None else check_filename(
+            self._default_results_base_filename
+            if filename is None else check_filename(
                 filename,
                 name="base filename to save the results"
             )
@@ -446,7 +455,7 @@ for res, val in {var_name}.results.items():
     @property
     def hyperparameters(self) -> dict | None:
         """Hyperparameter values used for the evaluation.
-        
+
         :rtype: dict
 
         :setter: Set the hyperparameter values used for the evaluation
@@ -472,11 +481,9 @@ for res, val in {var_name}.results.items():
             self._hyperparameters = None
             return
 
-        self._hyperparameters = (
-            None if values is None else check_func_params(
-                values,
-                name="hyperparameters"
-            )
+        self._hyperparameters = check_func_params(
+            values,
+            name="hyperparameters"
         )
 
         # Check that no parameter name is reserved
@@ -501,13 +508,13 @@ for res, val in {var_name}.results.items():
     @classmethod
     def from_config(
         cls,
-        config_script_filename: Optional[str] = None
+        config_script_filename: str | None = None
     ) -> Evaluation:
         """Generate a new evaluation from a configuration file.
 
-        :param config_script_filename: Path to the configuration file. If set
-            to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used
+        :param config_script_filename: Path to the configuration file. If
+            omitted,
+            :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
             Defaults to :data:`None`
         :type config_script_filename: str
         :raises RuntimeError: If *config_script_filename* is an invalid file
@@ -534,8 +541,8 @@ for res, val in {var_name}.results.items():
     @classmethod
     def generate_run_script(
         cls,
-        config_filename: Optional[str] = None,
-        run_script_filename: Optional[str] = None
+        config_filename: str | None = None,
+        run_script_filename: str | None = None
     ) -> None:
         """Generate a script to run an evaluation.
 
@@ -543,15 +550,13 @@ for res, val in {var_name}.results.items():
 
         :param config_filename: Path to the configuration file. It can be
             whether a configuration script or a serialized
-            :attr:`~culebra.tools.Evaluation` instance. If set to
-            :data:`None`,
+            :attr:`~culebra.tools.Evaluation` instance. If omitted,
             :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
             Defaults to :data:`None`
         :type config_filename: str
-        :param run_script_filename: File path to store the run script. If set
-            to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME`
-            is used. Defaults to :data:`None`
+        :param run_script_filename: File path to store the run script. If
+            omitted, :attr:`~culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME` is
+            used. Defaults to :data:`None`
         :type run_script_filename: str
         :raises TypeError: If *config_filename* or *run_script_filename*
             are not a valid filename
@@ -577,13 +582,13 @@ for res, val in {var_name}.results.items():
                     ext=SERIALIZED_FILE_EXTENSION
                 )
                 factory_method = 'load'
-            except ValueError:
+            except ValueError as e:
                 raise ValueError(
                     "Not valid extension for the configuration file. "
                     f"Valid extensions are {SCRIPT_FILE_EXTENSION} for "
                     f"python scripts or {SERIALIZED_FILE_EXTENSION} for "
                     f"serialized evaluation objects: {config_filename}"
-                )
+                ) from e
             except TypeError as error:
                 raise error
 
@@ -656,11 +661,11 @@ for res, val in {var_name}.results.items():
         )
 
     @staticmethod
-    def _load_config(config_script_filename: Optional[str] = None) -> object:
+    def _load_config(config_script_filename: str | None = None) -> object:
         """Generate a new evaluation from a configuration file.
 
-        :param config_script_filename: Path to the configuration file. If set
-            to :data:`None`,
+        :param config_script_filename: Path to the configuration file. If
+            omitted,
             :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
             Defaults to :data:`None`
         :type config_script_filename: str
@@ -699,10 +704,10 @@ for res, val in {var_name}.results.items():
             # Load the module
             config = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(config)
-        except Exception:
+        except Exception as e:
             raise RuntimeError(
                 f"Bad configuration script: {config_script_filename}"
-            )
+            ) from e
 
         return config
 
@@ -790,16 +795,16 @@ class Experiment(Evaluation):
         """Feature metrics."""
 
     @property
-    def best_solutions(self) -> Sequence[HallOfFame] | None:
+    def best_solutions(self) -> tuple[HallOfFame] | None:
         """Best solutions found by the trainer.
-        
+
         :return: One Hall of Fame for each species
-        :rtype: ~collections.abc.Sequence[~deap.tools.HallOfFame]
+        :rtype: tuple[~deap.tools.HallOfFame]
         """
         return self._best_solutions
 
     @property
-    def best_representatives(self) -> List[List[Solution]] | None:
+    def best_representatives(self) -> list[list[Solution]] | None:
         """Best representatives found by the trainer.
 
         :rtype: list[list[~culebra.abc.Solution]]
@@ -1090,7 +1095,7 @@ class Experiment(Evaluation):
         features_hof = ParetoFront()
 
         # For each species
-        for species_index, hof in enumerate(self.best_solutions):
+        for hof in self.best_solutions:
             # If the species codes features
             hof_species = hof[0].species
             if isinstance(hof_species, FSSpecies):
@@ -1144,7 +1149,7 @@ class Experiment(Evaluation):
         # Perform the test fitness stats
         self._add_fitness_stats(self._ResultKeys.test_fitness_stats)
 
-    def _find_best_lexicographically(self) -> Sequence[Solution]:
+    def _find_best_lexicographically(self) -> tuple[Solution]:
         """Find the best solution in the Pareto front.
 
         Since the Pareto front solutions are not comparable, they are ordered
@@ -1153,13 +1158,13 @@ class Experiment(Evaluation):
         The validation fitness should be used to sort the solutions.
 
         :return: The solution (one per species)
-        :rtype: ~collections.abc.Sequence[~culebra.abc.Solution]
+        :rtype: tuple[~culebra.abc.Solution]
         """
         # Tied best solutions. May be several per species
         tied_best = []
 
         # For each species
-        for species_index, hof in enumerate(self.best_solutions):
+        for hof in self.best_solutions:
             # Sort the hof
             ordered = sorted(hof, reverse=True)
 
@@ -1205,7 +1210,7 @@ class Experiment(Evaluation):
             )
         ]
 
-        return all_combinations[sorted_indices[0]]
+        return tuple(all_combinations[sorted_indices[0]])
 
     def _add_best(
         self,
@@ -1344,14 +1349,15 @@ class Batch(Evaluation):
     """Statistics calculated for the results gathered from all the
     experiments."""
 
+
     def __init__(
         self,
         trainer: Trainer,
-        untie_best_fitness_function: Optional[FitnessFunction] = None,
-        test_fitness_function: Optional[FitnessFunction] = None,
-        results_base_filename: Optional[str] = None,
-        hyperparameters: Optional[dict] = None,
-        num_experiments: Optional[int] = None
+        untie_best_fitness_function: FitnessFunction | None = None,
+        test_fitness_function: FitnessFunction | None = None,
+        results_base_filename: str | None = None,
+        hyperparameters: dict | None = None,
+        num_experiments: int | None = None
     ) -> None:
         """Generate a batch of experiments.
 
@@ -1359,24 +1365,24 @@ class Batch(Evaluation):
         :type trainer: ~culebra.abc.Trainer
         :param untie_best_fitness_function: The fitness function used to
             select the best solution from those found by the trainer in case
-            of a tie. If set to :data:`None`, the training fitness function
-            will be used. Defaults to :data:`None`
-        :type untie_best_fitness_function: ~culebra.abc.FitnessFunction
-        :param test_fitness_function: The fitness used to test. If
-            :data:`None`, the training fitness function will be used
+            of a tie. If omitted, the training fitness function will be used.
             Defaults to :data:`None`
+        :type untie_best_fitness_function: ~culebra.abc.FitnessFunction
+        :param test_fitness_function: The fitness used to test. If omitted,
+            the training fitness function will be used. Defaults to
+            :data:`None`
         :type test_fitness_function: ~culebra.abc.FitnessFunction
         :param results_base_filename: The base filename to save the results
-            If set to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_RESULTS_BASENAME` is used
-            Defaults to :data:`None`
+            If omitted,
+            :attr:`~culebra.tools.Batch._default_results_base_filename` is
+            used. Defaults to :data:`None`
         :type results_base_filename: str
         :param hyperparameters: Hyperparameter values used in this evaluation,
             optional
         :type hyperparameters: dict
-        :param num_experiments: Number of experiments in the batch. If
-            :data:`None`, :attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS` is
-            used. Defaults to :data:`None`
+        :param num_experiments: Number of experiments in the batch. If omitted,
+            :attr:`~culebra.tools.Batch._default_num_experiments`
+            is used. Defaults to :data:`None`
         :type num_experiments: int
         :raises TypeError: If *trainer* is not a valid trainer
         :raises TypeError: If *test_fitness_function* is not a valid
@@ -1401,38 +1407,46 @@ class Batch(Evaluation):
         self.num_experiments = num_experiments
 
     @property
+    def _default_num_experiments(self) -> int:
+        """Default number of experiments in the batch.
+
+        :return: :attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS`
+        :rtype: int
+        """
+        return DEFAULT_NUM_EXPERIMENTS
+
+    @property
     def num_experiments(self) -> int:
         """Number of experiments in the batch.
-        
+
         :rtype: int
         :setter: Set a new number of experiments
         :param value: New number of experiments. If set to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS` is used
+            :attr:`~culebra.tools.Batch._default_num_experiments` is used
         :type value: int
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not greater than
             zero
         """
-        return (
-            DEFAULT_NUM_EXPERIMENTS
-            if self._num_experiments is None
-            else self._num_experiments
-        )
+        return self._num_experiments
 
     @num_experiments.setter
     def num_experiments(self, value: int | None) -> None:
         """Set a new number of experiments.
 
         :param value: New number of experiments. If set to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_NUM_EXPERIMENTS` is used
+            :attr:`~culebra.tools.Batch._default_num_experiments` is used
         :type value: int
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not greater than
             zero
         """
         # Check the value
-        self._num_experiments = None if value is None else check_int(
-            value, "number of experiments", gt=0
+        self._num_experiments = (
+            self._default_num_experiments
+            if value is None else check_int(
+                value, "number of experiments", gt=0
+            )
         )
 
         # Reset results
@@ -1447,7 +1461,7 @@ class Batch(Evaluation):
         return _Labels.experiment.lower()
 
     @property
-    def experiment_labels(self) -> Tuple[str]:
+    def experiment_labels(self) -> tuple[str]:
         """Label to identify each one of the experiments in the batch.
 
         :rtype: tuple[str]
@@ -1464,14 +1478,13 @@ class Batch(Evaluation):
     @classmethod
     def from_config(
         cls,
-        config_script_filename: str
+        config_script_filename: str | None = None
     ) -> Batch:
         """Generate a new evaluation from a configuration file.
 
-        :param config_script_filename: Path to the configuration file. If set
-            to :data:`None`,
-            :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used
-            Defaults to :data:`None`
+        :param config_script_filename: Path to the configuration file. If
+            omitted, :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is
+            used. Defaults to :data:`None`
         :type config_script_filename: str
         :raises RuntimeError: If *config_script_filename* is an invalid file
             path or an invalid configuration file
@@ -1680,7 +1693,7 @@ class Batch(Evaluation):
                     df.loc[len(df)] = stats
 
             # Feature indices should be int
-            df[_Labels.feature] = (df[_Labels.feature].astype(int))
+            df[_Labels.feature] = df[_Labels.feature].astype(int)
 
             df.set_index(index, inplace=True)
             df.sort_index(inplace=True)
@@ -1846,5 +1859,5 @@ __all__ = [
     'DEFAULT_NUM_EXPERIMENTS',
     'DEFAULT_RUN_SCRIPT_FILENAME',
     'DEFAULT_CONFIG_SCRIPT_FILENAME',
-    'DEFAULT_RESULTS_BASENAME'
+    'DEFAULT_RESULTS_BASE_FILENAME'
 ]

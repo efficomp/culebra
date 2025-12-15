@@ -21,15 +21,8 @@
 
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Optional,
-    Callable,
-    List,
-    Dict,
-    Type
-)
-from collections.abc import Sequence
+from typing import Any
+from collections.abc import Sequence, Callable
 from numbers import Integral, Real
 from os import PathLike
 from os.path import normcase, normpath
@@ -69,8 +62,8 @@ def check_bool(value: bool, name: str) -> bool:
 def check_str(
     value: str,
     name: str,
-    valid_chars: Optional[str] = None,
-    invalid_chars: Optional[str] = None
+    valid_chars: str | None = None,
+    invalid_chars: str | None = None
 ) -> str:
     """Check if the given value is a valid string.
 
@@ -110,10 +103,10 @@ def check_str(
 def check_limits(
     value: Real,
     name: str,
-    gt: Optional[Real] = None,
-    ge: Optional[Real] = None,
-    lt: Optional[Real] = None,
-    le: Optional[Real] = None
+    gt: Real | None = None,
+    ge: Real | None = None,
+    lt: Real | None = None,
+    le: Real | None = None
 ) -> Real:
     """Check if the given value meets the limits.
 
@@ -159,11 +152,11 @@ def check_limits(
 def check_int(
     value: int,
     name: str,
-    gt: Optional[int] = None,
-    ge: Optional[int] = None,
-    lt: Optional[int] = None,
-    le: Optional[int] = None,
-    ne: Optional[int] = None
+    gt: int | None = None,
+    ge: int | None = None,
+    lt: int | None = None,
+    le: int | None = None,
+    ne: int | None = None
 ) -> int:
     """Check if the given value is a valid integer.
 
@@ -210,10 +203,10 @@ def check_int(
 def check_float(
     value: float,
     name: str,
-    gt: Optional[float] = None,
-    ge: Optional[float] = None,
-    lt: Optional[float] = None,
-    le: Optional[float] = None
+    gt: float | None = None,
+    ge: float | None = None,
+    lt: float | None = None,
+    le: float | None = None
 ) -> float:
     """Check if the given value is a valid float.
 
@@ -301,7 +294,7 @@ def check_func(
     return value
 
 
-def check_func_params(value: Dict[str, Any], name: str) -> Dict[str, Any]:
+def check_func_params(value: dict[str, Any], name: str) -> dict[str, Any]:
     """Check if the given value is a valid set of function parameters.
 
     :param value: A dictionary
@@ -327,9 +320,9 @@ def check_func_params(value: Dict[str, Any], name: str) -> Dict[str, Any]:
 def check_sequence(
     seq: Sequence[Any],
     name: str,
-    size: Optional[int] = None,
-    item_checker: Optional[Callable[[Any, str], Any]] = None
-) -> List[Any]:
+    size: int | None = None,
+    item_checker: Callable[[Any, str], Any] | None = None
+) -> list[Any]:
     """Check a sequence of items.
 
     :param seq: The sequence.
@@ -350,7 +343,7 @@ def check_sequence(
     :raises ValueError: If any item fails the *item_checker* function
     """
     # Check that seq is a sequence
-    if not (isinstance(seq, Sequence) or isinstance(seq, np.ndarray)):
+    if not isinstance(seq, (Sequence, np.ndarray)):
         raise TypeError(f"The {name} must be in a sequence: {seq}")
 
     # Check the length
@@ -376,7 +369,7 @@ def check_sequence(
 def check_filename(
     value: str | PathLike,
     name: str,
-    ext: Optional[str] = None
+    ext: str | None = None
 ) -> str:
     """Check if the given value is a valid filename.
 
@@ -425,14 +418,14 @@ def check_filename(
 def check_matrix(
     values: Sequence[Sequence[object], ...],
     name: str,
-    dtype: Optional[str | Type] = None,
-    square: Optional[bool] = False,
-    gt: Optional[float] = None,
-    ge: Optional[float] = None,
-    lt: Optional[float] = None,
-    le: Optional[float] = None,
+    dtype: str | type | None = None,
+    square: bool | None = False,
+    gt: float | None = None,
+    ge: float | None = None,
+    lt: float | None = None,
+    le: float | None = None,
 
-) -> str:
+) -> np.ndarray:
     """Check if the given values define a correct two-dimensional matrix.
 
     :param values: The values

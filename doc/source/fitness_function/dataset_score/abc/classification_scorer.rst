@@ -31,6 +31,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.classifier
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.cv_folds
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.fitness_cls
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.index
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer.num_obj
@@ -42,6 +43,10 @@ Properties
 
 Private properties
 ------------------
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._default_classifier
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._default_cv_folds
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._default_index
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.ClassificationScorer._worst_score
 
 Methods

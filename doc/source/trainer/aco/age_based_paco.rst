@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.choice_info
@@ -61,13 +61,30 @@ Properties
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_shapes
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_ingoing
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_outgoing
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_size
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.random_seed
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.representatives
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.runtime
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.species
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.verbose
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_index
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_pop_size
+.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_verbosity
 
 Methods
 -------

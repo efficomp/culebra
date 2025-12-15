@@ -102,7 +102,7 @@ params = {
     "gene_ind_mutation_prob": 1.0/species.num_params,
     "pop_size": dataset.num_feats,
     "max_num_iters": 100,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

@@ -50,20 +50,20 @@
 <li><p><strong>trainer</strong> (<a class="reference internal" href="../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><em>Trainer</em></a>) – The trainer method</p></li>
 <li><p><strong>untie_best_fitness_function</strong> (<a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><em>FitnessFunction</em></a>) – The fitness function used to
 select the best solution from those found by the trainer in case
-of a tie. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the training fitness function
-will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
-<li><p><strong>test_fitness_function</strong> (<a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><em>FitnessFunction</em></a>) – The fitness used to test. If
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, the training fitness function will be used
+of a tie. If omitted, the training fitness function will be used.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>test_fitness_function</strong> (<a class="reference internal" href="../abc/fitness_function.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><em>FitnessFunction</em></a>) – The fitness used to test. If omitted,
+the training fitness function will be used. Defaults to
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>results_base_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The base filename to save the results
-If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_RESULTS_BASENAME" title="culebra.tools.DEFAULT_RESULTS_BASENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RESULTS_BASENAME</span></code></a> is used
-Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+If omitted,
+<a class="reference internal" href="#culebra.tools.Batch._default_results_base_filename" title="culebra.tools.Batch._default_results_base_filename"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_results_base_filename</span></code></a> is
+used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 <li><p><strong>hyperparameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Hyperparameter values used in this evaluation,
 optional</p></li>
-<li><p><strong>num_experiments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of experiments in the batch. If
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NUM_EXPERIMENTS" title="culebra.tools.DEFAULT_NUM_EXPERIMENTS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUM_EXPERIMENTS</span></code></a> is
-used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>num_experiments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of experiments in the batch. If omitted,
+<a class="reference internal" href="#culebra.tools.Batch._default_num_experiments" title="culebra.tools.Batch._default_num_experiments"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_num_experiments</span></code></a>
+is used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -102,14 +102,13 @@ experiments.</p>
 <h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py" id="culebra.tools.Batch.from_config">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#culebra.tools.Batch" title="culebra.tools.evaluation.Batch"><span class="pre">Batch</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.from_config" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_script_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#culebra.tools.Batch" title="culebra.tools.evaluation.Batch"><span class="pre">Batch</span></a></span></span><a class="headerlink" href="#culebra.tools.Batch.from_config" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a new evaluation from a configuration file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config_script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Path to the configuration file. If set
-to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></code></a> is used
-Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><strong>config_script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Path to the configuration file. If
+omitted, <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></code></a> is
+used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If <em>config_script_filename</em> is an invalid file
@@ -128,14 +127,12 @@ path or an invalid configuration file</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Path to the configuration file. It can be
 whether a configuration script or a serialized
-<a class="reference internal" href="evaluation.html#culebra.tools.Evaluation" title="culebra.tools.Evaluation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Evaluation</span></code></a> instance. If set to
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="evaluation.html#culebra.tools.Evaluation" title="culebra.tools.Evaluation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Evaluation</span></code></a> instance. If omitted,
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_SCRIPT_FILENAME</span></code></a> is used.
 Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
-<li><p><strong>run_script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – File path to store the run script. If set
-to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RUN_SCRIPT_FILENAME</span></code></a>
-is used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>run_script_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – File path to store the run script. If
+omitted, <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME" title="culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RUN_SCRIPT_FILENAME</span></code></a> is
+used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -197,7 +194,7 @@ are not a valid filename</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.tools.Batch.experiment_labels">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">experiment_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.tools.Batch.experiment_labels" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">experiment_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.tools.Batch.experiment_labels" title="Link to this definition">¶</a></dt>
 <dd><p>Label to identify each one of the experiments in the batch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -243,7 +240,7 @@ are not a valid filename</p></li>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – New number of experiments. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NUM_EXPERIMENTS" title="culebra.tools.DEFAULT_NUM_EXPERIMENTS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUM_EXPERIMENTS</span></code></a> is used</p>
+<a class="reference internal" href="#culebra.tools.Batch._default_num_experiments" title="culebra.tools.Batch._default_num_experiments"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_num_experiments</span></code></a> is used</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -279,7 +276,8 @@ zero</p></li>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – New results base filename. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
-<a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_RESULTS_BASENAME" title="culebra.tools.DEFAULT_RESULTS_BASENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RESULTS_BASENAME</span></code></a> is used</p>
+<a class="reference internal" href="evaluation.html#culebra.tools.Evaluation._default_results_base_filename" title="culebra.tools.Evaluation._default_results_base_filename"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_results_base_filename</span></code></a> is
+used</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p>
@@ -358,6 +356,37 @@ them will be returned</p>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>func</em> is not a valid fitness
 function</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="private-properties">
+<h2>Private properties<a class="headerlink" href="#private-properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.tools.Batch._default_num_experiments">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_default_num_experiments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.tools.Batch._default_num_experiments" title="Link to this definition">¶</a></dt>
+<dd><p>Default number of experiments in the batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_NUM_EXPERIMENTS" title="culebra.tools.DEFAULT_NUM_EXPERIMENTS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUM_EXPERIMENTS</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.tools.Batch._default_results_base_filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Batch.</span></span><span class="sig-name descname"><span class="pre">_default_results_base_filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.Batch._default_results_base_filename" title="Link to this definition">¶</a></dt>
+<dd><p>Default base name for results files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_RESULTS_BASE_FILENAME" title="culebra.tools.DEFAULT_RESULTS_BASE_FILENAME"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_RESULTS_BASE_FILENAME</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>

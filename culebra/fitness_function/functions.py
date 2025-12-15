@@ -26,10 +26,8 @@ which allows the aggregation of several single-objective fitness functions.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Tuple, Optional, List
 from functools import partial
 
-from culebra import DEFAULT_SIMILARITY_THRESHOLD
 from culebra.abc import Fitness, FitnessFunction, Solution
 from culebra.checker import (
     check_float, check_instance, check_sequence
@@ -51,7 +49,7 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
 
     def __init__(
         self,
-        *objectives: Tuple[SingleObjectiveFitnessFunction, ...]
+        *objectives: tuple[SingleObjectiveFitnessFunction, ...]
     ) -> None:
         """Construct a multi-objective fitness function.
 
@@ -60,12 +58,14 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
             tuple[~culebra.fitness_function.abc.SingleObjectiveFitnessFunction]
         """
         # Init the objective list
-        self._objectives = check_sequence(
-            objectives,
-            "objectives",
-            item_checker=partial(
-                check_instance,
-                cls=SingleObjectiveFitnessFunction
+        self._objectives = tuple(
+            check_sequence(
+                objectives,
+                "objectives",
+                item_checker=partial(
+                    check_instance,
+                    cls=SingleObjectiveFitnessFunction
+                )
             )
         )
 
@@ -73,8 +73,11 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         for idx, obj in enumerate(self.objectives):
             obj.index = idx
 
+        # Init the superclass
+        super().__init__()
+
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         :rtype: tuple[int]
@@ -87,7 +90,7 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         return weights
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :rtype: tuple[str]
@@ -100,7 +103,7 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         return names
 
     @property
-    def obj_thresholds(self) -> List[float]:
+    def obj_thresholds(self) -> list[float]:
         """Objective similarity thresholds.
 
         :rtype: list[float]
@@ -109,8 +112,8 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
             same threshold will be used for all the objectives. Different
             thresholds can be provided in a :class:`~collections.abc.Sequence`.
             If set to :data:`None`, all the thresholds are set to
-            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
-        :type values: float | ~collections.abc.Sequence[float] | None
+            :attr:`~culebra.abc.FitnessFunction._default_similarity_threshold`
+        :type values: float | ~collections.abc.Sequence[float]
         :raises TypeError: If neither a real number nor a
             :class:`~collections.abc.Sequence` of real numbers is provided
         :raises ValueError: If any value is negative
@@ -134,8 +137,8 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
             same threshold will be used for all the objectives. Different
             thresholds can be provided in a :class:`~collections.abc.Sequence`.
             If set to :data:`None`, all the thresholds are set to
-            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
-        :type values: float | ~collections.abc.Sequence[float] | None
+            :attr:`~culebra.abc.FitnessFunction._default_similarity_threshold`
+        :type values: float | ~collections.abc.Sequence[float]
         :raises TypeError: If neither a real number nor a
             :class:`~collections.abc.Sequence` of real numbers is provided
         :raises ValueError: If any value is negative
@@ -149,32 +152,28 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
                 size=self.num_obj,
                 item_checker=partial(check_float, ge=0)
             )
-        elif values is not None:
-            thresholds = [
-                check_float(values, "objective similarity threshold", ge=0)
-            ] * self.num_obj
         else:
             thresholds = (
-                [DEFAULT_SIMILARITY_THRESHOLD] * self.num_obj
+                [values] * self.num_obj
             )
 
         for obj, th in zip(self.objectives, thresholds):
             obj.obj_thresholds = th
 
     @property
-    def objectives(self) -> List[SingleObjectiveFitnessFunction]:
-        """List of objectives.
+    def objectives(self) -> tuple[SingleObjectiveFitnessFunction]:
+        """Objectives to be optimized.
 
         :rtype:
-            list[~culebra.fitness_function.abc.SingleObjectiveFitnessFunction]
+            tuple[~culebra.fitness_function.abc.SingleObjectiveFitnessFunction]
         """
         return self._objectives
 
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 

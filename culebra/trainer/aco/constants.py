@@ -51,7 +51,7 @@ DEFAULT_ACOFS_INITIAL_PHEROMONE = 1
 """Default initial pheromone for ACO-FS approaches."""
 
 DEFAULT_ACOFS_HEURISTIC_INFLUENCE = 0
-"""Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches."""
+r"""Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches."""
 
 DEFAULT_ACOFS_EXPLOITATION_PROB = 0
 r"""Default exploitation probability (:math:`{q_0}`) for ACO-FS approaches."""

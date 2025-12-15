@@ -37,7 +37,7 @@ species = Species(num_nodes)
 
 # Default fitness function
 optimum_path = np.random.permutation(num_nodes)
-fitness_function = PathLength.fromPath(optimum_path)
+fitness_function = PathLength.from_path(optimum_path)
 
 # Default fitness class
 fitness_cls = fitness_function.fitness_cls
@@ -60,7 +60,7 @@ class AntTester(unittest.TestCase):
             with self.assertRaises(ValueError):
                 ant.path = path
 
-        valid_path = [node for node in range(num_nodes)]
+        valid_path = list(range(num_nodes))
         ant.path = valid_path
         self.assertTrue(np.all(valid_path == ant.path))
 

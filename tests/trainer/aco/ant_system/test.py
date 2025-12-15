@@ -39,7 +39,7 @@ from culebra.fitness_function.tsp import PathLength
 
 num_nodes = 25
 optimum_path = np.random.permutation(num_nodes)
-fitness_func = PathLength.fromPath(optimum_path)
+fitness_func = PathLength.from_path(optimum_path)
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
 
@@ -140,84 +140,6 @@ class TrainerTester(unittest.TestCase):
         trainer._init_search()
         trainer._start_iteration()
         ant = trainer._generate_ant()
-
-    def test_decrease_pheromone(self):
-        """Test the _decrease_pheromone method."""
-        # Trainer parameters
-        params = {
-            "solution_cls": Ant,
-            "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
-            "initial_pheromone": 2
-        }
-
-        # Create the trainer
-        trainer = AntSystemTSP(**params)
-        trainer._init_search()
-
-        # Check the initial pheromone
-        pheromone_value = trainer.initial_pheromone[0]
-        self.assertTrue(
-            np.all(trainer.pheromone[0] == pheromone_value)
-        )
-
-        # Evaporate pheromone
-        trainer._decrease_pheromone()
-
-        # Check again
-        pheromone_value = (
-            trainer.initial_pheromone[0] * (
-                1 - trainer.pheromone_evaporation_rate
-            )
-        )
-        self.assertTrue(
-            np.all(trainer.pheromone[0] == pheromone_value)
-        )
-
-    def test_increase_pheromone(self):
-        """Test the _increase_pheromone method."""
-        # Trainer parameters
-        params = {
-            "solution_cls": Ant,
-            "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
-            "initial_pheromone": 2,
-            "col_size": 1
-        }
-
-        # Create the trainer
-        trainer = AntSystemTSP(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-
-        # Check the initial pheromone
-        pheromone_value = trainer.initial_pheromone[0]
-        self.assertTrue(
-            np.all(trainer.pheromone[0] == pheromone_value)
-        )
-
-        # Generate a new colony
-        trainer._generate_col()
-
-        # Evaporate pheromone
-        trainer._increase_pheromone()
-
-        # Get the ant
-        ant = trainer.col[0]
-        pheromone_increment = trainer._pheromone_amount(ant)[0]
-        pheromone_value += pheromone_increment
-
-        org = ant.path[-1]
-        for dest in ant.path:
-            self.assertEqual(
-                trainer.pheromone[0][org][dest],
-                pheromone_value
-            )
-            self.assertEqual(
-                trainer.pheromone[0][dest][org],
-                pheromone_value
-            )
-            org = dest
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

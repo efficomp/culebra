@@ -45,8 +45,8 @@ optimum_paths = [
     np.random.permutation(num_nodes)
 ]
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(optimum_paths[0]),
-    PathLength.fromPath(optimum_paths[1])
+    PathLength.from_path(optimum_paths[0]),
+    PathLength.from_path(optimum_paths[1])
 )
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
@@ -60,12 +60,12 @@ class InvalidPACOMO(PACOMO):
     @property
     def pheromone_shapes(self):
         """Return the shape of the pheromone matrices."""
-        return [(3, ) * 2] * self.num_pheromone_matrices
+        return ((3, ) * 2,) * self.num_pheromone_matrices
 
     @property
     def heuristic_shapes(self):
         """Return the shape of the heuristic matrices."""
-        return [(2, ) * 2] * self.num_heuristic_matrices
+        return ((2, ) * 2,) * self.num_heuristic_matrices
 
 
 class TrainerTester(unittest.TestCase):
@@ -87,10 +87,10 @@ class TrainerTester(unittest.TestCase):
             "custom_termination_func": max,
             "col_size": 6,
             "pop_size": 5,
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 13,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
-            "verbose": False,
+            "verbosity": False,
             "random_seed": 15
         }
 
@@ -143,13 +143,13 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.col_size, params["col_size"])
         self.assertEqual(trainer.pop_size, params["pop_size"])
         self.assertEqual(
-            trainer.checkpoint_enable, params["checkpoint_enable"]
+            trainer.checkpoint_activation, params["checkpoint_activation"]
         )
         self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
         self.assertEqual(
             trainer.checkpoint_filename, params["checkpoint_filename"]
         )
-        self.assertEqual(trainer.verbose, params["verbose"])
+        self.assertEqual(trainer.verbosity, params["verbosity"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
 
     def test_num_pheromone_matrices(self):
@@ -282,7 +282,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try before any colony has been created
         best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 

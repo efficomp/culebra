@@ -166,13 +166,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             pop_sizes=valid_pop_size
         )
-
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.pop_sizes), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_pop_size in trainer.pop_sizes:
-            self.assertEqual(island_pop_size, valid_pop_size)
+        self.assertIsInstance(trainer.pop_sizes, tuple)
+        self.assertEqual(
+            trainer.pop_sizes, (valid_pop_size,) * trainer.num_subtrainers
+        )
 
         # Try different values of pop_size for each island
         trainer = MyIslandsEA(
@@ -183,6 +180,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             pop_sizes=valid_pop_sizes
         )
+        self.assertIsInstance(trainer.pop_sizes, tuple)
         for pop_size1, pop_size2 in zip(trainer.pop_sizes, valid_pop_sizes):
             self.assertEqual(pop_size1, pop_size2)
 
@@ -208,12 +206,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_funcs=valid_func
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.crossover_funcs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_crossover_func in trainer.crossover_funcs:
-            self.assertEqual(island_crossover_func, valid_func)
+        self.assertIsInstance(trainer.crossover_funcs, tuple)
+        self.assertEqual(
+            trainer.crossover_funcs, (valid_func,) * trainer.num_subtrainers
+        )
 
         # Try different values of crossover_func for each island
         trainer = MyIslandsEA(
@@ -224,6 +220,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_funcs=valid_funcs
         )
+        self.assertIsInstance(trainer.crossover_funcs, tuple)
         for crossover_func1, crossover_func2 in zip(
             trainer.crossover_funcs, valid_funcs
         ):
@@ -251,12 +248,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_funcs=valid_func
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.mutation_funcs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_mutation_func in trainer.mutation_funcs:
-            self.assertEqual(island_mutation_func, valid_func)
+        self.assertIsInstance(trainer.mutation_funcs, tuple)
+        self.assertEqual(
+            trainer.mutation_funcs, (valid_func,) * trainer.num_subtrainers
+        )
 
         # Try different values of mutation_func for each island
         trainer = MyIslandsEA(
@@ -267,6 +262,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_funcs=valid_funcs
         )
+        self.assertIsInstance(trainer.mutation_funcs, tuple)
         for mutation_func1, mutation_func2 in zip(
             trainer.mutation_funcs, valid_funcs
         ):
@@ -294,12 +290,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs=valid_func
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.selection_funcs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_selection_func in trainer.selection_funcs:
-            self.assertEqual(island_selection_func, valid_func)
+        self.assertIsInstance(trainer.selection_funcs, tuple)
+        self.assertEqual(
+            trainer.selection_funcs, (valid_func, ) * trainer.num_subtrainers
+        )
 
         # Try different values of selection_func for each island
         trainer = MyIslandsEA(
@@ -310,6 +304,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs=valid_funcs
         )
+        self.assertIsInstance(trainer.selection_funcs, tuple)
         for selection_func1, selection_func2 in zip(
             trainer.selection_funcs, valid_funcs
         ):
@@ -349,12 +344,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_probs=valid_prob
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.crossover_probs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_crossover_prob in trainer.crossover_probs:
-            self.assertEqual(island_crossover_prob, valid_prob)
+        self.assertIsInstance(trainer.crossover_probs, tuple)
+        self.assertEqual(
+            trainer.crossover_probs, (valid_prob,) * trainer.num_subtrainers
+        )
 
         # Try different values of crossover_prob for each island
         trainer = MyIslandsEA(
@@ -365,6 +358,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_probs=valid_probs
         )
+        self.assertIsInstance(trainer.crossover_probs, tuple)
         for prob1, prob2 in zip(trainer.crossover_probs, valid_probs):
             self.assertEqual(prob1, prob2)
 
@@ -402,12 +396,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_probs=valid_prob
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.mutation_probs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_mutation_prob in trainer.mutation_probs:
-            self.assertEqual(island_mutation_prob, valid_prob)
+        self.assertIsInstance(trainer.mutation_probs, tuple)
+        self.assertEqual(
+            trainer.mutation_probs, (valid_prob,) * trainer.num_subtrainers
+        )
 
         # Try different values of mutation_prob for each island
         trainer = MyIslandsEA(
@@ -418,6 +410,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_probs=valid_probs
         )
+        self.assertIsInstance(trainer.mutation_probs, tuple)
         for prob1, prob2 in zip(trainer.mutation_probs, valid_probs):
             self.assertEqual(prob1, prob2)
 
@@ -455,9 +448,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             gene_ind_mutation_probs=valid_prob
         )
-        # Check the length of the sequence
+        self.assertIsInstance(trainer.gene_ind_mutation_probs, tuple)
         self.assertEqual(
-            len(trainer.gene_ind_mutation_probs), trainer.num_subtrainers
+            trainer.gene_ind_mutation_probs,
+            (valid_prob,) * trainer.num_subtrainers
         )
 
         # Check that all the values match
@@ -473,6 +467,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             gene_ind_mutation_probs=valid_probs
         )
+        self.assertIsInstance(trainer.gene_ind_mutation_probs, tuple)
         for prob1, prob2 in zip(trainer.gene_ind_mutation_probs, valid_probs):
             self.assertEqual(prob1, prob2)
 
@@ -498,14 +493,11 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs_params=valid_params
         )
-        # Check the length of the sequence
+        self.assertIsInstance(trainer.selection_funcs_params, tuple)
         self.assertEqual(
-            len(trainer.selection_funcs_params), trainer.num_subtrainers
+            trainer.selection_funcs_params,
+            (valid_params,) * trainer.num_subtrainers
         )
-
-        # Check that all the values match
-        for island_selection_func_params in trainer.selection_funcs_params:
-            self.assertEqual(island_selection_func_params, valid_params)
 
         # Try different values of selection_funcs_params for each island
         trainer = MyIslandsEA(
@@ -516,6 +508,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs_params=valid_funcs_params
         )
+        self.assertIsInstance(trainer.selection_funcs_params, tuple)
         for selection_func_params1, selection_func_params2 in zip(
             trainer.selection_funcs_params, valid_funcs_params
         ):
@@ -658,12 +651,13 @@ class TrainerTester(unittest.TestCase):
                 trainer.max_num_iters
             )
             self.assertEqual(
-                island_trainer.checkpoint_enable, trainer.checkpoint_enable
+                island_trainer.checkpoint_activation,
+                trainer.checkpoint_activation
             )
             self.assertEqual(
                 island_trainer.checkpoint_freq, trainer.checkpoint_freq
             )
-            self.assertEqual(island_trainer.verbose, trainer.verbose)
+            self.assertEqual(island_trainer.verbosity, trainer.verbosity)
             self.assertEqual(island_trainer.random_seed, trainer.random_seed)
             self.assertEqual(island_trainer.container, trainer)
             self.assertEqual(
@@ -729,76 +723,6 @@ class TrainerTester(unittest.TestCase):
                 island_trainer.selection_func_params,
                 island_selection_func_params
             )
-
-        # Try incorrect number of pop_sizes
-        trainer.pop_sizes = pop_sizes + pop_sizes
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of pop_sizes and
-        # try an incorrect number of crossover_funcs
-        trainer.pop_sizes = pop_sizes
-        trainer.crossover_funcs = crossover_funcs + crossover_funcs
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of crossover_funcs and
-        # try an incorrect number of mutation_funcs
-        trainer.crossover_funcs = crossover_funcs
-        trainer.mutation_funcs = mutation_funcs + mutation_funcs
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of mutation_funcs and
-        # try an incorrect number of selection_funcs
-        trainer.mutation_funcs = mutation_funcs
-        trainer.selection_funcs = selection_funcs + selection_funcs
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of selection_funcs and
-        # try an incorrect number of crossover_probs
-        trainer.selection_funcs = selection_funcs
-        trainer.crossover_probs = crossover_probs + crossover_probs
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of crossover_probs and
-        # try an incorrect number of mutation_probs
-        trainer.crossover_probs = crossover_probs
-        trainer.mutation_probs = mutation_probs + mutation_probs
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of mutation_probs and
-        # try an incorrect number of gene_ind_mutation_probs
-        trainer.mutation_probs = mutation_probs
-        trainer.gene_ind_mutation_probs = gene_ind_mutation_probs * 2
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
-
-        # Restore the number of gene_ind_mutation_probs and
-        # try an incorrect number of selection_funcs_params
-        trainer.gene_ind_mutation_probs = gene_ind_mutation_probs
-        trainer.selection_funcs_params = selection_funcs_params * 2
-
-        # Create the islands. Should fail
-        with self.assertRaises(RuntimeError):
-            trainer._generate_subtrainers()
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

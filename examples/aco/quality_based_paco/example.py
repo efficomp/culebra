@@ -32,7 +32,7 @@ from culebra.fitness_function.tsp import PathLength
 
 # Load the GR17 distances matrix from TSPLIB
 # The minimal tour has length 2085
-fitness_func = PathLength.fromTSPLib(
+fitness_func = PathLength.from_tsplib(
     "https://raw.githubusercontent.com/mastqe/tsplib/master/gr17.tsp"
 )
 
@@ -60,7 +60,7 @@ params = {
     "col_size": 15,
     "pop_size": 15,
     "max_num_iters": 200,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

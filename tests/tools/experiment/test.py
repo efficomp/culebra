@@ -134,8 +134,8 @@ params = {
         2.0/dataset.num_feats,
         2.0/dataset.num_feats
     ),
-    "checkpoint_enable": False,
-    "verbose": False
+    "checkpoint_activation": False,
+    "verbosity": False
 }
 
 # Create the trainer

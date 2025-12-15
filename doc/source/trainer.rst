@@ -26,6 +26,15 @@
 
 Attributes
 ----------
+.. attribute:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
+    :annotation: = <function full_connected_destinations>
+
+    Default topology function for the cooperative model.
+
+.. attribute:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+    :annotation: = {}
+
+    Parameters for the default topology function in the cooperative model.
 
 .. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
     :annotation: = <function ring_destinations>

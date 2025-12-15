@@ -21,7 +21,7 @@
 
 from deap.tools import selTournament
 
-from .topology import ring_destinations
+from .topology import ring_destinations, full_connected_destinations
 
 
 __author__ = 'Jesús González'
@@ -57,6 +57,12 @@ DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC = ring_destinations
 DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS = {}
 """Parameters for the default topology function in the islands model."""
 
+DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC = full_connected_destinations
+"""Default topology function for the cooperative model."""
+
+DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS = {}
+"""Parameters for the default topology function in the cooperative model."""
+
 
 # Exported symbols for this module
 __all__ = [
@@ -66,5 +72,7 @@ __all__ = [
     'DEFAULT_REPRESENTATION_SELECTION_FUNC',
     'DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS',
     'DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC',
-    'DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS'
+    'DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS',
+    'DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC',
+    'DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS'
 ]

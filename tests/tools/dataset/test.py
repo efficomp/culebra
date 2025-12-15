@@ -76,7 +76,7 @@ class DatasetTester(unittest.TestCase):
         # Try to load a mixed dataset with an invalid separator.
         # It should fail
         with self.assertRaises(TypeError):
-            Dataset(files=("numeric_1.dat",), output_index=0, sep=1)
+            Dataset("numeric_1.dat", output_index=0, sep=1)
 
         # Try to load a mixed empty dataset. It should fail
         with self.assertRaises(RuntimeError):

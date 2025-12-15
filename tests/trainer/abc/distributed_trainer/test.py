@@ -24,9 +24,9 @@
 
 import unittest
 import os
-from multiprocess.queues import Queue
 from copy import copy, deepcopy
 
+from multiprocess.queues import Queue
 from deap.tools import Logbook
 
 from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
@@ -38,7 +38,10 @@ from culebra.trainer import (
     DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
 )
 from culebra.trainer.abc import SingleSpeciesTrainer, DistributedTrainer
-from culebra.trainer.topology import ring_destinations
+from culebra.trainer.topology import (
+    ring_destinations,
+    full_connected_destinations
+)
 from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
@@ -92,10 +95,10 @@ class MyTrainer(DistributedTrainer):
             "species": species,
             "fitness_function": self.fitness_function,
             "max_num_iters": self.max_num_iters,
-            "checkpoint_enable": self.checkpoint_enable,
+            "checkpoint_activation": self.checkpoint_activation,
             "checkpoint_freq": self.checkpoint_freq,
             "checkpoint_filename": self.checkpoint_filename,
-            "verbose": self.verbose,
+            "verbosity": self.verbosity,
             "random_seed": self.random_seed
         }
 
@@ -111,13 +114,13 @@ class MyTrainer(DistributedTrainer):
             self._subtrainers.append(subtrainer)
 
     @property
-    def representation_topology_func(self):
-        """Get and set the representation topology function."""
+    def _default_representation_topology_func(self):
+        """Default topology function."""
         return ring_destinations
 
     @property
-    def representation_topology_func_params(self):
-        """Get and set the representation topology function parameters."""
+    def _default_representation_topology_func_params(self):
+        """Default parameters for the default topology function."""
         return {}
 
 
@@ -226,6 +229,51 @@ class TrainerTester(unittest.TestCase):
                     representation_freq=representation_freq
                 )
 
+        # Try invalid representation topology function. Should fail
+        invalid_funcs = ('a', 1.5)
+        for func in invalid_funcs:
+            with self.assertRaises(TypeError):
+                MyTrainer(
+                    fitness_func,
+                    valid_subtrainer_cls,
+                    representation_topology_func=func
+                )
+
+        # Try invalid types for representation topology function parameters
+        # Should fail
+        invalid_params = ('a', type)
+        for params in invalid_params:
+            with self.assertRaises(TypeError):
+                MyTrainer(
+                    fitness_func,
+                    valid_subtrainer_cls,
+                    representation_topology_func_params=params
+                )
+
+        # Try a valid representation topology function
+        valid_representation_topology_func = full_connected_destinations
+        trainer = MyTrainer(
+            fitness_func,
+            valid_subtrainer_cls,
+            representation_topology_func=valid_representation_topology_func
+        )
+        self.assertEqual(
+            trainer.representation_topology_func,
+            valid_representation_topology_func
+        )
+
+        # Try valid representation topology function params
+        valid_params = {"offset": 2}
+        trainer = MyTrainer(
+            fitness_func,
+            valid_subtrainer_cls,
+            representation_topology_func_params=valid_params
+        )
+        self.assertEqual(
+            trainer.representation_topology_func_params,
+            valid_params
+        )
+
         # Try invalid representation selection function. Should fail
         invalid_funcs = ('a', 1.5)
         for func in invalid_funcs:
@@ -258,6 +306,14 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(
             trainer.representation_freq, DEFAULT_REPRESENTATION_FREQ
+        )
+        self.assertEqual(
+            trainer.representation_topology_func,
+            ring_destinations
+        )
+        self.assertEqual(
+            trainer.representation_topology_func_params,
+            {}
         )
         self.assertEqual(
             trainer.representation_selection_func,
@@ -396,7 +452,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False
+            "verbosity": False
         }
 
         # Test default params
@@ -438,7 +494,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -461,8 +517,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -492,8 +548,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -522,8 +578,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -545,8 +601,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -571,8 +627,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Construct a parameterized trainer

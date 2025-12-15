@@ -248,9 +248,7 @@ class TrainerTester(unittest.TestCase):
             subtrainer_cls
         )
 
-        self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
-
-        # All these parameters should be None if subtrainers are not generated
+        # Default values for not initialized subpopulations should be None
         self.assertEqual(trainer.pop_size, None)
         self.assertEqual(trainer.crossover_func, None)
         self.assertEqual(trainer.mutation_func, None)
@@ -260,10 +258,10 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.gene_ind_mutation_prob, None)
         self.assertEqual(trainer.selection_func_params, None)
 
-        # Generate the subtrainers
+        # Create the islands
         trainer._generate_subtrainers()
 
-        # Now the default values of subtrainers should be returned
+        self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
         self.assertEqual(trainer.pop_size, DEFAULT_POP_SIZE)
         self.assertEqual(
             trainer.crossover_func, trainer.solution_cls.crossover
@@ -359,13 +357,14 @@ class TrainerTester(unittest.TestCase):
                 trainer.selection_func_params
             )
             self.assertEqual(
-                island_trainer.checkpoint_enable, trainer.checkpoint_enable
+                island_trainer.checkpoint_activation,
+                trainer.checkpoint_activation
             )
             self.assertEqual(
                 island_trainer.checkpoint_freq,
                 trainer.checkpoint_freq
             )
-            self.assertEqual(island_trainer.verbose, trainer.verbose)
+            self.assertEqual(island_trainer.verbosity, trainer.verbosity)
             self.assertEqual(island_trainer.random_seed, trainer.random_seed)
             self.assertEqual(island_trainer.container, trainer)
             self.assertEqual(

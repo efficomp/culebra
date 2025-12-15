@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.container
@@ -70,10 +70,31 @@ Properties
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.subtrainers
-.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.verbose
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA.verbosity
 
 Private properties
 ------------------
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_index
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_num_subtrainers
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_representation_freq
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_representation_selection_func
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_representation_selection_func_params
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_representation_size
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_representation_topology_func
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_representation_topology_func_params
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._default_verbosity
 .. autoproperty:: culebra.trainer.ea.HomogeneousParallelIslandsEA._subtrainer_suffixes
 
 Static methods

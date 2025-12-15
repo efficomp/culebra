@@ -28,14 +28,12 @@ from copy import copy, deepcopy
 
 
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 from sklearn.metrics import cohen_kappa_score, make_scorer
 
 from culebra import DEFAULT_SIMILARITY_THRESHOLD, SERIALIZED_FILE_EXTENSION
-from culebra.fitness_function.dataset_score import (
-    DEFAULT_CLASSIFIER,
-    DEFAULT_CV_FOLDS
-)
+from culebra.fitness_function.dataset_score import DEFAULT_CV_FOLDS
 from culebra.fitness_function.dataset_score.abc import ClassificationScorer
 
 from culebra.solution.feature_selection import (
@@ -76,25 +74,26 @@ class ClassificationScorerTester(unittest.TestCase):
     def test_init(self):
         """Test the constructor."""
         # Check default parameter values
-        training_data, test_data = dataset.split(0.3)
         func = MyClassificationScorer(
-            training_data=training_data
+            training_data=dataset
         )
         self.assertTrue(
-            (func.training_data.inputs == training_data.inputs).all()
+            (func.training_data.inputs == dataset.inputs).all()
         )
         self.assertTrue(
-            (func.training_data.outputs == training_data.outputs).all()
+            (func.training_data.outputs == dataset.outputs).all()
         )
         self.assertEqual(func.test_data, None)
-        self.assertTrue(isinstance(func.classifier, DEFAULT_CLASSIFIER))
+        self.assertTrue(isinstance(func.classifier, GaussianNB))
         self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
         self.assertEqual(func.index, 0)
-        self.assertEqual(func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD])
+        self.assertEqual(
+            func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD]
+        )
 
         # Try a valid classifier
         func = MyClassificationScorer(
-            training_data,
+            dataset,
             classifier=KNeighborsClassifier(n_neighbors=5)
         )
         self.assertIsInstance(func.classifier, KNeighborsClassifier)
@@ -102,13 +101,13 @@ class ClassificationScorerTester(unittest.TestCase):
         # Try an invalid classifier. Should fail
         with self.assertRaises(TypeError):
             MyClassificationScorer(
-                training_data,
+                dataset,
                 classifier='a'
             )
         # Check a valid index
         valid_index = 3
         func = MyClassificationScorer(
-            training_data=training_data,
+            training_data=dataset,
             index=valid_index
         )
         self.assertEqual(func.index, valid_index)

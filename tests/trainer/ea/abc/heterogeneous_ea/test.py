@@ -26,6 +26,14 @@ import unittest
 
 from culebra.trainer.topology import ring_destinations
 from culebra.trainer.ea.abc import SinglePopEA, HeterogeneousEA
+from culebra.trainer.ea import (
+    DEFAULT_POP_SIZE,
+    DEFAULT_CROSSOVER_PROB,
+    DEFAULT_MUTATION_PROB,
+    DEFAULT_GENE_IND_MUTATION_PROB,
+    DEFAULT_SELECTION_FUNC,
+    DEFAULT_SELECTION_FUNC_PARAMS
+)
 from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
@@ -168,13 +176,13 @@ class MyTrainer(HeterogeneousEA):
             self._subtrainers.append(subtrainer)
 
     @property
-    def representation_topology_func(self):
-        """Get and set the representation topology function."""
+    def _default_representation_topology_func(self):
+        """Default representation topology function."""
         return ring_destinations
 
     @property
-    def representation_topology_func_params(self):
-        """Get and set the representation topology function parameters."""
+    def _default_representation_topology_func_params(self):
+        """Default representation topology function parameters."""
         return {}
 
 
@@ -245,13 +253,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             pop_sizes=valid_pop_size
         )
-
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.pop_sizes), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_pop_size in trainer.pop_sizes:
-            self.assertEqual(island_pop_size, valid_pop_size)
+        self.assertIsInstance(trainer.pop_sizes, tuple)
+        self.assertEqual(
+            trainer.pop_sizes, (valid_pop_size,) * trainer.num_subtrainers
+        )
 
         # Try different values of pop_size for each island
         trainer = MyTrainer(
@@ -260,6 +265,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             pop_sizes=valid_pop_sizes
         )
+        self.assertIsInstance(trainer.pop_sizes, tuple)
         for pop_size1, pop_size2 in zip(trainer.pop_sizes, valid_pop_sizes):
             self.assertEqual(pop_size1, pop_size2)
 
@@ -281,12 +287,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_funcs=valid_func
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.crossover_funcs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_crossover_func in trainer.crossover_funcs:
-            self.assertEqual(island_crossover_func, valid_func)
+        self.assertIsInstance(trainer.crossover_funcs, tuple)
+        self.assertEqual(
+            trainer.crossover_funcs, (valid_func,) * trainer.num_subtrainers
+        )
 
         # Try different values of crossover_func for each island
         trainer = MyTrainer(
@@ -295,6 +299,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_funcs=valid_funcs
         )
+        self.assertIsInstance(trainer.crossover_funcs, tuple)
         for crossover_func1, crossover_func2 in zip(
             trainer.crossover_funcs, valid_funcs
         ):
@@ -318,12 +323,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_funcs=valid_func
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.mutation_funcs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_mutation_func in trainer.mutation_funcs:
-            self.assertEqual(island_mutation_func, valid_func)
+        self.assertIsInstance(trainer.mutation_funcs, tuple)
+        self.assertEqual(
+            trainer.mutation_funcs, (valid_func,) * trainer.num_subtrainers
+        )
 
         # Try different values of mutation_func for each island
         trainer = MyTrainer(
@@ -332,6 +335,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_funcs=valid_funcs
         )
+        self.assertIsInstance(trainer.mutation_funcs, tuple)
         for mutation_func1, mutation_func2 in zip(
             trainer.mutation_funcs, valid_funcs
         ):
@@ -355,12 +359,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs=valid_func
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.selection_funcs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_selection_func in trainer.selection_funcs:
-            self.assertEqual(island_selection_func, valid_func)
+        self.assertIsInstance(trainer.selection_funcs, tuple)
+        self.assertEqual(
+            trainer.selection_funcs, (valid_func, ) * trainer.num_subtrainers
+        )
 
         # Try different values of selection_func for each island
         trainer = MyTrainer(
@@ -369,6 +371,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs=valid_funcs
         )
+        self.assertIsInstance(trainer.selection_funcs, tuple)
         for selection_func1, selection_func2 in zip(
             trainer.selection_funcs, valid_funcs
         ):
@@ -402,12 +405,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_probs=valid_prob
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.crossover_probs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_crossover_prob in trainer.crossover_probs:
-            self.assertEqual(island_crossover_prob, valid_prob)
+        self.assertIsInstance(trainer.crossover_probs, tuple)
+        self.assertEqual(
+            trainer.crossover_probs, (valid_prob,) * trainer.num_subtrainers
+        )
 
         # Try different values of crossover_prob for each island
         trainer = MyTrainer(
@@ -416,6 +417,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             crossover_probs=valid_probs
         )
+        self.assertIsInstance(trainer.crossover_probs, tuple)
         for prob1, prob2 in zip(trainer.crossover_probs, valid_probs):
             self.assertEqual(prob1, prob2)
 
@@ -447,12 +449,10 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_probs=valid_prob
         )
-        # Check the length of the sequence
-        self.assertEqual(len(trainer.mutation_probs), trainer.num_subtrainers)
-
-        # Check that all the values match
-        for island_mutation_prob in trainer.mutation_probs:
-            self.assertEqual(island_mutation_prob, valid_prob)
+        self.assertIsInstance(trainer.mutation_probs, tuple)
+        self.assertEqual(
+            trainer.mutation_probs, (valid_prob,) * trainer.num_subtrainers
+        )
 
         # Try different values of mutation_prob for each island
         trainer = MyTrainer(
@@ -461,6 +461,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             mutation_probs=valid_probs
         )
+        self.assertIsInstance(trainer.mutation_probs, tuple)
         for prob1, prob2 in zip(trainer.mutation_probs, valid_probs):
             self.assertEqual(prob1, prob2)
 
@@ -492,14 +493,11 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             gene_ind_mutation_probs=valid_prob
         )
-        # Check the length of the sequence
+        self.assertIsInstance(trainer.gene_ind_mutation_probs, tuple)
         self.assertEqual(
-            len(trainer.gene_ind_mutation_probs), trainer.num_subtrainers
+            trainer.gene_ind_mutation_probs,
+            (valid_prob,) * trainer.num_subtrainers
         )
-
-        # Check that all the values match
-        for island_gene_ind_mutation_prob in trainer.gene_ind_mutation_probs:
-            self.assertEqual(island_gene_ind_mutation_prob, valid_prob)
 
         # Try different values of gene_ind_mutation_prob for each island
         trainer = MyTrainer(
@@ -508,6 +506,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             gene_ind_mutation_probs=valid_probs
         )
+        self.assertIsInstance(trainer.gene_ind_mutation_probs, tuple)
         for prob1, prob2 in zip(trainer.gene_ind_mutation_probs, valid_probs):
             self.assertEqual(prob1, prob2)
 
@@ -529,14 +528,11 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs_params=valid_params
         )
-        # Check the length of the sequence
+        self.assertIsInstance(trainer.selection_funcs_params, tuple)
         self.assertEqual(
-            len(trainer.selection_funcs_params), trainer.num_subtrainers
+            trainer.selection_funcs_params,
+            (valid_params,) * trainer.num_subtrainers
         )
-
-        # Check that all the values match
-        for island_selection_func_params in trainer.selection_funcs_params:
-            self.assertEqual(island_selection_func_params, valid_params)
 
         # Try different values of selection_funcs_params for each island
         trainer = MyTrainer(
@@ -545,6 +541,7 @@ class TrainerTester(unittest.TestCase):
             num_subtrainers=valid_num_subtrainers,
             selection_funcs_params=valid_funcs_params
         )
+        self.assertIsInstance(trainer.selection_funcs_params, tuple)
         for selection_func_params1, selection_func_params2 in zip(
             trainer.selection_funcs_params, valid_funcs_params
         ):
@@ -581,6 +578,38 @@ class TrainerTester(unittest.TestCase):
 
         for selection_func_params in trainer.selection_funcs_params:
             self.assertEqual(selection_func_params, None)
+
+        # Generate subtrainers
+        trainer._generate_subtrainers()
+
+        # Check default values
+        for pop_size in trainer.pop_sizes:
+            self.assertEqual(pop_size, DEFAULT_POP_SIZE)
+
+        for crossover_func in trainer.crossover_funcs:
+            self.assertEqual(crossover_func, trainer.solution_cls.crossover)
+
+        for mutation_func in trainer.mutation_funcs:
+            self.assertEqual(mutation_func, trainer.solution_cls.mutate)
+
+        for selection_func in trainer.selection_funcs:
+            self.assertEqual(selection_func, DEFAULT_SELECTION_FUNC)
+
+        for crossover_prob in trainer.crossover_probs:
+            self.assertEqual(crossover_prob, DEFAULT_CROSSOVER_PROB)
+
+        for mutation_prob in trainer.mutation_probs:
+            self.assertEqual(mutation_prob, DEFAULT_MUTATION_PROB)
+
+        for gene_ind_mutation_prob in trainer.gene_ind_mutation_probs:
+            self.assertEqual(
+                gene_ind_mutation_prob, DEFAULT_GENE_IND_MUTATION_PROB
+            )
+
+        for selection_func_params in trainer.selection_funcs_params:
+            self.assertEqual(
+                selection_func_params, DEFAULT_SELECTION_FUNC_PARAMS
+            )
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

@@ -110,7 +110,7 @@ params = {
     "pop_sizes": tuple(
         dataset.num_feats + i*5 for i in range(num_subtrainers)
     ),
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

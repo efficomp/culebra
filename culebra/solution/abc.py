@@ -32,8 +32,9 @@ different metaheuristics. Currently, the following are defined:
 
 from __future__ import annotations
 
-from typing import Tuple, Sequence
 from abc import abstractmethod
+
+import numpy as np
 
 from culebra.abc import Solution
 
@@ -55,7 +56,7 @@ class Individual(Solution):
     """
 
     @abstractmethod
-    def crossover(self, other: Individual) -> Tuple[Individual, Individual]:
+    def crossover(self, other: Individual) -> tuple[Individual, Individual]:
         """Cross this individual with another one.
 
         This method must be overridden by subclasses to return a correct
@@ -73,7 +74,7 @@ class Individual(Solution):
         )
 
     @abstractmethod
-    def mutate(self, indpb: float) -> Tuple[Individual]:
+    def mutate(self, indpb: float) -> tuple[Individual]:
         """Mutate the individual.
 
         This method must be overridden by subclasses to return a correct
@@ -99,13 +100,13 @@ class Ant(Solution):
 
     @property
     @abstractmethod
-    def path(self) -> Sequence[int]:
+    def path(self) -> np.ndarray[int]:
         """Path traveled by the ant.
 
         This property must be overridden by subclasses to return a correct
         value.
 
-        :rtype: ~collections.abc.Sequence[int]
+        :rtype: ~numpy.ndarray[int]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
@@ -123,13 +124,13 @@ class Ant(Solution):
 
     @property
     @abstractmethod
-    def discarded(self) -> Sequence[int]:
+    def discarded(self) -> np.ndarray[int]:
         """Nodes discarded by the ant.
 
         This property must be overridden by subclasses to return a correct
         value.
 
-        :rtype: ~collections.abc.Sequence[int]
+        :rtype: ~numpy.ndarray[int]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(

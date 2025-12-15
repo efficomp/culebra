@@ -199,8 +199,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -208,7 +208,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try before the population has been created
         best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 
@@ -221,7 +221,7 @@ class TrainerTester(unittest.TestCase):
         best_ones = trainer.best_solutions()
 
         # Test that a list with only one species is returned
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), 1)
         for sol in best_ones[0]:
             self.assertIsInstance(sol, solution_cls)
@@ -239,8 +239,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -279,8 +279,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -336,8 +336,8 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer

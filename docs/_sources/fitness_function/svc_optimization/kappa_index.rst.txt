@@ -31,6 +31,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.cv_folds
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.index
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex.num_obj
@@ -42,6 +43,10 @@ Properties
 
 Private properties
 ------------------
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex._default_classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex._default_cv_folds
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex._default_index
+.. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex._default_similarity_threshold
 .. autoproperty:: culebra.fitness_function.svc_optimization.KappaIndex._worst_score
 
 Methods

@@ -30,12 +30,7 @@ import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import DEFAULT_CONVERGENCE_CHECK_FREQ
-from culebra.trainer.aco.abc import (
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    ReseteablePheromoneBasedACO,
-    ACOTSP
-)
+from culebra.trainer.aco.abc import ACOTSP, ReseteablePheromoneBasedACO
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
@@ -43,19 +38,22 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(
-    ACOTSP,
-    ReseteablePheromoneBasedACO,    
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO
-):
+class MyTrainer(ACOTSP,ReseteablePheromoneBasedACO):
     """Dummy implementation of a trainer method."""
+
+    @property
+    def num_pheromone_matrices(self) -> int:
+        return self.fitness_function.num_obj
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        return self.fitness_function.num_obj
 
 
 num_nodes = 25
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(np.random.permutation(num_nodes)),
-    PathLength.fromPath(np.random.permutation(num_nodes))
+    PathLength.from_path(np.random.permutation(num_nodes)),
+    PathLength.from_path(np.random.permutation(num_nodes))
 )
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
@@ -232,7 +230,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
-        
+
         # Create the trainer
         trainer = MyTrainer(**params)
         trainer._init_search()
@@ -264,12 +262,13 @@ class TrainerTester(unittest.TestCase):
         for pher, init_pher in zip(
             trainer.pheromone, trainer.initial_pheromone
         ):
-            for i in range(len(feasible_nodes)):
-                org = feasible_nodes[i-1]
-                dest = feasible_nodes[i]
+            for org, dest in zip(
+                feasible_nodes,
+                np.append(feasible_nodes[1:], feasible_nodes[0])
+            ):
                 pher[org][dest] = init_pher
                 pher[dest][org] = init_pher
-        
+
         # Do an interation
         trainer._start_iteration()
         trainer._do_iteration()

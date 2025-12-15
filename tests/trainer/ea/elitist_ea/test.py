@@ -130,7 +130,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(dataset.num_feats),
             "fitness_function": KappaIndex(dataset),
             "pop_size": 100,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -154,7 +154,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(dataset.num_feats),
             "fitness_function": KappaIndex(dataset),
             "pop_size": 100,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -176,8 +176,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaIndex(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
         trainer = ElitistEA(**params)
 
@@ -196,8 +196,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaIndex(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
         trainer = ElitistEA(**params)
         trainer._init_search()

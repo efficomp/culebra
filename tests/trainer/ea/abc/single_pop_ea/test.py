@@ -399,7 +399,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -421,7 +421,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -447,7 +447,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -472,7 +472,7 @@ class TrainerTester(unittest.TestCase):
             "species": cooperative_species[0],
             "fitness_function": fitness_function,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -498,8 +498,8 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -507,7 +507,7 @@ class TrainerTester(unittest.TestCase):
 
         # Try before the population has been created
         best_ones = trainer.best_solutions()
-        self.assertIsInstance(best_ones, list)
+        self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), 1)
         self.assertEqual(len(best_ones[0]), 0)
 
@@ -575,7 +575,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -603,7 +603,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -624,7 +624,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -648,7 +648,7 @@ class TrainerTester(unittest.TestCase):
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
             "pop_size": 2,
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer

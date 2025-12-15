@@ -26,11 +26,6 @@
 
 Attributes:
 -----------
-.. attribute:: DEFAULT_CLASSIFIER
-    :annotation: = <class 'sklearn.naive_bayes.GaussianNB'>
-
-    Default classifier for fitness functions.
-
 .. attribute:: DEFAULT_CV_FOLDS
     :annotation: = 5
 

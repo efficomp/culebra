@@ -122,7 +122,7 @@ class ResultsTester(unittest.TestCase):
 
     def test_serialization(self):
         """Test the dump and load methods."""
-        BAD_EXTENSION = ".tar"
+        bad_extension = ".tar"
         data_filenames = (
             "test_fitness" + CSV_FILE_EXTENSION,
             "execution_metrics" + CSV_FILE_EXTENSION
@@ -131,7 +131,7 @@ class ResultsTester(unittest.TestCase):
         bad_serialized_filename_type = 1
         bad_serialized_filename_values = [
             "file",
-            "file" + BAD_EXTENSION
+            "file" + bad_extension
         ]
         good_serialized_filename = "myresults" + SERIALIZED_FILE_EXTENSION
 

@@ -33,10 +33,10 @@ Attributes:
 
      Default basename for checkpointing files.
 
-.. attribute:: DEFAULT_CHECKPOINT_ENABLE
+.. attribute:: DEFAULT_CHECKPOINT_ACTIVATION
     :annotation: = True
 
-    Default checkpointing enablement for a :class:`~culebra.abc.Trainer`.
+    Default checkpointing activation for a :class:`~culebra.abc.Trainer`.
 
 .. attribute:: DEFAULT_CHECKPOINT_FILENAME
     :annotation: = 'checkpoint.dill.gz'
@@ -51,8 +51,7 @@ Attributes:
 .. attribute:: DEFAULT_INDEX
     :annotation: = 0
 
-    Default :class:`~culebra.abc.Trainer` index. Only used within a
-    distributed approaches.
+    Default index.
 
 .. attribute:: DEFAULT_MAX_NUM_ITERS
     :annotation: = 100

@@ -28,13 +28,10 @@ fitness functions. The following classes are provided:
 from __future__ import annotations
 
 from abc import abstractmethod
-from collections.abc import Sequence
-from typing import Tuple, List, Optional
-from functools import partial
 
-from culebra import DEFAULT_SIMILARITY_THRESHOLD
+from culebra import DEFAULT_INDEX
 from culebra.abc import FitnessFunction, Solution
-from culebra.checker import check_int, check_float, check_sequence
+from culebra.checker import check_int
 
 
 __author__ = 'Jesús González'
@@ -51,7 +48,7 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
 
     def __init__(
         self,
-        index: Optional[int] = None
+        index: int | None = None
     ) -> None:
         """Construct the fitness function.
 
@@ -63,14 +60,25 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
         :raises ValueError: If *index* is not positive
         """
         # Init the superclasses
+        super().__init__()
+
+        # Check the number of objectives
         if self.num_obj != 1:
             raise RuntimeError(
                 f"Class {self.__class__} should have only one objective"
             )
 
-        super().__init__()
+        # Set the index
         self.index = index
-        self.obj_thresholds = None
+
+    @property
+    def _default_index(self) -> int:
+        """Default index.
+
+        :return: :attr:`~culebra.DEFAULT_INDEX`
+        :rtype: int
+        """
+        return DEFAULT_INDEX
 
     @property
     def index(self) -> int:
@@ -79,10 +87,12 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
         :rtype: int
 
         :setter: Set a new index
-        :param value: The new index
+        :param value: The new index. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction._default_index`
+            is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer number
-        :raises ValueError: If *value* is not positive
+        :raises ValueError: If *value* is a negative number
         """
         return self._index
 
@@ -90,77 +100,27 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
     def index(self, value: int | None) -> None:
         """Set a new index for the objective.
 
-        :param value: The new index
+        :param value: The new index. If set to :data:`None`,
+            :attr:`~culebra.fitness_function.abc.SingleObjectiveFitnessFunction._default_index`
+            is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer number
-        :raises ValueError: If *value* is not positive
+        :raises ValueError: If *value* is a negative number
         """
-        if value is None:
-            self._index = 0
-        else:
-            self._index = check_int(value, "objective index", ge=0)
+        # Check the value
+        self._index = (
+            self._default_index if value is None else check_int(
+                value, "objective index", ge=0
+            )
+        )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :rtype: tuple[str]
         """
         return (f"obj_{self.index}",)
-
-    @property
-    def obj_thresholds(self) -> List[float]:
-        """Objective similarity thresholds.
-
-        :rtype: list[float]
-        :setter: Set new thresholds.
-        :param values: The new values. If only a single value is provided, the
-            same threshold will be used for all the objectives. Different
-            thresholds can be provided in a :class:`~collections.abc.Sequence`.
-            If set to :data:`None`, all the thresholds are set to
-            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
-        :type values: float | ~collections.abc.Sequence[float] | None
-        :raises TypeError: If neither a real number nor a
-            :class:`~collections.abc.Sequence` of real numbers is provided
-        :raises ValueError: If any value is negative
-        :raises ValueError: If the length of the thresholds sequence does not
-            match the number of objectives
-        """
-        return self._obj_thresholds
-
-    @obj_thresholds.setter
-    def obj_thresholds(
-        self, values: float | Sequence[float] | None
-    ) -> None:
-        """Set new objective similarity thresholds.
-
-        :param values: The new values. If only a single value is provided, the
-            same threshold will be used for all the objectives. Different
-            thresholds can be provided in a :class:`~collections.abc.Sequence`.
-            If set to :data:`None`, all the thresholds are set to
-            :attr:`~culebra.DEFAULT_SIMILARITY_THRESHOLD`
-        :type values: float | ~collections.abc.Sequence[float] | None
-        :raises TypeError: If neither a real number nor a
-            :class:`~collections.abc.Sequence` of real numbers is provided
-        :raises ValueError: If any value is negative
-        :raises ValueError: If the length of the thresholds sequence does not
-            match the number of objectives
-        """
-        if isinstance(values, Sequence):
-            self._obj_thresholds = check_sequence(
-                values,
-                "objective similarity thresholds",
-                size=self.num_obj,
-                item_checker=partial(check_float, ge=0)
-            )
-        elif values is not None:
-            self._obj_thresholds = [
-                check_float(values, "objective similarity threshold", ge=0)
-            ] * self.num_obj
-        else:
-            self._obj_thresholds = (
-                [DEFAULT_SIMILARITY_THRESHOLD] * self.num_obj
-            )
 
     @abstractmethod
     def is_evaluable(self, sol: Solution) -> bool:

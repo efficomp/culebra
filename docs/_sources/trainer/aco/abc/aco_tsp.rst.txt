@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.ACOTSP.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.abc.ACOTSP.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.abc.ACOTSP.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.ACOTSP.choice_info
@@ -64,7 +64,21 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOTSP.runtime
 .. autoproperty:: culebra.trainer.aco.abc.ACOTSP.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.ACOTSP.species
-.. autoproperty:: culebra.trainer.aco.abc.ACOTSP.verbose
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_col_size
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_heuristic
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_index
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.ACOTSP._default_verbosity
 
 Methods
 -------
@@ -80,7 +94,6 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._ant_choice_info
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._calculate_choice_info
-.. automethod:: culebra.trainer.aco.abc.ACOTSP._decrease_pheromone
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._do_iteration
@@ -90,7 +103,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._generate_col
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._get_state
-.. automethod:: culebra.trainer.aco.abc.ACOTSP._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._init_internals
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._init_pheromone
 .. automethod:: culebra.trainer.aco.abc.ACOTSP._init_representatives

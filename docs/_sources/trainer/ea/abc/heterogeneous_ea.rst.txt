@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.container
@@ -68,10 +68,31 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.subtrainers
-.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.verbose
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA.verbosity
 
 Private properties
 ------------------
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_funcs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_probs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_gene_ind_mutation_probs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_index
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_funcs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_probs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_num_subtrainers
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_pop_sizes
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_representation_freq
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_representation_selection_func
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_representation_selection_func_params
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_representation_size
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_representation_topology_func
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_representation_topology_func_params
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs_params
+.. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._default_verbosity
 .. autoproperty:: culebra.trainer.ea.abc.HeterogeneousEA._subtrainer_suffixes
 
 Static methods

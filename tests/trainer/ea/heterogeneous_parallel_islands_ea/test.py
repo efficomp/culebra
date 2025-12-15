@@ -26,10 +26,11 @@ import unittest
 from multiprocess import cpu_count
 
 from culebra import (
-    DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_CHECKPOINT_FILENAME,
+    DEFAULT_CHECKPOINT_FREQ,
     DEFAULT_MAX_NUM_ITERS,
-    SERIALIZED_FILE_EXTENSION
+    SERIALIZED_FILE_EXTENSION,
+    DEFAULT_VERBOSITY
 )
 from culebra.trainer import (
     DEFAULT_REPRESENTATION_SIZE,
@@ -115,10 +116,10 @@ class TrainerTester(unittest.TestCase):
         representation_topology_func_params = {"parameter2": 45}
         representation_selection_func = min
         representation_selection_func_params = {"parameter3": 15}
-        checkpoint_enable = False
+        checkpoint_activation = False
         checkpoint_freq = 17
         checkpoint_filename = "my_check_file" + SERIALIZED_FILE_EXTENSION
-        verbose = False
+        verbosity = False
         random_seed = 149
         nsga3_reference_points_p = 18
 
@@ -148,10 +149,10 @@ class TrainerTester(unittest.TestCase):
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             nsga3_reference_points_p=nsga3_reference_points_p
         )
@@ -179,10 +180,10 @@ class TrainerTester(unittest.TestCase):
             trainer.representation_selection_func_params,
             representation_selection_func_params
         )
-        self.assertEqual(trainer.checkpoint_enable, checkpoint_enable)
+        self.assertEqual(trainer.checkpoint_activation, checkpoint_activation)
         self.assertEqual(trainer.checkpoint_freq, checkpoint_freq)
         self.assertEqual(trainer.checkpoint_filename, checkpoint_filename)
-        self.assertEqual(trainer.verbose, verbose)
+        self.assertEqual(trainer.verbosity, verbosity)
         self.assertEqual(trainer.random_seed, random_seed)
         self.assertEqual(
             trainer.subtrainer_params["nsga3_reference_points_p"],
@@ -253,14 +254,12 @@ class TrainerTester(unittest.TestCase):
             trainer.representation_selection_func_params,
             DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
         )
-        self.assertEqual(trainer.checkpoint_enable, True)
-        self.assertEqual(
-            trainer.checkpoint_freq, DEFAULT_CHECKPOINT_FREQ
-        )
+        self.assertEqual(trainer.checkpoint_activation, True)
+        self.assertEqual(trainer.checkpoint_freq, DEFAULT_CHECKPOINT_FREQ)
         self.assertEqual(
             trainer.checkpoint_filename, DEFAULT_CHECKPOINT_FILENAME
         )
-        self.assertEqual(trainer.verbose, __debug__)
+        self.assertEqual(trainer.verbosity, DEFAULT_VERBOSITY)
         self.assertEqual(trainer.random_seed, None)
         self.assertEqual(trainer.subtrainer_params, {})
 
@@ -323,10 +322,10 @@ class TrainerTester(unittest.TestCase):
         representation_topology_func_params = {"parameter2": 45}
         representation_selection_func = min
         representation_selection_func_params = {"parameter3": 15}
-        checkpoint_enable = False
+        checkpoint_activation = False
         checkpoint_freq = 17
         checkpoint_filename = "my_check_file" + SERIALIZED_FILE_EXTENSION
-        verbose = False
+        verbosity = False
         random_seed = 149
         nsga3_reference_points_p = 18
 
@@ -356,10 +355,10 @@ class TrainerTester(unittest.TestCase):
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             nsga3_reference_points_p=nsga3_reference_points_p
         )

@@ -72,7 +72,7 @@ Attributes
 
     Default method for adjusting the p-values with the Dunn's test.
 
-.. attribute:: DEFAULT_RESULTS_BASENAME
+.. attribute:: DEFAULT_RESULTS_BASE_FILENAME
     :annotation: = 'results'
 
     Default base name for results files.

@@ -21,15 +21,8 @@
 
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Type,
-    Tuple,
-    Dict,
-    Callable,
-    Optional
-)
-from collections.abc import Sequence
+from typing import Any
+from collections.abc import Sequence, Callable
 from random import randrange
 from copy import copy
 
@@ -42,9 +35,6 @@ from culebra.solution.abc import Ant
 
 from culebra.trainer.aco.abc import (
     SingleColACO,
-    SinglePheromoneMatrixACO,
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
     ElitistACO,
     PACO,
     MaxPheromonePACO
@@ -60,42 +50,31 @@ __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
 
 
-class PACOMO(
-    MaxPheromonePACO,
-    ElitistACO,
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO
-):
+class PACOMO(MaxPheromonePACO, ElitistACO):
     """Implement the PACO-MO algorithm."""
 
     def __init__(
         self,
-        solution_cls: Type[Ant],
+        solution_cls: type[Ant],
         species: Species,
         fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
         max_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        exploitation_prob: Optional[float] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [PACOMO],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        pop_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        heuristic:
+            np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
+        pheromone_influence: float | Sequence[float, ...] | None = None,
+        heuristic_influence: float | Sequence[float, ...] | None = None,
+        exploitation_prob: float | None = None,
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[PACOMO], bool] | None = None,
+        col_size: int | None = None,
+        pop_size: int | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         r"""Create a new elitist single-colony ACO trainer.
 
@@ -123,20 +102,20 @@ class PACOMO(
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
             :attr:`~culebra.trainer.aco.PACOMO.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices,
-            according to the kind of problem being solved, are assumed.
-            Defaults to :data:`None`
+            heuristic matrices. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_heuristic`
+            will be used. Defaults to :data:`None`
         :type heuristic:
-            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
-            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
+            ~numpy.ndarray[float] |
+            ~collections.abc.Sequence[~numpy.ndarray[float], ...]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
             :attr:`~culebra.trainer.aco.PACOMO.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.PACOMO._default_pheromone_influence`
+            will be used. Defaults to :data:`None`
         :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
@@ -144,66 +123,53 @@ class PACOMO(
             for all the
             :attr:`~culebra.trainer.aco.PACOMO.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :data:`None`
+            :attr:`~culebra.trainer.aco.PACOMO._default_heuristic_influence`
+            will be used. Defaults to :data:`None`
         :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB` will
-            be used. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.PACOMO._default_exploitation_prob`
+            will be used. Defaults to :data:`None`
         :type exploitation_prob: float
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.PACOMO._default_termination_func` is
+            used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted, the default size,
-            according to the kind of problem being solved, is assumed. Defaults
-            to :data:`None`
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_col_size` will be
+            used. Defaults to :data:`None`
         :type col_size: int
-        :param pop_size: The population size. If set to :data:`None`,
-            *col_size* will be used. Defaults to :data:`None`
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_pop_size` will be
+            used. Defaults to :data:`None`
         :type pop_size: int
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.aco.PACOMO._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclasses
-        MultiplePheromoneMatricesACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone
-        )
-        MultipleHeuristicMatricesACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone
-        )
         ElitistACO.__init__(
             self,
             solution_cls=solution_cls,
@@ -226,10 +192,10 @@ class PACOMO(
             custom_termination_func=custom_termination_func,
             col_size=col_size,
             pop_size=pop_size,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
         # Check the pheromone and heuristic matrices shapes
@@ -249,7 +215,23 @@ class PACOMO(
                     "same shape"
                 )
 
-    def _get_state(self) -> Dict[str, Any]:
+    @property
+    def num_pheromone_matrices(self) -> int:
+        """Number of pheromone matrices used by this trainer.
+
+        :rtype: int
+        """
+        return self.fitness_function.num_obj
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        """Number of heuristic matrices used by this trainer.
+
+        :rtype: int
+        """
+        return self.fitness_function.num_obj
+
+    def _get_state(self) -> dict[str, Any]:
         """Return the state of this trainer.
 
         Overridden to ignore the population, which is now an internal
@@ -259,7 +241,7 @@ class PACOMO(
         """
         return super(PACO, self)._get_state()
 
-    def _set_state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to ignore the population, which is now an internal
@@ -286,11 +268,11 @@ class PACOMO(
         """
         super(PACO, self)._reset_state()
 
-    def best_solutions(self) -> Sequence[HallOfFame]:
+    def best_solutions(self) -> tuple[HallOfFame]:
         """Get the best solutions found for each species.
 
         :return: One Hall of Fame for each species
-        :rtype: list[~deap.tools.HallOfFame]
+        :rtype: tuple[~deap.tools.HallOfFame]
         """
         return super(PACO, self).best_solutions()
 
@@ -468,6 +450,18 @@ class PACOMO(
                 del candidate_ants[nearest_ant_index]
                 remaining_room_in_pop -= 1
 
+    def _update_pheromone(self) -> None:
+        """Update the pheromone trails.
+
+        Pheromone trails are reinitialized and updated according to the
+        current population.
+        """
+        # Reinitialize the pheromone trails
+        self._init_pheromone()
+
+        # Update the pheromone trails
+        self._deposit_pheromone(self.pop)
+
     def _do_iteration(self) -> None:
         """Implement an iteration of the search process."""
         # Create the ant colony and the ants' paths from the current
@@ -485,40 +479,29 @@ class PACOMO(
         self._update_pheromone()
 
 
-class CPACO(
-    PACO,
-    SinglePheromoneMatrixACO,
-    MultipleHeuristicMatricesACO
-):
+class CPACO(PACO):
     """Implement the Crowding PACO algorithm."""
 
     def __init__(
         self,
-        solution_cls: Type[Ant],
+        solution_cls: type[Ant],
         species: Species,
         fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
-        heuristic: Optional[
-            Sequence[Sequence[float], ...] |
-            Sequence[Sequence[Sequence[float], ...], ...]
-        ] = None,
-        pheromone_influence: Optional[float | Sequence[float, ...]] = None,
-        heuristic_influence: Optional[float | Sequence[float, ...]] = None,
-        exploitation_prob: Optional[float] = None,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [CPACO],
-                bool
-            ]
-        ] = None,
-        col_size: Optional[int] = None,
-        pop_size: Optional[int] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        heuristic:
+            np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
+        pheromone_influence: float | Sequence[float, ...] | None = None,
+        heuristic_influence: float | Sequence[float, ...] | None = None,
+        exploitation_prob: float | None = None,
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[CPACO], bool] | None = None,
+        col_size: int | None = None,
+        pop_size: int | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         r"""Create a new Crowding PACO trainer.
 
@@ -539,20 +522,20 @@ class CPACO(
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
             :attr:`~culebra.trainer.aco.CPACO.num_heuristic_matrices`
-            heuristic matrices. If omitted, the default heuristic matrices,
-            according to the kind of problem being solved, are assumed.
-            Defaults to :data:`None`
+            heuristic matrices. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_heuristic`
+            will be used. Defaults to :data:`None`
         :type heuristic:
-            ~collections.abc.Sequence[~collections.abc.Sequence[float]] |
-            ~collections.abc.Sequence[~collections.abc.Sequence[~collections.abc.Sequence[float]]]
+            ~numpy.ndarray[float] |
+            ~collections.abc.Sequence[~numpy.ndarray[float], ...]
         :param pheromone_influence: Relative influence of each pheromone
             matrix (:math:`{\alpha}`). Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
             for all the
             :attr:`~culebra.trainer.aco.CPACO.num_pheromone_matrices`
             pheromone matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_INFLUENCE` will
-            be used for all the pheromone matrices. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.CPACO._default_pheromone_influence`
+            will be used. Defaults to :data:`None`
         :type pheromone_influence: float | ~collections.abc.Sequence[float]
         :param heuristic_influence: Relative influence of each heuristic
             (:math:`{\beta}`). Both a scalar value or a sequence of
@@ -560,66 +543,53 @@ class CPACO(
             for all the
             :attr:`~culebra.trainer.aco.CPACO.num_heuristic_matrices`
             heuristic matrices. If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_HEURISTIC_INFLUENCE` will
-            be used for all the heuristic matrices. Defaults to
-            :data:`None`
+            :attr:`~culebra.trainer.aco.CPACO._default_heuristic_influence`
+            will be used. Defaults to :data:`None`
         :type heuristic_influence: float | ~collections.abc.Sequence[float]
         :param exploitation_prob: Probability to make the best possible move
             (:math:`{q_0}`). If omitted,
-            :attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB` will
-            be used. Defaults to :data:`None`
+            :attr:`~culebra.trainer.aco.CPACO._default_exploitation_prob`
+            will be used. Defaults to :data:`None`
         :type exploitation_prob: float
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.CPACO._default_termination_func` is
+            used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted, the default size,
-            according to the kind of problem being solved, is assumed. Defaults
-            to :data:`None`
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_col_size` will be
+            used. Defaults to :data:`None`
         :type col_size: int
-        :param pop_size: The population size. If set to :data:`None`,
-            *col_size* will be used. Defaults to :data:`None`
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_pop_size` will be
+            used. Defaults to :data:`None`
         :type pop_size: int
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.aco.CPACO._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
-        # Init the superclasses
-        SinglePheromoneMatrixACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone
-        )
-        MultipleHeuristicMatricesACO.__init__(
-            self,
-            solution_cls=solution_cls,
-            species=species,
-            fitness_function=fitness_function,
-            initial_pheromone=initial_pheromone
-        )
+        # Init the superclass
         PACO.__init__(
             self,
             solution_cls=solution_cls,
@@ -634,10 +604,10 @@ class CPACO(
             custom_termination_func=custom_termination_func,
             col_size=col_size,
             pop_size=pop_size,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
         # Check the pheromone and heuristic matrices shapes
@@ -648,6 +618,23 @@ class CPACO(
                     "All the heuristic matrices shapes must match the "
                     "pheromone matrix shape"
                 )
+        self._pareto_fronts = None
+
+    @property
+    def num_pheromone_matrices(self) -> int:
+        """Number of pheromone matrices used by this trainer.
+
+        :rtype: int
+        """
+        return 1
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        """Number of heuristic matrices used by this trainer.
+
+        :rtype: int
+        """
+        return self.fitness_function.num_obj
 
     def _new_state(self) -> None:
         """Generate a new trainer state.
@@ -667,7 +654,7 @@ class CPACO(
         # Since the evaluation of the initial population is performed
         # before the first iteration, fix self.current_iter = -1
         # The poppulation is filled through an initial colony sized to pop_size
-        # to enable the iterations stats
+        # to activate the iterations stats
         self._current_iter = -1
         while len(self.col) < self.pop_size:
             self.col.append(self._generate_ant())
@@ -810,10 +797,7 @@ class CPACO(
                         # ant2's previous node
                         ant2_prev_node = ant2.path[node2_index - 1]
                         # If there is an arc match
-                        if (
-                            ant1_next_node == ant2_next_node or
-                            ant1_next_node == ant2_prev_node
-                        ):
+                        if ant1_next_node in (ant2_next_node, ant2_prev_node):
                             # Increment the number of detected common arcs
                             detected_common_arcs += 1
 
@@ -844,7 +828,7 @@ class CPACO(
                     )
 
                     # If pop_ant is closer than closest_ant
-                    if (pop_ant_num_common_arcs > closest_ant_num_common_arcs):
+                    if pop_ant_num_common_arcs > closest_ant_num_common_arcs:
                         # Select pop_ant as the closest ant in the population
                         closest_ant_index = pop_ant_index
                         closest_ant = pop_ant
@@ -854,7 +838,7 @@ class CPACO(
             if col_ant > closest_ant:
                 self.pop[closest_ant_index] = col_ant
 
-    def _pheromone_amount (self, ant: Ant) -> Tuple[float, ...]:
+    def _pheromone_amount (self, ant: Ant) -> tuple[float, ...]:
         """Return the amount of pheromone to be deposited by an ant.
 
         Each ant deposit an amount of pheromone according to its rank + 1.
@@ -864,16 +848,21 @@ class CPACO(
         :return: The amount of pheromone to be deposited for each objective
         :rtype: tuple[float]
         """
+        pher_amount = None
         for rank, front in enumerate(self._pareto_fronts):
             if ant in front:
-                return (rank + 1,)
+                pher_amount = rank + 1
+                break
+
+        return (pher_amount,)
 
     def _update_pheromone(self) -> None:
         """Update the pheromone trails.
 
-        The pheromone trails are updated according to the current population.
+        Pheromone trails are reinitialized and updated according to the
+        current population.
         """
-        # Init the pheromone matrix
+        # Reinitialize the pheromone trails
         self._init_pheromone()
 
         # Sort the population into nondomination levels

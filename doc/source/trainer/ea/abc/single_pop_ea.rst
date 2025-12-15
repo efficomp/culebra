@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.container
@@ -60,7 +60,24 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.selection_func_params
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.solution_cls
 .. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.species
-.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.verbose
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_index
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.abc.SinglePopEA._default_verbosity
 
 Methods
 -------

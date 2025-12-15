@@ -38,8 +38,8 @@ DEFAULT_MAX_NUM_ITERS = 100
 SERIALIZED_FILE_EXTENSION = ".dill.gz"
 """Extension for files containing serialized objects."""
 
-DEFAULT_CHECKPOINT_ENABLE = True
-"""Default checkpointing enablement for a :class:`~culebra.abc.Trainer`."""
+DEFAULT_CHECKPOINT_ACTIVATION = True
+"""Default checkpointing activation for a :class:`~culebra.abc.Trainer`."""
 
 DEFAULT_CHECKPOINT_FREQ = 10
 """Default checkpointing frequency for a :class:`~culebra.abc.Trainer`."""
@@ -56,16 +56,14 @@ DEFAULT_VERBOSITY = __debug__
 """Default verbosity for a :class:`~culebra.abc.Trainer`."""
 
 DEFAULT_INDEX = 0
-"""Default :class:`~culebra.abc.Trainer` index. Only used within a
-distributed approaches.
-"""
+"""Default index."""
 
 
 __all__ = [
     'DEFAULT_SIMILARITY_THRESHOLD',
     'DEFAULT_MAX_NUM_ITERS',
     'SERIALIZED_FILE_EXTENSION',
-    'DEFAULT_CHECKPOINT_ENABLE',
+    'DEFAULT_CHECKPOINT_ACTIVATION',
     'DEFAULT_CHECKPOINT_FREQ',
     'DEFAULT_CHECKPOINT_BASENAME',
     'DEFAULT_CHECKPOINT_FILENAME',

@@ -38,6 +38,10 @@ Properties
 .. autoproperty:: culebra.fitness_function.tsp.abc.TSPFitnessFunction.obj_thresholds
 .. autoproperty:: culebra.fitness_function.tsp.abc.TSPFitnessFunction.obj_weights
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.tsp.abc.TSPFitnessFunction._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.tsp.abc.TSPFitnessFunction.dump

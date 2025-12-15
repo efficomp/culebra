@@ -93,10 +93,10 @@ class MyDistributedTrainer(ParallelDistributedTrainer):
             "species": species,
             "fitness_function": self.fitness_function,
             "max_num_iters": self.max_num_iters,
-            "checkpoint_enable": self.checkpoint_enable,
+            "checkpoint_activation": self.checkpoint_activation,
             "checkpoint_freq": self.checkpoint_freq,
             "checkpoint_filename": self.checkpoint_filename,
-            "verbose": self.verbose,
+            "verbosity": self.verbosity,
             "random_seed": self.random_seed
         }
 
@@ -112,13 +112,13 @@ class MyDistributedTrainer(ParallelDistributedTrainer):
             self._subtrainers.append(subtrainer)
 
     @property
-    def representation_topology_func(self):
-        """Get and set the representation topology function."""
+    def _default_representation_topology_func(self):
+        """Default topology function."""
         return ring_destinations
 
     @property
-    def representation_topology_func_params(self):
-        """Get and set the representation topology function parameters."""
+    def _default_representation_topology_func_params(self):
+        """Default parameters for the default topology function."""
         return {"offset": 3}
 
 
@@ -178,8 +178,8 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -207,8 +207,8 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
-            "verbose": False,
-            "checkpoint_enable": False
+            "verbosity": False,
+            "checkpoint_activation": False
         }
 
         # Create the trainer
@@ -221,8 +221,7 @@ class TrainerTester(unittest.TestCase):
         # Test the runtime
         global_runtime = 0
         for subtrainer in trainer.subtrainers:
-            if subtrainer.runtime > global_runtime:
-                global_runtime = subtrainer.runtime
+            global_runtime = max(subtrainer.runtime, global_runtime)
 
         self.assertEqual(global_runtime, trainer.runtime)
 
@@ -236,7 +235,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False
+            "verbosity": False
         }
 
         # Test default params
@@ -257,7 +256,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False
+            "verbosity": False
         }
 
         # Test default params
@@ -302,7 +301,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
-            "verbose": False
+            "verbosity": False
         }
 
         # Test default params
@@ -327,8 +326,8 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Test the search method
@@ -355,8 +354,8 @@ class TrainerTester(unittest.TestCase):
             "subtrainer_cls": subtrainer_cls,
             "num_subtrainers": num_subtrainers,
             "max_num_iters": max_num_iters,
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         trainer = MyDistributedTrainer(**params)

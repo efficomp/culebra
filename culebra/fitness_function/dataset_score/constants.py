@@ -19,9 +19,6 @@
 """Constants of the module."""
 
 
-from sklearn.naive_bayes import GaussianNB
-
-
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2025, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
@@ -31,15 +28,11 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-DEFAULT_CLASSIFIER = GaussianNB
-"""Default classifier for fitness functions."""
-
 DEFAULT_CV_FOLDS = 5
 """Default number of folds for cross-validation."""
 
 
 # Exported symbols for this module
 __all__ = [
-    'DEFAULT_CLASSIFIER',
     'DEFAULT_CV_FOLDS'
 ]

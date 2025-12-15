@@ -31,7 +31,7 @@ import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import ACOTSP
-from culebra.trainer.aco import CPACO
+from culebra.trainer.aco import CPACO, DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
@@ -40,8 +40,8 @@ from culebra.fitness_function.tsp import (
 
 num_nodes = 25
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(np.random.permutation(num_nodes)),
-    PathLength.fromPath(np.random.permutation(num_nodes))
+    PathLength.from_path(np.random.permutation(num_nodes)),
+    PathLength.from_path(np.random.permutation(num_nodes))
 )
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
@@ -52,16 +52,38 @@ class CPACOTSP(CPACO, ACOTSP):
 
 class InvalidCPACO(CPACO):
     """Invalid CPACO subclass."""
-
     @property
     def pheromone_shapes(self):
-        """Return the shape of the pheromone matrices."""
-        return [(3, ) * 2] * self.num_pheromone_matrices
+        return ((3, ) * 2,) * self.num_pheromone_matrices
 
     @property
     def heuristic_shapes(self):
-        """Return the shape of the heuristic matrices."""
-        return [(2, ) * 2] * self.num_heuristic_matrices
+        return ((2, ) * 2,) * self.num_heuristic_matrices
+
+    @property
+    def _default_col_size(self):
+        return 10
+
+    @property
+    def _default_heuristic(self):
+        return tuple(
+            np.ones(shape) for shape in self.heuristic_shapes
+        )
+
+    def _deposit_pheromone(
+            self, ants, weight = DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
+    ):
+        for ant in ants:
+            for pher, pher_amount in zip(
+                self.pheromone, self._pheromone_amount(ant)
+            ):
+
+                weighted_pher_amount = pher_amount * weight
+                org = ant.path[-1]
+                for dest in ant.path:
+                    pher[org][dest] += weighted_pher_amount
+                    pher[dest][org] += weighted_pher_amount
+                    org = dest
 
 
 class TrainerTester(unittest.TestCase):
@@ -81,15 +103,15 @@ class TrainerTester(unittest.TestCase):
             "custom_termination_func": max,
             "col_size": 6,
             "pop_size": 5,
-            "checkpoint_enable": False,
+            "checkpoint_activation": False,
             "checkpoint_freq": 13,
             "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
-            "verbose": False,
+            "verbosity": False,
             "random_seed": 15
         }
 
         # Try an invalid subclass. Should fail...
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValueError):
             InvalidCPACO(**params)
 
         # Create the trainer
@@ -124,8 +146,8 @@ class TrainerTester(unittest.TestCase):
             self.assertTrue(
                 np.all(trainer.heuristic[heur_idx] == params["heuristic"])
             )
-            
-            
+
+
         self.assertEqual(
             len(trainer.heuristic_influence), trainer.num_heuristic_matrices
         )
@@ -134,7 +156,7 @@ class TrainerTester(unittest.TestCase):
                 trainer.heuristic_influence[heur_idx],
                 params["heuristic_influence"]
         )
-        
+
         self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(
             trainer.custom_termination_func, params["custom_termination_func"]
@@ -142,13 +164,13 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(trainer.col_size, params["col_size"])
         self.assertEqual(trainer.pop_size, params["pop_size"])
         self.assertEqual(
-            trainer.checkpoint_enable, params["checkpoint_enable"]
+            trainer.checkpoint_activation, params["checkpoint_activation"]
         )
         self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
         self.assertEqual(
             trainer.checkpoint_filename, params["checkpoint_filename"]
         )
-        self.assertEqual(trainer.verbose, params["verbose"])
+        self.assertEqual(trainer.verbosity, params["verbosity"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
 
     def test_num_pheromone_matrices(self):
@@ -158,7 +180,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -173,7 +195,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -190,7 +212,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -231,7 +253,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -258,7 +280,7 @@ class TrainerTester(unittest.TestCase):
             "species": Species(num_nodes, banned_nodes),
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -289,7 +311,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 4,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -315,7 +337,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 4,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -357,7 +379,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -401,7 +423,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": initial_pher,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -419,7 +441,7 @@ class TrainerTester(unittest.TestCase):
 
         ant = trainer.pop[0]
         org = ant.path[-1]
-        for dest in ant.path:            
+        for dest in ant.path:
             self.assertEqual(
                 trainer.pheromone[0][org][dest],
                 initial_pher + trainer._pheromone_amount(ant)[0]
@@ -438,7 +460,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -474,7 +496,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -504,7 +526,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -523,7 +545,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer
@@ -548,7 +570,7 @@ class TrainerTester(unittest.TestCase):
             "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "pop_size": 5,
-            "verbose": False
+            "verbosity": False
         }
 
         # Create the trainer

@@ -134,7 +134,7 @@ params = {
     ),
     "max_num_iters": 500,
     "pop_sizes": dataset.num_feats,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

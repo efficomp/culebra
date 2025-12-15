@@ -24,8 +24,6 @@
 
 import unittest
 
-import numpy as np
-
 from sklearn.metrics import cohen_kappa_score
 
 from culebra.fitness_function.feature_selection.abc import FSDatasetScorer

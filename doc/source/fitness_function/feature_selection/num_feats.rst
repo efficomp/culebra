@@ -37,6 +37,11 @@ Properties
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_thresholds
 .. autoproperty:: culebra.fitness_function.feature_selection.NumFeats.obj_weights
 
+Private properties
+------------------
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats._default_index
+.. autoproperty:: culebra.fitness_function.feature_selection.NumFeats._default_similarity_threshold
+
 Methods
 -------
 .. automethod:: culebra.fitness_function.feature_selection.NumFeats.dump

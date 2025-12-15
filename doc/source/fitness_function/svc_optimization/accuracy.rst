@@ -24,6 +24,7 @@
 
 .. autoclass:: culebra.fitness_function.svc_optimization.Accuracy
 
+
 Class methods
 -------------
 .. automethod:: culebra.fitness_function.svc_optimization.Accuracy.load
@@ -31,6 +32,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.cv_folds
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.index
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy.num_obj
@@ -42,6 +44,10 @@ Properties
 
 Private properties
 ------------------
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy._default_classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy._default_cv_folds
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy._default_index
+.. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy._default_similarity_threshold
 .. autoproperty:: culebra.fitness_function.svc_optimization.Accuracy._worst_score
 
 Methods

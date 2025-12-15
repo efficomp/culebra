@@ -42,6 +42,9 @@ Properties
 
 Private properties
 ------------------
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.DatasetScorer._default_cv_folds
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.DatasetScorer._default_index
+.. autoproperty:: culebra.fitness_function.dataset_score.abc.DatasetScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_function.dataset_score.abc.DatasetScorer._worst_score
 
 Methods

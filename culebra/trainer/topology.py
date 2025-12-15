@@ -21,8 +21,6 @@
 
 from __future__ import annotations
 
-from typing import List
-
 
 __author__ = 'Jesús González'
 __copyright__ = 'Copyright 2023, EFFICOMP'
@@ -41,7 +39,7 @@ def ring_destinations(
     origin: int,
     num_subtrainers: int,
     offset: int = DEFAULT_RING_OFFSET
-) -> List[int]:
+) -> list[int]:
     """Return the destinations reachable from *origin*.
 
     :param origin: The index of the origin subpopulation trainer
@@ -60,7 +58,7 @@ def ring_destinations(
 def full_connected_destinations(
     origin: int,
     num_subtrainers: int
-) -> List[int]:
+) -> list[int]:
     """Return the destinations reachable from *origin*.
 
     :param origin: The index of the origin subpopulation trainer

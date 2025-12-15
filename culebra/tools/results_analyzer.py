@@ -21,7 +21,7 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple, Dict, List
+from typing import NamedTuple
 from collections import UserDict, namedtuple
 from collections.abc import Sequence, Callable
 from functools import partial
@@ -462,10 +462,10 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Apply the test to all the distributions
         pvalues = []
-        for batch_key in data:
+        for batch_val in data.values():
             with catch_warnings():
                 simplefilter("ignore")
-                results = test(data[batch_key])
+                results = test(batch_val)
             pvalues += (results.pvalue,)
 
         # Return the results
@@ -1061,7 +1061,7 @@ class ResultsAnalyzer(UserDict, Base):
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with such dataframe key and column label
         """
-        def average_ranks(first: int, last: int) -> List[float]:
+        def average_ranks(first: int, last: int) -> list[float]:
             """Return a list of averaged ranks.
 
             :param first: The first considered rank
@@ -1271,7 +1271,7 @@ class ResultsAnalyzer(UserDict, Base):
         self,
         dataframe_key: str,
         column: str,
-    ) -> Dict['str', Series | None]:
+    ) -> dict[str, Series | None]:
         """Gather data from the results in the analyzer.
 
         :param dataframe_key: Key to select a dataframe from the results

@@ -133,13 +133,13 @@ class MyTrainer(MultiPopEA):
             self._subtrainers.append(subtrainer)
 
     @property
-    def representation_topology_func(self):
-        """Get and set the representation topology function."""
+    def _default_representation_topology_func(self):
+        """Default representation topology function."""
         return ring_destinations
 
     @property
-    def representation_topology_func_params(self):
-        """Get and set the representation topology function parameters."""
+    def _default_representation_topology_func_params(self):
+        """Default representation topology function parameters."""
         return {}
 
 

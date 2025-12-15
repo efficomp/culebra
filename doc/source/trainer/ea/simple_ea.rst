@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.SimpleEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.SimpleEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.SimpleEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.SimpleEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.SimpleEA.container
@@ -60,7 +60,24 @@ Properties
 .. autoproperty:: culebra.trainer.ea.SimpleEA.selection_func_params
 .. autoproperty:: culebra.trainer.ea.SimpleEA.solution_cls
 .. autoproperty:: culebra.trainer.ea.SimpleEA.species
-.. autoproperty:: culebra.trainer.ea.SimpleEA.verbose
+.. autoproperty:: culebra.trainer.ea.SimpleEA.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_index
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.SimpleEA._default_verbosity
 
 Methods
 -------

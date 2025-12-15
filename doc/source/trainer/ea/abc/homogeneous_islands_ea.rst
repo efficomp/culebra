@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.checkpoint_enable
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.checkpoint_activation
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.checkpoint_filename
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.checkpoint_freq
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.container
@@ -70,10 +70,31 @@ Properties
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_cls
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainer_params
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.subtrainers
-.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.verbose
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA.verbosity
 
 Private properties
 ------------------
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_crossover_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_crossover_prob
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_gene_ind_mutation_prob
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_index
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_max_num_iters
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_mutation_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_mutation_prob
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_num_subtrainers
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_pop_size
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_freq
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_selection_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_selection_func_params
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_size
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_topology_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_topology_func_params
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_selection_func
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_selection_func_params
+.. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._default_verbosity
 .. autoproperty:: culebra.trainer.ea.abc.HomogeneousIslandsEA._subtrainer_suffixes
 
 Static methods

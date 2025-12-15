@@ -39,7 +39,7 @@ class ElitistAntSystemTSP(ACOTSP, ElitistAntSystem):
 
 # Load the GR17 distances matrix from TSPLIB
 # The minimal tour has length 2085
-fitness_func = PathLength.fromTSPLib(
+fitness_func = PathLength.from_tsplib(
     "https://raw.githubusercontent.com/mastqe/tsplib/master/gr17.tsp"
 )
 
@@ -64,7 +64,7 @@ params = {
     "fitness_function": fitness_func,
     "initial_pheromone": initial_pheromone,
     "max_num_iters": 500,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

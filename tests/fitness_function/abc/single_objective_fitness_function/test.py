@@ -24,7 +24,7 @@
 
 import unittest
 
-from culebra import DEFAULT_SIMILARITY_THRESHOLD
+from culebra import DEFAULT_SIMILARITY_THRESHOLD, DEFAULT_INDEX
 from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
 
 
@@ -49,7 +49,7 @@ class SingleObjectiveFitnessFunctionTester(unittest.TestCase):
         """Test the constructor."""
         # Check default parameter values
         func = MySingleObjectiveFitnessFunction()
-        self.assertEqual(func.index, 0)
+        self.assertEqual(func.index, DEFAULT_INDEX)
 
         # Check a valid index
         valid_index = 3
@@ -81,7 +81,7 @@ class SingleObjectiveFitnessFunctionTester(unittest.TestCase):
         self.assertEqual(
             func.obj_thresholds,
             [DEFAULT_SIMILARITY_THRESHOLD] * func.num_obj
-            )
+        )
 
         invalid_threshold_types = (type, {}, len)
         invalid_threshold_value = -1

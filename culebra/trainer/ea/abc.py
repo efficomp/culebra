@@ -55,16 +55,8 @@ Finally, two types of islands-based models are also defined:
 
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Type,
-    Callable,
-    Tuple,
-    List,
-    Dict,
-    Optional,
-    Sequence
-)
+from typing import Any
+from collections.abc import Sequence, Callable
 from functools import partial, partialmethod
 from itertools import repeat
 
@@ -116,35 +108,29 @@ class HomogeneousEA(SingleSpeciesTrainer):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [HomogeneousEA],
-                bool
-            ]
-        ] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[HomogeneousEA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new homogeneous evolutionary trainer.
 
@@ -154,70 +140,66 @@ class HomogeneousEA(SingleSpeciesTrainer):
         :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.abc.HomogeneousEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param pop_size: The population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
-            Defaults to :data:`None`
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_pop_size`
+            is used. Defaults to :data:`None`
         :type pop_size: int
-        :param crossover_func: The crossover function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :data:`None`
+        :param crossover_func: The crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_crossover_func`
+            is used. Defaults to :data:`None`
         :type crossover_func: ~collections.abc.Callable
-        :param mutation_func: The mutation function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :data:`None`
+        :param mutation_func: The mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_mutation_func`
+            is used. Defaults to :data:`None`
         :type mutation_func: ~collections.abc.Callable
-        :param selection_func: The selection function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :data:`None`
+        :param selection_func: The selection function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_selection_func`
+            is used. Defaults to :data:`None`
         :type selection_func: ~collections.abc.Callable
-        :param crossover_prob: The crossover probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+        :param crossover_prob: The crossover probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_crossover_prob`
+            is used. Defaults to :data:`None`
         :type crossover_prob: float
-        :param mutation_prob: The mutation probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+        :param mutation_prob: The mutation probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_mutation_prob`
+            is used. Defaults to :data:`None`
         :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :data:`None`
+            probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_gene_ind_mutation_prob`
+            is used. Defaults to :data:`None`
         :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :data:`None`
+            function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_selection_func_params`
+            is used. Defaults to :data:`None`
         :type selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -229,10 +211,10 @@ class HomogeneousEA(SingleSpeciesTrainer):
             fitness_function=fitness_function,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
@@ -246,22 +228,9 @@ class HomogeneousEA(SingleSpeciesTrainer):
         self.gene_ind_mutation_prob = gene_ind_mutation_prob
         self.selection_func_params = selection_func_params
 
-    @property
-    def solution_cls(self) -> Type[Individual]:
-        """Solution class.
-
-        :rtype: type[~culebra.solution.abc.Individual]
-        :setter: Set a new individual class
-        :param cls: The new class
-        :type cls: type[~culebra.solution.abc.Individual]
-        :raises TypeError: If *cls* is not an
-            :class:`~culebra.solution.abc.Individual`
-        """
-        return self._solution_cls
-
-    @solution_cls.setter
-    def solution_cls(self, cls: Type[Individual]) -> None:
-        """Set a new individual class.
+    @SingleSpeciesTrainer.solution_cls.setter
+    def solution_cls(self, cls: type[Individual]) -> None:
+        """Set a new solution class.
 
         :param cls: The new class
         :type cls: type[~culebra.solution.abc.Individual]
@@ -269,12 +238,17 @@ class HomogeneousEA(SingleSpeciesTrainer):
             :class:`~culebra.solution.abc.Individual`
         """
         # Check cls
-        self._solution_cls = check_subclass(
-            cls, "solution class", Individual
-        )
+        check_subclass(cls, "solution class", Individual)
+        SingleSpeciesTrainer.solution_cls.fset(self, cls)
 
-        # Reset the algorithm
-        self.reset()
+    @property
+    def _default_pop_size(self) -> int:
+        """Default population size.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE`
+        :rtype: int
+        """
+        return DEFAULT_POP_SIZE
 
     @property
     def pop_size(self) -> int:
@@ -282,168 +256,205 @@ class HomogeneousEA(SingleSpeciesTrainer):
 
         :rtype: int
         :setter: Set a new population size
-        :param size: The new population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :param size: The new population size. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_pop_size`
+            is chosen
         :type size: int
         :raises TypeError: If *size* is not an :class:`int`
         :raises ValueError: If *size* is not greater than zero
         """
-        return DEFAULT_POP_SIZE if self._pop_size is None else self._pop_size
+        return self._pop_size
 
     @pop_size.setter
     def pop_size(self, size: int | None) -> None:
         """Set a new population size.
 
-        :param size: The new population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :param size: The new population size. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_pop_size`
+            is chosen
         :type size: int
         :raises TypeError: If *size* is not an :class:`int`
         :raises ValueError: If *size* is not greater than zero
         """
         # Check the value
         self._pop_size = (
-            None if size is None else check_int(size, "population size", gt=0)
+            self._default_pop_size
+            if size is None else check_int(size, "population size", gt=0)
         )
 
         # Reset the algorithm
         self.reset()
 
     @property
+    def _default_crossover_func(self) -> Callable[
+        [Individual, Individual],
+        tuple[Individual, Individual]
+    ]:
+        """Default crossover function.
+
+        :return: The :meth:`~culebra.solution.abc.Individual.crossover` method
+            of :attr:`~culebra.trainer.ea.abc.HomogeneousEA.solution_cls`
+        :rtype: ~collections.abc.Callable
+        """
+        return self.solution_cls.crossover
+
+    @property
     def crossover_func(self) -> Callable[
-            [Individual, Individual],
-            Tuple[Individual, Individual]
+        [Individual, Individual],
+        tuple[Individual, Individual]
     ]:
         """Crossover function.
 
         :rtype: ~collections.abc.Callable
         :setter: Set a new crossover function
-        :param func: The new crossover function. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.crossover` method
-            of the individual class evolved by the trainer is chosen
+        :param func: The new crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_crossover_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        return (
-            self.solution_cls.crossover
-            if self._crossover_func is None
-            else self._crossover_func
-        )
-
-        # Reset the algorithm
-        self.reset()
+        return self._crossover_func
 
     @crossover_func.setter
     def crossover_func(
         self,
         func: Callable[
             [Individual, Individual],
-            Tuple[Individual, Individual]
+            tuple[Individual, Individual]
         ] | None
     ) -> None:
         """Set a new crossover function.
 
-        :param func: The new crossover function. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.crossover` method
-            of the individual class evolved by the trainer is chosen
+        :param func: The new crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_crossover_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
         # Check func
         self._crossover_func = (
-            None if func is None else check_func(func, "crossover function")
+            self._default_crossover_func
+            if func is None else check_func(func, "crossover function")
         )
 
         # Reset the algorithm
         self.reset()
 
     @property
+    def _default_mutation_func(self) -> Callable[
+        [Individual, float],
+        tuple[Individual]
+    ]:
+        """Default mutation function.
+
+        :return: The :meth:`~culebra.solution.abc.Individual.mutate` method
+            of :attr:`~culebra.trainer.ea.abc.HomogeneousEA.solution_cls`
+        :rtype: ~collections.abc.Callable
+        """
+        return self.solution_cls.mutate
+
+    @property
     def mutation_func(self) -> Callable[
         [Individual, float],
-        Tuple[Individual]
+        tuple[Individual]
     ]:
         """Mutation function.
 
         :rtype: ~collections.abc.Callable
         :setter: Set a new mutation function
-        :param func: The new mutation function. If set to :data:`None`, the
-            :meth:`~culebra.solution.abc.Individual.mutate` method of the
-            individual class evolved by the trainer is chosen
+        :param func: The new mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_mutation_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        return (
-            self.solution_cls.mutate
-            if self._mutation_func is None
-            else self._mutation_func
-        )
+        return self._mutation_func
 
     @mutation_func.setter
     def mutation_func(
         self,
         func: Callable[
             [Individual, float],
-            Tuple[Individual]
+            tuple[Individual]
         ] | None
     ) -> None:
         """Set a new mutation function.
 
-        :param func: The new mutation function. If set to :data:`None`, the
-            :meth:`~culebra.solution.abc.Individual.mutate` method of the
-            individual class evolved by the trainer is chosen
+        :param func: The new mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_mutation_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
         # Check func
         self._mutation_func = (
-            None if func is None else check_func(func, "mutation function")
+            self._default_mutation_func
+            if func is None else check_func(func, "mutation function")
         )
 
         # Reset the algorithm
         self.reset()
 
     @property
+    def _default_selection_func(
+        self
+    ) -> Callable[[list[Individual], int, Any], list[Individual]]:
+        """Default selection function.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC`
+        :rtype: ~collections.abc.Callable
+        """
+        return DEFAULT_SELECTION_FUNC
+
+    @property
     def selection_func(
         self
-    ) -> Callable[[List[Individual], int, Any], List[Individual]]:
+    ) -> Callable[[list[Individual], int, Any], list[Individual]]:
         """Selection function.
 
         :rtype: ~collections.abc.Callable
         :setter: Set a new selection function
-        :param func: The new selection function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` is
-            chosen
+        :param func: The new selection function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_selection_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        return (
-            DEFAULT_SELECTION_FUNC
-            if self._selection_func is None
-            else self._selection_func
-        )
+        return self._selection_func
 
     @selection_func.setter
     def selection_func(
         self,
         func: Callable[
-            [List[Individual], int, Any],
-            List[Individual]
+            [list[Individual], int, Any],
+            list[Individual]
         ] | None
     ) -> None:
         """Set a new selection function.
 
-        :param func: The new selection function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` is
-            chosen
+        :param func: The new selection function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_selection_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
         # Check func
         self._selection_func = (
-            None if func is None else check_func(func, "selection function")
+            self._default_selection_func
+            if func is None else check_func(func, "selection function")
         )
 
         # Reset the algorithm
         self.reset()
+
+    @property
+    def _default_crossover_prob(self) -> float:
+        """Default crossover probability.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB`
+        :rtype: float
+        """
+        return DEFAULT_CROSSOVER_PROB
 
     @property
     def crossover_prob(self) -> float:
@@ -451,33 +462,29 @@ class HomogeneousEA(SingleSpeciesTrainer):
 
         :rtype: float
         :setter: Set a new crossover probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` is
-            chosen
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_crossover_prob`
+            is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
-        return (
-            DEFAULT_CROSSOVER_PROB
-            if self._crossover_prob is None
-            else self._crossover_prob
-        )
+        return self._crossover_prob
 
     @crossover_prob.setter
     def crossover_prob(self, prob: float | None) -> None:
         """Set a new crossover probability.
 
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` is
-            chosen
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_crossover_prob`
+            is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
         # Check prob
         self._crossover_prob = (
-            None if prob is None else check_float(
+            self._default_crossover_prob if prob is None else check_float(
                 prob, "crossover probability", gt=0, lt=1)
         )
 
@@ -485,36 +492,43 @@ class HomogeneousEA(SingleSpeciesTrainer):
         self.reset()
 
     @property
+    def _default_mutation_prob(self) -> float:
+        """Default mutation probability.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB`
+        :rtype: float
+        """
+        return DEFAULT_MUTATION_PROB
+
+    @property
     def mutation_prob(self) -> float:
         """Mutation probability.
 
         :rtype: float
         :setter: Set a new mutation probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` is chosen
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_mutation_prob`
+            is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
-        return (
-            DEFAULT_MUTATION_PROB
-            if self._mutation_prob is None
-            else self._mutation_prob
-        )
+        return self._mutation_prob
 
     @mutation_prob.setter
     def mutation_prob(self, prob: float | None) -> None:
         """Set a new mutation probability.
 
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` is chosen
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_mutation_prob`
+            is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
         # Check prob
         self._mutation_prob = (
-            None if prob is None else check_float(
+            self._default_mutation_prob if prob is None else check_float(
                 prob, "mutation probability", gt=0, lt=1
             )
         )
@@ -523,29 +537,35 @@ class HomogeneousEA(SingleSpeciesTrainer):
         self.reset()
 
     @property
+    def _default_gene_ind_mutation_prob(self) -> float:
+        """Default gene independent mutation probability.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+        :rtype: float
+        """
+        return DEFAULT_GENE_IND_MUTATION_PROB
+
+    @property
     def gene_ind_mutation_prob(self) -> float:
         """Gene independent mutation probability.
 
         :rtype: float
         :setter: Set a new gene independent mutation probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_gene_ind_mutation_prob`
             is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
-        return (
-            DEFAULT_GENE_IND_MUTATION_PROB
-            if self._gene_ind_mutation_prob is None
-            else self._gene_ind_mutation_prob)
+        return self._gene_ind_mutation_prob
 
     @gene_ind_mutation_prob.setter
     def gene_ind_mutation_prob(self, prob: float | None) -> None:
         """Set a new gene independent mutation probability.
 
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_gene_ind_mutation_prob`
             is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
@@ -553,7 +573,8 @@ class HomogeneousEA(SingleSpeciesTrainer):
         """
         # Check prob
         self._gene_ind_mutation_prob = (
-            None if prob is None else check_float(
+            self._default_gene_ind_mutation_prob
+            if prob is None else check_float(
                 prob, "gene independent mutation probability", gt=0, lt=1
             )
         )
@@ -562,35 +583,42 @@ class HomogeneousEA(SingleSpeciesTrainer):
         self.reset()
 
     @property
-    def selection_func_params(self) -> Dict[str, Any]:
+    def _default_selection_func_params(self) -> dict[str, Any]:
+        """Parameters of the default selection function.
+
+        :return: :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+        :rtype: float
+        """
+        return DEFAULT_SELECTION_FUNC_PARAMS
+
+    @property
+    def selection_func_params(self) -> dict[str, Any]:
         """Parameters of the selection function.
 
         :rtype: dict
         :setter: Set new parameters for the selection function
-        :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+        :param params: The new parameters. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_selection_func_params`
             is chosen
         :type params: dict
         :raises TypeError: If *params* is not a :class:`dict`
         """
-        return (
-            DEFAULT_SELECTION_FUNC_PARAMS
-            if self._selection_func_params is None
-            else self._selection_func_params)
+        return self._selection_func_params
 
     @selection_func_params.setter
-    def selection_func_params(self, params: Dict[str, Any] | None) -> None:
+    def selection_func_params(self, params: dict[str, Any] | None) -> None:
         """Set new parameters for the selection function.
 
-        :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+        :param params: The new parameters. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousEA._default_selection_func_params`
             is chosen
         :type params: dict
         :raises TypeError: If *params* is not a :class:`dict`
         """
         # Check params
         self._selection_func_params = (
-            None if params is None else check_func_params(
+            self._default_selection_func_params
+            if params is None else check_func_params(
                 params, "selection function parameters"
             )
         )
@@ -604,35 +632,29 @@ class SinglePopEA(HomogeneousEA):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [SinglePopEA],
-                bool
-            ]
-        ] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[SinglePopEA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new single-population evolutionary trainer.
 
@@ -642,70 +664,66 @@ class SinglePopEA(HomogeneousEA):
         :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
-        :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
-        :type custom_termination_func: ~collections.abc.Callable
-        :param pop_size: The population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_max_num_iters`
             will be used. Defaults to :data:`None`
+        :type max_num_iters: int
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.abc.SinglePopEA._default_termination_func`
+            is used. Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_pop_size`
+            is used. Defaults to :data:`None`
         :type pop_size: int
-        :param crossover_func: The crossover function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :data:`None`
+        :param crossover_func: The crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_crossover_func`
+            is used. Defaults to :data:`None`
         :type crossover_func: ~collections.abc.Callable
-        :param mutation_func: The mutation function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :data:`None`
+        :param mutation_func: The mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_mutation_func`
+            is used. Defaults to :data:`None`
         :type mutation_func: ~collections.abc.Callable
-        :param selection_func: The selection function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :data:`None`
+        :param selection_func: The selection function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_selection_func`
+            is used. Defaults to :data:`None`
         :type selection_func: ~collections.abc.Callable
-        :param crossover_prob: The crossover probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+        :param crossover_prob: The crossover probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_crossover_prob`
+            is used. Defaults to :data:`None`
         :type crossover_prob: float
-        :param mutation_prob: The mutation probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+        :param mutation_prob: The mutation probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_mutation_prob`
+            is used. Defaults to :data:`None`
         :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :data:`None`
+            probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_gene_ind_mutation_prob`
+            is used. Defaults to :data:`None`
         :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :data:`None`
+            function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_selection_func_params`
+            is used. Defaults to :data:`None`
         :type selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.SinglePopEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -724,22 +742,22 @@ class SinglePopEA(HomogeneousEA):
             mutation_prob=mutation_prob,
             gene_ind_mutation_prob=gene_ind_mutation_prob,
             selection_func_params=selection_func_params,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
     @property
-    def pop(self) -> List[Individual] | None:
+    def pop(self) -> list[Individual] | None:
         """Population.
 
         :rtype: list[~culebra.solution.abc.Individual]
         """
         return self._pop
 
-    def _evaluate_pop(self, pop: List[Individual]) -> None:
+    def _evaluate_pop(self, pop: list[Individual]) -> None:
         """Evaluate the individuals of *pop* that have an invalid fitness.
 
         :param pop: A population
@@ -763,7 +781,7 @@ class SinglePopEA(HomogeneousEA):
                     fitness_cls=self.fitness_function.fitness_cls)
             )
 
-    def _get_state(self) -> Dict[str, Any]:
+    def _get_state(self) -> dict[str, Any]:
         """Return the state of this trainer.
 
         Overridden to add the current population to the trainer's state.
@@ -780,7 +798,7 @@ class SinglePopEA(HomogeneousEA):
 
         return state
 
-    def _set_state(self, state: Dict[str, Any]) -> None:
+    def _set_state(self, state: dict[str, Any]) -> None:
         """Set the state of this trainer.
 
         Overridden to add the current population to the trainer's state.
@@ -836,19 +854,19 @@ class SinglePopEA(HomogeneousEA):
         if self.container is not None:
             record["Pop"] = self.index
         self._logbook.record(**record)
-        if self.verbose:
+        if self.verbosity:
             print(self._logbook.stream)
 
-    def best_solutions(self) -> List[HallOfFame]:
+    def best_solutions(self) -> tuple[HallOfFame]:
         """Get the best solutions found for each species.
 
         :return: One Hall of Fame for each species
-        :rtype: list[~deap.tools.HallOfFame]
+        :rtype: tuple[~deap.tools.HallOfFame]
         """
         hof = ParetoFront()
         if self.pop is not None:
             hof.update(self.pop)
-        return [hof]
+        return (hof,)
 
 
 class MultiPopEA(DistributedTrainer):
@@ -857,135 +875,8 @@ class MultiPopEA(DistributedTrainer):
     stats_names = DISTRIBUTED_EA_STATS_NAMES
     """Statistics calculated each iteration."""
 
-    def __init__(
-        self,
-        fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SingleSpeciesTrainer],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [MultiPopEA],
-                bool]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
-        **subtrainer_params: Any
-    ) -> None:
-        """Create a new trainer.
-
-        :param fitness_function: The training fitness function
-        :type fitness_function: ~culebra.abc.FitnessFunction
-        :param subtrainer_cls: Single-population EA trainer class to handle
-            the subtrainers
-        :type subtrainer_cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
-        :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
-        :type custom_termination_func: ~collections.abc.Callable
-        :param num_subtrainers: The number of subtrainers. If set to
-            :data:`None`, :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`
-            will be used. Defaults to :data:`None`
-        :type num_subtrainers: int
-        :param representation_size: Number of representative solutions that
-            will be sent to the other subtrainers. If set to
-            :data:`None`, :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE`
-            will be used. Defaults to :data:`None`
-        :type representation_size: int
-        :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
-        :type representation_freq: int
-        :param representation_selection_func: Policy function to choose the
-            representatives from each subtrainer. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
-            will be used. Defaults to :data:`None`
-        :type representation_selection_func: ~collections.abc.Callable
-        :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :data:`None`
-        :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
-            will be used. Defaults to :data:`None`
-        :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to :data:`None`,
-            :data:`__debug__` will be used. Defaults to :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
-        :type random_seed: int
-        :param subtrainer_params: Custom parameters for the subtrainers
-            trainer
-        :type subtrainer_params: dict
-        :raises TypeError: If any argument is not of the appropriate type
-        :raises ValueError: If any argument has an incorrect value
-        """
-        # Init the superclass
-        super().__init__(
-            fitness_function=fitness_function,
-            subtrainer_cls = subtrainer_cls,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            num_subtrainers = num_subtrainers,
-            representation_size = representation_size,
-            representation_freq = representation_freq,
-            representation_selection_func = representation_selection_func,
-            representation_selection_func_params = (
-                representation_selection_func_params
-            ),
-            checkpoint_enable=checkpoint_enable,
-            checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
-            random_seed=random_seed,
-            **subtrainer_params
-        )
-
-    @property
-    def subtrainer_cls(self) -> Type[SinglePopEA]:
-        """Trainer class to handle the subpopulations.
-
-        Each subpopulation will be handled by a single-population evolutionary
-        trainer.
-
-        :rtype: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :setter: Set a new trainer class to handle the subpopulations
-        :param cls: The new class
-        :type cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :raises TypeError: If *cls* is not a
-            :class:`~culebra.trainer.ea.abc.SinglePopEA` subclass
-        """
-        return self._subtrainer_cls
-
-    @subtrainer_cls.setter
-    def subtrainer_cls(self, cls: Type[SinglePopEA]) -> None:
+    @DistributedTrainer.subtrainer_cls.setter
+    def subtrainer_cls(self, cls: type[SinglePopEA]) -> None:
         """Set a new trainer class to handle the subpopulations.
 
         Each subpopulation will be handled by a single-population evolutionary
@@ -997,12 +888,8 @@ class MultiPopEA(DistributedTrainer):
             :class:`~culebra.trainer.ea.abc.SinglePopEA` subclass
         """
         # Check cls
-        self._subtrainer_cls = check_subclass(
-            cls, "trainer class for subpopulations", SinglePopEA
-        )
-
-        # Reset the algorithm
-        self.reset()
+        check_subclass(cls, "trainer class for subpopulations", SinglePopEA)
+        DistributedTrainer.subtrainer_cls.fset(self, cls)
 
 
 class IslandsEA(IslandsTrainer, MultiPopEA):
@@ -1010,35 +897,26 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [IslandsEA], bool]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[IslandsEA], bool] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -1052,69 +930,65 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
         :param subtrainer_cls: Single-population EA trainer class to handle
             the subpopulations
         :type subtrainer_cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If omitted,
+            :meth:`~culebra.trainer.ea.abc.IslandsEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param num_subtrainers: The number of subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
-            used. Defaults to :data:`None`
+        :param num_subtrainers: The number of subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_num_subtrainers`
+            will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative individuals that
-            will be sent to the other subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
         :param representation_topology_func: Topology function for
-            representatives sending. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_representation_topology_func`
             will be used. Defaults to :data:`None`
         :type representation_topology_func: ~collections.abc.Callable
         :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_representation_topology_func_params`
             will be used. Defaults to :data:`None`
         :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subpopulation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.IslandsEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subpopulations
             trainer
@@ -1122,6 +996,11 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
         """
+        MultiPopEA.__init__(
+            self,
+            fitness_function=fitness_function,
+            subtrainer_cls=subtrainer_cls
+        )
         IslandsTrainer.__init__(
             self,
             solution_cls=solution_cls,
@@ -1141,10 +1020,10 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -1152,11 +1031,11 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
     # Copy the culebra.trainer.ea.abc.HomogeneousEA.solution_cls property
     solution_cls = HomogeneousEA.solution_cls
 
-    def best_solutions(self) -> List[HallOfFame]:
+    def best_solutions(self) -> tuple[HallOfFame]:
         """Get the best solutions found for each species.
 
         :return: One Hall of Fame for each species
-        :rtype: list[~deap.tools.HallOfFame]
+        :rtype: tuple[~deap.tools.HallOfFame]
         """
         hof = ParetoFront()
         if self.subtrainers is not None:
@@ -1164,7 +1043,7 @@ class IslandsEA(IslandsTrainer, MultiPopEA):
                 if subtrainer.pop is not None:
                     hof.update(subtrainer.pop)
 
-        return [hof]
+        return (hof,)
 
     @staticmethod
     def receive_representatives(subtrainer: SinglePopEA) -> None:
@@ -1214,50 +1093,40 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [HomogeneousIslandsEA],
-                bool]
-        ] = None,
-        pop_size: Optional[int] = None,
-        crossover_func: Optional[
-            Callable[[Individual, Individual], Tuple[Individual, Individual]]
-        ] = None,
-        mutation_func: Optional[
-            Callable[[Individual, float], Tuple[Individual]]
-        ] = None,
-        selection_func: Optional[
-            Callable[[List[Individual], int, Any], List[Individual]]
-        ] = None,
-        crossover_prob: Optional[float] = None,
-        mutation_prob: Optional[float] = None,
-        gene_ind_mutation_prob: Optional[float] = None,
-        selection_func_params: Optional[Dict[str, Any]] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HomogeneousIslandsEA], bool] | None = None,
+        pop_size: int | None = None,
+        crossover_func:
+            Callable[[Individual, Individual], tuple[Individual, Individual]] |
+            None = None,
+        mutation_func:
+            Callable[[Individual, float], tuple[Individual]] | None = None,
+        selection_func:
+            Callable[[list[Individual], int, Any], list[Individual]] |
+            None = None,
+        crossover_prob: float | None = None,
+        mutation_prob: float | None = None,
+        gene_ind_mutation_prob: float | None = None,
+        selection_func_params: dict[str, Any] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -1271,109 +1140,100 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         :param subtrainer_cls: Single-population EA trainer class to handle
             the subpopulations
         :type subtrainer_cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param pop_size: The population size. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
-            Defaults to :data:`None`
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_pop_size`
+            is used. Defaults to :data:`None`
         :type pop_size: int
-        :param crossover_func: The crossover function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.crossover` method will
-            be used. Defaults to :data:`None`
+        :param crossover_func: The crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_crossover_func`
+            is used. Defaults to :data:`None`
         :type crossover_func: ~collections.abc.Callable
-        :param mutation_func: The mutation function. If set to
-            :data:`None`, the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :data:`None`
+        :param mutation_func: The mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_mutation_func`
+            is used. Defaults to :data:`None`
         :type mutation_func: ~collections.abc.Callable
-        :param selection_func: The selection function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :data:`None`
+        :param selection_func: The selection function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_selection_func`
+            is used. Defaults to :data:`None`
         :type selection_func: ~collections.abc.Callable
-        :param crossover_prob: The crossover probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+        :param crossover_prob: The crossover probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_crossover_prob`
+            is used. Defaults to :data:`None`
         :type crossover_prob: float
-        :param mutation_prob: The mutation probability. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+        :param mutation_prob: The mutation probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_mutation_prob`
+            is used. Defaults to :data:`None`
         :type mutation_prob: float
         :param gene_ind_mutation_prob: The gene independent mutation
-            probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
-            will be used. Defaults to :data:`None`
+            probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_gene_ind_mutation_prob`
+            is used. Defaults to :data:`None`
         :type gene_ind_mutation_prob: float
         :param selection_func_params: The parameters for the selection
-            function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
-            will be used. Defaults to :data:`None`
+            function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_selection_func_params`
+            is used. Defaults to :data:`None`
         :type selection_func_params: dict
-        :param num_subtrainers: The number of subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
-            used. Defaults to :data:`None`
+        :param num_subtrainers: The number of subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_num_subtrainers`
+            will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative individuals that
-            will be sent to the other subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
         :param representation_topology_func: Topology function for
-            representatives sending. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_topology_func`
             will be used. Defaults to :data:`None`
         :type representation_topology_func: ~collections.abc.Callable
         :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_topology_func_params`
             will be used. Defaults to :data:`None`
         :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subpopulation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subpopulations
             trainer
@@ -1414,191 +1274,257 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
 
+    @property
+    def _default_pop_size(self) -> int:
+        """Default population size.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: int
+        """
+        return None
+
     @HomogeneousEA.pop_size.getter
-    def pop_size(self) -> int | None:
+    def pop_size(self) -> int:
         """Population size.
 
-        :return: The population size or :data:`None` if subtrainers have not
-            been initialized
+        :return: If subtrainers have been generated, the subtrainers population
+            size. Otherwise, the population size value used to call the
+            constructor
         :rtype: int
         :setter: Set a new population size
-        :param size: The new population size. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+        :param size: The new population size. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_pop_size`
+            is chosen
         :type size: int
         :raises TypeError: If *size* is not an :class:`int`
         :raises ValueError: If *size* is not greater than zero
         """
-        if self._pop_size is not None:
-            return self._pop_size
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].pop_size
-        else:
-            return None
+        return HomogeneousEA.pop_size.fget(self)
+
+    @property
+    def _default_crossover_func(self) -> Callable[
+        [Individual, Individual],
+        tuple[Individual, Individual]
+    ]:
+        """Default crossover function.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: ~collections.abc.Callable
+        """
+        return None
 
     @HomogeneousEA.crossover_func.getter
     def crossover_func(self) -> Callable[
-            [Individual, Individual],
-            Tuple[Individual, Individual]
-    ] | None:
+        [Individual, Individual],
+        tuple[Individual, Individual]
+    ]:
         """Crossover function.
 
-        :return: The crossover function or :data:`None` if subtrainers have
-            not been initialized
+        :return: If subtrainers have been generated, the subtrainers crossover
+            function. Otherwise, the crossover function value used to call the
+            constructor
         :rtype: ~collections.abc.Callable
         :setter: Set a new crossover function
-        :param func: The new crossover function. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.crossover` method
-            of the individual class evolved by the trainer is chosen
+        :param func: The new crossover function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_crossover_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        if self._crossover_func is not None:
-            return self._crossover_func
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].crossover_func
-        else:
-            return None
+        return HomogeneousEA.crossover_func.fget(self)
+
+    @property
+    def _default_mutation_func(self) -> Callable[
+        [Individual, float],
+        tuple[Individual]
+    ]:
+        """Default mutation function.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: ~collections.abc.Callable
+        """
+        return None
 
     @HomogeneousEA.mutation_func.getter
     def mutation_func(self) -> Callable[
         [Individual, float],
-        Tuple[Individual]
-    ] | None:
+        tuple[Individual]
+    ]:
         """Mutation function.
 
-        :return: The mutation function or :data:`None` if subtrainers have
-            not been initialized
+        :return: If subtrainers have been generated, the subtrainers mutation
+            function. Otherwise, the mutation function value used to call the
+            constructor
         :rtype: ~collections.abc.Callable
         :setter: Set a new mutation function
-        :param func: The new mutation function. If set to :data:`None`, the
-            :meth:`~culebra.solution.abc.Individual.mutate` method of the
-            individual class evolved by the trainer is chosen
+        :param func: The new mutation function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_mutation_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        if self._mutation_func is not None:
-            return self._mutation_func
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].mutation_func
-        else:
-            return None
+        return HomogeneousEA.mutation_func.fget(self)
+
+    @property
+    def _default_selection_func(
+        self
+    ) -> Callable[[list[Individual], int, Any], list[Individual]]:
+        """Default selection function.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: ~collections.abc.Callable
+        """
+        return None
 
     @HomogeneousEA.selection_func.getter
     def selection_func(
         self
-    ) -> Callable[[List[Individual], int, Any], List[Individual]] | None:
+    ) -> Callable[[list[Individual], int, Any], list[Individual]]:
         """Selection function.
 
-        :return: The selection function or :data:`None` if subtrainers have
-            not been initialized
+        :return: If subtrainers have been generated, the subtrainers selection
+            function. Otherwise, the selection function value used to call the
+            constructor
         :rtype: ~collections.abc.Callable
         :setter: Set a new selection function
-        :param func: The new selection function. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` is
-            chosen
+        :param func: The new selection function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_selection_func`
+            is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        if self._selection_func is not None:
-            return self._selection_func
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].selection_func
-        else:
-            return None
+        return HomogeneousEA.selection_func.fget(self)
+
+    @property
+    def _default_crossover_prob(self) -> float:
+        """Default crossover probability.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: float
+        """
+        return None
 
     @HomogeneousEA.crossover_prob.getter
-    def crossover_prob(self) -> float | None:
+    def crossover_prob(self) -> float:
         """Crossover probability.
 
-        :return: The crossover probability or :data:`None` if subtrainers have
-            not been initialized
+        :return: If subtrainers have been generated, the subtrainers crossover
+            probability. Otherwise, the crossover probability value used to
+            call the constructor
         :rtype: float
         :setter: Set a new crossover probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` is
-            chosen
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_crossover_prob`
+            is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
-        if self._crossover_prob is not None:
-            return self._crossover_prob
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].crossover_prob
-        else:
-            return None
+        return HomogeneousEA.crossover_prob.fget(self)
+
+    @property
+    def _default_mutation_prob(self) -> float:
+        """Default mutation probability.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: float
+        """
+        return None
 
     @HomogeneousEA.mutation_prob.getter
-    def mutation_prob(self) -> float | None:
+    def mutation_prob(self) -> float:
         """Mutation probability.
 
-        :return: The mutation probability or :data:`None` if subtrainers have
-            not been initialized
+        :return: If subtrainers have been generated, the subtrainers mutation
+            probability. Otherwise, the mutation probability value used to
+            call the constructor
         :rtype: float
         :setter: Set a new mutation probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` is chosen
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_mutation_prob`
+            is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
-        if self._mutation_prob is not None:
-            return self._mutation_prob
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].mutation_prob
-        else:
-            return None
+        return HomogeneousEA.mutation_prob.fget(self)
+
+    @property
+    def _default_gene_ind_mutation_prob(self) -> float:
+        """Default gene independent mutation probability.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: float
+        """
+        return None
 
     @HomogeneousEA.gene_ind_mutation_prob.getter
-    def gene_ind_mutation_prob(self) -> float | None:
+    def gene_ind_mutation_prob(self) -> float:
         """Gene independent mutation probability.
 
-        :return: The gene independent mutation probability or :data:`None`
-            if subtrainers have not been initialized
+        :return: If subtrainers have been generated, the subtrainers gene
+            independent mutation probability. Otherwise, the gene independent
+            mutation probability value used to call the constructor
         :rtype: float
         :setter: Set a new gene independent mutation probability
-        :param prob: The new probability. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+        :param prob: The new probability. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_gene_ind_mutation_prob`
             is chosen
         :type prob: float
         :raises TypeError: If *prob* is not a real number
         :raises ValueError: If *prob* is not in (0, 1)
         """
-        if self._gene_ind_mutation_prob is not None:
-            return self._gene_ind_mutation_prob
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].gene_ind_mutation_prob
-        else:
-            return None
+        return HomogeneousEA.gene_ind_mutation_prob.fget(self)
+
+    @property
+    def _default_selection_func_params(self) -> dict[str, Any]:
+        """Parameters of the default selection function.
+
+        :return: :data:`None` to allow subtrainers use their default value
+        :rtype: float
+        """
+        return None
 
     @HomogeneousEA.selection_func_params.getter
-    def selection_func_params(self) -> Dict[str, Any] | None:
+    def selection_func_params(self) -> dict[str, Any]:
         """Parameters of the selection function.
 
-        :return: The parameters of the selection function or :data:`None`
-            if subtrainers have not been initialized
+        :return: If subtrainers have been generated, the subtrainers parameters
+            for the selection function. Otherwise, the parameters for the
+            selection function used to call the constructor
         :rtype: dict
         :setter: Set new parameters for the selection function
-        :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+        :param params: The new parameters. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HomogeneousIslandsEA._default_selection_func_params`
             is chosen
-        :type params: dict
+        :type func: dict
         :raises TypeError: If *params* is not a :class:`dict`
         """
-        if self._selection_func_params is not None:
-            return self._selection_func_params
-        elif self.subtrainers is not None:
+        if self.subtrainers is not None:
             return self.subtrainers[0].selection_func_params
-        else:
-            return None
+        return HomogeneousEA.selection_func_params.fget(self)
 
     def _generate_subtrainers(self) -> None:
         """Generate the subpopulation trainers.
@@ -1621,7 +1547,7 @@ class HomogeneousIslandsEA(IslandsEA, HomogeneousEA):
         exchange between subtrainers, if necessary.
         """
 
-        def subtrainers_properties() -> Dict[str, Any]:
+        def subtrainers_properties() -> dict[str, Any]:
             """Return the subpopulation trainers' properties."""
             # Get the attributes from the container trainer
             cls = self.subtrainer_cls
@@ -1665,69 +1591,50 @@ class HeterogeneousEA(MultiPopEA):
     def __init__(
         self,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HeterogeneousEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [HeterogeneousEA],
-                bool]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -1737,46 +1644,45 @@ class HeterogeneousEA(MultiPopEA):
         :param subtrainer_cls: Single-population EA trainer class to handle
             the subpopulations
         :type subtrainer_cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.abc.HeterogeneousEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
         :param pop_sizes: The population size for each subpopulation.
             If only a single value is provided, the same size will be used for
             all the subpopulations. Different sizes can be provided in a
             :class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
-            Defaults to :data:`None`
+            greater then zero. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_pop_sizes`
+            will be used. Defaults to :data:`None`
         :type pop_sizes: int | ~collections.abc.Sequence[int]
         :param crossover_funcs: The crossover function for each subpopulation.
             If only a single value is provided, the same function will be used
             for all the subpopulations. Different functions can be provided in
-            a :class:`~collections.abc.Sequence`. If set to :data:`None`, the
-            :meth:`~culebra.solution.abc.Individual.crossover` method of each
-            subpopulation's individual class will be used. Defaults to
-            :data:`None`
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_funcs`
+            will be used. Defaults to :data:`None`
         :type crossover_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param mutation_funcs: The mutation function for each subpopulation.
             If only a single value is provided, the same function will be used
             for all the subpopulations. Different functions can be provided in
-            a :class:`~collections.abc.Sequence`. If set to :data:`None`, the
-            :meth:`~culebra.solution.abc.Individual.mutate` method of each
-            subpopulation's individual class will be used. Defaults to
-            :data:`None`
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_funcs`
+            will be used. Defaults to :data:`None`
         :type mutation_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param selection_funcs: The selection function for each subpopulation.
             If only a single value is provided, the same function will be used
             for all the subpopulations. Different functions can be provided in
-            a :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :data:`None`
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs`
+            will be used. Defaults to :data:`None`
         :type selection_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param crossover_probs: The crossover probability for each
@@ -1784,80 +1690,86 @@ class HeterogeneousEA(MultiPopEA):
             same probability will be used for all the subpopulations.
             Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+            be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_probs`
+            will be used. Defaults to :data:`None`
         :type crossover_probs: float | ~collections.abc.Sequence[float]
         :param mutation_probs: The mutation probability for each subpopulation.
             If only a single value is provided, the same probability will be
             used for all the subpopulations. Different probabilities can be
             provided in a :class:`~collections.abc.Sequence`. All the
-            probabilities must be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+            probabilities must be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_probs`
+            will be used. Defaults to :data:`None`
         :type mutation_probs: float | ~collections.abc.Sequence[float]
         :param gene_ind_mutation_probs: The gene independent mutation
             probability for each subpopulation. If only a single
             value is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_gene_ind_mutation_probs`
             will be used. Defaults to :data:`None`
         :type gene_ind_mutation_probs: float | ~collections.abc.Sequence[float]
         :param selection_funcs_params: The parameters for the selection
             function of each subpopulation. If only a single value is
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs_params`
             will be used. Defaults to :data:`None`
         :type selection_funcs_params: dict | ~collections.abc.Sequence[dict]
-        :param num_subtrainers: The number of subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
-            used. Defaults to :data:`None`
+        :param num_subtrainers: The number of subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_num_subtrainers`
+            will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative individuals that
-            will be sent to the other subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
+        :param representation_topology_func: Topology function for
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_representation_topology_func`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func: ~collections.abc.Callable
+        :param representation_topology_func_params: Parameters to obtain the
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_representation_topology_func_params`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subpopulation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subpopulations
             trainer
@@ -1873,14 +1785,18 @@ class HeterogeneousEA(MultiPopEA):
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -1896,36 +1812,41 @@ class HeterogeneousEA(MultiPopEA):
         self.selection_funcs_params = selection_funcs_params
 
     @property
-    def pop_sizes(self) -> Sequence[int | None]:
+    def _default_pop_sizes(self) -> tuple[None]:
+        """Default population size for each subtrainer.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def pop_sizes(self) -> tuple[int | None]:
         """Population size for each subtrainer.
 
-        :return: The population size of each subtrainer. If subtrainers have
-            not been initialized, the population size defined for each
-            subtrainer in the trainer constructor is returned
-        :rtype: ~collections.abc.Sequence[int]
+        :return: If subtrainers have been generated, the subtrainers population
+            size. Otherwise, the population size values used to call the
+            constructor
+        :rtype: tuple[int]
         :setter: Set the population size for each subtrainer
         :param sizes: The new population sizes. If only a single value
             is provided, the same size will be used for all the subtrainers.
             Different sizes can be provided in a
             :class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+            greater then zero. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_pop_sizes`
+            is chosen
         :type sizes: int | ~collections.abc.Sequence[int]
         :raises TypeError: If *sizes* is not an :class:`int`
             or a :class:`~collections.abc.Sequence` of :class:`int`
         :raises ValueError: If any value in *sizes* is not greater than zero
         """
         if self.subtrainers is not None:
-            the_pop_sizes = [
-                subtrainer.pop_size
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._pop_sizes, Sequence):
-            the_pop_sizes = self._pop_sizes
-        else:
-            the_pop_sizes = list(repeat(self._pop_sizes, self.num_subtrainers))
-
-        return the_pop_sizes
+            return tuple(
+                subtrainer.pop_size for subtrainer in self.subtrainers
+            )
+        return self._pop_sizes
 
     @pop_sizes.setter
     def pop_sizes(self, sizes: int | Sequence[int] | None) -> None:
@@ -1935,8 +1856,9 @@ class HeterogeneousEA(MultiPopEA):
             is provided, the same size will be used for all the subtrainers.
             Different sizes can be provided in a
             :class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` is chosen
+            greater then zero. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_pop_sizes`
+            is chosen
         :type sizes: int | ~collections.abc.Sequence[int]
         :raises TypeError: If *sizes* is not an :class:`int`
             or a :class:`~collections.abc.Sequence` of :class:`int`
@@ -1944,39 +1866,54 @@ class HeterogeneousEA(MultiPopEA):
         """
         # If None is provided ...
         if sizes is None:
-            self._pop_sizes = None
+            self._pop_sizes = self._default_pop_sizes
         # If a sequence is provided ...
         elif isinstance(sizes, Sequence):
-            self._pop_sizes = check_sequence(
-                sizes,
-                "population sizes",
-                item_checker=partial(check_int, gt=0)
+            self._pop_sizes = tuple(
+                check_sequence(
+                    sizes,
+                    "population sizes",
+                    size=self.num_subtrainers,
+                    item_checker=partial(check_int, gt=0)
+                )
             )
         # If a scalar value is provided ...
         else:
-            self._pop_sizes = check_int(sizes, "population size", gt=0)
+            self._pop_sizes = (
+                check_int(sizes, "population size", gt=0),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def crossover_funcs(self) -> Sequence[
-        Callable[[Individual, Individual], Tuple[Individual, Individual]] |
+    def _default_crossover_funcs(self) -> tuple[None]:
+        """Default crossover function for each subpopulation.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def crossover_funcs(self) -> tuple[
+        Callable[[Individual, Individual], tuple[Individual, Individual]] |
         None
     ]:
         """Crossover function for each subpopulation.
 
-        :return: The crossover function of each subtrainer. If subtrainers have
-            not been initialized, the crossover function defined for each
-            subtrainer in the trainer constructor is returned
-        :rtype: ~collections.abc.Sequence[~collections.abc.Callable]
+        :return: If subtrainers have been generated, the subtrainers crossover
+            function. Otherwise, the crossover functions used to call the
+            constructor
+        :rtype: tuple[~collections.abc.Callable]
         :setter: Set the crossover function for each subpopulation
         :param funcs: The new crossover functions. If only a single value is
             provided, the same function will be used for all the
             subpopulations. Different functions can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.crossover` method
-            of the individual class evolved by each subtrainer is chosen
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_funcs`
+            is chosen
         :type funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :raises TypeError: If *funcs* is not
@@ -1985,29 +1922,21 @@ class HeterogeneousEA(MultiPopEA):
             :class:`~collections.abc.Callable`
         """
         if self.subtrainers is not None:
-            the_funcs = [
-                subtrainer.crossover_func
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._crossover_funcs, Sequence):
-            the_funcs = self._crossover_funcs
-        else:
-            the_funcs = list(
-                repeat(self._crossover_funcs, self.num_subtrainers)
+            return tuple(
+                subtrainer.crossover_func for subtrainer in self.subtrainers
             )
-
-        return the_funcs
+        return self._crossover_funcs
 
     @crossover_funcs.setter
     def crossover_funcs(
         self,
         funcs: Callable[
             [Individual, Individual],
-            Tuple[Individual, Individual]
+            tuple[Individual, Individual]
         ] | Sequence[
             Callable[
                 [Individual, Individual],
-                Tuple[Individual, Individual]
+                tuple[Individual, Individual]
             ]
         ] | None
     ) -> None:
@@ -2016,9 +1945,9 @@ class HeterogeneousEA(MultiPopEA):
         :param funcs: The new crossover functions. If only a single value is
             provided, the same function will be used for all the
             subpopulations. Different functions can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.crossover` method
-            of the individual class evolved by each subtrainer is chosen
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_funcs`
+            is chosen
         :type funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :raises TypeError: If *funcs* is not
@@ -2027,36 +1956,51 @@ class HeterogeneousEA(MultiPopEA):
             :class:`~collections.abc.Callable`
         """
         if funcs is None:
-            self._crossover_funcs = None
+            self._crossover_funcs = self._default_crossover_funcs
         elif isinstance(funcs, Sequence):
-            self._crossover_funcs = check_sequence(
-                funcs,
-                "crossover functions",
-                item_checker=check_func
+            self._crossover_funcs = tuple(
+                    check_sequence(
+                    funcs,
+                    "crossover functions",
+                    size=self.num_subtrainers,
+                    item_checker=check_func
+                )
             )
         else:
-            self._crossover_funcs = check_func(funcs, "crossover function")
+            self._crossover_funcs = (
+                check_func(funcs, "crossover function"),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def mutation_funcs(self) -> Sequence[
-        Callable[[Individual, float], Tuple[Individual]] | None
+    def _default_mutation_funcs(self) -> tuple[None]:
+        """Default mutation function for each subpopulation.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def mutation_funcs(self) -> tuple[
+        Callable[[Individual, float], tuple[Individual]] | None
     ]:
         """Mutation function for each subpopulation.
 
-        :return: The mutation function of each subtrainer. If subtrainers have
-            not been initialized, the mutation function defined for each
-            subtrainer in the trainer constructor is returned
-        :rtype: ~collections.abc.Sequence[~collections.abc.Callable]
+        :return: If subtrainers have been generated, the subtrainers mutation
+            function. Otherwise, the mutation functions used to call the
+            constructor
+        :rtype: tuple[~collections.abc.Callable]
         :setter: Set the mutation function for each subpopulation
         :param funcs: The new mutation functions. If only a single value is
             provided, the same function will be used for all the
             subpopulations. Different functions can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.mutate` method of
-            the individual class evolved by each subtrainer is chosen
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_funcs`
+            is chosen
         :type funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :raises TypeError: If *funcs* is not
@@ -2065,29 +2009,21 @@ class HeterogeneousEA(MultiPopEA):
             :class:`~collections.abc.Callable`
         """
         if self.subtrainers is not None:
-            the_funcs = [
-                subtrainer.mutation_func
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._mutation_funcs, Sequence):
-            the_funcs = self._mutation_funcs
-        else:
-            the_funcs = list(
-                repeat(self._mutation_funcs, self.num_subtrainers)
+            return tuple (
+                subtrainer.mutation_func for subtrainer in self.subtrainers
             )
-
-        return the_funcs
+        return self._mutation_funcs
 
     @mutation_funcs.setter
     def mutation_funcs(
         self,
         funcs: Callable[
             [Individual, float],
-            Tuple[Individual]
+            tuple[Individual]
         ] | Sequence[
             Callable[
                 [Individual, float],
-                Tuple[Individual]
+                tuple[Individual]
             ]
         ] | None
     ) -> None:
@@ -2096,9 +2032,9 @@ class HeterogeneousEA(MultiPopEA):
         :param funcs: The new mutation functions. If only a single value is
             provided, the same function will be used for all the
             subpopulations. Different functions can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            the :meth:`~culebra.solution.abc.Individual.mutate` method of
-            the individual class evolved by each subtrainer is chosen
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_funcs`
+            is chosen
         :type funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :raises TypeError: If *funcs* is not
@@ -2107,52 +2043,146 @@ class HeterogeneousEA(MultiPopEA):
             :class:`~collections.abc.Callable`
         """
         if funcs is None:
-            self._mutation_funcs = None
+            self._mutation_funcs = self._default_mutation_funcs
         elif isinstance(funcs, Sequence):
-            self._mutation_funcs = check_sequence(
-                funcs,
-                "mutation functions",
-                item_checker=check_func
+            self._mutation_funcs = tuple(
+                check_sequence(
+                    funcs,
+                    "mutation functions",
+                    size=self.num_subtrainers,
+                    item_checker=check_func
+                )
             )
         else:
-            self._mutation_funcs = check_func(funcs, "mutation function")
+            self._mutation_funcs = (
+                check_func(funcs, "mutation function"),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def crossover_probs(self) -> Sequence[float | None]:
+    def _default_selection_funcs(self) -> tuple[None]:
+        """Default selection function for each subpopulation.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def selection_funcs(self) -> tuple[
+        Callable[[list[Individual], int, Any], list[Individual]] | None
+    ]:
+        """Selection function for each subpopulation.
+
+        :return: If subtrainers have been generated, the subtrainers selection
+            function. Otherwise, the selection functions used to call the
+            constructor
+        :rtype: tuple[float]
+        :setter: Set a new selection function for each subpopulation
+        :param funcs: The new selection functions. If only a single value is
+            provided, the same function will be used for all the
+            subpopulations. Different functions can be provided in a
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs`
+            is chosen
+        :type funcs: ~collections.abc.Callable |
+            ~collections.abc.Sequence[~collections.abc.Callable]
+        :raises TypeError: If *funcs* is not
+            :class:`~collections.abc.Callable` or a
+            :class:`~collections.abc.Sequence` of
+            :class:`~collections.abc.Callable`
+        """
+        if self.subtrainers is not None:
+            return tuple(
+                subtrainer.selection_func for subtrainer in self.subtrainers
+            )
+        return self._selection_funcs
+
+    @selection_funcs.setter
+    def selection_funcs(self, funcs: Callable[
+            [list[Individual], int, Any],
+            list[Individual]
+        ] | Sequence[
+            Callable[
+                [list[Individual], int, Any],
+                list[Individual]
+            ]
+    ] | None
+    ) -> None:
+        """Set a new selection function for each subpopulation.
+
+        :param funcs: The new selection functions. If only a single value is
+            provided, the same function will be used for all the
+            subpopulations. Different functions can be provided in a
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs`
+            is chosen
+        :type funcs: ~collections.abc.Callable |
+            ~collections.abc.Sequence[~collections.abc.Callable]
+        :raises TypeError: If *funcs* is not
+            :class:`~collections.abc.Callable` or a
+            :class:`~collections.abc.Sequence` of
+            :class:`~collections.abc.Callable`
+        """
+        if funcs is None:
+            self._selection_funcs = self._default_selection_funcs
+        # If a sequence is provided ...
+        elif isinstance(funcs, Sequence):
+            self._selection_funcs = tuple(
+                check_sequence(
+                    funcs,
+                    "selection functions",
+                    size=self.num_subtrainers,
+                    item_checker=check_func
+                )
+            )
+        else:
+            self._selection_funcs = (
+                check_func(funcs, "selection function"),
+        ) * self.num_subtrainers
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def _default_crossover_probs(self) -> tuple[None]:
+        """Default crossover probability for each subpopulation.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def crossover_probs(self) -> tuple[float | None]:
         """Crossover probability for each subpopulation.
 
-        :return: The crossover probability of each subtrainer. If subtrainers
-            have not been initialized, the crossover probability defined for
-            each subtrainer in the trainer constructor is returned
-        :rtype: ~collections.abc.Sequence[float]
+        :return: If subtrainers have been generated, the subtrainers crossover
+            probability. Otherwise, the crossover probabilities used to call
+            the constructor
+        :rtype: tuple[float]
         :setter: Set a new crossover probability for each subpopulation
         :param probs: The new probabilities. If only a single value
             is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` is chosen
+            be in (0, 1). If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_probs`
+            is chosen
         :type probs: float | ~collections.abc.Sequence[float]
         :raises TypeError: If *probs* is not a real number or a
             :class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If any value in *probs* is not in (0, 1)
         """
         if self.subtrainers is not None:
-            the_probs = [
-                subtrainer.crossover_prob
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._crossover_probs, Sequence):
-            the_probs = self._crossover_probs
-        else:
-            the_probs = list(
-                repeat(self._crossover_probs, self.num_subtrainers)
+            return tuple(
+                subtrainer.crossover_prob for subtrainer in self.subtrainers
             )
-
-        return the_probs
+        return self._crossover_probs
 
     @crossover_probs.setter
     def crossover_probs(self, probs: float | Sequence[float] | None) -> None:
@@ -2162,63 +2192,70 @@ class HeterogeneousEA(MultiPopEA):
             is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` is chosen
+            be in (0, 1). If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_crossover_probs`
+            is chosen
         :type probs: float | ~collections.abc.Sequence[float]
         :raises TypeError: If *probs* is not a real number or a
             :class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If any value in *probs* is not in (0, 1)
         """
         if probs is None:
-            self._crossover_probs = None
+            self._crossover_probs = self._default_crossover_probs
         # If a sequence is provided ...
         elif isinstance(probs, Sequence):
-            self._crossover_probs = check_sequence(
-                probs,
-                "crossover probabilities",
-                item_checker=partial(check_float, gt=0, lt=1)
+            self._crossover_probs = tuple(
+                check_sequence(
+                    probs,
+                    "crossover probabilities",
+                    size=self.num_subtrainers,
+                    item_checker=partial(check_float, gt=0, lt=1)
+                )
             )
         else:
-            self._crossover_probs = check_float(
-                probs, "crossover probability", gt=0, lt=1
-            )
+            self._crossover_probs = (
+                check_float(probs, "crossover probability", gt=0, lt=1),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def mutation_probs(self) -> Sequence[float | None]:
+    def _default_mutation_probs(self) -> tuple[None]:
+        """Default mutation probability for each subpopulation.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def mutation_probs(self) -> tuple[float | None]:
         """Mutation probability for each subpopulation.
 
-        :return: The mutation probability of each subtrainer. If subtrainers
-            have not been initialized, the mutation probability defined for
-            each subtrainer in the trainer constructor is returned
-        :rtype: ~collections.abc.Sequence[float]
+        :return: If subtrainers have been generated, the subtrainers mutation
+            probability. Otherwise, the mutation probabilities used to call
+            the constructor
+        :rtype: tuple[float]
         :setter: Set a new mutation probability for each subpopulation
         :param probs: The new probabilities. If only a single value
             is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` is chosen
+            be in (0, 1). If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_probs`
+            is chosen
         :type probs: float | ~collections.abc.Sequence[float]
         :raises TypeError: If *probs* is not a real number or a
             :class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If any value in *probs* is not in (0, 1)
         """
         if self.subtrainers is not None:
-            the_probs = [
-                subtrainer.mutation_prob
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._mutation_probs, Sequence):
-            the_probs = self._mutation_probs
-        else:
-            the_probs = list(
-                repeat(self._mutation_probs, self.num_subtrainers)
+            return tuple(
+                subtrainer.mutation_prob for subtrainer in self.subtrainers
             )
-
-        return the_probs
+        return self._mutation_probs
 
     @mutation_probs.setter
     def mutation_probs(self, probs: float | Sequence[float] | None):
@@ -2228,46 +2265,59 @@ class HeterogeneousEA(MultiPopEA):
             is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` is chosen
+            be in (0, 1). If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_mutation_probs`
+            is chosen
         :type probs: float | ~collections.abc.Sequence[float]
         :raises TypeError: If *probs* is not a real number or a
             :class:`~collections.abc.Sequence` of real numbers
         :raises ValueError: If any value in *probs* is not in (0, 1)
         """
         if probs is None:
-            self._mutation_probs = None
+            self._mutation_probs = self._default_mutation_probs
         # If a sequence is provided ...
         elif isinstance(probs, Sequence):
-            self._mutation_probs = check_sequence(
-                probs,
-                "mutation probabilities",
-                item_checker=partial(check_float, gt=0, lt=1)
+            self._mutation_probs = tuple(
+                check_sequence(
+                    probs,
+                    "mutation probabilities",
+                    size=self.num_subtrainers,
+                    item_checker=partial(check_float, gt=0, lt=1)
+                )
             )
         else:
-            self._mutation_probs = check_float(
-                probs, "mutation probability", gt=0, lt=1
-            )
+            self._mutation_probs = (
+                check_float(probs, "mutation probability", gt=0, lt=1),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def gene_ind_mutation_probs(self) -> Sequence[float | None]:
+    def _default_gene_ind_mutation_probs(self) -> tuple[None]:
+        """Default gene independent mutation probability for each subpopulation.
+
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
+        """
+        return (None, ) * self.num_subtrainers
+
+    @property
+    def gene_ind_mutation_probs(self) -> tuple[float | None]:
         """Gene independent mutation probabilities.
 
-        :return: The gene independent mutation probability of each subtrainer.
-            If subtrainers have not been initialized, the gene independent
-            mutation probability defined for each subtrainer in the trainer
-            constructor is returned
-        :rtype: ~collections.abc.Sequence[float]
+        :return: If subtrainers have been generated, the subtrainers gene
+            independent mutation probability. Otherwise, the gene independent
+            mutation probabilities used to call the constructor
+        :rtype: tuple[float]
         :setter: Set new gene independent mutation probabilities
         :param probs: The new probabilities. If only a single value is
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            be in (0, 1). If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_gene_ind_mutation_probs`
             is chosen
         :type probs: float | ~collections.abc.Sequence[float]
         :raises TypeError: If *probs* is not a real number or a
@@ -2275,18 +2325,10 @@ class HeterogeneousEA(MultiPopEA):
         :raises ValueError: If any value in *probs* is not in (0, 1)
         """
         if self.subtrainers is not None:
-            the_probs = [
-                subtrainer.gene_ind_mutation_prob
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._gene_ind_mutation_probs, Sequence):
-            the_probs = self._gene_ind_mutation_probs
-        else:
-            the_probs = list(
-                repeat(self._gene_ind_mutation_probs, self.num_subtrainers)
+            return tuple(
+                subtrainer.gene_ind_mutation_prob for subtrainer in self.subtrainers
             )
-
-        return the_probs
+        return self._gene_ind_mutation_probs
 
     @gene_ind_mutation_probs.setter
     def gene_ind_mutation_probs(self, probs: float | Sequence[float] | None):
@@ -2296,8 +2338,8 @@ class HeterogeneousEA(MultiPopEA):
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            be in (0, 1). If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_gene_ind_mutation_probs`
             is chosen
         :type probs: float | ~collections.abc.Sequence[float]
         :raises TypeError: If *probs* is not a real number or a
@@ -2305,123 +2347,58 @@ class HeterogeneousEA(MultiPopEA):
         :raises ValueError: If any value in *probs* is not in (0, 1)
         """
         if probs is None:
-            self._gene_ind_mutation_probs = None
+            self._gene_ind_mutation_probs = (
+                self._default_gene_ind_mutation_probs
+            )
         # If a sequence is provided ...
         elif isinstance(probs, Sequence):
-            self._gene_ind_mutation_probs = check_sequence(
-                probs,
-                "gene independent mutation probabilities",
-                item_checker=partial(check_float, gt=0, lt=1)
+            self._gene_ind_mutation_probs = tuple(
+                check_sequence(
+                    probs,
+                    "gene independent mutation probabilities",
+                    size=self.num_subtrainers,
+                    item_checker=partial(check_float, gt=0, lt=1)
+                )
             )
         else:
-            self._gene_ind_mutation_probs = check_float(
-                probs,
-                "gene independent mutation probability",
-                gt=0,
-                lt=1
-            )
+            self._gene_ind_mutation_probs = (
+                check_float(
+                    probs,
+                    "gene independent mutation probability",
+                    gt=0,
+                    lt=1
+                ),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def selection_funcs(self) -> Sequence[
-        Callable[[List[Individual], int, Any], List[Individual]] | None
-    ]:
-        """Selection function for each subpopulation.
+    def _default_selection_funcs_params(self) -> tuple[None]:
+        """Default parameters for the selection function of each subpopulation.
 
-        :return: The selection function of each subtrainer. If subtrainers
-            have not been initialized, the selection function defined for
-            each subtrainer in the trainer constructor is returned
-        :rtype: ~collections.abc.Sequence[float]
-        :setter: Set a new selection function for each subpopulation
-        :param funcs: The new selection functions. If only a single value is
-            provided, the same function will be used for all the
-            subpopulations. Different functions can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` is
-            chosen
-        :type funcs: ~collections.abc.Callable |
-            ~collections.abc.Sequence[~collections.abc.Callable]
-        :raises TypeError: If *funcs* is not
-            :class:`~collections.abc.Callable` or a
-            :class:`~collections.abc.Sequence` of
-            :class:`~collections.abc.Callable`
+        :return: :data:`None` for each subtrainer, to allow subtrainers use
+            their default value
+        :rtype: tuple[None]
         """
-        if self.subtrainers is not None:
-            the_funcs = [
-                subtrainer.selection_func
-                for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._selection_funcs, Sequence):
-            the_funcs = self._selection_funcs
-        else:
-            the_funcs = list(
-                repeat(self._selection_funcs, self.num_subtrainers)
-            )
-
-        return the_funcs
-
-    @selection_funcs.setter
-    def selection_funcs(self, funcs: Callable[
-            [List[Individual], int, Any],
-            List[Individual]
-        ] | Sequence[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ]
-    ] | None
-    ) -> None:
-        """Set a new selection function for each subpopulation.
-
-        :param funcs: The new selection functions. If only a single value is
-            provided, the same function will be used for all the
-            subpopulations. Different functions can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` is
-            chosen
-        :type funcs: ~collections.abc.Callable |
-            ~collections.abc.Sequence[~collections.abc.Callable]
-        :raises TypeError: If *funcs* is not
-            :class:`~collections.abc.Callable` or a
-            :class:`~collections.abc.Sequence` of
-            :class:`~collections.abc.Callable`
-        """
-        if funcs is None:
-            self._selection_funcs = None
-        # If a sequence is provided ...
-        elif isinstance(funcs, Sequence):
-            self._selection_funcs = check_sequence(
-                funcs,
-                "selection functions",
-                item_checker=check_func
-            )
-        else:
-            self._selection_funcs = check_func(
-                funcs,
-                "selection function"
-            )
-
-        # Reset the algorithm
-        self.reset()
+        return (None, ) * self.num_subtrainers
 
     @property
-    def selection_funcs_params(self) -> Sequence[Dict[str, Any] | None]:
+    def selection_funcs_params(self) -> tuple[dict[str, Any] | None]:
         """Parameters for the selection function of each subpopulation.
 
         :return: The parameters for the selection function of each subtrainer.
             If subtrainers have not been initialized, the parameters of the
             selection function defined for each subtrainer in the trainer
             constructor is returned
-        :rtype: ~collections.abc.Sequence[dict]
+        :rtype: tuple[dict]
         :setter: Set new parameters for the selection function of each
             subpopulation
         :param param_dicts: The new parameters. If only a single value is
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs_params`
             is chosen
         :type param_dicts: dict | ~collections.abc.Sequence[dict]
         :raises TypeError: If *param_dicts* is not a :class:`dict`
@@ -2430,31 +2407,24 @@ class HeterogeneousEA(MultiPopEA):
             :class:`dict`
         """
         if self.subtrainers is not None:
-            the_params = [
+            return tuple(
                 subtrainer.selection_func_params
                 for subtrainer in self.subtrainers
-            ]
-        elif isinstance(self._selection_funcs_params, Sequence):
-            the_params = self._selection_funcs_params
-        else:
-            the_params = list(
-                repeat(self._selection_funcs_params, self.num_subtrainers)
             )
-
-        return the_params
+        return self._selection_funcs_params
 
     @selection_funcs_params.setter
     def selection_funcs_params(
         self,
-        param_dicts: Dict[str, Any] | Sequence[Dict[str, Any]] | None
+        param_dicts: dict[str, Any] | Sequence[dict[str, Any]] | None
     ) -> None:
         """Set new parameters for the selection function of each subpopulation.
 
         :param param_dicts: The new parameters. If only a single value is
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            :class:`~collections.abc.Sequence`. If set to :data`None`,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousEA._default_selection_funcs_params`
             is chosen
         :type param_dicts: dict | ~collections.abc.Sequence[dict]
         :raises TypeError: If *param_dicts* is not a :class:`dict`
@@ -2463,19 +2433,21 @@ class HeterogeneousEA(MultiPopEA):
             :class:`dict`
         """
         if param_dicts is None:
-            self._selection_funcs_params = None
+            self._selection_funcs_params = self._default_selection_funcs_params
         # If a sequence is provided ...
         elif isinstance(param_dicts, Sequence):
-            self._selection_funcs_params = check_sequence(
-                param_dicts,
-                "selection functions parameters",
-                item_checker=check_func_params
+            self._selection_funcs_params = tuple(
+                check_sequence(
+                    param_dicts,
+                    "selection functions parameters",
+                    size=self.num_subtrainers,
+                    item_checker=check_func_params
+                )
             )
         else:
-            self._selection_funcs_params = check_func_params(
-                param_dicts,
-                "selection function parameters"
-            )
+            self._selection_funcs_params = (
+                check_func_params(param_dicts,"selection function parameters"),
+            ) * self.num_subtrainers
 
         # Reset the algorithm
         self.reset()
@@ -2499,78 +2471,53 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
 
     def __init__(
         self,
-        solution_cls: Type[Individual],
+        solution_cls: type[Individual],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[HeterogeneousIslandsEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [HeterogeneousIslandsEA],
-                bool]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -2584,46 +2531,52 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
         :param subtrainer_cls: Single-population EA trainer class to handle
             the subpopulations
         :type subtrainer_cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
         :param pop_sizes: The population size for each subpopulation.
             If only a single value is provided, the same size will be used for
             all the subpopulations. Different sizes can be provided in a
             :class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :data:`None`,
+            greater then zero. If omitted,
             :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
             Defaults to :data:`None`
+        :param pop_sizes: The population size for each subpopulation.
+            If only a single value is provided, the same size will be used for
+            all the subpopulations. Different sizes can be provided in a
+            :class:`~collections.abc.Sequence`. All the sizes must be
+            greater then zero. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_pop_sizes`
+            will be used. Defaults to :data:`None`
         :type pop_sizes: int | ~collections.abc.Sequence[int]
         :param crossover_funcs: The crossover function for each subpopulation.
             If only a single value is provided, the same function will be used
             for all the subpopulations. Different functions can be provided in
-            a :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.crossover` method will be
-            used. Defaults to :data:`None`
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_crossover_funcs`
+            will be used. Defaults to :data:`None`
         :type crossover_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param mutation_funcs: The mutation function for each subpopulation.
             If only a single value is provided, the same function will be used
             for all the subpopulations. Different functions can be provided in
-            a :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            the *solution_cls*
-            :meth:`~culebra.solution.abc.Individual.mutate` method will be
-            used. Defaults to :data:`None`
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_mutation_funcs`
+            will be used. Defaults to :data:`None`
         :type mutation_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param selection_funcs: The selection function for each subpopulation.
             If only a single value is provided, the same function will be used
             for all the subpopulations. Different functions can be provided in
-            a :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC` will be
-            used. Defaults to :data:`None`
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_selection_funcs`
+            will be used. Defaults to :data:`None`
         :type selection_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param crossover_probs: The crossover probability for each
@@ -2631,90 +2584,86 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             same probability will be used for all the subpopulations.
             Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+            be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_crossover_probs`
+            will be used. Defaults to :data:`None`
         :type crossover_probs: float | ~collections.abc.Sequence[float]
         :param mutation_probs: The mutation probability for each subpopulation.
-            If only a single value is provided, the same probability
-            will be used for all the subpopulations. Different probabilities
-            can be provided in a :class:`~collections.abc.Sequence`. All
-            the probabilities must be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+            If only a single value is provided, the same probability will be
+            used for all the subpopulations. Different probabilities can be
+            provided in a :class:`~collections.abc.Sequence`. All the
+            probabilities must be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_mutation_probs`
+            will be used. Defaults to :data:`None`
         :type mutation_probs: float | ~collections.abc.Sequence[float]
         :param gene_ind_mutation_probs: The gene independent mutation
             probability for each subpopulation. If only a single
             value is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_gene_ind_mutation_probs`
             will be used. Defaults to :data:`None`
         :type gene_ind_mutation_probs: float | ~collections.abc.Sequence[float]
         :param selection_funcs_params: The parameters for the selection
             function of each subpopulation. If only a single value is
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_selection_funcs_params`
             will be used. Defaults to :data:`None`
         :type selection_funcs_params: dict | ~collections.abc.Sequence[dict]
-        :param num_subtrainers: The number of subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` will be
-            used. Defaults to :data:`None`
+        :param num_subtrainers: The number of subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_num_subtrainers`
+            will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative individuals that
-            will be sent to the other subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
         :param representation_topology_func: Topology function for
-            representatives sending. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_representation_topology_func`
             will be used. Defaults to :data:`None`
         :type representation_topology_func: ~collections.abc.Callable
         :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_representation_topology_func_params`
             will be used. Defaults to :data:`None`
         :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subpopulation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.HeterogeneousIslandsEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subpopulations
             trainer
@@ -2726,6 +2675,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             self,
             fitness_function=fitness_function,
             subtrainer_cls=subtrainer_cls,
+            num_subtrainers=num_subtrainers,
             pop_sizes=pop_sizes,
             crossover_funcs=crossover_funcs,
             mutation_funcs=mutation_funcs,
@@ -2754,10 +2704,10 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -2786,7 +2736,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             not match the number of subpopulations.
         """
 
-        def subtrainers_properties() -> List[Dict[str, Any]]:
+        def subtrainers_properties() -> list[dict[str, Any]]:
             """Obtain the properties of each subpopulation trainer.
 
             :raises RuntimeError: If the length of any properties sequence
@@ -2806,7 +2756,7 @@ class HeterogeneousIslandsEA(IslandsEA, HeterogeneousEA):
             # Append subpopulation trainer custom atributes
             common_properties.update(self.subtrainer_params)
 
-            # List with the common properties. Equal for all the subpopulations
+            # list with the common properties. Equal for all the subpopulations
             properties = []
             for _ in range(self.num_subtrainers):
                 subpop_properties = {}
@@ -2887,73 +2837,52 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
 
     def __init__(
         self,
-        solution_classes: Sequence[Type[Individual]],
+        solution_classes: Sequence[type[Individual]],
         species: Sequence[Species],
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[CooperativeEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [CooperativeEA],
-                bool
-            ]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -2970,128 +2899,133 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
         :param subtrainer_cls: Single-population EA trainer class to handle
             the subpopulations
         :type subtrainer_cls: type[~culebra.trainer.ea.abc.SinglePopEA]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`, the default termination criterion is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.ea.abc.CooperativeEA._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param pop_sizes: The population size for each subpopulation (species).
+        :param pop_sizes: The population size for each subpopulation.
             If only a single value is provided, the same size will be used for
             all the subpopulations. Different sizes can be provided in a
             :class:`~collections.abc.Sequence`. All the sizes must be
-            greater then zero. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_POP_SIZE` will be used.
-            Defaults to :data:`None`
+            greater then zero. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_pop_sizes`
+            will be used. Defaults to :data:`None`
         :type pop_sizes: int | ~collections.abc.Sequence[int]
-        :param crossover_funcs: The crossover function for each subpopulation
-            (species). If only a single value is provided, the same function
-            will be used for all the subpopulations. Different functions can
-            be provided in a :class:`~collections.abc.Sequence`. If set to
-            :data:`None`, the
-            :meth:`~culebra.solution.abc.Individual.crossover` method of each
-            subpopulation's individual class will be used. Defaults to
-            :data:`None`
+        :param crossover_funcs: The crossover function for each subpopulation.
+            If only a single value is provided, the same function will be used
+            for all the subpopulations. Different functions can be provided in
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_crossover_funcs`
+            will be used. Defaults to :data:`None`
         :type crossover_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
-        :param mutation_funcs: The mutation function for each subpopulation
-            (species). If only a single value is provided, the same function
-            will be used for all the subpopulations. Different functions can
-            be provided in a :class:`~collections.abc.Sequence`. If set to
-            :data:`None`, the :meth:`~culebra.solution.abc.Individual.mutate`
-            method of each subpopulation's individual class will be used.
-            Defaults to :data:`None`
+        :param mutation_funcs: The mutation function for each subpopulation.
+            If only a single value is provided, the same function will be used
+            for all the subpopulations. Different functions can be provided in
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_mutation_funcs`
+            will be used. Defaults to :data:`None`
         :type mutation_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
-        :param selection_funcs: The selection function for each subpopulation
-            (species). If only a single value is provided, the same function
-            will be used for all the subpopulations. Different functions can
-            be provided in a :class:`~collections.abc.Sequence`. If set to
-            :data:`None`, :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC`
+        :param selection_funcs: The selection function for each subpopulation.
+            If only a single value is provided, the same function will be used
+            for all the subpopulations. Different functions can be provided in
+            a :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_selection_funcs`
             will be used. Defaults to :data:`None`
         :type selection_funcs: ~collections.abc.Callable |
             ~collections.abc.Sequence[~collections.abc.Callable]
         :param crossover_probs: The crossover probability for each
-            subpopulation (species). If only a single value is provided, the
+            subpopulation. If only a single value is provided, the
             same probability will be used for all the subpopulations.
             Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_CROSSOVER_PROB` will be
-            used. Defaults to :data:`None`
+            be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_crossover_probs`
+            will be used. Defaults to :data:`None`
         :type crossover_probs: float | ~collections.abc.Sequence[float]
-        :param mutation_probs: The mutation probability for each subpopulation
-            (species). If only a single value is provided, the same probability
-            will be used for all the subpopulations. Different probabilities
-            can be provided in a :class:`~collections.abc.Sequence`. All
-            the probabilities must be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_MUTATION_PROB` will be
-            used. Defaults to :data:`None`
+        :param mutation_probs: The mutation probability for each subpopulation.
+            If only a single value is provided, the same probability will be
+            used for all the subpopulations. Different probabilities can be
+            provided in a :class:`~collections.abc.Sequence`. All the
+            probabilities must be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_mutation_probs`
+            will be used. Defaults to :data:`None`
         :type mutation_probs: float | ~collections.abc.Sequence[float]
         :param gene_ind_mutation_probs: The gene independent mutation
-            probability for each subpopulation (species). If only a single
+            probability for each subpopulation. If only a single
             value is provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
             :class:`~collections.abc.Sequence`. All the probabilities must
-            be in (0, 1). If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB`
+            be in (0, 1). If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_gene_ind_mutation_probs`
             will be used. Defaults to :data:`None`
         :type gene_ind_mutation_probs: float | ~collections.abc.Sequence[float]
         :param selection_funcs_params: The parameters for the selection
-            function of each subpopulation (species). If only a single value is
+            function of each subpopulation. If only a single value is
             provided, the same probability will be used for all the
             subpopulations. Different probabilities can be provided in a
-            :class:`~collections.abc.Sequence`. If set to :data:`None`,
-            :attr:`~culebra.trainer.ea.DEFAULT_SELECTION_FUNC_PARAMS`
+            :class:`~collections.abc.Sequence`. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_selection_funcs_params`
             will be used. Defaults to :data:`None`
         :type selection_funcs_params: dict | ~collections.abc.Sequence[dict]
-        :param num_subtrainers: The number of subpopulations (species). If set
-            to :data:`None`, the number of species  evolved by the trainer
-            is will be used, otherwise it must match the number of species.
-            Defaults to :data:`None`
+        :param num_subtrainers: The number of subtrainers (species). If
+            omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_num_subtrainers`
+            will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative individuals that
-            will be sent to the other subpopulations. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subpopulations. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
+        :param representation_topology_func: Topology function for
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_representation_topology_func`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func: ~collections.abc.Callable
+        :param representation_topology_func_params: Parameters to obtain the
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_representation_topology_func_params`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subpopulation (species). If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subpopulation (species). If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.ea.abc.CooperativeEA._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subpopulations
             (species) trainer
@@ -3123,14 +3057,18 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=(
+                representation_topology_func_params
+            ),
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -3159,7 +3097,7 @@ class CooperativeEA(CooperativeTrainer, HeterogeneousEA):
             not match the number of subpopulations.
         """
 
-        def subtrainers_properties() -> List[Dict[str, Any]]:
+        def subtrainers_properties() -> list[dict[str, Any]]:
             """Obtain the properties of each subpopulation.
 
             :raises RuntimeError: If the length of any properties sequence

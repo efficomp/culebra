@@ -31,6 +31,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.cv_folds
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.fitness_cls
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.index
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer.num_obj
@@ -42,6 +43,10 @@ Properties
 
 Private properties
 ------------------
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._default_classifier
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._default_cv_folds
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._default_index
+.. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_function.svc_optimization.abc.RBFSVCScorer._worst_score
 
 Methods

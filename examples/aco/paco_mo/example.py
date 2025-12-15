@@ -38,10 +38,10 @@ class PACOMOTSP(PACOMO, ACOTSP):
 
 # Try the KroAB100 problem
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromTSPLib(
+    PathLength.from_tsplib(
        "https://raw.githubusercontent.com/mastqe/tsplib/master/kroA100.tsp"
     ),
-    PathLength.fromTSPLib(
+    PathLength.from_tsplib(
        "https://raw.githubusercontent.com/mastqe/tsplib/master/kroB100.tsp"
     )
 )
@@ -66,7 +66,7 @@ params = {
     "col_size": 50,
     "pop_size": 10,
     "max_num_iters": 100,
-    "checkpoint_enable": False
+    "checkpoint_activation": False
 }
 
 # Create the wrapper

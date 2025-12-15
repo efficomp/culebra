@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_enable
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_activation
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_filename
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_freq
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.container
@@ -60,10 +60,23 @@ Properties
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainer_cls
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainer_params
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainers
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.verbose
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.verbosity
 
 Private properties
 ------------------
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_index
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_max_num_iters
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_num_subtrainers
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_freq
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_selection_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_selection_func_params
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_size
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_topology_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_topology_func_params
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_verbosity
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._subtrainer_suffixes
 
 Static methods

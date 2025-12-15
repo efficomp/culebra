@@ -24,16 +24,8 @@ Sequential and parallel cooperative co-evolutionary algorithms.
 
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Type,
-    Optional,
-    Callable,
-    Tuple,
-    List,
-    Dict,
-    Sequence
-)
+from typing import Any
+from collections.abc import Sequence, Callable
 
 from culebra.abc import (
     Species,
@@ -61,79 +53,53 @@ class SequentialCooperativeEA(CooperativeEA, SequentialDistributedTrainer):
 
     def __init__(
         self,
-        solution_classes: Type[Individual] | Sequence[Type[Individual]],
-        species: Species | Sequence[Species],
+        solution_classes: Sequence[type[Individual]],
+        species: Sequence[Species],
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[SequentialCooperativeEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [SequentialCooperativeEA],
-                bool
-            ]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """."""
@@ -163,14 +129,16 @@ class SequentialCooperativeEA(CooperativeEA, SequentialDistributedTrainer):
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=representation_topology_func_params,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
@@ -184,79 +152,53 @@ class ParallelCooperativeEA(CooperativeEA, ParallelDistributedTrainer):
 
     def __init__(
         self,
-        solution_classes: Type[Individual] | Sequence[Type[Individual]],
-        species: Species | Sequence[Species],
+        solution_classes: Sequence[type[Individual]],
+        species: Sequence[Species],
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SinglePopEA],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
+        subtrainer_cls: type[SinglePopEA],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[ParallelCooperativeEA], bool] | None = None,
+        pop_sizes: int | Sequence[int] | None = None,
+        crossover_funcs:
             Callable[
-                [ParallelCooperativeEA],
-                bool
-            ]
-        ] = None,
-        pop_sizes: Optional[int | Sequence[int]] = None,
-        crossover_funcs: Optional[
-            Callable[
-                [Individual, Individual],
-                Tuple[Individual, Individual]
+                [Individual, Individual], tuple[Individual, Individual]
             ] |
             Sequence[
                 Callable[
-                    [Individual, Individual],
-                    Tuple[Individual, Individual]
+                    [Individual, Individual], tuple[Individual, Individual]
                 ]
-            ]
-        ] = None,
-        mutation_funcs: Optional[
-            Callable[
-                [Individual, float],
-                Tuple[Individual]
             ] |
+            None = None,
+        mutation_funcs:
+            Callable[[Individual, float], tuple[Individual]] |
+            Sequence[Callable[[Individual, float], tuple[Individual]]] |
+            None = None,
+        selection_funcs:
+            Callable[[list[Individual], int, Any], list[Individual]] |
             Sequence[
-                Callable[
-                    [Individual, float],
-                    Tuple[Individual]
-                ]
-            ]
-        ] = None,
-        selection_funcs: Optional[
-            Callable[
-                [List[Individual], int, Any],
-                List[Individual]
-            ] | Sequence[
-                Callable[
-                    [List[Individual], int, Any],
-                    List[Individual]
-                ]
-            ]
-        ] = None,
-        crossover_probs: Optional[float | Sequence[float]] = None,
-        mutation_probs: Optional[float | Sequence[float]] = None,
-        gene_ind_mutation_probs: Optional[float | Sequence[float]] = None,
-        selection_funcs_params: Optional[
-            Dict[str, Any] | Sequence[Dict[str, Any]]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Individual], Any], Individual]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+                Callable[[list[Individual], int, Any], list[Individual]]
+            ] |
+            None = None,
+        crossover_probs: float | Sequence[float] | None = None,
+        mutation_probs: float | Sequence[float] | None = None,
+        gene_ind_mutation_probs: float | Sequence[float] | None = None,
+        selection_funcs_params:
+            dict[str, Any] | Sequence[dict[str, Any]] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Individual], Any], Individual] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """."""
@@ -286,14 +228,16 @@ class ParallelCooperativeEA(CooperativeEA, ParallelDistributedTrainer):
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=representation_topology_func_params,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )

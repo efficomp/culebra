@@ -21,7 +21,6 @@
 
 from __future__ import annotations
 
-from typing import Optional, Tuple
 from collections.abc import Sequence
 
 from culebra.abc import Fitness
@@ -49,7 +48,7 @@ class C(SVCScorer):
     """Minimization of the C hyperparameter of RBF SVCs."""
 
     @property
-    def obj_weights(self) -> Tuple[int, ...]:
+    def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
         Minimize C.
@@ -60,7 +59,7 @@ class C(SVCScorer):
         return (-1, )
 
     @property
-    def obj_names(self) -> Tuple[str, ...]:
+    def obj_names(self) -> tuple[str, ...]:
         """Objective names.
 
         :return: ("C",)
@@ -71,8 +70,8 @@ class C(SVCScorer):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 

@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_enable
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_activation
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_filename
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_freq
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.container
@@ -51,7 +51,16 @@ Properties
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.runtime
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.solution_cls
 .. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.species
-.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.verbose
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._default_index
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._default_max_num_iters
+.. autoproperty:: culebra.trainer.abc.SingleSpeciesTrainer._default_verbosity
 
 Methods
 -------

@@ -30,18 +30,21 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.num_obj
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_weights
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_names
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_thresholds
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.cv_folds
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.fitness_cls
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.index
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.training_data
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.num_obj
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_names
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_thresholds
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.obj_weights
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.test_data
-.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.cv_folds
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy.training_data
 
 Private properties
 ------------------
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy._default_cv_folds
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy._default_index
+.. autoproperty:: culebra.fitness_function.dataset_score.Accuracy._default_similarity_threshold
 .. autoproperty:: culebra.fitness_function.dataset_score.Accuracy._worst_score
 
 Methods
@@ -52,7 +55,7 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.fitness_function.dataset_score.Accuracy._score
-.. automethod:: culebra.fitness_function.dataset_score.Accuracy._final_training_test_data
-.. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_train_test
 .. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_kfcv
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._evaluate_train_test
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._final_training_test_data
+.. automethod:: culebra.fitness_function.dataset_score.Accuracy._score

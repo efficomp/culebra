@@ -47,28 +47,17 @@
 <span id="culebra-trainer-aco-abc-module"></span><h1><a class="reference internal" href="#module-culebra.trainer.aco.abc" title="culebra.trainer.aco.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.aco.abc</span></code></a> module<a class="headerlink" href="#module-culebra.trainer.aco.abc" title="Link to this heading">¶</a></h1>
 <p>Abstract base classes for the ACO-based trainers.</p>
 <p>This module provides several abstract classes for different kind of
-Ant Colony Optimization based trainers. The base class for all the single
-colony ACO-based trainers is <a class="reference internal" href="abc/single_col_aco.html#culebra.trainer.aco.abc.SingleColACO" title="culebra.trainer.aco.abc.SingleColACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleColACO</span></code></a>.
-Elitism is also supported via the <a class="reference internal" href="abc/elitist_aco.html#culebra.trainer.aco.abc.ElitistACO" title="culebra.trainer.aco.abc.ElitistACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACO</span></code></a>.</p>
+Ant Colony Optimization based trainers.</p>
 <ul class="simple">
-<li><p>Regarding the matrices structure of the ACO-based approach:</p>
+<li><p>Basic base classes:</p>
 <ul>
-<li><p><a class="reference internal" href="abc/multiple_heuristic_matrices_aco.html#culebra.trainer.aco.abc.MultipleHeuristicMatricesACO" title="culebra.trainer.aco.abc.MultipleHeuristicMatricesACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleHeuristicMatricesACO</span></code></a>: A base
-class for all the single colony ACO-based trainers which use multiple
-heuristic matrices</p></li>
-<li><p><a class="reference internal" href="abc/multiple_pheromone_matrices_aco.html#culebra.trainer.aco.abc.MultiplePheromoneMatricesACO" title="culebra.trainer.aco.abc.MultiplePheromoneMatricesACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplePheromoneMatricesACO</span></code></a>: A base
-class for all the single colony ACO-based trainers which use multiple
-phermone matrices</p></li>
-<li><p><a class="reference internal" href="abc/single_heuristic_matrix_aco.html#culebra.trainer.aco.abc.SingleHeuristicMatrixACO" title="culebra.trainer.aco.abc.SingleHeuristicMatrixACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleHeuristicMatrixACO</span></code></a>: A base class
-for all the single colony ACO-based trainers which rely on a single
-heuristic matrix</p></li>
+<li><p><a class="reference internal" href="abc/single_col_aco.html#culebra.trainer.aco.abc.SingleColACO" title="culebra.trainer.aco.abc.SingleColACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleColACO</span></code></a>: Base class for all the
+single colony ACO-based trainers</p></li>
+<li><p><a class="reference internal" href="abc/elitist_aco.html#culebra.trainer.aco.abc.ElitistACO" title="culebra.trainer.aco.abc.ElitistACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACO</span></code></a> Support for elitist
+single colony ACO-based trainers</p></li>
 <li><p><a class="reference internal" href="abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO" title="culebra.trainer.aco.abc.SingleObjACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleObjACO</span></code></a>: A base class for all
 the single colony ACO-based trainers which optimize only a single
-objective, that is, with a single pheromone matrix and also a single
-heuristic matrix</p></li>
-<li><p><a class="reference internal" href="abc/single_pheromone_matrix_aco.html#culebra.trainer.aco.abc.SinglePheromoneMatrixACO" title="culebra.trainer.aco.abc.SinglePheromoneMatrixACO"><code class="xref py py-class docutils literal notranslate"><span class="pre">SinglePheromoneMatrixACO</span></code></a>: A base class
-for all the single colony ACO-based trainers which rely on a single
-pheromone matrix</p></li>
+objective</p></li>
 </ul>
 </li>
 <li><p>With respect to the pheromone updating procedure:</p>

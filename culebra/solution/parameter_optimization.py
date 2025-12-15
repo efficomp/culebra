@@ -40,7 +40,7 @@ and mutation operators to the
 
 from __future__ import annotations
 
-from typing import Tuple, NamedTuple, Type, Optional
+from typing import NamedTuple
 from collections.abc import Sequence
 from collections import namedtuple
 from string import ascii_letters, digits
@@ -104,8 +104,8 @@ class Species(BaseSpecies):
         self,
         lower_bounds: Sequence[int | float],
         upper_bounds: Sequence[int | float],
-        types: Optional[Sequence[Type[int] | Type[float]]] = None,
-        names: Optional[Sequence[str]] = None
+        types: Sequence[type[int] | type[float]] | None = None,
+        names: Sequence[str] | None = None
     ) -> None:
         """Create a new species.
 
@@ -139,7 +139,7 @@ class Species(BaseSpecies):
         ) = self._check_attributes(lower_bounds, upper_bounds, types, names)
 
     @property
-    def lower_bounds(self) -> Tuple[int | float, ...]:
+    def lower_bounds(self) -> tuple[int | float, ...]:
         """Lower bound for each parameter.
 
         :rtype: tuple[int | float]
@@ -147,7 +147,7 @@ class Species(BaseSpecies):
         return self._lower_bounds
 
     @property
-    def upper_bounds(self) -> Tuple[int | float, ...]:
+    def upper_bounds(self) -> tuple[int | float, ...]:
         """Upper bound for each parameter.
 
         :rtype: tuple[int | float]
@@ -155,7 +155,7 @@ class Species(BaseSpecies):
         return self._upper_bounds
 
     @property
-    def types(self) -> Tuple[Type[int] | Type[float], ...]:
+    def types(self) -> tuple[type[int] | type[float], ...]:
         """Type of each parameter.
 
         :rtype: tuple[type]
@@ -163,7 +163,7 @@ class Species(BaseSpecies):
         return self._types
 
     @property
-    def names(self) -> Tuple[str, ...]:
+    def names(self) -> tuple[str, ...]:
         """Name of each parameter.
 
         :rtype: tuple[str]
@@ -216,8 +216,8 @@ class Species(BaseSpecies):
     @staticmethod
     def _retype(
         values: Sequence[float],
-        types: Sequence[Type[int] | Type[float]]
-    ) -> Tuple[int | float, ...]:
+        types: Sequence[type[int] | type[float]]
+    ) -> tuple[int | float, ...]:
         """Retype the input values to the types provided.
 
         :param values: The values
@@ -236,13 +236,13 @@ class Species(BaseSpecies):
     def _check_attributes(
         lower_bounds: Sequence[int | float],
         upper_bounds: Sequence[int | float],
-        types: Optional[Sequence[Type[int] | Type[float]]] = None,
-        names: Optional[Sequence[str]] = None
-    ) -> Tuple[
-        Tuple[int | float, ...],
-        Tuple[int | float, ...],
-        Tuple[Type[int] | Type[float], ...],
-        Tuple[str, ...]
+        types: Sequence[type[int] | type[float]] | None = None,
+        names: Sequence[str] | None = None
+    ) -> tuple[
+        tuple[int | float, ...],
+        tuple[int | float, ...],
+        tuple[type[int] | type[float], ...],
+        tuple[str, ...]
     ]:
         """Check the species attributes.
 
@@ -416,8 +416,8 @@ class Solution(BaseSolution):
     def __init__(
         self,
         species: Species,
-        fitness_cls: Type[Fitness],
-        values: Optional[Sequence[int | float]] = None
+        fitness_cls: type[Fitness],
+        values: Sequence[int | float] | None = None
     ) -> None:
         """Construct a default solution.
 
@@ -439,9 +439,9 @@ class Solution(BaseSolution):
             self._setup()
 
     @property
-    def named_values_cls(self) -> Type[NamedTuple]:
+    def named_values_cls(self) -> type[NamedTuple]:
         """Named tuple class to hold the parameter values.
-        
+
         :rtype: type[~typing.NamedTuple]
         """
         return namedtuple("NamedValues", self.species.names)
@@ -449,7 +449,7 @@ class Solution(BaseSolution):
     @property
     def values(self) -> NamedTuple[int | float, ...]:
         """Parameter values evolved by the solution.
-        
+
         :rtype:
             :attr:`~culebra.solution.parameter_optimization.Solution.named_values_cls`
 
@@ -560,7 +560,7 @@ class Individual(Solution, BaseIndividual):
     in SBX and polynomial mutation.
     """
 
-    def crossover(self, other: Individual) -> Tuple[Individual, Individual]:
+    def crossover(self, other: Individual) -> tuple[Individual, Individual]:
         """Cross this individual with another one.
 
         SBX is used.
@@ -589,7 +589,7 @@ class Individual(Solution, BaseIndividual):
 
         return self, other
 
-    def mutate(self, indpb: float) -> Tuple[Individual]:
+    def mutate(self, indpb: float) -> tuple[Individual]:
         """Mutate the individual.
 
         Polynomial mutation is used.

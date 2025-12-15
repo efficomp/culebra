@@ -65,7 +65,7 @@ class SolutionTester(unittest.TestCase):
         with self.assertRaises(TypeError):
             MySolution(BaseSpecies(), MyFitness)
         with self.assertRaises(TypeError):
-            MySolution(Species(), Species)
+            MySolution(Species(num_nodes=10), Species)
 
         # Check default solution
         num_nodes = 10
@@ -89,7 +89,7 @@ class SolutionTester(unittest.TestCase):
             with self.assertRaises(ValueError):
                 sol.path = path
 
-        valid_path = [node for node in range(num_nodes)]
+        valid_path = list(range(num_nodes))
         sol.path = valid_path
         self.assertTrue(np.all(valid_path == sol.path))
 

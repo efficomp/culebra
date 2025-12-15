@@ -127,7 +127,7 @@ params = {
     ),
     "max_num_iters": 100,
     "pop_sizes": dataset.num_feats//2,
-    "checkpoint_enable": False,
+    "checkpoint_activation": False,
 }
 
 # Create the trainer

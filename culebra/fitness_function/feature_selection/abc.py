@@ -32,7 +32,6 @@ selecion problems:
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Tuple, Optional
 
 from culebra.abc import Fitness
 from culebra.fitness_function.abc import SingleObjectiveFitnessFunction
@@ -78,8 +77,8 @@ class FSDatasetScorer(DatasetScorer, FSScorer):
     def evaluate(
         self,
         sol: Solution,
-        index: Optional[int] = None,
-        representatives: Optional[Sequence[Solution]] = None
+        index: int | None = None,
+        representatives: Sequence[Solution] | None = None
     ) -> Fitness:
         """Evaluate a solution.
 
@@ -110,7 +109,7 @@ class FSDatasetScorer(DatasetScorer, FSScorer):
     def _final_training_test_data(
         self,
         sol: Solution
-    ) -> Tuple[Dataset, Dataset]:
+    ) -> tuple[Dataset, Dataset]:
         """Get the final training and test data.
 
         :param sol: Solution to be evaluated. It is used to select the

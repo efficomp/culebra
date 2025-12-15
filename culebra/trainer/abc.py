@@ -49,16 +49,8 @@ Finally, some usual distributed approaches are also provided:
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import (
-    Any,
-    Type,
-    Optional,
-    Callable,
-    List,
-    Dict,
-    Generator,
-    Sequence
-)
+from typing import Any
+from collections.abc import Sequence, Callable, Generator
 from copy import deepcopy
 from functools import partial
 from multiprocess import (
@@ -85,8 +77,6 @@ from culebra.checker import (
     check_func_params,
     check_sequence
 )
-
-from .topology import full_connected_destinations
 from .constants import (
     DEFAULT_NUM_SUBTRAINERS,
     DEFAULT_REPRESENTATION_SIZE,
@@ -95,6 +85,8 @@ from .constants import (
     DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS,
     DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC,
     DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS,
+    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC,
+    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 )
 
 
@@ -107,11 +99,6 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC = full_connected_destinations
-"""Default topology function for the cooperative model."""
-
-COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS = {}
-"""Parameters for the default topology function in the cooperative model."""
 
 
 class SingleSpeciesTrainer(Trainer):
@@ -119,18 +106,16 @@ class SingleSpeciesTrainer(Trainer):
 
     def __init__(
         self,
-        solution_cls: Type[Solution],
+        solution_cls: type[Solution],
         species: Species,
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[[Trainer], bool]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[Trainer], bool] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new trainer.
 
@@ -140,32 +125,32 @@ class SingleSpeciesTrainer(Trainer):
         :type species: ~culebra.abc.Species
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.abc.SingleSpeciesTrainer._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.abc.SingleSpeciesTrainer._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.abc.SingleSpeciesTrainer._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.abc.SingleSpeciesTrainer._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.abc.SingleSpeciesTrainer._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.abc.SingleSpeciesTrainer._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -176,10 +161,10 @@ class SingleSpeciesTrainer(Trainer):
             fitness_function=fitness_function,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
@@ -188,7 +173,7 @@ class SingleSpeciesTrainer(Trainer):
         self.species = species
 
     @property
-    def solution_cls(self) -> Type[Solution]:
+    def solution_cls(self) -> type[Solution]:
         """Solution class.
 
         :rtype: type[~culebra.abc.Solution]
@@ -196,13 +181,12 @@ class SingleSpeciesTrainer(Trainer):
         :setter: Set a new solution class
         :param cls: The new class
         :type cls: type[~culebra.abc.Solution]
-        :raises TypeError: If *cls* is not a :class:`~culebra.abc.Solution`
-            subclass
+        :raises TypeError: If *cls* is not valid solution class
         """
         return self._solution_cls
 
     @solution_cls.setter
-    def solution_cls(self, cls: Type[Solution]) -> None:
+    def solution_cls(self, cls: type[Solution]) -> None:
         """Set a new solution class.
 
         :param cls: The new class
@@ -225,8 +209,7 @@ class SingleSpeciesTrainer(Trainer):
         :setter: Set a new species
         :param value: The new species
         :type value: ~culebra.abc.Species
-        :raises TypeError: If *value* is not a :class:`~culebra.abc.Species`
-            instance
+        :raises TypeError: If *value* is not a valid species
         """
         return self._species
 
@@ -307,27 +290,24 @@ class DistributedTrainer(Trainer):
     def __init__(
         self,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SingleSpeciesTrainer],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [SingleSpeciesTrainer],
-                bool]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Solution], Any], Solution]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SingleSpeciesTrainer],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[SingleSpeciesTrainer], bool] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Solution], Any], Solution] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -337,56 +317,66 @@ class DistributedTrainer(Trainer):
         :param subtrainer_cls: Single-species trainer class to handle
             the subtrainers.
         :type subtrainer_cls: type[~culebra.trainer.abc.SingleSpeciesTrainer]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.abc.DistributedTrainer._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param num_subtrainers: The number of subtrainers. If set to
-            :data:`None`, :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`
+        :param num_subtrainers: The number of subtrainers. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_num_subtrainers`
             will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative solutions that
-            will be sent to the other subtrainers. If set to
-            :data:`None`, :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE`
+            will be sent to the other subtrainers. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_size`
             will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
+        :param representation_topology_func: Topology function for
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_topology_func`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func: ~collections.abc.Callable
+        :param representation_topology_func_params: Parameters to obtain the
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_topology_func_params`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subtrainer. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subtrainer. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to :data:`None`,
-            :data:`__debug__` will be used. Defaults to :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subtrainers
             trainer
@@ -399,10 +389,10 @@ class DistributedTrainer(Trainer):
             fitness_function=fitness_function,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
@@ -411,6 +401,10 @@ class DistributedTrainer(Trainer):
         self.num_subtrainers = num_subtrainers
         self.representation_size = representation_size
         self.representation_freq = representation_freq
+        self.representation_topology_func = representation_topology_func
+        self.representation_topology_func_params = (
+            representation_topology_func_params
+        )
         self.representation_selection_func = representation_selection_func
         self.representation_selection_func_params = (
             representation_selection_func_params
@@ -418,7 +412,7 @@ class DistributedTrainer(Trainer):
         self.subtrainer_params = subtrainer_params
 
     @property
-    def subtrainer_cls(self) -> Type[SingleSpeciesTrainer]:
+    def subtrainer_cls(self) -> type[SingleSpeciesTrainer]:
         """Trainer class to handle the subtrainers.
 
         Each subtrainer will be handled by a single-species trainer.
@@ -427,13 +421,12 @@ class DistributedTrainer(Trainer):
         :setter: Set a new trainer class to handle the subtrainers
         :param cls: The new class
         :type cls: type[~culebra.trainer.abc.SingleSpeciesTrainer]
-        :raises TypeError: If *cls* is not a
-            :class:`~culebra.trainer.abc.SingleSpeciesTrainer` subclass
+        :raises TypeError: If *cls* is not a valid trainer class
         """
         return self._subtrainer_cls
 
     @subtrainer_cls.setter
-    def subtrainer_cls(self, cls: Type[SingleSpeciesTrainer]) -> None:
+    def subtrainer_cls(self, cls: type[SingleSpeciesTrainer]) -> None:
         """Set a new trainer class to handle the subtrainers.
 
         Each subtrainer will be handled by a single-species trainer.
@@ -452,41 +445,58 @@ class DistributedTrainer(Trainer):
         self.reset()
 
     @property
+    def _default_num_subtrainers(self) -> int:
+        """Default number of subtrainers.
+
+        :return: :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`
+        :rtype: int
+        """
+        return DEFAULT_NUM_SUBTRAINERS
+
+    @property
     def num_subtrainers(self) -> int:
         """Number of subtrainers.
 
         :rtype: int
         :setter: Set a new value for the number of subtrainers
         :param value: The new number of subtrainers. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` is chosen
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_num_subtrainers`
+            is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
-        return (
-            DEFAULT_NUM_SUBTRAINERS if self._num_subtrainers is None
-            else self._num_subtrainers
-        )
+        return self._num_subtrainers
 
     @num_subtrainers.setter
     def num_subtrainers(self, value: int | None) -> None:
         """Set a new value for the number of subtrainers.
 
         :param value: The new number of subtrainers. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS` is chosen
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_num_subtrainers`
+            is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
         # Check the value
         self._num_subtrainers = (
-            None if value is None else check_int(
+            self._default_num_subtrainers if value is None else check_int(
                 value, "number of subtrainers", gt=0
             )
         )
 
         # Reset the algorithm
         self.reset()
+
+    @property
+    def _default_representation_size(self) -> int:
+        """Default number of representatives sent to the other subtrainers.
+
+        :return: :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE`
+        :rtype: int
+        """
+        return DEFAULT_REPRESENTATION_SIZE
 
     @property
     def representation_size(self) -> int:
@@ -496,29 +506,28 @@ class DistributedTrainer(Trainer):
         :rtype: int
         :setter: Set a new representation size
         :param size: The new size. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` is chosen
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_size`
+            is chosen
         :type size: int
         :raises TypeError: If *size* is not an integer number
         :raises ValueError: If *size* is not positive
         """
-        return (
-            DEFAULT_REPRESENTATION_SIZE if self._representation_size is None
-            else self._representation_size
-        )
+        return self._representation_size
 
     @representation_size.setter
     def representation_size(self, size: int | None) -> None:
         """Set a new representation size.
 
         :param size: The new size. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` is chosen
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_size`
+            is chosen
         :type size: int
         :raises TypeError: If *size* is not an integer number
         :raises ValueError: If *size* is not positive
         """
         # Check size
         self._representation_size = (
-            None if size is None else check_int(
+            self._default_representation_size if size is None else check_int(
                 size, "representation size", gt=0
             )
         )
@@ -527,35 +536,43 @@ class DistributedTrainer(Trainer):
         self.reset()
 
     @property
+    def _default_representation_freq(self) -> int:
+        """Default number of iterations between representatives sending.
+
+        :return: :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ`
+        :rtype: int
+        """
+        return DEFAULT_REPRESENTATION_FREQ
+
+    @property
     def representation_freq(self) -> int:
         """Number of iterations between representatives sendings.
 
         :rtype: int
         :setter: Set a new value for the frequency
         :param value: The new frequency. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` is chosen
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_freq`
+            is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
-        return (
-            DEFAULT_REPRESENTATION_FREQ if self._representation_freq is None
-            else self._representation_freq
-        )
+        return self._representation_freq
 
     @representation_freq.setter
     def representation_freq(self, value: int | None) -> None:
         """Set the number of iterations between representatives sendings.
 
         :param value: The new frequency. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` is chosen
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_freq`
+            is chosen
         :type value: int
         :raises TypeError: If *value* is not an integer
         :raises ValueError: If *value* is not a positive number
         """
         # Check the value
         self._representation_freq = (
-            None if value is None else check_int(
+            self._default_representation_freq if value is None else check_int(
                 value, "representation frequency", gt=0
             )
         )
@@ -564,16 +581,16 @@ class DistributedTrainer(Trainer):
         self.reset()
 
     @property
-    @abstractmethod
-    def representation_topology_func(
+    def _default_representation_topology_func(
         self
-    ) -> Callable[[int, int, Any], List[int]]:
-        """Representation topology function.
+    ) -> Callable[[int, int, Any], list[int]]:
+        """Default topology function.
 
         This property must be overridden by subclasses to return a correct
         value.
 
         :rtype: ~collections.abc.Callable
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The representation_topology_func property has not been "
@@ -581,14 +598,54 @@ class DistributedTrainer(Trainer):
         )
 
     @property
-    @abstractmethod
-    def representation_topology_func_params(self) -> Dict[str, Any]:
-        """Parameters of the representation topology function.
+    def representation_topology_func(
+        self
+    ) -> Callable[[int, int, Any], list[int]]:
+        """Representation topology function.
+
+        :rtype: ~collections.abc.Callable
+        :setter: Set new representation topology function
+        :param func: The new function. If set to :data:`None`,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_topology_func`
+            is chosen
+        :type func: ~collections.abc.Callable
+        :raises TypeError: If *func* is not callable
+        """
+        return self._representation_topology_func
+
+    @representation_topology_func.setter
+    def representation_topology_func(
+        self,
+        func: Callable[[int, int, Any], list[int]] | None
+    ) -> None:
+        """Set new representation topology function.
+
+        :param func: The new function. If set to :data:`None`,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_topology_func`
+            is chosen
+        :type func: ~collections.abc.Callable
+        :raises TypeError: If *func* is not callable
+        """
+        # Check func
+        self._representation_topology_func = (
+            self._default_representation_topology_func
+            if func is None else check_func(
+                func, "representation topology function"
+            )
+        )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def _default_representation_topology_func_params(self) -> dict[str, Any]:
+        """Default parameters for the default topology function.
 
         This property must be overridden by subclasses to return a correct
         value.
 
         :rtype: dict
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The representation_topology_func_params property has not been "
@@ -596,9 +653,57 @@ class DistributedTrainer(Trainer):
         )
 
     @property
+    def representation_topology_func_params(self) -> dict[str, Any]:
+        """Parameters of the representation topology function.
+
+        :rtype: dict
+        :setter: Set new parameters
+        :param params: The new parameters. If set to :data:`None`,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_topology_func_params`
+            is chosen
+        :type params: dict
+        :raises TypeError: If *params* is not a :class:`dict`
+        """
+        return self._representation_topology_func_params
+
+    @representation_topology_func_params.setter
+    def representation_topology_func_params(
+        self, params: dict[str, Any] | None
+    ) -> None:
+        """Set the parameters for the representation topology function.
+
+        :param params: The new parameters. If set to :data:`None`,
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_topology_func_params`
+            is chosen
+        :type params: dict
+        :raises TypeError: If *params* is not a :class:`dict`
+        """
+        # Check params
+        self._representation_topology_func_params = (
+            self._default_representation_topology_func_params
+            if params is None else check_func_params(
+                params, "representation topology function parameters"
+            )
+        )
+
+        # Reset the algorithm
+        self.reset()
+
+    @property
+    def _default_representation_selection_func(
+        self
+    ) -> Callable[[list[Solution], Any], Solution]:
+        """Default selection policy function to choose the representatives.
+
+        :return: :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+        :rtype: ~collections.abc.Callable
+        """
+        return DEFAULT_REPRESENTATION_SELECTION_FUNC
+
+    @property
     def representation_selection_func(
         self
-    ) -> Callable[[List[Solution], Any], Solution]:
+    ) -> Callable[[list[Solution], Any], Solution]:
         """Representation selection policy function.
 
         :return: A function that chooses which solutions are selected as
@@ -606,33 +711,30 @@ class DistributedTrainer(Trainer):
         :rtype: ~collections.abc.Callable
         :setter: Set new representation selection policy function.
         :param func: The new function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_selection_func`
             is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
-        return (
-            DEFAULT_REPRESENTATION_SELECTION_FUNC
-            if self._representation_selection_func is None
-            else self._representation_selection_func
-        )
+        return self._representation_selection_func
 
     @representation_selection_func.setter
     def representation_selection_func(
         self,
-        func: Callable[[List[Solution], Any], Solution] | None
+        func: Callable[[list[Solution], Any], Solution] | None
     ) -> None:
         """Set new representation selection policy function.
 
         :param func: The new function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_selection_func`
             is chosen
         :type func: ~collections.abc.Callable
         :raises TypeError: If *func* is not callable
         """
         # Check func
         self._representation_selection_func = (
-            None if func is None else check_func(
+            self._default_representation_selection_func
+            if func is None else check_func(
                 func, "representation selection policy function"
             )
         )
@@ -641,38 +743,44 @@ class DistributedTrainer(Trainer):
         self.reset()
 
     @property
-    def representation_selection_func_params(self) -> Dict[str, Any]:
+    def _default_representation_selection_func_params(self) -> dict[str, Any]:
+        """Default parameters for the representatives selection policy function.
+
+        :return: :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+        :rtype: dict
+        """
+        return DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
+
+    @property
+    def representation_selection_func_params(self) -> dict[str, Any]:
         """Parameters of the representation selection function.
 
         :rtype: dict
         :setter: Set new parameters
         :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_selection_func_params`
             is chosen
         :type params: dict
         :raises TypeError: If *params* is not a :class:`dict`
         """
-        return (
-            DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
-            if self._representation_selection_func_params is None
-            else self._representation_selection_func_params
-        )
+        return self._representation_selection_func_params
 
     @representation_selection_func_params.setter
     def representation_selection_func_params(
-        self, params: Dict[str, Any] | None
+        self, params: dict[str, Any] | None
     ) -> None:
         """Set the parameters for the representation selection policy function.
 
         :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            :attr:`~culebra.trainer.abc.DistributedTrainer._default_representation_selection_func_params`
             is chosen
         :type params: dict
         :raises TypeError: If *params* is not a :class:`dict`
         """
         # Check that params is a valid dict
         self._representation_selection_func_params = (
-            None if params is None else check_func_params(
+            self._default_representation_selection_func_params
+            if params is None else check_func_params(
                 params, "representation selection policy function parameters"
             )
         )
@@ -709,7 +817,7 @@ class DistributedTrainer(Trainer):
         return the_logbook
 
     @property
-    def subtrainer_params(self) -> Dict[str, Any]:
+    def subtrainer_params(self) -> dict[str, Any]:
         """Custom parameters for the subtrainers.
 
         :rtype: dict
@@ -721,7 +829,7 @@ class DistributedTrainer(Trainer):
         return self._subtrainer_params
 
     @subtrainer_params.setter
-    def subtrainer_params(self, params: Dict[str, Any]) -> None:
+    def subtrainer_params(self, params: dict[str, Any]) -> None:
         """Set the parameters for the subtrainers.
 
         :param params: The new parameters
@@ -755,7 +863,7 @@ class DistributedTrainer(Trainer):
         )
 
     @property
-    def subtrainers(self) -> List[SingleSpeciesTrainer] | None:
+    def subtrainers(self) -> list[SingleSpeciesTrainer] | None:
         """Subtrainers.
 
         One single-species trainer for each subtrainer.
@@ -789,6 +897,7 @@ class DistributedTrainer(Trainer):
 
         :param subtrainer: The subtrainer receiving representatives
         :type subtrainer: ~culebra.trainer.abc.SingleSpeciesTrainer
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The receive_representatives method has not been implemented in "
@@ -803,6 +912,7 @@ class DistributedTrainer(Trainer):
 
         :param subtrainer: The sender subtrainer
         :type subtrainer: ~culebra.trainer.abc.SingleSpeciesTrainer
+        :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The send_representatives method has not been implemented in "
@@ -1086,78 +1196,14 @@ class SequentialDistributedTrainer(DistributedTrainer):
 class ParallelDistributedTrainer(DistributedTrainer):
     """Abstract base class for parallel distributed trainers."""
 
-    def __init__(
-        self,
-        fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SingleSpeciesTrainer],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [SingleSpeciesTrainer],
-                bool]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Solution], Any], Solution]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
-        **subtrainer_params: Any
-    ) -> None:
-        """."""
-        # Init the superclass
-        super().__init__(
-            fitness_function=fitness_function,
-            subtrainer_cls = subtrainer_cls,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
-            num_subtrainers = num_subtrainers,
-            representation_size = representation_size,
-            representation_freq = representation_freq,
-            representation_selection_func = representation_selection_func,
-            representation_selection_func_params = (
-                representation_selection_func_params
-            ),
-            checkpoint_enable=checkpoint_enable,
-            checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
-            random_seed=random_seed,
-            **subtrainer_params
-        )
+    @property
+    def _default_num_subtrainers(self) -> int:
+        """Default number of subtrainers.
 
-    # Change the docstring of the constructor to indicate that the default
-    # number of subpopulations is the number of CPU cores for parallel
-    # multi-population approaches
-    __init__.__doc__ = DistributedTrainer.__init__.__doc__.replace(
-        ':attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`',
-        'the number of CPU cores'
-    )
-
-    @DistributedTrainer.num_subtrainers.getter
-    def num_subtrainers(self) -> int:
-        """Number of subtrainers.
-
+        :return: The number of CPU cores
         :rtype: int
-        :setter: Set a new value for the number of subtrainers
-        :param value: The new number of subtrainers. If set to :data:`None`,
-            the number of CPU cores is chosen
-        :type value: int
-        :raises TypeError: If *value* is not an integer
-        :raises ValueError: If *value* is not a positive number
         """
-        return (
-            cpu_count() if self._num_subtrainers is None
-            else self._num_subtrainers
-        )
+        return cpu_count()
 
     @property
     def current_iter(self) -> int | None:
@@ -1169,8 +1215,7 @@ class ParallelDistributedTrainer(DistributedTrainer):
         """
         if self.subtrainers is not None:
             return self.subtrainers[0].current_iter
-        else:
-            return self._current_iter
+        return self._current_iter
 
     @property
     def num_evals(self) -> int | None:
@@ -1290,35 +1335,27 @@ class IslandsTrainer(SingleSpeciesTrainer, DistributedTrainer):
 
     def __init__(
         self,
-        solution_cls: Type[Solution],
+        solution_cls: type[Solution],
         species: Species,
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SingleSpeciesTrainer],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [SingleSpeciesTrainer], bool]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_topology_func: Optional[
-            Callable[[int, int, Any], List[int]]
-        ] = None,
-        representation_topology_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Solution], Any], Solution]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SingleSpeciesTrainer],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[SingleSpeciesTrainer], bool] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Solution], Any], Solution] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -1332,68 +1369,67 @@ class IslandsTrainer(SingleSpeciesTrainer, DistributedTrainer):
         :param subtrainer_cls: Single-species trainer class to handle
             the subtrainers (islands).
         :type subtrainer_cls: type[~culebra.trainer.abc.SingleSpeciesTrainer]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.abc.IslandsTrainer._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param num_subtrainers: The number of subtrainers (islands). If set to
-            :data:`None`, :attr:`~culebra.trainer.DEFAULT_NUM_SUBTRAINERS`
+        :param num_subtrainers: The number of subtrainers (islands). If
+            omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_num_subtrainers`
             will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative solutions that
-            will be sent to the other subtrainers. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subtrainers. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
         :param representation_topology_func: Topology function for
-            representatives sending. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_representation_topology_func`
             will be used. Defaults to :data:`None`
         :type representation_topology_func: ~collections.abc.Callable
         :param representation_topology_func_params: Parameters to obtain the
-            destinations with the topology function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_representation_topology_func_params`
             will be used. Defaults to :data:`None`
         :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subtrainer (island). If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subtrainer (island). If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.abc.IslandsTrainer._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subtrainers
             (islands) trainer
@@ -1417,104 +1453,39 @@ class IslandsTrainer(SingleSpeciesTrainer, DistributedTrainer):
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=representation_topology_func_params,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
-        self.representation_topology_func = representation_topology_func
-        self.representation_topology_func_params = (
-            representation_topology_func_params
-        )
 
     @property
-    def representation_topology_func(
+    def _default_representation_topology_func(
         self
-    ) -> Callable[[int, int, Any], List[int]]:
-        """Representation topology function.
+    ) -> Callable[[int, int, Any], list[int]]:
+        """Default topology function.
 
+        :return: :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
         :rtype: ~collections.abc.Callable
-        :setter: Set new representation topology function
-        :param func: The new function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
-            is chosen
-        :type func: ~collections.abc.Callable
-        :raises TypeError: If *func* is not a callable
         """
-        return (
-            DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
-            if self._representation_topology_func is None
-            else self._representation_topology_func
-        )
-
-    @representation_topology_func.setter
-    def representation_topology_func(
-        self,
-        func: Callable[[int, int, Any], List[int]] | None
-    ) -> None:
-        """Set new representation topology function.
-
-        :param func: The new function. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC`
-            is chosen
-        :type func: ~collections.abc.Callable
-        :raises TypeError: If *func* is not a callable
-        """
-        # Check func
-        self._representation_topology_func = (
-            None if func is None else check_func(
-                func, "representation topology function"
-            )
-        )
-
-        # Reset the algorithm
-        self.reset()
+        return DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
 
     @property
-    def representation_topology_func_params(self) -> Dict[str, Any]:
-        """Parameters of the representation topology function.
+    def _default_representation_topology_func_params(self) -> dict[str, Any]:
+        """Default parameters for the default topology function.
 
+        :return: :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
         :rtype: dict
-        :setter: Set new parameters
-        :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            is chosen
-        :type params: dict
-        :raises TypeError: If *params* is not a :class:`dict`
         """
-        return (
-            DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-            if self._representation_topology_func_params is None
-            else self._representation_topology_func_params
-        )
-
-    @representation_topology_func_params.setter
-    def representation_topology_func_params(
-        self, params: Dict[str, Any] | None
-    ) -> None:
-        """Set the parameters for the representation topology function.
-
-        :param params: The new parameters. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
-            is chosen
-        :type params: dict
-        :raises TypeError: If *params* is not a :class:`dict`
-        """
-        # Check params
-        self._representation_topology_func_params = (
-            None if params is None else check_func_params(
-                params, "representation topology function parameters"
-            )
-        )
-
-        # Reset the algorithm
-        self.reset()
+        return DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 
     def __copy__(self) -> IslandsTrainer:
         """Shallow copy the trainer.
@@ -1589,18 +1560,16 @@ class MultiSpeciesTrainer(Trainer):
 
     def __init__(
         self,
-        solution_classes: Sequence[Type[Solution]],
+        solution_classes: Sequence[type[Solution]],
         species: Sequence[Species],
         fitness_function: FitnessFunction,
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[[Trainer], bool]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None
+        max_num_iters: int | None = None,
+        custom_termination_func: Callable[[Trainer], bool] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None
     ) -> None:
         """Create a new trainer.
 
@@ -1611,32 +1580,32 @@ class MultiSpeciesTrainer(Trainer):
         :type species: ~collections.abc.Sequence[~culebra.abc.Species]
         :param fitness_function: The training fitness function
         :type fitness_function: ~culebra.abc.FitnessFunction
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.abc.MultiSpeciesTrainer._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.abc.MultiSpeciesTrainer._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.abc.MultiSpeciesTrainer._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.abc.MultiSpeciesTrainer._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.abc.MultiSpeciesTrainer._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.abc.MultiSpeciesTrainer._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :raises TypeError: If any argument is not of the appropriate type
         :raises ValueError: If any argument has an incorrect value
@@ -1647,10 +1616,10 @@ class MultiSpeciesTrainer(Trainer):
             fitness_function=fitness_function,
             max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed
         )
 
@@ -1659,10 +1628,10 @@ class MultiSpeciesTrainer(Trainer):
         self.species = species
 
     @property
-    def solution_classes(self) -> Sequence[Type[Solution]]:
+    def solution_classes(self) -> tuple[type[Solution]]:
         """Solution classes.
 
-        :rtype: ~collections.abc.Sequence[~culebra.abc.Solution]
+        :rtype: tuple[~culebra.abc.Solution]
         :setter: Set the new solution classes
         :param classes: The classes.
         :type classes: ~collections.abc.Sequence[~culebra.abc.Solution]
@@ -1674,7 +1643,7 @@ class MultiSpeciesTrainer(Trainer):
         return self._solution_classes
 
     @solution_classes.setter
-    def solution_classes(self, classes: Sequence[Type[Solution]]) -> None:
+    def solution_classes(self, classes: Sequence[type[Solution]]) -> None:
         """Set the new solution classes.
 
         :param classes: The classes.
@@ -1684,27 +1653,28 @@ class MultiSpeciesTrainer(Trainer):
         :raises ValueError: If any element of *classes* is not a
             :class:`~culebra.abc.Solution` subclass
         """
-        self._solution_classes = check_sequence(
-            classes,
-            "solution classes",
-            item_checker=partial(check_subclass, cls=Solution)
+        self._solution_classes = tuple(
+            check_sequence(
+                classes,
+                "solution classes",
+                item_checker=partial(check_subclass, cls=Solution)
+            )
         )
 
         # Reset the algorithm
         self.reset()
 
     @property
-    def species(self) -> Sequence[Species]:
+    def species(self) -> tuple[Species]:
         """Species for each subtrainer.
 
-        :rtype: ~collections.abc.Sequence[~culebra.abc.Species]
+        :rtype: tuple[~culebra.abc.Species]
         :setter: Set the new species
         :param value: The species
         :type value: ~collections.abc.Sequence[~culebra.abc.Species]
         :raises TypeError: If *value* is not a
             :class:`~collections.abc.Sequence`
-        :raises ValueError: If any element of *value* is not a
-            :class:`~culebra.abc.Species`
+        :raises ValueError: If any element of *value* is not a valid species
         """
         return self._species
 
@@ -1719,10 +1689,12 @@ class MultiSpeciesTrainer(Trainer):
         :raises ValueError: If any element of *value* is not a
             :class:`~culebra.abc.Species`
         """
-        self._species = check_sequence(
-            value,
-            "species",
-            item_checker=partial(check_instance, cls=Species)
+        self._species = tuple(
+            check_sequence(
+                value,
+                "species",
+                item_checker=partial(check_instance, cls=Species)
+            )
         )
 
         # Reset the algorithm
@@ -1789,31 +1761,27 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
 
     def __init__(
         self,
-        solution_classes: Sequence[Type[Solution]],
+        solution_classes: Sequence[type[Solution]],
         species: Sequence[Species],
         fitness_function: FitnessFunction,
-        subtrainer_cls: Type[SingleSpeciesTrainer],
-        max_num_iters: Optional[int] = None,
-        custom_termination_func: Optional[
-            Callable[
-                [SingleSpeciesTrainer],
-                bool
-            ]
-        ] = None,
-        num_subtrainers: Optional[int] = None,
-        representation_size: Optional[int] = None,
-        representation_freq: Optional[int] = None,
-        representation_selection_func: Optional[
-            Callable[[List[Solution], Any], Solution]
-        ] = None,
-        representation_selection_func_params: Optional[
-            Dict[str, Any]
-        ] = None,
-        checkpoint_enable: Optional[bool] = None,
-        checkpoint_freq: Optional[int] = None,
-        checkpoint_filename: Optional[str] = None,
-        verbose: Optional[bool] = None,
-        random_seed: Optional[int] = None,
+        subtrainer_cls: type[SingleSpeciesTrainer],
+        max_num_iters: int | None = None,
+        custom_termination_func:
+            Callable[[SingleSpeciesTrainer], bool] | None = None,
+        num_subtrainers: int | None = None,
+        representation_size: int | None = None,
+        representation_freq: int | None = None,
+        representation_topology_func:
+            Callable[[int, int, Any], list[int]] | None = None,
+        representation_topology_func_params: dict[str, Any] | None = None,
+        representation_selection_func:
+            Callable[[list[Solution], Any], Solution] | None = None,
+        representation_selection_func_params: dict[str, Any] | None = None,
+        checkpoint_activation: bool | None = None,
+        checkpoint_freq: int | None = None,
+        checkpoint_filename: str | None = None,
+        verbosity: bool | None = None,
+        random_seed: int | None = None,
         **subtrainer_params: Any
     ) -> None:
         """Create a new trainer.
@@ -1830,60 +1798,68 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
         :param subtrainer_cls: Single-species trainer class to handle
             the subtrainers.
         :type subtrainer_cls: type[~culebra.trainer.abc.SingleSpeciesTrainer]
-        :param max_num_iters: Maximum number of iterations. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_MAX_NUM_ITERS` will
-            be used. Defaults to :data:`None`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_max_num_iters`
+            will be used. Defaults to :data:`None`
         :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If set to
-            :data:`None`,
-            :meth:`~culebra.abc.Trainer._default_termination_func` is used.
-            Defaults to :data:`None`
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.abc.CooperativeTrainer._default_termination_func`
+            is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param num_subtrainers: The number of subtrainers (species). If set to
-            :data:`None`, the number of species  evolved by the trainer is
-            will be used, otherwise it must match the number of species.
-            Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param num_subtrainers: The number of subtrainers (species). If
+            omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_num_subtrainers`
+            will be used. Defaults to :data:`None`
         :type num_subtrainers: int
         :param representation_size: Number of representative individuals that
-            will be sent to the other subtrainers. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SIZE` will
-            be used. Defaults to :data:`None`
+            will be sent to the other subtrainers. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_representation_size`
+            will be used. Defaults to :data:`None`
         :type representation_size: int
         :param representation_freq: Number of iterations between
-            representatives sendings. If set to :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_FREQ` will
-            be used. Defaults to :data:`None`
+            representatives sendings. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_representation_freq`
+            will be used. Defaults to :data:`None`
         :type representation_freq: int
+        :param representation_topology_func: Topology function for
+            representatives sending. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_representation_topology_func`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func: ~collections.abc.Callable
+        :param representation_topology_func_params: Parameters to obtain the
+            destinations with the topology function. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_representation_topology_func_params`
+            will be used. Defaults to :data:`None`
+        :type representation_topology_func_params: dict
         :param representation_selection_func: Policy function to choose the
-            representatives from each subtrainer (species). If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC`
+            representatives from each subtrainer (species). If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_representation_selection_func`
             will be used. Defaults to :data:`None`
         :type representation_selection_func: ~collections.abc.Callable
         :param representation_selection_func_params: Parameters to obtain the
-            representatives with the selection policy function. If set to
-            :data:`None`,
-            :attr:`~culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS`
+            representatives with the selection policy function. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_representation_selection_func_params`
             will be used. Defaults to :data:`None`
         :type representation_selection_func_params: dict
-        :param checkpoint_enable: Enable/disable checkpoining. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_ENABLE` will
-            be used. Defaults to :data:`None`
-        :type checkpoint_enable: bool
-        :param checkpoint_freq: The checkpoint frequency. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FREQ` will
-            be used. Defaults to :data:`None`
+        :param checkpoint_activation: Checkpoining activation. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_checkpoint_activation`
+            will be used. Defaults to :data:`None`
+        :type checkpoint_activation: bool
+        :param checkpoint_freq: The checkpoint frequency. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_checkpoint_freq`
+            will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If set to
-            :data:`None`, :attr:`~culebra.DEFAULT_CHECKPOINT_FILENAME`
+        :param checkpoint_filename: The checkpoint file path. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_checkpoint_filename`
             will be used. Defaults to :data:`None`
         :type checkpoint_filename: str
-        :param verbose: The verbosity. If set to
-            :data:`None`, :data:`__debug__` will be used. Defaults to
-            :data:`None`
-        :type verbose: bool
-        :param random_seed: The seed, defaults to :data:`None`
+        :param verbosity: The verbosity. If omitted,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_verbosity`
+            will be used. Defaults to :data:`None`
+        :type verbosity: bool
+        :param random_seed: The seed. Defaults to :data:`None`
         :type random_seed: int
         :param subtrainer_params: Custom parameters for the subtrainers
             (species) trainer
@@ -1907,42 +1883,45 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
             num_subtrainers=num_subtrainers,
             representation_size=representation_size,
             representation_freq=representation_freq,
+            representation_topology_func=representation_topology_func,
+            representation_topology_func_params=representation_topology_func_params,
             representation_selection_func=representation_selection_func,
             representation_selection_func_params=(
                 representation_selection_func_params
             ),
-            checkpoint_enable=checkpoint_enable,
+            checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
             checkpoint_filename=checkpoint_filename,
-            verbose=verbose,
+            verbosity=verbosity,
             random_seed=random_seed,
             **subtrainer_params
         )
 
     @property
-    def representation_topology_func(
+    def _default_representation_topology_func(
         self
-    ) -> Callable[[int, int, Any], List[int]]:
-        """Representation topology function.
+    ) -> Callable[[int, int, Any], list[int]]:
+        """Default representation topology function.
 
+        :return: :attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC`
         :rtype: ~collections.abc.Callable
         """
-        return COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
+        return DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
 
     @property
-    def representation_topology_func_params(self) -> Dict[str, Any]:
-        """Parameters of the representation topology function.
+    def _default_representation_topology_func_params(self) -> dict[str, Any]:
+        """Default parameters of the representation topology function.
 
+        :return: :attr:`~culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS`
         :rtype: dict
         """
-        return COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+        return DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
 
     @property
-    def representatives(self) -> Sequence[Sequence[Solution | None]] | None:
+    def representatives(self) -> list[list[Solution | None]] | None:
         """Representatives of the other species.
 
-        :rtype:
-            ~collections.abc.Sequence[~collections.abc.Sequence[~culebra.abc.Solution]]
+        :rtype: list[list[~culebra.abc.Solution]]
         """
         # Default value
         the_representatives = None
@@ -1982,51 +1961,42 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
         return the_representatives
 
     @property
-    def num_subtrainers(self) -> int:
-        """Number of subtrainers.
+    def _default_num_subtrainers(self) -> int:
+        """Default number of subtrainers.
 
+        :return: The number of species
         :rtype: int
-        :setter: Set a new value for the number of subtrainers
-        :param value: The new number of subtrainers. If set to
-            :data:`None`, the number of species evolved by the trainer is
-            chosen, otherwise *it must match the number of species*
-        :type value: int
-        :raises TypeError: If *value* is not an integer
-        :raises ValueError: If *value* is different of the number of species
         """
-        return (
-            len(self.species) if self._num_subtrainers is None
-            else self._num_subtrainers
-        )
+        return len(self.species)
 
-    @num_subtrainers.setter
+    @DistributedTrainer.num_subtrainers.setter
     def num_subtrainers(self, value: int | None) -> None:
-        """Set the number of subtrainers.
+        """Set a new value for the number of subtrainers.
 
-        :param value: The new number of subtrainers. If set to
-            :data:`None`, the number of species evolved by the trainer is
-            chosen, otherwise *it must match the number of species*
+        :param value: The new number of subtrainers. If set to :data:`None`,
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_num_subtrainers`
+            is chosen. Otherwise *it must match*
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_num_subtrainers`
         :type value: int
         :raises TypeError: If *value* is not an integer
-        :raises ValueError: If *value* is different of the number of species
+        :raises ValueError: If *value* does not match
+            :attr:`~culebra.trainer.abc.CooperativeTrainer._default_num_subtrainers`
         """
-        # Check the value
-        if value is not None and value != len(self.species):
+        DistributedTrainer.num_subtrainers.fset(self, value)
+        if (
+            self._num_subtrainers is not None and
+            self._num_subtrainers != len(self.species)
+        ):
             raise ValueError(
                 "The number of subtrainers must match the number of "
                 f"species: {self.species}"
             )
 
-        self._num_subtrainers = value
-
-        # Reset the algorithm
-        self.reset()
-
-    def best_solutions(self) -> List[HallOfFame]:
+    def best_solutions(self) -> tuple[HallOfFame]:
         """Get the best solutions found for each species.
 
         :return: One Hall of Fame for each species
-        :rtype: list[~deap.tools.HallOfFame]
+        :rtype: tuple[~deap.tools.HallOfFame]
         """
         # List of hofs
         hofs = []
@@ -2040,9 +2010,9 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
             for subtrainer in self.subtrainers:
                 hofs.append(subtrainer.best_solutions()[0])
 
-        return hofs
+        return tuple(hofs)
 
-    def best_representatives(self) -> List[List[Solution]] | None:
+    def best_representatives(self) -> list[list[Solution]] | None:
         """Return a list of representatives from each species.
 
         :return: A list of representatives lists. One representatives list for
@@ -2081,7 +2051,7 @@ class CooperativeTrainer(MultiSpeciesTrainer, DistributedTrainer):
     @staticmethod
     def _init_subtrainer_representatives(
         subtrainer: SingleSpeciesTrainer,
-        solution_classes: Sequence[Type[Solution]],
+        solution_classes: Sequence[type[Solution]],
         species: Sequence[Species],
         representation_size: int
     ):

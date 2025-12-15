@@ -136,7 +136,7 @@ class TrainerTester(unittest.TestCase):
             "selection_func": selNSGA3
         }
         trainer = NSGA(**params)
-        # trainer.pop_size should be DEFAULT_POP_SIZE
+        # trainer.pop_size should be the number of reference points
         self.assertEqual(trainer.pop_size, len(trainer.nsga3_reference_points))
 
         # Set a customized value
@@ -248,7 +248,7 @@ class TrainerTester(unittest.TestCase):
         trainer._init_internals()
 
         # Check the current reference points
-        self.assertEqual(trainer._nsga3_ref_points, None)
+        self.assertEqual(trainer._nsga3_reference_points, None)
 
     def test_reset_internals(self):
         """Test _reset_internals`."""
@@ -267,7 +267,7 @@ class TrainerTester(unittest.TestCase):
         trainer._reset_internals()
 
         # Check the current reference points
-        self.assertEqual(trainer._nsga3_ref_points, None)
+        self.assertEqual(trainer._nsga3_reference_points, None)
 
     def test_do_iteration(self):
         """Test _do_iteration."""
@@ -275,8 +275,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaNumFeats(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
         trainer = NSGA(**params)
 
@@ -295,8 +295,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaNumFeats(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -322,8 +322,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaNumFeats(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -342,8 +342,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaNumFeats(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -385,8 +385,8 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
             "fitness_function": KappaNumFeats(dataset),
-            "checkpoint_enable": False,
-            "verbose": False
+            "checkpoint_activation": False,
+            "verbosity": False
         }
 
         # Construct a parameterized trainer

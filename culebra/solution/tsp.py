@@ -34,7 +34,6 @@ problem, the :class:`~culebra.solution.tsp.Ant` class is provided.
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Type, Optional
 from collections.abc import Sequence
 from copy import deepcopy
 
@@ -64,7 +63,7 @@ class Species(BaseSpecies):
     def __init__(
         self,
         num_nodes: int,
-        banned_nodes: Optional[Sequence[int]] = None
+        banned_nodes: Sequence[int] | None = None
     ) -> None:
         """Create a new species.
 
@@ -222,8 +221,8 @@ class Solution(BaseSolution):
     def __init__(
         self,
         species: Species,
-        fitness_cls: Type[Fitness],
-        path: Optional[Sequence[int]] = None
+        fitness_cls: type[Fitness],
+        path: Sequence[int] | None = None
     ) -> None:
         """Construct a default solution.
 
@@ -258,9 +257,10 @@ class Solution(BaseSolution):
         )
 
     @property
-    def path(self) -> Sequence[int]:
+    def path(self) -> np.ndarray[int]:
         """Path.
 
+        :rtype: ~numpy.ndarray[int]
         :setter: Set a new path
         :param value: The new path
         :type value: ~collections.abc.Sequence[int]

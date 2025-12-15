@@ -116,7 +116,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -143,7 +143,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -163,7 +163,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer
@@ -186,7 +186,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": FeatureSelectionIndividual,
             "species": FeatureSelectionSpecies(dataset.num_feats),
             "fitness_function": NumFeats(),
-            "verbose": False
+            "verbosity": False
         }
 
         # Construct a parameterized trainer

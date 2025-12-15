@@ -31,12 +31,7 @@ import numpy as np
 from deap.tools import ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.trainer.aco.abc import (
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-    MaxPheromonePACO,
-    ACOTSP
-)
+from culebra.trainer.aco.abc import MaxPheromonePACO, ACOTSP
 from culebra.solution.tsp import Species, Ant
 from culebra.fitness_function.tsp import (
     PathLength,
@@ -44,13 +39,16 @@ from culebra.fitness_function.tsp import (
 )
 
 
-class MyTrainer(
-    ACOTSP,
-    MaxPheromonePACO,
-    MultiplePheromoneMatricesACO,
-    MultipleHeuristicMatricesACO,
-):
+class MyTrainer(ACOTSP, MaxPheromonePACO):
     """Dummy implementation of a trainer method."""
+
+    @property
+    def num_pheromone_matrices(self) -> int:
+        return self.fitness_function.num_obj
+
+    @property
+    def num_heuristic_matrices(self) -> int:
+        return self.fitness_function.num_obj
 
     def _update_pop(self) -> None:
         """Update the population."""
@@ -85,8 +83,8 @@ optimum_paths = [
     np.random.permutation(num_nodes)
 ]
 fitness_func = MultiObjectivePathLength(
-    PathLength.fromPath(optimum_paths[0]),
-    PathLength.fromPath(optimum_paths[1])
+    PathLength.from_path(optimum_paths[0]),
+    PathLength.from_path(optimum_paths[1])
 )
 banned_nodes = [0, num_nodes-1]
 feasible_nodes = list(range(1, num_nodes - 1))
@@ -129,7 +127,18 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Try valid values for max_pheromone
-        valid_max_pheromone = [3]
+        valid_max_pheromone = [3] * fitness_func.num_obj
+        trainer = MyTrainer(
+            valid_ant_cls,
+            valid_species,
+            valid_fitness_func,
+            valid_initial_pheromone,
+            max_pheromone=valid_max_pheromone
+        )
+        self.assertEqual(trainer.max_pheromone, tuple(valid_max_pheromone))
+
+        # Try valid values for max_pheromone
+        valid_max_pheromone = 4
         trainer = MyTrainer(
             valid_ant_cls,
             valid_species,
@@ -139,7 +148,7 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(
             trainer.max_pheromone,
-            valid_max_pheromone * trainer.num_pheromone_matrices
+            (valid_max_pheromone, ) * fitness_func.num_obj
         )
 
         # Test default params
@@ -186,8 +195,8 @@ class TrainerTester(unittest.TestCase):
 
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [1]
-        max_pheromone = [3]
+        initial_pheromone = [1] * fitness_func.num_obj
+        max_pheromone = [3] * fitness_func.num_obj
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -218,8 +227,8 @@ class TrainerTester(unittest.TestCase):
         """Test the __copy__ method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [1]
-        max_pheromone = [3]
+        initial_pheromone = (1,) * fitness_func.num_obj
+        max_pheromone = (3,) * fitness_func.num_obj
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -252,8 +261,8 @@ class TrainerTester(unittest.TestCase):
         """Test the __deepcopy__ method."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [2]
-        max_pheromone = [4]
+        initial_pheromone = 2
+        max_pheromone = 4
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -274,8 +283,8 @@ class TrainerTester(unittest.TestCase):
         """Serialization test."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [2]
-        max_pheromone = [4]
+        initial_pheromone = 2
+        max_pheromone = 4
         params = {
             "solution_cls": Ant,
             "species": species,
@@ -302,8 +311,8 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         species = Species(num_nodes, banned_nodes)
-        initial_pheromone = [2]
-        max_pheromone = [3]
+        initial_pheromone = 2
+        max_pheromone = 3
         params = {
             "solution_cls": Ant,
             "species": species,

@@ -35,7 +35,7 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.checkpoint_enable
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.checkpoint_activation
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.choice_info
@@ -64,7 +64,21 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.runtime
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.ElitistACO.species
-.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.verbose
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO.verbosity
+
+Private properties
+------------------
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_index
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.ElitistACO._default_verbosity
 
 Methods
 -------
@@ -80,7 +94,6 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._ant_choice_info
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._calculate_choice_info
-.. automethod:: culebra.trainer.aco.abc.ElitistACO._decrease_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._do_iteration
@@ -90,7 +103,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._generate_col
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._get_state
-.. automethod:: culebra.trainer.aco.abc.ElitistACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._init_internals
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._init_pheromone
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._init_representatives
