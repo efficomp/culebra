@@ -20,13 +20,13 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :class:`culebra.trainer.aco.abc.SingleColACO`."""
+"""Unit test for :class:`culebra.trainer.aco.abc.ACOTSP`."""
 
 import unittest
 
 import numpy as np
 
-from culebra import DEFAULT_MAX_NUM_ITERS
+from culebra.trainer import DEFAULT_MAX_NUM_ITERS
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_HEURISTIC_INFLUENCE,
@@ -36,7 +36,7 @@ from culebra.trainer.aco.abc import ACOTSP
 from culebra.solution.tsp import Species, Ant
 from culebra.abc import Species as GenericSpecies
 from culebra.solution.abc import Ant as GenericAnt
-from culebra.fitness_function.tsp import (
+from culebra.fitness_func.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
@@ -79,12 +79,12 @@ class MyMultiPathTrainer(MySinglePathTrainer):
     @property
     def num_pheromone_matrices(self) -> int:
         """Get the number of pheromone matrices used by this trainer."""
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
     @property
     def num_heuristic_matrices(self) -> int:
         """Get the number of heuristic matrices used by this trainer."""
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
 
 # TSP related stuff
@@ -103,61 +103,70 @@ tsp_feasible_nodes = list(range(1, tsp_num_nodes - 1))
 
 
 class TrainerTester(unittest.TestCase):
-    """Test :class:`culebra.trainer.aco.abc.SingleColACO`."""
+    """Test :class:`culebra.trainer.aco.abc.ACOTSP`."""
 
     def test_init(self):
         """Test __init__."""
-        valid_ant_cls = Ant
-        valid_species = Species(tsp_num_nodes, tsp_banned_nodes)
         valid_tsp_fitness_func_single = tsp_fitness_func_single
         valid_tsp_fitness_func_multi = tsp_fitness_func_multi
+        valid_ant_cls = Ant
+        valid_species = Species(tsp_num_nodes, tsp_banned_nodes)
         valid_initial_pheromone = 1
-
-        # Try invalid ant classes. Should fail
-        invalid_ant_classes = (type, None, 1, GenericAnt)
-        for solution_cls in invalid_ant_classes:
-            with self.assertRaises(TypeError):
-                MySinglePathTrainer(
-                    solution_cls,
-                    valid_species,
-                    valid_tsp_fitness_func_single,
-                    valid_initial_pheromone
-                )
-
-        # Try invalid species. Should fail
-        invalid_species = (type, None, 'a', 1, GenericSpecies)
-        for species in invalid_species:
-            with self.assertRaises(TypeError):
-                MyMultiPathTrainer(
-                    valid_ant_cls,
-                    species,
-                    valid_tsp_fitness_func_multi,
-                    valid_initial_pheromone
-                )
 
         # Try invalid fitness functions. Should fail
         invalid_fitness_funcs = (type, None, 'a', 1)
         for func in invalid_fitness_funcs:
             with self.assertRaises(TypeError):
                 MySinglePathTrainer(
+                    func,
                     valid_ant_cls,
                     valid_species,
-                    func,
+                    valid_initial_pheromone
+                )
+
+        # Try invalid ant classes. Should fail
+        invalid_ant_classes = (type, None, 1, GenericAnt)
+        for solution_cls in invalid_ant_classes:
+            with self.assertRaises(TypeError):
+                MySinglePathTrainer(
+                    valid_tsp_fitness_func_single,
+                    solution_cls,
+                    valid_species,
+                    valid_initial_pheromone
+                )
+
+        # Try invalid species. Should fail
+        invalid_species = (type, None, 1, GenericSpecies)
+        for species in invalid_species:
+            with self.assertRaises(TypeError):
+                MyMultiPathTrainer(
+                    valid_tsp_fitness_func_multi,
+                    valid_ant_cls,
+                    species,
                     valid_initial_pheromone
                 )
 
         # Test default params
         single_path_trainer = MySinglePathTrainer(
+            valid_tsp_fitness_func_single,
             valid_ant_cls,
             valid_species,
-            valid_tsp_fitness_func_single,
             valid_initial_pheromone
         )
         multi_path_trainer = MyMultiPathTrainer(
+            valid_tsp_fitness_func_multi,
             valid_ant_cls,
             valid_species,
-            valid_tsp_fitness_func_multi,
             valid_initial_pheromone
+        )
+
+        self.assertEqual(
+            single_path_trainer.fitness_func,
+            valid_tsp_fitness_func_single
+        )
+        self.assertEqual(
+            multi_path_trainer.fitness_func,
+            valid_tsp_fitness_func_multi
         )
 
         self.assertEqual(single_path_trainer.solution_cls, valid_ant_cls)
@@ -165,15 +174,6 @@ class TrainerTester(unittest.TestCase):
 
         self.assertEqual(single_path_trainer.species, valid_species)
         self.assertEqual(multi_path_trainer.species, valid_species)
-
-        self.assertEqual(
-            single_path_trainer.fitness_function,
-            valid_tsp_fitness_func_single
-        )
-        self.assertEqual(
-            multi_path_trainer.fitness_function,
-            valid_tsp_fitness_func_multi
-        )
 
         self.assertEqual(
             single_path_trainer.initial_pheromone, (valid_initial_pheromone,)
@@ -262,20 +262,20 @@ class TrainerTester(unittest.TestCase):
         species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": tsp_fitness_func_multi,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MyMultiPathTrainer(**params)
 
-        # Try to get the choice info before the search initialization
+        # Try to get the choice info before the training initialization
         self.assertEqual(trainer.choice_info, None)
 
-        # Try to get the choice_info after initializing the search
-        trainer._init_search()
+        # Try to get the choice_info after initializing the training
+        trainer._init_training()
         trainer._start_iteration()
 
         the_choice_info = np.ones((species.num_nodes,) * 2)
@@ -305,20 +305,20 @@ class TrainerTester(unittest.TestCase):
         species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": tsp_fitness_func_single,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": tsp_fitness_func_single,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MySinglePathTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Try to generate valid first nodes
         ant = trainer.solution_cls(
-            trainer.species, trainer.fitness_function.fitness_cls
+            trainer.species, trainer.fitness_func.fitness_cls
         )
         ant_choice_info = trainer._ant_choice_info(ant)
         self.assertTrue((ant_choice_info[tsp_banned_nodes] == 0).all())
@@ -360,16 +360,16 @@ class TrainerTester(unittest.TestCase):
         species = Species(tsp_num_nodes, tsp_banned_nodes)
         initial_pheromone = [2, 3]
         params = {
+            "fitness_func": tsp_fitness_func_multi,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": tsp_fitness_func_multi,
             "initial_pheromone": initial_pheromone,
             "col_size": 1
         }
 
         # Create the trainer
         trainer = MyMultiPathTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the initial pheromone

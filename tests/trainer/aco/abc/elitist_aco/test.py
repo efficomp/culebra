@@ -30,7 +30,7 @@ from deap.tools import ParetoFront
 
 from culebra.trainer.aco.abc import ACOTSP, ElitistACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import (
+from culebra.fitness_func.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
@@ -41,11 +41,11 @@ class MyTrainer(ACOTSP, ElitistACO):
 
     @property
     def num_pheromone_matrices(self) -> int:
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
     @property
     def num_heuristic_matrices(self) -> int:
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
     def _get_state(self):
         """Return the state of this trainer."""
@@ -101,15 +101,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Save the trainer's state
@@ -140,9 +140,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = [2, 3]
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -163,9 +163,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = (2, 4)
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -188,9 +188,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = [2, 3]
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -204,7 +204,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(best_ones[0]), 0)
 
         # Update the elite
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         ant = trainer._generate_ant()
         trainer._elite.update([ant])
@@ -226,15 +226,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = [2, 5]
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

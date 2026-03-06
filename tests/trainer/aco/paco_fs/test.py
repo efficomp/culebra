@@ -32,8 +32,8 @@ from deap.tools import sortNondominated
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import PACOFS
 from culebra.solution.feature_selection import Species, Ant
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
@@ -77,10 +77,10 @@ species = Species(
     )
 
 # Training fitness function
-training_fitness_function = KappaNumFeats(training_data, cv_folds=5)
+training_fitness_func = KappaNumFeats(training_data, cv_folds=5)
 
 # Test fitness function
-test_fitness_function = KappaNumFeats(training_data, test_data=test_data)
+test_fitness_func = KappaNumFeats(training_data, test_data=test_data)
 
 # Lists of banned and feasible nodes
 banned_nodes = [0, dataset.num_feats-1]
@@ -90,45 +90,12 @@ feasible_nodes = list(range(1, dataset.num_feats-1))
 class PACOFSTester(unittest.TestCase):
     """Test :class:`culebra.trainer.aco.PACOFS`."""
 
-    def test_internals(self):
-        """Test the _init_internals and _reset_internals methods."""
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": training_fitness_function,
-            "verbosity": False
-        }
-
-        # Create the trainer
-        trainer = PACOFS(**params)
-
-        # Init the trainer interal structures
-        trainer._init_internals()
-
-        # Check the choice info matrix
-        self.assertFalse(trainer._choice_info is None)
-        self.assertIsInstance(trainer._choice_info, np.ndarray)
-        self.assertEqual(
-            trainer._choice_info.shape,
-            (
-                trainer.species.num_feats,
-                trainer.species.num_feats
-            )
-        )
-
-        # Reset the internals
-        trainer._reset_internals()
-        # Check the choice info matrix
-        self.assertEqual(trainer._choice_info, None)
-        # Check the pheromone matrices
-        self.assertEqual(trainer.pheromone, None)
-
     def test_new_state(self):
         """Test _new_state."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -152,16 +119,16 @@ class PACOFSTester(unittest.TestCase):
     def test_state(self):
         """Test the get_state and _set_state methods."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = PACOFS(**params)
-        trainer._init_search()
-        trainer._new_state()
+        trainer._init_training()
+        trainer._start_iteration()
 
         # Fill the pop
         while len(trainer.pop) < trainer.pop_size:
@@ -197,9 +164,9 @@ class PACOFSTester(unittest.TestCase):
     def test_update_pop(self):
         """Test _update_pop."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 2,
             "col_size": 2,
             "verbosity": False
@@ -209,7 +176,7 @@ class PACOFSTester(unittest.TestCase):
         trainer = PACOFS(**params)
 
         # Try to update the population with an empty elite
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._generate_col()
 
@@ -241,9 +208,9 @@ class PACOFSTester(unittest.TestCase):
     def test_pheromone_amount(self):
         """Test _pheromone_amount."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 5,
             "verbosity": False
         }
@@ -251,11 +218,9 @@ class PACOFSTester(unittest.TestCase):
         # Create the trainer
         trainer = PACOFS(**params)
 
-        # Init the search
-        trainer._init_search()
-
-        # Reset the pheromone values
-        trainer._init_pheromone()
+        # Init the training
+        trainer._init_training()
+        trainer._start_iteration()
 
         # Fill the pop
         while len(trainer.pop) < trainer.pop_size:
@@ -271,9 +236,9 @@ class PACOFSTester(unittest.TestCase):
     def test_update_pheromone(self):
         """Test _update_pheromone."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 5,
             "verbosity": False
         }
@@ -281,11 +246,9 @@ class PACOFSTester(unittest.TestCase):
         # Create the trainer
         trainer = PACOFS(**params)
 
-        # Init the search
-        trainer._init_search()
-
-        # Reset the pheromone values
-        trainer._init_pheromone()
+        # Init the training
+        trainer._init_training()
+        trainer._start_iteration()
 
         # Fill the pop
         while len(trainer.pop) < trainer.pop_size:
@@ -310,9 +273,9 @@ class PACOFSTester(unittest.TestCase):
         """Test the __copy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 5,
             "verbosity": False
         }
@@ -326,8 +289,8 @@ class PACOFSTester(unittest.TestCase):
 
         # The objects attributes are shared
         self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
         self.assertEqual(id(trainer1.species), id(trainer2.species))
 
@@ -339,9 +302,9 @@ class PACOFSTester(unittest.TestCase):
         """Test the __deepcopy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 5,
             "verbosity": False
         }
@@ -357,9 +320,9 @@ class PACOFSTester(unittest.TestCase):
         """Serialization test."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 5,
             "verbosity": False
         }
@@ -381,16 +344,16 @@ class PACOFSTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "pop_size": 5,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = PACOFS(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 
@@ -406,7 +369,8 @@ class PACOFSTester(unittest.TestCase):
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(
-            id(trainer1.species.num_feats), id(trainer2.species.num_feats)
+            id(trainer1.species.num_feats),
+            id(trainer2.species.num_feats)
         )
         self.assertEqual(trainer1.max_num_iters, trainer2.max_num_iters)
 

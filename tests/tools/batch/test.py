@@ -42,14 +42,18 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
-from culebra.fitness_function.svc_optimization import C
-from culebra.fitness_function.cooperative import FSSVCScorer
+from culebra.fitness_func.svc_optimization import C
+from culebra.fitness_func.cooperative import FSSVCScorer
+from culebra.trainer.abc import (
+#    ParallelDistributedTrainer,
+    SequentialDistributedTrainer,
+    CooperativeTrainer
+)
 from culebra.trainer.ea import ElitistEA
-from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import (
     Dataset,
     Batch,
@@ -90,22 +94,22 @@ training_data = training_data.oversample(random_seed=0)
 
 
 # Training fitness function
-my_training_fitness_function = KappaNumFeatsC(training_data, cv_folds=5)
+my_training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
 
 # Set the training fitness similarity threshold
-my_training_fitness_function.obj_thresholds = 0.001
+my_training_fitness_func.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-my_untie_best_fitness_function = KappaNumFeatsC(
+my_untie_best_fitness_func = KappaNumFeatsC(
     training_data, cv_folds=max_folds
 )
 
 # Test fitness function
-my_test_fitness_function = KappaNumFeatsC(training_data, test_data)
+my_test_fitness_func = KappaNumFeatsC(training_data, test_data)
 
 
 # Species to optimize a SVM-based classifier
@@ -125,37 +129,49 @@ featureSelectionSpecies2 = FeatureSelectionSpecies(
     min_feat=dataset.num_feats//2 + 1,
 )
 
-# Parameters for the wrapper
-params = {
-    "solution_classes": [
-        ClassifierOptimizationIndividual,
-        FeatureSelectionIndividual,
-        FeatureSelectionIndividual
-    ],
-    "species": [
-        classifierOptimizationSpecies,
-        featureSelectionSpecies1,
-        featureSelectionSpecies2
-    ],
-    "fitness_function": my_training_fitness_function,
-    "subtrainer_cls": ElitistEA,
-    "representation_size": 2,
-    "crossover_probs": 0.8,
-    "mutation_probs": 0.2,
-    "gene_ind_mutation_probs": (
-        # At least one hyperparameter/feature will be mutated
-        1.0/classifierOptimizationSpecies.num_params,
-        2.0/dataset.num_feats,
-        2.0/dataset.num_feats
-    ),
-    "max_num_iters": 3,
-    "pop_sizes": 2,
+# Subtrainers params
+subtrainer_params = {
+    "fitness_func": my_training_fitness_func,
+    "crossover_prob": 0.8,
+    "mutation_prob": 0.2,
+    "pop_size": dataset.num_feats//2,
+    "max_num_iters": 5,
     "checkpoint_activation": False,
-    "verbosity": False
+    "verbosity":False
 }
 
-# Create the trainer
-my_trainer = ParallelCooperativeEA(**params)
+# Parameters for the wrapper
+params = {
+    "num_representatives": 2
+}
+
+# Create the wrapper
+subtrainers = (
+    ElitistEA(
+        solution_cls=ClassifierOptimizationIndividual,
+        species=classifierOptimizationSpecies,
+        # At least one hyperparameter/feature will be mutated
+        gene_ind_mutation_prob=1.0/classifierOptimizationSpecies.num_params,
+        **subtrainer_params
+    ),
+    ElitistEA(
+        solution_cls=FeatureSelectionIndividual,
+        species=featureSelectionSpecies1,
+        gene_ind_mutation_prob=2.0/dataset.num_feats,
+        **subtrainer_params
+    ),
+    ElitistEA(
+        solution_cls=FeatureSelectionIndividual,
+        species=featureSelectionSpecies2,
+        gene_ind_mutation_prob=2.0/dataset.num_feats,
+        **subtrainer_params
+    )
+)
+
+# Trainer
+class MyTrainer(SequentialDistributedTrainer, CooperativeTrainer):
+    """Parallel implementation of a cooperative trainer."""
+
 
 my_num_experiments = 3
 
@@ -166,11 +182,12 @@ class BatchTester(unittest.TestCase):
     def test_init(self):
         """Test the :meth:`~culebra.tools.Batch.__init__` constructor."""
         # Try default params
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch = Batch(my_trainer)
 
         self.assertEqual(batch.trainer, my_trainer)
-        self.assertEqual(batch.untie_best_fitness_function, None)
-        self.assertEqual(batch.test_fitness_function, None)
+        self.assertEqual(batch.untie_best_fitness_func, None)
+        self.assertEqual(batch.test_fitness_func, None)
         self.assertEqual(batch.results, None)
         self.assertEqual(
             batch.results_base_filename,
@@ -184,17 +201,17 @@ class BatchTester(unittest.TestCase):
         my_hyperparameters = {"a": 1}
         batch = Batch(
             my_trainer,
-            my_untie_best_fitness_function,
-            my_test_fitness_function,
+            my_untie_best_fitness_func,
+            my_test_fitness_func,
             my_filename,
             my_hyperparameters,
             my_num_experiments
         )
         self.assertEqual(
-            batch.untie_best_fitness_function, my_untie_best_fitness_function
+            batch.untie_best_fitness_func, my_untie_best_fitness_func
         )
         self.assertEqual(
-            batch.test_fitness_function, my_test_fitness_function
+            batch.test_fitness_func, my_test_fitness_func
         )
         self.assertEqual(
             batch.results_base_filename, my_filename
@@ -214,16 +231,16 @@ class BatchTester(unittest.TestCase):
 
         # Check the untie fitness function
         self.assertIsInstance(
-            batch.untie_best_fitness_function, FitnessFunction)
+            batch.untie_best_fitness_func, FitnessFunction)
 
         # Check the test fitness function
         self.assertIsInstance(
-            batch.test_fitness_function, FitnessFunction)
+            batch.test_fitness_func, FitnessFunction)
 
         # Check the hyperparameters
         self.assertEqual(
             batch.hyperparameters,
-            {"representation_size": 2, "max_num_iters": 100}
+            {"num_representatives": 2, "max_num_iters": 500}
         )
 
         # Check the number of experiments
@@ -232,6 +249,7 @@ class BatchTester(unittest.TestCase):
     def test_experiment_labels(self):
         """Test the experiment_labels method."""
         # Try default params
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch = Batch(my_trainer)
 
         for num_exp in range(1, 15):
@@ -242,6 +260,7 @@ class BatchTester(unittest.TestCase):
 
     def test_reset(self):
         """Test the reset method."""
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch = Batch(my_trainer)
         batch._results = 1
         batch._results_indices = {1: 2}
@@ -253,10 +272,11 @@ class BatchTester(unittest.TestCase):
     def test_setup(self):
         """Test the setup method."""
         # Create the batch
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch = Batch(
             trainer=my_trainer,
-            untie_best_fitness_function=my_untie_best_fitness_function,
-            test_fitness_function=my_test_fitness_function,
+            untie_best_fitness_func=my_untie_best_fitness_func,
+            test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
@@ -287,10 +307,11 @@ class BatchTester(unittest.TestCase):
     def test_run(self):
         """Test the run method."""
         # Create the batch
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch = Batch(
             trainer=my_trainer,
-            untie_best_fitness_function=my_untie_best_fitness_function,
-            test_fitness_function=my_test_fitness_function,
+            untie_best_fitness_func=my_untie_best_fitness_func,
+            test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
@@ -323,10 +344,11 @@ class BatchTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the :meth:`~culebra.tools.Batch.__copy__` method."""
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch1 = Batch(
             trainer=my_trainer,
-            untie_best_fitness_function=my_untie_best_fitness_function,
-            test_fitness_function=my_test_fitness_function,
+            untie_best_fitness_func=my_untie_best_fitness_func,
+            test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
@@ -354,10 +376,11 @@ class BatchTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test :meth:`~culebra.tools.Batch.__deepcopy__`."""
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch1 = Batch(
             trainer=my_trainer,
-            untie_best_fitness_function=my_untie_best_fitness_function,
-            test_fitness_function=my_test_fitness_function,
+            untie_best_fitness_func=my_untie_best_fitness_func,
+            test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments
@@ -383,10 +406,11 @@ class BatchTester(unittest.TestCase):
         Test the :meth:`~culebra.tools.Batch.__setstate__` and
         :meth:`~culebra.tools.Batch.__reduce__` methods.
         """
+        my_trainer = MyTrainer(*subtrainers, **params)
         batch1 = Batch(
             trainer=my_trainer,
-            untie_best_fitness_function=my_untie_best_fitness_function,
-            test_fitness_function=my_test_fitness_function,
+            untie_best_fitness_func=my_untie_best_fitness_func,
+            test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
             num_experiments=my_num_experiments

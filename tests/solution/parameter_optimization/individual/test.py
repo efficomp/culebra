@@ -27,7 +27,7 @@ from numbers import Integral
 from itertools import repeat
 
 from culebra.solution.parameter_optimization import Species, Individual
-from culebra.fitness_function.svc_optimization import C
+from culebra.fitness_func.svc_optimization import C
 
 DEFAULT_MIN_BOUND = 0
 """Default minimum bound for all the parameters."""
@@ -46,10 +46,10 @@ species = Species(
 )
 
 # Default fitness function
-fitness_function = C()
+fitness_func = C()
 
 # Default fitness class
-fitness_cls = fitness_function.fitness_cls
+fitness_cls = fitness_func.fitness_cls
 
 
 class IndividualTester(unittest.TestCase):

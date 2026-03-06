@@ -144,8 +144,9 @@ class SpeciesTester(unittest.TestCase):
         :type species2: ~culebra.solution.tsp.Species
         """
         # Copies all the levels
-        self.assertNotEqual(id(species1), id(species2))
-        self.assertEqual(species1._num_nodes, species2._num_nodes)
+        self.assertTrue(species1 is not species2)
+        self.assertEqual(species1.num_nodes, species2.num_nodes)
+        self.assertTrue(species1.banned_nodes is not species2.banned_nodes)
         self.assertTrue(np.all(species1.banned_nodes == species2.banned_nodes))
 
 

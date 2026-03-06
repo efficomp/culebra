@@ -29,7 +29,7 @@ import numpy as np
 from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import QualityBasedPACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 
 class MyMinimizationFitnessFunc(PathLength):
@@ -78,11 +78,11 @@ class TrainerTester(unittest.TestCase):
         max_pheromone = 3
 
         minimization_params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": MyMinimizationFitnessFunc.from_path(
+            "fitness_func": MyMinimizationFitnessFunc.from_path(
                 optimum_path
             ),
+            "solution_cls": Ant,
+            "species": species,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1,
@@ -91,7 +91,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the minimization trainer
         minimization_trainer = QualityBasedPACOTSP(**minimization_params)
-        minimization_trainer._init_search()
+        minimization_trainer._init_training()
 
         # The initial population should be empty
         minimization_trainer._start_iteration()
@@ -133,11 +133,11 @@ class TrainerTester(unittest.TestCase):
             self.assertTrue(ant.fitness.values in fit_better_values)
 
         maximization_params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": MyMaximizationFitnessFunc.from_path(
+            "fitness_func": MyMaximizationFitnessFunc.from_path(
                 optimum_path
             ),
+            "solution_cls": Ant,
+            "species": species,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1,
@@ -146,7 +146,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the minimization trainer
         maximization_trainer = QualityBasedPACOTSP(**maximization_params)
-        maximization_trainer._init_search()
+        maximization_trainer._init_training()
 
         # The initial population should be empty
         maximization_trainer._start_iteration()
@@ -195,11 +195,11 @@ class TrainerTester(unittest.TestCase):
         max_pheromone = 3
 
         params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": MyMinimizationFitnessFunc.from_path(
+            "fitness_func": MyMinimizationFitnessFunc.from_path(
                 optimum_path
             ),
+            "solution_cls": Ant,
+            "species": species,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1,
@@ -208,7 +208,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = QualityBasedPACOTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

@@ -36,7 +36,7 @@ from culebra.trainer.aco import (
     DEFAULT_CONVERGENCE_CHECK_FREQ
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 
 
@@ -65,9 +65,9 @@ class TrainerTester(unittest.TestCase):
         for iter_best_use_limit in invalid_iter_best_use_limit:
             with self.assertRaises(TypeError):
                 MMASTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     iter_best_use_limit=iter_best_use_limit
                 )
@@ -77,9 +77,9 @@ class TrainerTester(unittest.TestCase):
         for iter_best_use_limit in invalid_iter_best_use_limit:
             with self.assertRaises(ValueError):
                 MMASTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     iter_best_use_limit=iter_best_use_limit
                 )
@@ -88,9 +88,9 @@ class TrainerTester(unittest.TestCase):
         valid_iter_best_use_limit = (1, 10)
         for iter_best_use_limit in valid_iter_best_use_limit:
             trainer = MMASTSP(
+                fitness_func,
                 ant_cls,
                 species,
-                fitness_func,
                 initial_pheromone,
                 iter_best_use_limit=iter_best_use_limit
             )
@@ -104,9 +104,9 @@ class TrainerTester(unittest.TestCase):
         for convergence_check_freq in invalid_convergence_check_freq:
             with self.assertRaises(TypeError):
                 MMASTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     convergence_check_freq=convergence_check_freq
                 )
@@ -116,9 +116,9 @@ class TrainerTester(unittest.TestCase):
         for convergence_check_freq in invalid_convergence_check_freq:
             with self.assertRaises(ValueError):
                 MMASTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     convergence_check_freq=convergence_check_freq
                 )
@@ -127,9 +127,9 @@ class TrainerTester(unittest.TestCase):
         valid_convergence_check_freq = (1, 10)
         for convergence_check_freq in valid_convergence_check_freq:
             trainer = MMASTSP(
+                fitness_func,
                 ant_cls,
                 species,
-                fitness_func,
                 initial_pheromone,
                 convergence_check_freq=convergence_check_freq
             )
@@ -140,9 +140,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = MMASTSP(
+            fitness_func,
             ant_cls,
             species,
-            fitness_func,
             initial_pheromone
         )
         self.assertEqual(
@@ -170,9 +170,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -192,9 +192,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -211,7 +211,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(state["min_pheromone"], None)
         self.assertEqual(state["last_elite_iter"], None)
 
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Save the trainer's state
@@ -256,9 +256,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -287,9 +287,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -320,7 +320,7 @@ class TrainerTester(unittest.TestCase):
             trainer._min_pheromone,
             (
                 trainer._max_pheromone /
-                (2 * trainer.fitness_function.num_nodes)
+                (2 * trainer.fitness_func.num_nodes)
             )
         )
         self.assertEqual(trainer._last_elite_iter, None)
@@ -353,16 +353,16 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "col_size": 1
         }
 
         # Create the trainer
         trainer = MMASTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the initial pheromone
@@ -378,13 +378,15 @@ class TrainerTester(unittest.TestCase):
 
         # In iterations above MMAS.iter_best_use_limit only the global-best
         # ant should deposit the pheromone
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._current_iter = trainer.iter_best_use_limit
 
         # Generate a new elite
         optimum_ant = Ant(species, fitness_func.fitness_cls, optimum_path)
-        trainer.evaluate(optimum_ant)
+        trainer.evaluate(
+            optimum_ant, fitness_func, trainer.index, trainer.cooperators
+        )
         trainer._elite.update([optimum_ant])
         trainer._increase_pheromone()
         assert_path_pheromone_increment(trainer, trainer._elite[0])
@@ -395,16 +397,16 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "pheromone_evaporation_rate": 0.5
         }
 
         # Create the trainer
         trainer = MMASTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._max_pheromone = 4
         trainer._update_pheromone()
@@ -423,15 +425,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MMASTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the limits
@@ -469,15 +471,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MMASTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._do_iteration()
 
@@ -514,15 +516,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MMASTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
 
         # Simulate convergence
         heuristic_shape = trainer.heuristic[0].shape
@@ -550,15 +552,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = 10
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MMASTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

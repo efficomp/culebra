@@ -26,8 +26,8 @@
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.tools.Experiment.feature_metric_functions
-.. autoattribute:: culebra.tools.Experiment.stats_functions
+.. autoattribute:: culebra.tools.Experiment.feature_metric_funcs
+.. autoattribute:: culebra.tools.Experiment.stats_funcs
 
 Class methods
 -------------
@@ -37,16 +37,16 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.tools.Experiment.best_representatives
+.. autoproperty:: culebra.tools.Experiment.best_cooperators
 .. autoproperty:: culebra.tools.Experiment.best_solutions
 .. autoproperty:: culebra.tools.Experiment.excel_results_filename
 .. autoproperty:: culebra.tools.Experiment.hyperparameters
 .. autoproperty:: culebra.tools.Experiment.results
 .. autoproperty:: culebra.tools.Experiment.results_base_filename
 .. autoproperty:: culebra.tools.Experiment.serialized_results_filename
-.. autoproperty:: culebra.tools.Experiment.test_fitness_function
+.. autoproperty:: culebra.tools.Experiment.test_fitness_func
 .. autoproperty:: culebra.tools.Experiment.trainer
-.. autoproperty:: culebra.tools.Experiment.untie_best_fitness_function
+.. autoproperty:: culebra.tools.Experiment.untie_best_fitness_func
 
 Private properties
 ------------------

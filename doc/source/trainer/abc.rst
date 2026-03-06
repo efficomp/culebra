@@ -28,10 +28,11 @@
 .. toctree::
     :hidden:
 
-    SingleSpeciesTrainer <abc/single_species_trainer>
-    MultiSpeciesTrainer <abc/multi_species_trainer>
-
+    CentralizedTrainer <abc/centralized_trainer>
+    
     DistributedTrainer <abc/distributed_trainer>
+    CommonFitnessFunctionDistributedTrainer <abc/common_fitness_function_distributed_trainer>
+    
     SequentialDistributedTrainer <abc/sequential_distributed_trainer>
     SequentialDistributedTrainer <abc/parallel_distributed_trainer>
 

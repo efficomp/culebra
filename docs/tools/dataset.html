@@ -8,7 +8,7 @@
     <title>culebra.tools.Dataset class &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/nature.css?v=279e0f84" />
-    <script src="../_static/documentation_options.js?v=c87aa342"></script>
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -151,11 +151,11 @@ is considered.</p>
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.tools.Dataset.inputs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Dataset.</span></span><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.Dataset.inputs" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Dataset.</span></span><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.Dataset.inputs" title="Link to this definition">¶</a></dt>
 <dd><p>Input data of the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -173,11 +173,11 @@ is considered.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="culebra.tools.Dataset.outputs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Dataset.</span></span><span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.Dataset.outputs" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Dataset.</span></span><span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#culebra.tools.Dataset.outputs" title="Link to this definition">¶</a></dt>
 <dd><p>Output data of the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -277,14 +277,14 @@ than 0)</p></li>
 <dd><p>Oversample all classes but the majority class.</p>
 <p>All classes but the majority class are oversampled to equal the number
 of samples of the majority class.
-<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a> is used for oversampling, but
+<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a> is used for oversampling, but
 if any class has less than <em>n_neighbors</em> samples,
-<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler" title="(in imbalanced-learn v0.14.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomOverSampler</span></code></a> is first applied</p>
+<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html#imblearn.over_sampling.RandomOverSampler" title="(in imbalanced-learn v0.14.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomOverSampler</span></code></a> is first applied</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_neighbors</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of neighbors for
-<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a>, defaults to
+<a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a>, defaults to
 <a class="reference internal" href="../tools.html#culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS" title="culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_SMOTE_NUM_NEIGHBORS</span></code></a></p></li>
 <li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Random seed for the random generator, defaults to
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
@@ -411,7 +411,7 @@ The remaining samples will be returned as training data</p></li>
       </ul>
     </div>
     <div class="footer">
-      &copy;2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="../_sources/tools/dataset.rst.txt"

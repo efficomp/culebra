@@ -34,7 +34,7 @@ from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import PACOMO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import (
+from culebra.fitness_func.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
@@ -74,37 +74,37 @@ class TrainerTester(unittest.TestCase):
     def test_init(self):
         """Test __init__."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "heuristic": np.ones((num_nodes, num_nodes)),
             "pheromone_influence": 2,
             "heuristic_influence": 5,
             "exploitation_prob": 0.8,
-            "max_num_iters": 123,
             "custom_termination_func": max,
+            "max_num_iters": 123,
             "col_size": 6,
             "pop_size": 5,
             "checkpoint_activation": False,
             "checkpoint_freq": 13,
-            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
+            "checkpoint_basename": "my_check",
             "verbosity": False,
             "random_seed": 15
         }
 
         # Try an invalid subclass. Should fail...
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ValueError):
             InvalidPACOMO(**params)
 
         # Create the trainer
         trainer = PACOMOTSP(**params)
 
         # Check the parameters
+        self.assertEqual(trainer.fitness_func, params["fitness_func"])
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
         self.assertEqual(trainer.species, params["species"])
-        self.assertEqual(trainer.fitness_function, params["fitness_function"])
         self.assertEqual(trainer.pheromone, None)
         self.assertEqual(
             len(trainer.initial_pheromone), trainer.num_pheromone_matrices
@@ -136,10 +136,10 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             trainer.exploitation_prob, params["exploitation_prob"]
         )
-        self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(
             trainer.custom_termination_func, params["custom_termination_func"]
         )
+        self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(trainer.col_size, params["col_size"])
         self.assertEqual(trainer.pop_size, params["pop_size"])
         self.assertEqual(
@@ -147,7 +147,7 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
         self.assertEqual(
-            trainer.checkpoint_filename, params["checkpoint_filename"]
+            trainer.checkpoint_basename, params["checkpoint_basename"]
         )
         self.assertEqual(trainer.verbosity, params["verbosity"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
@@ -155,9 +155,9 @@ class TrainerTester(unittest.TestCase):
     def test_num_pheromone_matrices(self):
         """Test the num_pheromone_matrices property."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -170,9 +170,9 @@ class TrainerTester(unittest.TestCase):
     def test_num_heuristic_matrices(self):
         """Test the num_heuristic_matrices property."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -185,16 +185,16 @@ class TrainerTester(unittest.TestCase):
     def test_state(self):
         """Test the get_state and _set_state methods."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
 
         # Create the trainer
         trainer = PACOMOTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Save the trainer's state
@@ -226,9 +226,9 @@ class TrainerTester(unittest.TestCase):
     def test_new_state(self):
         """Test _new_state."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -247,9 +247,9 @@ class TrainerTester(unittest.TestCase):
     def test_reset_state(self):
         """Test _reset_state."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -270,9 +270,9 @@ class TrainerTester(unittest.TestCase):
     def test_best_solutions(self):
         """Test the best_solutions method."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -287,7 +287,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(best_ones[0]), 0)
 
         # Update the elite
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         ant = trainer._generate_ant()
         trainer._elite.update([ant])
@@ -306,9 +306,9 @@ class TrainerTester(unittest.TestCase):
     def test_init_internals(self):
         """Test _init_internals."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -326,9 +326,9 @@ class TrainerTester(unittest.TestCase):
     def test_reset_internals(self):
         """Test _reset_internals."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3
         }
@@ -348,9 +348,9 @@ class TrainerTester(unittest.TestCase):
     def test_calculate_choice_info(self):
         """Test _test_calculate_choice_info."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 4
@@ -360,8 +360,8 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = PACOMOTSP(**params)
 
-        # Init the search
-        trainer._init_search()
+        # Init the training
+        trainer._init_training()
         trainer._start_iteration()
 
         # Generate the elite
@@ -387,9 +387,9 @@ class TrainerTester(unittest.TestCase):
     def test_update_pop(self):
         """Test _update_pop."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 5
@@ -399,7 +399,7 @@ class TrainerTester(unittest.TestCase):
         trainer = PACOMOTSP(**params)
 
         # Try to update the population with an empty elite
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._update_pop()
 
@@ -408,7 +408,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(trainer.pop), 0)
 
         # Try with an elite size lower than the population size
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         elite_size = trainer.pop_size // 2
         while len(trainer._elite) < elite_size:
@@ -421,7 +421,7 @@ class TrainerTester(unittest.TestCase):
             self.assertEqual(ant1, ant2)
 
         # Try with an elite size higher than the population size
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         elite_size = trainer.pop_size + 1
         while len(trainer._elite) < elite_size:
@@ -436,9 +436,9 @@ class TrainerTester(unittest.TestCase):
     def test_update_pheromone(self):
         """Test _update_pheromone."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 5
@@ -447,8 +447,8 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = PACOMOTSP(**params)
 
-        # Init the search
-        trainer._init_search()
+        # Init the training
+        trainer._init_training()
 
         # Generate a new population and update the pheromone matrices
         trainer._start_iteration()
@@ -466,9 +466,9 @@ class TrainerTester(unittest.TestCase):
         """Test the __copy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 5
@@ -483,8 +483,8 @@ class TrainerTester(unittest.TestCase):
 
         # The objects attributes are shared
         self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
         self.assertEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(trainer1.max_pheromone, trainer2.max_pheromone)
@@ -497,9 +497,9 @@ class TrainerTester(unittest.TestCase):
         """Test the __deepcopy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 5
@@ -516,9 +516,9 @@ class TrainerTester(unittest.TestCase):
         """Serialization test."""
         # Trainer parameters
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 5
@@ -540,9 +540,9 @@ class TrainerTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "pop_size": 5
@@ -550,7 +550,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = PACOMOTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

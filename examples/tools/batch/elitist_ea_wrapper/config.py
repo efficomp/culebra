@@ -22,8 +22,8 @@
 from collections import Counter
 
 from culebra.solution.parameter_optimization import Species, Individual
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.svc_optimization import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.svc_optimization import (
     KappaIndex,
     C
 )
@@ -64,23 +64,23 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 training_data = training_data.oversample(random_seed=0)
 
 # Training fitness function
-training_fitness_function = KappaC(training_data=training_data, cv_folds=5)
+training_fitness_func = KappaC(training_data=training_data, cv_folds=5)
 
 # Set the training fitness similarity threshold
-training_fitness_function.obj_thresholds = 0.001
+training_fitness_func.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-untie_best_fitness_function = KappaC(
+untie_best_fitness_func = KappaC(
     training_data=training_data,
     cv_folds=max_folds
 )
 
 # Test fitness function
-test_fitness_function = KappaC(
+test_fitness_func = KappaC(
     training_data=training_data, test_data=test_data
 )
 
@@ -93,9 +93,9 @@ species = Species(
 
 # Parameters for the wrapper
 params = {
+    "fitness_func": training_fitness_func,
     "solution_cls": Individual,
     "species": species,
-    "fitness_function": training_fitness_function,
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
     # At least one hyperparameter will be mutated

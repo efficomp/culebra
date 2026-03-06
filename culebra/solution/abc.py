@@ -40,9 +40,9 @@ from culebra.abc import Solution
 
 
 __author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'

@@ -67,9 +67,9 @@ from .evaluation import (
     Evaluation,
     Experiment,
     Batch,
-    DEFAULT_STATS_FUNCTIONS,
-    DEFAULT_FEATURE_METRIC_FUNCTIONS,
-    DEFAULT_BATCH_STATS_FUNCTIONS,
+    DEFAULT_STATS_FUNCS,
+    DEFAULT_FEATURE_METRIC_FUNCS,
+    DEFAULT_BATCH_STATS_FUNCS,
     DEFAULT_NUM_EXPERIMENTS,
     DEFAULT_RUN_SCRIPT_FILENAME,
     DEFAULT_CONFIG_SCRIPT_FILENAME,
@@ -78,9 +78,9 @@ from .evaluation import (
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -104,9 +104,9 @@ __all__ = [
     'DEFAULT_NORMALITY_TEST',
     'DEFAULT_HOMOSCEDASTICITY_TEST',
     'DEFAULT_P_ADJUST',
-    'DEFAULT_STATS_FUNCTIONS',
-    'DEFAULT_FEATURE_METRIC_FUNCTIONS',
-    'DEFAULT_BATCH_STATS_FUNCTIONS',
+    'DEFAULT_STATS_FUNCS',
+    'DEFAULT_FEATURE_METRIC_FUNCS',
+    'DEFAULT_BATCH_STATS_FUNCS',
     'DEFAULT_NUM_EXPERIMENTS',
     'DEFAULT_RUN_SCRIPT_FILENAME',
     'DEFAULT_CONFIG_SCRIPT_FILENAME',

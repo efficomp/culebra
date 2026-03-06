@@ -33,15 +33,14 @@ from culebra.trainer.ea import (
     DEFAULT_POP_SIZE,
     NSGA,
     DEFAULT_NSGA_SELECTION_FUNC,
-    DEFAULT_NSGA_SELECTION_FUNC_PARAMS,
     DEFAULT_NSGA3_REFERENCE_POINTS_P
 )
 from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
@@ -81,9 +80,9 @@ class TrainerTester(unittest.TestCase):
         """Test :meth:`~culebra.trainer.ea.NSGA.__init__`."""
         # Test the default parameters
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
 
@@ -92,17 +91,14 @@ class TrainerTester(unittest.TestCase):
             trainer.selection_func, DEFAULT_NSGA_SELECTION_FUNC
         )
         self.assertEqual(
-            trainer.selection_func_params, DEFAULT_NSGA_SELECTION_FUNC_PARAMS
-        )
-        self.assertEqual(
             trainer.nsga3_reference_points_p, DEFAULT_NSGA3_REFERENCE_POINTS_P)
         self.assertEqual(trainer.nsga3_reference_points_scaling, None)
 
         # Try custom params
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "nsga3_reference_points_p": 1,
             "nsga3_reference_points_scaling": 4
         }
@@ -120,9 +116,9 @@ class TrainerTester(unittest.TestCase):
         """Test :meth:`~culebra.trainer.ea.NSGA.pop_size` getter."""
         # Try with the default pop_size for NSGA2
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
         # trainer.pop_size should be DEFAULT_POP_SIZE
@@ -130,76 +126,65 @@ class TrainerTester(unittest.TestCase):
 
         # Try with the default pop_size for NSGA3
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "selection_func": selNSGA3
         }
         trainer = NSGA(**params)
+
         # trainer.pop_size should be the number of reference points
         self.assertEqual(trainer.pop_size, len(trainer.nsga3_reference_points))
 
         # Set a customized value
         pop_size = 200
         trainer.pop_size = pop_size
+
         # trainer.pop_size should be the customized value
         self.assertEqual(trainer.pop_size, pop_size)
 
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "pop_size": pop_size
         }
         trainer = NSGA(**params)
+
         # trainer.pop_size should be the customized value
         self.assertEqual(trainer.pop_size, pop_size)
 
     def test_selection_func(self):
-        """Test :meth:`~culebra.trainer.ea.NSGA.selection_func` getter."""
+        """Test :meth:`~culebra.trainer.ea.NSGA.selection_func` property."""
         # Try with the default selection function
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
+
         # trainer.selection_func should be DEFAULT_NSGA_SELECTION_FUNC
         self.assertEqual(trainer.selection_func, DEFAULT_NSGA_SELECTION_FUNC)
 
         # Try with a custom selection function
         params["selection_func"] = selNSGA3
         trainer = NSGA(**params)
+
         # trainer.selection_func should be selNSGA3
         self.assertEqual(trainer.selection_func, selNSGA3)
 
-    def test_selection_func_params(self):
-        """Test :meth:`~culebra.trainer.ea.NSGA.selection_func_params`."""
-        # Try with the default selection function
-        params = {
-            "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
-        }
-        trainer = NSGA(**params)
-        # trainer.selection_func should be DEFAULT_NSGA_SELECTION_FUNC
-        self.assertEqual(
-            trainer.selection_func_params, DEFAULT_NSGA_SELECTION_FUNC_PARAMS
-        )
-
-        # Try with a custom selection function
-        params["selection_func"] = selNSGA3
-        trainer = NSGA(**params)
-        # trainer.selection_func should be selNSGA3
-        self.assertEqual(trainer.selection_func, selNSGA3)
+        # Try an invalid selection function. Should fail
+        with self.assertRaises(ValueError):
+            trainer.selection_func=max
 
     def test_nsga3_reference_points_p(self):
         """Test nsga3_reference_points_p."""
         # Construct the trainer
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
 
@@ -219,9 +204,9 @@ class TrainerTester(unittest.TestCase):
         """Test nsga3_reference_points_scaling."""
         # Construct the trainer
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
 
@@ -238,25 +223,40 @@ class TrainerTester(unittest.TestCase):
         """Test _init_internals`."""
         # Construct the trainer
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
 
-        # Init the internals
+        # Test with the default selection function
         trainer._init_internals()
+        self.assertEqual(
+            trainer._toolbox.select.func, DEFAULT_NSGA_SELECTION_FUNC
+        )
+        self.assertEqual(trainer._toolbox.select.keywords, {})
 
-        # Check the current reference points
-        self.assertEqual(trainer._nsga3_reference_points, None)
+        # Try with selNSGA3
+        trainer.selection_func = selNSGA3
+        trainer._init_internals()
+        self.assertEqual(
+            trainer._toolbox.select.func, selNSGA3
+        )
+        self.assertTrue("ref_points" in trainer._toolbox.select.keywords)
+        self.assertTrue(
+            (
+                trainer._toolbox.select.keywords["ref_points"] ==
+                trainer.nsga3_reference_points
+            ).all()
+        )
 
     def test_reset_internals(self):
         """Test _reset_internals`."""
         # Construct the trainer
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset)
+            "species": Species(dataset.num_feats)
         }
         trainer = NSGA(**params)
 
@@ -272,16 +272,16 @@ class TrainerTester(unittest.TestCase):
     def test_do_iteration(self):
         """Test _do_iteration."""
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
         trainer = NSGA(**params)
 
-        # Init the search process
-        trainer._init_search()
+        # Init the training process
+        trainer._init_training()
 
         # Do an iteration
         pop_size_before = len(trainer.pop)
@@ -292,9 +292,9 @@ class TrainerTester(unittest.TestCase):
     def test_copy(self):
         """Test the __copy__ method."""
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
@@ -308,8 +308,8 @@ class TrainerTester(unittest.TestCase):
 
         # The objects attributes are shared
         self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
         self.assertEqual(
             id(trainer1.species),
@@ -319,9 +319,9 @@ class TrainerTester(unittest.TestCase):
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
@@ -339,9 +339,9 @@ class TrainerTester(unittest.TestCase):
         Test the __setstate__ and __reduce__ methods.
         """
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
@@ -382,16 +382,16 @@ class TrainerTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Set custom params
         params = {
+            "fitness_func": KappaNumFeats(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaNumFeats(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
 
         # Construct a parameterized trainer
         trainer = NSGA(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

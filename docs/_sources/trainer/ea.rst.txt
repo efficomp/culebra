@@ -48,14 +48,10 @@ Attributes
     Default mutation probability.
 
 .. attribute:: DEFAULT_NSGA_SELECTION_FUNC
-    :annotation: = <function selNSGA2>
+    :annotation: = <function :func:`deap.tools.selection.selNSGA2`>
 
     Default selection function for NSGA-based algorithms.
 
-.. attribute:: DEFAULT_NSGA_SELECTION_FUNC_PARAMS
-    :annotation: = {}
-
-    Default selection function parameters for NSGA-based algorithms.
 
 .. attribute:: DEFAULT_NSGA3_REFERENCE_POINTS_P
     :annotation: = 4
@@ -69,28 +65,15 @@ Attributes
     Default population size.
 
 .. attribute:: DEFAULT_SELECTION_FUNC
-    :annotation: = <function selTournament>
+    :annotation: = :func:`functools.partial`(<function :func:`deap.tools.selection.selTournament`>, tournsize=2)
 
     Default selection function.
 
-.. attribute:: DEFAULT_SELECTION_FUNC_PARAMS
-    :annotation: = {'tournsize': 2}
-
-    Default selection function parameters.
 
 .. toctree::
     :hidden:
 
-    abc <ea/abc>
 
-    SimpleEA <ea/simple_ea>
+    EA <ea/ea>
     ElitistEA <ea/elitist_ea>
     NSGA <ea/nsga>
-
-    HomogeneousSequentialIslandsEA <ea/homogeneous_sequential_islands_ea>
-    HomogeneousParallelIslandsEA <ea/homogeneous_parallel_islands_ea>
-    HeterogeneousSequentialIslandsEA <ea/heterogeneous_sequential_islands_ea>
-    HeterogeneousParallelIslandsEA <ea/heterogeneous_parallel_islands_ea>
-
-    SequentialCooperativeEA <ea/sequential_cooperative_ea>
-    ParallelCooperativeEA <ea/parallel_cooperative_ea>

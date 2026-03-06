@@ -34,7 +34,7 @@ from culebra.trainer.aco import (
     DEFAULT_ELITE_WEIGHT
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 
 num_nodes = 25
@@ -62,9 +62,9 @@ class TrainerTester(unittest.TestCase):
         for elite_weight in invalid_elite_weight_types:
             with self.assertRaises(TypeError):
                 ElitistAntSystemTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     elite_weight=elite_weight
                 )
@@ -74,9 +74,9 @@ class TrainerTester(unittest.TestCase):
         for elite_weight in invalid_elite_weight_values:
             with self.assertRaises(ValueError):
                 ElitistAntSystemTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     elite_weight=elite_weight
                 )
@@ -85,9 +85,9 @@ class TrainerTester(unittest.TestCase):
         valid_elite_weight_values = (0.0, 0.5, 1.0)
         for elite_weight in valid_elite_weight_values:
             trainer = ElitistAntSystemTSP(
+                fitness_func,
                 ant_cls,
                 species,
-                fitness_func,
                 initial_pheromone,
                 elite_weight=elite_weight
             )
@@ -95,9 +95,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = ElitistAntSystemTSP(
+            fitness_func,
             ant_cls,
             species,
-            fitness_func,
             initial_pheromone
         )
         self.assertEqual(
@@ -111,15 +111,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = ElitistAntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Save the trainer's state
@@ -155,9 +155,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2.5
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -189,9 +189,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -217,9 +217,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 3.7
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -233,7 +233,7 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(len(best_ones[0]), 0)
 
         # Update the elite
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         ant = trainer._generate_ant()
         trainer._elite.update([ant])
@@ -278,9 +278,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         elite_weight = 0.8
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "col_size": 1,
             "elite_weight": elite_weight
@@ -288,7 +288,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = ElitistAntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the initial pheromone
@@ -310,7 +310,7 @@ class TrainerTester(unittest.TestCase):
 
         # Update the elite and try with an empty colony
         # Only the elite ant should deposit pheromone
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._elite.update([ant])
         trainer._col = []
@@ -327,15 +327,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = ElitistAntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # The elite should be empty
@@ -353,15 +353,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = ElitistAntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

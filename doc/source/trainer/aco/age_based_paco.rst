@@ -19,116 +19,124 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:class:`culebra.trainer.aco.QualityBasedPACO` class
-===================================================
+:class:`culebra.trainer.aco.AgeBasedPACO` class
+===============================================
 
-.. autoclass:: culebra.trainer.aco.QualityBasedPACO
-
-Class attributes
-----------------
-.. autoattribute:: culebra.trainer.aco.QualityBasedPACO.objective_stats
-.. autoattribute:: culebra.trainer.aco.QualityBasedPACO.stats_names
+.. autoclass:: culebra.trainer.aco.AgeBasedPACO
 
 Class methods
 -------------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.load
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.load
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_activation
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.choice_info
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.col
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.col_size
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.container
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.current_iter
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.fitness_function
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic_influence
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.heuristic_shapes
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.index
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.initial_pheromone
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.logbook
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_num_iters
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.max_pheromone
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_evals
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_heuristic_matrices
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.num_pheromone_matrices
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_influence
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pheromone_shapes
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_ingoing
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_outgoing
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.pop_size
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.random_seed
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.representatives
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.runtime
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.solution_cls
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.species
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO.verbosity
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_basename
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.choice_info
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.col
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.col_size
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.container
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.cooperators
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.current_iter
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.custom_termination_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.exploitation_prob
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.fitness_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.heuristic
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.heuristic_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.heuristic_shapes
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.index
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.iteration_metric_names
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.iteration_obj_stats
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.logbook
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.max_num_iters
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.max_pheromone
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.num_evals
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.num_iters
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.num_heuristic_matrices
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.num_pheromone_matrices
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pheromone_shapes
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop_ingoing
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop_outgoing
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.pop_size
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.random_seed
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.receive_representatives_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.runtime
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.send_representatives_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.solution_cls
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.species
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.state_proxy
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.training_finished
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO.verbosity
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_checkpoint_activation
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_checkpoint_filename
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_checkpoint_freq
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_col_size
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_exploitation_prob
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_heuristic
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_heuristic_influence
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_index
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_max_num_iters
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_pheromone_influence
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_pop_size
-.. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_verbosity
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_checkpoint_basename
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_checkpoint_freq
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_col_size
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_exploitation_prob
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_heuristic
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_heuristic_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_index
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_pop_size
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_receive_representatives_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_send_representatives_func
+.. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_verbosity
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.best_representatives
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.best_solutions
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.dump
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.evaluate
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.reset
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.test
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.train
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.best_cooperators
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.best_solutions
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.dump
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.evaluate
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.integrate_representatives
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.reset
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.select_representatives
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.test
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.train
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._ant_choice_info
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._calculate_choice_info
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._decrease_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._default_termination_func
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._deposit_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._do_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._do_iteration_stats
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._finish_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._finish_search
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_ant
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_col
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._get_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._increase_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_internals
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_representatives
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_search
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._init_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._load_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._new_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._next_choice
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._pheromone_amount
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._postprocess_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._preprocess_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._reset_internals
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._reset_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._save_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._search
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._set_cooperative_fitness
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._set_state
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._start_iteration
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._termination_criterion
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._update_pheromone
-.. automethod:: culebra.trainer.aco.QualityBasedPACO._update_pop
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._ant_choice_info
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._calculate_choice_info
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._decrease_pheromone
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._default_termination_func
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._deposit_pheromone
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._do_iteration
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._do_training
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._finish_iteration
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._finish_training
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_ant
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_col
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._generate_cooperators
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._get_iteration_metrics
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._get_objective_stats
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._get_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._increase_pheromone
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._init_internals
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._init_pheromone
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._init_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._init_training
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._load_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._new_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._next_choice
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._pheromone_amount
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._reset_internals
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._reset_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._save_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._set_state
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._start_iteration
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._termination_criterion
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._update_logbook
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._update_pheromone
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._update_pop

@@ -19,60 +19,70 @@
 
 """Constants of the module."""
 
+from functools import partial
+
 from deap.tools import selTournament
 
 from .topology import ring_destinations, full_connected_destinations
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-DEFAULT_NUM_SUBTRAINERS = 1
-"""Default number of subtrainers."""
+DEFAULT_MAX_NUM_ITERS = 100
+"""Default maximum number of iterations."""
 
-DEFAULT_REPRESENTATION_SIZE = 5
+DEFAULT_CHECKPOINT_ACTIVATION = True
+"""Default checkpointing activation for a :class:`~culebra.trainer.abc.CentralizedTrainer`."""
+
+DEFAULT_CHECKPOINT_FREQ = 10
+"""Default checkpointing frequency for a :class:`~culebra.trainer.abc.CentralizedTrainer`."""
+
+DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
+"""Default basename for checkpointing files."""
+
+DEFAULT_VERBOSITY = __debug__
+"""Default verbosity for a :class:`~culebra.trainer.abc.CentralizedTrainer`."""
+
+DEFAULT_COOPERATIVE_TOPOLOGY_FUNC = full_connected_destinations
+"""Default topology function for the cooperative model."""
+
+DEFAULT_ISLANDS_TOPOLOGY_FUNC = ring_destinations
+"""Default topology function for the islands model."""
+
+DEFAULT_NUM_REPRESENTATIVES = 5
 """Default value for the number of representatives sent to the other
-subtrainers.
-"""
+subtrainers."""
 
-DEFAULT_REPRESENTATION_FREQ = 10
+DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ = 10
 """Default value for the number of iterations between representatives
 sending."""
 
-DEFAULT_REPRESENTATION_SELECTION_FUNC = selTournament
-"""Default selection policy function to choose the representatives."""
-
-DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS = {'tournsize': 3}
+DEFAULT_REPRESENTATIVES_SELECTION_FUNC_PARAMS = {'tournsize': 3}
 """Default parameters for the representatives selection policy function."""
 
-DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC = ring_destinations
-"""Default topology function for the islands model."""
-
-DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS = {}
-"""Parameters for the default topology function in the islands model."""
-
-DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC = full_connected_destinations
-"""Default topology function for the cooperative model."""
-
-DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS = {}
-"""Parameters for the default topology function in the cooperative model."""
+DEFAULT_REPRESENTATIVES_SELECTION_FUNC = partial(
+    selTournament, **DEFAULT_REPRESENTATIVES_SELECTION_FUNC_PARAMS
+)
+"""Default selection policy function to choose the representatives."""
 
 
 # Exported symbols for this module
 __all__ = [
-    'DEFAULT_NUM_SUBTRAINERS',
-    'DEFAULT_REPRESENTATION_SIZE',
-    'DEFAULT_REPRESENTATION_FREQ',
-    'DEFAULT_REPRESENTATION_SELECTION_FUNC',
-    'DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS',
-    'DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC',
-    'DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS',
-    'DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC',
-    'DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS'
+    'DEFAULT_MAX_NUM_ITERS',
+    'DEFAULT_CHECKPOINT_ACTIVATION',
+    'DEFAULT_CHECKPOINT_FREQ',
+    'DEFAULT_CHECKPOINT_BASENAME',
+    'DEFAULT_VERBOSITY',
+    'DEFAULT_COOPERATIVE_TOPOLOGY_FUNC',
+    'DEFAULT_ISLANDS_TOPOLOGY_FUNC',
+    'DEFAULT_NUM_REPRESENTATIVES',
+    'DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ',
+    'DEFAULT_REPRESENTATIVES_SELECTION_FUNC'
 ]

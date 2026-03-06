@@ -31,9 +31,9 @@ import numpy as np
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -294,8 +294,8 @@ def check_func(
     return value
 
 
-def check_func_params(value: dict[str, Any], name: str) -> dict[str, Any]:
-    """Check if the given value is a valid set of function parameters.
+def check_params(value: dict[str, Any], name: str) -> dict[str, Any]:
+    """Check if the given value is a valid set of parameters.
 
     :param value: A dictionary
     :type value: dict
@@ -304,7 +304,7 @@ def check_func_params(value: dict[str, Any], name: str) -> dict[str, Any]:
     :raises TypeError: If *value* is not a dictionary
     :raises ValueError: If the keys in *value* are not strings
     """
-    # Check that func_params is a valid dict
+    # Check that value is a valid dict
     if not isinstance(value, dict):
         raise TypeError(f"The {name} must be in a dictionary: "
                         f"{value}")
@@ -520,7 +520,7 @@ __all__ = [
     'check_instance',
     'check_subclass',
     'check_func',
-    'check_func_params',
+    'check_params',
     'check_sequence',
     'check_filename',
     'check_matrix'

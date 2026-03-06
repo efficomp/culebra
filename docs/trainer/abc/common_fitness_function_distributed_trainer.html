@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer class &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
+    <script src="../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="culebra.trainer.abc.SequentialDistributedTrainer class" href="sequential_distributed_trainer.html" />
+    <link rel="prev" title="culebra.trainer.abc.DistributedTrainer class" href="distributed_trainer.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sequential_distributed_trainer.html" title="culebra.trainer.abc.SequentialDistributedTrainer class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="distributed_trainer.html" title="culebra.trainer.abc.DistributedTrainer class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../abc.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer</span></code> class</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="culebra-trainer-abc-commonfitnessfunctiondistributedtrainer-class">
+<h1><a class="reference internal" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer" title="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer</span></code></a> class<a class="headerlink" href="#culebra-trainer-abc-commonfitnessfunctiondistributedtrainer-class" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CommonFitnessFunctionDistributedTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">subtrainers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><span class="pre">CentralizedTrainer</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_representatives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representatives_selection_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representatives_exchange_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="distributed_trainer.html#culebra.trainer.abc.DistributedTrainer" title="culebra.trainer.abc.DistributedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedTrainer</span></code></a></p>
+<p>Create a new distributed trainer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subtrainers</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><em>CentralizedTrainer</em></a><em>]</em>) – The subtrainers</p></li>
+<li><p><strong>num_representatives</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of representative solutions that
+will be sent to the other subtrainers. If omitted,
+<a class="reference internal" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_num_representatives" title="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_num_representatives"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_num_representatives</span></code></a>
+will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>representatives_selection_func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Policy function to choose the
+representatives from each subtrainer. If omitted,
+<a class="reference internal" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_selection_func" title="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_selection_func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_representatives_selection_func</span></code></a>
+will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>representatives_exchange_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of iterations between
+representatives sendings. If omitted,
+<a class="reference internal" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_exchange_freq" title="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_exchange_freq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_representatives_exchange_freq</span></code></a>
+will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+<li><p><strong>topology_func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Topology function for representatives sending.
+If omitted,
+<a class="reference internal" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_topology_func" title="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_topology_func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_topology_func</span></code></a>
+will be used. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If any argument is not of the appropriate type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any argument has an incorrect value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="class-methods">
+<h2>Class methods<a class="headerlink" href="#class-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded object</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
+<a class="reference internal" href="../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.cooperative_fitness_estimation_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">cooperative_fitness_estimation_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.cooperative_fitness_estimation_func" title="Link to this definition">¶</a></dt>
+<dd><p>Cooperative fitness estimation function.</p>
+<p>Funtion to estimate the cooperative fitness of a solution from
+several fitness trials with different cooperators. Only used by
+cooperative trainers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a></p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new function</p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – The new function</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>func</em> is not a valid function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.fitness_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">fitness_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../abc/fitness_func.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><span class="pre">FitnessFunction</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.fitness_func" title="Link to this definition">¶</a></dt>
+<dd><p>Training fitness function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../abc/fitness_func.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><em>FitnessFunction</em></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.iteration_metric_names">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">iteration_metric_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">(</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">)</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.iteration_metric_names" title="Link to this definition">¶</a></dt>
+<dd><p>Names of the metrics recorded each iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.iteration_obj_stats">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">iteration_obj_stats</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">(</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">)</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.iteration_obj_stats" title="Link to this definition">¶</a></dt>
+<dd><p>Stats applied to each objective every iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.logbook">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">logbook</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.4)"><span class="pre">Logbook</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.logbook" title="Link to this definition">¶</a></dt>
+<dd><p>Trainer logbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A logbook with the statistics of the training or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>
+if the training has not been done yet</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.Logbook" title="(in DEAP v1.4)"><em>Logbook</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_evals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">num_evals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_evals" title="Link to this definition">¶</a></dt>
+<dd><p>Number of evaluations performed while training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of evaluations or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the training has
+not been done yet</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_iters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">num_iters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_iters" title="Link to this definition">¶</a></dt>
+<dd><p>Number of iterations performed while training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of iterations performed by the subtrainer that
+has performed more iterations or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the training has
+not been done yet</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_representatives">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">num_representatives</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_representatives" title="Link to this definition">¶</a></dt>
+<dd><p>Number of representatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of representatives sent to the other subtrainers</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+<dt class="field-odd">Setter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Set a new number of representatives</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The new value. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="distributed_trainer.html#culebra.trainer.abc.DistributedTrainer._default_num_representatives" title="culebra.trainer.abc.DistributedTrainer._default_num_representatives"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_num_representatives</span></code></a>
+is chosen</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>value</em> is not an integer number</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>value</em> is not positive</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_subtrainers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">num_subtrainers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.num_subtrainers" title="Link to this definition">¶</a></dt>
+<dd><p>Number of subtrainers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.representatives_exchange_freq">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">representatives_exchange_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.representatives_exchange_freq" title="Link to this definition">¶</a></dt>
+<dd><p>Number of iterations between representatives sendings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set a new value for the frequency</p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The new frequency. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="distributed_trainer.html#culebra.trainer.abc.DistributedTrainer._default_representatives_exchange_freq" title="culebra.trainer.abc.DistributedTrainer._default_representatives_exchange_freq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_representatives_exchange_freq</span></code></a>
+is chosen</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>value</em> is not an integer</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <em>value</em> is not a positive number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.representatives_selection_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">representatives_selection_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.representatives_selection_func" title="Link to this definition">¶</a></dt>
+<dd><p>Representatives selection policy function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A function that chooses which solutions are selected as
+representatives of each subtrainer</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a></p>
+</dd>
+<dt class="field-odd">Setter<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Set new representatives selection policy function.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – The new function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="distributed_trainer.html#culebra.trainer.abc.DistributedTrainer._default_representatives_selection_func" title="culebra.trainer.abc.DistributedTrainer._default_representatives_selection_func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_representatives_selection_func</span></code></a>
+is chosen</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>func</em> is not callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.runtime">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">runtime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.runtime" title="Link to this definition">¶</a></dt>
+<dd><p>Training runtime.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The training runtime or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the training has not
+been done yet.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If has not been overridden</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.subtrainers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">subtrainers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/trainer.html#culebra.abc.Trainer" title="culebra.abc.Trainer"><span class="pre">Trainer</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.subtrainers" title="Link to this definition">¶</a></dt>
+<dd><p>Subtrainers.</p>
+<p>One single-species trainer for each subtrainer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><em>CentralizedTrainer</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.topology_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">topology_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.topology_func" title="Link to this definition">¶</a></dt>
+<dd><p>Topology function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a></p>
+</dd>
+<dt class="field-even">Setter<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set new topology function</p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – The new function. If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>,
+<a class="reference internal" href="distributed_trainer.html#culebra.trainer.abc.DistributedTrainer._default_topology_func" title="culebra.trainer.abc.DistributedTrainer._default_topology_func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_topology_func</span></code></a>
+is chosen</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>func</em> is not callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.training_finished">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">training_finished</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.training_finished" title="Link to this definition">¶</a></dt>
+<dd><p>Check if training has finished.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>:data`True` if training has finished</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="private-properties">
+<h2>Private properties<a class="headerlink" href="#private-properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_cooperative_fitness_estimation_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_default_cooperative_fitness_estimation_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_cooperative_fitness_estimation_func" title="Link to this definition">¶</a></dt>
+<dd><p>Default cooperative fitness estimation function.</p>
+<p>Return the average of all fitness trials.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_num_representatives">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_default_num_representatives</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_num_representatives" title="Link to this definition">¶</a></dt>
+<dd><p>Default number of representatives sent to the other subtrainers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../trainer.html#culebra.trainer.DEFAULT_NUM_REPRESENTATIVES" title="culebra.trainer.DEFAULT_NUM_REPRESENTATIVES"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_NUM_REPRESENTATIVES</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_exchange_freq">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_default_representatives_exchange_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_exchange_freq" title="Link to this definition">¶</a></dt>
+<dd><p>Default number of iterations between representatives sending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../trainer.html#culebra.trainer.DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ" title="culebra.trainer.DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_selection_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_default_representatives_selection_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_representatives_selection_func" title="Link to this definition">¶</a></dt>
+<dd><p>Default selection policy function to choose the representatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../trainer.html#culebra.trainer.DEFAULT_REPRESENTATIVES_SELECTION_FUNC" title="culebra.trainer.DEFAULT_REPRESENTATIVES_SELECTION_FUNC"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_REPRESENTATIVES_SELECTION_FUNC</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_topology_func">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_default_topology_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_topology_func" title="Link to this definition">¶</a></dt>
+<dd><p>Default topology function.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><em>Callable</em></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If has not been overridden</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="static-methods">
+<h2>Static methods<a class="headerlink" href="#static-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.receive_representatives">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">receive_representatives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subtrainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><span class="pre">CentralizedTrainer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.receive_representatives" title="Link to this definition">¶</a></dt>
+<dd><p>Receive representative solutions.</p>
+<p>This method must be overridden by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subtrainer</strong> (<a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><em>CentralizedTrainer</em></a>) – The subtrainer receiving representatives</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If has not been overridden</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.send_representatives">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">send_representatives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subtrainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><span class="pre">CentralizedTrainer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.send_representatives" title="Link to this definition">¶</a></dt>
+<dd><p>Send representatives.</p>
+<p>This method must be overridden by subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subtrainer</strong> (<a class="reference internal" href="centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><em>CentralizedTrainer</em></a>) – The sender subtrainer</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If has not been overridden</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.best_cooperators">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">best_cooperators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.best_cooperators" title="Link to this definition">¶</a></dt>
+<dd><p>Return a list of cooperators from each species.</p>
+<p>Only used for cooperative trainers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of cooperators lists if the trainer is cooperative or
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> in other cases</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><em>Solution</em></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.best_solutions">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">best_solutions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><span class="pre">HallOfFame</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.best_solutions" title="Link to this definition">¶</a></dt>
+<dd><p>Get the best solutions found for each species.</p>
+<p>This method must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One Hall of Fame for each species</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><em>HallOfFame</em></a>]</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If has not been overridden</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.dump">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file name.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
+<a class="reference internal" href="../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.evaluate">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../abc/fitness_func.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><span class="pre">FitnessFunction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cooperators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.evaluate" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate one solution.</p>
+<p>Its fitness will be modified according with the fitness function
+results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sol</strong> (<a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><em>Solution</em></a>) – The solution</p></li>
+<li><p><strong>fitness_func</strong> (<a class="reference internal" href="../../abc/fitness_func.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><em>FitnessFunction</em></a>) – The fitness function. If omitted, the training
+function is used</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Index where <em>sol</em> should be inserted in the
+<em>cooperators</em> sequence to form a complete solution for the
+problem</p></li>
+<li><p><strong>cooperators</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><em>Solution</em></a><em>]</em><em>]</em>) – Sequence of cooperators of other species or
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> (if no cooperators are needed to evaluate <em>sol</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of evaluations performed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.reset">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the trainer.</p>
+<p>Delete all the internal data structures needed to perform the training.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.test">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">best_found</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><span class="pre">HallOfFame</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitness_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../abc/fitness_func.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><span class="pre">FitnessFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cooperators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><span class="pre">Solution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.test" title="Link to this definition">¶</a></dt>
+<dd><p>Apply the test fitness function to the solutions found.</p>
+<p>Update the solutions in <em>best_found</em> with their test fitness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>best_found</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><em>HallOfFame</em></a><em>]</em>) – The best solutions found for each species.
+One <a class="reference external" href="https://deap.readthedocs.io/en/master/api/tools.html#deap.tools.HallOfFame" title="(in DEAP v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HallOfFame</span></code></a> for each species</p></li>
+<li><p><strong>fitness_func</strong> (<a class="reference internal" href="../../abc/fitness_func.html#culebra.abc.FitnessFunction" title="culebra.abc.FitnessFunction"><em>FitnessFunction</em></a>) – Fitness function used to evaluate the final
+solutions</p></li>
+<li><p><strong>cooperators</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[
+</em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="../../abc/solution.html#culebra.abc.Solution" title="culebra.abc.Solution"><em>Solution</em></a><em>]</em><em>]</em>) – Sequence of cooperators of other species or
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> (if no cooperators are needed)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If any parameter has a wrong type</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any parameter has an invalid value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.train">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.train" title="Link to this definition">¶</a></dt>
+<dd><p>Perform the training process.</p>
+</dd></dl>
+
+</section>
+<section id="private-methods">
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._do_training">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_do_training</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._do_training" title="Link to this definition">¶</a></dt>
+<dd><p>Apply the training algorithm.</p>
+<p>This abstract method should be implemented by subclasses in order to
+implement the desired behavior.
+:raises NotImplementedError: If has not been overridden</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._finish_training">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_finish_training</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._finish_training" title="Link to this definition">¶</a></dt>
+<dd><p>Finish the training process.</p>
+<p>This method is called after the training has finished. It can be
+overridden to perform any treatment of the solutions found.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._init_internals">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_init_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._init_internals" title="Link to this definition">¶</a></dt>
+<dd><p>Set up the trainer internal data structures to start training.</p>
+<p>Create the subtrainer communication queues.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._init_training">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_init_training</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._init_training" title="Link to this definition">¶</a></dt>
+<dd><p>Init the training process.</p>
+<p>Initialize all the internal data structures needed to perform the
+training.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._reset_internals">
+<span class="sig-prename descclassname"><span class="pre">CommonFitnessFunctionDistributedTrainer.</span></span><span class="sig-name descname"><span class="pre">_reset_internals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._reset_internals" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the internal structures of the trainer.</p>
+<p>Reset the subtrainer communication queues.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sequential_distributed_trainer.html" title="culebra.trainer.abc.SequentialDistributedTrainer class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="distributed_trainer.html" title="culebra.trainer.abc.DistributedTrainer class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../trainer.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../abc.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer</span></code> class</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../../_sources/trainer/abc/common_fitness_function_distributed_trainer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work is supported by projects <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish
+        <i><a href="https://www.ciencia.gob.es/">Ministerio de Ciencia,
+        Innovación y Universidades</a></i>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

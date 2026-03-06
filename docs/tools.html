@@ -8,7 +8,7 @@
     <title>culebra.tools module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=c87aa342"></script>
+    <script src="_static/documentation_options.js?v=2bd037f0"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -76,8 +76,8 @@ statistical test</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_BATCH_STATS_FUNCTIONS">
-<span class="sig-name descname"><span class="pre">DEFAULT_BATCH_STATS_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.max&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.min&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.std&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_BATCH_STATS_FUNCTIONS" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_BATCH_STATS_FUNCS">
+<span class="sig-name descname"><span class="pre">DEFAULT_BATCH_STATS_FUNCS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.max&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.min&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame._add_numeric_operations.&lt;locals&gt;.std&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_BATCH_STATS_FUNCS" title="Link to this definition">¶</a></dt>
 <dd><p>Default statistics calculated for the results gathered from all the
 experiments.</p>
 </dd></dl>
@@ -89,8 +89,8 @@ experiments.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_FEATURE_METRIC_FUNCTIONS">
-<span class="sig-name descname"><span class="pre">DEFAULT_FEATURE_METRIC_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_FEATURE_METRIC_FUNCTIONS" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_FEATURE_METRIC_FUNCS">
+<span class="sig-name descname"><span class="pre">DEFAULT_FEATURE_METRIC_FUNCS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Rank':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.rank&gt;,</span> <span class="pre">'Relevance':</span> <span class="pre">&lt;function</span> <span class="pre">Metrics.relevance&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_FEATURE_METRIC_FUNCS" title="Link to this definition">¶</a></dt>
 <dd><p>Default metrics calculated for the features in the set of solutions.</p>
 </dd></dl>
 
@@ -145,12 +145,12 @@ experiments.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS">
 <span class="sig-name descname"><span class="pre">DEFAULT_SMOTE_NUM_NEIGHBORS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS" title="Link to this definition">¶</a></dt>
-<dd><p>Default number of neighbors for <a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a>.</p>
+<dd><p>Default number of neighbors for <a class="reference external" href="https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html#imblearn.over_sampling.SMOTE" title="(in imbalanced-learn v0.14.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMOTE</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.tools.DEFAULT_STATS_FUNCTIONS">
-<span class="sig-name descname"><span class="pre">DEFAULT_STATS_FUNCTIONS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_STATS_FUNCTIONS" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.tools.DEFAULT_STATS_FUNCS">
+<span class="sig-name descname"><span class="pre">DEFAULT_STATS_FUNCS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'Avg':</span> <span class="pre">&lt;function</span> <span class="pre">mean&gt;,</span> <span class="pre">'Max':</span> <span class="pre">&lt;function</span> <span class="pre">amax&gt;,</span> <span class="pre">'Min':</span> <span class="pre">&lt;function</span> <span class="pre">amin&gt;,</span> <span class="pre">'Std':</span> <span class="pre">&lt;function</span> <span class="pre">std&gt;}</span></em><a class="headerlink" href="#culebra.tools.DEFAULT_STATS_FUNCS" title="Link to this definition">¶</a></dt>
 <dd><p>Default statistics calculated for the results.</p>
 </dd></dl>
 
@@ -191,7 +191,7 @@ experiments.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy;2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="_sources/tools.rst.txt"

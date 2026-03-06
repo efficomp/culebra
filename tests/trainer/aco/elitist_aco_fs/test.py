@@ -31,8 +31,8 @@ import numpy as np
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco import ElitistACOFS
 from culebra.solution.feature_selection import Species, Ant
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
@@ -76,10 +76,10 @@ species = Species(
     )
 
 # Training fitness function
-training_fitness_function = KappaNumFeats(training_data, cv_folds=5)
+training_fitness_func = KappaNumFeats(training_data, cv_folds=5)
 
 # Test fitness function
-test_fitness_function = KappaNumFeats(training_data, test_data=test_data)
+test_fitness_func = KappaNumFeats(training_data, test_data=test_data)
 
 # Lists of banned and feasible nodes
 banned_nodes = [0, dataset.num_feats-1]
@@ -89,19 +89,45 @@ feasible_nodes = list(range(1, dataset.num_feats-1))
 class ElitistACOFSTester(unittest.TestCase):
     """Test :class:`culebra.trainer.aco.ElitistACOFS`."""
 
-    def test_state(self):
-        """Test the get_state and _set_state methods."""
+    def test_internals(self):
+        """Test the _init_internals and _reset_internals methods."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = ElitistACOFS(**params)
-        trainer._init_search()
-        trainer._new_state()
+
+        # Check the pheromone matrices
+        self.assertIsNone(trainer.pheromone)
+
+        # Init the trainer internal structures
+        trainer._init_internals()
+
+        # Check the pheromone matrices
+        self.assertIsNotNone(trainer.pheromone)
+
+        # Reset the internals
+        trainer._reset_internals()
+
+        # Check the pheromone matrices
+        self.assertIsNone(trainer.pheromone)
+
+    def test_state(self):
+        """Test the get_state and _set_state methods."""
+        params = {
+            "fitness_func": training_fitness_func,
+            "solution_cls": Ant,
+            "species": species,
+            "verbosity": False
+        }
+
+        # Create the trainer
+        trainer = ElitistACOFS(**params)
+        trainer._init_training()
 
         # Save the trainer's state
         state = trainer._get_state()
@@ -129,9 +155,9 @@ class ElitistACOFSTester(unittest.TestCase):
     def test_update_elite(self):
         """Test _update_elite."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "col_size": 50,
             "verbosity": False
         }
@@ -140,7 +166,7 @@ class ElitistACOFSTester(unittest.TestCase):
         trainer = ElitistACOFS(**params)
 
         # Try to update the elite
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         trainer._generate_col()
         trainer._update_elite()
@@ -157,7 +183,7 @@ class ElitistACOFSTester(unittest.TestCase):
         for elite_ant in elite[1:]:
             elite_ant.fitness.values = ((bad_kappa, bad_nf))
 
-        col[0].fitness.valuesalues = ((bad_kappa, good_nf))
+        col[0].fitness.values = ((bad_kappa, good_nf))
         for col_ant in col[1:]:
             col_ant.fitness.values = ((bad_kappa, bad_nf))
 
@@ -171,17 +197,18 @@ class ElitistACOFSTester(unittest.TestCase):
     def test_pheromone_amount(self):
         """Test _pheromone_amount."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = ElitistACOFS(**params)
 
-        # Init the search
-        trainer._init_search()
+        # Init the training
+        trainer._init_training()
+        trainer._start_iteration()
 
         ant = trainer._generate_ant()
 
@@ -192,20 +219,18 @@ class ElitistACOFSTester(unittest.TestCase):
     def test_update_pheromone(self):
         """Test _update_pheromone."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = ElitistACOFS(**params)
 
-        # Init the search
-        trainer._init_search()
-
-        # Reset the pheromone values
-        trainer._init_pheromone()
+        # Init the training
+        trainer._init_training()
+        trainer._start_iteration()
 
         # Update pheromone according to the elite
         trainer._do_iteration()
@@ -226,9 +251,9 @@ class ElitistACOFSTester(unittest.TestCase):
         """Test the __copy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -241,8 +266,8 @@ class ElitistACOFSTester(unittest.TestCase):
 
         # The objects attributes are shared
         self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
         self.assertEqual(id(trainer1.species), id(trainer2.species))
 
@@ -254,9 +279,9 @@ class ElitistACOFSTester(unittest.TestCase):
         """Test the __deepcopy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -271,9 +296,9 @@ class ElitistACOFSTester(unittest.TestCase):
         """Serialization test."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -294,15 +319,15 @@ class ElitistACOFSTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = ElitistACOFS(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 
@@ -318,7 +343,8 @@ class ElitistACOFSTester(unittest.TestCase):
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(
-            id(trainer1.species.num_feats), id(trainer2.species.num_feats)
+            id(trainer1.species.num_feats),
+            id(trainer2.species.num_feats)
         )
         self.assertEqual(trainer1.max_num_iters, trainer2.max_num_iters)
 

@@ -29,25 +29,20 @@ from copy import copy, deepcopy
 from multiprocess.queues import Queue
 from deap.tools import Logbook
 
-from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
+from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer import (
-    DEFAULT_NUM_SUBTRAINERS,
-    DEFAULT_REPRESENTATION_SIZE,
-    DEFAULT_REPRESENTATION_FREQ,
-    DEFAULT_REPRESENTATION_SELECTION_FUNC,
-    DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
+    DEFAULT_NUM_REPRESENTATIVES,
+    DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ
 )
-from culebra.trainer.abc import SingleSpeciesTrainer, DistributedTrainer
-from culebra.trainer.topology import (
-    ring_destinations,
-    full_connected_destinations
-)
+
+from culebra.trainer.abc import CentralizedTrainer, DistributedTrainer
+from culebra.trainer.topology import ring_destinations
 from culebra.solution.feature_selection import (
     Species,
     BinarySolution as Solution
 )
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
@@ -73,6 +68,59 @@ def KappaNumFeats(
     )
 
 
+class MySubtrainer(CentralizedTrainer):
+    """Dummy implementation of a subtrainer."""
+
+    def _do_iteration(self):
+        """Implement an iteration of the training process."""
+        self.pop = [
+            self.solution_cls(
+                self.species,
+                self.fitness_func.fitness_cls,
+                features=[1, 2 ,3]
+            ),
+            self.solution_cls(
+                self.species,
+                self.fitness_func.fitness_cls,
+                features = [1, 2]
+            )
+        ]
+        for sol in self.pop:
+            self._current_iter_evals += self.evaluate(
+                sol, self.fitness_func, self.index, self.cooperators
+            )
+
+    def _get_objective_stats(self) -> dict:
+        """Gather the objective stats."""
+        return self._stats.compile(self.pop) if self._stats else {}
+
+
+class MyTrainer(DistributedTrainer):
+    """Dummy implementation of a distributed trainer."""
+
+    @property
+    def _default_topology_func(self):
+        """Default topology function."""
+        return ring_destinations
+
+    @property
+    def runtime(self):
+        """Dummy implementation."""
+        return 0
+
+    @property
+    def fitness_func(self):
+        """Training fitness function."""
+        return self.subtrainers[0].fitness_func
+
+    @staticmethod
+    def receive_representatives(subtrainer):
+        pass
+
+    @staticmethod
+    def send_representatives(subtrainer):
+        pass
+
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
 
@@ -84,44 +132,15 @@ species = Species(num_feats=dataset.num_feats)
 
 fitness_func = KappaNumFeats(dataset)
 
-
-class MyTrainer(DistributedTrainer):
-    """Dummy implementation of a distributed trainer."""
-
-    def _generate_subtrainers(self):
-        self._subtrainers = []
-        subtrainer_params = {
-            "solution_cls": Solution,
-            "species": species,
-            "fitness_function": self.fitness_function,
-            "max_num_iters": self.max_num_iters,
-            "checkpoint_activation": self.checkpoint_activation,
-            "checkpoint_freq": self.checkpoint_freq,
-            "checkpoint_filename": self.checkpoint_filename,
-            "verbosity": self.verbosity,
-            "random_seed": self.random_seed
-        }
-
-        for (
-            index,
-            checkpoint_filename
-        ) in enumerate(self.subtrainer_checkpoint_filenames):
-            subtrainer = self.subtrainer_cls(**subtrainer_params)
-            subtrainer.checkpoint_filename = checkpoint_filename
-
-            subtrainer.index = index
-            subtrainer.container = self
-            self._subtrainers.append(subtrainer)
-
-    @property
-    def _default_representation_topology_func(self):
-        """Default topology function."""
-        return ring_destinations
-
-    @property
-    def _default_representation_topology_func_params(self):
-        """Default parameters for the default topology function."""
-        return {}
+# Subtrainers params
+subtrainer_params = {
+    "fitness_func": fitness_func,
+    "solution_cls": Solution,
+    "species": species,
+    "max_num_iters": 5,
+    "checkpoint_activation": False,
+    "verbosity": False
+}
 
 
 class TrainerTester(unittest.TestCase):
@@ -129,279 +148,277 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test :meth:`~culebra.trainer.abc.DistributedTrainer.__init__`."""
-        valid_subtrainer_cls = SingleSpeciesTrainer
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
-        # Try fitness functions. Should fail
-        invalid_fitness_funcs = (type, None, 'a', 1)
-        for func in invalid_fitness_funcs:
+        # Try with insufficient subtrainers. Should fail
+        insufficient_subtrainers = ((), subtrainers[:1],)
+        for subtrainer_seq in insufficient_subtrainers:
+            with self.assertRaises(ValueError):
+                MyTrainer(*subtrainer_seq)
+
+        # Try invalid subtrainers
+        invalid_subtrainers = ((1, subtrainers[1]), (subtrainers[0], 2))
+        for subtrainer_seq in invalid_subtrainers:
+            with self.assertRaises(ValueError):
+                MyTrainer(*subtrainer_seq)
+
+        # Try invalid types for the number of representatives. Should fail
+        invalid_num_representatives = (str, 'a', -0.001, 1.001)
+        for num_representatives in invalid_num_representatives:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    func,
-                    valid_subtrainer_cls
+                    *subtrainers,
+                    num_representatives=num_representatives
                 )
 
-        # Try invalid subtrainer_cls. Should fail
-        invalid_trainer_classes = (tuple, str, None, 'a', 1)
-        for cls in invalid_trainer_classes:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    fitness_func,
-                    cls
-                )
-
-        # Try invalid types for max_num_iters. Should fail
-        invalid_max_num_iters = ('a', 1.5, str)
-        for max_num_iters in invalid_max_num_iters:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    max_num_iters=max_num_iters
-                )
-
-        # Try invalid values for max_num_iters. Should fail
-        invalid_max_num_iters = (-1, 0)
-        for max_num_iters in invalid_max_num_iters:
+        # Try invalid values for the number of representatives. Should fail
+        invalid_num_representatives = (-1, 0)
+        for num_representatives in invalid_num_representatives:
             with self.assertRaises(ValueError):
                 MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    max_num_iters=max_num_iters
+                    *subtrainers,
+                    num_representatives=num_representatives
                 )
 
-        # Try invalid types for num_subtrainers. Should fail
-        invalid_num_subtrainers = ('a', 1.5, str)
-        for num_subtrainers in invalid_num_subtrainers:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    num_subtrainers=num_subtrainers
-                )
-
-        # Try invalid values for num_subtrainers. Should fail
-        invalid_num_subtrainers = (-1, 0)
-        for num_subtrainers in invalid_num_subtrainers:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    num_subtrainers=num_subtrainers
-                )
-
-        # Try invalid types for the representation size. Should fail
-        invalid_representation_sizes = (str, 'a', -0.001, 1.001)
-        for representation_size in invalid_representation_sizes:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_size=representation_size
-                )
-
-        # Try invalid values for the representation size. Should fail
-        invalid_representation_sizes = (-1, 0)
-        for representation_size in invalid_representation_sizes:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_size=representation_size
-                )
-
-        # Try invalid types for the representation frequency. Should fail
-        invalid_representation_freqs = (str, 'a', 1.5)
-        for representation_freq in invalid_representation_freqs:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_freq=representation_freq
-                )
-
-        # Try invalid values for the representation frequency. Should fail
-        invalid_representation_freqs = (-1, 0)
-        for representation_freq in invalid_representation_freqs:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_freq=representation_freq
-                )
-
-        # Try invalid representation topology function. Should fail
+        # Try invalid representatives selection function. Should fail
         invalid_funcs = ('a', 1.5)
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_topology_func=func
+                    *subtrainers,
+                    representatives_selection_func=func
                 )
 
-        # Try invalid types for representation topology function parameters
+        # Try invalid types for the representatives exchange frequency.
         # Should fail
-        invalid_params = ('a', type)
-        for params in invalid_params:
+        invalid_repr_exchange_freqs = (str, 'a', 1.5)
+        for repr_exchange_freq in invalid_repr_exchange_freqs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_topology_func_params=params
+                    *subtrainers,
+                    representatives_exchange_freq=repr_exchange_freq
                 )
 
-        # Try a valid representation topology function
-        valid_representation_topology_func = full_connected_destinations
-        trainer = MyTrainer(
-            fitness_func,
-            valid_subtrainer_cls,
-            representation_topology_func=valid_representation_topology_func
-        )
-        self.assertEqual(
-            trainer.representation_topology_func,
-            valid_representation_topology_func
-        )
+        # Try invalid values for the representatives exchange frequency.
+        # Should fail
+        invalid_repr_exchange_freqs = (-1, 0)
+        for repr_exchange_freq in invalid_repr_exchange_freqs:
+            with self.assertRaises(ValueError):
+                MyTrainer(
+                    *subtrainers,
+                    representatives_exchange_freq=repr_exchange_freq
+                )
 
-        # Try valid representation topology function params
-        valid_params = {"offset": 2}
-        trainer = MyTrainer(
-            fitness_func,
-            valid_subtrainer_cls,
-            representation_topology_func_params=valid_params
-        )
-        self.assertEqual(
-            trainer.representation_topology_func_params,
-            valid_params
-        )
-
-        # Try invalid representation selection function. Should fail
+        # Try invalid topology functions. Should fail
         invalid_funcs = ('a', 1.5)
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
                 MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_selection_func=func
-                )
-
-        # Try invalid types for representation selection function parameters
-        # Should fail
-        invalid_params = ('a', type)
-        for params in invalid_params:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    fitness_func,
-                    valid_subtrainer_cls,
-                    representation_selection_func_params=params
+                    *subtrainers, topology_func=func
                 )
 
         # Test default params
-        trainer = MyTrainer(fitness_func, valid_subtrainer_cls)
+        trainer = MyTrainer(*subtrainers)
 
-        self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
-        self.assertEqual(trainer.num_subtrainers, DEFAULT_NUM_SUBTRAINERS)
-
-        self.assertEqual(
-            trainer.representation_size, DEFAULT_REPRESENTATION_SIZE
-        )
-        self.assertEqual(
-            trainer.representation_freq, DEFAULT_REPRESENTATION_FREQ
-        )
-        self.assertEqual(
-            trainer.representation_topology_func,
-            ring_destinations
-        )
-        self.assertEqual(
-            trainer.representation_topology_func_params,
-            {}
-        )
-        self.assertEqual(
-            trainer.representation_selection_func,
-            DEFAULT_REPRESENTATION_SELECTION_FUNC
-        )
-        self.assertEqual(
-            trainer.representation_selection_func_params,
-            DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
-        )
-
-        self.assertEqual(trainer.subtrainer_params, {})
-        self.assertEqual(trainer.subtrainers, None)
-        self.assertEqual(trainer._communication_queues, None)
-
-        # Test islands trainer extra params
-        trainer = MyTrainer(
-            fitness_func,
-            valid_subtrainer_cls,
-            extra="foo")
-        self.assertEqual(trainer.subtrainer_params, {"extra": "foo"})
-
-    def test_subtrainer_suffixes(self):
-        """Test the _subtrainer_suffixes method."""
-        # Parameters for the trainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": SingleSpeciesTrainer
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Try several number of islands
-        max_num_subtrainers = 10
-        for num_subtrainers in range(1, max_num_subtrainers+1):
-            trainer.num_subtrainers = num_subtrainers
-
-            # Check the suffixes
-            for suffix in range(num_subtrainers):
-                suffixes = trainer._subtrainer_suffixes
-                self.assertTrue(f"{suffix}" in suffixes)
-
-    def test_subtrainer_checkpoint_filenames(self):
-        """Test subtrainer_checkpoint_filenames."""
-        # Parameters for the trainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": SingleSpeciesTrainer,
-            "num_subtrainers": 2,
-            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        # Check the file names
-        self.assertEqual(
-            tuple(trainer.subtrainer_checkpoint_filenames),
-            (
-                "my_check_0" + SERIALIZED_FILE_EXTENSION,
-                "my_check_1" + SERIALIZED_FILE_EXTENSION
+        self.assertEqual(trainer.subtrainers, subtrainers)
+        self.assertEqual(trainer.num_subtrainers, len(subtrainers))
+        for idx, subtrainer in enumerate(trainer.subtrainers):
+            self.assertEqual(idx, subtrainer.index)
+            self.assertEqual(trainer, subtrainer.container)
+            self.assertEqual(
+                trainer.receive_representatives,
+                subtrainer.receive_representatives_func
             )
+            self.assertEqual(
+                trainer.send_representatives,
+                subtrainer.send_representatives_func
+            )
+            self.assertEqual(trainer.fitness_func, subtrainer.fitness_func)
+
+        self.assertEqual(
+            trainer.num_representatives, DEFAULT_NUM_REPRESENTATIVES
         )
+        self.assertEqual(
+            trainer.representatives_exchange_freq,
+            DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ
+        )
+        self.assertEqual(trainer.topology_func, ring_destinations)
+
+        # Test custom params
+        params = {
+            "num_representatives": 3,
+            "representatives_selection_func": max,
+            "representatives_exchange_freq": 2,
+            "topology_func": len
+        }
+
+        trainer = MyTrainer(*subtrainers, **params)
+
+        self.assertEqual(
+            trainer.num_representatives, params["num_representatives"]
+        )
+        self.assertEqual(
+            trainer.representatives_selection_func,
+            params["representatives_selection_func"]
+        )
+        self.assertEqual(
+            trainer.representatives_exchange_freq,
+            params["representatives_exchange_freq"]
+        )
+        self.assertEqual(
+            trainer.topology_func,
+            params["topology_func"]
+        )
+
+    def test_iteration_metric_names(self):
+        """Test the iteration_metric_names property."""
+        # Try several number of subtrainers
+        max_num_subtrainers = 10
+        for num_subtrainers in range(2, max_num_subtrainers+1):
+            subtrainers = tuple(
+                MySubtrainer(**subtrainer_params)
+                for _ in range(num_subtrainers)
+            )
+
+            # Create the trainer
+            trainer = MyTrainer(*subtrainers)
+            self.assertEqual(
+                trainer.iteration_metric_names,
+                trainer.subtrainers[1].iteration_metric_names
+            )
+
+    def test_iteration_obj_stats(self):
+        """Test the iteration_obj_stats property."""
+        # Try several number of subtrainers
+        max_num_subtrainers = 10
+        for num_subtrainers in range(2, max_num_subtrainers+1):
+            subtrainers = tuple(
+                MySubtrainer(**subtrainer_params)
+                for _ in range(num_subtrainers)
+            )
+
+            # Create the trainer
+            trainer = MyTrainer(*subtrainers)
+            self.assertEqual(
+                trainer.iteration_obj_stats,
+                trainer.subtrainers[1].iteration_obj_stats
+            )
+
+    def test_num_subtrainers(self):
+        """Test the num_subtrainers property."""
+        # Try several number of subtrainers
+        max_num_subtrainers = 10
+        for num_subtrainers in range(2, max_num_subtrainers+1):
+            subtrainers = tuple(
+                MySubtrainer(**subtrainer_params)
+                for _ in range(num_subtrainers)
+            )
+
+            # Create the trainer
+            trainer = MyTrainer(*subtrainers)
+            self.assertEqual(trainer.num_subtrainers, num_subtrainers)
+
+    def test_training_finished(self):
+        """Test the training_finished property."""
+        # Try several number of subtrainers
+        num_subtrainers = 10
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params)
+            for _ in range(num_subtrainers)
+        )
+
+        # Create the trainer
+        trainer = MyTrainer(*subtrainers)
+
+        for subtr in trainer.subtrainers:
+            self.assertFalse(trainer.training_finished)
+            subtr._training_finished = True
+
+        self.assertTrue(trainer.training_finished)
+
+    def test_logbook(self):
+        """Test the logbook property."""
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
+
+        # Create the trainer
+        trainer = MyTrainer(*subtrainers)
+
+        self.assertEqual(trainer.logbook, None)
+
+        trainer._init_training()
+        for subtrainer in trainer.subtrainers:
+            subtrainer.train()
+
+        # Test the logbook property
+        global_logbook_len = 0
+        for subtrainer in trainer.subtrainers:
+            global_logbook_len += len(subtrainer.logbook)
+
+        self.assertIsInstance(trainer.logbook, Logbook)
+        self.assertEqual(global_logbook_len, len(trainer.logbook))
+
+    def test_num_evals(self):
+        """Test the num_evals property."""
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
+
+        # Create the trainer
+        trainer = MyTrainer(*subtrainers)
+
+        self.assertEqual(trainer.num_evals, None)
+
+        trainer._init_training()
+        for subtrainer in trainer.subtrainers:
+            subtrainer.train()
+
+        # Test the number of evaluations
+        global_num_evals = 0
+        for subtrainer in trainer.subtrainers:
+            global_num_evals += subtrainer.num_evals
+
+        self.assertEqual(global_num_evals, trainer.num_evals)
+
+    def test_num_iters(self):
+        """Test the num_iters property."""
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
+
+        # Create the trainer
+        trainer = MyTrainer(*subtrainers)
+
+        self.assertEqual(trainer.num_iters, None)
+
+        trainer._init_training()
+        for subtrainer in trainer.subtrainers:
+            subtrainer.train()
+
+        # Test the number of iterations
+        self.assertEqual(trainer.num_iters, subtrainer_params["max_num_iters"])
+
+        # Test when a subtrainer has done more iterations
+        trainer.subtrainers[1]._current_iter *= 2
+        self.assertEqual(trainer.subtrainers[1].num_iters, trainer.num_iters)
 
     def test_init_internals(self):
         """Test _init_internals."""
-        # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers
-        }
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyTrainer(*subtrainers)
         trainer._init_internals()
-
-        # Test the number of subtrainerulations
-        self.assertEqual(len(trainer.subtrainers), num_subtrainers)
-
-        # Test each island
-        for subtrainer in trainer.subtrainers:
-            self.assertIsInstance(subtrainer, subtrainer_cls)
-            self.assertEqual(subtrainer.species, species)
-            self.assertEqual(subtrainer.solution_cls, Solution)
-            self.assertEqual(subtrainer.fitness_function, fitness_func)
 
         # Test that the communication queues have been created
         self.assertIsInstance(trainer._communication_queues, list)
@@ -420,170 +437,56 @@ class TrainerTester(unittest.TestCase):
 
     def test_reset_internals(self):
         """Test _reset_internals."""
-        # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers
-        }
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyTrainer(*subtrainers)
         trainer._init_internals()
-
-        # Reset the internals
         trainer._reset_internals()
-
-        # Test the number of subtrainerulations
-        self.assertEqual(trainer.subtrainers, None)
 
         # Test the communication queues
         self.assertEqual(trainer._communication_queues, None)
 
-    def test_checkpoining(self):
-        """Test checkpointing."""
-        # Create a default trainer
-        # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False
-        }
+    def test_reset(self):
+        """Test reset."""
+        self.test_reset_internals()
 
-        # Test default params
-        trainer1 = MyTrainer(**params)
-
-        # Create the subtrainerulations
-        trainer1._init_search()
-
-        # Set state attributes to dummy values
-        trainer1._runtime = 10
-        trainer1._current_iter = 19
-
-        # Save the state of trainer1
-        trainer1._save_state()
-
-        # Create another trainer
-        trainer2 = MyTrainer(**params)
-
-        # Trainer2 has no subtrainerulations yet
-        self.assertEqual(trainer2.subtrainers, None)
-
-        # Load the state of trainer1 into trainer2
-        trainer2._load_state()
-
-        # Check that the state attributes of trainer2 are equal to those of
-        # trainer1
-        self.assertEqual(trainer1.runtime, trainer2.runtime)
-        self.assertEqual(trainer1._current_iter, trainer2._current_iter)
-
-        # Remove the checkpoint files
-        os.remove(trainer1.checkpoint_filename)
-
-    def test_new_state(self):
-        """Test _new_state."""
-        # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_internals()
-        trainer._new_state()
-
-        # Check the current iteration
-        self.assertEqual(trainer._current_iter, 0)
-
-        # Test that the logbook is None
-        self.assertEqual(trainer._logbook, None)
-
-    def test_logbook(self):
-        """Test the logbook property."""
-        # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-
-        self.assertEqual(trainer._logbook, None)
-
-        # Generate the subtrainerulations
-        trainer._init_search()
-        for subtrainer in trainer.subtrainers:
-            subtrainer._init_search()
-
-        # Test the logbook property
-        global_logbook_len = 0
-        for subtrainer in trainer.subtrainers:
-            global_logbook_len += len(subtrainer.logbook)
-
-        self.assertIsInstance(trainer.logbook, Logbook)
-        self.assertEqual(global_logbook_len, len(trainer.logbook))
+    def test_init_training(self):
+        """Test reset."""
+        self.test_init_internals()
 
     def test_copy(self):
         """Test the __copy__ method."""
-        # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
-        # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyTrainer(*subtrainers)
         trainer2 = copy(trainer1)
 
-        # Copy only copies the first level (trainer1 != trainerl2)
-        self.assertNotEqual(id(trainer1), id(trainer2))
+        # Copy only copies the first level
+        self.assertFalse(trainer1 is trainer2)
 
         # The objects attributes are shared
-        self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
-        )
-        self.assertEqual(
-            id(trainer1.subtrainer_cls),
-            id(trainer2.subtrainer_cls)
-        )
+        self.assertTrue(
+            trainer1.topology_func is trainer2.topology_func)
+
+        for subtr1, subtr2 in zip(trainer1.subtrainers, trainer2.subtrainers):
+            self.assertTrue(subtr1 is subtr2)
 
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
         # Parameters for the trainer
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
-        # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyTrainer(*subtrainers)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -594,19 +497,12 @@ class TrainerTester(unittest.TestCase):
 
         Test the __setstate__ and __reduce__ methods.
         """
-        # Set custom params
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
-        # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyTrainer(*subtrainers)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
@@ -620,20 +516,13 @@ class TrainerTester(unittest.TestCase):
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
-        # Set custom params
-        num_subtrainers = 2
-        subtrainer_cls = SingleSpeciesTrainer
-        params = {
-            "fitness_function": fitness_func,
-            "subtrainer_cls": subtrainer_cls,
-            "num_subtrainers": num_subtrainers,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        num_subtrainers = 3
+        subtrainers = tuple(
+            MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
+        )
 
-        # Construct a parameterized trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer = MyTrainer(*subtrainers)
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 
@@ -645,13 +534,14 @@ class TrainerTester(unittest.TestCase):
         :param trainer2: The second trainer
         :type trainer2: ~culebra.trainer.abc.DistributedTrainer
         """
-        self.assertNotEqual(id(trainer1), id(trainer2))
-        self.assertNotEqual(
-            id(trainer1.subtrainer_params), id(trainer2.subtrainer_params)
-        )
-        self.assertEqual(
-            trainer1.subtrainer_params, trainer2.subtrainer_params
-        )
+        self.assertFalse(trainer1 is trainer2)
+
+        for subtr1, subtr2 in zip(trainer1.subtrainers, trainer2.subtrainers):
+            self.assertFalse(subtr1 is subtr2)
+            self.assertTrue(subtr1.solution_cls is subtr2.solution_cls)
+            self.assertFalse(subtr1.species is subtr2.species)
+            self.assertTrue(subtr1.container is trainer1)
+            self.assertTrue(subtr2.container is trainer2)
 
 
 if __name__ == '__main__':

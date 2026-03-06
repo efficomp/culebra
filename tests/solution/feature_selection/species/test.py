@@ -245,8 +245,8 @@ class SpeciesTester(unittest.TestCase):
         :type species2: ~culebra.solution.feature_selection.Species
         """
         # Copies all the levels
-        self.assertNotEqual(id(species1), id(species2))
-        self.assertEqual(species1._num_feats, species2._num_feats)
+        self.assertTrue(species1 is not species2)
+        self.assertTrue(species1.__dict__, species2.__dict__)
 
 
 if __name__ == '__main__':

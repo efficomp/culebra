@@ -26,8 +26,8 @@
 
 Class attributes
 ----------------
-.. autoattribute:: culebra.tools.Evaluation.feature_metric_functions
-.. autoattribute:: culebra.tools.Evaluation.stats_functions
+.. autoattribute:: culebra.tools.Evaluation.feature_metric_funcs
+.. autoattribute:: culebra.tools.Evaluation.stats_funcs
 
 Class methods
 -------------
@@ -42,9 +42,9 @@ Properties
 .. autoproperty:: culebra.tools.Evaluation.results
 .. autoproperty:: culebra.tools.Evaluation.results_base_filename
 .. autoproperty:: culebra.tools.Evaluation.serialized_results_filename
-.. autoproperty:: culebra.tools.Evaluation.test_fitness_function
+.. autoproperty:: culebra.tools.Evaluation.test_fitness_func
 .. autoproperty:: culebra.tools.Evaluation.trainer
-.. autoproperty:: culebra.tools.Evaluation.untie_best_fitness_function
+.. autoproperty:: culebra.tools.Evaluation.untie_best_fitness_func
 
 Private properties
 ------------------

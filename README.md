@@ -51,5 +51,5 @@ This work is supported by projects *New Computing Paradigms and Heterogeneous Pa
 
 ## Copyright
 
-Culebra © 2020-2025 [EFFICOMP](https://efficomp.ugr.es).
+Culebra © 2020-2026 [EFFICOMP](https://efficomp.ugr.es).
 

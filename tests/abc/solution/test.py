@@ -37,8 +37,8 @@ class MySolution(Solution):
 class MySpecies(Species):
     """Dummy subclass to test the :class:`~culebra.abc.Species` class."""
 
-    def check(self, _):
-        """Check a solution."""
+    def is_member(self, sol):
+        """Check if a solution meets the constraints imposed by the species."""
         return True
 
 
@@ -232,9 +232,10 @@ class SolutionTester(unittest.TestCase):
         :type sol2: ~culebra.abc.Solution
         """
         # Copies all the levels
-        self.assertNotEqual(id(sol1), id(sol2))
-        self.assertNotEqual(id(sol1.species), id(sol2.species))
-        self.assertNotEqual(id(sol1.fitness), id(sol2.fitness))
+        self.assertTrue(sol1 is not sol2)
+        self.assertTrue(sol1.species is not sol2.species)
+        self.assertEqual(sol1.species.__dict__, sol2.species.__dict__)
+        self.assertTrue(sol1.fitness is not sol2.fitness)
         self.assertEqual(sol1.fitness, sol2.fitness)
 
     def test_repr(self):

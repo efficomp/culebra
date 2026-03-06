@@ -44,7 +44,7 @@ from culebra.checker import (
     check_int,
     check_instance,
     check_filename,
-    check_func_params
+    check_params
 )
 from culebra.solution.feature_selection import (
     Species as FSSpecies,
@@ -54,9 +54,9 @@ from culebra.tools import Results, EXCEL_FILE_EXTENSION
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -142,7 +142,7 @@ class _Labels:
     """Label for the batch column in dataframes."""
 
 
-DEFAULT_STATS_FUNCTIONS = {
+DEFAULT_STATS_FUNCS = {
     _Labels.avg: np.mean,
     _Labels.std: np.std,
     _Labels.min: np.min,
@@ -150,13 +150,13 @@ DEFAULT_STATS_FUNCTIONS = {
 }
 """Default statistics calculated for the results."""
 
-DEFAULT_FEATURE_METRIC_FUNCTIONS = {
+DEFAULT_FEATURE_METRIC_FUNCS = {
     _Labels.relevance: Metrics.relevance,
     _Labels.rank: Metrics.rank
 }
 """Default metrics calculated for the features in the set of solutions."""
 
-DEFAULT_BATCH_STATS_FUNCTIONS = {
+DEFAULT_BATCH_STATS_FUNCS = {
     _Labels.avg: Series.mean,
     _Labels.std: Series.std,
     _Labels.min: Series.min,
@@ -202,10 +202,10 @@ class Evaluation(Base):
         appropriate result keys.
         """
 
-    feature_metric_functions = DEFAULT_FEATURE_METRIC_FUNCTIONS
+    feature_metric_funcs = DEFAULT_FEATURE_METRIC_FUNCS
     """Metrics calculated for the features in the set of solutions."""
 
-    stats_functions = DEFAULT_STATS_FUNCTIONS
+    stats_funcs = DEFAULT_STATS_FUNCS
     """Statistics calculated for the solutions."""
 
     _run_script_code = """#!/usr/bin/env python3
@@ -236,8 +236,8 @@ for res, val in {var_name}.results.items():
     def __init__(
         self,
         trainer: Trainer,
-        untie_best_fitness_function: FitnessFunction | None = None,
-        test_fitness_function: FitnessFunction | None = None,
+        untie_best_fitness_func: FitnessFunction | None = None,
+        test_fitness_func: FitnessFunction | None = None,
         results_base_filename: str | None = None,
         hyperparameters: dict | None = None
     ) -> None:
@@ -245,15 +245,15 @@ for res, val in {var_name}.results.items():
 
         :param trainer: The trainer method
         :type trainer: ~culebra.abc.Trainer
-        :param untie_best_fitness_function: The fitness function used to
+        :param untie_best_fitness_func: The fitness function used to
             select the best solution from those found by the trainer in case
             of a tie. If omitted, the training fitness function will be used.
             Defaults to :data:`None`
-        :type untie_best_fitness_function: ~culebra.abc.FitnessFunction
-        :param test_fitness_function: The fitness function used to test. If
+        :type untie_best_fitness_func: ~culebra.abc.FitnessFunction
+        :param test_fitness_func: The fitness function used to test. If
             omitted, the training fitness function will be used. Defaults to
             :data:`None`
-        :type test_fitness_function: ~culebra.abc.FitnessFunction
+        :type test_fitness_func: ~culebra.abc.FitnessFunction
         :param results_base_filename: The base filename to save the results.
             If omitted,
             :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
@@ -263,16 +263,16 @@ for res, val in {var_name}.results.items():
             optional
         :type hyperparameters: dict
         :raises TypeError: If *trainer* is not a valid trainer
-        :raises TypeError: If *test_fitness_function* is not a valid
-            fitness function
+        :raises TypeError: If *untie_best_fitness_func* or
+            *test_fitness_func* are not valid fitness functions
         :raises TypeError: If *results_base_filename* is not a valid file name
         :raises TypeError: If *hyperparameters* is not a dictionary
         :raises ValueError: If the keys in *hyperparameters* are not strings
         :raises ValueError: If any key in *hyperparameters* is reserved
         """
         self.trainer = trainer
-        self.untie_best_fitness_function = untie_best_fitness_function
-        self.test_fitness_function = test_fitness_function
+        self.untie_best_fitness_func = untie_best_fitness_func
+        self.test_fitness_func = test_fitness_func
         self.results_base_filename = results_base_filename
         self.hyperparameters = hyperparameters
 
@@ -303,35 +303,50 @@ for res, val in {var_name}.results.items():
         self.reset()
 
     @property
-    def untie_best_fitness_function(self) -> FitnessFunction | None:
+    def _default_untie_best_fitness_func(self) -> FitnessFunction:
+        """Default fitness function to tie-break the best solutions.
+    
+        :return: The trainer's training function
+        :rtype: ~culebra.abc.FitnessFunction
+        """
+        return self.trainer.fitness_func
+
+    @property
+    def untie_best_fitness_func(self) -> FitnessFunction:
         """Fitness function to untie the best solutions.
+        
+        If several
 
         :rtype: ~culebra.abc.FitnessFunction
         :setter: Set a new fitness function to untie the best solutions
-        :param func: New untie fitness function. If set to :data:`None`
-            and several tied solutions are found by the trainer, the first of
-            them will be returned
+        :param func: New tie-breaking fitness function. If set to
+            :data:`None`, the training fitness function will also be used to
+            break ties
         :type func: ~culebra.abc.FitnessFunction
         :raises TypeError: If *func* is not a valid fitness
             function
         """
-        return self._untie_best_fitness_function
+        return (
+            self._default_untie_best_fitness_func
+            if self._untie_best_fitness_func is None
+            else self._untie_best_fitness_func
+        )
 
-    @untie_best_fitness_function.setter
-    def untie_best_fitness_function(
+    @untie_best_fitness_func.setter
+    def untie_best_fitness_func(
         self, func: FitnessFunction | None
     ) -> None:
         """Set a new fitness function to untie the best solutions.
 
-        :param func: New untie fitness function. If set to :data:`None`
-            and several tied solutions are found by the trainer, the first of
-            them will be returned
+        :param func: New tie-breaking fitness function. If set to
+            :data:`None`, the training fitness function will also be used to
+            break ties
         :type func: ~culebra.abc.FitnessFunction
         :raises TypeError: If *func* is not a valid fitness
             function
         """
         # Check the function
-        self._untie_best_fitness_function = (
+        self._untie_best_fitness_func = (
             None if func is None else check_instance(
                 func, "untie fitness function", FitnessFunction
             )
@@ -341,7 +356,16 @@ for res, val in {var_name}.results.items():
         self.reset()
 
     @property
-    def test_fitness_function(self) -> FitnessFunction | None:
+    def _default_test_best_fitness_func(self) -> FitnessFunction:
+        """Default test fitness function.
+    
+        :return: The trainer's training function
+        :rtype: ~culebra.abc.FitnessFunction
+        """
+        return self.trainer.fitness_func
+
+    @property
+    def test_fitness_func(self) -> FitnessFunction:
         """Test fitness function.
 
         :rtype: ~culebra.abc.FitnessFunction
@@ -351,10 +375,14 @@ for res, val in {var_name}.results.items():
         :type func: ~culebra.abc.FitnessFunction
         :raises TypeError: If *func* is not a valid fitness function
         """
-        return self._test_fitness_function
+        return (
+            self._default_test_best_fitness_func
+            if self._test_fitness_func is None
+            else self._test_fitness_func
+        )
 
-    @test_fitness_function.setter
-    def test_fitness_function(self, func: FitnessFunction | None) -> None:
+    @test_fitness_func.setter
+    def test_fitness_func(self, func: FitnessFunction | None) -> None:
         """Set a new test fitness function.
 
         :param func: New test fitness function. If set to :data:`None`,
@@ -363,7 +391,7 @@ for res, val in {var_name}.results.items():
         :raises TypeError: If *func* is not a valid fitness function
         """
         # Check the function
-        self._test_fitness_function = (
+        self._test_fitness_func = (
             None if func is None else check_instance(
                 func, "test fitness function", FitnessFunction
             )
@@ -394,7 +422,11 @@ for res, val in {var_name}.results.items():
         :type filename: str
         :raises TypeError: If *filename* is not a valid file name
         """
-        return self._results_base_filename
+        return (
+            self._default_results_base_filename
+            if self._results_base_filename is None
+            else self._results_base_filename
+        )
 
     @results_base_filename.setter
     def results_base_filename(self, filename: str | None) -> None:
@@ -408,8 +440,7 @@ for res, val in {var_name}.results.items():
         """
         # Check the filename
         self._results_base_filename = (
-            self._default_results_base_filename
-            if filename is None else check_filename(
+            None if filename is None else check_filename(
                 filename,
                 name="base filename to save the results"
             )
@@ -481,7 +512,7 @@ for res, val in {var_name}.results.items():
             self._hyperparameters = None
             return
 
-        self._hyperparameters = check_func_params(
+        self._hyperparameters = check_params(
             values,
             name="hyperparameters"
         )
@@ -526,11 +557,11 @@ for res, val in {var_name}.results.items():
         # Generate the Evaluation from the config module
         return cls(
             trainer=getattr(config, 'trainer', None),
-            untie_best_fitness_function=getattr(
-                config, 'untie_best_fitness_function', None
+            untie_best_fitness_func=getattr(
+                config, 'untie_best_fitness_func', None
             ),
-            test_fitness_function=getattr(
-                config, 'test_fitness_function', None
+            test_fitness_func=getattr(
+                config, 'test_fitness_func', None
             ),
             results_base_filename=getattr(
                 config, 'results_base_filename', None
@@ -731,8 +762,15 @@ for res, val in {var_name}.results.items():
         :rtype: ~culebra.tools.Evaluation
         """
         cls = self.__class__
-        result = cls(self.trainer)
-        result.__dict__.update(deepcopy(self.__dict__, memo))
+        result = cls(
+            deepcopy(self.trainer, memo)
+        )
+        result.__dict__.update(
+            deepcopy(
+                self.__dict__,
+                memo | {id(self.trainer): result.trainer}
+            )
+        )
         return result
 
     def __reduce__(self) -> tuple:
@@ -752,11 +790,9 @@ for res, val in {var_name}.results.items():
         :return: The evaluation
         :rtype: ~culebra.tools.Evaluation
         """
-        obj = cls(
-            state['_trainer']
-        )
+        obj = cls(state['_trainer'])
         obj.__setstate__(state)
-        return obj
+        return deepcopy(obj)
 
 
 class Experiment(Evaluation):
@@ -804,21 +840,21 @@ class Experiment(Evaluation):
         return self._best_solutions
 
     @property
-    def best_representatives(self) -> list[list[Solution]] | None:
-        """Best representatives found by the trainer.
+    def best_cooperators(self) -> list[list[Solution]] | None:
+        """Best cooperators found by the trainer.
 
         :rtype: list[list[~culebra.abc.Solution]]
         """
-        return self._best_representatives
+        return self._best_cooperators
 
     def reset(self) -> None:
         """Reset the results.
 
-        Overridden to reset the best solutions and best representatives.
+        Overridden to reset the best solutions and best cooperators.
         """
         super().reset()
         self._best_solutions = None
-        self._best_representatives = None
+        self._best_cooperators = None
 
     def _do_training(self) -> None:
         """Perform the training step.
@@ -826,12 +862,12 @@ class Experiment(Evaluation):
         Train the trainer and get the best solutions and the training
         stats.
         """
-        # Search the best solutions
+        # Train
         self.trainer.train()
 
         # Best solutions found by the trainer
         self._best_solutions = self.trainer.best_solutions()
-        self._best_representatives = self.trainer.best_representatives()
+        self._best_cooperators = self.trainer.best_cooperators()
 
         # Add the training stats
         self._add_training_stats()
@@ -845,7 +881,7 @@ class Experiment(Evaluation):
     def _add_training_stats(self) -> None:
         """Add the training stats to the experiment results."""
         # Training_fitness class
-        tr_fitness_func = self.trainer.fitness_function
+        tr_fitness_func = self.trainer.fitness_func
 
         # Number of training objectives
         num_obj = tr_fitness_func.num_obj
@@ -876,7 +912,7 @@ class Experiment(Evaluation):
                 index += [hyper_name]
 
         # Add the iteration stats
-        for stat in self._trainer.stats_names:
+        for stat in self.trainer.iteration_metric_names:
             df[stat.capitalize()] = logbook.select(stat) * num_obj
             index += [stat.capitalize()]
 
@@ -887,7 +923,7 @@ class Experiment(Evaluation):
         df[_Labels.fitness] = fitness_index
 
         # For each objective stat
-        for stat in self.trainer.objective_stats.keys():
+        for stat in self.trainer.iteration_obj_stats.keys():
             # Select the data of this stat for all the objectives
             data = logbook.select(stat)
             stat_data = np.zeros(n_entries * num_obj)
@@ -993,7 +1029,7 @@ class Experiment(Evaluation):
         )
 
         # Column names for the dataframe
-        column_names = index + list(self.stats_functions.keys())
+        column_names = index + list(self.stats_funcs.keys())
 
         # Final dataframe (not created yet)
         df = None
@@ -1021,7 +1057,7 @@ class Experiment(Evaluation):
                 species_df[_Labels.species] = [species_index] * n_obj
 
             species_df[_Labels.fitness] = obj_names
-            for name, func in self.stats_functions.items():
+            for name, func in self.stats_funcs.items():
                 species_df[name] = func(fitness, axis=1)
 
             df = (
@@ -1088,7 +1124,7 @@ class Experiment(Evaluation):
         index += [_Labels.feature]
 
         # Column names for the dataframe
-        column_names = index + list(self.feature_metric_functions.keys())
+        column_names = index + list(self.feature_metric_funcs.keys())
 
         # Create the dataframe
         df = DataFrame(columns=column_names)
@@ -1108,7 +1144,7 @@ class Experiment(Evaluation):
             # Get the metrics
             is_first_metric = True
             metric = None
-            for name, func in self.feature_metric_functions.items():
+            for name, func in self.feature_metric_funcs.items():
                 metric = func(features_hof)
                 df[name] = metric
                 # If there is any metric
@@ -1137,10 +1173,10 @@ class Experiment(Evaluation):
         the best solutions dataframe.
         """
         # Test the best solutions found
-        self._trainer.test(
+        self.trainer.test(
             self.best_solutions,
-            self.test_fitness_function,
-            self.best_representatives
+            self.test_fitness_func,
+            self.best_cooperators
         )
 
         # Add the test fitness to the best solutions dataframe
@@ -1189,16 +1225,12 @@ class Experiment(Evaluation):
                 for item in species_best:
                     all_combinations.append(comb + [item])
 
-        # If an untie function is defined
-        if self.untie_best_fitness_function is not None:
-            eval_func = self.untie_best_fitness_function
-        else:
-            eval_func = self.trainer.fitness_function
-
         # Evaluate each combination
         all_combinations_fitness = []
         for solution in all_combinations:
-            fitness = eval_func.evaluate(solution[0], 0, solution)
+            fitness = self.untie_best_fitness_func.evaluate(
+                solution[0], 0, solution
+            )
             fitness.thresholds = [0] * fitness.num_obj
             all_combinations_fitness.append(fitness)
 
@@ -1222,7 +1254,7 @@ class Experiment(Evaluation):
 
         The best solution should have been selected according to the
         validation fitness. It is evaluated only with the species that compose
-        the best solution, without any other representative
+        the best solution, without any other cooperator
 
         :param best: The best solution (one per species)
         :type best: ~collections.abc.Sequence[~culebra.abc.Solution]
@@ -1300,7 +1332,7 @@ class Experiment(Evaluation):
         # Add the execution metrics
         self._add_execution_metric(_Labels.runtime, self.trainer.runtime)
         self._add_execution_metric(
-            _Labels.num_iters, self.trainer.current_iter
+            _Labels.num_iters, self.trainer.num_iters
         )
         self._add_execution_metric(_Labels.num_evals, self.trainer.num_evals)
 
@@ -1312,14 +1344,14 @@ class Experiment(Evaluation):
 
         self._add_best(
             best,
-            self.trainer.fitness_function,
+            self.trainer.fitness_func,
             self._ResultKeys.train_best
         )
 
         # Evaluate the best solution with the test data
         self._add_best(
             best,
-            self.test_fitness_function,
+            self.test_fitness_func,
             self._ResultKeys.test_best
         )
 
@@ -1345,7 +1377,7 @@ class Batch(Evaluation):
         batch_test_fitness_stats = "batch_test_fitness_stats"
         """Batch test fitness stats."""
 
-    stats_functions = DEFAULT_BATCH_STATS_FUNCTIONS
+    stats_funcs = DEFAULT_BATCH_STATS_FUNCS
     """Statistics calculated for the results gathered from all the
     experiments."""
 
@@ -1353,8 +1385,8 @@ class Batch(Evaluation):
     def __init__(
         self,
         trainer: Trainer,
-        untie_best_fitness_function: FitnessFunction | None = None,
-        test_fitness_function: FitnessFunction | None = None,
+        untie_best_fitness_func: FitnessFunction | None = None,
+        test_fitness_func: FitnessFunction | None = None,
         results_base_filename: str | None = None,
         hyperparameters: dict | None = None,
         num_experiments: int | None = None
@@ -1363,15 +1395,15 @@ class Batch(Evaluation):
 
         :param trainer: The trainer method
         :type trainer: ~culebra.abc.Trainer
-        :param untie_best_fitness_function: The fitness function used to
+        :param untie_best_fitness_func: The fitness function used to
             select the best solution from those found by the trainer in case
             of a tie. If omitted, the training fitness function will be used.
             Defaults to :data:`None`
-        :type untie_best_fitness_function: ~culebra.abc.FitnessFunction
-        :param test_fitness_function: The fitness used to test. If omitted,
+        :type untie_best_fitness_func: ~culebra.abc.FitnessFunction
+        :param test_fitness_func: The fitness used to test. If omitted,
             the training fitness function will be used. Defaults to
             :data:`None`
-        :type test_fitness_function: ~culebra.abc.FitnessFunction
+        :type test_fitness_func: ~culebra.abc.FitnessFunction
         :param results_base_filename: The base filename to save the results
             If omitted,
             :attr:`~culebra.tools.Batch._default_results_base_filename` is
@@ -1385,8 +1417,8 @@ class Batch(Evaluation):
             is used. Defaults to :data:`None`
         :type num_experiments: int
         :raises TypeError: If *trainer* is not a valid trainer
-        :raises TypeError: If *test_fitness_function* is not a valid
-            fitness function
+        :raises TypeError: If *untie_best_fitness_func* or
+            *test_fitness_func* are not valid fitness functions
         :raises TypeError: If *results_base_filename* is not a valid file name
         :raises TypeError: If *hyperparameters* is not a dictionary
         :raises ValueError: If the keys in *hyperparameters* are not strings
@@ -1397,8 +1429,8 @@ class Batch(Evaluation):
         # Init the super class
         super().__init__(
             trainer,
-            untie_best_fitness_function,
-            test_fitness_function,
+            untie_best_fitness_func,
+            test_fitness_func,
             results_base_filename,
             hyperparameters
         )
@@ -1428,7 +1460,11 @@ class Batch(Evaluation):
         :raises ValueError: If set to a value which is not greater than
             zero
         """
-        return self._num_experiments
+        return (
+            self._default_num_experiments
+            if self._num_experiments is None
+            else self._num_experiments
+        )
 
     @num_experiments.setter
     def num_experiments(self, value: int | None) -> None:
@@ -1443,8 +1479,7 @@ class Batch(Evaluation):
         """
         # Check the value
         self._num_experiments = (
-            self._default_num_experiments
-            if value is None else check_int(
+            None if value is None else check_int(
                 value, "number of experiments", gt=0
             )
         )
@@ -1495,11 +1530,11 @@ class Batch(Evaluation):
         # Generate the Batch from the config module
         return cls(
             trainer=getattr(config, 'trainer', None),
-            untie_best_fitness_function=getattr(
-                config, 'untie_best_fitness_function', None
+            untie_best_fitness_func=getattr(
+                config, 'untie_best_fitness_func', None
             ),
-            test_fitness_function=getattr(
-                config, 'test_fitness_function', None
+            test_fitness_func=getattr(
+                config, 'test_fitness_func', None
             ),
             results_base_filename=getattr(
                 config, 'results_base_filename', None
@@ -1605,7 +1640,7 @@ class Batch(Evaluation):
         index += [_Labels.metric]
 
         # Column names for the dataframe
-        column_names = index + list(self.stats_functions.keys())
+        column_names = index + list(self.stats_funcs.keys())
 
         # Create a dataframe
         df = DataFrame(columns=column_names)
@@ -1621,7 +1656,7 @@ class Batch(Evaluation):
             stats += [metric]
 
             # Apply the stats
-            for func in self.stats_functions.values():
+            for func in self.stats_funcs.values():
                 stats.append(func(input_data[metric]))
 
             # Append the row to the dataframe
@@ -1651,7 +1686,7 @@ class Batch(Evaluation):
             index += [_Labels.metric, _Labels.feature]
 
             # Column names for the dataframe
-            column_names = index + list(self.stats_functions.keys())
+            column_names = index + list(self.stats_funcs.keys())
 
             # Create a dataframe
             df = DataFrame(columns=column_names)
@@ -1686,7 +1721,7 @@ class Batch(Evaluation):
                     stats += [metric, feature]
 
                     # Apply the stats
-                    for func in self.stats_functions.values():
+                    for func in self.stats_funcs.values():
                         stats.append(func(feature_metric_values))
 
                     # Append the row to the dataframe
@@ -1727,7 +1762,7 @@ class Batch(Evaluation):
         index += [_Labels.fitness]
 
         # Column names for the dataframe
-        column_names = index + list(self.stats_functions.keys())
+        column_names = index + list(self.stats_funcs.keys())
 
         # Get the objective names
         obj_names = input_data.columns
@@ -1746,7 +1781,7 @@ class Batch(Evaluation):
             stats += [obj_name]
 
             # Apply the stats
-            for func in self.stats_functions.values():
+            for func in self.stats_funcs.values():
                 stats.append(func(input_data[obj_name]))
 
             # Append the row to the dataframe
@@ -1765,8 +1800,8 @@ class Batch(Evaluation):
         # Create the experiment
         experiment = Experiment(
             self.trainer,
-            self.untie_best_fitness_function,
-            self.test_fitness_function,
+            self.untie_best_fitness_func,
+            self.test_fitness_func,
             self.results_base_filename,
             self.hyperparameters
         )
@@ -1853,9 +1888,9 @@ __all__ = [
     'Evaluation',
     'Experiment',
     'Batch',
-    'DEFAULT_STATS_FUNCTIONS',
-    'DEFAULT_FEATURE_METRIC_FUNCTIONS',
-    'DEFAULT_BATCH_STATS_FUNCTIONS',
+    'DEFAULT_STATS_FUNCS',
+    'DEFAULT_FEATURE_METRIC_FUNCS',
+    'DEFAULT_BATCH_STATS_FUNCS',
     'DEFAULT_NUM_EXPERIMENTS',
     'DEFAULT_RUN_SCRIPT_FILENAME',
     'DEFAULT_CONFIG_SCRIPT_FILENAME',

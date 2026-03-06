@@ -24,60 +24,35 @@
 
 .. autoclass:: culebra.trainer.abc.ParallelDistributedTrainer
 
-Class attributes
-----------------
-.. autoattribute:: culebra.trainer.abc.ParallelDistributedTrainer.objective_stats
-.. autoattribute:: culebra.trainer.abc.ParallelDistributedTrainer.stats_names
-
 Class methods
 -------------
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.load
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.checkpoint_activation
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.checkpoint_filename
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.checkpoint_freq
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.container
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.current_iter
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.custom_termination_func
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.fitness_function
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.index
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.fitness_func
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.iteration_metric_names
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.iteration_obj_stats
 .. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.logbook
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.max_num_iters
 .. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.num_evals
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.num_iters
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.num_representatives
 .. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.num_subtrainers
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.random_seed
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representation_freq
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representation_selection_func
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representation_selection_func_params
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representation_size
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representation_topology_func
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representation_topology_func_params
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representatives
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representatives_exchange_freq
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.representatives_selection_func
 .. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.runtime
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.subtrainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.subtrainer_cls
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.subtrainer_params
 .. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.subtrainers
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.verbosity
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.topology_func
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer.training_finished
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_checkpoint_activation
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_checkpoint_filename
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_checkpoint_freq
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_index
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_max_num_iters
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_num_subtrainers
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representation_freq
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representation_selection_func
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representation_selection_func_params
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representation_size
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representation_topology_func
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representation_topology_func_params
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_verbosity
-.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._subtrainer_suffixes
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_num_representatives
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representatives_exchange_freq
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_representatives_selection_func
+.. autoproperty:: culebra.trainer.abc.ParallelDistributedTrainer._default_topology_func
 
 Static methods
 --------------
@@ -86,7 +61,7 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.best_representatives
+.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.best_cooperators
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.best_solutions
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.dump
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer.evaluate
@@ -96,26 +71,8 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._default_termination_func
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._do_iteration
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._do_iteration_stats
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._finish_iteration
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._finish_search
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._generate_subtrainers
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._get_state
+.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._do_training
+.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._finish_training
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._init_internals
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._init_representatives
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._init_search
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._init_state
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._load_state
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._new_state
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._postprocess_iteration
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._preprocess_iteration
+.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._init_training
 .. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._reset_internals
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._reset_state
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._save_state
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._search
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._set_cooperative_fitness
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._set_state
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._start_iteration
-.. automethod:: culebra.trainer.abc.ParallelDistributedTrainer._termination_criterion

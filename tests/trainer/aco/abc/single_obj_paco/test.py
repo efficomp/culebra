@@ -28,7 +28,7 @@ import numpy as np
 
 from culebra.trainer.aco.abc import SingleObjPACO, ACOTSP
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 
 class MyTrainer(ACOTSP, SingleObjPACO):
@@ -47,9 +47,9 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test __init__`."""
+        valid_fitness_func = fitness_func
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
-        valid_fitness_func = fitness_func
         valid_initial_pheromone = 1
 
         # Try invalid types for max_pheromone. Should fail
@@ -57,9 +57,9 @@ class TrainerTester(unittest.TestCase):
         for max_pheromone in invalid_max_pheromone:
             with self.assertRaises(TypeError):
                 MyTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     max_pheromone=max_pheromone
                 )
@@ -71,9 +71,9 @@ class TrainerTester(unittest.TestCase):
         for max_pheromone in invalid_max_pheromone:
             with self.assertRaises(ValueError):
                 MyTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     max_pheromone=max_pheromone
                 )
@@ -81,9 +81,9 @@ class TrainerTester(unittest.TestCase):
         # Try valid values for max_pheromone
         valid_max_pheromone = 3.0
         trainer = MyTrainer(
+            valid_fitness_func,
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
             valid_initial_pheromone,
             max_pheromone=valid_max_pheromone
         )
@@ -94,9 +94,9 @@ class TrainerTester(unittest.TestCase):
         for pop_size in invalid_pop_size:
             with self.assertRaises(TypeError):
                 MyTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     valid_max_pheromone,
                     pop_size=pop_size
@@ -107,9 +107,9 @@ class TrainerTester(unittest.TestCase):
         for pop_size in invalid_pop_size:
             with self.assertRaises(ValueError):
                 MyTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     valid_max_pheromone,
                     pop_size=pop_size
@@ -117,9 +117,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = MyTrainer(
+            valid_fitness_func,
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
             valid_initial_pheromone,
             valid_max_pheromone
         )
@@ -140,9 +140,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
@@ -176,9 +176,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
@@ -203,9 +203,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
@@ -213,8 +213,8 @@ class TrainerTester(unittest.TestCase):
         # Create the trainer
         trainer = MyTrainer(**params)
 
-        # Init the search ans start a new iteration
-        trainer._init_search()
+        # Init the training and start a new iteration
+        trainer._init_training()
         trainer._start_iteration()
 
         # Append an ant in the ingoing and outgoung lists
@@ -239,9 +239,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 1
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1
@@ -249,7 +249,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Use the same ant to increase an decrease pheromone
@@ -272,16 +272,16 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = [2]
         max_pheromone = [3]
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
 
         # Create the trainer
         trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

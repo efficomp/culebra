@@ -30,7 +30,8 @@ from os import remove
 
 import numpy as np
 
-from culebra import DEFAULT_MAX_NUM_ITERS, SERIALIZED_FILE_EXTENSION
+from culebra import SERIALIZED_FILE_EXTENSION
+from culebra.trainer import DEFAULT_MAX_NUM_ITERS
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_ACOFS_INITIAL_PHEROMONE,
@@ -45,8 +46,8 @@ from culebra.solution.tsp import (
     Species as TSPSpecies,
     Ant as TSPAnt
 )
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
@@ -77,6 +78,14 @@ class MyACOFS(ACOFS):
     def _pheromone_amount (self, ant):
         return tuple(self.initial_pheromone)
 
+    def _init_internals(self):
+        super()._init_internals()
+        self._init_pheromone()
+
+    def _reset_internals(self):
+        super()._reset_internals()
+        self._pheromone = None
+
 
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
@@ -96,10 +105,10 @@ species = Species(
     )
 
 # Training fitness function
-training_fitness_function = KappaNumFeats(training_data, cv_folds=5)
+training_fitness_func = KappaNumFeats(training_data, cv_folds=5)
 
 # Test fitness function
-test_fitness_function = KappaNumFeats(training_data, test_data=test_data)
+test_fitness_func = KappaNumFeats(training_data, test_data=test_data)
 
 # Lists of banned and feasible features
 banned_feats = [0, dataset.num_feats-1]
@@ -111,35 +120,35 @@ class ACOFSTester(unittest.TestCase):
 
     def test_init(self):
         """Test __init__."""
-        # Try an invalid ant. Should fail
-        with self.assertRaises(TypeError):
-            MyACOFS(TSPAnt, species, training_fitness_function)
-
-        # Try an invalid species. Should fail
         tsp_species = TSPSpecies(species.num_feats)
-        with self.assertRaises(TypeError):
-            MyACOFS(Ant, tsp_species, training_fitness_function)
-
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": training_fitness_function,
-            "verbosity": False
-        }
 
         # Try invalid fitness functions. Should fail
         invalid_fitness_funcs = (type, None, 'a', 1)
         for func in invalid_fitness_funcs:
             with self.assertRaises(TypeError):
-                MyACOFS(Ant, tsp_species, func)
+                MyACOFS(func, Ant, tsp_species)
+
+        # Try an invalid ant. Should fail
+        with self.assertRaises(TypeError):
+            MyACOFS(training_fitness_func, TSPAnt, species)
+
+        # Try an invalid species. Should fail
+        with self.assertRaises(TypeError):
+            MyACOFS(training_fitness_func, Ant, tsp_species)
 
         # Create the trainer
+        params = {
+            "fitness_func": training_fitness_func,
+            "solution_cls": Ant,
+            "species": species,
+            "verbosity": False
+        }
         trainer = MyACOFS(**params)
 
         # Check the parameters
+        self.assertEqual(trainer.fitness_func, training_fitness_func)
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
         self.assertEqual(trainer.species, species)
-        self.assertEqual(trainer.fitness_function, training_fitness_function)
         self.assertEqual(
             trainer.initial_pheromone,
             (DEFAULT_ACOFS_INITIAL_PHEROMONE,) * trainer.num_pheromone_matrices
@@ -165,9 +174,9 @@ class ACOFSTester(unittest.TestCase):
     def test_num_pheromone_matrices(self):
         """Test the num_pheromone_matrices property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -179,9 +188,9 @@ class ACOFSTester(unittest.TestCase):
     def test_num_heuristic_matrices(self):
         """Test the num_heuristic_matrices property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -195,9 +204,9 @@ class ACOFSTester(unittest.TestCase):
     def test_initial_pheromone(self):
         """Test the initial_pheromone property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -233,9 +242,9 @@ class ACOFSTester(unittest.TestCase):
     def test_heuristic(self):
         """Test the heuristic property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -323,9 +332,9 @@ class ACOFSTester(unittest.TestCase):
     def test_heuristic_influence(self):
         """Test the heuristic_influence property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -370,9 +379,9 @@ class ACOFSTester(unittest.TestCase):
     def test_exploitation_prob(self):
         """Test the exploitation_prob property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
         # Try invalid types for exploitation_prob. Should fail
@@ -402,9 +411,9 @@ class ACOFSTester(unittest.TestCase):
     def test_col_size(self):
         """Test the col_size property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -432,9 +441,9 @@ class ACOFSTester(unittest.TestCase):
     def test_discard_prob(self):
         """Test the discard_prob property."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
         # Try invalid types for discard_prob. Should fail
@@ -461,58 +470,26 @@ class ACOFSTester(unittest.TestCase):
             trainer.discard_prob, DEFAULT_ACOFS_DISCARD_PROB
         )
 
-    def test_internals(self):
-        """Test the _init_internals and _reset_internals methods."""
-        params = {
-            "solution_cls": Ant,
-            "species": species,
-            "fitness_function": training_fitness_function,
-            "verbosity": False
-        }
-
-        # Create the trainer
-        trainer = MyACOFS(**params)
-
-        # Init the trainer internal structures
-        trainer._init_internals()
-
-        # Check the choice info matrix
-        self.assertFalse(trainer._choice_info is None)
-        self.assertIsInstance(trainer._choice_info, np.ndarray)
-        self.assertEqual(
-            trainer._choice_info.shape,
-            (
-                trainer.species.num_feats,
-                trainer.species.num_feats
-            )
-        )
-
-        # Reset the internals
-        trainer._reset_internals()
-        # Check the choice info matrix
-        self.assertEqual(trainer._choice_info, None)
-        # Check the pheromone matrices
-        self.assertEqual(trainer.pheromone, None)
-
     def test_calculate_choice_info(self):
         """Test the _calculate_choice_info method."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = MyACOFS(**params)
 
-        # Try to get the choice info before the search initialization
+        # Try to get the choice info before the training initialization
         choice_info = trainer.choice_info
         self.assertEqual(choice_info, None)
 
         # Try to get the choice_info after initializing the internal
         # structures
         trainer._init_internals()
+        trainer._start_iteration()
         choice_info = trainer.choice_info
 
         the_choice_info = np.ones((species.num_feats,) * 2)
@@ -539,9 +516,9 @@ class ACOFSTester(unittest.TestCase):
     def test_ant_choice_info(self):
         """Test the _ant_choice_info method."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -550,10 +527,11 @@ class ACOFSTester(unittest.TestCase):
 
         # Initialize the internal structures
         trainer._init_internals()
+        trainer._start_iteration()
 
         # The ant
         ant = trainer.solution_cls(
-            trainer.species, trainer.fitness_function.fitness_cls
+            trainer.species, trainer.fitness_func.fitness_cls
         )
 
         discard_next_feat = True
@@ -580,17 +558,18 @@ class ACOFSTester(unittest.TestCase):
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = MyACOFS(**params)
 
-        # Initialize the internal structures
-        trainer._init_internals()
+        # Initialize the training
+        trainer._init_training()
+        trainer._start_iteration()
 
         species_num_feats = species.max_feat - species.min_feat + 1
 
@@ -605,17 +584,19 @@ class ACOFSTester(unittest.TestCase):
     def test_deposit_pheromone(self):
         """Test the _deposit_pheromone method."""
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = MyACOFS(**params)
 
-        # Init the internal strcutures
-        trainer._init_internals()
+        # Init the the training
+        trainer._init_training()
+        trainer._start_iteration()
+
         for i in range(100):
             ant = trainer._generate_ant()
 
@@ -648,9 +629,9 @@ class ACOFSTester(unittest.TestCase):
         """Test the __copy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -663,8 +644,8 @@ class ACOFSTester(unittest.TestCase):
 
         # The objects attributes are shared
         self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
         self.assertEqual(id(trainer1.species), id(trainer2.species))
 
@@ -676,9 +657,9 @@ class ACOFSTester(unittest.TestCase):
         """Test the __deepcopy__ method."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -693,9 +674,9 @@ class ACOFSTester(unittest.TestCase):
         """Serialization test."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
@@ -716,15 +697,15 @@ class ACOFSTester(unittest.TestCase):
         """Test the repr and str dunder methods."""
         # Trainer parameters
         params = {
+            "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": training_fitness_function,
             "verbosity": False
         }
 
         # Create the trainer
         trainer = MyACOFS(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 
@@ -739,13 +720,14 @@ class ACOFSTester(unittest.TestCase):
         # Copies all the levels
         self.assertNotEqual(id(trainer1), id(trainer2))
         self.assertNotEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
 
         self.assertNotEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(
-            id(trainer1.species.num_feats), id(trainer2.species.num_feats)
+            id(trainer1.species.num_feats),
+            id(trainer2.species.num_feats)
         )
         self.assertEqual(trainer1.max_num_iters, trainer2.max_num_iters)
 

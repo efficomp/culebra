@@ -26,52 +26,56 @@
 
 Attributes
 ----------
-.. attribute:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
-    :annotation: = <function full_connected_destinations>
+.. attribute:: DEFAULT_CHECKPOINT_ACTIVATION
+    :annotation: = True
+
+    Default checkpointing activation for a :class:`~culebra.trainer.abc.CentralizedTrainer`.
+
+.. attribute:: DEFAULT_CHECKPOINT_BASENAME
+     :annotation: = 'checkpoint'
+
+     Default basename for checkpointing files.
+
+.. attribute:: DEFAULT_CHECKPOINT_FREQ
+    :annotation: = 10
+
+    Default checkpointing frequency for a :class:`~culebra.trainer.abc.CentralizedTrainer`.
+
+.. attribute:: DEFAULT_COOPERATIVE_TOPOLOGY_FUNC
+    :annotation: = <function :func:`culebra.trainer.topology.full_connected_destinations`>
 
     Default topology function for the cooperative model.
 
-.. attribute:: DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-    :annotation: = {}
-
-    Parameters for the default topology function in the cooperative model.
-
-.. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC
-    :annotation: = <function ring_destinations>
+.. attribute:: DEFAULT_ISLANDS_TOPOLOGY_FUNC
+    :annotation: = <function :func:`culebra.trainer.topology.ring_destinations`>
 
     Default topology function for the islands model.
 
-.. attribute:: DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-    :annotation: = {}
+.. attribute:: DEFAULT_MAX_NUM_ITERS
+    :annotation: = 100
 
-    Parameters for the default topology function in the islands model.
+    Default maximum number of iterations.
 
-.. attribute:: DEFAULT_NUM_SUBTRAINERS
-    :annotation: = 1
+.. attribute:: DEFAULT_NUM_REPRESENTATIVES
+    :annotation: = 5
 
-    Default number of subtrainers.
+    Default value for the number of representatives selected.
 
-.. attribute:: DEFAULT_REPRESENTATION_FREQ
+.. attribute:: DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ
     :annotation: = 10
 
-    Default value for the number of generations between representatives
+    Default value for the number of iterations between representatives
     sending.
 
-.. attribute:: DEFAULT_REPRESENTATION_SELECTION_FUNC
-    :annotation: = <function selTournament>
+.. attribute:: DEFAULT_REPRESENTATIVES_SELECTION_FUNC
+    :annotation: = :func:`functools.partial`(<function :func:`deap.tools.selection.selTournament`>, tournsize=3)
 
     Default selection policy function to choose the representatives.
 
-.. attribute:: DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS
-    :annotation: = {'tournsize': 3}
+.. attribute:: DEFAULT_VERBOSITY
+    :annotation: = True
 
-    Default parameters for the representatives selection policy function.
-
-.. attribute:: DEFAULT_REPRESENTATION_SIZE
-    :annotation: = 5
-
-    Default value for the number of representatives sent to the other
-    subtrainers.
+    Default verbosity for a :class:`~culebra.trainer.abc.CentralizedTrainer`.
 
 
 .. toctree::

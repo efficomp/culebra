@@ -362,8 +362,11 @@ class SpeciesTester(unittest.TestCase):
             :class:`~culebra.solution.parameter_optimization.Species`
         """
         # Copies all the levels
-        self.assertNotEqual(id(species1), id(species2))
-        self.assertEqual(species1._lower_bounds, species2._lower_bounds)
+        self.assertTrue(species1 is not species2)
+        self.assertTrue(species1.lower_bounds is not species2.lower_bounds)
+        self.assertEqual(species1.lower_bounds, species2.lower_bounds)
+        self.assertTrue(species1.upper_bounds is not species2.upper_bounds)
+        self.assertEqual(species1.upper_bounds, species2.upper_bounds)
 
 
 if __name__ == '__main__':

@@ -28,7 +28,7 @@ import numpy as np
 
 from culebra.trainer.aco.abc import SingleObjACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import (
+from culebra.fitness_func.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
@@ -51,20 +51,20 @@ feasible_nodes = list(range(1, num_nodes - 1))
 class TrainerTester(unittest.TestCase):
     """Test :class:`culebra.trainer.aco.abc.SingleObjACO`."""
 
-    def test_fitness_function(self):
-        """Test the fitness_function property`."""
+    def test_fitness_func(self):
+        """Test the fitness_func property`."""
         ant_cls = Ant
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 1
 
         # Try invalid types for fitness function. Should fail
-        invalid_fitness_functions = (type, 'a')
-        for invalid_fitness_func in invalid_fitness_functions:
+        invalid_fitness_funcs = (type, 'a')
+        for invalid_fitness_func in invalid_fitness_funcs:
             with self.assertRaises(TypeError):
                 SingleObjACO(
+                    invalid_fitness_func,
                     ant_cls,
                     species,
-                    invalid_fitness_func,
                     initial_pheromone
                 )
 
@@ -72,9 +72,9 @@ class TrainerTester(unittest.TestCase):
         invalid_fitness_func = fitness_func_multi
         with self.assertRaises(ValueError):
             SingleObjACO(
+                invalid_fitness_func,
                 ant_cls,
                 species,
-                invalid_fitness_func,
                 initial_pheromone
             )
 

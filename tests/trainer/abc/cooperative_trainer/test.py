@@ -23,19 +23,19 @@
 """Unit test for :class:`culebra.trainer.abc.CooperativeTrainer`."""
 
 import unittest
-from os import remove
-from copy import copy, deepcopy
-from functools import partialmethod
+from time import sleep
+from queue import Empty
 
 from sklearn.svm import SVC
 
 from deap.tools import ParetoFront
 
-from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.trainer.abc import SingleSpeciesTrainer, CooperativeTrainer
-from culebra.trainer import (
-    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC,
-    DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
+from culebra.trainer import DEFAULT_COOPERATIVE_TOPOLOGY_FUNC
+
+from culebra.trainer.abc import (
+    CentralizedTrainer,
+    SequentialDistributedTrainer,
+    CooperativeTrainer
 )
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
@@ -45,12 +45,12 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Solution as ClassifierOptimizationSolution
 )
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
-from culebra.fitness_function.svc_optimization import C
-from culebra.fitness_function.cooperative import FSSVCScorer
+from culebra.fitness_func.svc_optimization import C
+from culebra.fitness_func.cooperative import FSSVCScorer
 from culebra.tools import Dataset
 
 
@@ -81,421 +81,162 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 fitness_func = KappaNumFeatsC(dataset, cv_folds=5)
 
 
-class MySingleSpeciesTrainer(SingleSpeciesTrainer):
-    """Dummy implementation of a trainer method."""
+class MySubtrainer(CentralizedTrainer):
+    """Dummy implementation of a subtrainer."""
 
-    def _do_iteration(self):
-        """Implement an iteration of the search process."""
-        self.sol = self.solution_cls(
-            self.species, self.fitness_function.fitness_cls
+    def __init__(
+        self,
+        fitness_func,
+        solution_cls,
+        species,
+        custom_termination_func=None,
+        max_num_iters=None,
+        checkpoint_activation=None,
+        checkpoint_freq=None,
+        checkpoint_basename=None,
+        verbosity=None,
+        random_seed=None
+    ):
+        """Constructor."""
+        super().__init__(
+            fitness_func=fitness_func,
+            solution_cls=solution_cls,
+            species=species,
+            custom_termination_func=custom_termination_func,
+            max_num_iters=max_num_iters,
+            checkpoint_activation=checkpoint_activation,
+            checkpoint_freq=checkpoint_freq,
+            checkpoint_basename=checkpoint_basename,
+            verbosity=verbosity,
+            random_seed=random_seed
         )
-        self.evaluate(self.sol)
+        self.pop = None
 
     def best_solutions(self):
         """Get the best solutions found for each species."""
         hof = ParetoFront()
-        hof.update([self.sol])
+        if self.pop is not None:
+            hof.update(self.pop)
         return (hof,)
 
+    def select_representatives(self):
+        """Select representative solutions."""
+        if self.container:
+            return self.container.representatives_selection_func(
+                self.pop, self.container.num_representatives
+                )
 
-class MyTrainer(CooperativeTrainer):
-    """Dummy implementation of a cooperative co-evolutionary algorithm."""
+        return []
 
-    _subtrainer_properties_mapping = {
-        "solution_classes": "solution_cls",
-        "species": "species"
-    }
-    """Map the container names of properties sequences to the different
-    subtrainer property names."""
+    def integrate_representatives(self, representatives):
+        """Integrate representative solutions."""
+        self.pop.extend(representatives)
 
-    def _new_state(self) -> None:
-        """Generate a new trainer state."""
+    def _new_state(self):
         super()._new_state()
-
-        # Generate the state of all subtrainers
-        for subtrainer in self.subtrainers:
-            subtrainer._new_state()
-
-    def _init_search(self):
-        super()._init_search()
-        for island_trainer in self.subtrainers:
-            island_trainer._init_search()
-
-    def _start_iteration(self) -> None:
-        """Start an iteration.
-
-        Prepare the metrics before each iteration is run.
-        """
-        super()._start_iteration()
-        # For all the subtrainers
-        for subtrainer in self.subtrainers:
-            # Fix the current iteration
-            subtrainer._current_iter = self._current_iter
-            # Start the iteration
-            subtrainer._start_iteration()
-
-    def _do_iteration(self) -> None:
-        """Implement an iteration of the search process."""
-        # For all the subtrainers
-        for subtrainer in self.subtrainers:
-            subtrainer._do_iteration()
-
-    def _do_iteration_stats(self) -> None:
-        """Perform the iteration stats."""
-        # For all the subtrainers
-        for subtrainer in self.subtrainers:
-            subtrainer._do_iteration_stats()
-
-    def _generate_subtrainers(self) -> None:
-        """Generate the subtrainers.
-
-        Also assign an
-        :attr:`~culebra.trainer.abc.SingleSpeciesTrainer.index` and a
-        :attr:`~culebra.trainer.abc.SingleSpeciesTrainer.container` to each
-        subtrainer :class:`~culebra.trainer.abc.SingleSpeciesTrainer`
-        trainer, change the subtrainers'
-        :attr:`~culebra.trainer.abc.SingleSpeciesTrainer.checkpoint_filename`
-        according to the container checkpointing file name and each
-        subtrainer index.
-
-        Finally, the
-        :meth:`~culebra.trainer.abc.SingleSpeciesTrainer._preprocess_iteration`
-        and
-        :meth:`~culebra.trainer.abc.SingleSpeciesTrainer._postprocess_iteration`
-        methods of the
-        :attr:`~culebra.trainer.abc.DistributedTrainer.subtrainer_cls` class
-        are dynamically overridden, in order to allow individuals exchange
-        between subtrainers, if necessary
-
-        :raises RuntimeError: If the length of any properties sequence does
-            not match the number of subtrainers.
-        """
-
-        def subtrainers_properties():
-            """Obtain the properties of each subtrainer.
-
-            :raises RuntimeError: If the length of any properties sequence
-                does not match the number of subtrainers.
-
-            :return: The properties of each subtrainer.
-            :rtype: list
-            """
-            # Get the common attributes from the container trainer
-            cls = self.subtrainer_cls
-            common_properties = {
-                key: getattr(self, key)
-                for key in cls.__init__.__code__.co_varnames
-                if hasattr(self, key) and getattr(self, key) is not None
-            }
-
-            # Append subtrainer custom atributes
-            common_properties.update(self.subtrainer_params)
-
-            # List with the common properties. Equal for all the subtrainers
-            properties = []
-            for _ in range(self.num_subtrainers):
-                subtrainer_properties = {}
-                for key, value in common_properties.items():
-                    subtrainer_properties[key] = value
-                properties.append(subtrainer_properties)
-
-            # Particular properties for each subtrainer
-            cls = self.__class__
-            for (
-                    property_sequence_name,
-                    subtrainer_property_name
-            ) in self._subtrainer_properties_mapping.items():
-
-                # Values of the sequence
-                property_sequence_values = getattr(
-                    cls, property_sequence_name
-                ).fget(self)
-
-                # Check the properties' length
-                if len(property_sequence_values) != self.num_subtrainers:
-                    raise RuntimeError(
-                        f"The length of {property_sequence_name} does not "
-                        "match the number of subtrainers"
-                    )
-                for (
-                        subtrainer_properties, subtrainer_property_value
-                ) in zip(properties, property_sequence_values):
-                    subtrainer_properties[
-                        subtrainer_property_name] = subtrainer_property_value
-
-            return properties
-
-        # Get the subtrainers properties
-        properties = subtrainers_properties()
-
-        # Generate the subtrainers
-        self._subtrainers = []
-
-        for (
-            index, (
-                checkpoint_filename,
-                subtrainer_properties
-            )
-        ) in enumerate(
-            zip(self.subtrainer_checkpoint_filenames, properties)
-        ):
-            subtrainer = self.subtrainer_cls(**subtrainer_properties)
-            subtrainer.checkpoint_filename = checkpoint_filename
-            subtrainer.index = index
-            subtrainer.container = self
-            subtrainer.__class__._preprocess_iteration = (
-                self.receive_representatives
-            )
-            subtrainer.__class__._postprocess_iteration = (
-                self.send_representatives
+        self._current_iter_evals = 0
+        self.pop = [
+            self.solution_cls(self.species, self.fitness_func.fitness_cls),
+            self.solution_cls(self.species, self.fitness_func.fitness_cls)
+        ]
+        for sol in self.pop:
+            self._current_iter_evals += self.evaluate(
+                sol, self.fitness_func, self.index, self.cooperators
             )
 
-            subtrainer.__class__._init_representatives = partialmethod(
-                self._init_subtrainer_representatives,
-                solution_classes=self.solution_classes,
-                species=self.species,
-                representation_size=self.representation_size
+
+    def _do_iteration(self):
+        """Implement an iteration of the training process."""
+        self.pop = [
+            self.solution_cls(self.species, self.fitness_func.fitness_cls),
+            self.solution_cls(self.species, self.fitness_func.fitness_cls)
+        ]
+        for sol in self.pop:
+            self._current_iter_evals += self.evaluate(
+                sol, self.fitness_func, self.index, self.cooperators
             )
 
-            self._subtrainers.append(subtrainer)
+    def _get_objective_stats(self) -> dict:
+        """Gather the objective stats."""
+        return self._stats.compile(self.pop) if self._stats else {}
+
+
+class MyTrainer(SequentialDistributedTrainer, CooperativeTrainer):
+    """Sequential implementation of a cooperative trainer."""
+
+
+# Subtrainers parameters
+classifier_optimization_species = ClassifierOptimizationSpecies(
+    lower_bounds=[0, 0],
+    upper_bounds=[100000, 100000],
+    names=["C", "gamma"]
+)
+
+feature_selection_species = FeatureSelectionSpecies(dataset.num_feats)
+
+common_subtrainer_params = {
+    "fitness_func": fitness_func,
+    "max_num_iters": 1,
+    "checkpoint_activation": False,
+    "verbosity": False
+}
 
 
 class TrainerTester(unittest.TestCase):
     """Test :class:`~culebra.trainer.abc.CooperativeTrainer`."""
 
-    def test_init(self):
-        """Test :meth:`~culebra.trainer.abc.CooperativeTrainer.__init__`."""
-        valid_solution_classes = [
-            ClassifierOptimizationSolution,
-            FeatureSelectionSolution
-        ]
-        invalid_solution_class_types = (1, int, len, None)
-        invalid_solution_class_values = (
-            [valid_solution_classes[0], 2],
-            [None, valid_solution_classes[0]]
-        )
 
-        valid_species = [
-            # Species to optimize a SVM-based classifier
-            ClassifierOptimizationSpecies(
-                lower_bounds=[0, 0],
-                upper_bounds=[100000, 100000],
-                names=["C", "gamma"]
+    def test_default_topology_func(self):
+        """Test _default_topology_func."""
+        # Subtrainers
+        subtrainers = [
+            MySubtrainer(
+                solution_cls=ClassifierOptimizationSolution,
+                species=classifier_optimization_species,
+                **common_subtrainer_params
             ),
-            # Species for the feature selection problem
-            FeatureSelectionSpecies(dataset.num_feats),
-        ]
-        invalid_species_types = (1, int, len, None)
-        invalid_species_values = (
-            [valid_species[0], 2],
-            [None, valid_species[0]]
-        )
-
-        valid_fitness_func = fitness_func
-        valid_subtrainer_cls = MySingleSpeciesTrainer
-        valid_num_subtrainers = 2
-
-        # Try invalid types for the individual classes. Should fail
-        for solution_cls in invalid_solution_class_types:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    solution_cls,
-                    valid_species,
-                    valid_fitness_func,
-                    valid_subtrainer_cls,
-                    num_subtrainers=valid_num_subtrainers
-                )
-
-        # Try invalid values for the individual classes. Should fail
-        for solution_classes in invalid_solution_class_values:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    solution_classes,
-                    valid_species,
-                    valid_fitness_func,
-                    valid_subtrainer_cls,
-                    num_subtrainers=valid_num_subtrainers
-                )
-
-        # Try different values of solution_cls for each subtrainer
-        trainer = MyTrainer(
-            valid_solution_classes,
-            valid_species,
-            valid_fitness_func,
-            valid_subtrainer_cls,
-            num_subtrainers=valid_num_subtrainers
-        )
-        for cls1, cls2 in zip(
-            trainer.solution_classes, valid_solution_classes
-        ):
-            self.assertEqual(cls1, cls2)
-
-        # Try invalid types for the species. Should fail
-        for species in invalid_species_types:
-            with self.assertRaises(TypeError):
-                MyTrainer(
-                    valid_solution_classes,
-                    species,
-                    valid_fitness_func,
-                    valid_subtrainer_cls,
-                    num_subtrainers=valid_num_subtrainers
-                )
-
-        # Try invalid values for the species. Should fail
-        for species in invalid_species_values:
-            with self.assertRaises(ValueError):
-                MyTrainer(
-                    valid_solution_classes,
-                    species,
-                    valid_fitness_func,
-                    valid_subtrainer_cls,
-                    num_subtrainers=valid_num_subtrainers
-                )
-
-        # Try different values of species for each subtrainer
-        trainer = MyTrainer(
-            valid_solution_classes,
-            valid_species,
-            valid_fitness_func,
-            valid_subtrainer_cls,
-            num_subtrainers=valid_num_subtrainers
-        )
-        for species1, species2 in zip(
-            trainer.species, valid_species
-        ):
-            self.assertEqual(species1, species2)
-
-        # Check the default value for num_subtrainers
-        trainer = MyTrainer(
-            valid_solution_classes,
-            valid_species,
-            valid_fitness_func,
-            valid_subtrainer_cls
-        )
-        self.assertEqual(trainer.num_subtrainers, len(valid_species))
-
-        # Check a value for num_subtrainers different from the number of
-        # species. It should fail
-        with self.assertRaises(ValueError):
-            MyTrainer(
-                valid_solution_classes,
-                valid_species,
-                valid_fitness_func,
-                valid_subtrainer_cls,
-                num_subtrainers=18
+            MySubtrainer(
+                solution_cls=FeatureSelectionSolution,
+                species=feature_selection_species,
+                **common_subtrainer_params
             )
+        ]
 
         # Test default params
-        trainer = MyTrainer(
-            valid_solution_classes,
-            valid_species,
-            valid_fitness_func,
-            valid_subtrainer_cls
-        )
+        trainer = MyTrainer(*subtrainers)
 
         self.assertEqual(
-            trainer.representation_topology_func,
-            DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC
+            trainer.topology_func,
+            DEFAULT_COOPERATIVE_TOPOLOGY_FUNC
         )
-        self.assertEqual(
-            trainer.representation_topology_func_params,
-            DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS
-        )
-
-        # Create the subtrainers
-        trainer._generate_subtrainers()
-
-        for solution_cls, subtrainer in zip(
-            trainer.solution_classes, trainer.subtrainers
-        ):
-            self.assertEqual(solution_cls, subtrainer.solution_cls)
-
-    def test_representatives(self):
-        """Test the representatives property."""
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "representation_size": 2,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
-
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
-
-        # Get the representatives
-        the_representatives = trainer.representatives
-
-        # Check the representatives
-        for (
-                subtrainer_index,
-                subtrainer
-                ) in enumerate(trainer.subtrainers):
-            for (
-                context_index, _
-            ) in enumerate(subtrainer.representatives):
-                self.assertEqual(
-                    the_representatives[context_index][subtrainer_index - 1],
-                    subtrainer.representatives[
-                        context_index][subtrainer_index - 1]
-                )
 
     def test_best_solutions(self):
         """Test best_solutions."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "representation_size": 2,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        # Subtrainers
+        subtrainers = [
+            MySubtrainer(
+                solution_cls=ClassifierOptimizationSolution,
+                species=classifier_optimization_species,
+                **common_subtrainer_params
+            ),
+            MySubtrainer(
+                solution_cls=FeatureSelectionSolution,
+                species=feature_selection_species,
+                **common_subtrainer_params
+            )
+        ]
 
-        # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyTrainer(*subtrainers)
 
-        # Try before the subtrainers have been created
+        # Try before training
         best_ones = trainer.best_solutions()
         self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), trainer.num_subtrainers)
         for best in best_ones:
             self.assertEqual(len(best), 0)
 
-        # Generate the subtrainers
-        trainer._init_search()
-        trainer._start_iteration()
-        trainer._do_iteration()
+        # Train
+        trainer.train()
 
         # Try again
         best_ones = trainer.best_solutions()
@@ -503,227 +244,162 @@ class TrainerTester(unittest.TestCase):
         # Test that a list with hof per species returned
         self.assertIsInstance(best_ones, tuple)
         self.assertEqual(len(best_ones), trainer.num_subtrainers)
-        for hof, ind_cls in zip(best_ones, trainer.solution_classes):
-            for ind in hof:
-                self.assertIsInstance(ind, ind_cls)
+        for hof, subtr in zip(best_ones, trainer.subtrainers):
+            for sol in hof:
+                self.assertIsInstance(sol, subtr.solution_cls)
 
-    def test_best_representatives(self):
-        """Test the best_representatives method."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "max_num_iters": 2,
-            "representation_size": 3,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+    def test_best_cooperators(self):
+        """Test the best_cooperators method."""
+        # Subtrainers
+        subtrainers = [
+            MySubtrainer(
+                solution_cls=ClassifierOptimizationSolution,
+                species=classifier_optimization_species,
+                **common_subtrainer_params
+            ),
+            MySubtrainer(
+                solution_cls=FeatureSelectionSolution,
+                species=feature_selection_species,
+                **common_subtrainer_params
+            )
+        ]
 
-        # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyTrainer(*subtrainers)
 
         # Try before the subtrainers have been created
-        the_representatives = trainer.best_representatives()
+        the_cooperators = trainer.best_cooperators()
 
-        # The representatives should be None
-        self.assertEqual(the_representatives, None)
+        # The cooperators should be None
+        self.assertIsNone(the_cooperators)
+
+        trainer.train()
+
+        # Try after training
+        the_cooperators = trainer.best_cooperators()
+
+        # Check the cooperators
+        self.assertIsInstance(the_cooperators, list)
+        self.assertEqual(
+            len(the_cooperators), trainer.num_representatives
+        )
+        for context in the_cooperators:
+            self.assertIsInstance(context, list)
+            self.assertEqual(len(context), trainer.num_subtrainers)
+            for sol, subtr in zip(context, trainer.subtrainers):
+                self.assertTrue(subtr.species.is_member(sol))
+
+    def test_receive_representatives(self):
+        """Test receive_representatives."""
+        # Subtrainers
+        subtrainers = [
+            MySubtrainer(
+                solution_cls=ClassifierOptimizationSolution,
+                species=classifier_optimization_species,
+                **common_subtrainer_params
+            ),
+            MySubtrainer(
+                solution_cls=FeatureSelectionSolution,
+                species=feature_selection_species,
+                **common_subtrainer_params
+            )
+        ]
+
+        trainer = MyTrainer(*subtrainers)
 
         # Train
         trainer.train()
 
-        # Try after training
-        the_representatives = trainer.best_representatives()
-
-        # Check the representatives
-        self.assertIsInstance(the_representatives, list)
-        self.assertEqual(
-            len(the_representatives), trainer.representation_size
-        )
-        for context in the_representatives:
-            self.assertIsInstance(context, list)
-            self.assertEqual(len(context), trainer.num_subtrainers)
-            for ind, species in zip(context, trainer.species):
-                self.assertTrue(species.is_member(ind))
-
-    def test_copy(self):
-        """Test the __copy__ method."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "representation_size": 2,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
-
-        # Create the trainer
-        trainer1 = MyTrainer(**params)
-        trainer2 = copy(trainer1)
-
-        # Copy only copies the first level (trainer1 != trainerl2)
-        self.assertNotEqual(id(trainer1), id(trainer2))
-
-        # The objects attributes are shared
-        self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
-        )
-        self.assertEqual(
-            id(trainer1.species),
-            id(trainer2.species)
+        sender_index = 0
+        the_representatives = (
+            trainer.subtrainers[sender_index].select_representatives()
         )
 
-    def test_deepcopy(self):
-        """Test the __deepcopy__ method."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "representation_size": 2,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        for index in range(trainer.num_subtrainers):
+            if index != sender_index:
+                trainer._communication_queues[index].put(
+                    (sender_index, the_representatives)
+                )
+            # Wait for the parallel queue processing
+            sleep(1)
 
-        # Create the trainer
-        trainer1 = MyTrainer(**params)
-        trainer2 = deepcopy(trainer1)
 
-        # Check the copy
-        self._check_deepcopy(trainer1, trainer2)
+        # Call to receive representatives, assigned to
+        # subtrainer.receive_representatives_func
+        for subtr in trainer.subtrainers:
+            subtr.receive_representatives_func(subtr)
 
-    def test_serialization(self):
-        """Serialization test.
+        # Check the received values
+        for recv_index, subtr in enumerate(trainer.subtrainers):
+            if recv_index != sender_index:
+                for sol_index, sol in enumerate(the_representatives):
+                    self.assertEqual(
+                        subtr.cooperators[sol_index][sender_index], sol
+                    )
 
-        Test the __setstate__ and __reduce__ methods.
-        """
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "representation_size": 2,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+                # Check that all the individuals have been reevaluated
+                for sol in subtr.pop:
+                    self.assertTrue(sol.fitness.is_valid)
 
-        # Create the trainer
-        trainer1 = MyTrainer(**params)
+    def test_send_representatives(self):
+        """Test send_representatives."""
+        # Subtrainers
+        subtrainers = [
+            MySubtrainer(
+                solution_cls=ClassifierOptimizationSolution,
+                species=classifier_optimization_species,
+                **common_subtrainer_params
+            ),
+            MySubtrainer(
+                solution_cls=FeatureSelectionSolution,
+                species=feature_selection_species,
+                **common_subtrainer_params
+            )
+        ]
 
-        serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
-        trainer1.dump(serialized_filename)
-        trainer2 = MyTrainer.load(serialized_filename)
+        trainer = MyTrainer(*subtrainers)
 
-        # Check the serialization
-        self._check_deepcopy(trainer1, trainer2)
+        # Train
+        trainer.train()
 
-        # Remove the serialized file
-        remove(serialized_filename)
+        # Wait for the parallel queue processing
+        sleep(1)
 
-    def test_repr(self):
-        """Test the repr and str dunder methods."""
-        # Parameters for the trainer
-        params = {
-            "solution_classes": [
-                ClassifierOptimizationSolution,
-                FeatureSelectionSolution
-            ],
-            "species": [
-                # Species to optimize a SVM-based classifier
-                ClassifierOptimizationSpecies(
-                    lower_bounds=[0, 0],
-                    upper_bounds=[100000, 100000],
-                    names=["C", "gamma"]
-                ),
-                # Species for the feature selection problem
-                FeatureSelectionSpecies(dataset.num_feats)
-            ],
-            "fitness_function": fitness_func,
-            "subtrainer_cls": MySingleSpeciesTrainer,
-            "representation_size": 2,
-            "verbosity": False,
-            "checkpoint_activation": False
-        }
+        # Clear communication queues
+        for queue in trainer._communication_queues:
+            while True:
+                try:
+                    queue.get_nowait()
+                except Empty:
+                    break
 
-        # Create the trainer
-        trainer = MyTrainer(**params)
-        trainer._init_search()
-        self.assertIsInstance(repr(trainer), str)
-        self.assertIsInstance(str(trainer), str)
+        # Set an iteration that should not provoke representatives sending
+        for subtr in trainer.subtrainers:
+            subtr._current_iter = (
+                trainer.representatives_exchange_freq + 1
+            )
 
-    def _check_deepcopy(self, trainer1, trainer2):
-        """Check if *trainer1* is a deepcopy of *trainer2*.
+            # Call to send representatives, assigned to
+            # subtrainer.send_representatives_func
+            subtr.send_representatives_func(subtr)
 
-        :param trainer1: The first trainer
-        :type trainer1: ~culebra.trainer.abc.CooperativeTrainer
-        :param trainer2: The second trainer
-        :type trainer2: ~culebra.trainer.abc.CooperativeTrainer
-        """
-        # Copies all the levels
-        self.assertNotEqual(id(trainer1), id(trainer2))
-        self.assertNotEqual(
-            id(trainer1.subtrainer_params), id(trainer2.subtrainer_params)
-        )
-        self.assertEqual(
-            trainer1.subtrainer_params, trainer2.subtrainer_params
-        )
-        self.assertNotEqual(id(trainer1.species), id(trainer2.species))
-        for spe1, spe2 in zip(trainer1.species, trainer2.species):
-            self.assertNotEqual(id(spe1), id(spe2))
+        # All the queues should be empty
+        for queue in trainer._communication_queues:
+            self.assertTrue(queue.empty())
+
+        # Set an iteration that should provoke representatives sending
+        for subtr in trainer.subtrainers:
+            subtr._current_iter = trainer.representatives_exchange_freq
+
+            # Call to send representatives, assigned to
+            # subtrainer.send_representatives_func
+            subtr.send_representatives_func(subtr)
+
+            # Wait for the parallel queue processing
+            sleep(1)
+
+        # None of the the queues should be empty
+        for queue in trainer._communication_queues:
+            self.assertFalse(queue.empty())
 
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@
 .. toctree::
     :hidden:
 
-    SingleColACO <abc/single_col_aco>
+    ACO <abc/aco>
 
     SingleObjACO <abc/single_obj_aco>
     PheromoneBasedACO <abc/pheromone_based_aco>

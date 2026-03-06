@@ -24,45 +24,29 @@
 
 .. autoclass:: culebra.abc.Trainer
 
-Class attributes
-----------------
-.. autoattribute:: culebra.abc.Trainer.objective_stats
-.. autoattribute:: culebra.abc.Trainer.stats_names
-
 Class methods
 -------------
 .. automethod:: culebra.abc.Trainer.load
 
 Properties
 ----------
-.. autoproperty:: culebra.abc.Trainer.checkpoint_activation
-.. autoproperty:: culebra.abc.Trainer.checkpoint_filename
-.. autoproperty:: culebra.abc.Trainer.checkpoint_freq
-.. autoproperty:: culebra.abc.Trainer.container
-.. autoproperty:: culebra.abc.Trainer.current_iter
-.. autoproperty:: culebra.abc.Trainer.custom_termination_func
-.. autoproperty:: culebra.abc.Trainer.fitness_function
-.. autoproperty:: culebra.abc.Trainer.index
+.. autoproperty:: culebra.abc.Trainer.cooperative_fitness_estimation_func
+.. autoproperty:: culebra.abc.Trainer.fitness_func
+.. autoproperty:: culebra.abc.Trainer.iteration_metric_names
+.. autoproperty:: culebra.abc.Trainer.iteration_obj_stats
 .. autoproperty:: culebra.abc.Trainer.logbook
-.. autoproperty:: culebra.abc.Trainer.max_num_iters
 .. autoproperty:: culebra.abc.Trainer.num_evals
-.. autoproperty:: culebra.abc.Trainer.random_seed
-.. autoproperty:: culebra.abc.Trainer.representatives
+.. autoproperty:: culebra.abc.Trainer.num_iters
 .. autoproperty:: culebra.abc.Trainer.runtime
-.. autoproperty:: culebra.abc.Trainer.verbosity
+.. autoproperty:: culebra.abc.Trainer.training_finished
 
 Private properties
 ------------------
-.. autoproperty:: culebra.abc.Trainer._default_checkpoint_activation
-.. autoproperty:: culebra.abc.Trainer._default_checkpoint_filename
-.. autoproperty:: culebra.abc.Trainer._default_checkpoint_freq
-.. autoproperty:: culebra.abc.Trainer._default_index
-.. autoproperty:: culebra.abc.Trainer._default_max_num_iters
-.. autoproperty:: culebra.abc.Trainer._default_verbosity
+.. autoproperty:: culebra.abc.Trainer._default_cooperative_fitness_estimation_func
 
 Methods
 -------
-.. automethod:: culebra.abc.Trainer.best_representatives
+.. automethod:: culebra.abc.Trainer.best_cooperators
 .. automethod:: culebra.abc.Trainer.best_solutions
 .. automethod:: culebra.abc.Trainer.dump
 .. automethod:: culebra.abc.Trainer.evaluate
@@ -72,25 +56,6 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.abc.Trainer._default_termination_func
-.. automethod:: culebra.abc.Trainer._do_iteration
-.. automethod:: culebra.abc.Trainer._do_iteration_stats
-.. automethod:: culebra.abc.Trainer._finish_iteration
-.. automethod:: culebra.abc.Trainer._finish_search
-.. automethod:: culebra.abc.Trainer._get_state
-.. automethod:: culebra.abc.Trainer._init_internals
-.. automethod:: culebra.abc.Trainer._init_representatives
-.. automethod:: culebra.abc.Trainer._init_search
-.. automethod:: culebra.abc.Trainer._init_state
-.. automethod:: culebra.abc.Trainer._load_state
-.. automethod:: culebra.abc.Trainer._new_state
-.. automethod:: culebra.abc.Trainer._postprocess_iteration
-.. automethod:: culebra.abc.Trainer._preprocess_iteration
-.. automethod:: culebra.abc.Trainer._reset_internals
-.. automethod:: culebra.abc.Trainer._reset_state
-.. automethod:: culebra.abc.Trainer._save_state
-.. automethod:: culebra.abc.Trainer._search
-.. automethod:: culebra.abc.Trainer._set_cooperative_fitness
-.. automethod:: culebra.abc.Trainer._set_state
-.. automethod:: culebra.abc.Trainer._start_iteration
-.. automethod:: culebra.abc.Trainer._termination_criterion
+.. automethod:: culebra.abc.Trainer._do_training
+.. automethod:: culebra.abc.Trainer._finish_training
+.. automethod:: culebra.abc.Trainer._init_training

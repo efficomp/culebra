@@ -67,9 +67,9 @@ from culebra.solution.abc import Individual as BaseIndividual
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -372,8 +372,17 @@ class Species(BaseSpecies):
         :rtype: ~culebra.solution.parameter_optimization.Species
         """
         cls = self.__class__
-        result = cls(self.lower_bounds, self.upper_bounds)
-        result.__dict__.update(deepcopy(self.__dict__, memo))
+        args = deepcopy([self.lower_bounds, self.upper_bounds], memo)
+        result = cls(*args)
+        result.__dict__.update(
+            deepcopy(
+                self.__dict__,
+                memo | {
+                    id(self.lower_bounds): result.lower_bounds,
+                    id(self.upper_bounds): result.upper_bounds
+                }
+            )
+        )
         return result
 
     def __reduce__(self) -> tuple:
@@ -397,12 +406,9 @@ class Species(BaseSpecies):
         :return: The species
         :rtype: ~culebra.solution.parameter_optimization.Species
         """
-        obj = cls(
-            state['_lower_bounds'],
-            state['_upper_bounds']
-        )
+        obj = cls(state['_lower_bounds'], state['_upper_bounds'])
         obj.__setstate__(state)
-        return obj
+        return deepcopy(obj)
 
 
 class Solution(BaseSolution):

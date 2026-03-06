@@ -123,7 +123,7 @@ class FitnessTester(unittest.TestCase):
         for i in range(times):
             for obj_index in range(fitness.num_obj):
                 fitness.update_value(i, obj_index)
-                self.assertEqual(fitness._values[obj_index], i)
+                self.assertEqual(fitness.values[obj_index], i)
 
     def test_dominates(self):
         """Test the :meth:`~culebra.abc.Fitness.dominates` method."""
@@ -523,7 +523,7 @@ class FitnessTester(unittest.TestCase):
         self.assertNotEqual(id(fitness1), id(fitness2))
 
         # The objects attributes are shared
-        self.assertEqual(id(fitness1._values), id(fitness2._values))
+        self.assertEqual(id(fitness1.values), id(fitness2.values))
 
     def test_deepcopy(self):
         """Test the :meth:`~culebra.abc.Fitness.__deepcopy__` method."""

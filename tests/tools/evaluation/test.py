@@ -41,14 +41,17 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
-from culebra.fitness_function.svc_optimization import C
-from culebra.fitness_function.cooperative import FSSVCScorer
+from culebra.fitness_func.svc_optimization import C
+from culebra.fitness_func.cooperative import FSSVCScorer
+from culebra.trainer.abc import (
+    ParallelDistributedTrainer,
+    CooperativeTrainer
+)
 from culebra.trainer.ea import ElitistEA
-from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import (
     Dataset,
     Evaluation,
@@ -89,22 +92,21 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # of samples
 training_data = training_data.oversample(random_seed=0)
 
-
 # Training fitness function
-training_fitness_function = KappaNumFeatsC(training_data, cv_folds=5)
+training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
 
 # Set the training fitness similarity threshold
-training_fitness_function.obj_thresholds = 0.001
+training_fitness_func.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-untie_best_fitness_function = KappaNumFeatsC(training_data, cv_folds=max_folds)
+untie_best_fitness_func = KappaNumFeatsC(training_data, cv_folds=max_folds)
 
 # Test fitness function
-test_fitness_function = KappaNumFeatsC(training_data, test_data)
+test_fitness_func = KappaNumFeatsC(training_data, test_data)
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(
@@ -123,37 +125,47 @@ featureSelectionSpecies2 = FeatureSelectionSpecies(
     min_feat=dataset.num_feats//2 + 1,
 )
 
-# Parameters for the wrapper
-params = {
-    "solution_classes": [
-        ClassifierOptimizationIndividual,
-        FeatureSelectionIndividual,
-        FeatureSelectionIndividual
-    ],
-    "species": [
-        classifierOptimizationSpecies,
-        featureSelectionSpecies1,
-        featureSelectionSpecies2
-    ],
-    "fitness_function": training_fitness_function,
-    "subtrainer_cls": ElitistEA,
-    "representation_size": 2,
-    "crossover_probs": 0.8,
-    "mutation_probs": 0.2,
-    "gene_ind_mutation_probs": (
-        # At least one hyperparameter/feature will be mutated
-        1.0/classifierOptimizationSpecies.num_params,
-        2.0/dataset.num_feats,
-        2.0/dataset.num_feats
-    ),
-    "max_num_iters": 3,
-    "pop_sizes": 2,
-    "checkpoint_activation": False,
-    "verbosity": False
+# Subtrainers params
+subtrainer_params = {
+    "fitness_func": training_fitness_func,
+    "crossover_prob": 0.8,
+    "mutation_prob": 0.2,
+    "pop_size": dataset.num_feats//2,
+    "max_num_iters": 500,
+    "checkpoint_activation": False
 }
 
-# Create the trainer
-trainer = ParallelCooperativeEA(**params)
+# Parameters for the wrapper
+params = {
+    "num_representatives": 2
+}
+
+# Create the wrapper
+subtrainers = (
+    ElitistEA(
+        solution_cls=ClassifierOptimizationIndividual,
+        species=classifierOptimizationSpecies,
+        # At least one hyperparameter/feature will be mutated
+        gene_ind_mutation_prob=1.0/classifierOptimizationSpecies.num_params,
+        **subtrainer_params
+    ),
+    ElitistEA(
+        solution_cls=FeatureSelectionIndividual,
+        species=featureSelectionSpecies1,
+        gene_ind_mutation_prob=2.0/dataset.num_feats,
+        **subtrainer_params
+    ),
+    ElitistEA(
+        solution_cls=FeatureSelectionIndividual,
+        species=featureSelectionSpecies2,
+        gene_ind_mutation_prob=2.0/dataset.num_feats,
+        **subtrainer_params
+    )
+)
+
+# Trainer
+class MyTrainer(ParallelDistributedTrainer, CooperativeTrainer):
+    """Parallel implementation of a cooperative trainer."""
 
 
 class MyEvaluation(Evaluation):
@@ -170,13 +182,15 @@ class EvaluationTester(unittest.TestCase):
 
     def test_init(self):
         """Test the constructor."""
+        trainer = MyTrainer(*subtrainers, **params)
+
         # Try default params
         evaluation = MyEvaluation(trainer)
 
         self.assertEqual(evaluation.trainer, trainer)
-        self.assertEqual(evaluation.untie_best_fitness_function, None)
+        self.assertEqual(evaluation.untie_best_fitness_func, None)
 
-        self.assertEqual(evaluation.test_fitness_function, None)
+        self.assertEqual(evaluation.test_fitness_func, None)
         self.assertEqual(
             evaluation.results_base_filename,
             DEFAULT_RESULTS_BASE_FILENAME
@@ -186,11 +200,11 @@ class EvaluationTester(unittest.TestCase):
 
         # Try an invalid untie fitness function
         with self.assertRaises(TypeError):
-            MyEvaluation(trainer, untie_best_fitness_function="a")
+            MyEvaluation(trainer, untie_best_fitness_func="a")
 
         # Try an invalid test fitness function
         with self.assertRaises(TypeError):
-            MyEvaluation(trainer, test_fitness_function="a")
+            MyEvaluation(trainer, test_fitness_func="a")
 
         # Try an invalid results base filename
         with self.assertRaises(TypeError):
@@ -210,18 +224,18 @@ class EvaluationTester(unittest.TestCase):
 
         # Try an evaluation with a custom untie fitness function
         evaluation = MyEvaluation(
-            trainer, untie_best_fitness_function=untie_best_fitness_function
+            trainer, untie_best_fitness_func=untie_best_fitness_func
         )
         self.assertEqual(
-            evaluation.untie_best_fitness_function, untie_best_fitness_function
+            evaluation.untie_best_fitness_func, untie_best_fitness_func
         )
 
         # Try an evaluation with a custom test fitness function
         evaluation = MyEvaluation(
-            trainer, test_fitness_function=test_fitness_function
+            trainer, test_fitness_func=test_fitness_func
         )
         self.assertEqual(
-            evaluation.test_fitness_function, test_fitness_function
+            evaluation.test_fitness_func, test_fitness_func
         )
 
         # Try an evaluation with a custom results base name
@@ -256,11 +270,11 @@ class EvaluationTester(unittest.TestCase):
 
         # Check the untie fitness function
         self.assertIsInstance(
-            evaluation.untie_best_fitness_function, FitnessFunction)
+            evaluation.untie_best_fitness_func, FitnessFunction)
 
         # Check the test fitness function
         self.assertIsInstance(
-            evaluation.test_fitness_function, FitnessFunction)
+            evaluation.test_fitness_func, FitnessFunction)
 
         # Check the results base filename
         self.assertEqual(evaluation.results_base_filename, "my_results")
@@ -268,11 +282,13 @@ class EvaluationTester(unittest.TestCase):
         # Check the hyperparameters
         self.assertEqual(
             evaluation.hyperparameters,
-            {"representation_size": 2, "max_num_iters": 100}
+            {"num_representatives": 2, "max_num_iters": 500}
         )
 
     def test_reset(self):
         """Test the reset method."""
+        trainer = MyTrainer(*subtrainers, **params)
+
         evaluation = MyEvaluation(trainer)
         evaluation._results = 1
         evaluation.reset()
@@ -280,8 +296,10 @@ class EvaluationTester(unittest.TestCase):
 
     def test_execute(self):
         """Test the _execute method."""
+        trainer = MyTrainer(*subtrainers, **params)
+
         # Create the evaluation
-        evaluation = MyEvaluation(trainer, test_fitness_function)
+        evaluation = MyEvaluation(trainer, test_fitness_func)
 
         # Init the results manager
         evaluation._results = Results()
@@ -363,11 +381,13 @@ class EvaluationTester(unittest.TestCase):
 
     def test_run(self):
         """Test the run method."""
+        trainer = MyTrainer(*subtrainers, **params)
+
         # Create the evaluation
         evaluation = MyEvaluation(
             trainer,
-            untie_best_fitness_function,
-            test_fitness_function,
+            untie_best_fitness_func,
+            test_fitness_func,
             "the_results"
         )
 
@@ -387,10 +407,12 @@ class EvaluationTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the :meth:`~culebra.tools.Evaluation.__copy__` method."""
+        trainer = MyTrainer(*subtrainers, **params)
+
         evaluation1 = MyEvaluation(
             trainer,
-            untie_best_fitness_function,
-            test_fitness_function
+            untie_best_fitness_func,
+            test_fitness_func
         )
 
         evaluation1.run()
@@ -408,10 +430,12 @@ class EvaluationTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test :meth:`~culebra.tools.Evaluation.__deepcopy__`."""
+        trainer = MyTrainer(*subtrainers, **params)
+
         evaluation1 = MyEvaluation(
             trainer,
-            untie_best_fitness_function,
-            test_fitness_function
+            untie_best_fitness_func,
+            test_fitness_func
         )
         evaluation1.run()
         evaluation2 = deepcopy(evaluation1)
@@ -429,10 +453,12 @@ class EvaluationTester(unittest.TestCase):
         Test the :meth:`~culebra.tools.Evaluation.__setstate__` and
         :meth:`~culebra.tools.Evaluation.__reduce__` methods.
         """
+        trainer = MyTrainer(*subtrainers, **params)
+
         evaluation1 = MyEvaluation(
             trainer,
-            untie_best_fitness_function,
-            test_fitness_function
+            untie_best_fitness_func,
+            test_fitness_func
         )
         evaluation1.run()
 
@@ -459,7 +485,8 @@ class EvaluationTester(unittest.TestCase):
         :type evaluation2: ~culebra.tools.Evaluation
         """
         # Copies all the levels
-        self.assertNotEqual(id(evaluation1), id(evaluation2))
+        self.assertTrue(evaluation1 is not evaluation2)
+        self.assertTrue(evaluation1.trainer is not evaluation2.trainer)
         if evaluation1.results is None:
             self.assertEqual(evaluation2.results, None)
         else:
@@ -467,7 +494,7 @@ class EvaluationTester(unittest.TestCase):
                 self.assertTrue(
                     evaluation1.results[key].equals(evaluation2.results[key])
                 )
-
+            
 
 if __name__ == '__main__':
     unittest.main()

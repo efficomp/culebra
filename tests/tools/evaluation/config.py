@@ -31,14 +31,17 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Individual as ClassifierOptimizationIndividual
 )
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
-from culebra.fitness_function.svc_optimization import C
-from culebra.fitness_function.cooperative import FSSVCScorer
+from culebra.fitness_func.svc_optimization import C
+from culebra.fitness_func.cooperative import FSSVCScorer
+from culebra.trainer.abc import (
+    ParallelDistributedTrainer,
+    CooperativeTrainer
+)
 from culebra.trainer.ea import ElitistEA
-from culebra.trainer.ea import ParallelCooperativeEA
 from culebra.tools import Dataset
 
 
@@ -70,22 +73,21 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # of samples
 training_data = training_data.oversample(random_seed=0)
 
-
 # Training fitness function
-training_fitness_function = KappaNumFeatsC(training_data, cv_folds=5)
+training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
 
 # Set the training fitness similarity threshold
-training_fitness_function.obj_thresholds = 0.001
+training_fitness_func.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-untie_best_fitness_function = KappaNumFeatsC(training_data, cv_folds=max_folds)
+untie_best_fitness_func = KappaNumFeatsC(training_data, cv_folds=max_folds)
 
 # Test fitness function
-test_fitness_function = KappaNumFeatsC(training_data, test_data)
+test_fitness_func = KappaNumFeatsC(training_data, test_data)
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(
@@ -104,37 +106,55 @@ featureSelectionSpecies2 = FeatureSelectionSpecies(
     min_feat=dataset.num_feats//2 + 1,
 )
 
-# Parameters for the wrapper
-params = {
-    "solution_classes": [
-        ClassifierOptimizationIndividual,
-        FeatureSelectionIndividual,
-        FeatureSelectionIndividual
-    ],
-    "species": [
-        classifierOptimizationSpecies,
-        featureSelectionSpecies1,
-        featureSelectionSpecies2
-    ],
-    "fitness_function": training_fitness_function,
-    "subtrainer_cls": ElitistEA,
-    "representation_size": 2,
-    "gene_ind_mutation_probs": (
-        # At least one hyperparameter/feature will be mutated
-        1.0/classifierOptimizationSpecies.num_params,
-        2.0/dataset.num_feats,
-        2.0/dataset.num_feats
-    ),
-    "max_num_iters": 100,
-    "pop_sizes": dataset.num_feats//2,
-    "checkpoint_activation": False,
+# Subtrainers params
+subtrainer_params = {
+    "fitness_func": training_fitness_func,
+    "crossover_prob": 0.8,
+    "mutation_prob": 0.2,
+    "pop_size": dataset.num_feats//2,
+    "max_num_iters": 500,
+    "checkpoint_activation": False
 }
 
-# Create the trainer
-trainer = ParallelCooperativeEA(**params)
+# Parameters for the wrapper
+params ={
+    "num_representatives": 2
+}
+
+# Create the wrapper
+subtrainers = (
+    ElitistEA(
+        solution_cls=ClassifierOptimizationIndividual,
+        species=classifierOptimizationSpecies,
+        # At least one hyperparameter/feature will be mutated
+        gene_ind_mutation_prob=1.0/classifierOptimizationSpecies.num_params,
+        **subtrainer_params
+    ),
+    ElitistEA(
+        solution_cls=FeatureSelectionIndividual,
+        species=featureSelectionSpecies1,
+        gene_ind_mutation_prob=2.0/dataset.num_feats,
+        **subtrainer_params
+    ),
+    ElitistEA(
+        solution_cls=FeatureSelectionIndividual,
+        species=featureSelectionSpecies2,
+        gene_ind_mutation_prob=2.0/dataset.num_feats,
+        **subtrainer_params
+    )
+)
+
+# Trainer
+class MyTrainer(ParallelDistributedTrainer, CooperativeTrainer):
+    """Parallel implementation of a cooperative trainer."""
+
+trainer = MyTrainer(*subtrainers, **params)
 
 # Define a base filename for the results
 results_base_filename = "my_results"
 
-# Require some custom parameters to appear in the results
-hyperparameters = {"representation_size": 2, "max_num_iters": 100}
+# Parameters to appear in the results
+hyperparameters = {
+    "num_representatives": params["num_representatives"],
+    "max_num_iters": subtrainer_params["max_num_iters"]
+}

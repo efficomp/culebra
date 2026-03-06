@@ -33,7 +33,7 @@ from deap.tools import ParetoFront
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import MaxPheromonePACO, ACOTSP
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import (
+from culebra.fitness_func.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
@@ -44,11 +44,11 @@ class MyTrainer(ACOTSP, MaxPheromonePACO):
 
     @property
     def num_pheromone_matrices(self) -> int:
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
     @property
     def num_heuristic_matrices(self) -> int:
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
     def _update_pop(self) -> None:
         """Update the population."""
@@ -95,9 +95,9 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test __init__`."""
+        valid_fitness_func = fitness_func
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
-        valid_fitness_func = fitness_func
         valid_initial_pheromone = 1
 
         # Try invalid types for max_pheromone. Should fail
@@ -105,9 +105,9 @@ class TrainerTester(unittest.TestCase):
         for max_pheromone in invalid_max_pheromone:
             with self.assertRaises(TypeError):
                 MyTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     max_pheromone=max_pheromone
                 )
@@ -119,9 +119,9 @@ class TrainerTester(unittest.TestCase):
         for max_pheromone in invalid_max_pheromone:
             with self.assertRaises(ValueError):
                 MyTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     max_pheromone=max_pheromone
                 )
@@ -129,9 +129,9 @@ class TrainerTester(unittest.TestCase):
         # Try valid values for max_pheromone
         valid_max_pheromone = [3] * fitness_func.num_obj
         trainer = MyTrainer(
+            valid_fitness_func,
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
             valid_initial_pheromone,
             max_pheromone=valid_max_pheromone
         )
@@ -140,9 +140,9 @@ class TrainerTester(unittest.TestCase):
         # Try valid values for max_pheromone
         valid_max_pheromone = 4
         trainer = MyTrainer(
+            valid_fitness_func,
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
             valid_initial_pheromone,
             max_pheromone=valid_max_pheromone
         )
@@ -153,9 +153,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = MyTrainer(
+            valid_fitness_func,
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
             valid_initial_pheromone,
             valid_max_pheromone
         )
@@ -198,9 +198,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = [1] * fitness_func.num_obj
         max_pheromone = [3] * fitness_func.num_obj
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1
@@ -208,7 +208,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the initial pheromone
@@ -230,9 +230,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = (1,) * fitness_func.num_obj
         max_pheromone = (3,) * fitness_func.num_obj
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1
@@ -247,8 +247,8 @@ class TrainerTester(unittest.TestCase):
 
         # The objects attributes are shared
         self.assertEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
+            id(trainer1.fitness_func),
+            id(trainer2.fitness_func)
         )
         self.assertEqual(id(trainer1.species), id(trainer2.species))
         self.assertEqual(trainer1.max_pheromone, trainer2.max_pheromone)
@@ -264,9 +264,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 4
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1
@@ -286,9 +286,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 4
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1
@@ -314,16 +314,16 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
 
         # Create the trainer
         trainer = MyTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 
@@ -336,13 +336,9 @@ class TrainerTester(unittest.TestCase):
         :type trainer2: ~culebra.trainer.aco.abc.MaxPheromonePACO
         """
         # Copies all the levels
-        self.assertNotEqual(id(trainer1), id(trainer2))
-        self.assertNotEqual(
-            id(trainer1.fitness_function),
-            id(trainer2.fitness_function)
-        )
-
-        self.assertNotEqual(id(trainer1.species), id(trainer2.species))
+        self.assertTrue(trainer1 is not trainer2)
+        self.assertTrue(trainer1.fitness_func is not trainer2.fitness_func)
+        self.assertTrue(trainer1.species is not trainer2.species)
         self.assertEqual(trainer1.max_pheromone, trainer2.max_pheromone)
 
         # Check some non mandatory parameters

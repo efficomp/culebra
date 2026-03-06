@@ -33,7 +33,7 @@ from culebra.trainer.aco.abc import (
     ACOTSP
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import (
+from culebra.fitness_func.tsp import (
     PathLength,
     MultiObjectivePathLength
 )
@@ -48,11 +48,11 @@ class MyMultiplePheromoneTrainer(ACOTSP, PheromoneBasedACO):
 
     @property
     def num_pheromone_matrices(self) -> int:
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
     @property
     def num_heuristic_matrices(self) -> int:
-        return self.fitness_function.num_obj
+        return self.fitness_func.num_obj
 
 
 num_nodes = 25
@@ -74,9 +74,9 @@ class TrainerTester(unittest.TestCase):
 
     def test_init(self):
         """Test __init__`."""
+        valid_fitness_func = multiple_obj_fitness_func
         valid_ant_cls = Ant
         valid_species = Species(num_nodes, banned_nodes)
-        valid_fitness_func = multiple_obj_fitness_func
         valid_initial_pheromone = [1, 2]
 
         # Try invalid types for pheromone_evaporation_rate. Should fail
@@ -84,9 +84,9 @@ class TrainerTester(unittest.TestCase):
         for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
             with self.assertRaises(TypeError):
                 MyMultiplePheromoneTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     pheromone_evaporation_rate=pheromone_evaporation_rate
                 )
@@ -96,9 +96,9 @@ class TrainerTester(unittest.TestCase):
         for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
             with self.assertRaises(ValueError):
                 MyMultiplePheromoneTrainer(
+                    valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
-                    valid_fitness_func,
                     valid_initial_pheromone,
                     pheromone_evaporation_rate=pheromone_evaporation_rate
                 )
@@ -107,9 +107,9 @@ class TrainerTester(unittest.TestCase):
         valid_pheromone_evaporation_rate = (0.5, 1)
         for pheromone_evaporation_rate in valid_pheromone_evaporation_rate:
             trainer = MyMultiplePheromoneTrainer(
+                valid_fitness_func,
                 valid_ant_cls,
                 valid_species,
-                valid_fitness_func,
                 valid_initial_pheromone,
                 pheromone_evaporation_rate=pheromone_evaporation_rate
             )
@@ -120,9 +120,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = MyMultiplePheromoneTrainer(
+            valid_fitness_func,
             valid_ant_cls,
             valid_species,
-            valid_fitness_func,
             valid_initial_pheromone
         )
         self.assertEqual(trainer.pheromone, None)
@@ -137,9 +137,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": single_obj_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": single_obj_fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -172,9 +172,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = [2, 3]
         params = {
+            "fitness_func": multiple_obj_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": multiple_obj_fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -202,9 +202,9 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = (2, )
         params = {
+            "fitness_func": single_obj_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": single_obj_fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
@@ -225,15 +225,15 @@ class TrainerTester(unittest.TestCase):
         """Test the _decrease_pheromone method."""
         # Trainer parameters
         params = {
+            "fitness_func": single_obj_fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": single_obj_fitness_func,
             "initial_pheromone": 2
         }
 
         # Create the trainer
         trainer = MySinglePheromoneTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
 
         # Check the initial pheromone
         pheromone_value = trainer.initial_pheromone[0]
@@ -258,16 +258,16 @@ class TrainerTester(unittest.TestCase):
         """Test the _increase_pheromone method."""
         # Trainer parameters
         params = {
+            "fitness_func": single_obj_fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": single_obj_fitness_func,
             "initial_pheromone": 2,
             "col_size": 1
         }
 
         # Create the trainer
         trainer = MySinglePheromoneTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the initial pheromone
@@ -303,16 +303,16 @@ class TrainerTester(unittest.TestCase):
         """Test the _update_pheromone method."""
         # Trainer parameters
         params = {
+            "fitness_func": single_obj_fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": single_obj_fitness_func,
             "initial_pheromone": 2,
             "col_size": 1
         }
 
         # Create the trainer
         trainer = MySinglePheromoneTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
 
         # Check the initial pheromone
         pheromone_value = trainer.initial_pheromone[0]
@@ -337,7 +337,7 @@ class TrainerTester(unittest.TestCase):
             np.all(trainer.pheromone[0] == pheromone_value)
         )
 
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
 
         # Check the initial pheromone
@@ -380,15 +380,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes)
         initial_pheromone = [2]
         params = {
+            "fitness_func": single_obj_fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": single_obj_fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = MySinglePheromoneTrainer(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

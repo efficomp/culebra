@@ -26,11 +26,10 @@ import unittest
 
 import numpy as np
 
-from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import ACOTSP
 from culebra.trainer.aco import AgeBasedPACO
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 
 num_nodes = 25
@@ -50,21 +49,21 @@ class TrainerTester(unittest.TestCase):
     def test_init(self):
         """Test __init__`."""
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 1,
             "max_pheromone": 3,
             "heuristic": np.ones((num_nodes, num_nodes)),
             "pheromone_influence": 2,
             "heuristic_influence": 5,
-            "max_num_iters": 123,
             "custom_termination_func": max,
+            "max_num_iters": 123,
             "col_size": 6,
             "pop_size": 5,
             "checkpoint_activation": False,
             "checkpoint_freq": 13,
-            "checkpoint_filename": "my_check" + SERIALIZED_FILE_EXTENSION,
+            "checkpoint_basename": "my_check",
             "verbosity": False,
             "random_seed": 15
         }
@@ -73,9 +72,9 @@ class TrainerTester(unittest.TestCase):
         trainer = AgeBasedPACOTSP(**params)
 
         # Check the parameters
+        self.assertEqual(trainer.fitness_func, params["fitness_func"])
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
         self.assertEqual(trainer.species, params["species"])
-        self.assertEqual(trainer.fitness_function, params["fitness_function"])
         self.assertEqual(
             trainer.initial_pheromone[0], params["initial_pheromone"]
         )
@@ -87,10 +86,10 @@ class TrainerTester(unittest.TestCase):
         self.assertEqual(
             trainer.heuristic_influence[0], params["heuristic_influence"]
         )
-        self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(
             trainer.custom_termination_func, params["custom_termination_func"]
         )
+        self.assertEqual(trainer.max_num_iters, params["max_num_iters"])
         self.assertEqual(trainer.col_size, params["col_size"])
         self.assertEqual(trainer.pop_size, params["pop_size"])
         self.assertEqual(
@@ -98,7 +97,7 @@ class TrainerTester(unittest.TestCase):
         )
         self.assertEqual(trainer.checkpoint_freq, params["checkpoint_freq"])
         self.assertEqual(
-            trainer.checkpoint_filename, params["checkpoint_filename"]
+            trainer.checkpoint_basename, params["checkpoint_basename"]
         )
         self.assertEqual(trainer.verbosity, params["verbosity"])
         self.assertEqual(trainer.random_seed, params["random_seed"])
@@ -110,9 +109,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
@@ -134,9 +133,9 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone,
             "col_size": 1,
@@ -145,7 +144,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = AgeBasedPACOTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
 
         # The initial population should be empty
         trainer._start_iteration()
@@ -196,16 +195,16 @@ class TrainerTester(unittest.TestCase):
         initial_pheromone = 2
         max_pheromone = 3
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone,
             "max_pheromone": max_pheromone
         }
 
         # Create the trainer
         trainer = AgeBasedPACOTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

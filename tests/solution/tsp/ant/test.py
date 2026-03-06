@@ -27,7 +27,7 @@ import unittest
 import numpy as np
 
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 # Default number of nodes
 num_nodes = 25
@@ -37,10 +37,10 @@ species = Species(num_nodes)
 
 # Default fitness function
 optimum_path = np.random.permutation(num_nodes)
-fitness_function = PathLength.from_path(optimum_path)
+fitness_func = PathLength.from_path(optimum_path)
 
 # Default fitness class
-fitness_cls = fitness_function.fitness_cls
+fitness_cls = fitness_func.fitness_cls
 
 
 class AntTester(unittest.TestCase):
@@ -89,7 +89,7 @@ class AntTester(unittest.TestCase):
         # Test repeated nodes, should fail
         for index in indices:
             # Evaluate the ant
-            fitness_function.evaluate(ant)
+            fitness_func.evaluate(ant)
 
             # Check that the ant has been evaluated
             self.assertNotEqual(ant.fitness.values, (None, ))
@@ -114,7 +114,7 @@ class AntTester(unittest.TestCase):
         ant = Ant(species, fitness_cls)
         for index, node in enumerate(indices):
             # Evaluate the ant
-            fitness_function.evaluate(ant)
+            fitness_func.evaluate(ant)
 
             # Append a new node
             ant.append(node)

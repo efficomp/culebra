@@ -24,60 +24,35 @@
 
 .. autoclass:: culebra.trainer.abc.SequentialDistributedTrainer
 
-Class attributes
-----------------
-.. autoattribute:: culebra.trainer.abc.SequentialDistributedTrainer.objective_stats
-.. autoattribute:: culebra.trainer.abc.SequentialDistributedTrainer.stats_names
-
 Class methods
 -------------
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.load
 
 Properties
 ----------
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_activation
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_filename
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.checkpoint_freq
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.container
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.current_iter
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.custom_termination_func
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.fitness_function
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.index
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.fitness_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.iteration_metric_names
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.iteration_obj_stats
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.logbook
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.max_num_iters
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.num_evals
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.num_iters
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.num_representatives
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.num_subtrainers
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.random_seed
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representation_freq
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representation_selection_func
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representation_selection_func_params
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representation_size
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representation_topology_func
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representation_topology_func_params
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representatives
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representatives_exchange_freq
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.representatives_selection_func
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.runtime
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainer_checkpoint_filenames
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainer_cls
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainer_params
 .. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.subtrainers
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.verbosity
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.topology_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer.training_finished
 
 Private properties
 ------------------
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_checkpoint_activation
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_checkpoint_filename
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_checkpoint_freq
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_index
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_max_num_iters
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_num_subtrainers
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_freq
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_selection_func
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_selection_func_params
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_size
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_topology_func
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representation_topology_func_params
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_verbosity
-.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._subtrainer_suffixes
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_num_representatives
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representatives_exchange_freq
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_representatives_selection_func
+.. autoproperty:: culebra.trainer.abc.SequentialDistributedTrainer._default_topology_func
 
 Static methods
 --------------
@@ -86,7 +61,7 @@ Static methods
 
 Methods
 -------
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.best_representatives
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.best_cooperators
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.best_solutions
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.dump
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer.evaluate
@@ -96,26 +71,9 @@ Methods
 
 Private methods
 ---------------
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._default_termination_func
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._do_iteration
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._do_iteration_stats
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._finish_iteration
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._finish_search
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._generate_subtrainers
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._get_state
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._do_training
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._finish_training
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_internals
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_representatives
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_search
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_state
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._load_state
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._new_state
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._postprocess_iteration
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._preprocess_iteration
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_training
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._reset_internals
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._reset_state
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._save_state
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._search
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._set_cooperative_fitness
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._set_state
-.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._start_iteration
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._termination_criterion

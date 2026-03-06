@@ -24,11 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO
 
-Class attributes
-----------------
-.. autoattribute:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.objective_stats
-.. autoattribute:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.stats_names
-
 Class methods
 -------------
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.load
@@ -36,6 +31,7 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_activation
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_basename
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_filename
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.choice_info
@@ -43,18 +39,23 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.col_size
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.container
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.convergence_check_freq
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.cooperative_fitness_estimation_func
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.cooperators
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.current_iter
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.custom_termination_func
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.exploitation_prob
-.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.fitness_function
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.fitness_func
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.heuristic
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.heuristic_influence
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.heuristic_shapes
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.index
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.initial_pheromone
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.iteration_metric_names
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.iteration_obj_stats
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.logbook
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_evals
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_heuristic_matrices
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.num_pheromone_matrices
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.pheromone
@@ -62,19 +63,23 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.pheromone_shapes
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.random_seed
-.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.representatives
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.runtime
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.send_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.solution_cls
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.species
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.state_proxy
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.training_finished
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.verbosity
 
 Private properties
 ------------------
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_activation
-.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_filename
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_basename
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_col_size
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_convergence_check_freq
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_cooperative_fitness_estimation_func
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_exploitation_prob
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_heuristic
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_heuristic_influence
@@ -82,15 +87,19 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_max_num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_pheromone_evaporation_rate
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_receive_representatives_func
+.. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_verbosity
 
 Methods
 -------
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.best_representatives
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.best_cooperators
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.best_solutions
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.dump
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.evaluate
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.integrate_representatives
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.reset
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.select_representatives
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.test
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO.train
 
@@ -102,33 +111,32 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._default_termination_func
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._do_iteration
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._do_iteration_stats
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._do_training
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._finish_iteration
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._finish_search
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._finish_training
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_ant
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_col
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._generate_cooperators
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._get_iteration_metrics
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._get_objective_stats
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._get_state
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._has_converged
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_internals
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_pheromone
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_representatives
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_search
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_state
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._init_training
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._load_state
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._new_state
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._next_choice
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._pheromone_amount
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._postprocess_iteration
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._preprocess_iteration
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._reset_internals
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._reset_state
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._save_state
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._search
-.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._set_cooperative_fitness
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._set_state
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._should_reset_pheromone
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._start_iteration
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._termination_criterion
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._update_elite
+.. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._update_logbook
 .. automethod:: culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._update_pheromone

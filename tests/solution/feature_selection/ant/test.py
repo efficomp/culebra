@@ -32,13 +32,13 @@ import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies
-from culebra.fitness_function.feature_selection import NumFeats
+from culebra.fitness_func.feature_selection import NumFeats
 from culebra.solution.feature_selection import Species, Ant
 
-fitness_function = NumFeats()
+fitness_func = NumFeats()
 """Default fitness function."""
 
-fitness_cls = fitness_function.fitness_cls
+fitness_cls = fitness_func.fitness_cls
 """Default fitness class."""
 
 DEFAULT_NUM_FEATS_VALUES = [10, 100, 1000, 10000]
@@ -233,7 +233,7 @@ class AntTester(unittest.TestCase):
         # Test repeated features, should fail
         for index in indices:
             # Evaluate the ant
-            fitness_function.evaluate(ant)
+            fitness_func.evaluate(ant)
 
             # Check that the ant has been evaluated
             self.assertNotEqual(ant.fitness.values, (None, ))
@@ -259,7 +259,7 @@ class AntTester(unittest.TestCase):
         ant = Ant(species, fitness_cls)
         for index, feature in enumerate(indices):
             # Evaluate the ant
-            fitness_function.evaluate(ant)
+            fitness_func.evaluate(ant)
 
             # Append a new node
             ant.append(feature)

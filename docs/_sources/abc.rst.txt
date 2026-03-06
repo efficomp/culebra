@@ -32,5 +32,5 @@
     species <abc/species>
     solution <abc/solution>
     fitness <abc/fitness>
-    fitness_function <abc/fitness_function>
+    fitness_func <abc/fitness_func>
     trainer <abc/trainer>

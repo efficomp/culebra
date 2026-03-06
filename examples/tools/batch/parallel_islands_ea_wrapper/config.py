@@ -24,16 +24,17 @@ from collections import Counter
 
 from sklearn.neighbors import KNeighborsClassifier
 
-from deap.tools import selTournament
-
 from culebra.solution.feature_selection import Species, IntVector
-from culebra.fitness_function import MultiObjectiveFitnessFunction
-from culebra.fitness_function.feature_selection import (
+from culebra.fitness_func import MultiObjectiveFitnessFunction
+from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
-from culebra.trainer.topology import ring_destinations
-from culebra.trainer.ea import NSGA, HomogeneousParallelIslandsEA
+from culebra.trainer.abc import (
+    ParallelDistributedTrainer,
+    IslandsTrainer
+)
+from culebra.trainer.ea import NSGA
 from culebra.tools import Dataset
 
 
@@ -56,6 +57,11 @@ def KappaNumFeats(
     )
 
 
+# Wrapper
+class Wrapper(ParallelDistributedTrainer, IslandsTrainer):
+    """Parallel implementation of an islands-based trainer."""
+
+
 # Dataset
 dataset = Dataset.load_from_uci(name="Wine")
 
@@ -75,53 +81,57 @@ n_neighbors = 5
 knn_classifier = KNeighborsClassifier(n_neighbors)
 
 # Training fitness function
-training_fitness_function = KappaNumFeats(
+training_fitness_func = KappaNumFeats(
     training_data=training_data, classifier=knn_classifier, cv_folds=5
 )
 
 # Set the training fitness similarity threshold
-training_fitness_function.obj_thresholds = 0.001
+training_fitness_func.obj_thresholds = 0.001
 
 # Untie fitness function to select the best solution
 samples_per_class = Counter(training_data.outputs)
 max_folds = samples_per_class[
     min(samples_per_class, key=samples_per_class.get)
 ]
-untie_best_fitness_function = KappaNumFeats(
+untie_best_fitness_func = KappaNumFeats(
     training_data=training_data,
     classifier=knn_classifier,
     cv_folds=max_folds
 )
 
 # Test fitness function
-test_fitness_function = KappaNumFeats(
+test_fitness_func = KappaNumFeats(
     training_data=training_data, test_data=test_data, classifier=knn_classifier
 )
 
 # Number of islands
 num_subtrainers = cpu_count()
 
-# Parameters for the wrapper
-params = {
+# Subtrainers params
+common_subtrainer_params = {
+    "fitness_func": training_fitness_func,
     "solution_cls": IntVector,
     "species": Species(num_feats=dataset.num_feats, min_size=1),
-    "fitness_function": training_fitness_function,
-    "subtrainer_cls": NSGA,
-    "num_subtrainers": num_subtrainers,
-    "representation_topology_func": ring_destinations,
-    "representation_topology_func_params": {"offset": 1},
-    "representation_selection_func": selTournament,
-    "representation_selection_func_params": {"tournsize": 10},
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
     "gene_ind_mutation_prob": 1.0/dataset.num_feats,
-    "max_num_iters": 100,
     "pop_size": dataset.num_feats,
+    "max_num_iters": 100,
     "checkpoint_activation": False
 }
 
+# Create the subtrainers
+subtrainers = tuple(
+    NSGA(**common_subtrainer_params) for _ in range(num_subtrainers)
+)
+
+# Parameters for the wrapper
+params = {
+    "num_representatives": 3,
+}
+
 # Create the wrapper
-trainer = HomogeneousParallelIslandsEA(**params)
+trainer = Wrapper(*subtrainers, **params)
 
 # Set the number of experiments
 num_experiments = 3

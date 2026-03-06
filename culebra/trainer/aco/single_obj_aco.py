@@ -42,9 +42,9 @@ from culebra.trainer.aco.abc import (
 
 
 __author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
@@ -69,37 +69,34 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
 
     def __init__(
         self,
+        fitness_func: FitnessFunction,
         solution_cls: type[Ant],
         species: Species,
-        fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
         heuristic:
             np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
         pheromone_influence: float | Sequence[float, ...] | None = None,
         heuristic_influence: float | Sequence[float, ...] | None = None,
         exploitation_prob: float | None = None,
+        col_size: int | None = None,
         pheromone_evaporation_rate: float | None = None,
-        max_num_iters: int | None = None,
         custom_termination_func:
             Callable[[AntSystem], bool] | None = None,
-        col_size: int | None = None,
+        max_num_iters: int | None = None,
         checkpoint_activation: bool | None = None,
         checkpoint_freq: int | None = None,
-        checkpoint_filename: str | None = None,
+        checkpoint_basename: str | None = None,
         verbosity: bool | None = None,
         random_seed: int | None = None
     ) -> None:
         r"""Create a new Ant System trainer.
 
+        :param fitness_func: The training fitness function
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param solution_cls: The solution class
         :type solution_cls: type[~culebra.solution.abc.Ant]
-        :param species: The species for all the ants
+        :param species: The species for the solutions
         :type species: ~culebra.abc.Species
-        :param fitness_function: The training fitness function. Since the
-            original Ant System algorithm was proposed to solve
-            single-objective problems, only the first objective of the
-            function is taken into account.
-        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
@@ -140,24 +137,24 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.AntSystem._default_exploitation_prob`
             will be used. Defaults to :data:`None`
         :type exploitation_prob: float
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_col_size` will be
+            used. Defaults to :data:`None`
+        :type col_size: int
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If omitted,
             :attr:`~culebra.trainer.aco.AntSystem._default_pheromone_evaporation_rate`
             will be used. Defaults to :data:`None`
         :type pheromone_evaporation_rate: float
-        :param max_num_iters: Maximum number of iterations. If omitted,
-            :attr:`~culebra.trainer.aco.AntSystem._default_max_num_iters`
-            will be used. Defaults to :data:`None`
-        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If
             omitted,
             :meth:`~culebra.trainer.aco.AntSystem._default_termination_func`
             is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted,
-            :attr:`~culebra.trainer.aco.AntSystem._default_col_size` will be
-            used. Defaults to :data:`None`
-        :type col_size: int
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_max_num_iters`
+            will be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param checkpoint_activation: Checkpoining activation. If omitted,
             :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_activation`
             will be used. Defaults to :data:`None`
@@ -166,10 +163,10 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If omitted,
-            :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_filename`
+        :param checkpoint_basename: The checkpoint base file path. If omitted,
+            :attr:`~culebra.trainer.aco.AntSystem._default_checkpoint_basename`
             will be used. Defaults to :data:`None`
-        :type checkpoint_filename: str
+        :type checkpoint_basename: str
         :param verbosity: The verbosity. If omitted,
             :attr:`~culebra.trainer.aco.AntSystem._default_verbosity`
             will be used. Defaults to :data:`None`
@@ -182,28 +179,28 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
         # Init the superclasses
         SingleObjACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
         )
         PheromoneBasedACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             exploitation_prob=exploitation_prob,
-            pheromone_evaporation_rate=pheromone_evaporation_rate,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
             col_size=col_size,
+            pheromone_evaporation_rate=pheromone_evaporation_rate,
+            custom_termination_func=custom_termination_func,
+            max_num_iters=max_num_iters,
             checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
+            checkpoint_basename=checkpoint_basename,
             verbosity=verbosity,
             random_seed=random_seed
         )
@@ -221,39 +218,36 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
 
     def __init__(
         self,
+        fitness_func: FitnessFunction,
         solution_cls: type[Ant],
         species: Species,
-        fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
         heuristic:
             np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
         pheromone_influence: float | Sequence[float, ...] | None = None,
         heuristic_influence: float | Sequence[float, ...] | None = None,
         exploitation_prob: float | None = None,
+        col_size: int | None = None,
         pheromone_evaporation_rate: float | None = None,
         convergence_check_freq: int | None = None,
         elite_weight: float | None = None,
-        max_num_iters: int | None = None,
         custom_termination_func:
             Callable[[ElitistAntSystem], bool] | None = None,
-        col_size: int | None = None,
+        max_num_iters: int | None = None,
         checkpoint_activation: bool | None = None,
         checkpoint_freq: int | None = None,
-        checkpoint_filename: str | None = None,
+        checkpoint_basename: str | None = None,
         verbosity: bool | None = None,
         random_seed: int | None = None
     ) -> None:
         r"""Create a new Elitist Ant System trainer.
 
+        :param fitness_func: The training fitness function
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param solution_cls: The solution class
         :type solution_cls: type[~culebra.solution.abc.Ant]
-        :param species: The species for all the ants
+        :param species: The species for the solutions
         :type species: ~culebra.abc.Species
-        :param fitness_function: The training fitness function. Since the
-            original Ant System algorithm was proposed to solve
-            single-objective problems, only the first objective of the
-            function is taken into account.
-        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
@@ -294,6 +288,10 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.ElitistAntSystem._default_exploitation_prob`
             will be used. Defaults to :data:`None`
         :type exploitation_prob: float
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_col_size`
+            will be used. Defaults to :data:`None`
+        :type col_size: int
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If omitted,
             :attr:`~culebra.trainer.aco.ElitistAntSystem._default_pheromone_evaporation_rate`
@@ -309,19 +307,15 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.ElitistAntSystem._default_elite_weight`
             will be used. Defaults to :data:`None`
         :type elite_weight: float
-        :param max_num_iters: Maximum number of iterations. If omitted,
-            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_max_num_iters`
-            will be used. Defaults to :data:`None`
-        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If
             omitted,
             :meth:`~culebra.trainer.aco.ElitistAntSystem._default_termination_func`
             is used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted,
-            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_col_size`
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_max_num_iters`
             will be used. Defaults to :data:`None`
-        :type col_size: int
+        :type max_num_iters: int
         :param checkpoint_activation: Checkpoining activation. If omitted,
             :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_activation`
             will be used. Defaults to :data:`None`
@@ -330,10 +324,10 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If omitted,
-            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_filename`
+        :param checkpoint_basename: The checkpoint base file path. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistAntSystem._default_checkpoint_basename`
             will be used. Defaults to :data:`None`
-        :type checkpoint_filename: str
+        :type checkpoint_basename: str
         :param verbosity: The verbosity. If omitted,
             :attr:`~culebra.trainer.aco.ElitistAntSystem._default_verbosity`
             will be used. Defaults to :data:`None`
@@ -346,29 +340,29 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
         # Init the superclasses
         SingleObjACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
         )
         ReseteablePheromoneBasedACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             exploitation_prob=exploitation_prob,
+            col_size=col_size,
             pheromone_evaporation_rate=pheromone_evaporation_rate,
             convergence_check_freq=convergence_check_freq,
-            max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            col_size=col_size,
+            max_num_iters=max_num_iters,
             checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
+            checkpoint_basename=checkpoint_basename,
             verbosity=verbosity,
             random_seed=random_seed
         )
@@ -400,7 +394,11 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
         :raises TypeError: If *weight* is not a real number
         :raises ValueError: If *weight* is outside [0, 1]
         """
-        return self._elite_weight
+        return (
+            self._default_elite_weight
+            if self._elite_weight is None
+            else self._elite_weight
+        )
 
     @elite_weight.setter
     def elite_weight(self, weight: float | None) -> None:
@@ -415,8 +413,7 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
         """
         # Check prob
         self._elite_weight = (
-            self._default_elite_weight
-            if weight is None
+            None if weight is None
             else check_float(weight, "elite weigth", ge=0, le=1)
         )
 
@@ -447,39 +444,36 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
 
     def __init__(
         self,
+        fitness_func: FitnessFunction,
         solution_cls: type[Ant],
         species: Species,
-        fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...],
         heuristic:
             np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
         pheromone_influence: float | Sequence[float, ...] | None = None,
         heuristic_influence: float | Sequence[float, ...] | None = None,
         exploitation_prob: float | None = None,
+        col_size: int | None = None,
         pheromone_evaporation_rate: float | None = None,
         iter_best_use_limit: int| None = None,
         convergence_check_freq: int | None = None,
-        max_num_iters: int | None = None,
         custom_termination_func:
             Callable[[MMAS], bool] | None = None,
-        col_size: int | None = None,
+        max_num_iters: int | None = None,
         checkpoint_activation: bool | None = None,
         checkpoint_freq: int | None = None,
-        checkpoint_filename: str | None = None,
+        checkpoint_basename: str | None = None,
         verbosity: bool | None = None,
         random_seed: int | None = None
     ) -> None:
         r"""Create a new :math:`{\small \mathcal{MAX}{-}\mathcal{MIN}}` AS trainer.
 
+        :param fitness_func: The training fitness function
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param solution_cls: The solution class
         :type solution_cls: type[~culebra.solution.abc.Ant]
-        :param species: The species for all the ants
+        :param species: The species for the solutions
         :type species: ~culebra.abc.Species
-        :param fitness_function: The training fitness function. Since the
-            original Ant System algorithm was proposed to solve
-            single-objective problems, only the first objective of the
-            function is taken into account.
-        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
@@ -520,6 +514,10 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.MMAS._default_exploitation_prob`
             will be used. Defaults to :data:`None`
         :type exploitation_prob: float
+        :param col_size: The colony size. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_col_size` will be
+            used. Defaults to :data:`None`
+        :type col_size: int
         :param pheromone_evaporation_rate: Pheromone evaluation rate
             (:math:`{\rho}`). If omitted,
             :attr:`~culebra.trainer.aco.MMAS._default_pheromone_evaporation_rate`
@@ -536,19 +534,15 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.MMAS._default_convergence_check_freq`
             will be used. Defaults to :data:`None`
         :type convergence_check_freq: int
-        :param max_num_iters: Maximum number of iterations. If omitted,
-            :attr:`~culebra.trainer.aco.MMAS._default_max_num_iters`
-            will be used. Defaults to :data:`None`
-        :type max_num_iters: int
         :param custom_termination_func: Custom termination criterion. If
             omitted,
             :meth:`~culebra.trainer.aco.MMAS._default_termination_func` is
             used. Defaults to :data:`None`
         :type custom_termination_func: ~collections.abc.Callable
-        :param col_size: The colony size. If omitted,
-            :attr:`~culebra.trainer.aco.MMAS._default_col_size` will be
-            used. Defaults to :data:`None`
-        :type col_size: int
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_max_num_iters`
+            will be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param checkpoint_activation: Checkpoining activation. If omitted,
             :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_activation`
             will be used. Defaults to :data:`None`
@@ -557,10 +551,10 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
             :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If omitted,
-            :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_filename`
+        :param checkpoint_basename: The checkpoint base file path. If omitted,
+            :attr:`~culebra.trainer.aco.MMAS._default_checkpoint_basename`
             will be used. Defaults to :data:`None`
-        :type checkpoint_filename: str
+        :type checkpoint_basename: str
         :param verbosity: The verbosity. If omitted,
             :attr:`~culebra.trainer.aco.MMAS._default_verbosity`
             will be used. Defaults to :data:`None`
@@ -573,29 +567,29 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         # Init the superclasses
         SingleObjACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
         )
         ReseteablePheromoneBasedACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             exploitation_prob=exploitation_prob,
+            col_size=col_size,
             pheromone_evaporation_rate=pheromone_evaporation_rate,
             convergence_check_freq=convergence_check_freq,
-            max_num_iters=max_num_iters,
             custom_termination_func=custom_termination_func,
-            col_size=col_size,
+            max_num_iters=max_num_iters,
             checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
+            checkpoint_basename=checkpoint_basename,
             verbosity=verbosity,
             random_seed=random_seed
         )
@@ -630,7 +624,11 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         :raises TypeError: If *value* is not an integer number
         :raises ValueError: If *value* is non-positive
         """
-        return self._iter_best_use_limit
+        return (
+            self._default_iter_best_use_limit
+            if self._iter_best_use_limit is None
+            else self._iter_best_use_limit
+        )
 
     @iter_best_use_limit.setter
     def iter_best_use_limit(self, value: int | None) -> None:
@@ -648,7 +646,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
         """
         # Check the value
         self._iter_best_use_limit = (
-            self._default_iter_best_use_limit if value is None else check_int(
+            None if value is None else check_int(
                 value, "iteration-best use limit", gt=0
             )
         )
@@ -834,10 +832,10 @@ class AgeBasedPACO(SingleObjPACO):
     """Single-objective PACO with an age-based population update strategy."""
 
     def _init_internals(self) -> None:
-        """Set up the trainer internal data structures to start searching.
+        """Set up the trainer internal data structures to start training.
 
         Create all the internal objects, functions and data structures needed
-        to run the search process. For the
+        to run the training process. For the
         :class:`~culebra.trainer.aco.AgeBasedPACO` class, the youngest
         ant index is created. Subclasses which need more objects or data
         structures should override this method.

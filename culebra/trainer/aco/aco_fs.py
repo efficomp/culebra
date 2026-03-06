@@ -40,9 +40,9 @@ from culebra.trainer.aco.abc import (
 
 
 __author__ = 'Jesús González & Alberto Ortega'
-__copyright__ = 'Copyright 2025, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es & aoruiz@ugr.es'
 __status__ = 'Development'
@@ -104,34 +104,34 @@ class PACOFS(
 
     def __init__(
         self,
+        fitness_func: FitnessFunction,
         solution_cls: type[Ant],
         species: Species,
-        fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...] | None = None,
         heuristic:
             np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
         pheromone_influence: float | Sequence[float, ...] | None = None,
         heuristic_influence: float | Sequence[float, ...] | None = None,
         exploitation_prob: float | None = None,
-        max_num_iters: int | None = None,
-        custom_termination_func: Callable[[PACOFS], bool] | None = None,
         col_size: int | None = None,
         pop_size: int | None = None,
         discard_prob: float | None = None,
+        custom_termination_func: Callable[[PACOFS], bool] | None = None,
+        max_num_iters: int | None = None,
         checkpoint_activation: bool | None = None,
         checkpoint_freq: int | None = None,
-        checkpoint_filename: str | None = None,
+        checkpoint_basename: str | None = None,
         verbosity: bool | None = None,
         random_seed: int | None = None
     ) -> None:
         r"""Create a new population-based ACO-FS trainer.
 
+        :param fitness_func: The training fitness function
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param solution_cls: The solution class
         :type solution_cls: type[~culebra.solution.feature_selection.Ant]
-        :param species: The species for all the ants
+        :param species: The species for the solutions
         :type species: ~culebra.solution.feature_selection.Species
-        :param fitness_function: The training fitness function
-        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
@@ -174,15 +174,6 @@ class PACOFS(
             :attr:`~culebra.trainer.aco.PACOFS._default_exploitation_prob`
             will be used. Defaults to :data:`None`
         :type exploitation_prob: float
-        :param max_num_iters: Maximum number of iterations. If omitted,
-            :attr:`~culebra.trainer.aco.PACOFS._default_max_num_iters`
-            will be used. Defaults to :data:`None`
-        :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If
-            omitted,
-            :meth:`~culebra.trainer.aco.PACOFS._default_termination_func` is
-            used. Defaults to :data:`None`
-        :type custom_termination_func: ~collections.abc.Callable
         :param col_size: The colony size. If omitted,
             :attr:`~culebra.trainer.aco.PACOFS._default_col_size` will be
             used. Defaults to :data:`None`
@@ -196,6 +187,15 @@ class PACOFS(
             :attr:`~culebra.trainer.aco.PACOFS._default_discard_prob` is used.
             Defaults to :data:`None`
         :type discard_prob: float
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.PACOFS._default_termination_func` is
+            used. Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.PACOFS._default_max_num_iters`
+            will be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param checkpoint_activation: Checkpoining activation. If omitted,
             :attr:`~culebra.trainer.aco.PACOFS._default_checkpoint_activation`
             will be used. Defaults to :data:`None`
@@ -204,10 +204,10 @@ class PACOFS(
             :attr:`~culebra.trainer.aco.PACOFS._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If omitted,
-            :attr:`~culebra.trainer.aco.PACOFS._default_checkpoint_filename`
+        :param checkpoint_basename: The checkpoint base file path. If omitted,
+            :attr:`~culebra.trainer.aco.PACOFS._default_checkpoint_basename`
             will be used. Defaults to :data:`None`
-        :type checkpoint_filename: str
+        :type checkpoint_basename: str
         :param verbosity: The verbosity. If omitted,
             :attr:`~culebra.trainer.aco.PACOFS._default_verbosity`
             will be used. Defaults to :data:`None`
@@ -220,29 +220,29 @@ class PACOFS(
         # Init the superclasses
         ACOFS.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             discard_prob=discard_prob
         )
         PACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             exploitation_prob=exploitation_prob,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
             col_size=col_size,
             pop_size=pop_size,
+            custom_termination_func=custom_termination_func,
+            max_num_iters=max_num_iters,
             checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
+            checkpoint_basename=checkpoint_basename,
             verbosity=verbosity,
             random_seed=random_seed
         )
@@ -252,7 +252,7 @@ class PACOFS(
         """Update the population."""
         # Update the population according to the NSGA-II selection
         # procedure
-        self.pop[:] = selNSGA2(self.pop[:] + self.col, self.pop_size)
+        self.pop[:] = selNSGA2(self.pop + self.col, self.pop_size)
 
     def _pheromone_amount (self, ant: Ant) -> tuple[float, ...]:
         """Return the amount of pheromone to be deposited by an ant.
@@ -298,33 +298,33 @@ class ElitistACOFS(
 
     def __init__(
         self,
+        fitness_func: FitnessFunction,
         solution_cls: type[Ant],
         species: Species,
-        fitness_function: FitnessFunction,
         initial_pheromone: float | Sequence[float, ...] | None = None,
         heuristic:
             np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
         pheromone_influence: float | Sequence[float, ...] | None = None,
         heuristic_influence: float | Sequence[float, ...] | None = None,
         exploitation_prob: float | None = None,
-        max_num_iters: int | None = None,
-        custom_termination_func: Callable[[ElitistACOFS], bool] | None = None,
         col_size: int | None = None,
         discard_prob: float | None = None,
+        custom_termination_func: Callable[[ElitistACOFS], bool] | None = None,
+        max_num_iters: int | None = None,
         checkpoint_activation: bool | None = None,
         checkpoint_freq: int | None = None,
-        checkpoint_filename: str | None = None,
+        checkpoint_basename: str | None = None,
         verbosity: bool | None = None,
         random_seed: int | None = None
     ) -> None:
         r"""Create a new elitist ACO-FS trainer.
 
+        :param fitness_func: The training fitness function
+        :type fitness_func: ~culebra.abc.FitnessFunction
         :param solution_cls: The solution class
         :type solution_cls: type[~culebra.solution.feature_selection.Ant]
-        :param species: The species for all the ants
+        :param species: The species for the solutions
         :type species: ~culebra.solution.feature_selection.Species
-        :param fitness_function: The training fitness function
-        :type fitness_function: ~culebra.abc.FitnessFunction
         :param initial_pheromone: Initial amount of pheromone for the paths
             of each pheromone matrix. Both a scalar value or a sequence of
             values are allowed. If a scalar value is provided, it will be used
@@ -367,15 +367,6 @@ class ElitistACOFS(
             :attr:`~culebra.trainer.aco.ElitistACOFS._default_exploitation_prob`
             will be used. Defaults to :data:`None`
         :type exploitation_prob: float
-        :param max_num_iters: Maximum number of iterations. If omitted,
-            :attr:`~culebra.trainer.aco.ElitistACOFS._default_max_num_iters`
-            will be used. Defaults to :data:`None`
-        :type max_num_iters: int
-        :param custom_termination_func: Custom termination criterion. If
-            omitted,
-            :meth:`~culebra.trainer.aco.ElitistACOFS._default_termination_func`
-            is used. Defaults to :data:`None`
-        :type custom_termination_func: ~collections.abc.Callable
         :param col_size: The colony size. If omitted,
             :attr:`~culebra.trainer.aco.ElitistACOFS._default_col_size` will be
             used. Defaults to :data:`None`
@@ -385,6 +376,15 @@ class ElitistACOFS(
             :attr:`~culebra.trainer.aco.ElitistACOFS._default_discard_prob` is
             used. Defaults to :data:`None`
         :type discard_prob: float
+        :param custom_termination_func: Custom termination criterion. If
+            omitted,
+            :meth:`~culebra.trainer.aco.ElitistACOFS._default_termination_func`
+            is used. Defaults to :data:`None`
+        :type custom_termination_func: ~collections.abc.Callable
+        :param max_num_iters: Maximum number of iterations. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistACOFS._default_max_num_iters`
+            will be used. Defaults to :data:`None`
+        :type max_num_iters: int
         :param checkpoint_activation: Checkpoining activation. If omitted,
             :attr:`~culebra.trainer.aco.ElitistACOFS._default_checkpoint_activation`
             will be used. Defaults to :data:`None`
@@ -393,10 +393,10 @@ class ElitistACOFS(
             :attr:`~culebra.trainer.aco.ElitistACOFS._default_checkpoint_freq`
             will be used. Defaults to :data:`None`
         :type checkpoint_freq: int
-        :param checkpoint_filename: The checkpoint file path. If omitted,
-            :attr:`~culebra.trainer.aco.ElitistACOFS._default_checkpoint_filename`
+        :param checkpoint_basename: The checkpoint base file path. If omitted,
+            :attr:`~culebra.trainer.aco.ElitistACOFS._default_checkpoint_basename`
             will be used. Defaults to :data:`None`
-        :type checkpoint_filename: str
+        :type checkpoint_basename: str
         :param verbosity: The verbosity. If omitted,
             :attr:`~culebra.trainer.aco.ElitistACOFS._default_verbosity`
             will be used. Defaults to :data:`None`
@@ -409,31 +409,55 @@ class ElitistACOFS(
         # Init the superclasses
         ACOFS.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             discard_prob=discard_prob
         )
         ElitistACO.__init__(
             self,
+            fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
-            fitness_function=fitness_function,
             initial_pheromone=initial_pheromone,
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             exploitation_prob=exploitation_prob,
-            max_num_iters=max_num_iters,
-            custom_termination_func=custom_termination_func,
             col_size=col_size,
+            custom_termination_func=custom_termination_func,
+            max_num_iters=max_num_iters,
             checkpoint_activation=checkpoint_activation,
             checkpoint_freq=checkpoint_freq,
-            checkpoint_filename=checkpoint_filename,
+            checkpoint_basename=checkpoint_basename,
             verbosity=verbosity,
             random_seed=random_seed
         )
+
+    def _init_internals(self) -> None:
+        """Set up the trainer internal data structures to start training.
+
+        Create all the internal objects, functions and data structures needed
+        to run the training process. For the
+        :class:`~culebra.trainer.aco.ElitistACOFS` class, the pheromone
+        matrices are created and also the choice info matrix is calculated.
+        Subclasses which need more objects or data structures should override
+        this method.
+        """
+        super()._init_internals()
+        self._init_pheromone()
+
+    def _reset_internals(self) -> None:
+        """Reset the internal structures of the trainer.
+
+        Overridden to reset the pheromone matrices. If subclasses overwrite
+        the :meth:`~culebra.trainer.aco.ElitistACOFS._init_internals` method
+        to add any new internal object, this method should also be overridden
+        to reset all the internal objects of the trainer.
+        """
+        super()._reset_internals()
+        self._pheromone = None
 
     def _set_state(self, state: dict[str, Any]) -> None:
         """Set the state of this trainer.
@@ -460,7 +484,7 @@ class ElitistACOFS(
         self._update_pheromone()
 
     def _do_iteration(self) -> None:
-        """Implement an iteration of the search process."""
+        """Implement an iteration of the training process."""
         # Create the ant colony and the ants' paths
         self._generate_col()
 

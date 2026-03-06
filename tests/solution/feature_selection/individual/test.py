@@ -33,7 +33,7 @@ from pandas import DataFrame
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import Species as BaseSpecies
-from culebra.fitness_function.feature_selection import NumFeats
+from culebra.fitness_func.feature_selection import NumFeats
 from culebra.solution.abc import Individual
 from culebra.solution.feature_selection import (
     Solution,
@@ -57,7 +57,7 @@ DEFAULT_MUT_PROB_VALUES = [0.00, 0.25, 0.50, 0.75, 1.00]
 DEFAULT_TIMES = 1000
 """Default value for the number of times an implementation is run."""
 
-fitness_function = NumFeats()
+fitness_func = NumFeats()
 
 
 class IndividualTester(unittest.TestCase):
@@ -68,7 +68,7 @@ class IndividualTester(unittest.TestCase):
     :class:`~culebra.solution.abc.Individual`
     """
 
-    individual_cls = Solution
+    individual_cls = Individual
     """Feature selector implementation class that will be tested."""
 
     num_feats_values = DEFAULT_NUM_FEATS_VALUES
@@ -134,7 +134,7 @@ class IndividualTester(unittest.TestCase):
 
         # Check the type of arguments
         with self.assertRaises(TypeError):
-            self.individual_cls(BaseSpecies(), fitness_function.fitness_cls)
+            self.individual_cls(BaseSpecies(), fitness_func.fitness_cls)
         with self.assertRaises(TypeError):
             self.individual_cls(Species(num_feats=10), Species)
 
@@ -151,7 +151,7 @@ class IndividualTester(unittest.TestCase):
                     self.__check_correctness(
                         self.individual_cls(
                             species,
-                            fitness_function.fitness_cls
+                            fitness_func.fitness_cls
                         )
                     )
 
@@ -179,11 +179,11 @@ class IndividualTester(unittest.TestCase):
                     # Generate the two parents
                     parent1 = self.individual_cls(
                         species,
-                        fitness_function.fitness_cls
+                        fitness_func.fitness_cls
                     )
                     parent2 = self.individual_cls(
                         species,
-                        fitness_function.fitness_cls
+                        fitness_func.fitness_cls
                     )
 
                     # Cross the two parents
@@ -213,15 +213,14 @@ class IndividualTester(unittest.TestCase):
                 species = Species.from_proportion(num_feats, prop)
                 # Generate a feature selector
                 individual = self.individual_cls(
-                    species, fitness_function.fitness_cls
+                    species, fitness_func.fitness_cls
                 )
 
                 # For each possible value of the independent mutation
                 # probability
                 for mut_prob in self.mut_prob_values:
                     # Execute the mutation function the given number of times
-                    for _ in repeat(
-                            None, self.times):
+                    for _ in repeat(None, self.times):
                         # Mutate the feature selector
                         mutant, = individual.mutate(mut_prob)
                         # Check that the mutant meets the species constraints
@@ -237,7 +236,7 @@ class IndividualTester(unittest.TestCase):
         species = Species(num_feats)
         individual = self.individual_cls(
             species,
-            fitness_function.fitness_cls
+            fitness_func.fitness_cls
         )
         self.assertIsInstance(repr(individual), str)
         self.assertIsInstance(str(individual), str)
@@ -250,7 +249,7 @@ class IndividualTester(unittest.TestCase):
               'dump and load methods ...', end=' ')
         num_feats = 10
         species = Species(num_feats)
-        ind1 = self.individual_cls(species, fitness_function.fitness_cls)
+        ind1 = self.individual_cls(species, fitness_func.fitness_cls)
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         ind1.dump(serialized_filename)
         ind2 = self.individual_cls.load(serialized_filename)
@@ -371,6 +370,9 @@ class IndividualTester(unittest.TestCase):
             :class:`~culebra.solution.feature_selection.Solution` and
             :class:`~culebra.solution.abc.Individual`
         """
+        # Checks the validity of individual
+        self.assertTrue(individual.species.is_member(individual))
+
         # Checks that feature selector's size is lower than or equal to the
         # maximum allowed size fixed in its species
         self.assertLessEqual(
@@ -401,33 +403,29 @@ class IndividualTester(unittest.TestCase):
                 f'Individual max feat: {individual.max_feat} '
                 f'Species max feat: {individual.species.max_feat}')
 
-    @staticmethod
-    def __runtime(func, times=DEFAULT_TIMES, *args, **kwargs):
-        """Estimate the __runtime of a function.
+    def __runtime(self, func, *args, **kwargs):
+        """Estimate the runtime of a function.
 
-        :param func: The function whose __runtime will be estimated
+        :param func: The function whose runtime will be estimated
         :type func: ~collections.abc.Callable
-        :param times: Number of execution times for func, defaults to
-            :attr:`DEFAULT_TIMES`
-        :type times: int
         :param args: Unnamed arguments for *func*
         :type args: tuple
         :param kwargs: Named arguments for func
         :type kwargs: dict
-        :return: Total __runtime of all the executions of the function
+        :return: Total runtime of all the executions of the function
         :rtype: float
         """
         # Measure time just before executing the function
         start_time = perf_counter()
 
         # Execute the function the given number of times
-        for _ in repeat(None, times):
+        for _ in repeat(None, self.times):
             func(*args, **kwargs)
 
         # Measure time just after finishing the execution
         end_time = perf_counter()
 
-        # Return the total __runtime
+        # Return the total runtime
         return end_time - start_time
 
     def __constructor_scalability(self):
@@ -452,16 +450,15 @@ class IndividualTester(unittest.TestCase):
         for num_feats in self.num_feats_values:
             # Initialize the runtime accumulator
             runtime = 0
-            # Accumulate __runtimes for the different proportions ...
+            # Accumulate runtimes for the different proportions ...
             for prop in self.prop_values:
                 # Create the species from num_feats and prop
                 species = Species.from_proportion(num_feats, prop)
                 # Obtain the average execution time
                 runtime += self.__runtime(
                     self.individual_cls,
-                    self.times,
                     species=species,
-                    fitness_cls=fitness_function.fitness_cls
+                    fitness_cls=fitness_func.fitness_cls
                 )
             # Store it
             runtimes.append(runtime / (self.times * len(self.prop_values)))
@@ -498,16 +495,16 @@ class IndividualTester(unittest.TestCase):
                 # Generate the two parents
                 parent1 = self.individual_cls(
                     species,
-                    fitness_function.fitness_cls
+                    fitness_func.fitness_cls
                 )
                 parent2 = self.individual_cls(
                     species,
-                    fitness_function.fitness_cls
+                    fitness_func.fitness_cls
                 )
                 # Obtain the average execution time
                 runtime += self.__runtime(
-                    self.individual_cls.crossover,
-                    self.times, parent1, parent2)
+                    self.individual_cls.crossover, parent1, parent2
+                )
             # Store it
             runtimes.append(runtime / (self.times * len(self.prop_values)))
 
@@ -541,15 +538,14 @@ class IndividualTester(unittest.TestCase):
                 species = Species.from_proportion(num_feats, prop)
                 # Generate a feature selector
                 individual = self.individual_cls(
-                    species, fitness_function.fitness_cls
+                    species, fitness_func.fitness_cls
                 )
                 # For each possible value of the mutation probability
                 for mut_prob in self.mut_prob_values:
                     # Obtain the average execution time
                     runtime += self.__runtime(
-                        self.individual_cls.mutate,
-                        self.times,
-                        individual, mut_prob)
+                        self.individual_cls.mutate, individual, mut_prob
+                    )
             # Store it
             runtimes.append(runtime / (self.times * len(self.prop_values) *
                                        len(self.mut_prob_values)))

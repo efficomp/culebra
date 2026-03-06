@@ -31,7 +31,7 @@ from culebra.solution.feature_selection import (
     Species,
     BitVector as Individual
 )
-from culebra.fitness_function.feature_selection import KappaIndex
+from culebra.fitness_func.feature_selection import KappaIndex
 from culebra.tools import Dataset
 
 
@@ -49,9 +49,9 @@ class TrainerTester(unittest.TestCase):
         """Test __init__."""
         # Trainer parameters
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset)
+            "species": Species(dataset.num_feats)
         }
 
         # Create the trainer
@@ -65,9 +65,9 @@ class TrainerTester(unittest.TestCase):
         """Test elite_size."""
         # Trainer parameters
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
-            "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset)
+            "species": Species(dataset.num_feats)
         }
 
         # Create the trainer
@@ -94,9 +94,9 @@ class TrainerTester(unittest.TestCase):
         """Test the get_state and _set_state methods."""
         # Trainer parameters
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset),
             "pop_size": 1000,
             "elite_size": 13
         }
@@ -126,9 +126,9 @@ class TrainerTester(unittest.TestCase):
         """Test _new_state."""
         # Trainer parameters
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset),
             "pop_size": 100,
             "verbosity": False
         }
@@ -150,9 +150,9 @@ class TrainerTester(unittest.TestCase):
         """Test _reset_state."""
         # Trainer parameters
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset),
             "pop_size": 100,
             "verbosity": False
         }
@@ -173,16 +173,16 @@ class TrainerTester(unittest.TestCase):
     def test_do_iteration(self):
         """Test _do_iteration."""
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
         trainer = ElitistEA(**params)
 
-        # Init the search process
-        trainer._init_search()
+        # Init the training process
+        trainer._init_training()
 
         # Do an iteration
         pop_size_before = len(trainer.pop)
@@ -193,14 +193,14 @@ class TrainerTester(unittest.TestCase):
     def test_repr(self):
         """Test the repr and str dunder methods."""
         params = {
+            "fitness_func": KappaIndex(dataset),
             "solution_cls": Individual,
             "species": Species(dataset.num_feats),
-            "fitness_function": KappaIndex(dataset),
             "checkpoint_activation": False,
             "verbosity": False
         }
         trainer = ElitistEA(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 

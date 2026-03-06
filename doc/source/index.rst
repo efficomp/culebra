@@ -28,45 +28,15 @@ Welcome to culebra's documentation!
 
 Attributes:
 -----------
-.. attribute:: DEFAULT_CHECKPOINT_BASENAME
-     :annotation: = 'checkpoint'
-
-     Default basename for checkpointing files.
-
-.. attribute:: DEFAULT_CHECKPOINT_ACTIVATION
-    :annotation: = True
-
-    Default checkpointing activation for a :class:`~culebra.abc.Trainer`.
-
-.. attribute:: DEFAULT_CHECKPOINT_FILENAME
-    :annotation: = 'checkpoint.dill.gz'
-
-    Default checkpointing file name for a :class:`~culebra.abc.Trainer`.
-
-.. attribute:: DEFAULT_CHECKPOINT_FREQ
-    :annotation: = 10
-
-    Default checkpointing frequency for a :class:`~culebra.abc.Trainer`.
-
 .. attribute:: DEFAULT_INDEX
     :annotation: = 0
 
     Default index.
 
-.. attribute:: DEFAULT_MAX_NUM_ITERS
-    :annotation: = 100
-
-    Default maximum number of iterations.
-
 .. attribute:: DEFAULT_SIMILARITY_THRESHOLD
     :annotation: = 0.0
 
     Default similarity threshold for fitnesses.
-
-.. attribute:: DEFAULT_VERBOSITY
-    :annotation: = True
-
-    Default verbosity for a :class:`~culebra.abc.Trainer`.
 
 .. attribute:: SERIALIZED_FILE_EXTENSION
     :annotation: = '.dill.gz'
@@ -103,6 +73,6 @@ References
     abc <abc>
     checker <checker>
     solution <solution>
-    fitness_function <fitness_function>
+    fitness_func <fitness_func>
     trainer <trainer>
     tools <tools>

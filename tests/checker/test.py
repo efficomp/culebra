@@ -36,7 +36,7 @@ from culebra.checker import (
     check_instance,
     check_subclass,
     check_func,
-    check_func_params,
+    check_params,
     check_sequence,
     check_filename,
     check_matrix
@@ -194,23 +194,23 @@ class TypeCheckerTester(unittest.TestCase):
         for value in valid_values:
             self.assertEqual(check_func(value, "name"), value)
 
-    def test_check_func_params(self):
-        """Test :func:`culebra.checker.check_func_params`."""
+    def test_check_params(self):
+        """Test :func:`culebra.checker.check_params`."""
         # Check invalid types. Should fail
         invalid_values = ('a', 1.5, 1)
         for value in invalid_values:
             with self.assertRaises(TypeError):
-                check_func_params(value, "name")
+                check_params(value, "name")
 
         # Check invalid keys. Should fail
         invalid_values = ({1: 1}, {'a': 1, 2: 2})
         for value in invalid_values:
             with self.assertRaises(ValueError):
-                check_func_params(value, "name")
+                check_params(value, "name")
 
         valid_values = ({'a': 1}, {'a': 1, 'b': 2})
         for value in valid_values:
-            self.assertEqual(check_func_params(value, "name"), value)
+            self.assertEqual(check_params(value, "name"), value)
 
     def test_check_sequence(self):
         """Test :func:`culebra.checker.check_sequence`."""

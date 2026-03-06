@@ -33,9 +33,9 @@ from culebra.abc import Base
 class BaseSubclass(Base):
     """Base for all classes in culebra."""
 
-    def __init__(self, my_list=[]):
+    def __init__(self, my_list=None):
         """Construct a base object."""
-        self.my_list = my_list
+        self.my_list = ([] if my_list is None else my_list)
 
     @property
     def my_list(self):
@@ -67,7 +67,7 @@ class BaseTester(unittest.TestCase):
         self.assertNotEqual(id(base1), id(base2))
 
         # The objects attributes are shared
-        self.assertEqual(id(base1._my_list), id(base2._my_list))
+        self.assertEqual(id(base1.my_list), id(base2.my_list))
 
     def test_deepcopy(self):
         """Test the :meth:`~culebra.abc.Base.__deepcopy__` method."""
@@ -117,10 +117,10 @@ class BaseTester(unittest.TestCase):
         """
         # Copies all the levels
         self.assertTrue(obj1.__class__, obj2.__class__)
-        self.assertNotEqual(id(obj1), id(obj2))
-        self.assertNotEqual(id(obj1._my_list), id(obj2._my_list))
-        for list1, list2 in zip(obj1._my_list, obj2._my_list):
-            self.assertNotEqual(id(list1), id(list2))
+        self.assertTrue(obj1 is not obj2)
+        self.assertTrue(obj1.my_list is not obj2.my_list)
+        for list1, list2 in zip(obj1.my_list, obj2.my_list):
+            self.assertTrue(list1 is not list2)
             for value1, value2 in zip(list1, list2):
                 self.assertEqual(value1, value2)
 

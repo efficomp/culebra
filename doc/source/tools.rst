@@ -31,7 +31,7 @@ Attributes
 
     Default significance level for statistical tests.
 
-.. attribute:: DEFAULT_BATCH_STATS_FUNCTIONS
+.. attribute:: DEFAULT_BATCH_STATS_FUNCS
     :annotation: = {'Avg': <function NDFrame._add_numeric_operations.<locals>.mean>, 'Max': <function NDFrame._add_numeric_operations.<locals>.max>, 'Min': <function NDFrame._add_numeric_operations.<locals>.min>, 'Std': <function NDFrame._add_numeric_operations.<locals>.std>}
 
     Default statistics calculated for the results gathered from all the
@@ -42,7 +42,7 @@ Attributes
 
     Default file name for configuration files.
 
-.. attribute:: DEFAULT_FEATURE_METRIC_FUNCTIONS
+.. attribute:: DEFAULT_FEATURE_METRIC_FUNCS
     :annotation: = {'Rank': <function Metrics.rank>, 'Relevance': <function Metrics.relevance>}
 
     Default metrics calculated for the features in the set of solutions.
@@ -92,7 +92,7 @@ Attributes
 
     Default number of neighbors for :class:`~imblearn.over_sampling.SMOTE`.
 
-.. attribute:: DEFAULT_STATS_FUNCTIONS
+.. attribute:: DEFAULT_STATS_FUNCS
     :annotation: = {'Avg': <function mean>, 'Max': <function amax>, 'Min': <function amin>, 'Std': <function std>}
 
     Default statistics calculated for the results.

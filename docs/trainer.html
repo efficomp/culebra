@@ -8,14 +8,14 @@
     <title>culebra.trainer module &#8212; culebra</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
-    <script src="_static/documentation_options.js?v=c87aa342"></script>
+    <script src="_static/documentation_options.js?v=2bd037f0"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="culebra.trainer.abc module" href="trainer/abc.html" />
-    <link rel="prev" title="culebra.fitness_function.tsp.MultiObjectivePathLength class" href="fitness_function/tsp/multi_objective_path_length.html" /> 
+    <link rel="prev" title="culebra.fitness_func.tsp.MultiObjectivePathLength class" href="fitness_func/tsp/multi_objective_path_length.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
@@ -30,7 +30,7 @@
           <a href="trainer/abc.html" title="culebra.trainer.abc module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fitness_function/tsp/multi_objective_path_length.html" title="culebra.fitness_function.tsp.MultiObjectivePathLength class"
+          <a href="fitness_func/tsp/multi_objective_path_length.html" title="culebra.fitness_func.tsp.MultiObjectivePathLength class"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a></li> 
@@ -58,59 +58,64 @@ topologies for distributed trainers.</p></li>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC">
-<span class="sig-name descname"><span class="pre">DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">full_connected_destinations&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_CHECKPOINT_ACTIVATION">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_ACTIVATION</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_CHECKPOINT_ACTIVATION" title="Link to this definition">¶</a></dt>
+<dd><p>Default checkpointing activation for a <a class="reference internal" href="trainer/abc/centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralizedTrainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_CHECKPOINT_BASENAME">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_BASENAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">'checkpoint'</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_CHECKPOINT_BASENAME" title="Link to this definition">¶</a></dt>
+<dd><p>Default basename for checkpointing files.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_CHECKPOINT_FREQ">
+<span class="sig-name descname"><span class="pre">DEFAULT_CHECKPOINT_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_CHECKPOINT_FREQ" title="Link to this definition">¶</a></dt>
+<dd><p>Default checkpointing frequency for a <a class="reference internal" href="trainer/abc/centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralizedTrainer</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_COOPERATIVE_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_COOPERATIVE_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">:func:`culebra.trainer.topology.full_connected_destinations`&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_COOPERATIVE_TOPOLOGY_FUNC" title="Link to this definition">¶</a></dt>
 <dd><p>Default topology function for the cooperative model.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
-<span class="sig-name descname"><span class="pre">DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_COOPERATIVE_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
-<dd><p>Parameters for the default topology function in the cooperative model.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC">
-<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">ring_destinations&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_TOPOLOGY_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_TOPOLOGY_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">:func:`culebra.trainer.topology.ring_destinations`&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_TOPOLOGY_FUNC" title="Link to this definition">¶</a></dt>
 <dd><p>Default topology function for the islands model.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS">
-<span class="sig-name descname"><span class="pre">DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_ISLANDS_REPRESENTATION_TOPOLOGY_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
-<dd><p>Parameters for the default topology function in the islands model.</p>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_MAX_NUM_ITERS">
+<span class="sig-name descname"><span class="pre">DEFAULT_MAX_NUM_ITERS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">100</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_MAX_NUM_ITERS" title="Link to this definition">¶</a></dt>
+<dd><p>Default maximum number of iterations.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_NUM_SUBTRAINERS">
-<span class="sig-name descname"><span class="pre">DEFAULT_NUM_SUBTRAINERS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_NUM_SUBTRAINERS" title="Link to this definition">¶</a></dt>
-<dd><p>Default number of subtrainers.</p>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_NUM_REPRESENTATIVES">
+<span class="sig-name descname"><span class="pre">DEFAULT_NUM_REPRESENTATIVES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_NUM_REPRESENTATIVES" title="Link to this definition">¶</a></dt>
+<dd><p>Default value for the number of representatives selected.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_FREQ">
-<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_FREQ" title="Link to this definition">¶</a></dt>
-<dd><p>Default value for the number of generations between representatives
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATIVES_EXCHANGE_FREQ" title="Link to this definition">¶</a></dt>
+<dd><p>Default value for the number of iterations between representatives
 sending.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC">
-<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">selTournament&gt;</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATIVES_SELECTION_FUNC">
+<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATIVES_SELECTION_FUNC</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">:func:`functools.partial`(&lt;function</span> <span class="pre">:func:`deap.tools.selection.selTournament`&gt;,</span> <span class="pre">tournsize=3)</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATIVES_SELECTION_FUNC" title="Link to this definition">¶</a></dt>
 <dd><p>Default selection policy function to choose the representatives.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS">
-<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">{'tournsize':</span> <span class="pre">3}</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SELECTION_FUNC_PARAMS" title="Link to this definition">¶</a></dt>
-<dd><p>Default parameters for the representatives selection policy function.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_REPRESENTATION_SIZE">
-<span class="sig-name descname"><span class="pre">DEFAULT_REPRESENTATION_SIZE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_REPRESENTATION_SIZE" title="Link to this definition">¶</a></dt>
-<dd><p>Default value for the number of representatives sent to the other
-subtrainers.</p>
+<dt class="sig sig-object py" id="culebra.trainer.DEFAULT_VERBOSITY">
+<span class="sig-name descname"><span class="pre">DEFAULT_VERBOSITY</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#culebra.trainer.DEFAULT_VERBOSITY" title="Link to this definition">¶</a></dt>
+<dd><p>Default verbosity for a <a class="reference internal" href="trainer/abc/centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer" title="culebra.trainer.abc.CentralizedTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralizedTrainer</span></code></a>.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
@@ -137,14 +142,14 @@ subtrainers.</p>
           <a href="trainer/abc.html" title="culebra.trainer.abc module"
              >next</a> |</li>
         <li class="right" >
-          <a href="fitness_function/tsp/multi_objective_path_length.html" title="culebra.fitness_function.tsp.MultiObjectivePathLength class"
+          <a href="fitness_func/tsp/multi_objective_path_length.html" title="culebra.fitness_func.tsp.MultiObjectivePathLength class"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">culebra</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.trainer</span></code> module</a></li> 
       </ul>
     </div>
     <div class="footer">
-      &copy;2025, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
       
       |
       <a href="_sources/trainer.rst.txt"

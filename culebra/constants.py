@@ -21,9 +21,9 @@
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -32,41 +32,16 @@ __status__ = 'Development'
 DEFAULT_SIMILARITY_THRESHOLD = 0.0
 """Default similarity threshold for fitnesses."""
 
-DEFAULT_MAX_NUM_ITERS = 100
-"""Default maximum number of iterations."""
+DEFAULT_INDEX = 0
+"""Default index."""
 
 SERIALIZED_FILE_EXTENSION = ".dill.gz"
 """Extension for files containing serialized objects."""
 
-DEFAULT_CHECKPOINT_ACTIVATION = True
-"""Default checkpointing activation for a :class:`~culebra.abc.Trainer`."""
-
-DEFAULT_CHECKPOINT_FREQ = 10
-"""Default checkpointing frequency for a :class:`~culebra.abc.Trainer`."""
-
-DEFAULT_CHECKPOINT_BASENAME = "checkpoint"
-"""Default basename for checkpointing files."""
-
-DEFAULT_CHECKPOINT_FILENAME = (
-    DEFAULT_CHECKPOINT_BASENAME + SERIALIZED_FILE_EXTENSION
-)
-"""Default checkpointing file name for a :class:`~culebra.abc.Trainer`."""
-
-DEFAULT_VERBOSITY = __debug__
-"""Default verbosity for a :class:`~culebra.abc.Trainer`."""
-
-DEFAULT_INDEX = 0
-"""Default index."""
-
 
 __all__ = [
     'DEFAULT_SIMILARITY_THRESHOLD',
-    'DEFAULT_MAX_NUM_ITERS',
-    'SERIALIZED_FILE_EXTENSION',
-    'DEFAULT_CHECKPOINT_ACTIVATION',
-    'DEFAULT_CHECKPOINT_FREQ',
-    'DEFAULT_CHECKPOINT_BASENAME',
-    'DEFAULT_CHECKPOINT_FILENAME',
-    'DEFAULT_VERBOSITY',
-    'DEFAULT_INDEX'
+    'DEFAULT_INDEX',
+    'SERIALIZED_FILE_EXTENSION'
+   
 ]

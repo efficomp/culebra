@@ -31,7 +31,7 @@ Functions
 .. autofunction:: culebra.checker.check_filename
 .. autofunction:: culebra.checker.check_float
 .. autofunction:: culebra.checker.check_func
-.. autofunction:: culebra.checker.check_func_params
+.. autofunction:: culebra.checker.check_params
 .. autofunction:: culebra.checker.check_instance
 .. autofunction:: culebra.checker.check_int
 .. autofunction:: culebra.checker.check_limits

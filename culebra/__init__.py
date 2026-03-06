@@ -34,7 +34,7 @@ Culebra is structured in the following modules:
   support culebra
 * The :mod:`~culebra.checker` module, which provides several checker functions
   used within culebra to prevent wrong arguments to functions and methods
-* The :mod:`~culebra.fitness_function` module, which provides fitness functions
+* The :mod:`~culebra.fitness_func` module, which provides fitness functions
   for several problems
 * The :mod:`~culebra.solution` module, which define solutions and solution
   species for several problems
@@ -47,29 +47,23 @@ Culebra is structured in the following modules:
 
 from .constants import (
     DEFAULT_SIMILARITY_THRESHOLD,
-    DEFAULT_MAX_NUM_ITERS,
-    SERIALIZED_FILE_EXTENSION,
-    DEFAULT_CHECKPOINT_ACTIVATION,
-    DEFAULT_CHECKPOINT_FREQ,
-    DEFAULT_CHECKPOINT_BASENAME,
-    DEFAULT_CHECKPOINT_FILENAME,
-    DEFAULT_VERBOSITY,
-    DEFAULT_INDEX
+    DEFAULT_INDEX,
+    SERIALIZED_FILE_EXTENSION
 )
 from . import (
     checker,
     abc,
     solution,
-    fitness_function,
+    fitness_func,
     trainer,
     tools
 )
 
 
 __author__ = 'Jesús González'
-__copyright__ = 'Copyright 2023, EFFICOMP'
+__copyright__ = 'Copyright 2026, EFFICOMP'
 __license__ = 'GNU GPL-3.0-or-later'
-__version__ = '0.3.1'
+__version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
@@ -79,16 +73,10 @@ __all__ = [
     'checker',
     'abc',
     'solution',
-    'fitness_function',
+    'fitness_func',
     'trainer',
     'tools',
     'DEFAULT_SIMILARITY_THRESHOLD',
-    'DEFAULT_MAX_NUM_ITERS',
-    'SERIALIZED_FILE_EXTENSION',
-    'DEFAULT_CHECKPOINT_ACTIVATION',
-    'DEFAULT_CHECKPOINT_FREQ',
-    'DEFAULT_CHECKPOINT_BASENAME',
-    'DEFAULT_CHECKPOINT_FILENAME',
-    'DEFAULT_VERBOSITY',
-    'DEFAULT_INDEX'
+    'DEFAULT_INDEX',
+    'SERIALIZED_FILE_EXTENSION'
 ]

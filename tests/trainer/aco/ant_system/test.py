@@ -34,7 +34,7 @@ from culebra.trainer.aco import (
     DEFAULT_AS_EXPLOITATION_PROB
 )
 from culebra.solution.tsp import Species, Ant
-from culebra.fitness_function.tsp import PathLength
+from culebra.fitness_func.tsp import PathLength
 
 
 num_nodes = 25
@@ -62,9 +62,9 @@ class TrainerTester(unittest.TestCase):
         for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
             with self.assertRaises(TypeError):
                 AntSystemTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     pheromone_evaporation_rate=pheromone_evaporation_rate
                 )
@@ -74,9 +74,9 @@ class TrainerTester(unittest.TestCase):
         for pheromone_evaporation_rate in invalid_pheromone_evaporation_rate:
             with self.assertRaises(ValueError):
                 AntSystemTSP(
+                    fitness_func,
                     ant_cls,
                     species,
-                    fitness_func,
                     initial_pheromone,
                     pheromone_evaporation_rate=pheromone_evaporation_rate
                 )
@@ -85,9 +85,9 @@ class TrainerTester(unittest.TestCase):
         valid_pheromone_evaporation_rate = (0.5, 1)
         for pheromone_evaporation_rate in valid_pheromone_evaporation_rate:
             trainer = AntSystemTSP(
+                fitness_func,
                 ant_cls,
                 species,
-                fitness_func,
                 initial_pheromone,
                 pheromone_evaporation_rate=pheromone_evaporation_rate
             )
@@ -98,9 +98,9 @@ class TrainerTester(unittest.TestCase):
 
         # Test default params
         trainer = AntSystemTSP(
+            fitness_func,
             ant_cls,
             species,
-            fitness_func,
             initial_pheromone
         )
         self.assertEqual(
@@ -115,15 +115,15 @@ class TrainerTester(unittest.TestCase):
         """Test the _generate_ant method."""
         # Trainer parameters
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": Species(num_nodes, banned_nodes),
-            "fitness_function": fitness_func,
             "initial_pheromone": 2
         }
 
         # Create the trainer
         trainer = AntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
 
         # Try to generate valid ants
         times = 1000
@@ -137,7 +137,7 @@ class TrainerTester(unittest.TestCase):
 
         # Create the trainer
         trainer = AntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         trainer._start_iteration()
         ant = trainer._generate_ant()
 
@@ -147,15 +147,15 @@ class TrainerTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes)
         initial_pheromone = 2
         params = {
+            "fitness_func": fitness_func,
             "solution_cls": Ant,
             "species": species,
-            "fitness_function": fitness_func,
             "initial_pheromone": initial_pheromone
         }
 
         # Create the trainer
         trainer = AntSystemTSP(**params)
-        trainer._init_search()
+        trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
 
