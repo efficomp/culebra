@@ -81,13 +81,13 @@ Culebra provides a `setup.sh` script to automate the environment configuration a
 
 Culebra is fully documented in its [github-pages](https://efficomp.github.io/culebra/). You can also generate its docs from the source code. Simply change directory to the `doc` subfolder and type in `make html`, the documentation will be under `build/html`. You will need [Sphinx](https://www.sphinx-doc.org/en/master/) to build the documentation.
 
---
+---
 
 ## 🚀 Quickstart Examples
 
 The `examples` subfolder contains several examples that show the basic usage of culebra.
 
---
+---
 
 ## 🏛️ Funding
 
@@ -102,7 +102,7 @@ This work is supported by projects *New Computing Paradigms and Heterogeneous Pa
   </a>
 </div>
 
---
+---
 
 ## ⚖️ License
 
