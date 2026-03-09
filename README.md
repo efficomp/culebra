@@ -25,7 +25,7 @@ allows you to tackle:
 * **Combinatorial Optimization:** Native support for problems like the
   *Traveling Salesman Problem (TSP)*.
 
-* Diverse Metaheuristics:
+* **Diverse Metaheuristics:**
 
   * **EA (Evolutionary Algorithms):** Standard and coevolutionary approaches.
 
