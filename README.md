@@ -37,8 +37,6 @@ allows you to tackle:
 
 * **Feature Selection:** High-performance wrappers for Scikit-learn,
   including specialized fitness functions for imbalanced data.
-  
-  implementaciones distribuidas paraleleas y secuenciales
 
 ---
 
