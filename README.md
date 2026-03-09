@@ -1,8 +1,8 @@
 # Culebra: Metaheuristic Optimization Framework
 
-[![License: GPL v3] (https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Python 3.8+] (https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Powered by DEAP] (https://img.shields.io/badge/powered%20by-DEAP-orange.svg)](https://github.com/DEAP/deap)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Powered by DEAP](https://img.shields.io/badge/powered%20by-DEAP-orange.svg)](https://github.com/DEAP/deap)
 
 
 **Culebra** is a versatile and extensible Python framework for solving complex
@@ -44,18 +44,18 @@ allows you to tackle:
 
 Culebra requires Python 3.8+. It also depends on the following Python packages:
 
-* [DEAP] (https://pypi.org/project/deap/)
-* [NumPy] (https://pypi.org/project/numpy/)
-* [Pandas] (https://pypi.org/project/pandas/)
-* [Scikit-learn] (https://pypi.org/project/scikit-learn/)
-* [Sphinx] (https://pypi.org/project/Sphinx/)
-* [Tabulate] (https://pypi.org/project/tabulate/)
-* [OpenPyXL] (https://pypi.org/project/openpyxl/)
-* [scikit-posthocs] (https://pypi.org/project/scikit-posthocs/)
-* [ucimlrepo] (https://pypi.org/project/ucimlrepo/)
-* [imbalanced-learn] (https://pypi.org/project/imbalanced-learn/)
-* [dill] (https://pypi.org/project/dill/)
-* [multiprocess] (https://pypi.org/project/multiprocess/)
+* [DEAP](https://pypi.org/project/deap/)
+* [NumPy](https://pypi.org/project/numpy/)
+* [Pandas](https://pypi.org/project/pandas/)
+* [Scikit-learn](https://pypi.org/project/scikit-learn/)
+* [Sphinx](https://pypi.org/project/Sphinx/)
+* [Tabulate](https://pypi.org/project/tabulate/)
+* [OpenPyXL](https://pypi.org/project/openpyxl/)
+* [scikit-posthocs](https://pypi.org/project/scikit-posthocs/)
+* [ucimlrepo](https://pypi.org/project/ucimlrepo/)
+* [imbalanced-learn](https://pypi.org/project/imbalanced-learn/)
+* [dill](https://pypi.org/project/dill/)
+* [multiprocess](https://pypi.org/project/multiprocess/)
 
 ---
 
@@ -78,10 +78,10 @@ and install all dependencies.
 
 ## 📖 Documentation
 
-Culebra is fully documented in its [github-pages] (https://efficomp.github.io/culebra/).
+Culebra is fully documented in its [github-pages](https://efficomp.github.io/culebra/).
 You can also generate its docs from the source code. Simply change directory
 to the `doc` subfolder and type in `make html`, the documentation will be
-under `build/html`. You will need [Sphinx] (https://www.sphinx-doc.org/en/master/)
+under `build/html`. You will need [Sphinx](https://www.sphinx-doc.org/en/master/)
 to build the documentation.
 
 ---
@@ -96,15 +96,15 @@ of culebra.
 ## 🏛️ Funding
 
 This work is supported by projects:
-* *New Computing Paradigms and Heterogeneous Parallel Architectures for
-   High-Performance and Energy Efficiency of Classification and Optimization
-   Tasks on Biomedical Engineering Applications*
-   ([HPEE-COBE] (https://efficomp.ugr.es/research/projects/hpee-cobe/)), with
-   reference PGC2018-098813-B-C31
-* *Advanced Methods of Biomedical Data Analysis and Brain Modeling Optimized
-  for High-Performance and Energy-Efficient Computing*
-  ([HPEEC-BIOBRAIN] (https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/)),
-  with reference PID2022-137461NB-C31
+* [HPEE-COBE:](https://efficomp.ugr.es/research/projects/hpee-cobe/)
+  New Computing Paradigms and Heterogeneous Parallel Architectures for
+  High-Performance and Energy Efficiency of Classification and Optimization
+  Tasks on Biomedical Engineering Applications, with reference
+  PGC2018-098813-B-C31.
+* [HPEEC-BIOBRAIN:](https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/)
+  Advanced Methods of Biomedical Data Analysis and Brain Modeling Optimized
+  for High-Performance and Energy-Efficient Computing, with reference
+  PID2022-137461NB-C31.
 
 These projects are funded by the Spanish State Research Agency
 MCIN/AEI/[10.13039/501100011033](https://doi.org/10.13039/501100011033) and
