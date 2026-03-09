@@ -1,8 +1,8 @@
 # Culebra: Metaheuristic Optimization Framework
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Powered by DEAP](https://img.shields.io/badge/powered%20by-DEAP-orange.svg)](https://github.com/DEAP/deap)
+[![License: GPL v3] (https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Python 3.8+] (https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Powered by DEAP] (https://img.shields.io/badge/powered%20by-DEAP-orange.svg)](https://github.com/DEAP/deap)
 
 
 **Culebra** is a versatile and extensible Python framework for solving complex
@@ -60,7 +60,8 @@ Culebra requires Python 3.8+. It also depends on the following Python packages:
 ---
 
 ## 📦 Installation
-Culebra provides a `setup.sh` script to automate the environment configuration and install all dependencies.
+Culebra provides a `setup.sh` script to automate the environment configuration
+and install all dependencies.
 
 1.  **Clone the repository:**
     ```bash
@@ -77,21 +78,39 @@ Culebra provides a `setup.sh` script to automate the environment configuration a
 
 ## 📖 Documentation
 
-Culebra is fully documented in its [github-pages](https://efficomp.github.io/culebra/). You can also generate its docs from the source code. Simply change directory to the `doc` subfolder and type in `make html`, the documentation will be under `build/html`. You will need [Sphinx](https://www.sphinx-doc.org/en/master/) to build the documentation.
+Culebra is fully documented in its [github-pages] (https://efficomp.github.io/culebra/).
+You can also generate its docs from the source code. Simply change directory
+to the `doc` subfolder and type in `make html`, the documentation will be
+under `build/html`. You will need [Sphinx] (https://www.sphinx-doc.org/en/master/)
+to build the documentation.
 
 ---
 
 ## 🚀 Quickstart Examples
 
-The `examples` subfolder contains several examples that show the basic usage of culebra.
+The `examples` subfolder contains several examples that show the basic usage
+of culebra.
 
 ---
 
 ## 🏛️ Funding
 
-This work is supported by projects *New Computing Paradigms and Heterogeneous Parallel Architectures for High-Performance and Energy Efficiency of Classification and Optimization Tasks on Biomedical Engineering Applications* ([HPEE-COBE](https://efficomp.ugr.es/research/projects/hpee-cobe/)), with reference PGC2018-098813-B-C31, and *Advanced Methods of Biomedical Data Analysis and Brain Modeling Optimized for High-Performance and Energy-Efficient Computing* ([HPEEC-BIOBRAIN](https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/)), with reference PID2022-137461NB-C31, both funded by the Spanish [*Ministerio de Ciencia, Innovación y Universidades*](https://www.ciencia.gob.es/), and by the [European Regional Development Fund (ERDF)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
+This work is supported by projects:
+* *New Computing Paradigms and Heterogeneous Parallel Architectures for
+   High-Performance and Energy Efficiency of Classification and Optimization
+   Tasks on Biomedical Engineering Applications*
+   ([HPEE-COBE] (https://efficomp.ugr.es/research/projects/hpee-cobe/)), with
+   reference PGC2018-098813-B-C31
+* *Advanced Methods of Biomedical Data Analysis and Brain Modeling Optimized
+  for High-Performance and Energy-Efficient Computing*
+  ([HPEEC-BIOBRAIN] (https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/)),
+  with reference PID2022-137461NB-C31
 
-<div style="text-align: right">
+These projects are funded by the Spanish State Research Agency
+MCIN/AEI/[10.13039/501100011033](https://doi.org/10.13039/501100011033) and
+by the [European Regional Development Fund (ERDF/EU)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
+
+<div style="text-align: center">
   <a href="https://www.ciencia.gob.es/">
     <img src="https://raw.githubusercontent.com/efficomp/culebra/master/doc/source/_static/micinu.png" height="75">
   </a>
