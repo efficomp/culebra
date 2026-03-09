@@ -107,7 +107,7 @@ This work is supported by projects:
   PID2022-137461NB-C31.
 
 These projects are funded by the Spanish State Research Agency
-MCIN/AEI/[10.13039/501100011033](https://doi.org/10.13039/501100011033) and
+[MCIN/AEI/10.13039/501100011033](https://doi.org/10.13039/501100011033) and
 by the [European Regional Development Fund (ERDF/EU)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
 
 ---
