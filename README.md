@@ -110,8 +110,16 @@ These projects are funded by the Spanish State Research Agency
 MCIN/AEI/[10.13039/501100011033](https://doi.org/10.13039/501100011033) and
 by the [European Regional Development Fund (ERDF/EU)](https://ec.europa.eu/regional_policy/en/funding/erdf/).
 
+---
 
-<hr>
+## ⚖️ License
+Distributed under the [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.md)
+license. See the `LICENSE` file for more information.
+
+Culebra © 2020-2026 [EFFICOMP](https://efficomp.ugr.es).
+
+---
+
 <p align="center">
   <a href="https://www.ciencia.gob.es/">
     <img src="https://raw.githubusercontent.com/efficomp/culebra/master/doc/source/_static/micinu.png" height="75">
@@ -120,11 +128,3 @@ by the [European Regional Development Fund (ERDF/EU)](https://ec.europa.eu/regio
     <img src="https://raw.githubusercontent.com/efficomp/culebra/master/doc/source/_static/erdf.png" height="75">
   </a>
 </p>
-
----
-
-## ⚖️ License
-Distributed under the [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.md)
-license. See the `LICENSE` file for more information.
-
-Culebra © 2020-2026 [EFFICOMP](https://efficomp.ugr.es).
