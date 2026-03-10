@@ -299,6 +299,34 @@ class TrainerTester(unittest.TestCase):
                     the_choice_info[node, next_node]
                 )
 
+    def test_unfeasible_nodes(self):
+        """Test the _unfeasible_nodes method."""
+        # Trainer parameters
+        species = Species(tsp_num_nodes, tsp_banned_nodes)
+        initial_pheromone = 2
+        params = {
+            "fitness_func": tsp_fitness_func_single,
+            "solution_cls": Ant,
+            "species": species,
+            "initial_pheromone": initial_pheromone
+        }
+
+        # Create the trainer
+        trainer = MySinglePathTrainer(**params)
+
+        ant = Ant(species, tsp_fitness_func_single.fitness_cls)
+        for node in range(species.num_nodes):
+            if node not in tsp_banned_nodes:
+                ant.append(node)
+                self.assertTrue(node in trainer._unfeasible_nodes(ant))
+
+        self.assertTrue(
+            (
+                np.sort(trainer._unfeasible_nodes(ant)) ==
+                np.arange(species.num_nodes)
+            ).all()
+        )
+
     def test_ant_choice_info(self):
         """Test the _ant_choice_info method."""
         # Trainer parameters

@@ -140,6 +140,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.MMAS._should_reset_pheromone
 .. automethod:: culebra.trainer.aco.MMAS._start_iteration
 .. automethod:: culebra.trainer.aco.MMAS._termination_criterion
+.. automethod:: culebra.trainer.aco.MMAS._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.MMAS._update_elite
 .. automethod:: culebra.trainer.aco.MMAS._update_logbook
 .. automethod:: culebra.trainer.aco.MMAS._update_pheromone

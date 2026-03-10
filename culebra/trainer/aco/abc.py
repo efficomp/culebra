@@ -796,13 +796,22 @@ class ACO(CentralizedTrainer):
         """
         return self._choice_info
 
+    def _unfeasible_nodes(self, ant: Ant) -> np.ndarray[float]:
+        """Return the indices of all unfeasible nodes.
+
+        Subclasses should also filter out any node forbidden by the
+        constraints of the :class:~culebra.abc.Species defining the problem.
+        
+        :param ant: The ant
+        :type ant: ~culebra.solution.abc.Ant
+        :return: All nodes visited by the ant, whether selected or discarded
+        :rtype: ~numpy.ndarray[float]
+        """
+        return np.concatenate((ant.path, ant.discarded))
+
     @abstractmethod
     def _ant_choice_info(self, ant: Ant) -> np.ndarray[float]:
         """Return the choice info to obtain the next node the ant will visit.
-
-        All previously visited nodes must be excluded. Additionally, subclasses
-        should filter out any nodes prohibited by the constraints of the
-        :class:~culebra.abc.Species defining the problem.
 
         :param ant: The ant
         :type ant: ~culebra.solution.abc.Ant
@@ -822,13 +831,15 @@ class ACO(CentralizedTrainer):
 
         The election is made from the feasible neighborhood of the current
         node, which is composed of those nodes neither discarded nor visited
-        yet by the ant and connected to its current node.
+        yet by the ant and connected to its current node. Any node forbidden
+        by the constraints of the :class:~culebra.abc.Species defining the
+        problem is also unfeasible.
 
         The best possible node is selected with probability
-        :attr:`~culebra.trainer.aco.abc.ACO.exploitation_prob`. In
-        case the best node is not chosen, the next node is selected
-        probabilistically according to the
-        :attr:`~culebra.trainer.aco.abc.ACO.choice_info` matrix.
+        :attr:`~culebra.trainer.aco.abc.ACO.exploitation_prob`. In case the
+        best node is not chosen, the next node is selected probabilistically
+        according to the :attr:`~culebra.trainer.aco.abc.ACO.choice_info`
+        matrix.
 
         :param ant: The ant
         :type ant: ~culebra.solution.abc.Ant
@@ -2693,7 +2704,13 @@ class ACOTSP(ACO):
         return self.species.num_nodes
 
     def _calculate_choice_info(self) -> None:
-        """Calculate the choice info matrix."""
+        """Calculate the choice information.
+
+        The choice information is generated from both the pheromone and the
+        heuristic matrices, modified by other parameters (depending on the ACO
+        approach) and is used to obtain the probalility of following the next
+        feasible arc for the node.
+        """
         self._choice_info = np.ones(self.pheromone_shapes[0])
 
         for (
@@ -2722,15 +2739,30 @@ class ACOTSP(ACO):
                 else:
                     self._choice_info *= np.power(heur, heur_influence)
 
-    def _ant_choice_info(self, ant: TSPAnt) -> np.ndarray[float]:
+    def _unfeasible_nodes(self, ant: Ant) -> np.ndarray[float]:
+        """Return the indices of all unfeasible nodes.
+        
+        :param ant: The ant
+        :type ant: ~culebra.solution.abc.Ant
+        :return: All nodes visited by the ant, whether selected or discarded.
+            Nodes restricted by the :class:~culebra.abc.Species defining the
+            problem are also incorporated
+
+        :rtype: ~numpy.ndarray[float]
+        """
+        return np.concatenate(
+            (super()._unfeasible_nodes(ant), self.species.banned_nodes)
+        )
+
+    def _ant_choice_info(self, ant: Ant) -> np.ndarray[float]:
         """Return the choice info to obtain the next node the ant will visit.
 
         All the nodes banned by the
-        :attr:`~culebra.trainer.aco.abc.ACOTSP.species`, along with all
+        :attr:`~culebra.trainer.aco.abc.ACO.species`, along with all
         the previously visited nodes are discarded.
 
         :param ant: The ant
-        :type ant: ~culebra.solution.tsp.Ant
+        :type ant: ~culebra.solution.abc.Ant
         :rtype: ~numpy.ndarray[float]
         """
         # Choose the choice info depending on the ant's current node
@@ -2739,12 +2771,8 @@ class ACOTSP(ACO):
         else:
             ant_choice_info = np.copy(self.choice_info[ant.current])
 
-        # Discard the previously visited nodes
-        ant_choice_info[ant.path] = 0
-        ant_choice_info[ant.discarded] = 0
-
-        # Discard also all the banned nodes
-        ant_choice_info[self.species.banned_nodes] = 0
+        # Discard the unfeasible nodes
+        ant_choice_info[self._unfeasible_nodes(ant)] = 0
 
         return ant_choice_info
 
@@ -3068,6 +3096,27 @@ class ACOFS(ACO):
         # Reset the trainer
         self.reset()
 
+    def _unfeasible_nodes(self, ant: Ant) -> np.ndarray[float]:
+        """Return the indices of all unfeasible nodes.
+        
+        :param ant: The ant
+        :type ant: ~culebra.solution.abc.Ant
+        :return: All nodes visited by the ant, whether selected or discarded.
+            Nodes restricted by the :class:~culebra.abc.Species defining the
+            problem are also incorporated
+
+        :rtype: ~numpy.ndarray[float]
+        """
+        return np.concatenate(
+            (
+                super()._unfeasible_nodes(ant),
+                np.arange(self.species.min_feat),
+                np.arange(
+                    self.species.max_feat + 1, self.species.num_feats
+                )
+            )
+        )
+
     # Use the same implementation as ACOTSP for _calculate_choice_info
     _calculate_choice_info = ACOTSP._calculate_choice_info
 
@@ -3172,36 +3221,8 @@ class ACOFS2D(ACOFS):
             for shape in self.heuristic_shapes
         )
 
-    def _ant_choice_info(self, ant: FSAnt) -> np.ndarray[float]:
-        """Return the choice info to obtain the next node the ant will visit.
-
-        All the nodes banned by the
-        :attr:`~culebra.trainer.aco.abc.ACOFS.species`, along with all
-        the previously visited nodes are discarded.
-
-        :param ant: The ant
-        :type ant: ~culebra.solution.feature_selection.Ant
-        :rtype: ~numpy.ndarray[float]
-        """
-        # Choose the choice info depending on the ant's current node
-        if ant.current is None:
-            ant_choice_info = np.sum(self.choice_info, axis=1)
-        else:
-            ant_choice_info = np.copy(self.choice_info[ant.current])
-
-        # Discard the previously visited nodes
-        ant_choice_info[ant.path] = 0
-        ant_choice_info[ant.discarded] = 0
-
-        # Discard also all the banned feats
-        if self.species.min_feat > 0:
-            ant_choice_info[np.arange(self.species.min_feat)] = 0
-        if self.species.max_feat < self.species.num_feats - 1:
-            ant_choice_info[
-                np.arange(self.species.max_feat + 1, self.species.num_feats)
-            ] = 0
-
-        return ant_choice_info
+    # Use the same implementation as ACOTSP for _ant_choice_info
+    _ant_choice_info = ACOTSP._ant_choice_info
 
     def _deposit_pheromone(
         self,
@@ -3290,17 +3311,8 @@ class ACOFS1D(ACOFS):
         """
         ant_choice_info = np.copy(self.choice_info)
 
-        # Discard the previously visited nodes
-        ant_choice_info[ant.path] = 0
-        ant_choice_info[ant.discarded] = 0
-
-        # Discard also all the banned feats
-        if self.species.min_feat > 0:
-            ant_choice_info[np.arange(self.species.min_feat)] = 0
-        if self.species.max_feat < self.species.num_feats - 1:
-            ant_choice_info[
-                np.arange(self.species.max_feat + 1, self.species.num_feats)
-            ] = 0
+        # Discard the unfeasible nodes
+        ant_choice_info[self._unfeasible_nodes(ant)] = 0
 
         return ant_choice_info
 

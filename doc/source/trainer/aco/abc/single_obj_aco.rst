@@ -129,5 +129,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._set_state
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._start_iteration
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._termination_criterion
+.. automethod:: culebra.trainer.aco.abc.SingleObjACO._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._update_logbook
 .. automethod:: culebra.trainer.aco.abc.SingleObjACO._update_pheromone

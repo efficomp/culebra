@@ -137,6 +137,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._set_state
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._start_iteration
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._termination_criterion
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._update_logbook
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._update_pop

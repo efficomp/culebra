@@ -514,6 +514,36 @@ class ACOFSTester(unittest.TestCase):
 
         self.assertTrue((trainer.choice_info == the_choice_info).all())
 
+    def test_unfeasible_nodes(self):
+        """Test the _unfeasible_nodes method."""
+        params = {
+            "fitness_func": training_fitness_func,
+            "solution_cls": Ant,
+            "species": species,
+            "verbosity": False
+        }
+
+        # Create the trainer
+        trainer = MyACOFS(**params)
+
+        ant = Ant(species, training_fitness_func.fitness_cls)
+        flipflop = True
+        for node in range(species.min_feat, species.max_feat + 1):
+            if flipflop:
+                ant.append(node)
+            else:
+                ant.discard(node)
+
+            self.assertTrue(node in trainer._unfeasible_nodes(ant))
+            flipflop = not flipflop
+
+        self.assertTrue(
+            (
+                np.sort(trainer._unfeasible_nodes(ant)) ==
+                np.arange(species.num_feats)
+            ).all()
+        )
+
     def test_generate_ant(self):
         """Test the _generate_ant method."""
         params = {

@@ -137,6 +137,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._set_state
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._start_iteration
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._termination_criterion
+.. automethod:: culebra.trainer.aco.AgeBasedPACO._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._update_logbook
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.AgeBasedPACO._update_pop

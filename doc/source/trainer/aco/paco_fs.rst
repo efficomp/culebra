@@ -135,6 +135,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.PACOFS._set_state
 .. automethod:: culebra.trainer.aco.PACOFS._start_iteration
 .. automethod:: culebra.trainer.aco.PACOFS._termination_criterion
+.. automethod:: culebra.trainer.aco.PACOFS._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.PACOFS._update_logbook
 .. automethod:: culebra.trainer.aco.PACOFS._update_pheromone
 .. automethod:: culebra.trainer.aco.PACOFS._update_pop

@@ -133,6 +133,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._set_state
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._start_iteration
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._termination_criterion
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._update_logbook
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._update_pheromone
 .. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO._update_pop

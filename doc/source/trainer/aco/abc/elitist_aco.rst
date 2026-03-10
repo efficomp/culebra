@@ -129,6 +129,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._set_state
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._start_iteration
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._termination_criterion
+.. automethod:: culebra.trainer.aco.abc.ElitistACO._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_elite
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_logbook
 .. automethod:: culebra.trainer.aco.abc.ElitistACO._update_pheromone

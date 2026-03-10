@@ -132,6 +132,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.CPACO._set_state
 .. automethod:: culebra.trainer.aco.CPACO._start_iteration
 .. automethod:: culebra.trainer.aco.CPACO._termination_criterion
+.. automethod:: culebra.trainer.aco.CPACO._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.CPACO._update_logbook
 .. automethod:: culebra.trainer.aco.CPACO._update_pheromone
 .. automethod:: culebra.trainer.aco.CPACO._update_pop

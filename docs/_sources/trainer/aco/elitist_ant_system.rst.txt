@@ -139,6 +139,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._should_reset_pheromone
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._start_iteration
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._termination_criterion
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_elite
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_logbook
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._update_pheromone

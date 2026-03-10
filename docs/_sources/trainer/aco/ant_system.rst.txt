@@ -133,5 +133,6 @@ Private methods
 .. automethod:: culebra.trainer.aco.AntSystem._set_state
 .. automethod:: culebra.trainer.aco.AntSystem._start_iteration
 .. automethod:: culebra.trainer.aco.AntSystem._termination_criterion
+.. automethod:: culebra.trainer.aco.AntSystem._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.AntSystem._update_logbook
 .. automethod:: culebra.trainer.aco.AntSystem._update_pheromone

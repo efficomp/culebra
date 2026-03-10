@@ -140,6 +140,11 @@ class MySingleObjTrainer(ACO):
         super()._reset_state()
         self._pheromone = None
 
+    def _unfeasible_nodes(self, ant: Ant):
+        return np.concatenate(
+            (super()._unfeasible_nodes(ant), self.species.banned_nodes)
+        )
+
     def _ant_choice_info(self, ant: Ant):
         # Choose the choice info depending on the ant's current node
         if ant.current is None:
@@ -147,12 +152,8 @@ class MySingleObjTrainer(ACO):
         else:
             ant_choice_info = np.copy(self.choice_info[ant.current])
 
-        # Discard the previously visited nodes
-        ant_choice_info[ant.path] = 0
-        ant_choice_info[ant.discarded] = 0
-
-        # Discard also all the banned nodes
-        ant_choice_info[self.species.banned_nodes] = 0
+        # Discard the unfeasible nodes
+        ant_choice_info[self._unfeasible_nodes(ant)] = 0
 
         return ant_choice_info
 
@@ -1176,6 +1177,41 @@ class TrainerTester(unittest.TestCase):
 
         self.assertEqual(trainer.col, None)
         self.assertEqual(trainer.choice_info, None)
+
+    def test_unfeasible_nodes(self):
+        """Test the _unfeasible_nodes method."""
+        # Trainer parameters
+        species = Species(tsp_num_nodes)
+        params = {
+            "fitness_func": tsp_fitness_func_single,
+            "solution_cls": Ant,
+            "species": species,
+            "initial_pheromone": [2]
+        }
+
+        # Create the trainer
+        trainer = MySingleObjTrainer(**params)
+
+        ant = Ant(species, tsp_fitness_func_single.fitness_cls)
+        for node in range(species.num_nodes):
+            ant.append(node)
+            self.assertTrue(node in trainer._unfeasible_nodes(ant))
+
+        self.assertTrue(
+            (
+                trainer._unfeasible_nodes(ant) ==
+                np.arange(species.num_nodes)
+            ).all()
+        )
+
+        # Try with banned nodes
+        trainer.species = Species(tsp_num_nodes, tsp_banned_nodes)
+        ant = Ant(species, tsp_fitness_func_single.fitness_cls)
+        self.assertTrue(
+            (
+                trainer._unfeasible_nodes(ant) == tsp_banned_nodes
+            ).all()
+        )
 
     def test_ant_choice_info(self):
         """Test the _ant_choice_info method."""
