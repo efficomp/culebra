@@ -140,9 +140,18 @@ class MySingleObjTrainer(ACO):
         super()._reset_state()
         self._pheromone = None
 
-    def _ant_choice_info(self, ant):
-        """Return the choice info to obtain the next node."""
-        ant_choice_info = super()._ant_choice_info(ant)
+    def _ant_choice_info(self, ant: Ant):
+        # Choose the choice info depending on the ant's current node
+        if ant.current is None:
+            ant_choice_info = np.sum(self.choice_info, axis=1)
+        else:
+            ant_choice_info = np.copy(self.choice_info[ant.current])
+
+        # Discard the previously visited nodes
+        ant_choice_info[ant.path] = 0
+        ant_choice_info[ant.discarded] = 0
+
+        # Discard also all the banned nodes
         ant_choice_info[self.species.banned_nodes] = 0
 
         return ant_choice_info

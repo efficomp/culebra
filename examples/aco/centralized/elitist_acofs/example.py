@@ -32,8 +32,13 @@ from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
+from culebra.trainer.aco.abc import ACOFS1D
 from culebra.trainer.aco import ElitistACOFS, ACOFSConvergenceDetector
 from culebra.tools import Dataset
+
+
+class ElitistACOFS1D(ACOFS1D, ElitistACOFS):
+    """ElitistACOFS using a vector to store the pheromone trails."""
 
 
 # Fitness function
@@ -100,7 +105,7 @@ params = {
 }
 
 # Create the wrapper
-wrapper = ElitistACOFS(**params)
+wrapper = ElitistACOFS1D(**params)
 
 # Train the wrapper
 print("Training ...")

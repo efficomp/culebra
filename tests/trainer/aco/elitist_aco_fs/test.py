@@ -29,6 +29,7 @@ from os import remove
 import numpy as np
 
 from culebra import SERIALIZED_FILE_EXTENSION
+from culebra.trainer.aco.abc import ACOFS1D
 from culebra.trainer.aco import ElitistACOFS
 from culebra.solution.feature_selection import Species, Ant
 from culebra.fitness_func import MultiObjectiveFitnessFunction
@@ -86,6 +87,10 @@ banned_nodes = [0, dataset.num_feats-1]
 feasible_nodes = list(range(1, dataset.num_feats-1))
 
 
+class MyElitistACOFS(ACOFS1D, ElitistACOFS):
+    """ElitistACOFS using a vector to store the pheromone trails."""
+
+
 class ElitistACOFSTester(unittest.TestCase):
     """Test :class:`culebra.trainer.aco.ElitistACOFS`."""
 
@@ -99,7 +104,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACOFS(**params)
+        trainer = MyElitistACOFS(**params)
 
         # Check the pheromone matrices
         self.assertIsNone(trainer.pheromone)
@@ -126,7 +131,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACOFS(**params)
+        trainer = MyElitistACOFS(**params)
         trainer._init_training()
 
         # Save the trainer's state
@@ -163,7 +168,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACOFS(**params)
+        trainer = MyElitistACOFS(**params)
 
         # Try to update the elite
         trainer._init_training()
@@ -204,7 +209,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACOFS(**params)
+        trainer = MyElitistACOFS(**params)
 
         # Init the training
         trainer._init_training()
@@ -226,7 +231,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACOFS(**params)
+        trainer = MyElitistACOFS(**params)
 
         # Init the training
         trainer._init_training()
@@ -258,7 +263,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ElitistACOFS(**params)
+        trainer1 = MyElitistACOFS(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -286,7 +291,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ElitistACOFS(**params)
+        trainer1 = MyElitistACOFS(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -303,11 +308,11 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = ElitistACOFS(**params)
+        trainer1 = MyElitistACOFS(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = ElitistACOFS.load(serialized_filename)
+        trainer2 = MyElitistACOFS.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -326,7 +331,7 @@ class ElitistACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = ElitistACOFS(**params)
+        trainer = MyElitistACOFS(**params)
         trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

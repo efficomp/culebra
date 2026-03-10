@@ -55,7 +55,14 @@ Ant Colony Optimization based trainers.
 * Finally, regarding the kind of problem:
 
   * :class:`~culebra.trainer.aco.abc.ACOFS`: A base class for all the
-    ACO-based approaches for FS
+    ACO-based approaches for FS:
+        
+    * :class:`~culebra.trainer.aco.abc.ACOFS1D`: Base class for all the
+      ACO-based approaches for FS using a vector to keep the pheromone trails
+    * :class:`~culebra.trainer.aco.abc.ACOFS2D`: Base class for all the
+      ACO-based approaches for FS using a bidimensional matrix to keep the
+      pheromone trails
+    
   * :class:`~culebra.trainer.aco.abc.ACOTSP`: A base class for all the
     ACO-based approaches for TSP
 """
@@ -789,26 +796,26 @@ class ACO(CentralizedTrainer):
         """
         return self._choice_info
 
+    @abstractmethod
     def _ant_choice_info(self, ant: Ant) -> np.ndarray[float]:
         """Return the choice info to obtain the next node the ant will visit.
 
-        All the previously visited nodes are discarded. Subclasses should
-        override this method if the :class:`~culebra.abc.Species`
-        constraining the solutions of the problem supports node banning.
+        All previously visited nodes must be excluded. Additionally, subclasses
+        should filter out any nodes prohibited by the constraints of the
+        :class:~culebra.abc.Species defining the problem.
 
         :param ant: The ant
         :type ant: ~culebra.solution.abc.Ant
         :rtype: ~numpy.ndarray[float]
+
+        This method should be overridden by subclasses.
+
+        :raises NotImplementedError: If has not been overridden
         """
-        if ant.current is None:
-            ant_choice_info = np.sum(self.choice_info, axis=1)
-        else:
-            ant_choice_info = np.copy(self.choice_info[ant.current])
-
-        ant_choice_info[ant.path] = 0
-        ant_choice_info[ant.discarded] = 0
-
-        return ant_choice_info
+        raise NotImplementedError(
+            "The _ant_choice_info method has not been implemented in "
+            f"the {self.__class__.__name__} class"
+        )
 
     def _next_choice(self, ant: Ant) -> int | None:
         """Choose the next node for an ant.
@@ -2726,7 +2733,17 @@ class ACOTSP(ACO):
         :type ant: ~culebra.solution.tsp.Ant
         :rtype: ~numpy.ndarray[float]
         """
-        ant_choice_info = super()._ant_choice_info(ant)
+        # Choose the choice info depending on the ant's current node
+        if ant.current is None:
+            ant_choice_info = np.sum(self.choice_info, axis=1)
+        else:
+            ant_choice_info = np.copy(self.choice_info[ant.current])
+
+        # Discard the previously visited nodes
+        ant_choice_info[ant.path] = 0
+        ant_choice_info[ant.discarded] = 0
+
+        # Discard also all the banned nodes
         ant_choice_info[self.species.banned_nodes] = 0
 
         return ant_choice_info
@@ -2912,26 +2929,6 @@ class ACOFS(ACO):
         """
         return 1
 
-    @property
-    def pheromone_shapes(self) -> tuple[tuple[int, int], ...]:
-        """Shape of the pheromone matrices.
-
-        :rtype: tuple[tuple[int]]
-        """
-        return (
-            ((self.species.num_feats, ) * 2,) * self.num_pheromone_matrices
-        )
-
-    @property
-    def heuristic_shapes(self) -> tuple[tuple[int, int], ...]:
-        """Shape of the heuristic matrices.
-
-        :rtype: tuple[tuple[int]]
-        """
-        return (
-            ((self.species.num_feats, ) * 2,) * self.num_heuristic_matrices
-        )
-
     @ACO.solution_cls.setter
     def solution_cls(self, value: type[FSAnt]) -> None:
         """Set a new solution class.
@@ -2991,31 +2988,6 @@ class ACOFS(ACO):
         if values is None:
             values = self._default_initial_pheromone
         ACO.initial_pheromone.fset(self, values)
-
-    @property
-    def _default_heuristic(self) -> tuple[np.ndarray[float], ...]:
-        """Default heuristic matrices.
-
-        :return: An all-ones matrix with a zero diagonal for each heuristic
-            matrix
-        :rtype: tuple[~numpy.ndarray[float]]
-        """
-        def create_hollow_matrix(shape: tuple[int, int]) -> np.ndarray:
-            """Create an all-ones matrix with a zero diagonal.
-
-            :param shape: Matrix shape
-            :type shape: tuple[int, int]
-            :return: The matrix
-            :rtype: ~numpy.ndarray
-            """
-            arr = np.ones(shape, dtype=np.float64)
-            np.fill_diagonal(arr, 0)
-            return arr
-
-        return tuple(
-            create_hollow_matrix(shape)
-            for shape in self.heuristic_shapes
-        )
 
     @property
     def _default_heuristic_influence(self) -> tuple[float, ...]:
@@ -3096,40 +3068,8 @@ class ACOFS(ACO):
         # Reset the trainer
         self.reset()
 
-    # Use the same implementation for _calculate_choice_info as ACOTSP
+    # Use the same implementation as ACOTSP for _calculate_choice_info
     _calculate_choice_info = ACOTSP._calculate_choice_info
-
-    def _ant_choice_info(self, ant: FSAnt) -> np.ndarray[float]:
-        """Return the choice info to obtain the next node the ant will visit.
-
-        All the nodes banned by the
-        :attr:`~culebra.trainer.aco.abc.ACOFS.species`, along with all
-        the previously visited nodes are discarded.
-
-        :param ant: The ant
-        :type ant: ~culebra.solution.feature_selection.Ant
-        :rtype: ~numpy.ndarray[float]
-        """
-        # Discard all the visited feats
-        ant_choice_info = super()._ant_choice_info(ant)
-
-        # Discard also all the banned feats
-        banned_feats = np.zeros((0,), dtype=int)
-        if self.species.min_feat > 0:
-            banned_feats = np.union1d(
-                banned_feats,
-                np.arange(self.species.min_feat)
-            )
-        if self.species.max_feat < self.species.num_feats - 1:
-            banned_feats = np.union1d(
-                banned_feats,
-                np.arange(
-                    self.species.max_feat + 1, self.species.num_feats
-                )
-            )
-        ant_choice_info[banned_feats] = 0
-
-        return ant_choice_info
 
     def _generate_ant(self) -> FSAnt:
         """Create a new ant.
@@ -3183,6 +3123,86 @@ class ACOFS(ACO):
 
         return ant
 
+
+class ACOFS2D(ACOFS):
+    """Abstract base class for all the 2D pheromone matrix ACO-FS trainers."""
+
+    @property
+    def pheromone_shapes(self) -> tuple[tuple[int, int], ...]:
+        """Shape of the pheromone matrices.
+
+        :rtype: tuple[tuple[int]]
+        """
+        return (
+            ((self.species.num_feats, ) * 2,) * self.num_pheromone_matrices
+        )
+
+    @property
+    def heuristic_shapes(self) -> tuple[tuple[int, int], ...]:
+        """Shape of the heuristic matrices.
+
+        :rtype: tuple[tuple[int]]
+        """
+        return (
+            ((self.species.num_feats, ) * 2,) * self.num_heuristic_matrices
+        )
+
+    @property
+    def _default_heuristic(self) -> tuple[np.ndarray[float], ...]:
+        """Default heuristic matrices.
+
+        :return: An all-ones matrix with a zero diagonal for each heuristic
+            matrix
+        :rtype: tuple[~numpy.ndarray[float]]
+        """
+        def create_hollow_matrix(shape: tuple[int, int]) -> np.ndarray:
+            """Create an all-ones matrix with a zero diagonal.
+
+            :param shape: Matrix shape
+            :type shape: tuple[int, int]
+            :return: The matrix
+            :rtype: ~numpy.ndarray
+            """
+            arr = np.ones(shape, dtype=np.float64)
+            np.fill_diagonal(arr, 0)
+            return arr
+
+        return tuple(
+            create_hollow_matrix(shape)
+            for shape in self.heuristic_shapes
+        )
+
+    def _ant_choice_info(self, ant: FSAnt) -> np.ndarray[float]:
+        """Return the choice info to obtain the next node the ant will visit.
+
+        All the nodes banned by the
+        :attr:`~culebra.trainer.aco.abc.ACOFS.species`, along with all
+        the previously visited nodes are discarded.
+
+        :param ant: The ant
+        :type ant: ~culebra.solution.feature_selection.Ant
+        :rtype: ~numpy.ndarray[float]
+        """
+        # Choose the choice info depending on the ant's current node
+        if ant.current is None:
+            ant_choice_info = np.sum(self.choice_info, axis=1)
+        else:
+            ant_choice_info = np.copy(self.choice_info[ant.current])
+
+        # Discard the previously visited nodes
+        ant_choice_info[ant.path] = 0
+        ant_choice_info[ant.discarded] = 0
+
+        # Discard also all the banned feats
+        if self.species.min_feat > 0:
+            ant_choice_info[np.arange(self.species.min_feat)] = 0
+        if self.species.max_feat < self.species.num_feats - 1:
+            ant_choice_info[
+                np.arange(self.species.max_feat + 1, self.species.num_feats)
+            ] = 0
+
+        return ant_choice_info
+
     def _deposit_pheromone(
         self,
         ants: Sequence[FSAnt],
@@ -3208,20 +3228,106 @@ class ACOFS(ACO):
             if len(ant.path) > 1:
                 # All the combinations of two features from those in the path
                 indices = combinations(ant.path, 2)
-
-                # Divide the amount of pheromone among all the couples
-                amount_per_combination = tuple(
-                    (pher_amount / comb(len(ant.path), 2)) * weight
-                    for pher_amount in self._pheromone_amount(ant)
-                )
+                num_combinations = comb(len(ant.path), 2)
 
                 # Deposit the pheromone
                 for pher, pher_amount in zip(
-                    self.pheromone, amount_per_combination
+                    self.pheromone, self._pheromone_amount(ant)
                 ):
+                    amount_per_combination = (
+                        pher_amount / num_combinations
+                    ) * weight
                     for (i, j) in indices:
                         pher[i][j] += amount_per_combination
                         pher[j][i] += amount_per_combination
+
+
+class ACOFS1D(ACOFS):
+    """Abstract base class for all the vector pheromone ACO-FS trainers."""
+
+    @property
+    def pheromone_shapes(self) -> tuple[tuple[int, int], ...]:
+        """Shape of the pheromone matrices.
+
+        :rtype: tuple[tuple[int]]
+        """
+        return (
+            ((self.species.num_feats, ),) * self.num_pheromone_matrices
+        )
+
+    @property
+    def heuristic_shapes(self) -> tuple[tuple[int, int], ...]:
+        """Shape of the heuristic matrices.
+
+        :rtype: tuple[tuple[int]]
+        """
+        return (
+            ((self.species.num_feats, ),) * self.num_heuristic_matrices
+        )
+
+    @property
+    def _default_heuristic(self) -> tuple[np.ndarray[float], ...]:
+        """Default heuristic matrices.
+
+        :return: An all-ones vector for each heuristic matrix
+        :rtype: tuple[~numpy.ndarray[float]]
+        """
+        return tuple(
+            np.ones(shape, dtype=np.float64)
+            for shape in self.heuristic_shapes
+        )
+
+    def _ant_choice_info(self, ant: FSAnt) -> np.ndarray[float]:
+        """Return the choice info to obtain the next node the ant will visit.
+
+        All the nodes banned by the
+        :attr:`~culebra.trainer.aco.abc.ACOFS.species`, along with all
+        the previously visited nodes are discarded.
+
+        :param ant: The ant
+        :type ant: ~culebra.solution.feature_selection.Ant
+        :rtype: ~numpy.ndarray[float]
+        """
+        ant_choice_info = np.copy(self.choice_info)
+
+        # Discard the previously visited nodes
+        ant_choice_info[ant.path] = 0
+        ant_choice_info[ant.discarded] = 0
+
+        # Discard also all the banned feats
+        if self.species.min_feat > 0:
+            ant_choice_info[np.arange(self.species.min_feat)] = 0
+        if self.species.max_feat < self.species.num_feats - 1:
+            ant_choice_info[
+                np.arange(self.species.max_feat + 1, self.species.num_feats)
+            ] = 0
+
+        return ant_choice_info
+
+    def _deposit_pheromone(
+        self,
+        ants: Sequence[FSAnt],
+        weight: float = DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
+    ) -> None:
+        """Make some ants deposit weighted pheromone.
+
+        The pheromone amount deposited by each ant is equally divided across
+        all possible feature pair combinations derived from its set of
+        selected features.
+
+        :param ants: The ants
+        :type ants:
+            ~collections.abc.Sequence[~culebra.solution.feature_selection.Ant]
+        :param weight: Weight for the pheromone. Defaults to
+            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_DEPOSIT_WEIGHT`
+        :type weight: float
+        """
+        for ant in ants:
+            for pher, pher_amount in zip(
+                self.pheromone, self._pheromone_amount(ant)
+            ):
+                for feat in ant.path:
+                    pher[feat] += pher_amount * weight
 
 
 # Exported symbols for this module
@@ -3235,5 +3341,7 @@ __all__ = [
     'MaxPheromonePACO',
     'SingleObjPACO',
     'ACOTSP',
-    'ACOFS'
+    'ACOFS',
+    'ACOFS1D',
+    'ACOFS2D'
 ]

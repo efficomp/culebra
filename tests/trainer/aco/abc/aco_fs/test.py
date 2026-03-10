@@ -24,7 +24,6 @@
 
 import unittest
 
-from itertools import combinations
 from copy import copy, deepcopy
 from os import remove
 
@@ -75,6 +74,25 @@ def KappaNumFeats(
 class MyACOFS(ACOFS):
     """Dummy implementation of a trainer method."""
 
+    @property
+    def pheromone_shapes(self):
+        return (
+            ((self.species.num_feats, ),) * self.num_pheromone_matrices
+        )
+
+    @property
+    def heuristic_shapes(self):
+        return (
+            ((self.species.num_feats, ),) * self.num_heuristic_matrices
+        )
+
+    @property
+    def _default_heuristic(self):
+        return tuple(
+            np.ones(shape, dtype=np.float64)
+            for shape in self.heuristic_shapes
+        )
+
     def _pheromone_amount (self, ant):
         return tuple(self.initial_pheromone)
 
@@ -85,6 +103,23 @@ class MyACOFS(ACOFS):
     def _reset_internals(self):
         super()._reset_internals()
         self._pheromone = None
+
+    def _ant_choice_info(self, ant):
+        ant_choice_info = np.copy(self.choice_info)
+
+        # Discard the previously visited nodes
+        ant_choice_info[ant.path] = 0
+        ant_choice_info[ant.discarded] = 0
+
+        # Discard also all the banned feats
+        if self.species.min_feat > 0:
+            ant_choice_info[np.arange(self.species.min_feat)] = 0
+        if self.species.max_feat < self.species.num_feats - 1:
+            ant_choice_info[
+                np.arange(self.species.max_feat + 1, self.species.num_feats)
+            ] = 0
+
+        return ant_choice_info
 
 
 # Dataset
@@ -153,9 +188,7 @@ class ACOFSTester(unittest.TestCase):
             trainer.initial_pheromone,
             (DEFAULT_ACOFS_INITIAL_PHEROMONE,) * trainer.num_pheromone_matrices
         )
-        default_heuristic = (
-            np.ones((species.num_feats, ) * 2) - np.identity(species.num_feats)
-        )
+        default_heuristic = np.ones((species.num_feats, ))
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == default_heuristic))
         self.assertEqual(
@@ -261,38 +294,24 @@ class ACOFSTester(unittest.TestCase):
             # Wrong shape
             (
                 np.ones(
-                    shape=(species.num_feats, species.num_feats + 1),
+                    shape=(species.num_feats, species.num_feats),
                     dtype=float
                 ),
             ),
-            np.ones(
-                shape=(species.num_feats, species.num_feats + 1),
-                dtype=float
-            ),
-            np.ones(
-                shape=(species.num_feats + 1, species.num_feats + 1),
-                dtype=float
-            ),
-            [[1, 2, 3], [4, 5, 6]],
-            ([[1, 2, 3], [4, 5, 6]], ),
-            [[1, 2], [3, 4], [5, 6]],
-            ([[1, 2], [3, 4], [5, 6]], ),
+            np.ones(shape=(species.num_feats - 1,), dtype=float),
+            np.ones(shape=(species.num_feats + 1,), dtype=float),
             # Negative values
             [
-                np.ones(
-                    shape=(species.num_feats, species.num_feats),
-                    dtype=float) * -1
+                np.ones(shape=(species.num_feats,),dtype=float) * -1
             ],
-            np.ones(
-                shape=(species.num_feats, species.num_feats), dtype=float
-            ) * -1,
+            np.ones(shape=(species.num_feats,), dtype=float) * -1,
             # Empty matrix
-            (np.ones(shape=(0, 0), dtype=float), ),
-            np.ones(shape=(0, 0), dtype=float),
+            (np.ones(shape=(0,), dtype=float), ),
+            np.ones(shape=(0,), dtype=float),
             # Wrong number of matrices
             (
                 np.ones(
-                    shape=(species.num_feats, species.num_feats), dtype=float
+                    shape=(species.num_feats,), dtype=float
                 ),
             ) * 3,
         )
@@ -300,32 +319,23 @@ class ACOFSTester(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MyACOFS(**params, heuristic=heuristic)
 
-        # Try a single two-dimensional array-like object
+        # Try a single one-dimensional array-like object
         valid_heuristic = np.full(
-            shape=(species.num_feats, species.num_feats),
-            fill_value=4,
-            dtype=float
+            shape=(species.num_feats,), fill_value=4, dtype=float
         )
         trainer = MyACOFS(**params, heuristic=valid_heuristic)
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == np.asarray(valid_heuristic)))
 
-        # Try sequences of single two-dimensional array-like objects
-        valid_heuristic = [
-            np.ones(
-                shape=(species.num_feats, species.num_feats),
-                dtype=float
-            )
-        ]
+        # Try sequences of single one-dimensional array-like objects
+        valid_heuristic = [np.ones(shape=(species.num_feats), dtype=float)]
         trainer = MyACOFS(**params, heuristic=valid_heuristic)
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == np.asarray(valid_heuristic[0])))
 
         # Try the default heuristic
         trainer = MyACOFS(**params)
-        default_heuristic = (
-            np.ones((species.num_feats, ) * 2) - np.identity(species.num_feats)
-        )
+        default_heuristic = np.ones((species.num_feats, ))
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == default_heuristic))
 
@@ -492,7 +502,7 @@ class ACOFSTester(unittest.TestCase):
         trainer._start_iteration()
         choice_info = trainer.choice_info
 
-        the_choice_info = np.ones((species.num_feats,) * 2)
+        the_choice_info = np.ones((species.num_feats,))
         for (pher, pher_inf, heur, heur_inf) in zip(
             trainer.pheromone,
             trainer.pheromone_influence,
@@ -502,58 +512,7 @@ class ACOFSTester(unittest.TestCase):
             the_choice_info *= np.power(pher, pher_inf)
             the_choice_info *= np.power(heur, heur_inf)
 
-        for feat in range(species.num_feats):
-            for next_feat in range(species.num_feats):
-                self.assertEqual(
-                    trainer.choice_info[feat, next_feat],
-                    the_choice_info[feat, next_feat]
-                )
-                self.assertEqual(
-                    trainer.choice_info[next_feat, feat],
-                    the_choice_info[feat, next_feat]
-                )
-
-    def test_ant_choice_info(self):
-        """Test the _ant_choice_info method."""
-        params = {
-            "fitness_func": training_fitness_func,
-            "solution_cls": Ant,
-            "species": species,
-            "verbosity": False
-        }
-
-        # Create the trainer
-        trainer = MyACOFS(**params)
-
-        # Initialize the internal structures
-        trainer._init_internals()
-        trainer._start_iteration()
-
-        # The ant
-        ant = trainer.solution_cls(
-            trainer.species, trainer.fitness_func.fitness_cls
-        )
-
-        discard_next_feat = True
-        for feat in feasible_feats:
-            if discard_next_feat:
-                ant.discard(feat)
-            else:
-                ant.append(feat)
-                discard_next_feat = not discard_next_feat
-
-            the_choice_info = trainer._ant_choice_info(ant)
-            self.assertTrue((the_choice_info[banned_feats] == 0).all())
-            self.assertTrue((the_choice_info[ant.path] == 0).all())
-            self.assertTrue((the_choice_info[ant.discarded] == 0).all())
-            remaining_feats = np.setdiff1d(
-                np.arange(species.num_feats),
-                np.concatenate((banned_feats, ant.path, ant.discarded))
-            )
-
-            self.assertTrue((the_choice_info[remaining_feats] > 0).all())
-
-        self.assertTrue((the_choice_info[range(species.num_feats)] == 0).all())
+        self.assertTrue((trainer.choice_info == the_choice_info).all())
 
     def test_generate_ant(self):
         """Test the _generate_ant method."""
@@ -580,50 +539,6 @@ class ACOFSTester(unittest.TestCase):
                 species_num_feats,
                 len(ant.path) + len(ant.discarded)
             )
-
-    def test_deposit_pheromone(self):
-        """Test the _deposit_pheromone method."""
-        params = {
-            "fitness_func": training_fitness_func,
-            "solution_cls": Ant,
-            "species": species,
-            "verbosity": False
-        }
-
-        # Create the trainer
-        trainer = MyACOFS(**params)
-
-        # Init the the training
-        trainer._init_training()
-        trainer._start_iteration()
-
-        for i in range(100):
-            ant = trainer._generate_ant()
-
-            # Init the pheromone matrix
-            trainer._init_pheromone()
-
-            # Let only the first ant deposit pheromone
-            trainer._deposit_pheromone([ant])
-
-            # All the combinations of two features from those in the path
-            indices = list(combinations(ant.path, 2))
-            for i in range(species.num_feats):
-                for j in range(i+1, species.num_feats):
-                    if (i, j) in indices or (j, i) in indices:
-                        self.assertGreater(
-                            trainer.pheromone[0][i][j],
-                            trainer.initial_pheromone
-                        )
-                        self.assertGreater(
-                            trainer.pheromone[0][j][i],
-                            trainer.initial_pheromone
-                        )
-                    else:
-                        self.assertEqual(
-                            trainer.pheromone[0][j][i],
-                            trainer.initial_pheromone
-                        )
 
     def test_copy(self):
         """Test the __copy__ method."""

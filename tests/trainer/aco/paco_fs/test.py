@@ -30,6 +30,7 @@ import numpy as np
 from deap.tools import sortNondominated
 
 from culebra import SERIALIZED_FILE_EXTENSION
+from culebra.trainer.aco.abc import ACOFS2D
 from culebra.trainer.aco import PACOFS
 from culebra.solution.feature_selection import Species, Ant
 from culebra.fitness_func import MultiObjectiveFitnessFunction
@@ -87,6 +88,10 @@ banned_nodes = [0, dataset.num_feats-1]
 feasible_nodes = list(range(1, dataset.num_feats-1))
 
 
+class MyPACOFS(ACOFS2D, PACOFS):
+    """PACOFS using a bidimensional matrix to store the pheromone trails."""
+
+
 class PACOFSTester(unittest.TestCase):
     """Test :class:`culebra.trainer.aco.PACOFS`."""
 
@@ -100,7 +105,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACOFS(**params)
+        trainer = MyPACOFS(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -126,7 +131,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACOFS(**params)
+        trainer = MyPACOFS(**params)
         trainer._init_training()
         trainer._start_iteration()
 
@@ -173,7 +178,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACOFS(**params)
+        trainer = MyPACOFS(**params)
 
         # Try to update the population with an empty elite
         trainer._init_training()
@@ -216,7 +221,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACOFS(**params)
+        trainer = MyPACOFS(**params)
 
         # Init the training
         trainer._init_training()
@@ -244,7 +249,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACOFS(**params)
+        trainer = MyPACOFS(**params)
 
         # Init the training
         trainer._init_training()
@@ -281,7 +286,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = PACOFS(**params)
+        trainer1 = MyPACOFS(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -310,7 +315,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = PACOFS(**params)
+        trainer1 = MyPACOFS(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -328,11 +333,11 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = PACOFS(**params)
+        trainer1 = MyPACOFS(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = PACOFS.load(serialized_filename)
+        trainer2 = MyPACOFS.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -352,7 +357,7 @@ class PACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = PACOFS(**params)
+        trainer = MyPACOFS(**params)
         trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)
