@@ -29,7 +29,7 @@ from collections.abc import Sequence
 from functools import partial
 
 import numpy as np
-from pandas import Series, DataFrame, read_csv
+from pandas import Series, DataFrame, read_csv, concat
 from pandas.errors import EmptyDataError
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
@@ -541,18 +541,25 @@ class Dataset(Base):
         :return: A dataframe with numerical values
         :rtype: ~pandas.DataFrame
         """
-        output_df = DataFrame()
+        columns_to_concat = []
+
         for col_name in dataframe:
-            col_values = dataframe[col_name].to_numpy()
-
+            col_series = dataframe[col_name]
+            
             # If the column values are not numeric
-            if not np.issubdtype(col_values.dtype, np.number):
-                labels = np.unique(col_values)
-                rep = dict(zip(labels, range(len(labels))))
-                output_df[col_name] = dataframe[col_name].map(Series(rep))
+            if not np.issubdtype(col_series.dtype, np.number):
+                labels = np.unique(col_series.dropna()) # dropna evita errores con nulos
+                rep = {val: i for i, val in enumerate(labels)}
+                # Keep the column name
+                new_col = col_series.map(rep)
+                columns_to_concat.append(new_col)
             else:
-                output_df[col_name] = dataframe[col_name]
-
+                # Is already numeric
+                columns_to_concat.append(col_series)
+    
+        # 2. Concat all the columns
+        output_df = concat(columns_to_concat, axis=1)
+        
         return output_df
 
     @staticmethod
