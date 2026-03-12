@@ -1,7 +1,7 @@
 # Culebra: Metaheuristic Optimization Framework
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Powered by DEAP](https://img.shields.io/badge/powered%20by-DEAP-orange.svg)](https://github.com/DEAP/deap)
 
 
@@ -42,7 +42,7 @@ allows you to tackle:
 
 ## 🛠️ Requirements
 
-Culebra requires Python 3.8+. It also depends on the following Python packages:
+Culebra requires Python 3.10+. It also depends on the following Python packages:
 
 * [DEAP](https://pypi.org/project/deap/)
 * [NumPy](https://pypi.org/project/numpy/)
