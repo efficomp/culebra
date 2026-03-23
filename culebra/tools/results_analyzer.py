@@ -22,13 +22,11 @@
 from __future__ import annotations
 
 from typing import NamedTuple
-from collections import UserDict, namedtuple
+from collections import UserDict
 from collections.abc import Sequence, Callable
 from functools import partial
-from warnings import catch_warnings, simplefilter
-from math import isclose
 
-import numpy
+import numpy as np
 from pandas import Series, DataFrame, MultiIndex
 from scipy.stats import (
     shapiro,
@@ -40,8 +38,7 @@ from scipy.stats import (
     f_oneway,
     mannwhitneyu,
     kruskal,
-    tukey_hsd,
-    ConstantInputWarning
+    tukey_hsd
 )
 from scikit_posthocs import posthoc_dunn
 from tabulate import tabulate
@@ -110,8 +107,8 @@ _P_ADJUST_NAMES = {
 """Names of p-values adjustment methods."""
 
 
-def __title(text: str, underline: str = '-') -> str:
-    """Make a title for the output report.
+def format_title(text: str, underline: str = '-') -> str:
+    """Format a title for the output report.
 
     :param text: Text to be displayed
     :type text: str
@@ -152,11 +149,11 @@ class TestOutcome(NamedTuple):
     batches: list
     """Labels of all the analyzed batches"""
 
-    pvalue: numpy.ndarray
+    pvalue: np.ndarray
     """p-value(s) returned by the test"""
 
     @property
-    def success(self) -> numpy.ndarray:
+    def success(self) -> np.ndarray:
         """Check the success of the test.
 
         :return: A boolean array showing where the null hypothesis is met
@@ -184,7 +181,7 @@ class TestOutcome(NamedTuple):
                     [
                         '\n'.join(self.batches),
                         self.success,
-                        numpy.round(self.pvalue, _DEFAULT_PRECISION)
+                        np.round(self.pvalue, _DEFAULT_PRECISION)
                     ]
                 ]
             else:
@@ -195,7 +192,7 @@ class TestOutcome(NamedTuple):
                 data = [
                     [
                         self.success[i],
-                        numpy.round(self.pvalue[i], _DEFAULT_PRECISION)
+                        np.round(self.pvalue[i], _DEFAULT_PRECISION)
                     ]
                     for (i, _) in sorted_batches
                 ]
@@ -223,7 +220,7 @@ class TestOutcome(NamedTuple):
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
-        output = __title(self.test)
+        output = format_title(self.test)
         # Add the input parameters to the output
         inputs = [
             ["Batches:", ", ".join(sorted(self.batches))]
@@ -262,7 +259,7 @@ class ResultsComparison(NamedTuple):
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
         # Title for the results analysis
-        output = __title("Results comparison", '=')
+        output = format_title("Results comparison", '=')
 
         # Get batches as a string
         batches = ", ".join(sorted(self.normality.batches))
@@ -283,7 +280,7 @@ class ResultsComparison(NamedTuple):
         output += tabulate(inputs, tablefmt='plain') + "\n\n\n"
 
         # Output the result of the normality test
-        output += __title("Normality: " + self.normality.test, '-')
+        output += format_title("Normality: " + self.normality.test, '-')
         normality_success = self.normality.success.all()
 
         output += "Results "
@@ -296,7 +293,7 @@ class ResultsComparison(NamedTuple):
         # If the results are normal, check homoscedasticity
         homoscedasticity_success = False
         if normality_success:
-            output += __title(
+            output += format_title(
                 "Homoscedasticity: " + self.homoscedasticity.test, '-'
             )
             homoscedasticity_success = self.homoscedasticity.success.all()
@@ -309,7 +306,7 @@ class ResultsComparison(NamedTuple):
             output += self.homoscedasticity.__str__() + "\n\n\n"
 
         # Output the global comparison results
-        output += __title(
+        output += format_title(
             "Global comparison: " + self.global_comparison.test, '-'
         )
         global_comparison_success = self.global_comparison.success.all()
@@ -323,7 +320,7 @@ class ResultsComparison(NamedTuple):
 
         # Output from a pairwise comparison
         if self.pairwise_comparison is not None:
-            output += __title(
+            output += format_title(
                 "Pairwise comparison: " +
                 self.pairwise_comparison.test +
                 f", alpha = {self.pairwise_comparison.alpha}",
@@ -354,7 +351,7 @@ class EffectSize(NamedTuple):
     batches: list
     """Labels of all the analyzed batches."""
 
-    value: numpy.ndarray
+    value: np.ndarray
     """Effect size values."""
 
     def __str__(self) -> str:
@@ -390,7 +387,7 @@ class EffectSize(NamedTuple):
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs."""
-        output = __title(self.test)
+        output = format_title(self.test)
         # Add the input parameters to the output
         inputs = [
             ["Batches:", ", ".join(sorted(self.batches))]
@@ -410,6 +407,62 @@ class EffectSize(NamedTuple):
 
 class ResultsAnalyzer(UserDict, Base):
     """Perform statistical analyses over the results of several batches."""
+
+    def _has_sufficient_variation(
+        self, data: Series, cv_threshold: float = 0.0001
+    ) -> bool:
+        """
+        Check if a data series has enough statistical variance to be used in 
+        inferential tests (e.g., normality, homoscedasticity, or t-tests).
+
+        This method acts as a safeguard to prevent mathematical errors such as 
+        division by zero or 'NaN' results in tests that rely on the standard 
+        deviation or the variance of the sample.
+
+        :param data: The pandas Series to be evaluated.
+        :type data: pandas.Series
+        :param cv_threshold: The minimum Coefficient of Variation (CV) required. 
+                          If the mean is zero, the absolute standard deviation 
+                          is compared against this threshold instead. 
+                          Defaults to 0.001.
+        :type cv_threshold: float
+        :return: True if the series is informative enough for statistical 
+                 analysis, False if it is constant or near-constant.
+        :rtype: bool
+
+        .. note::
+            A series is considered 'insufficient' if:
+            1. All values are identical (Standard Deviation is 0).
+            2. The relative spread (CV) is below the specified threshold.
+            3. The series is empty or contains only null values.
+        """
+        # Basic integrity check
+        if not isinstance(data, Series):
+            return False
+
+        # Drop NaNs to ensure accurate calculation
+        clean_data = data.dropna()
+
+        # Ensure a minimum data amount
+        if len(clean_data) < 2:
+            return False
+
+        std_dev = clean_data.std()
+        mean_val = clean_data.mean()
+
+        # If there is no variation at all, standard deviation will be 0
+        if np.isclose(std_dev, 0):
+            return False
+
+        # If mean is zero but std_dev > 0, we have variation
+        # (e.g., centered data)
+        # We return True because the data is not constant.
+        if np.isclose(mean_val, 0):
+            return True
+
+        # General case: Use the Coefficient of Variation
+        cv = abs(std_dev / mean_val)
+        return cv >= cv_threshold
 
     def normality_test(
         self,
@@ -462,11 +515,17 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Apply the test to all the distributions
         pvalues = []
-        for batch_val in data.values():
-            with catch_warnings():
-                simplefilter("ignore")
-                results = test(batch_val)
-            pvalues += (results.pvalue,)
+        for batch_values in data.values():
+            pval = None
+            if not self._has_sufficient_variation(batch_values):
+                pval = 0
+            else:
+                try:
+                    pval = test(batch_values).pvalue
+                except Exception:
+                    pval = 0
+
+            pvalues += (pval,)
 
         # Return the results
         return TestOutcome(
@@ -475,7 +534,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=numpy.asarray(pvalues)
+            pvalue=np.asarray(pvalues)
         )
 
     def homoscedasticity_test(
@@ -528,10 +587,24 @@ class ResultsAnalyzer(UserDict, Base):
                 "label"
             )
 
-        # Apply the test
-        with catch_warnings():
-            simplefilter("ignore")
-            results = test(*data.values())
+        # Check the series variation
+        validation_data = [
+            self._has_sufficient_variation(s) for s in data.values()
+        ]
+
+        pvalue = None
+
+        # If all the series are constant
+        if not any(validation_data):
+            pvalue = 1.0
+        # Else, if some series are constant and some aren't
+        elif not all(validation_data):
+            pvalue = 0.0
+        else:
+            try:
+                pvalue = test(*data.values()).pvalue
+            except Exception:
+                pvalue = 0.0
 
         # Return the results
         return TestOutcome(
@@ -540,7 +613,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=numpy.asarray([results.pvalue])
+            pvalue=np.asarray([pvalue])
         )
 
     def parametric_test(
@@ -580,28 +653,15 @@ class ResultsAnalyzer(UserDict, Base):
         data = self._gather_data(dataframe_key, column)
 
         # Check that the number of distributions is ok
-        test = None
         if len(data.keys()) < 2:
             raise ValueError(
                 "Less than two results with such dataframe key and column "
                 "label"
             )
-        if len(data.keys()) == 2:
-            # Apply the T-test
-            test = ttest_ind
-        else:
-            # Apply the one-way ANOVA test
-            test = f_oneway
 
-        # Apply the test
-        with catch_warnings(record=True) as w:
-            simplefilter("always")
-            results = test(*data.values())
-            if len(w) > 0 and isinstance(w[0].message, ConstantInputWarning):
-                F_onewayResult = namedtuple(
-                    'F_onewayResult', ('statistic', 'pvalue')
-                )
-                results = F_onewayResult(results.statistic, 1)
+        # Select the test according to the number of series
+        test = ttest_ind if len(data.keys()) == 2 else f_oneway
+        pvalue = test(*data.values()).pvalue
 
         # Return the results
         return TestOutcome(
@@ -610,7 +670,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=numpy.asarray([results.pvalue])
+            pvalue=np.asarray([pvalue])
         )
 
     def non_parametric_test(
@@ -649,23 +709,44 @@ class ResultsAnalyzer(UserDict, Base):
         data = self._gather_data(dataframe_key, column)
 
         # Check that the number of distributions is ok
-        test = None
         if len(data.keys()) < 2:
             raise ValueError(
                 "Less than two results with such dataframe key and column "
                 "label"
             )
-        if len(data.keys()) == 2:
-            # Apply the Mann-Whitney U-test
-            test = mannwhitneyu
-        else:
-            # Apply the Kruskal-Wallis H-test
-            test = kruskal
 
-        # Apply the test
-        with catch_warnings():
-            simplefilter("ignore")
-            results = test(*data.values())
+        # Check the series variation
+        validation_data = [
+            self._has_sufficient_variation(s) for s in data.values()
+        ]
+
+        test = mannwhitneyu if len(data.keys()) == 2 else kruskal
+        pvalue = None
+
+        # If all the series are constant
+        if not any(validation_data):
+            pvalue = 1.0
+            first_val = None
+            for batch_values in data.values():
+                if first_val is None:
+                    first_s = batch_values.dropna()
+                    first_val = first_s.iloc[0] if not first_s.empty else None
+                else:
+                    s = batch_values.dropna()
+                    val = s.iloc[0] if not s.empty else None
+
+                    if not np.isclose(val - first_val, 0):
+                        pvalue = 0
+                        break
+        # Else, if some series are constant and some aren't
+        elif not all(validation_data):
+            pvalue = 0.0
+        else:
+            try:
+                # Select the test according to the number of series
+                pvalue = test(*data.values()).pvalue
+            except Exception:
+                pvalue = 0.0
 
         # Return the results
         return TestOutcome(
@@ -674,7 +755,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=numpy.asarray([results.pvalue])
+            pvalue=np.asarray([pvalue])
         )
 
     def parametric_pairwise_test(
@@ -718,9 +799,7 @@ class ResultsAnalyzer(UserDict, Base):
             )
 
         # Apply the test
-        with catch_warnings():
-            simplefilter("ignore")
-            results = tukey_hsd(*data.values())
+        results = tukey_hsd(*data.values())
 
         # Return the results
         return TestOutcome(
@@ -784,9 +863,60 @@ class ResultsAnalyzer(UserDict, Base):
             )
 
         # Apply the test
-        with catch_warnings():
-            simplefilter("ignore")
-            results = posthoc_dunn([*data.values()], p_adjust=p_adjust)
+        batches = list(data.values())
+        num_batches = len(batches)
+
+        # Identify constants
+        constant_info = {}
+        for idx, series in enumerate(batches):
+            if not self._has_sufficient_variation(series):
+                clean_s = series.dropna()
+                # Keep the index and value of constant series
+                constant_info[idx] = (
+                    clean_s.iloc[0] if not clean_s.empty else None
+                )
+
+        # If not all the series are constant
+        if len(constant_info) < num_batches:
+            pvalue = posthoc_dunn(batches, p_adjust=p_adjust).to_numpy()
+        else:
+            pvalue = np.zeros((num_batches, num_batches))
+
+        # Identify constants
+        constant_info = {}
+        for idx, series in enumerate(batches):
+            if not self._has_sufficient_variation(series):
+                clean_s = series.dropna()
+                # Keep the index and value of constant series
+                constant_info[idx] = (
+                    clean_s.iloc[0] if not clean_s.empty else None
+                )
+
+        # Indices of constant series
+        constant_idx = list(constant_info.keys())
+
+        # If there are two or more constant series
+        if len(constant_idx) > 1:
+            for idx_pos in range(len(constant_idx)):
+                i = constant_idx[idx_pos]
+                val_i = constant_info[i]
+
+                for j_pos in range(idx_pos + 1, len(constant_idx)):
+                    j = constant_idx[j_pos]
+                    val_j = constant_info[j]
+
+                    # Compare the values
+                    if val_i is not None and val_j is not None:
+                        pval = 1.0 if np.isclose(val_i - val_j, 0) else 0.0
+                    else:
+                        pval = 1.0
+
+                    # Actualizamos la matriz de forma simétrica
+                    pvalue[i, j] = pval
+                    pvalue[j, i] = pval
+
+        # Fill the diagonal
+        np.fill_diagonal(pvalue, 1.0)
 
         # Return the results
         test_name = (
@@ -806,7 +936,7 @@ class ResultsAnalyzer(UserDict, Base):
             column=column,
             alpha=alpha,
             batches=list(data.keys()),
-            pvalue=results.to_numpy()
+            pvalue=pvalue
         )
 
     def effect_size(
@@ -829,33 +959,44 @@ class ResultsAnalyzer(UserDict, Base):
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with such dataframe key and column label
         """
-        def cohens_d(group1: Series, group2: Series) -> float:
+        def cohens_d(group0: Series, group1: Series) -> float:
             """Calculate the Cohen's d index fot two groups.
 
-            :param group1: The first group
+            :param group0: The first group
+            :type group0: ~pandas.Series
+            :param group1: The second group
             :type group1: ~pandas.Series
-            :param group2: The second group
-            :type group2: ~pandas.Series
             :return: The effect size
             :rtype: float
             """
-            # Calculating means of the two groups
-            mean1, mean2 = group1.mean(), group2.mean()
+            # Check the series variation
+            validation_data = [
+                self._has_sufficient_variation(s) for s in [group0, group1]
+            ]
 
-            # Calculating pooled standard deviation
-            std1, std2 = group1.std(ddof=1), group2.std(ddof=1)
-            n1, n2 = len(group1), len(group2)
-            pooled_std = numpy.sqrt(
-                ((n1 - 1) * std1 ** 2 + (n2 - 1) * std2 ** 2) / (n1 + n2 - 2)
-            )
+            mean0, mean1 = group0.mean(), group1.mean()
+            std0, std1 = group0.std(ddof=1), group1.std(ddof=1)
+
+            # If both series are constant
+            if not any(validation_data):
+                return 0 if np.isclose(mean0 - mean1, 0) else np.inf
+
+            # If only one series is constant
+            if not all(validation_data):
+                # Pooled standard deviation
+                pooled_std = std0 + std1
+            # If none is constant
+            else:
+                # Pooled standard deviation
+                n1, n2 = len(group0), len(group1)
+                pooled_std = np.sqrt(
+                    ((n1 - 1) * std0 ** 2 + (n2 - 1) * std1 ** 2) /
+                    (n1 + n2 - 2)
+                )
 
             # Calculating Cohen's d
-            if isclose(pooled_std, 0):
-                d = float('inf')
-            else:
-                d = abs(mean1 - mean2) / pooled_std
+            return abs(mean0 - mean1) / pooled_std
 
-            return d
 
         # Gather the data
         data = self._gather_data(dataframe_key, column)
@@ -868,7 +1009,7 @@ class ResultsAnalyzer(UserDict, Base):
                 "label"
             )
 
-        effect_size = numpy.zeros((num_batches, num_batches))
+        effect_size = np.zeros((num_batches, num_batches))
 
         batch_names = tuple(data.keys())
         for i, batch_i in enumerate(batch_names):
@@ -940,6 +1081,7 @@ class ResultsAnalyzer(UserDict, Base):
             dataframe_key, column, alpha=alpha, test=normality_test
         )
         normality_success = normality_result.success.all()
+        num_batches = len(normality_result.batches)
 
         # Check homoscedasticity
         homoscedasticity_result = None
@@ -972,24 +1114,25 @@ class ResultsAnalyzer(UserDict, Base):
         # If there are more than two results and they are not equal,
         # a pairwise comparison is necessary
         if (
-                len(self.keys()) > 2 and not
+                num_batches > 2 and not
                 global_comparison_result.success.all()
         ):
             pairwise_comparison_result = pairwise_compare_meth(
                 dataframe_key, column, alpha=alpha
             )
         else:
-            num_batches = len(self)
+            pvalue = np.full(
+                (num_batches, num_batches),
+                global_comparison_result.pvalue[0]
+            )
+            np.fill_diagonal(pvalue, 1.0)
             pairwise_comparison_result = TestOutcome(
                 test=global_comparison_result.test,
                 data=global_comparison_result.data,
                 column=global_comparison_result.column,
                 alpha=global_comparison_result.alpha,
                 batches=global_comparison_result.batches,
-                pvalue=numpy.full(
-                    (num_batches, num_batches),
-                    global_comparison_result.pvalue[0]
-                )
+                pvalue=pvalue
             )
 
         # Return the results
