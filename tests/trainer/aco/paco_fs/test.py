@@ -219,6 +219,9 @@ class PACOFSTester(unittest.TestCase):
             "pop_size": 5,
             "verbosity": False
         }
+        fitness_values = [(0.9, 8), (1, 10), (0.8, 12), (0.7, 11), (0.5, 20)]
+        expected_ranks = [1, 1, 2, 2, 3]
+        expected_pher_amounts = [1.0/r for r in expected_ranks]
 
         # Create the trainer
         trainer = MyPACOFS(**params)
@@ -227,16 +230,21 @@ class PACOFSTester(unittest.TestCase):
         trainer._init_training()
         trainer._start_iteration()
 
-        # Fill the pop
-        while len(trainer.pop) < trainer.pop_size:
-            trainer.pop.append(trainer._generate_ant())
-        trainer._pareto_fronts = sortNondominated(trainer.pop, trainer.pop_size)
-
-        for front_index, front in enumerate(trainer._pareto_fronts):
-            for ant in front:
-                self.assertEqual(
-                    trainer._pheromone_amount(ant), (front_index + 1,)
-                )
+        # Evaluate the population
+        for ant, fit_val in zip(trainer.pop, fitness_values):
+            ant.fitness.values = fit_val
+        
+        # Get the Pareto fronts
+        trainer._pareto_fronts = sortNondominated(
+            trainer.pop, trainer.pop_size
+        )
+        
+        # Check the pheromone amounts
+        for ant, amount in zip(trainer.pop, expected_pher_amounts):
+            self.assertTrue(
+                np.isclose(trainer._pheromone_amount(ant), amount)
+                
+            )
 
     def test_update_pheromone(self):
         """Test _update_pheromone."""

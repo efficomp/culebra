@@ -850,7 +850,7 @@ class CPACO(PACO):
         pher_amount = None
         for rank, front in enumerate(self._pareto_fronts):
             if ant in front:
-                pher_amount = rank + 1
+                pher_amount = 1/(rank + 1)
                 break
 
         return (pher_amount,)

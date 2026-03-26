@@ -28,6 +28,7 @@ from copy import copy, deepcopy
 from os import remove
 
 import numpy as np
+from deap.tools import sortNondominated
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.trainer.aco.abc import ACOTSP
@@ -451,6 +452,42 @@ class TrainerTester(unittest.TestCase):
                 initial_pher + trainer._pheromone_amount(ant)[0]
             )
             org = dest
+
+    def test_pheromone_amount(self):
+        """Test _pheromone_amount."""
+        params = {
+            "fitness_func": fitness_func,
+            "solution_cls": Ant,
+            "species": Species(num_nodes, banned_nodes),
+            "initial_pheromone": 1,
+            "pop_size": 5,
+            "verbosity": False
+        }
+        fitness_values = [(10, 8), (8, 10), (12, 10), (10, 12), (20, 20)]
+        expected_ranks = [1, 1, 2, 2, 3]
+        expected_pher_amounts = [1.0/r for r in expected_ranks]
+
+        # Create the trainer
+        trainer = CPACOTSP(**params)
+
+        # Init the training
+        trainer._init_training()
+
+        # Evaluate the population
+        for ant, fit_val in zip(trainer.pop, fitness_values):
+            ant.fitness.values = fit_val
+        
+        # Get the Pareto fronts
+        trainer._pareto_fronts = sortNondominated(
+            trainer.pop, trainer.pop_size
+        )
+        
+        # Check the pheromone amounts
+        for ant, amount in zip(trainer.pop, expected_pher_amounts):
+            self.assertTrue(
+                np.isclose(trainer._pheromone_amount(ant), amount)
+                
+            )
 
     def test_update_pheromone(self):
         """Test _update_pheromone."""
