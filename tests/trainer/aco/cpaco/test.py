@@ -473,20 +473,32 @@ class TrainerTester(unittest.TestCase):
         # Init the training
         trainer._init_training()
 
+        # Ensure that all ants in the population are different
+        for i in range(1, trainer.pop_size):
+            ant_is_unique = False
+            while not ant_is_unique:
+                ant = trainer._generate_ant()
+                ant_is_unique = True
+                for prev_ant in trainer.pop[:i]:
+                    if ant == prev_ant:
+                        ant_is_unique = False
+                        break
+
+            trainer.pop[i] = ant
+
         # Evaluate the population
         for ant, fit_val in zip(trainer.pop, fitness_values):
             ant.fitness.values = fit_val
-        
+
         # Get the Pareto fronts
         trainer._pareto_fronts = sortNondominated(
             trainer.pop, trainer.pop_size
         )
-        
+
         # Check the pheromone amounts
         for ant, amount in zip(trainer.pop, expected_pher_amounts):
             self.assertTrue(
-                np.isclose(trainer._pheromone_amount(ant), amount)
-                
+                np.isclose(trainer._pheromone_amount(ant)[0], amount)
             )
 
     def test_update_pheromone(self):

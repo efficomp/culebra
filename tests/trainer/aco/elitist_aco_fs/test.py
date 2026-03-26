@@ -205,8 +205,10 @@ class ElitistACOFSTester(unittest.TestCase):
             "fitness_func": training_fitness_func,
             "solution_cls": Ant,
             "species": species,
+            "col_size": 5,
             "verbosity": False
         }
+        fitness_values = [(0.9, 8), (1, 10), (0.8, 12), (0.7, 11), (0.5, 20)]
 
         # Create the trainer
         trainer = MyElitistACOFS(**params)
@@ -214,12 +216,18 @@ class ElitistACOFSTester(unittest.TestCase):
         # Init the training
         trainer._init_training()
         trainer._start_iteration()
+        trainer._do_iteration()
 
-        ant = trainer._generate_ant()
 
-        self.assertTrue(
-            trainer._pheromone_amount(ant) == trainer.initial_pheromone
-        )
+        # Evaluate the population
+        for ant, fit_val in zip(trainer.col, fitness_values):
+            ant.fitness.values = fit_val
+
+        # Check the pheromone amounts
+        for ant in trainer.col:
+            self.assertTrue(
+                trainer._pheromone_amount(ant) == trainer.initial_pheromone
+            )
 
     def test_update_pheromone(self):
         """Test _update_pheromone."""
