@@ -54,6 +54,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.iteration_obj_stats
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.logbook
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.ACOFS.max_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.num_evals
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.num_heuristic_matrices
@@ -61,6 +62,7 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.pheromone_shapes
+.. autoproperty:: culebra.trainer.aco.abc.ACOFS.pop_size
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.random_seed
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.runtime
@@ -85,7 +87,9 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_index
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_initial_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_max_num_iters
+.. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_max_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_pheromone_influence
+.. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_pop_size
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_verbosity
@@ -135,3 +139,4 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ACOFS._unfeasible_nodes
 .. automethod:: culebra.trainer.aco.abc.ACOFS._update_logbook
 .. automethod:: culebra.trainer.aco.abc.ACOFS._update_pheromone
+.. automethod:: culebra.trainer.aco.abc.ACOFS._update_pop

@@ -47,8 +47,8 @@ r"""Default pheromone evaporation rate (:math:`{\rho}`)."""
 DEFAULT_CONVERGENCE_CHECK_FREQ = 100
 """Default frequency to check if an elitist ACO has converged."""
 
-DEFAULT_ACOFS_INITIAL_PHEROMONE = 1
-"""Default initial pheromone for ACO-FS approaches."""
+DEFAULT_ACOFS_MAX_PHEROMONE = 1.0
+"""Default maximum pheromone for ACO-FS approaches."""
 
 DEFAULT_ACOFS_HEURISTIC_INFLUENCE = 0
 r"""Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches."""
@@ -68,7 +68,7 @@ __all__ = [
     'DEFAULT_PHEROMONE_DEPOSIT_WEIGHT',
     'DEFAULT_PHEROMONE_EVAPORATION_RATE',
     'DEFAULT_CONVERGENCE_CHECK_FREQ',
-    'DEFAULT_ACOFS_INITIAL_PHEROMONE',
+    'DEFAULT_ACOFS_MAX_PHEROMONE',
     'DEFAULT_ACOFS_HEURISTIC_INFLUENCE',
     'DEFAULT_ACOFS_EXPLOITATION_PROB',
     'DEFAULT_ACOFS_DISCARD_PROB'

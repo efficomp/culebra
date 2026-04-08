@@ -38,5 +38,3 @@
     SingleObjPACO <abc/single_obj_paco>
     ACOTSP <abc/aco_tsp>
     ACOFS <abc/aco_fs>
-    ACOFS1D <abc/aco_fs_1d>
-    ACOFS2D <abc/aco_fs_2d>

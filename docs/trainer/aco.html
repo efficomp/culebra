@@ -85,10 +85,10 @@ PACO-MO algorithm</p></li>
 <li><p>The <a class="reference internal" href="aco/aco_fs_convergence_detector.html#culebra.trainer.aco.ACOFSConvergenceDetector" title="culebra.trainer.aco.ACOFSConvergenceDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFSConvergenceDetector</span></code></a> class,
 designed to enable stopping <a class="reference internal" href="aco/abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS" title="culebra.trainer.aco.abc.ACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFS</span></code></a>
 trainers upon convergence</p></li>
-<li><p>The <a class="reference internal" href="aco/elitist_aco_fs.html#culebra.trainer.aco.ElitistACOFS" title="culebra.trainer.aco.ElitistACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElitistACOFS</span></code></a> class. A new
-elitist ACO-based wrapper for Feature Selection problems</p></li>
-<li><p>The <a class="reference internal" href="aco/paco_fs.html#culebra.trainer.aco.PACOFS" title="culebra.trainer.aco.PACOFS"><code class="xref py py-class docutils literal notranslate"><span class="pre">PACOFS</span></code></a> class. A new
-population-based wrapper ACO approach for Feature Selection problems</p></li>
+<li><p>The <a class="reference internal" href="aco/aco_fs_1d.html#culebra.trainer.aco.ACOFS1D" title="culebra.trainer.aco.ACOFS1D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFS1D</span></code></a>, which uses a vector to keep
+the pheromone trails</p></li>
+<li><p>The <a class="reference internal" href="aco/aco_fs_2d.html#culebra.trainer.aco.ACOFS2D" title="culebra.trainer.aco.ACOFS2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ACOFS2D</span></code></a>, using a bidimensional matrix to
+keep the pheromone trails</p></li>
 </ul>
 </li>
 </ul>
@@ -113,9 +113,9 @@ population-based wrapper ACO approach for Feature Selection problems</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACOFS_INITIAL_PHEROMONE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE" title="Link to this definition">¶</a></dt>
-<dd><p>Default initial pheromone.</p>
+<dt class="sig sig-object py" id="culebra.trainer.aco.DEFAULT_ACOFS_MAX_PHEROMONE">
+<span class="sig-name descname"><span class="pre">DEFAULT_ACOFS_MAX_PHEROMONE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1.0</span></em><a class="headerlink" href="#culebra.trainer.aco.DEFAULT_ACOFS_MAX_PHEROMONE" title="Link to this definition">¶</a></dt>
+<dd><p>Default maximum pheromone for ACO-FS approaches</p>
 </dd></dl>
 
 <dl class="py attribute">

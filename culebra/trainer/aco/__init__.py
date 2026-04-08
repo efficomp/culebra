@@ -55,10 +55,10 @@ This module is composed by:
   * The :class:`~culebra.trainer.aco.ACOFSConvergenceDetector` class,
     designed to enable stopping :class:`~culebra.trainer.aco.abc.ACOFS`
     trainers upon convergence
-  * The :class:`~culebra.trainer.aco.ElitistACOFS` class. A new
-    elitist ACO-based wrapper for Feature Selection problems
-  * The :class:`~culebra.trainer.aco.PACOFS` class. A new
-    population-based wrapper ACO approach for Feature Selection problems
+  * The :class:`~culebra.trainer.aco.ACOFS1D`, which uses a vector to keep
+    the pheromone trails
+  * The :class:`~culebra.trainer.aco.ACOFS2D`, using a bidimensional matrix to
+    keep the pheromone trails
 """
 
 from .constants import (
@@ -68,7 +68,7 @@ from .constants import (
     DEFAULT_PHEROMONE_DEPOSIT_WEIGHT,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
     DEFAULT_CONVERGENCE_CHECK_FREQ,
-    DEFAULT_ACOFS_INITIAL_PHEROMONE,
+    DEFAULT_ACOFS_MAX_PHEROMONE,
     DEFAULT_ACOFS_HEURISTIC_INFLUENCE,
     DEFAULT_ACOFS_EXPLOITATION_PROB,
     DEFAULT_ACOFS_DISCARD_PROB
@@ -94,8 +94,8 @@ from .multi_obj_aco import (
 
 from .aco_fs import (
     ACOFSConvergenceDetector,
-    PACOFS,
-    ElitistACOFS
+    ACOFS1D,
+    ACOFS2D
 )
 
 
@@ -119,8 +119,8 @@ __all__ = [
     'PACOMO',
     'CPACO',
     'ACOFSConvergenceDetector',
-    'PACOFS',
-    'ElitistACOFS',
+    'ACOFS1D',
+    'ACOFS2D',
     'DEFAULT_PHEROMONE_INFLUENCE',
     'DEFAULT_HEURISTIC_INFLUENCE',
     'DEFAULT_EXPLOITATION_PROB',
@@ -130,7 +130,7 @@ __all__ = [
     'DEFAULT_AS_EXPLOITATION_PROB',
     'DEFAULT_ELITE_WEIGHT',
     'DEFAULT_MMAS_ITER_BEST_USE_LIMIT',
-    'DEFAULT_ACOFS_INITIAL_PHEROMONE',
+    'DEFAULT_ACOFS_MAX_PHEROMONE',
     'DEFAULT_ACOFS_HEURISTIC_INFLUENCE',
     'DEFAULT_ACOFS_EXPLOITATION_PROB',
     'DEFAULT_ACOFS_DISCARD_PROB'

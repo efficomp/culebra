@@ -208,7 +208,7 @@ class AntSystem(PheromoneBasedACO, SingleObjACO):
     def _default_exploitation_prob(self) -> float:
         r"""Default exploitation probability (:math:`{q_0}`).
 
-        :return: attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB`
+        :return: :attr:`~culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB`
         :rtype: float
         """
         return DEFAULT_AS_EXPLOITATION_PROB
@@ -376,7 +376,7 @@ class ElitistAntSystem(ReseteablePheromoneBasedACO, SingleObjACO):
     def _default_elite_weight(self) -> float:
         """Default elite weigth.
 
-        :return: attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT`
+        :return: :attr:`~culebra.trainer.aco.DEFAULT_ELITE_WEIGHT`
         :rtype: float
         """
         return DEFAULT_ELITE_WEIGHT
@@ -603,7 +603,7 @@ class MMAS(ReseteablePheromoneBasedACO, SingleObjACO):
     def _default_iter_best_use_limit(self) -> int:
         """Default iteration-best use limit.
 
-        :return: attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
+        :return: :attr:`~culebra.trainer.aco.DEFAULT_MMAS_ITER_BEST_USE_LIMIT`
         :rtype: int
         """
         return DEFAULT_MMAS_ITER_BEST_USE_LIMIT

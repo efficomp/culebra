@@ -42,10 +42,10 @@ Attributes
     
     Default heuristic influence (:math:`{\beta}`) for ACO-FS approaches.
 
-.. attribute:: DEFAULT_ACOFS_INITIAL_PHEROMONE
-    :annotation: = 1
-
-    Default initial pheromone.
+.. attribute:: DEFAULT_ACOFS_MAX_PHEROMONE
+    :annotation: = 1.0
+    
+    Default maximum pheromone for ACO-FS approaches
 
 .. attribute:: DEFAULT_AS_EXPLOITATION_PROB
     :annotation: = 0
@@ -109,6 +109,7 @@ Attributes
     QualityBasedPACO <aco/quality_based_paco>
     PACOMO <aco/paco_mo>
     CPACO <aco/cpaco>
-    PACOFS <aco/paco_fs>
-    ElitistACOFS <aco/elitist_aco_fs>
     ACOFSConvergenceDetector <aco/aco_fs_convergence_detector>
+    ACOFS1D <aco/aco_fs_1d>
+    ACOFS2D <aco/aco_fs_2d>
+    

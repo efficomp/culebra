@@ -32,13 +32,8 @@ from culebra.fitness_func.feature_selection import (
     KappaIndex,
     NumFeats
 )
-from culebra.trainer.aco.abc import ACOFS1D
-from culebra.trainer.aco import PACOFS, ACOFSConvergenceDetector
+from culebra.trainer.aco import ACOFSConvergenceDetector, ACOFS1D
 from culebra.tools import Dataset
-
-
-class PACOFS1D(ACOFS1D, PACOFS):
-    """PACOFS using a vector to store the pheromone trails."""
 
 
 # Fitness function
@@ -105,7 +100,7 @@ params = {
 }
 
 # Create the wrapper
-wrapper = PACOFS1D(**params)
+wrapper = ACOFS1D(**params)
 
 # Train the wrapper
 print("Training ...")

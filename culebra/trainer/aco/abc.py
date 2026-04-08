@@ -55,14 +55,8 @@ Ant Colony Optimization based trainers.
 * Finally, regarding the kind of problem:
 
   * :class:`~culebra.trainer.aco.abc.ACOFS`: A base class for all the
-    ACO-based approaches for FS:
-        
-    * :class:`~culebra.trainer.aco.abc.ACOFS1D`: Base class for all the
-      ACO-based approaches for FS using a vector to keep the pheromone trails
-    * :class:`~culebra.trainer.aco.abc.ACOFS2D`: Base class for all the
-      ACO-based approaches for FS using a bidimensional matrix to keep the
-      pheromone trails
-    
+    ACO-based approaches for FS
+
   * :class:`~culebra.trainer.aco.abc.ACOTSP`: A base class for all the
     ACO-based approaches for TSP
 """
@@ -73,14 +67,13 @@ from abc import abstractmethod
 from typing import Any
 from collections.abc import Sequence, Callable
 from random import random
-from math import comb
+import math
 from functools import partial
-from itertools import combinations
 from copy import deepcopy
 from numbers import Real
 
 import numpy as np
-from deap.tools import HallOfFame, ParetoFront
+from deap.tools import HallOfFame, ParetoFront, sortNondominated, selNSGA2
 
 from culebra.abc import Species, FitnessFunction
 from culebra.checker import (
@@ -107,7 +100,7 @@ from .constants import (
     DEFAULT_PHEROMONE_DEPOSIT_WEIGHT,
     DEFAULT_PHEROMONE_EVAPORATION_RATE,
     DEFAULT_CONVERGENCE_CHECK_FREQ,
-    DEFAULT_ACOFS_INITIAL_PHEROMONE,
+    DEFAULT_ACOFS_MAX_PHEROMONE,
     DEFAULT_ACOFS_HEURISTIC_INFLUENCE,
     DEFAULT_ACOFS_EXPLOITATION_PROB,
     DEFAULT_ACOFS_DISCARD_PROB
@@ -665,7 +658,7 @@ class ACO(CentralizedTrainer):
     def _default_exploitation_prob(self) -> float:
         r"""Default exploitation probability (:math:`{q_0}`).
 
-        :return: attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB`
+        :return: :attr:`~culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB`
         :rtype: float
         """
         return DEFAULT_EXPLOITATION_PROB
@@ -2805,7 +2798,7 @@ class ACOTSP(ACO):
                     org = dest
 
 
-class ACOFS(ACO):
+class ACOFS(MaxPheromonePACO):
     """Abstract base class for all the ACO-FS trainers."""
 
     def __init__(
@@ -2814,12 +2807,14 @@ class ACOFS(ACO):
         solution_cls: type[FSAnt],
         species: FSSpecies,
         initial_pheromone: float | Sequence[float, ...] | None = None,
+        max_pheromone: float | Sequence[float, ...] | None = None,
         heuristic:
             np.ndarray[float] | Sequence[np.ndarray[float], ...] | None = None,
         pheromone_influence: float | Sequence[float, ...] | None = None,
         heuristic_influence: float | Sequence[float, ...] | None = None,
         exploitation_prob: float | None = None,
         col_size: int | None = None,
+        pop_size: int | None = None,
         discard_prob: float | None = None,
         custom_termination_func: Callable[[ACOFS], bool] | None = None,
         max_num_iters: int | None = None,
@@ -2846,6 +2841,15 @@ class ACOFS(ACO):
             :attr:`~culebra.trainer.aco.abc.ACOFS._default_initial_pheromone`
             will be used. Defaults to :data:`None`
         :type initial_pheromone: float | ~collections.abc.Sequence[float]
+        :param max_pheromone: Maximum amount of pheromone for the paths
+            of each pheromone matrix. Both a scalar value or a sequence of
+            values are allowed. If a scalar value is provided, it will be used
+            for all the
+            :attr:`~culebra.trainer.aco.abc.ACOFS.num_pheromone_matrices`
+            pheromone matrices.If omitted,
+            :attr:`~culebra.trainer.aco.abc.ACOFS._default_max_pheromone`
+            will be used. Defaults to :data:`None`
+        :type max_pheromone: float | ~collections.abc.Sequence[float]
         :param heuristic: Heuristic matrices. Both a single matrix or a
             sequence of matrices are allowed. If a single matrix is provided,
             it will be replicated for all the
@@ -2883,6 +2887,10 @@ class ACOFS(ACO):
             :attr:`~culebra.trainer.aco.abc.ACOFS._default_col_size` will be
             used. Defaults to :data:`None`
         :type col_size: int
+        :param pop_size: The population size. If omitted,
+            :attr:`~culebra.trainer.aco.abc.ACOFS._default_pop_size`
+            will be used. Defaults to :data:`None`
+        :type pop_size: int
         :param discard_prob: Probability of discarding a node (feature). If
             omitted,
             :attr:`~culebra.trainer.aco.abc.ACOFS._default_discard_prob` is
@@ -2919,17 +2927,19 @@ class ACOFS(ACO):
         :raises ValueError: If any argument has an incorrect value
         """
         # Init the superclass
-        ACO.__init__(
+        MaxPheromonePACO.__init__(
             self,
             fitness_func=fitness_func,
             solution_cls=solution_cls,
             species=species,
             initial_pheromone=initial_pheromone,
+            max_pheromone=max_pheromone,
             heuristic=heuristic,
             pheromone_influence=pheromone_influence,
             heuristic_influence=heuristic_influence,
             exploitation_prob=exploitation_prob,
             col_size=col_size,
+            pop_size=pop_size,
             custom_termination_func=custom_termination_func,
             max_num_iters=max_num_iters,
             checkpoint_activation=checkpoint_activation,
@@ -2940,6 +2950,9 @@ class ACOFS(ACO):
         )
 
         self.discard_prob = discard_prob
+        self._pareto_fronts = None
+        self._num_pareto_fronts = None
+        self._pheromone_delta = None
 
     @property
     def num_pheromone_matrices(self) -> int:
@@ -2957,7 +2970,7 @@ class ACOFS(ACO):
         """
         return 1
 
-    @ACO.solution_cls.setter
+    @MaxPheromonePACO.solution_cls.setter
     def solution_cls(self, value: type[FSAnt]) -> None:
         """Set a new solution class.
 
@@ -2967,9 +2980,9 @@ class ACOFS(ACO):
             :class:`~culebra.solution.feature_selection.Ant` subclass
         """
         check_subclass(value, "solution class", FSAnt)
-        ACO.solution_cls.fset(self, value)
+        MaxPheromonePACO.solution_cls.fset(self, value)
 
-    @ACO.species.setter
+    @MaxPheromonePACO.species.setter
     def species(self, value: FSSpecies) -> None:
         """Set a new species.
 
@@ -2979,20 +2992,20 @@ class ACOFS(ACO):
             :class:`~culebra.solution.feature_selection.Species`
         """
         check_instance(value, "species", FSSpecies)
-        ACO.species.fset(self, value)
+        MaxPheromonePACO.species.fset(self, value)
 
     @property
     def _default_initial_pheromone(self) -> tuple[float, ...]:
-        """Default value for the initial pheromone.
+        r"""Default value for the initial pheromone.
 
-        :return: The
-            attr:`~culebra.trainer.aco.DEFAULT_ACOFS_INITIAL_PHEROMONE`
-            for each pheromone matrix
+        :return: :math:`{0.01 \cdot }` ``number of features``
+            :math:`{^{-1/3}}` for all the pheromone matrices
         :rtype: tuple[float]
         """
-        return (DEFAULT_ACOFS_INITIAL_PHEROMONE,) * self.num_pheromone_matrices
+        init_pher = 0.01 / (math.pow(self.species.num_feats, 1/3))
+        return (init_pher,) * self.num_pheromone_matrices
 
-    @ACO.initial_pheromone.setter
+    @MaxPheromonePACO.initial_pheromone.setter
     def initial_pheromone(
         self, values: float | Sequence[float, ...] | None
     ) -> None:
@@ -3015,7 +3028,43 @@ class ACOFS(ACO):
         """
         if values is None:
             values = self._default_initial_pheromone
-        ACO.initial_pheromone.fset(self, values)
+        MaxPheromonePACO.initial_pheromone.fset(self, values)
+
+    @property
+    def _default_max_pheromone(self) -> tuple[float, ...]:
+        """Default value for the maximum pheromone.
+
+        :return: 
+            :attr:`~culebra.trainer.aco.DEFAULT_ACOFS_MAX_PHEROMONE`
+            for each pheromone matrix
+        :rtype: tuple[float]
+        """
+        return (DEFAULT_ACOFS_MAX_PHEROMONE,) * self.num_pheromone_matrices
+
+    @MaxPheromonePACO.max_pheromone.setter
+    def max_pheromone(self, values: float | Sequence[float, ...]) -> None:
+        """Set the maximum value for each pheromone matrix.
+
+        :param values: New maximum value for each pheromone matrix. Both a
+            scalar value or a sequence of values are allowed. If a scalar value
+            is provided, it will be used for all the
+            :attr:`~culebra.trainer.aco.abc.ACOSF.num_pheromone_matrices`
+            pheromone matrices. If omitted,
+            :attr:`~culebra.trainer.aco.abc.ACOFS._default_max_pheromone`
+            is chosen
+        :type values: float | ~collections.abc.Sequence[float]
+        :raises TypeError: If *values* is neither a float nor a Sequence of
+            float values
+        :raises ValueError: If any element in *values* is negative or zero
+        :raises ValueError: If any element in *values* is lower than or
+            equal to its corresponding initial pheromone value
+        :raises ValueError: If *values* is a sequence and it length is
+            different from
+            :attr:`~culebra.trainer.aco.abc.ACOFS.num_pheromone_matrices`
+        """
+        if values is None:
+            values = self._default_max_pheromone
+        MaxPheromonePACO.max_pheromone.fset(self, values)
 
     @property
     def _default_heuristic_influence(self) -> tuple[float, ...]:
@@ -3033,7 +3082,7 @@ class ACOFS(ACO):
     def _default_exploitation_prob(self) -> float:
         r"""Default exploitation probability (:math:`{q_0}`).
 
-        :return: attr:`~culebra.trainer.aco.DEFAULT_ACOFS_EXPLOITATION_PROB`
+        :return: :attr:`~culebra.trainer.aco.DEFAULT_ACOFS_EXPLOITATION_PROB`
         :rtype: float
         """
         return DEFAULT_ACOFS_EXPLOITATION_PROB
@@ -3052,7 +3101,7 @@ class ACOFS(ACO):
     def _default_discard_prob(self) -> float:
         """Default probability of discarding a node.
 
-        :return: attr:`~culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB`
+        :return: :attr:`~culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB`
         :rtype: float
         """
         return DEFAULT_ACOFS_DISCARD_PROB
@@ -3172,174 +3221,51 @@ class ACOFS(ACO):
 
         return ant
 
+    def _update_pop(self) -> None:
+        """Update the population."""
+        # Update the population according to the NSGA-II selection
+        # procedure
+        self.pop[:] = selNSGA2(self.pop + self.col, self.pop_size)
 
-class ACOFS2D(ACOFS):
-    """Abstract base class for all the 2D pheromone matrix ACO-FS trainers."""
+    def _pheromone_amount (self, ant: Ant) -> tuple[float, ...]:
+        """Return the amount of pheromone to be deposited by an ant.
 
-    @property
-    def pheromone_shapes(self) -> tuple[tuple[int, int], ...]:
-        """Shape of the pheromone matrices.
-
-        :rtype: tuple[tuple[int]]
-        """
-        return (
-            ((self.species.num_feats, ) * 2,) * self.num_pheromone_matrices
-        )
-
-    @property
-    def heuristic_shapes(self) -> tuple[tuple[int, int], ...]:
-        """Shape of the heuristic matrices.
-
-        :rtype: tuple[tuple[int]]
-        """
-        return (
-            ((self.species.num_feats, ) * 2,) * self.num_heuristic_matrices
-        )
-
-    @property
-    def _default_heuristic(self) -> tuple[np.ndarray[float], ...]:
-        """Default heuristic matrices.
-
-        :return: An all-ones matrix with a zero diagonal for each heuristic
-            matrix
-        :rtype: tuple[~numpy.ndarray[float]]
-        """
-        def create_hollow_matrix(shape: tuple[int, int]) -> np.ndarray:
-            """Create an all-ones matrix with a zero diagonal.
-
-            :param shape: Matrix shape
-            :type shape: tuple[int, int]
-            :return: The matrix
-            :rtype: ~numpy.ndarray
-            """
-            arr = np.ones(shape, dtype=np.float64)
-            np.fill_diagonal(arr, 0)
-            return arr
-
-        return tuple(
-            create_hollow_matrix(shape)
-            for shape in self.heuristic_shapes
-        )
-
-    # Use the same implementation as ACOTSP for _ant_choice_info
-    _ant_choice_info = ACOTSP._ant_choice_info
-
-    def _deposit_pheromone(
-        self,
-        ants: Sequence[FSAnt],
-        weight: float = DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
-    ) -> None:
-        """Make some ants deposit weighted pheromone.
-
-        The pheromone amount deposited by each ant is equally divided across
-        all possible feature pair combinations derived from its set of
-        selected features.
-
-        A symmetric problem is assumed. Thus if (*i*, *j*) is an arc in an
-        ant's path, arc (*j*, *i*) is also incremented the by same amount.
-
-        :param ants: The ants
-        :type ants:
-            ~collections.abc.Sequence[~culebra.solution.feature_selection.Ant]
-        :param weight: Weight for the pheromone. Defaults to
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_DEPOSIT_WEIGHT`
-        :type weight: float
-        """
-        for ant in ants:
-            if len(ant.path) > 1:
-                # All the combinations of two features from those in the path
-                indices = combinations(ant.path, 2)
-                num_combinations = comb(len(ant.path), 2)
-
-                # Deposit the pheromone
-                for pher, pher_amount in zip(
-                    self.pheromone, self._pheromone_amount(ant)
-                ):
-                    amount_per_combination = (
-                        pher_amount / num_combinations
-                    ) * weight
-                    for (i, j) in indices:
-                        pher[i][j] += amount_per_combination
-                        pher[j][i] += amount_per_combination
-
-
-class ACOFS1D(ACOFS):
-    """Abstract base class for all the vector pheromone ACO-FS trainers."""
-
-    @property
-    def pheromone_shapes(self) -> tuple[tuple[int, int], ...]:
-        """Shape of the pheromone matrices.
-
-        :rtype: tuple[tuple[int]]
-        """
-        return (
-            ((self.species.num_feats, ),) * self.num_pheromone_matrices
-        )
-
-    @property
-    def heuristic_shapes(self) -> tuple[tuple[int, int], ...]:
-        """Shape of the heuristic matrices.
-
-        :rtype: tuple[tuple[int]]
-        """
-        return (
-            ((self.species.num_feats, ),) * self.num_heuristic_matrices
-        )
-
-    @property
-    def _default_heuristic(self) -> tuple[np.ndarray[float], ...]:
-        """Default heuristic matrices.
-
-        :return: An all-ones vector for each heuristic matrix
-        :rtype: tuple[~numpy.ndarray[float]]
-        """
-        return tuple(
-            np.ones(shape, dtype=np.float64)
-            for shape in self.heuristic_shapes
-        )
-
-    def _ant_choice_info(self, ant: FSAnt) -> np.ndarray[float]:
-        """Return the choice info to obtain the next node the ant will visit.
-
-        All the nodes banned by the
-        :attr:`~culebra.trainer.aco.abc.ACOFS.species`, along with all
-        the previously visited nodes are discarded.
+        Each ant deposits an amount of pheromone calculated as its rank + 1.
 
         :param ant: The ant
         :type ant: ~culebra.solution.feature_selection.Ant
-        :rtype: ~numpy.ndarray[float]
+        :return: The amount of pheromone to be deposited for each objective
+        :rtype: tuple[float]
         """
-        ant_choice_info = np.copy(self.choice_info)
+        pher_amount = None
+        for rank, front in enumerate(self._pareto_fronts):
+            if ant in front:
+                pher_amount = self._pheromone_delta * (
+                    self._num_pareto_fronts - rank
+                )
+                break
 
-        # Discard the unfeasible nodes
-        ant_choice_info[self._unfeasible_nodes(ant)] = 0
+        return (pher_amount,)
 
-        return ant_choice_info
+    def _update_pheromone(self) -> None:
+        """Update the pheromone trails.
 
-    def _deposit_pheromone(
-        self,
-        ants: Sequence[FSAnt],
-        weight: float = DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
-    ) -> None:
-        """Make some ants deposit weighted pheromone.
-
-        The pheromone amount deposited by each ant is equally divided across
-        all possible feature pair combinations derived from its set of
-        selected features.
-
-        :param ants: The ants
-        :type ants:
-            ~collections.abc.Sequence[~culebra.solution.feature_selection.Ant]
-        :param weight: Weight for the pheromone. Defaults to
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_DEPOSIT_WEIGHT`
-        :type weight: float
+        Pheromone trails are reinitialized and updated according to the
+        current population.
         """
-        for ant in ants:
-            for pher, pher_amount in zip(
-                self.pheromone, self._pheromone_amount(ant)
-            ):
-                for feat in ant.path:
-                    pher[feat] += pher_amount * weight
+        # Reinitialize the pheromone trails
+        self._init_pheromone()
+
+        # Sort the population into nondomination levels to allow the
+        # _pheromone_amount method to assign a pheromone amount
+        self._pareto_fronts = sortNondominated(self.pop, self.pop_size)
+        self._num_pareto_fronts = len(self._pareto_fronts)
+        self._pheromone_delta = (
+            self.max_pheromone[0] - self.initial_pheromone[0]
+            ) / (self.pop_size * self._num_pareto_fronts)
+
+        # Update the pheromone matrices with the current population
+        self._deposit_pheromone(self.pop)
 
 
 # Exported symbols for this module
@@ -3353,7 +3279,5 @@ __all__ = [
     'MaxPheromonePACO',
     'SingleObjPACO',
     'ACOTSP',
-    'ACOFS',
-    'ACOFS1D',
-    'ACOFS2D'
+    'ACOFS'
 ]

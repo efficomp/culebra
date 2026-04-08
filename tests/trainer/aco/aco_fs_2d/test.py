@@ -20,27 +20,19 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :class:`culebra.trainer.aco.abc.ACOFS`."""
+"""Unit test for :class:`culebra.trainer.aco.ACOFS1D`."""
 
 import unittest
 
+from itertools import combinations
+
 import numpy as np
 
-from culebra.trainer import DEFAULT_MAX_NUM_ITERS
-from culebra.trainer.aco import (
-    DEFAULT_PHEROMONE_INFLUENCE,
-    DEFAULT_ACOFS_INITIAL_PHEROMONE,
-    DEFAULT_ACOFS_HEURISTIC_INFLUENCE,
-    DEFAULT_ACOFS_EXPLOITATION_PROB,
-    DEFAULT_ACOFS_DISCARD_PROB
-)
-from culebra.trainer.aco.abc import ACOFS1D
+from deap.tools import sortNondominated
+
+from culebra.trainer.aco import ACOFS2D
 
 from culebra.solution.feature_selection import Species, Ant
-from culebra.solution.tsp import (
-    Species as TSPSpecies,
-    Ant as TSPAnt
-)
 from culebra.fitness_func import MultiObjectiveFitnessFunction
 from culebra.fitness_func.feature_selection import (
     KappaIndex,
@@ -66,20 +58,6 @@ def KappaNumFeats(
         ),
         NumFeats()
     )
-
-class MyACOFS(ACOFS1D):
-    """Dummy implementation of a trainer method."""
-
-    def _pheromone_amount (self, ant):
-        return tuple(self.initial_pheromone)
-
-    def _init_internals(self):
-        super()._init_internals()
-        self._init_pheromone()
-
-    def _reset_internals(self):
-        super()._reset_internals()
-        self._pheromone = None
 
 
 # Dataset
@@ -111,58 +89,7 @@ feasible_feats = list(range(1, dataset.num_feats-1))
 
 
 class ACOFSTester(unittest.TestCase):
-    """Test :class:`culebra.trainer.aco.abc.ACOFS`."""
-
-    def test_init(self):
-        """Test __init__."""
-        tsp_species = TSPSpecies(species.num_feats)
-
-        # Try invalid fitness functions. Should fail
-        invalid_fitness_funcs = (type, None, 'a', 1)
-        for func in invalid_fitness_funcs:
-            with self.assertRaises(TypeError):
-                MyACOFS(func, Ant, tsp_species)
-
-        # Try an invalid ant. Should fail
-        with self.assertRaises(TypeError):
-            MyACOFS(training_fitness_func, TSPAnt, species)
-
-        # Try an invalid species. Should fail
-        with self.assertRaises(TypeError):
-            MyACOFS(training_fitness_func, Ant, tsp_species)
-
-        # Create the trainer
-        params = {
-            "fitness_func": training_fitness_func,
-            "solution_cls": Ant,
-            "species": species,
-            "verbosity": False
-        }
-        trainer = MyACOFS(**params)
-
-        # Check the parameters
-        self.assertEqual(trainer.fitness_func, training_fitness_func)
-        self.assertEqual(trainer.solution_cls, params["solution_cls"])
-        self.assertEqual(trainer.species, species)
-        self.assertEqual(
-            trainer.initial_pheromone,
-            (DEFAULT_ACOFS_INITIAL_PHEROMONE,) * trainer.num_pheromone_matrices
-        )
-        default_heuristic = np.ones((species.num_feats, ))
-        for heur in trainer.heuristic:
-            self.assertTrue(np.all(heur == default_heuristic))
-        self.assertEqual(
-            trainer.pheromone_influence, (DEFAULT_PHEROMONE_INFLUENCE,)
-        )
-        self.assertEqual(
-            trainer.heuristic_influence, (DEFAULT_ACOFS_HEURISTIC_INFLUENCE,)
-        )
-        self.assertEqual(
-            trainer.exploitation_prob, DEFAULT_ACOFS_EXPLOITATION_PROB
-        )
-        self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
-        self.assertEqual(trainer.col_size, species.num_feats)
-        self.assertEqual(trainer.discard_prob, DEFAULT_ACOFS_DISCARD_PROB)
+    """Test :class:`culebra.trainer.aco.ACOFS2D`."""
 
     def test_heuristic(self):
         """Test the heuristic property."""
@@ -177,7 +104,7 @@ class ACOFSTester(unittest.TestCase):
         invalid_heuristic = (type, 1)
         for heuristic in invalid_heuristic:
             with self.assertRaises(TypeError):
-                trainer = MyACOFS(**params, heuristic=heuristic)
+                trainer = ACOFS2D(**params, heuristic=heuristic)
 
         # Try invalid values for heuristic. Should fail
         invalid_heuristic = (
@@ -186,48 +113,71 @@ class ACOFSTester(unittest.TestCase):
             # Wrong shape
             (
                 np.ones(
-                    shape=(species.num_feats, species.num_feats),
+                    shape=(species.num_feats, species.num_feats + 1),
                     dtype=float
                 ),
             ),
-            np.ones(shape=(species.num_feats - 1,), dtype=float),
-            np.ones(shape=(species.num_feats + 1,), dtype=float),
+            np.ones(
+                shape=(species.num_feats, species.num_feats + 1),
+                dtype=float
+            ),
+            np.ones(
+                shape=(species.num_feats + 1, species.num_feats + 1),
+                dtype=float
+            ),
+            [[1, 2, 3], [4, 5, 6]],
+            ([[1, 2, 3], [4, 5, 6]], ),
+            [[1, 2], [3, 4], [5, 6]],
+            ([[1, 2], [3, 4], [5, 6]], ),
             # Negative values
             [
-                np.ones(shape=(species.num_feats,),dtype=float) * -1
+                np.ones(
+                    shape=(species.num_feats, species.num_feats),
+                    dtype=float) * -1
             ],
-            np.ones(shape=(species.num_feats,), dtype=float) * -1,
+            np.ones(
+                shape=(species.num_feats, species.num_feats), dtype=float
+            ) * -1,
             # Empty matrix
-            (np.ones(shape=(0,), dtype=float), ),
-            np.ones(shape=(0,), dtype=float),
+            (np.ones(shape=(0, 0), dtype=float), ),
+            np.ones(shape=(0, 0), dtype=float),
             # Wrong number of matrices
             (
                 np.ones(
-                    shape=(species.num_feats,), dtype=float
+                    shape=(species.num_feats, species.num_feats), dtype=float
                 ),
             ) * 3,
         )
         for heuristic in invalid_heuristic:
             with self.assertRaises(ValueError):
-                MyACOFS(**params, heuristic=heuristic)
+                ACOFS2D(**params, heuristic=heuristic)
 
-        # Try a single one-dimensional array-like object
+        # Try a single two-dimensional array-like object
         valid_heuristic = np.full(
-            shape=(species.num_feats,), fill_value=4, dtype=float
+            shape=(species.num_feats, species.num_feats),
+            fill_value=4,
+            dtype=float
         )
-        trainer = MyACOFS(**params, heuristic=valid_heuristic)
+        trainer = ACOFS2D(**params, heuristic=valid_heuristic)
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == np.asarray(valid_heuristic)))
 
-        # Try sequences of single one-dimensional array-like objects
-        valid_heuristic = [np.ones(shape=(species.num_feats), dtype=float)]
-        trainer = MyACOFS(**params, heuristic=valid_heuristic)
+        # Try sequences of single two-dimensional array-like objects
+        valid_heuristic = [
+            np.ones(
+                shape=(species.num_feats, species.num_feats),
+                dtype=float
+            )
+        ]
+        trainer = ACOFS2D(**params, heuristic=valid_heuristic)
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == np.asarray(valid_heuristic[0])))
 
         # Try the default heuristic
-        trainer = MyACOFS(**params)
-        default_heuristic = np.ones((species.num_feats, ))
+        trainer = ACOFS2D(**params)
+        default_heuristic = (
+            np.ones((species.num_feats, ) * 2) - np.identity(species.num_feats)
+        )
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == default_heuristic))
 
@@ -241,7 +191,7 @@ class ACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyACOFS(**params)
+        trainer = ACOFS2D(**params)
 
         # Initialize the internal structures
         trainer._init_internals()
@@ -283,32 +233,49 @@ class ACOFSTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyACOFS(**params)
+        trainer = ACOFS2D(**params)
 
         # Init the the training
         trainer._init_training()
         trainer._start_iteration()
 
-        for _ in range(100):
-            ant = trainer._generate_ant()
+        # Fill the population
+        for _ in range(trainer.pop_size):
+            trainer.pop.append(trainer._generate_ant())
 
-            # Init the pheromone matrix
+        for ant in trainer.pop:
             trainer._init_pheromone()
 
-            # Let only the first ant deposit pheromone
+            trainer._pareto_fronts = sortNondominated(
+                trainer.pop, trainer.pop_size
+            )
+            trainer._num_pareto_fronts = len(trainer._pareto_fronts)
+            trainer._pheromone_delta = (
+                trainer.max_pheromone[0] - trainer.initial_pheromone[0]
+                ) / (trainer.pop_size * trainer._num_pareto_fronts)
+
+
+            # Let the ant deposit pheromone
             trainer._deposit_pheromone([ant])
 
-            for feat in range(species.num_feats):
-                if feat in ant.path:
-                    self.assertGreater(
-                        trainer.pheromone[0][feat],
-                        trainer.initial_pheromone
-                    )
-                else:
-                    self.assertEqual(
-                        trainer.pheromone[0][feat],
-                        trainer.initial_pheromone
-                    )
+            # All the combinations of two features from those in the path
+            indices = list(combinations(ant.path, 2))
+            for i in range(species.num_feats):
+                for j in range(i+1, species.num_feats):
+                    if (i, j) in indices or (j, i) in indices:
+                        self.assertGreater(
+                            trainer.pheromone[0][i][j],
+                            trainer.initial_pheromone
+                        )
+                        self.assertGreater(
+                            trainer.pheromone[0][j][i],
+                            trainer.initial_pheromone
+                        )
+                    else:
+                        self.assertEqual(
+                            trainer.pheromone[0][j][i],
+                            trainer.initial_pheromone
+                        )
 
 
 if __name__ == '__main__':
