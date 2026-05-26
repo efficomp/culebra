@@ -91,6 +91,7 @@ Private methods
 .. automethod:: culebra.trainer.abc.CentralizedTrainer._generate_cooperators
 .. automethod:: culebra.trainer.abc.CentralizedTrainer._get_iteration_metrics
 .. automethod:: culebra.trainer.abc.CentralizedTrainer._get_objective_stats
+.. automethod:: culebra.trainer.abc.CentralizedTrainer._get_repr_properties
 .. automethod:: culebra.trainer.abc.CentralizedTrainer._get_state
 .. automethod:: culebra.trainer.abc.CentralizedTrainer._init_internals
 .. automethod:: culebra.trainer.abc.CentralizedTrainer._init_state

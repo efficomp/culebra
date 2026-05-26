@@ -47,3 +47,7 @@ Methods
 -------
 .. automethod:: culebra.fitness_func.tsp.MultiObjectivePathLength.dump
 .. automethod:: culebra.fitness_func.tsp.MultiObjectivePathLength.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.tsp.MultiObjectivePathLength._get_repr_properties

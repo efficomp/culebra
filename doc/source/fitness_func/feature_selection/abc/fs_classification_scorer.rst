@@ -31,20 +31,24 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.classifier
-.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_num_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_splitter
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.fitness_cls
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.index
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.num_obj
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.obj_names
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.obj_weights
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.objectives
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.test_data
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.training_data
 
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_classifier
-.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_cv_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_cv_num_folds
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_index
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._worst_score
@@ -60,4 +64,5 @@ Private methods
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._evaluate_kfcv
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._evaluate_train_test
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._final_training_test_data
+.. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._get_repr_properties
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._score

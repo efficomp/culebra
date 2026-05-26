@@ -41,6 +41,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.obj_names
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.obj_thresholds
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.obj_weights
+.. autoproperty:: culebra.fitness_func.tsp.PathLength.objectives
 
 Private properties
 ------------------
@@ -53,3 +54,7 @@ Methods
 .. automethod:: culebra.fitness_func.tsp.PathLength.evaluate
 .. automethod:: culebra.fitness_func.tsp.PathLength.greedy_solution
 .. automethod:: culebra.fitness_func.tsp.PathLength.is_evaluable
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.tsp.PathLength._get_repr_properties

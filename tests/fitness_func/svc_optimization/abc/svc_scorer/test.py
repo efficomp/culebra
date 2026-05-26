@@ -45,8 +45,7 @@ class MySVCScorer(SVCScorer):
 
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate a solution."""
-        sol.fitness.update_value(0, self.index)
-        return sol.fitness
+        return (0,)
 
 
 class SVCScorerTester(unittest.TestCase):

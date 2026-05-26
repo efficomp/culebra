@@ -263,6 +263,7 @@ class PathLengthTester(unittest.TestCase):
         species = Species(num_nodes, banned_nodes=banned_nodes)
         sol = fitness_func.greedy_solution(species)
         self.assertEqual(len(sol.path), 0)
+        self.assertTrue(sol.fitness.is_valid)
 
     def test_evaluate(self):
         """Test the evaluate method."""
@@ -284,23 +285,17 @@ class PathLengthTester(unittest.TestCase):
                     fitness_func.fitness_cls,
                     np.random.permutation(fitness_func.num_nodes)
                 )
-                fit_values = fitness_func.evaluate(sol).values
-                self.assertIsInstance(sol.fitness.values, tuple)
-                self.assertEqual(len(sol.fitness.values), 1)
+                fit_values = fitness_func.evaluate(sol)
+                self.assertIsInstance(fit_values, tuple)
+                self.assertEqual(len(fit_values), 1)
                 for i in range(fitness_func.num_obj):
-                    self.assertGreater(sol.fitness.values[i], 0)
-
-                self.assertEqual(fit_values, sol.fitness.values)
+                    self.assertGreater(fit_values[i], 0)
 
         # Try an unfeasible solution
         banned_nodes = list(node for node in range(fitness_func.num_nodes))
         species = Species(fitness_func.num_nodes, banned_nodes=banned_nodes)
         sol = fitness_func.greedy_solution(species)
-        fit_values = fitness_func.evaluate(sol).values
-        self.assertGreaterEqual(
-            sol.fitness.values, (0,)
-        )
-        self.assertEqual(fit_values, sol.fitness.values)
+        self.assertEqual(fitness_func.evaluate(sol)[0], 0)
 
     def test_from_path(self):
         """Test the from_path class method."""

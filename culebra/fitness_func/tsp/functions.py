@@ -33,7 +33,6 @@ from urllib.request import urlopen
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
-from culebra.abc import Fitness
 from culebra.fitness_func.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_func import MultiObjectiveFitnessFunction
 from culebra.fitness_func.tsp.abc import TSPFitnessFunction
@@ -248,7 +247,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
 
         # Construct the solution form the greedy path
         sol = Solution(species, self.fitness_cls, current_path)
-        self.evaluate(sol)
+        sol.fitness.values = self.evaluate(sol)
         return sol
 
     def evaluate(
@@ -256,8 +255,10 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.solution.tsp.Solution
@@ -269,8 +270,8 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
             used by cooperative problems
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         """
         path_len = 0
         if len(sol.path) > 0:
@@ -280,9 +281,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
                 org = dest
 
         # Set the path length
-        sol.fitness.update_value(path_len, self.index)
-
-        return sol.fitness
+        return (path_len,)
 
     @classmethod
     def from_path(cls, path: Sequence[int, ...]) -> PathLength:

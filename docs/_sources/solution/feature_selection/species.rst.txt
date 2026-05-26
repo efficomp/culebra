@@ -41,3 +41,7 @@ Methods
 -------
 .. automethod:: culebra.solution.feature_selection.Species.dump
 .. automethod:: culebra.solution.feature_selection.Species.is_member
+
+Private methods
+---------------
+.. automethod:: culebra.solution.feature_selection.Species._get_repr_properties

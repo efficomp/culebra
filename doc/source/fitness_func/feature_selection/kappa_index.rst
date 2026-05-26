@@ -31,20 +31,24 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.classifier
-.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.cv_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.cv_num_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.cv_splitter
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.fitness_cls
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.index
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.num_obj
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.obj_names
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.obj_thresholds
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.obj_weights
+.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.objectives
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.test_data
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex.training_data
 
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._default_classifier
-.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._default_cv_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._default_cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._default_cv_num_folds
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._default_index
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.feature_selection.KappaIndex._worst_score
@@ -60,4 +64,5 @@ Private methods
 .. automethod:: culebra.fitness_func.feature_selection.KappaIndex._evaluate_kfcv
 .. automethod:: culebra.fitness_func.feature_selection.KappaIndex._evaluate_train_test
 .. automethod:: culebra.fitness_func.feature_selection.KappaIndex._final_training_test_data
+.. automethod:: culebra.fitness_func.feature_selection.KappaIndex._get_repr_properties
 .. automethod:: culebra.fitness_func.feature_selection.KappaIndex._score

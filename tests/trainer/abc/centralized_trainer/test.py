@@ -37,10 +37,10 @@ from culebra import (
     SERIALIZED_FILE_EXTENSION
 )
 from culebra.abc import (
-    FitnessFunction,
     Solution,
     Species
 )
+from culebra.fitness_func.abc import SingleObjectiveFitnessFunction
 from culebra.trainer import (
     DEFAULT_MAX_NUM_ITERS,
     DEFAULT_CHECKPOINT_ACTIVATION,
@@ -96,7 +96,7 @@ class MyOtherSpecies(MySpecies):
     """Dummy subclass to test the :class:`~culebra.abc.Species` class."""
 
 
-class MyFitnessFunction(FitnessFunction):
+class MyFitnessFunction(SingleObjectiveFitnessFunction):
     """Dummy implementation of a fitness function."""
 
     @property
@@ -123,12 +123,10 @@ class MyFitnessFunction(FitnessFunction):
                 if other is not None:
                     max_val = max(other.val, max_val)
 
-        sol.fitness.values = (max_val,)
-
-        return sol.fitness
+        return (max_val,)
 
 
-class MyOtherFitnessFunction(FitnessFunction):
+class MyOtherFitnessFunction(SingleObjectiveFitnessFunction):
     """Dummy implementation of a fitness function."""
 
     @property
@@ -155,9 +153,7 @@ class MyOtherFitnessFunction(FitnessFunction):
                 if other is not None:
                     max_val = max(other.val, max_val)
 
-        sol.fitness.values = (max_val*2,)
-
-        return sol.fitness
+        return (max_val*2,)
 
 
 class MyTrainer(CentralizedTrainer):

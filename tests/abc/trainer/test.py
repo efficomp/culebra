@@ -96,6 +96,11 @@ class MyFitnessFunction(FitnessFunction):
         """Objective names."""
         return ("min", "max")
 
+    @property
+    def objectives(self):
+        """Objectives to be optimized."""
+        return (self, self)
+
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate one solution.
 
@@ -111,9 +116,7 @@ class MyFitnessFunction(FitnessFunction):
                     min_val = min(other.val, min_val)
                     max_val = max(other.val, max_val)
 
-        sol.fitness.values = (min_val, max_val)
-
-        return sol.fitness
+        return (min_val, max_val)
 
 
 class MyOtherFitnessFunction(FitnessFunction):
@@ -128,6 +131,11 @@ class MyOtherFitnessFunction(FitnessFunction):
     def obj_names(self):
         """Objective names."""
         return ("doublemin", "doublemax",)
+
+    @property
+    def objectives(self):
+        """Objectives to be optimized."""
+        return (self, self)
 
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate one solution.
@@ -144,9 +152,7 @@ class MyOtherFitnessFunction(FitnessFunction):
                     min_val = min(other.val, min_val)
                     max_val = max(other.val, max_val)
 
-        sol.fitness.values = (min_val*2, max_val*2)
-
-        return sol.fitness
+        return (min_val*2, max_val*2)
 
 
 class MyTrainer(Trainer):
@@ -216,27 +222,43 @@ class TrainerTester(unittest.TestCase):
 
     def test_evaluate(self):
         """Test the solution evaluation."""
+        # Training fitness function
+        fitness_func = MyFitnessFunction()
+
+        # Training fitness class
+        fitness_cls = fitness_func.fitness_cls
+
         # Create the species
         species = MySpecies()
 
         # Create the trainer
-        trainer = MyTrainer(MyFitnessFunction())
-
-        fitness_cls = trainer.fitness_func.fitness_cls
+        trainer = MyTrainer(fitness_func)
 
         # Create one solution
         sol = MySolution(species, fitness_cls, 2)
-
 
         # Omit the fitness function.
         # The default training funtion should be used
         num_evals = trainer.evaluate(sol)
         self.assertEqual(
-            sol.fitness.values, (sol.val,) * sol.fitness.num_obj
+            sol.fitness.values, (sol.val,) * fitness_func.num_obj
         )
+        self.assertEqual(sol.fitness.names, fitness_func.obj_names)
         self.assertEqual(
-            sol.fitness.names,
-            trainer.fitness_func.obj_names
+            sol.fitness.thresholds, fitness_func.obj_thresholds
+        )
+        self.assertEqual(num_evals, 1)
+
+        # Change the training fitness function thresholds
+        obj_th = 0.001
+        fitness_func.obj_thresholds = obj_th
+        num_evals = trainer.evaluate(sol, fitness_func)
+        self.assertEqual(
+            sol.fitness.values, (sol.val,) * fitness_func.num_obj
+        )
+        self.assertEqual(sol.fitness.names, fitness_func.obj_names)
+        self.assertEqual(
+            sol.fitness.thresholds, fitness_func.obj_thresholds
         )
         self.assertEqual(num_evals, 1)
 
@@ -244,11 +266,11 @@ class TrainerTester(unittest.TestCase):
         other_fitness_func = MyOtherFitnessFunction()
         num_evals = trainer.evaluate(sol, other_fitness_func)
         self.assertEqual(
-            sol.fitness.values, (sol.val*2,) * sol.fitness.num_obj
+            sol.fitness.values, (sol.val*2,) * other_fitness_func.num_obj
         )
+        self.assertEqual(sol.fitness.names, other_fitness_func.obj_names)
         self.assertEqual(
-            sol.fitness.names,
-            other_fitness_func.obj_names
+            sol.fitness.thresholds, other_fitness_func.obj_thresholds
         )
         self.assertEqual(num_evals, 1)
 

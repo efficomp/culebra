@@ -545,17 +545,17 @@ class Solution(BaseSolution):
 
         return msg
 
-    def __repr__(self) -> str:
-        """Solution representation.
+    def _get_repr_properties(self) -> dict[str, object]:
+        """Return the subset of properties used for ``__repr__``.
 
-        :rtype: str
+        :return: Mapping of property names to their corresponding values.
+        :rtype: dict[str, object]
         """
-        cls_name = self.__class__.__name__
-        species_info = self.species.__str__()
-        fitness_info = self.fitness.values
-
-        return (f"{cls_name}(species={species_info}, fitness={fitness_info}, "
-                f"values={self.__str__()})")
+        return {
+            'species': self.species,
+            'fitness': self.fitness.values,
+            'values': self.values
+        }
 
 
 class Individual(Solution, BaseIndividual):

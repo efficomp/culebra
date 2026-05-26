@@ -20,13 +20,12 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :class:`culebra.tools.Batch`."""
+"""Unit test for :class:`culebra.tools.evaluation.Batch`."""
 
 import unittest
 from os import remove
 from os.path import isfile, exists, join
 from shutil import rmtree
-from collections import Counter
 from copy import copy, deepcopy
 
 from pandas import DataFrame
@@ -54,25 +53,33 @@ from culebra.trainer.abc import (
     CooperativeTrainer
 )
 from culebra.trainer.ea import ElitistEA
+from culebra.tools.abc import DecisionManager
 from culebra.tools import (
     Dataset,
-    Batch,
     Results,
     DEFAULT_RESULTS_BASE_FILENAME,
     DEFAULT_RUN_SCRIPT_FILENAME,
     DEFAULT_NUM_EXPERIMENTS
 )
+from culebra.tools.decision_manager import LexicographicDM
+from culebra.tools.evaluation import Batch
 
 
 # Fitness function
-def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
+def KappaNumFeatsC(
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
+):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -94,19 +101,14 @@ training_data = training_data.oversample(random_seed=0)
 
 
 # Training fitness function
-my_training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
+my_training_fitness_func = KappaNumFeatsC(training_data, cv_num_folds=5)
 
-# Set the training fitness similarity threshold
-my_training_fitness_func.obj_thresholds = 0.001
-
-# Untie fitness function to select the best solution
-samples_per_class = Counter(training_data.outputs)
-max_folds = samples_per_class[
-    min(samples_per_class, key=samples_per_class.get)
-]
-my_untie_best_fitness_func = KappaNumFeatsC(
-    training_data, cv_folds=max_folds
-)
+# Define a dummy decision manager
+def my_decision_manager(trainer):
+    """Dummy decicion manager"""
+    return tuple(
+        hof[0] for hof in trainer.best_solutions()
+    )
 
 # Test fitness function
 my_test_fitness_func = KappaNumFeatsC(training_data, test_data)
@@ -177,17 +179,18 @@ my_num_experiments = 3
 
 
 class BatchTester(unittest.TestCase):
-    """Test :class:`~culebra.tools.Batch`."""
+    """Test :class:`~culebra.tools.evaluation.Batch`."""
 
     def test_init(self):
-        """Test the :meth:`~culebra.tools.Batch.__init__` constructor."""
+        """Test the constructor."""
         # Try default params
         my_trainer = MyTrainer(*subtrainers, **params)
-        batch = Batch(my_trainer)
+        my_dm = LexicographicDM(my_trainer)
+        batch = Batch(my_trainer, my_dm)
 
         self.assertEqual(batch.trainer, my_trainer)
-        self.assertEqual(batch.untie_best_fitness_func, None)
-        self.assertEqual(batch.test_fitness_func, None)
+        self.assertEqual(batch.decision_manager, my_dm)
+        self.assertEqual(batch.test_fitness_func, batch.trainer.fitness_func)
         self.assertEqual(batch.results, None)
         self.assertEqual(
             batch.results_base_filename,
@@ -201,14 +204,11 @@ class BatchTester(unittest.TestCase):
         my_hyperparameters = {"a": 1}
         batch = Batch(
             my_trainer,
-            my_untie_best_fitness_func,
+            my_dm,
             my_test_fitness_func,
             my_filename,
             my_hyperparameters,
             my_num_experiments
-        )
-        self.assertEqual(
-            batch.untie_best_fitness_func, my_untie_best_fitness_func
         )
         self.assertEqual(
             batch.test_fitness_func, my_test_fitness_func
@@ -229,9 +229,8 @@ class BatchTester(unittest.TestCase):
         # Check the trainer
         self.assertIsInstance(batch.trainer, Trainer)
 
-        # Check the untie fitness function
-        self.assertIsInstance(
-            batch.untie_best_fitness_func, FitnessFunction)
+        # Check the decision manager
+        self.assertIsInstance(batch.decision_manager, DecisionManager)
 
         # Check the test fitness function
         self.assertIsInstance(
@@ -250,7 +249,8 @@ class BatchTester(unittest.TestCase):
         """Test the experiment_labels method."""
         # Try default params
         my_trainer = MyTrainer(*subtrainers, **params)
-        batch = Batch(my_trainer)
+        my_dm = LexicographicDM(my_trainer)
+        batch = Batch(my_trainer, my_dm)
 
         for num_exp in range(1, 15):
             batch.num_experiments = num_exp
@@ -261,7 +261,8 @@ class BatchTester(unittest.TestCase):
     def test_reset(self):
         """Test the reset method."""
         my_trainer = MyTrainer(*subtrainers, **params)
-        batch = Batch(my_trainer)
+        my_dm = LexicographicDM(my_trainer)
+        batch = Batch(my_trainer, my_dm)
         batch._results = 1
         batch._results_indices = {1: 2}
 
@@ -273,9 +274,10 @@ class BatchTester(unittest.TestCase):
         """Test the setup method."""
         # Create the batch
         my_trainer = MyTrainer(*subtrainers, **params)
+        my_dm = LexicographicDM(my_trainer)
         batch = Batch(
             trainer=my_trainer,
-            untie_best_fitness_func=my_untie_best_fitness_func,
+            decision_manager=my_dm,
             test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -308,9 +310,10 @@ class BatchTester(unittest.TestCase):
         """Test the run method."""
         # Create the batch
         my_trainer = MyTrainer(*subtrainers, **params)
+        my_dm = LexicographicDM(my_trainer)
         batch = Batch(
             trainer=my_trainer,
-            untie_best_fitness_func=my_untie_best_fitness_func,
+            decision_manager=my_dm,
             test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -324,8 +327,8 @@ class BatchTester(unittest.TestCase):
         self.assertNotEqual(batch.results, None)
         self.assertIsInstance(batch.results, Results)
 
-        for key in Batch._ResultKeys.keys():
-            self.assertTrue(key in batch.results.keys())
+        for key in Batch.ResultsKeys:
+            self.assertTrue(key.value in batch.results)
 
         for key in batch.results:
             self.assertIsInstance(batch.results[key], DataFrame)
@@ -343,11 +346,12 @@ class BatchTester(unittest.TestCase):
         remove(batch.excel_results_filename)
 
     def test_copy(self):
-        """Test the :meth:`~culebra.tools.Batch.__copy__` method."""
+        """Test the :meth:`~culebra.tools.evaluation.Batch.__copy__` method."""
         my_trainer = MyTrainer(*subtrainers, **params)
+        my_dm = LexicographicDM(my_trainer)
         batch1 = Batch(
             trainer=my_trainer,
-            untie_best_fitness_func=my_untie_best_fitness_func,
+            decision_manager=my_dm,
             test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -375,11 +379,12 @@ class BatchTester(unittest.TestCase):
         remove(batch1.excel_results_filename)
 
     def test_deepcopy(self):
-        """Test :meth:`~culebra.tools.Batch.__deepcopy__`."""
+        """Test :meth:`~culebra.tools.evaluation.Batch.__deepcopy__`."""
         my_trainer = MyTrainer(*subtrainers, **params)
+        my_dm = LexicographicDM(my_trainer)
         batch1 = Batch(
             trainer=my_trainer,
-            untie_best_fitness_func=my_untie_best_fitness_func,
+            decision_manager=my_dm,
             test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -403,13 +408,14 @@ class BatchTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :meth:`~culebra.tools.Batch.__setstate__` and
-        :meth:`~culebra.tools.Batch.__reduce__` methods.
+        Test the :meth:`~culebra.tools.evaluation.Batch.__setstate__` and
+        :meth:`~culebra.tools.evaluation.Batch.__reduce__` methods.
         """
         my_trainer = MyTrainer(*subtrainers, **params)
+        my_dm = LexicographicDM(my_trainer)
         batch1 = Batch(
             trainer=my_trainer,
-            untie_best_fitness_func=my_untie_best_fitness_func,
+            decision_manager=my_dm,
             test_fitness_func=my_test_fitness_func,
             results_base_filename="res2",
             hyperparameters={"a": 1, "b": 2},
@@ -439,9 +445,9 @@ class BatchTester(unittest.TestCase):
         """Check if *batch1* is a deepcopy of *batch2*.
 
         :param batch1: The first batch
-        :type batch1: ~culebra.tools.Batch
+        :type batch1: ~culebra.tools.evaluation.Batch
         :param batch2: The second batch
-        :type batch2: ~culebra.tools.Batch
+        :type batch2: ~culebra.tools.evaluation.Batch
         """
         # Copies all the levels
         self.assertNotEqual(id(batch1), id(batch2))

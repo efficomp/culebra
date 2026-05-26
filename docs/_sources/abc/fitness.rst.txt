@@ -45,7 +45,10 @@ Methods
 -------
 .. automethod:: culebra.abc.Fitness.dominates
 .. automethod:: culebra.abc.Fitness.dump
-.. automethod:: culebra.abc.Fitness.update_value
+
+Private methods
+---------------
+.. automethod:: culebra.abc.Fitness._get_repr_properties
 
 Dunder methods
 --------------

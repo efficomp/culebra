@@ -17,9 +17,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Configuration file to test the :class:`culebra.tools.Batch` class."""
-
-from collections import Counter
+"""Configuration file for the :class:`~culebra.tools.abc.Evaluation` class."""
 
 from sklearn.svm import SVC
 
@@ -43,17 +41,24 @@ from culebra.trainer.abc import (
 )
 from culebra.trainer.ea import ElitistEA
 from culebra.tools import Dataset
+from culebra.tools.decision_manager import LexicographicDM
 
 
 # Fitness function
-def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
+def KappaNumFeatsC(
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
+):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -74,20 +79,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 training_data = training_data.oversample(random_seed=0)
 
 # Training fitness function
-training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
-
-# Set the training fitness similarity threshold
-training_fitness_func.obj_thresholds = 0.001
-
-# Untie fitness function to select the best solution
-samples_per_class = Counter(training_data.outputs)
-max_folds = samples_per_class[
-    min(samples_per_class, key=samples_per_class.get)
-]
-untie_best_fitness_func = KappaNumFeatsC(training_data, cv_folds=max_folds)
-
-# Test fitness function
-test_fitness_func = KappaNumFeatsC(training_data, test_data)
+training_fitness_func = KappaNumFeatsC(training_data, cv_num_folds=5)
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(
@@ -150,8 +142,14 @@ class MyTrainer(ParallelDistributedTrainer, CooperativeTrainer):
 
 trainer = MyTrainer(*subtrainers, **params)
 
-# Number of experiments
-num_experiments = 10
+# Decision manager
+decision_manager = LexicographicDM(trainer)
+
+# Test fitness function
+test_fitness_func = KappaNumFeatsC(training_data, test_data)
+
+# Define a base filename for the results
+results_base_filename = "my_results"
 
 # Parameters to appear in the results
 hyperparameters = {

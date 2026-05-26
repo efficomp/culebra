@@ -32,3 +32,7 @@ Methods
 -------
 .. automethod:: culebra.abc.Species.dump
 .. automethod:: culebra.abc.Species.is_member
+
+Private methods
+---------------
+.. automethod:: culebra.abc.Species._get_repr_properties

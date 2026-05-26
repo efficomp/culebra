@@ -58,4 +58,5 @@ Private methods
 ---------------
 .. automethod:: culebra.abc.Trainer._do_training
 .. automethod:: culebra.abc.Trainer._finish_training
+.. automethod:: culebra.abc.Trainer._get_repr_properties
 .. automethod:: culebra.abc.Trainer._init_training

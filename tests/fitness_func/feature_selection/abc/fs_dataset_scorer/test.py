@@ -64,13 +64,11 @@ class MyFSDatasetScorer(FSDatasetScorer):
 
     def _evaluate_train_test(self, sol, training_data, test_data):
         """Evaluate with a training and test datasets."""
-        sol.fitness.update_value(1, self.index)
-        return sol.fitness
+        return (1,)
 
     def _evaluate_kfcv(self, sol, training_data):
         """Perform a k-fold cross-validation."""
-        sol.fitness.update_value(3, self.index)
-        return sol.fitness
+        return (3,)
 
     _score = cohen_kappa_score
 
@@ -100,15 +98,11 @@ class FSDatasetScorerTester(unittest.TestCase):
 
         func = MyFSDatasetScorer(training_data, test_data)
         ind = FSIndividual(species, func.fitness_cls, features=selected_feats)
-        fit_values = func.evaluate(ind).values
-        self.assertEqual(ind.fitness.values, (1, ))
-        self.assertEqual(fit_values, ind.fitness.values)
+        self.assertEqual(func.evaluate(ind), (1, ))
         del ind.fitness.values
 
         func = MyFSDatasetScorer(training_data)
-        fit_values = func.evaluate(ind).values
-        self.assertEqual(ind.fitness.values, (3, ))
-        self.assertEqual(fit_values, ind.fitness.values)
+        self.assertEqual(func.evaluate(ind), (3, ))
 
     def test_final_training_test_data(self):
         """Test the _final_training_test_data method."""

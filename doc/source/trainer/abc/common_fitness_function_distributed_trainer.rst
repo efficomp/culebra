@@ -73,6 +73,7 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._do_training
 .. automethod:: culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._finish_training
+.. automethod:: culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._get_repr_properties
 .. automethod:: culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._init_internals
 .. automethod:: culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._init_training
 .. automethod:: culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._reset_internals

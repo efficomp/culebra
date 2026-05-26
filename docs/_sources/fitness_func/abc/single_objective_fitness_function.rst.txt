@@ -36,6 +36,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.obj_names
 .. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.obj_thresholds
 .. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.obj_weights
+.. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.objectives
 
 Private properties
 ------------------
@@ -47,3 +48,7 @@ Methods
 .. automethod:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.dump
 .. automethod:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.evaluate
 .. automethod:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.is_evaluable
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction._get_repr_properties

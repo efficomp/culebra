@@ -50,7 +50,13 @@ from culebra.checker import (
     check_float,
     check_str
 )
-from culebra.tools import Results
+from .results import Results
+from .constants import (
+    DEFAULT_ALPHA,
+    DEFAULT_NORMALITY_TEST,
+    DEFAULT_HOMOSCEDASTICITY_TEST,
+    DEFAULT_P_ADJUST
+)
 
 
 __author__ = 'Jesús González'
@@ -62,22 +68,10 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-DEFAULT_ALPHA = 0.05
-"""Default significance level for statistical tests."""
-
-DEFAULT_NORMALITY_TEST = shapiro
-"""Default normality test."""
-
-DEFAULT_HOMOSCEDASTICITY_TEST = bartlett
-"""Default homoscedasticity test."""
-
-DEFAULT_P_ADJUST = 'fdr_tsbky'
-"""Default method for adjusting the p-values with the Dunn's test."""
-
-_DEFAULT_PRECISION = 5
+DEFAULT_PRECISION = 5
 """Default precision to print the results."""
 
-_TEST_NAMES = {
+TEST_NAMES = {
     shapiro:      "Shapiro-Wilk test",
     normaltest:   "D'Agostino-Pearson test",
     bartlett:     "Bartlett's test",
@@ -92,7 +86,7 @@ _TEST_NAMES = {
 }
 """Names of the statistical tests."""
 
-_P_ADJUST_NAMES = {
+P_ADJUST_NAMES = {
     'bonferroni': "Bonferroni correction",
     'sidak': "Šidák correction",
     'holm-sidak': "Holm-Šídák correction",
@@ -181,7 +175,7 @@ class TestOutcome(NamedTuple):
                     [
                         '\n'.join(self.batches),
                         self.success,
-                        np.round(self.pvalue, _DEFAULT_PRECISION)
+                        np.round(self.pvalue, DEFAULT_PRECISION)
                     ]
                 ]
             else:
@@ -192,7 +186,7 @@ class TestOutcome(NamedTuple):
                 data = [
                     [
                         self.success[i],
-                        np.round(self.pvalue[i], _DEFAULT_PRECISION)
+                        np.round(self.pvalue[i], DEFAULT_PRECISION)
                     ]
                     for (i, _) in sorted_batches
                 ]
@@ -211,7 +205,7 @@ class TestOutcome(NamedTuple):
                             self.success[index_i][index_j],
                             round(
                                 self.pvalue[index_i][index_j],
-                                _DEFAULT_PRECISION
+                                DEFAULT_PRECISION
                             )
                         ]
                     ]
@@ -378,7 +372,7 @@ class EffectSize(NamedTuple):
                         batch_j,
                         round(
                             self.value[index_i][index_j],
-                            _DEFAULT_PRECISION
+                            DEFAULT_PRECISION
                         )
                     ]
                 ]
@@ -529,7 +523,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Return the results
         return TestOutcome(
-            test=_TEST_NAMES[test],
+            test=TEST_NAMES[test],
             data=dataframe_key,
             column=column,
             alpha=alpha,
@@ -608,7 +602,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Return the results
         return TestOutcome(
-            test=_TEST_NAMES[test],
+            test=TEST_NAMES[test],
             data=dataframe_key,
             column=column,
             alpha=alpha,
@@ -665,7 +659,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Return the results
         return TestOutcome(
-            test=_TEST_NAMES[test],
+            test=TEST_NAMES[test],
             data=dataframe_key,
             column=column,
             alpha=alpha,
@@ -750,7 +744,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Return the results
         return TestOutcome(
-            test=_TEST_NAMES[test],
+            test=TEST_NAMES[test],
             data=dataframe_key,
             column=column,
             alpha=alpha,
@@ -803,7 +797,7 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Return the results
         return TestOutcome(
-            test=_TEST_NAMES[tukey_hsd],
+            test=TEST_NAMES[tukey_hsd],
             data=dataframe_key,
             column=column,
             alpha=alpha,
@@ -847,7 +841,7 @@ class ResultsAnalyzer(UserDict, Base):
         alpha = check_float(alpha, "significance level", ge=0, le=1)
 
         # Check p-adjust
-        if p_adjust is not None and p_adjust not in _P_ADJUST_NAMES:
+        if p_adjust is not None and p_adjust not in P_ADJUST_NAMES:
             raise ValueError(
                 f"Not valid p-value adjustment method: {p_adjust}"
             )
@@ -920,12 +914,12 @@ class ResultsAnalyzer(UserDict, Base):
 
         # Return the results
         test_name = (
-            _TEST_NAMES[posthoc_dunn] +
+            TEST_NAMES[posthoc_dunn] +
             " (" +
             (
                 "No p-values correction"
                 if p_adjust is None
-                else _P_ADJUST_NAMES[p_adjust]
+                else P_ADJUST_NAMES[p_adjust]
             ) +
             ")"
         )
@@ -1445,9 +1439,5 @@ __all__ = [
     'TestOutcome',
     'ResultsComparison',
     'EffectSize',
-    'ResultsAnalyzer',
-    'DEFAULT_ALPHA',
-    'DEFAULT_NORMALITY_TEST',
-    'DEFAULT_HOMOSCEDASTICITY_TEST',
-    'DEFAULT_P_ADJUST'
+    'ResultsAnalyzer'
 ]

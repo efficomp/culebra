@@ -34,8 +34,7 @@ from culebra.checker import (
     check_sequence,
     check_filename
 )
-
-from . import DEFAULT_SEP
+from .constants import DEFAULT_SEP, DEFAULT_EXCEL_FILE_EXTENSION
 
 
 __author__ = 'Jesús González'
@@ -45,10 +44,6 @@ __version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
-
-
-EXCEL_FILE_EXTENSION = ".xlsx"
-"""File extension for Excel datasheets."""
 
 
 class Results(UserDict, Base):
@@ -109,12 +104,12 @@ class Results(UserDict, Base):
         :type filename: str
         :raises TypeError: If *filename* is not a valid file name
         :raises ValueError: If the *filename* extension is not
-            :attr:`~culebra.tools.EXCEL_FILE_EXTENSION`
+            :attr:`~culebra.tools.DEFAULT_EXCEL_FILE_EXTENSION`
         """
         filename = check_filename(
             filename,
             name="results excel datasheet file name",
-            ext=EXCEL_FILE_EXTENSION
+            ext=DEFAULT_EXCEL_FILE_EXTENSION
         )
 
         with ExcelWriter(filename) as writer: \
@@ -143,6 +138,5 @@ class Results(UserDict, Base):
 
 # Exported symbols for this module
 __all__ = [
-    'Results',
-    'EXCEL_FILE_EXTENSION'
+    'Results'
 ]

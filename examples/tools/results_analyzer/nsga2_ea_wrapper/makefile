@@ -59,7 +59,7 @@ $(RESULTS_EXCEL): $(RUN_SCRIPT)
 $(RUN_SCRIPT): $(CONFIG_SCRIPT)
 	@echo "Generating the run script ..."
 	@echo -e \
-"import culebra\\nculebra.tools.Batch.generate_run_script('$(CONFIG_SCRIPT)')" | $(PYTHON)
+"import culebra\\nculebra.tools.evaluation.Batch.generate_run_script('$(CONFIG_SCRIPT)')" | $(PYTHON)
 	@echo
 
 .PHONY: clean

@@ -73,6 +73,7 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.abc.IslandsTrainer._do_training
 .. automethod:: culebra.trainer.abc.IslandsTrainer._finish_training
+.. automethod:: culebra.trainer.abc.IslandsTrainer._get_repr_properties
 .. automethod:: culebra.trainer.abc.IslandsTrainer._init_internals
 .. automethod:: culebra.trainer.abc.IslandsTrainer._init_training
 .. automethod:: culebra.trainer.abc.IslandsTrainer._reset_internals

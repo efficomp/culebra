@@ -121,6 +121,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._generate_cooperators
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._get_iteration_metrics
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._get_objective_stats
+.. automethod:: culebra.trainer.aco.QualityBasedPACO._get_repr_properties
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._get_state
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._increase_pheromone
 .. automethod:: culebra.trainer.aco.QualityBasedPACO._init_internals

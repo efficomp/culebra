@@ -36,6 +36,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.feature_selection.NumFeats.obj_names
 .. autoproperty:: culebra.fitness_func.feature_selection.NumFeats.obj_thresholds
 .. autoproperty:: culebra.fitness_func.feature_selection.NumFeats.obj_weights
+.. autoproperty:: culebra.fitness_func.feature_selection.NumFeats.objectives
 
 Private properties
 ------------------
@@ -47,3 +48,7 @@ Methods
 .. automethod:: culebra.fitness_func.feature_selection.NumFeats.dump
 .. automethod:: culebra.fitness_func.feature_selection.NumFeats.evaluate
 .. automethod:: culebra.fitness_func.feature_selection.NumFeats.is_evaluable
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.feature_selection.NumFeats._get_repr_properties

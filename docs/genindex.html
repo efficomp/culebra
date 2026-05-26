@@ -225,25 +225,25 @@
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.__str__">(TestOutcome method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._add_best">_add_best() (Experiment method)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._add_best">_add_best() (Experiment method)</a>
 </li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._add_execution_metric">_add_execution_metric() (Experiment method)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._add_execution_metric">_add_execution_metric() (Experiment method)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._add_execution_metrics_stats">_add_execution_metrics_stats() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._add_execution_metrics_stats">_add_execution_metrics_stats() (Batch method)</a>
 </li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._add_feature_metrics">_add_feature_metrics() (Experiment method)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._add_feature_metrics">_add_feature_metrics() (Experiment method)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._add_feature_metrics_stats">_add_feature_metrics_stats() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._add_feature_metrics_stats">_add_feature_metrics_stats() (Batch method)</a>
 </li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._add_fitness">_add_fitness() (Experiment method)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._add_fitness">_add_fitness() (Experiment method)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._add_fitness_stats">_add_fitness_stats() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._add_fitness_stats">_add_fitness_stats() (Batch method)</a>
 
       <ul>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment._add_fitness_stats">(Experiment method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._add_fitness_stats">(Experiment method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._add_training_stats">_add_training_stats() (Experiment method)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._add_training_stats">_add_training_stats() (Experiment method)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._ant_choice_info">_ant_choice_info() (ACO method)</a>
 
@@ -285,7 +285,7 @@
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._ant_choice_info">(SingleObjPACO method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._append_data">_append_data() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._append_data">_append_data() (Batch method)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._calculate_choice_info">_calculate_choice_info() (ACO method)</a>
 
@@ -325,6 +325,14 @@
         <li><a href="trainer/aco/abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO._calculate_choice_info">(SingleObjACO method)</a>
 </li>
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._calculate_choice_info">(SingleObjPACO method)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager._choose">_choose() (DecisionManager method)</a>
+
+      <ul>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM._choose">(LexicographicDM method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._choose">(LexicographicWithRepeatedCVDM method)</a>
 </li>
       </ul></li>
       <li><a href="trainer/aco/age_based_paco.html#culebra.trainer.aco.AgeBasedPACO._decrease_pheromone">_decrease_pheromone() (AgeBasedPACO method)</a>
@@ -627,22 +635,40 @@
         <li><a href="trainer/ea/nsga.html#culebra.trainer.ea.NSGA._default_crossover_prob">(NSGA property)</a>
 </li>
       </ul></li>
-      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy._default_cv_folds">_default_cv_folds (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy._default_cv_folds">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy._default_cv_folds">[2]</a>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy._default_cv_fixed_folds">_default_cv_fixed_folds (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy._default_cv_fixed_folds">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy._default_cv_fixed_folds">[2]</a>
 
       <ul>
-        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_cv_folds">(ClassificationScorer property)</a>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_cv_fixed_folds">(ClassificationScorer property)</a>
 </li>
-        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_folds">(DatasetScorer property)</a>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_fixed_folds">(DatasetScorer property)</a>
 </li>
-        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_cv_folds">(FSClassificationScorer property)</a>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_cv_fixed_folds">(FSClassificationScorer property)</a>
 </li>
-        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer._default_cv_folds">(FSDatasetScorer property)</a>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer._default_cv_fixed_folds">(FSDatasetScorer property)</a>
 </li>
-        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex._default_cv_folds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex._default_cv_folds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex._default_cv_folds">[2]</a>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex._default_cv_fixed_folds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex._default_cv_fixed_folds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex._default_cv_fixed_folds">[2]</a>
 </li>
-        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_cv_folds">(RBFSVCScorer property)</a>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_cv_fixed_folds">(RBFSVCScorer property)</a>
 </li>
       </ul></li>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy._default_cv_num_folds">_default_cv_num_folds (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy._default_cv_num_folds">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy._default_cv_num_folds">[2]</a>
+
+      <ul>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_cv_num_folds">(ClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_num_folds">(DatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_cv_num_folds">(FSClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer._default_cv_num_folds">(FSDatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex._default_cv_num_folds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex._default_cv_num_folds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex._default_cv_num_folds">[2]</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_cv_num_folds">(RBFSVCScorer property)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._default_cv_repeats">_default_cv_repeats (LexicographicWithRepeatedCVDM property)</a>
+</li>
       <li><a href="trainer/aco/abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS._default_discard_prob">_default_discard_prob (ACOFS property)</a>
 
       <ul>
@@ -943,7 +969,7 @@
       </ul></li>
       <li><a href="trainer/ea/nsga.html#culebra.trainer.ea.NSGA._default_nsga3_reference_points_p">_default_nsga3_reference_points_p (NSGA property)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._default_num_experiments">_default_num_experiments (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._default_num_experiments">_default_num_experiments (Batch property)</a>
 </li>
       <li><a href="trainer/abc/common_fitness_function_distributed_trainer.html#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_num_representatives">_default_num_representatives (CommonFitnessFunctionDistributedTrainer property)</a>
 
@@ -1115,12 +1141,12 @@
         <li><a href="trainer/abc/sequential_distributed_trainer.html#culebra.trainer.abc.SequentialDistributedTrainer._default_representatives_selection_func">(SequentialDistributedTrainer property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._default_results_base_filename">_default_results_base_filename (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._default_results_base_filename">_default_results_base_filename (Batch property)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation._default_results_base_filename">(Evaluation property)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation._default_results_base_filename">(Evaluation property)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment._default_results_base_filename">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._default_results_base_filename">(Experiment property)</a>
 </li>
       </ul></li>
       <li><a href="trainer/ea/ea.html#culebra.trainer.ea.EA._default_selection_func">_default_selection_func (EA property)</a>
@@ -1202,6 +1228,10 @@
 </li>
         <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex._default_similarity_threshold">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex._default_similarity_threshold">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex._default_similarity_threshold">[2]</a>
 </li>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM._default_similarity_threshold">(LexicographicDM property)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._default_similarity_threshold">(LexicographicWithRepeatedCVDM property)</a>
+</li>
         <li><a href="fitness_func/multi_objective_fitness_function.html#culebra.fitness_func.MultiObjectiveFitnessFunction._default_similarity_threshold">(MultiObjectiveFitnessFunction property)</a>
 </li>
         <li><a href="fitness_func/tsp/multi_objective_path_length.html#culebra.fitness_func.tsp.MultiObjectivePathLength._default_similarity_threshold">(MultiObjectivePathLength property)</a>
@@ -1265,6 +1295,14 @@
         <li><a href="trainer/aco/abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO._default_termination_func">(SingleObjACO method)</a>
 </li>
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._default_termination_func">(SingleObjPACO method)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._default_test_fitness_func">_default_test_fitness_func (Batch property)</a>
+
+      <ul>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation._default_test_fitness_func">(Evaluation property)</a>
+</li>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._default_test_fitness_func">(Experiment property)</a>
 </li>
       </ul></li>
       <li><a href="trainer/abc/common_fitness_function_distributed_trainer.html#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._default_topology_func">_default_topology_func (CommonFitnessFunctionDistributedTrainer property)</a>
@@ -1417,7 +1455,7 @@
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._do_iteration">(SingleObjPACO method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._do_test">_do_test() (Experiment method)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._do_test">_do_test() (Experiment method)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._do_training">_do_training() (ACO method)</a>
 
@@ -1452,7 +1490,7 @@
 </li>
         <li><a href="trainer/ea/elitist_ea.html#culebra.trainer.ea.ElitistEA._do_training">(ElitistEA method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment._do_training">(Experiment method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._do_training">(Experiment method)</a>
 </li>
         <li><a href="trainer/abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer._do_training">(IslandsTrainer method)</a>
 </li>
@@ -1483,8 +1521,14 @@
         <li><a href="abc/trainer.html#culebra.abc.Trainer._do_training">(Trainer method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager._evaluate">_evaluate() (DecisionManager method)</a>
+
+      <ul>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM._evaluate">(LexicographicDM method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._evaluate">(LexicographicWithRepeatedCVDM method)</a>
+</li>
+      </ul></li>
       <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy._evaluate_kfcv">_evaluate_kfcv() (Accuracy method)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy._evaluate_kfcv">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy._evaluate_kfcv">[2]</a>
 
       <ul>
@@ -1525,12 +1569,12 @@
         <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._evaluate_train_test">(RBFSVCScorer method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._execute">_execute() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._execute">_execute() (Batch method)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation._execute">(Evaluation method)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation._execute">(Evaluation method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment._execute">(Experiment method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._execute">(Experiment method)</a>
 </li>
       </ul></li>
       <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy._final_training_test_data">_final_training_test_data() (Accuracy method)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy._final_training_test_data">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy._final_training_test_data">[2]</a>
@@ -1549,8 +1593,8 @@
         <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._final_training_test_data">(RBFSVCScorer method)</a>
 </li>
       </ul></li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment._find_best_lexicographically">_find_best_lexicographically() (Experiment method)</a>
-</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._finish_iteration">_finish_iteration() (ACO method)</a>
 
       <ul>
@@ -1659,6 +1703,14 @@
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._finish_training">(SingleObjPACO method)</a>
 </li>
         <li><a href="abc/trainer.html#culebra.abc.Trainer._finish_training">(Trainer method)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager._generate_all_combinations">_generate_all_combinations() (DecisionManager method)</a>
+
+      <ul>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM._generate_all_combinations">(LexicographicDM method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._generate_all_combinations">(LexicographicWithRepeatedCVDM method)</a>
 </li>
       </ul></li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._generate_ant">_generate_ant() (ACO method)</a>
@@ -1891,6 +1943,148 @@
         <li><a href="trainer/aco/abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO._get_objective_stats">(SingleObjACO method)</a>
 </li>
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._get_objective_stats">(SingleObjPACO method)</a>
+</li>
+      </ul></li>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy._get_repr_properties">_get_repr_properties() (Accuracy method)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy._get_repr_properties">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy._get_repr_properties">[2]</a>
+
+      <ul>
+        <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._get_repr_properties">(ACO method)</a>
+</li>
+        <li><a href="trainer/aco/abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS._get_repr_properties">(ACOFS method)</a>
+</li>
+        <li><a href="trainer/aco/aco_fs_1d.html#culebra.trainer.aco.ACOFS1D._get_repr_properties">(ACOFS1D method)</a>
+</li>
+        <li><a href="trainer/aco/aco_fs_2d.html#culebra.trainer.aco.ACOFS2D._get_repr_properties">(ACOFS2D method)</a>
+</li>
+        <li><a href="trainer/aco/aco_fs_convergence_detector.html#culebra.trainer.aco.ACOFSConvergenceDetector._get_repr_properties">(ACOFSConvergenceDetector method)</a>
+</li>
+        <li><a href="trainer/aco/abc/aco_tsp.html#culebra.trainer.aco.abc.ACOTSP._get_repr_properties">(ACOTSP method)</a>
+</li>
+        <li><a href="trainer/aco/age_based_paco.html#culebra.trainer.aco.AgeBasedPACO._get_repr_properties">(AgeBasedPACO method)</a>
+</li>
+        <li><a href="solution/abc/ant.html#culebra.solution.abc.Ant._get_repr_properties">(Ant method)</a>, <a href="solution/feature_selection/ant.html#culebra.solution.feature_selection.Ant._get_repr_properties">[1]</a>, <a href="solution/tsp/ant.html#culebra.solution.tsp.Ant._get_repr_properties">[2]</a>
+</li>
+        <li><a href="trainer/aco/ant_system.html#culebra.trainer.aco.AntSystem._get_repr_properties">(AntSystem method)</a>
+</li>
+        <li><a href="abc/base.html#culebra.abc.Base._get_repr_properties">(Base method)</a>
+</li>
+        <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch._get_repr_properties">(Batch method)</a>
+</li>
+        <li><a href="solution/feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution._get_repr_properties">(BinarySolution method)</a>
+</li>
+        <li><a href="solution/feature_selection/bit_vector.html#culebra.solution.feature_selection.BitVector._get_repr_properties">(BitVector method)</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/c.html#culebra.fitness_func.svc_optimization.C._get_repr_properties">(C method)</a>
+</li>
+        <li><a href="trainer/abc/centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer._get_repr_properties">(CentralizedTrainer method)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer._get_repr_properties">(ClassificationScorer method)</a>
+</li>
+        <li><a href="trainer/abc/common_fitness_function_distributed_trainer.html#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer._get_repr_properties">(CommonFitnessFunctionDistributedTrainer method)</a>
+</li>
+        <li><a href="trainer/abc/cooperative_trainer.html#culebra.trainer.abc.CooperativeTrainer._get_repr_properties">(CooperativeTrainer method)</a>
+</li>
+        <li><a href="trainer/aco/cpaco.html#culebra.trainer.aco.CPACO._get_repr_properties">(CPACO method)</a>
+</li>
+        <li><a href="tools/dataset.html#culebra.tools.Dataset._get_repr_properties">(Dataset method)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer._get_repr_properties">(DatasetScorer method)</a>
+</li>
+        <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager._get_repr_properties">(DecisionManager method)</a>
+</li>
+        <li><a href="trainer/abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer._get_repr_properties">(DistributedTrainer method)</a>
+</li>
+        <li><a href="trainer/ea/ea.html#culebra.trainer.ea.EA._get_repr_properties">(EA method)</a>
+</li>
+        <li><a href="trainer/aco/abc/elitist_aco.html#culebra.trainer.aco.abc.ElitistACO._get_repr_properties">(ElitistACO method)</a>
+</li>
+        <li><a href="trainer/aco/elitist_ant_system.html#culebra.trainer.aco.ElitistAntSystem._get_repr_properties">(ElitistAntSystem method)</a>
+</li>
+        <li><a href="trainer/ea/elitist_ea.html#culebra.trainer.ea.ElitistEA._get_repr_properties">(ElitistEA method)</a>
+</li>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation._get_repr_properties">(Evaluation method)</a>
+</li>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment._get_repr_properties">(Experiment method)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/feats_proportion.html#culebra.fitness_func.feature_selection.FeatsProportion._get_repr_properties">(FeatsProportion method)</a>
+</li>
+        <li><a href="abc/fitness.html#culebra.abc.Fitness._get_repr_properties">(Fitness method)</a>
+</li>
+        <li><a href="abc/fitness_func.html#culebra.abc.FitnessFunction._get_repr_properties">(FitnessFunction method)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer._get_repr_properties">(FSClassificationScorer method)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer._get_repr_properties">(FSDatasetScorer method)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_scorer.html#culebra.fitness_func.feature_selection.abc.FSScorer._get_repr_properties">(FSScorer method)</a>
+</li>
+        <li><a href="fitness_func/cooperative/fs_svc_scorer.html#culebra.fitness_func.cooperative.FSSVCScorer._get_repr_properties">(FSSVCScorer method)</a>
+</li>
+        <li><a href="solution/abc/individual.html#culebra.solution.abc.Individual._get_repr_properties">(Individual method)</a>, <a href="solution/parameter_optimization/individual.html#culebra.solution.parameter_optimization.Individual._get_repr_properties">[1]</a>
+</li>
+        <li><a href="solution/feature_selection/int_solution.html#culebra.solution.feature_selection.IntSolution._get_repr_properties">(IntSolution method)</a>
+</li>
+        <li><a href="solution/feature_selection/int_vector.html#culebra.solution.feature_selection.IntVector._get_repr_properties">(IntVector method)</a>
+</li>
+        <li><a href="trainer/abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer._get_repr_properties">(IslandsTrainer method)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex._get_repr_properties">(KappaIndex method)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex._get_repr_properties">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex._get_repr_properties">[2]</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM._get_repr_properties">(LexicographicDM method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._get_repr_properties">(LexicographicWithRepeatedCVDM method)</a>
+</li>
+        <li><a href="trainer/aco/abc/max_pheromone_paco.html#culebra.trainer.aco.abc.MaxPheromonePACO._get_repr_properties">(MaxPheromonePACO method)</a>
+</li>
+        <li><a href="solution/feature_selection/metrics.html#culebra.solution.feature_selection.Metrics._get_repr_properties">(Metrics method)</a>
+</li>
+        <li><a href="trainer/aco/mmas.html#culebra.trainer.aco.MMAS._get_repr_properties">(MMAS method)</a>
+</li>
+        <li><a href="fitness_func/multi_objective_fitness_function.html#culebra.fitness_func.MultiObjectiveFitnessFunction._get_repr_properties">(MultiObjectiveFitnessFunction method)</a>
+</li>
+        <li><a href="fitness_func/tsp/multi_objective_path_length.html#culebra.fitness_func.tsp.MultiObjectivePathLength._get_repr_properties">(MultiObjectivePathLength method)</a>
+</li>
+        <li><a href="trainer/ea/nsga.html#culebra.trainer.ea.NSGA._get_repr_properties">(NSGA method)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/num_feats.html#culebra.fitness_func.feature_selection.NumFeats._get_repr_properties">(NumFeats method)</a>
+</li>
+        <li><a href="trainer/aco/abc/paco.html#culebra.trainer.aco.abc.PACO._get_repr_properties">(PACO method)</a>
+</li>
+        <li><a href="trainer/aco/paco_mo.html#culebra.trainer.aco.PACOMO._get_repr_properties">(PACOMO method)</a>
+</li>
+        <li><a href="trainer/abc/parallel_distributed_trainer.html#culebra.trainer.abc.ParallelDistributedTrainer._get_repr_properties">(ParallelDistributedTrainer method)</a>
+</li>
+        <li><a href="fitness_func/tsp/path_length.html#culebra.fitness_func.tsp.PathLength._get_repr_properties">(PathLength method)</a>
+</li>
+        <li><a href="trainer/aco/abc/pheromone_based_aco.html#culebra.trainer.aco.abc.PheromoneBasedACO._get_repr_properties">(PheromoneBasedACO method)</a>
+</li>
+        <li><a href="trainer/aco/quality_based_paco.html#culebra.trainer.aco.QualityBasedPACO._get_repr_properties">(QualityBasedPACO method)</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._get_repr_properties">(RBFSVCScorer method)</a>
+</li>
+        <li><a href="trainer/aco/abc/reseteable_pheromone_based_aco.html#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO._get_repr_properties">(ReseteablePheromoneBasedACO method)</a>
+</li>
+        <li><a href="tools/results.html#culebra.tools.Results._get_repr_properties">(Results method)</a>
+</li>
+        <li><a href="tools/results_analyzer.html#culebra.tools.ResultsAnalyzer._get_repr_properties">(ResultsAnalyzer method)</a>
+</li>
+        <li><a href="trainer/abc/sequential_distributed_trainer.html#culebra.trainer.abc.SequentialDistributedTrainer._get_repr_properties">(SequentialDistributedTrainer method)</a>
+</li>
+        <li><a href="trainer/aco/abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO._get_repr_properties">(SingleObjACO method)</a>
+</li>
+        <li><a href="fitness_func/abc/single_objective_fitness_function.html#culebra.fitness_func.abc.SingleObjectiveFitnessFunction._get_repr_properties">(SingleObjectiveFitnessFunction method)</a>
+</li>
+        <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._get_repr_properties">(SingleObjPACO method)</a>
+</li>
+        <li><a href="abc/solution.html#culebra.abc.Solution._get_repr_properties">(Solution method)</a>, <a href="solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution._get_repr_properties">[1]</a>, <a href="solution/parameter_optimization/solution.html#culebra.solution.parameter_optimization.Solution._get_repr_properties">[2]</a>, <a href="solution/tsp/solution.html#culebra.solution.tsp.Solution._get_repr_properties">[3]</a>
+</li>
+        <li><a href="abc/species.html#culebra.abc.Species._get_repr_properties">(Species method)</a>, <a href="solution/feature_selection/species.html#culebra.solution.feature_selection.Species._get_repr_properties">[1]</a>, <a href="solution/parameter_optimization/species.html#culebra.solution.parameter_optimization.Species._get_repr_properties">[2]</a>, <a href="solution/tsp/species.html#culebra.solution.tsp.Species._get_repr_properties">[3]</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/svc_scorer.html#culebra.fitness_func.svc_optimization.abc.SVCScorer._get_repr_properties">(SVCScorer method)</a>
+</li>
+        <li><a href="abc/trainer.html#culebra.abc.Trainer._get_repr_properties">(Trainer method)</a>
+</li>
+        <li><a href="fitness_func/tsp/abc/tsp_fitness_function.html#culebra.fitness_func.tsp.abc.TSPFitnessFunction._get_repr_properties">(TSPFitnessFunction method)</a>
 </li>
       </ul></li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._get_state">_get_state() (ACO method)</a>
@@ -2177,14 +2371,6 @@
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO._init_training">(SingleObjPACO method)</a>
 </li>
         <li><a href="abc/trainer.html#culebra.abc.Trainer._init_training">(Trainer method)</a>
-</li>
-      </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch._is_reserved">_is_reserved() (Batch method)</a>
-
-      <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation._is_reserved">(Evaluation method)</a>
-</li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment._is_reserved">(Experiment method)</a>
 </li>
       </ul></li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO._load_state">_load_state() (ACO method)</a>
@@ -2939,7 +3125,7 @@
 </li>
       <li><a href="abc/base.html#culebra.abc.Base">Base (class in culebra.abc)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch">Batch (class in culebra.tools)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch">Batch (class in culebra.tools.evaluation)</a>
 </li>
       <li><a href="tools/effect_size.html#culebra.tools.EffectSize.batches">batches (EffectSize attribute)</a>
 
@@ -2947,7 +3133,7 @@
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.batches">(TestOutcome attribute)</a>
 </li>
       </ul></li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment.best_cooperators">best_cooperators (Experiment property)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.best_cooperators">best_cooperators (Experiment property)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO.best_cooperators">best_cooperators() (ACO method)</a>
 
@@ -3013,7 +3199,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment.best_solutions">best_solutions (Experiment property)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.best_solutions">best_solutions (Experiment property)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO.best_solutions">best_solutions() (ACO method)</a>
 
@@ -3794,6 +3980,27 @@
 </li>
       </ul></li>
       <li>
+    culebra.tools.abc
+
+      <ul>
+        <li><a href="tools/abc.html#module-culebra.tools.abc">module</a>
+</li>
+      </ul></li>
+      <li>
+    culebra.tools.decision_manager
+
+      <ul>
+        <li><a href="tools/decision_manager.html#module-culebra.tools.decision_manager">module</a>
+</li>
+      </ul></li>
+      <li>
+    culebra.tools.evaluation
+
+      <ul>
+        <li><a href="tools/evaluation.html#module-culebra.tools.evaluation">module</a>
+</li>
+      </ul></li>
+      <li>
     culebra.trainer
 
       <ul>
@@ -3933,20 +4140,54 @@
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO.custom_termination_func">(SingleObjPACO property)</a>
 </li>
       </ul></li>
-      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.cv_folds">cv_folds (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.cv_folds">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.cv_folds">[2]</a>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.cv_fixed_folds">cv_fixed_folds (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.cv_fixed_folds">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.cv_fixed_folds">[2]</a>
 
       <ul>
-        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer.cv_folds">(ClassificationScorer property)</a>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer.cv_fixed_folds">(ClassificationScorer property)</a>
 </li>
-        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_folds">(DatasetScorer property)</a>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_fixed_folds">(DatasetScorer property)</a>
 </li>
-        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_folds">(FSClassificationScorer property)</a>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_fixed_folds">(FSClassificationScorer property)</a>
 </li>
-        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer.cv_folds">(FSDatasetScorer property)</a>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer.cv_fixed_folds">(FSDatasetScorer property)</a>
 </li>
-        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.cv_folds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.cv_folds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.cv_folds">[2]</a>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.cv_fixed_folds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.cv_fixed_folds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.cv_fixed_folds">[2]</a>
 </li>
-        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_folds">(RBFSVCScorer property)</a>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_fixed_folds">(RBFSVCScorer property)</a>
+</li>
+      </ul></li>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.cv_num_folds">cv_num_folds (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.cv_num_folds">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.cv_num_folds">[2]</a>
+
+      <ul>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer.cv_num_folds">(ClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_num_folds">(DatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_num_folds">(FSClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer.cv_num_folds">(FSDatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.cv_num_folds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.cv_num_folds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.cv_num_folds">[2]</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_num_folds">(RBFSVCScorer property)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.cv_repeats">cv_repeats (LexicographicWithRepeatedCVDM property)</a>
+</li>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.cv_splitter">cv_splitter (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.cv_splitter">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.cv_splitter">[2]</a>
+
+      <ul>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer.cv_splitter">(ClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_splitter">(DatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer.cv_splitter">(FSClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer.cv_splitter">(FSDatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.cv_splitter">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.cv_splitter">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.cv_splitter">[2]</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_splitter">(RBFSVCScorer property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -3965,6 +4206,16 @@
 </li>
       <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer">DatasetScorer (class in culebra.fitness_func.dataset_score.abc)</a>
 </li>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.decision_manager">decision_manager (Batch property)</a>
+
+      <ul>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.decision_manager">(Evaluation property)</a>
+</li>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.decision_manager">(Experiment property)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager">DecisionManager (class in culebra.tools.abc)</a>
+</li>
       <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_ACOFS_DISCARD_PROB">DEFAULT_ACOFS_DISCARD_PROB (in module culebra.trainer.aco)</a>
 </li>
       <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_ACOFS_EXPLOITATION_PROB">DEFAULT_ACOFS_EXPLOITATION_PROB (in module culebra.trainer.aco)</a>
@@ -3976,8 +4227,6 @@
       <li><a href="tools.html#culebra.tools.DEFAULT_ALPHA">DEFAULT_ALPHA (in module culebra.tools)</a>
 </li>
       <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_AS_EXPLOITATION_PROB">DEFAULT_AS_EXPLOITATION_PROB (in module culebra.trainer.aco)</a>
-</li>
-      <li><a href="tools.html#culebra.tools.DEFAULT_BATCH_STATS_FUNCS">DEFAULT_BATCH_STATS_FUNCS (in module culebra.tools)</a>
 </li>
       <li><a href="trainer.html#culebra.trainer.DEFAULT_CHECKPOINT_ACTIVATION">DEFAULT_CHECKPOINT_ACTIVATION (in module culebra.trainer)</a>
 </li>
@@ -3993,7 +4242,11 @@
 </li>
       <li><a href="trainer/ea.html#culebra.trainer.ea.DEFAULT_CROSSOVER_PROB">DEFAULT_CROSSOVER_PROB (in module culebra.trainer.ea)</a>
 </li>
-      <li><a href="fitness_func/dataset_score.html#culebra.fitness_func.dataset_score.DEFAULT_CV_FOLDS">DEFAULT_CV_FOLDS (in module culebra.fitness_func.dataset_score)</a>
+      <li><a href="fitness_func/dataset_score.html#culebra.fitness_func.dataset_score.DEFAULT_CV_FIXED_FOLDS">DEFAULT_CV_FIXED_FOLDS (in module culebra.fitness_func.dataset_score)</a>
+</li>
+      <li><a href="fitness_func/dataset_score.html#culebra.fitness_func.dataset_score.DEFAULT_CV_NUM_FOLDS">DEFAULT_CV_NUM_FOLDS (in module culebra.fitness_func.dataset_score)</a>
+</li>
+      <li><a href="tools/decision_manager.html#culebra.tools.decision_manager.DEFAULT_CV_REPEATS">DEFAULT_CV_REPEATS (in module culebra.tools.decision_manager)</a>
 </li>
       <li><a href="trainer/ea.html#culebra.trainer.ea.DEFAULT_ELITE_SIZE">DEFAULT_ELITE_SIZE (in module culebra.trainer.ea)</a>
 </li>
@@ -4001,9 +4254,9 @@
 </li>
       <li><a href="solution/parameter_optimization.html#culebra.solution.parameter_optimization.DEFAULT_ETA">DEFAULT_ETA (in module culebra.solution.parameter_optimization)</a>
 </li>
-      <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB">DEFAULT_EXPLOITATION_PROB (in module culebra.trainer.aco)</a>
+      <li><a href="tools.html#culebra.tools.DEFAULT_EXCEL_FILE_EXTENSION">DEFAULT_EXCEL_FILE_EXTENSION (in module culebra.tools)</a>
 </li>
-      <li><a href="tools.html#culebra.tools.DEFAULT_FEATURE_METRIC_FUNCS">DEFAULT_FEATURE_METRIC_FUNCS (in module culebra.tools)</a>
+      <li><a href="trainer/aco.html#culebra.trainer.aco.DEFAULT_EXPLOITATION_PROB">DEFAULT_EXPLOITATION_PROB (in module culebra.trainer.aco)</a>
 </li>
       <li><a href="trainer/ea.html#culebra.trainer.ea.DEFAULT_GENE_IND_MUTATION_PROB">DEFAULT_GENE_IND_MUTATION_PROB (in module culebra.trainer.ea)</a>
 </li>
@@ -4057,6 +4310,8 @@
 </li>
       <li><a href="tools.html#culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME">DEFAULT_RUN_SCRIPT_FILENAME (in module culebra.tools)</a>
 </li>
+      <li><a href="tools.html#culebra.tools.DEFAULT_SCRIPT_FILE_EXTENSION">DEFAULT_SCRIPT_FILE_EXTENSION (in module culebra.tools)</a>
+</li>
       <li><a href="trainer/ea.html#culebra.trainer.ea.DEFAULT_SELECTION_FUNC">DEFAULT_SELECTION_FUNC (in module culebra.trainer.ea)</a>
 </li>
       <li><a href="tools.html#culebra.tools.DEFAULT_SEP">DEFAULT_SEP (in module culebra.tools)</a>
@@ -4064,8 +4319,6 @@
       <li><a href="index.html#culebra.DEFAULT_SIMILARITY_THRESHOLD">DEFAULT_SIMILARITY_THRESHOLD (in module culebra)</a>
 </li>
       <li><a href="tools.html#culebra.tools.DEFAULT_SMOTE_NUM_NEIGHBORS">DEFAULT_SMOTE_NUM_NEIGHBORS (in module culebra.tools)</a>
-</li>
-      <li><a href="tools.html#culebra.tools.DEFAULT_STATS_FUNCS">DEFAULT_STATS_FUNCS (in module culebra.tools)</a>
 </li>
       <li><a href="trainer.html#culebra.trainer.DEFAULT_VERBOSITY">DEFAULT_VERBOSITY (in module culebra.trainer)</a>
 </li>
@@ -4144,7 +4397,7 @@
 </li>
         <li><a href="abc/base.html#culebra.abc.Base.dump">(Base method)</a>
 </li>
-        <li><a href="tools/batch.html#culebra.tools.Batch.dump">(Batch method)</a>
+        <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.dump">(Batch method)</a>
 </li>
         <li><a href="solution/feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution.dump">(BinarySolution method)</a>
 </li>
@@ -4166,6 +4419,8 @@
 </li>
         <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.dump">(DatasetScorer method)</a>
 </li>
+        <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager.dump">(DecisionManager method)</a>
+</li>
         <li><a href="trainer/abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer.dump">(DistributedTrainer method)</a>
 </li>
         <li><a href="trainer/ea/ea.html#culebra.trainer.ea.EA.dump">(EA method)</a>
@@ -4176,9 +4431,9 @@
 </li>
         <li><a href="trainer/ea/elitist_ea.html#culebra.trainer.ea.ElitistEA.dump">(ElitistEA method)</a>
 </li>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.dump">(Evaluation method)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.dump">(Evaluation method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.dump">(Experiment method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.dump">(Experiment method)</a>
 </li>
         <li><a href="fitness_func/feature_selection/feats_proportion.html#culebra.fitness_func.feature_selection.FeatsProportion.dump">(FeatsProportion method)</a>
 </li>
@@ -4203,6 +4458,10 @@
         <li><a href="trainer/abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer.dump">(IslandsTrainer method)</a>
 </li>
         <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.dump">(KappaIndex method)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.dump">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.dump">[2]</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM.dump">(LexicographicDM method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.dump">(LexicographicWithRepeatedCVDM method)</a>
 </li>
         <li><a href="trainer/aco/abc/max_pheromone_paco.html#culebra.trainer.aco.abc.MaxPheromonePACO.dump">(MaxPheromonePACO method)</a>
 </li>
@@ -4381,23 +4640,21 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tools/evaluation.html#culebra.tools.Evaluation">Evaluation (class in culebra.tools)</a>
+      <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation">Evaluation (class in culebra.tools.abc)</a>
 </li>
-      <li><a href="tools.html#culebra.tools.EXCEL_FILE_EXTENSION">EXCEL_FILE_EXTENSION (in module culebra.tools)</a>
-</li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.excel_results_filename">excel_results_filename (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.excel_results_filename">excel_results_filename (Batch property)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.excel_results_filename">(Evaluation property)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.excel_results_filename">(Evaluation property)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.excel_results_filename">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.excel_results_filename">(Experiment property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/experiment.html#culebra.tools.Experiment">Experiment (class in culebra.tools)</a>
+      <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment">Experiment (class in culebra.tools.evaluation)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.experiment_basename">experiment_basename (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.experiment_basename">experiment_basename (Batch property)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.experiment_labels">experiment_labels (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.experiment_labels">experiment_labels (Batch property)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO.exploitation_prob">exploitation_prob (ACO property)</a>
 
@@ -4447,12 +4704,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="fitness_func/feature_selection/feats_proportion.html#culebra.fitness_func.feature_selection.FeatsProportion">FeatsProportion (class in culebra.fitness_func.feature_selection)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.feature_metric_funcs">feature_metric_funcs (Batch attribute)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.feature_metric_funcs">feature_metric_funcs (Batch attribute)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.feature_metric_funcs">(Evaluation attribute)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.feature_metric_funcs">(Evaluation attribute)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.feature_metric_funcs">(Experiment attribute)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.feature_metric_funcs">(Experiment attribute)</a>
 </li>
       </ul></li>
       <li><a href="solution/feature_selection/ant.html#culebra.solution.feature_selection.Ant.features">features (Ant property)</a>
@@ -4595,12 +4852,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="abc/fitness_func.html#culebra.abc.FitnessFunction">FitnessFunction (class in culebra.abc)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.from_config">from_config() (Batch class method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.from_config">from_config() (Batch class method)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.from_config">(Evaluation class method)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.from_config">(Evaluation class method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.from_config">(Experiment class method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.from_config">(Experiment class method)</a>
 </li>
       </ul></li>
       <li><a href="tools/results.html#culebra.tools.Results.from_csv_files">from_csv_files() (Results class method)</a>
@@ -4635,12 +4892,12 @@
         <li><a href="trainer/ea/nsga.html#culebra.trainer.ea.NSGA.gene_ind_mutation_prob">(NSGA property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.generate_run_script">generate_run_script() (Batch class method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.generate_run_script">generate_run_script() (Batch class method)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.generate_run_script">(Evaluation class method)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.generate_run_script">(Evaluation class method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.generate_run_script">(Experiment class method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.generate_run_script">(Experiment class method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -4795,12 +5052,12 @@
 </li>
       <li><a href="tools/results_analyzer.html#culebra.tools.ResultsAnalyzer.homoscedasticity_test">homoscedasticity_test() (ResultsAnalyzer method)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.hyperparameters">hyperparameters (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.hyperparameters">hyperparameters (Batch property)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.hyperparameters">(Evaluation property)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.hyperparameters">(Evaluation property)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.hyperparameters">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.hyperparameters">(Experiment property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -5173,6 +5430,10 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM">LexicographicDM (class in culebra.tools.decision_manager)</a>
+</li>
+      <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM">LexicographicWithRepeatedCVDM (class in culebra.tools.decision_manager)</a>
+</li>
       <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.load">load() (Accuracy class method)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.load">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.load">[2]</a>
 
       <ul>
@@ -5194,7 +5455,7 @@
 </li>
         <li><a href="abc/base.html#culebra.abc.Base.load">(Base class method)</a>
 </li>
-        <li><a href="tools/batch.html#culebra.tools.Batch.load">(Batch class method)</a>
+        <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.load">(Batch class method)</a>
 </li>
         <li><a href="solution/feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution.load">(BinarySolution class method)</a>
 </li>
@@ -5216,6 +5477,8 @@
 </li>
         <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.load">(DatasetScorer class method)</a>
 </li>
+        <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager.load">(DecisionManager class method)</a>
+</li>
         <li><a href="trainer/abc/distributed_trainer.html#culebra.trainer.abc.DistributedTrainer.load">(DistributedTrainer class method)</a>
 </li>
         <li><a href="trainer/ea/ea.html#culebra.trainer.ea.EA.load">(EA class method)</a>
@@ -5226,9 +5489,9 @@
 </li>
         <li><a href="trainer/ea/elitist_ea.html#culebra.trainer.ea.ElitistEA.load">(ElitistEA class method)</a>
 </li>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.load">(Evaluation class method)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.load">(Evaluation class method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.load">(Experiment class method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.load">(Experiment class method)</a>
 </li>
         <li><a href="fitness_func/feature_selection/feats_proportion.html#culebra.fitness_func.feature_selection.FeatsProportion.load">(FeatsProportion class method)</a>
 </li>
@@ -5253,6 +5516,10 @@
         <li><a href="trainer/abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer.load">(IslandsTrainer class method)</a>
 </li>
         <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.load">(KappaIndex class method)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.load">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.load">[2]</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM.load">(LexicographicDM class method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.load">(LexicographicWithRepeatedCVDM class method)</a>
 </li>
         <li><a href="trainer/aco/abc/max_pheromone_paco.html#culebra.trainer.aco.abc.MaxPheromonePACO.load">(MaxPheromonePACO class method)</a>
 </li>
@@ -5535,6 +5802,12 @@
 </li>
         <li><a href="tools.html#module-culebra.tools">culebra.tools</a>
 </li>
+        <li><a href="tools/abc.html#module-culebra.tools.abc">culebra.tools.abc</a>
+</li>
+        <li><a href="tools/decision_manager.html#module-culebra.tools.decision_manager">culebra.tools.decision_manager</a>
+</li>
+        <li><a href="tools/evaluation.html#module-culebra.tools.evaluation">culebra.tools.evaluation</a>
+</li>
         <li><a href="trainer.html#module-culebra.trainer">culebra.trainer</a>
 </li>
         <li><a href="trainer/abc.html#module-culebra.trainer.abc">culebra.trainer.abc</a>
@@ -5676,7 +5949,7 @@
         <li><a href="abc/trainer.html#culebra.abc.Trainer.num_evals">(Trainer property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.num_experiments">num_experiments (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.num_experiments">num_experiments (Batch property)</a>
 </li>
       <li><a href="solution/feature_selection/ant.html#culebra.solution.feature_selection.Ant.num_feats">num_feats (Ant property)</a>
 
@@ -5993,6 +6266,10 @@
 </li>
         <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.obj_thresholds">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.obj_thresholds">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.obj_thresholds">[2]</a>
 </li>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM.obj_thresholds">(LexicographicDM property)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.obj_thresholds">(LexicographicWithRepeatedCVDM property)</a>
+</li>
         <li><a href="fitness_func/multi_objective_fitness_function.html#culebra.fitness_func.MultiObjectiveFitnessFunction.obj_thresholds">(MultiObjectiveFitnessFunction property)</a>
 </li>
         <li><a href="fitness_func/tsp/multi_objective_path_length.html#culebra.fitness_func.tsp.MultiObjectivePathLength.obj_thresholds">(MultiObjectivePathLength property)</a>
@@ -6052,12 +6329,44 @@
         <li><a href="fitness_func/tsp/abc/tsp_fitness_function.html#culebra.fitness_func.tsp.abc.TSPFitnessFunction.obj_weights">(TSPFitnessFunction property)</a>
 </li>
       </ul></li>
-      <li><a href="fitness_func/cooperative/fs_svc_scorer.html#culebra.fitness_func.cooperative.FSSVCScorer.objectives">objectives (FSSVCScorer property)</a>
+      <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.objectives">objectives (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.objectives">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.objectives">[2]</a>
 
       <ul>
+        <li><a href="fitness_func/svc_optimization/c.html#culebra.fitness_func.svc_optimization.C.objectives">(C property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/classification_scorer.html#culebra.fitness_func.dataset_score.abc.ClassificationScorer.objectives">(ClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/abc/dataset_scorer.html#culebra.fitness_func.dataset_score.abc.DatasetScorer.objectives">(DatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/feats_proportion.html#culebra.fitness_func.feature_selection.FeatsProportion.objectives">(FeatsProportion property)</a>
+</li>
+        <li><a href="abc/fitness_func.html#culebra.abc.FitnessFunction.objectives">(FitnessFunction property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_classification_scorer.html#culebra.fitness_func.feature_selection.abc.FSClassificationScorer.objectives">(FSClassificationScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_dataset_scorer.html#culebra.fitness_func.feature_selection.abc.FSDatasetScorer.objectives">(FSDatasetScorer property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/abc/fs_scorer.html#culebra.fitness_func.feature_selection.abc.FSScorer.objectives">(FSScorer property)</a>
+</li>
+        <li><a href="fitness_func/cooperative/fs_svc_scorer.html#culebra.fitness_func.cooperative.FSSVCScorer.objectives">(FSSVCScorer property)</a>
+</li>
+        <li><a href="fitness_func/dataset_score/kappa_index.html#culebra.fitness_func.dataset_score.KappaIndex.objectives">(KappaIndex property)</a>, <a href="fitness_func/feature_selection/kappa_index.html#culebra.fitness_func.feature_selection.KappaIndex.objectives">[1]</a>, <a href="fitness_func/svc_optimization/kappa_index.html#culebra.fitness_func.svc_optimization.KappaIndex.objectives">[2]</a>
+</li>
         <li><a href="fitness_func/multi_objective_fitness_function.html#culebra.fitness_func.MultiObjectiveFitnessFunction.objectives">(MultiObjectiveFitnessFunction property)</a>
 </li>
         <li><a href="fitness_func/tsp/multi_objective_path_length.html#culebra.fitness_func.tsp.MultiObjectivePathLength.objectives">(MultiObjectivePathLength property)</a>
+</li>
+        <li><a href="fitness_func/feature_selection/num_feats.html#culebra.fitness_func.feature_selection.NumFeats.objectives">(NumFeats property)</a>
+</li>
+        <li><a href="fitness_func/tsp/path_length.html#culebra.fitness_func.tsp.PathLength.objectives">(PathLength property)</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.objectives">(RBFSVCScorer property)</a>
+</li>
+        <li><a href="fitness_func/abc/single_objective_fitness_function.html#culebra.fitness_func.abc.SingleObjectiveFitnessFunction.objectives">(SingleObjectiveFitnessFunction property)</a>
+</li>
+        <li><a href="fitness_func/svc_optimization/abc/svc_scorer.html#culebra.fitness_func.svc_optimization.abc.SVCScorer.objectives">(SVCScorer property)</a>
+</li>
+        <li><a href="fitness_func/tsp/abc/tsp_fitness_function.html#culebra.fitness_func.tsp.abc.TSPFitnessFunction.objectives">(TSPFitnessFunction property)</a>
 </li>
       </ul></li>
       <li><a href="tools/dataset.html#culebra.tools.Dataset.outputs">outputs (Dataset property)</a>
@@ -6473,7 +6782,7 @@
 </li>
         <li><a href="trainer/aco/ant_system.html#culebra.trainer.aco.AntSystem.reset">(AntSystem method)</a>
 </li>
-        <li><a href="tools/batch.html#culebra.tools.Batch.reset">(Batch method)</a>
+        <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.reset">(Batch method)</a>
 </li>
         <li><a href="trainer/abc/centralized_trainer.html#culebra.trainer.abc.CentralizedTrainer.reset">(CentralizedTrainer method)</a>
 </li>
@@ -6493,9 +6802,9 @@
 </li>
         <li><a href="trainer/ea/elitist_ea.html#culebra.trainer.ea.ElitistEA.reset">(ElitistEA method)</a>
 </li>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.reset">(Evaluation method)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.reset">(Evaluation method)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.reset">(Experiment method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.reset">(Experiment method)</a>
 </li>
         <li><a href="trainer/abc/islands_trainer.html#culebra.trainer.abc.IslandsTrainer.reset">(IslandsTrainer method)</a>
 </li>
@@ -6530,36 +6839,50 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="trainer/aco/abc/reseteable_pheromone_based_aco.html#culebra.trainer.aco.abc.ReseteablePheromoneBasedACO">ReseteablePheromoneBasedACO (class in culebra.trainer.aco.abc)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.results">results (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.results">results (Batch property)</a>
 </li>
       <li><a href="tools/results.html#culebra.tools.Results">Results (class in culebra.tools)</a>
 </li>
-      <li><a href="tools/evaluation.html#culebra.tools.Evaluation.results">results (Evaluation property)</a>
+      <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.results">results (Evaluation property)</a>
 
       <ul>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.results">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.results">(Experiment property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.results_base_filename">results_base_filename (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.results_base_filename">results_base_filename (Batch property)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.results_base_filename">(Evaluation property)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.results_base_filename">(Evaluation property)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.results_base_filename">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.results_base_filename">(Experiment property)</a>
 </li>
       </ul></li>
       <li><a href="tools/results_analyzer.html#culebra.tools.ResultsAnalyzer">ResultsAnalyzer (class in culebra.tools)</a>
 </li>
       <li><a href="tools/results_comparison.html#culebra.tools.ResultsComparison">ResultsComparison (class in culebra.tools)</a>
 </li>
-      <li><a href="trainer/topology.html#culebra.trainer.topology.ring_destinations">ring_destinations() (in module culebra.trainer.topology)</a>
-</li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.run">run() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.ResultsKeys">ResultsKeys (Batch attribute)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.run">(Evaluation method)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.ResultsKeys">(Experiment attribute)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.run">(Experiment method)</a>
+      </ul></li>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.ResultsLabels">ResultsLabels (Batch attribute)</a>
+
+      <ul>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.ResultsLabels">(Evaluation attribute)</a>
+</li>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.ResultsLabels">(Experiment attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="trainer/topology.html#culebra.trainer.topology.ring_destinations">ring_destinations() (in module culebra.trainer.topology)</a>
+</li>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.run">run() (Batch method)</a>
+
+      <ul>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.run">(Evaluation method)</a>
+</li>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.run">(Experiment method)</a>
 </li>
       </ul></li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO.runtime">runtime (ACO property)</a>
@@ -6632,6 +6955,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tools/dataset.html#culebra.tools.Dataset.scale">scale() (Dataset method)</a>
 </li>
+      <li><a href="tools/abc/decision_manager.html#culebra.tools.abc.DecisionManager.select">select() (DecisionManager method)</a>
+
+      <ul>
+        <li><a href="tools/decision_manager/lexicographic_dm.html#culebra.tools.decision_manager.LexicographicDM.select">(LexicographicDM method)</a>
+</li>
+        <li><a href="tools/decision_manager/lexicographic_with_repeated_cv_dm.html#culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.select">(LexicographicWithRepeatedCVDM method)</a>
+</li>
+      </ul></li>
       <li><a href="tools/dataset.html#culebra.tools.Dataset.select_features">select_features() (Dataset method)</a>
 </li>
       <li><a href="trainer/aco/abc/aco.html#culebra.trainer.aco.abc.ACO.select_representatives">select_representatives() (ACO method)</a>
@@ -6756,15 +7087,15 @@
 </li>
       <li><a href="index.html#culebra.SERIALIZED_FILE_EXTENSION">SERIALIZED_FILE_EXTENSION (in module culebra)</a>
 </li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.serialized_results_filename">serialized_results_filename (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.serialized_results_filename">serialized_results_filename (Batch property)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.serialized_results_filename">(Evaluation property)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.serialized_results_filename">(Evaluation property)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.serialized_results_filename">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.serialized_results_filename">(Experiment property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.setup">setup() (Batch method)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.setup">setup() (Batch method)</a>
 </li>
       <li><a href="trainer/aco/abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO">SingleObjACO (class in culebra.trainer.aco.abc)</a>
 </li>
@@ -6974,12 +7305,12 @@
         <li><a href="trainer/aco/abc/single_obj_paco.html#culebra.trainer.aco.abc.SingleObjPACO.state_proxy">(SingleObjPACO property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.stats_funcs">stats_funcs (Batch attribute)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.stats_funcs">stats_funcs (Batch attribute)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.stats_funcs">(Evaluation attribute)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.stats_funcs">(Evaluation attribute)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.stats_funcs">(Experiment attribute)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.stats_funcs">(Experiment attribute)</a>
 </li>
       </ul></li>
       <li><a href="trainer/abc/common_fitness_function_distributed_trainer.html#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.subtrainers">subtrainers (CommonFitnessFunctionDistributedTrainer property)</a>
@@ -7090,12 +7421,12 @@
         <li><a href="fitness_func/svc_optimization/abc/rbf_svc_scorer.html#culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.test_data">(RBFSVCScorer property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/batch.html#culebra.tools.Batch.test_fitness_func">test_fitness_func (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.test_fitness_func">test_fitness_func (Batch property)</a>
 
       <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.test_fitness_func">(Evaluation property)</a>
+        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.test_fitness_func">(Evaluation property)</a>
 </li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.test_fitness_func">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.test_fitness_func">(Experiment property)</a>
 </li>
       </ul></li>
       <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome">TestOutcome (class in culebra.tools)</a>
@@ -7182,14 +7513,14 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tools/batch.html#culebra.tools.Batch.trainer">trainer (Batch property)</a>
+      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.trainer">trainer (Batch property)</a>
 </li>
       <li><a href="abc/trainer.html#culebra.abc.Trainer">Trainer (class in culebra.abc)</a>
 </li>
-      <li><a href="tools/evaluation.html#culebra.tools.Evaluation.trainer">trainer (Evaluation property)</a>
+      <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.trainer">trainer (Evaluation property)</a>
 
       <ul>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.trainer">(Experiment property)</a>
+        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.trainer">(Experiment property)</a>
 </li>
       </ul></li>
       <li><a href="fitness_func/dataset_score/accuracy.html#culebra.fitness_func.dataset_score.Accuracy.training_data">training_data (Accuracy property)</a>, <a href="fitness_func/feature_selection/accuracy.html#culebra.fitness_func.feature_selection.Accuracy.training_data">[1]</a>, <a href="fitness_func/svc_optimization/accuracy.html#culebra.fitness_func.svc_optimization.Accuracy.training_data">[2]</a>
@@ -7280,18 +7611,6 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tools/batch.html#culebra.tools.Batch.untie_best_fitness_func">untie_best_fitness_func (Batch property)</a>
-
-      <ul>
-        <li><a href="tools/evaluation.html#culebra.tools.Evaluation.untie_best_fitness_func">(Evaluation property)</a>
-</li>
-        <li><a href="tools/experiment.html#culebra.tools.Experiment.untie_best_fitness_func">(Experiment property)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="abc/fitness.html#culebra.abc.Fitness.update_value">update_value() (Fitness method)</a>
-</li>
       <li><a href="solution/parameter_optimization/species.html#culebra.solution.parameter_optimization.Species.upper_bounds">upper_bounds (Species property)</a>
 </li>
   </ul></td>

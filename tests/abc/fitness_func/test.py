@@ -43,11 +43,15 @@ class MyFitnessFunction(FitnessFunction):
         """Objective names."""
         return ('a', 'b')
 
+    @property
+    def objectives(self):
+        """Objectives to be optimized."""
+        return (self, self)
+
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate one solution."""
-        sol.fitness.values = (0, 0)
 
-        return sol.fitness
+        return (0, 0)
 
 
 class FitnessFunctionTester(unittest.TestCase):
@@ -66,7 +70,7 @@ class FitnessFunctionTester(unittest.TestCase):
 
         self.assertEqual(
             func.obj_thresholds,
-            [DEFAULT_SIMILARITY_THRESHOLD] * func.num_obj
+            (DEFAULT_SIMILARITY_THRESHOLD,) * func.num_obj
         )
 
         invalid_threshold_types = (type, {}, len)
@@ -85,12 +89,10 @@ class FitnessFunctionTester(unittest.TestCase):
         # Try a fixed value for all the thresholds
         for threshold in valid_thresholds:
             func.obj_thresholds = threshold
-            # Check the length of the sequence
-            self.assertEqual(len(func.obj_thresholds), func.num_obj)
-
-            # Check that all the values match
-            for th in func.obj_thresholds:
-                self.assertEqual(threshold, th)
+            # Check the thresholds
+            self.assertEqual(
+                func.obj_thresholds, (threshold,) * func.num_obj
+            )
 
         # Try different values of threshold for each objective
         func.obj_thresholds = valid_thresholds[:func.num_obj]
@@ -113,6 +115,15 @@ class FitnessFunctionTester(unittest.TestCase):
         self.assertEqual(fitness_cls.weights, func.obj_weights)
         self.assertEqual(fitness_cls.names, func.obj_names)
         self.assertEqual(fitness_cls.thresholds, func.obj_thresholds)
+
+    def test_get_repr_properties(self):
+        """Test the: meth:`~culebra.abc.Base._get_repr_properties()` method."""
+        # Fitness function to be tested
+        func = MyFitnessFunction()
+
+        # Check the objectives
+        properties = func._get_repr_properties()
+        self.assertTrue(properties["objectives"], ('self', 'self'))
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

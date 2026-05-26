@@ -33,8 +33,7 @@ from collections.abc import Sequence
 
 from sklearn.svm import SVC
 
-from culebra.abc import Solution, Fitness
-
+from culebra.abc import Solution
 from culebra.fitness_func.feature_selection.abc import (
     FSScorer,
     FSDatasetScorer,
@@ -177,7 +176,7 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
 
            It is assumed that:
@@ -190,6 +189,8 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
                features. All of them are instances of
                :class:`culebra.solution.feature_selection.Solution`
 
+        Neither the solution nor its fitness should be modified.
+
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.abc.Solution
         :param index: Index where *sol* should be inserted in the cooperators
@@ -198,8 +199,8 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
         :param cooperators: Cooperators of each species being optimized
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         """
         # Assemble the solution and cooperators to construct a complete
         # solution for each of the problems solved cooperatively
@@ -207,23 +208,18 @@ class FSSVCScorer(MultiObjectiveFitnessFunction):
             sol, index, cooperators
         )
 
-        for obj_idx, obj in enumerate(self.objectives):
+        fit_values = ()
+        for obj in self.objectives:
             if isinstance(obj, FSScorer):
                 if isinstance(obj, FSClassificationScorer):
                     obj.classifier.C = sol_hyperparams.values.C
                     obj.classifier.gamma = sol_hyperparams.values.gamma
 
-                obj.evaluate(sol_features)
-                sol.fitness.update_value(
-                    sol_features.fitness.values[obj_idx], obj_idx
-                )
+                fit_values += obj.evaluate(sol_features)
             elif isinstance(obj, SVCScorer):
-                obj.evaluate(sol_hyperparams)
-                sol.fitness.update_value(
-                    sol_hyperparams.fitness.values[obj_idx], obj_idx
-                )
+                fit_values += obj.evaluate(sol_hyperparams)
 
-        return sol.fitness
+        return fit_values
 
 
 # Exported symbols for this module

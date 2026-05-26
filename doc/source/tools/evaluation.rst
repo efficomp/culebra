@@ -19,44 +19,14 @@
    Innovación y Universidades" and by the European Regional Development Fund
    (ERDF).
 
-:class:`culebra.tools.Evaluation` class
-=======================================
+:class:`culebra.tools.evaluation` module
+========================================
 
-.. autoclass:: culebra.tools.Evaluation
+.. automodule:: culebra.tools.evaluation
 
-Class attributes
-----------------
-.. autoattribute:: culebra.tools.Evaluation.feature_metric_funcs
-.. autoattribute:: culebra.tools.Evaluation.stats_funcs
 
-Class methods
--------------
-.. automethod:: culebra.tools.Evaluation.from_config
-.. automethod:: culebra.tools.Evaluation.generate_run_script
-.. automethod:: culebra.tools.Evaluation.load
+.. toctree::
+    :hidden:
 
-Properties
-----------
-.. autoproperty:: culebra.tools.Evaluation.excel_results_filename
-.. autoproperty:: culebra.tools.Evaluation.hyperparameters
-.. autoproperty:: culebra.tools.Evaluation.results
-.. autoproperty:: culebra.tools.Evaluation.results_base_filename
-.. autoproperty:: culebra.tools.Evaluation.serialized_results_filename
-.. autoproperty:: culebra.tools.Evaluation.test_fitness_func
-.. autoproperty:: culebra.tools.Evaluation.trainer
-.. autoproperty:: culebra.tools.Evaluation.untie_best_fitness_func
-
-Private properties
-------------------
-.. autoproperty:: culebra.tools.Evaluation._default_results_base_filename
-
-Methods
--------
-.. automethod:: culebra.tools.Evaluation.dump
-.. automethod:: culebra.tools.Evaluation.reset
-.. automethod:: culebra.tools.Evaluation.run
-
-Private methods
----------------
-.. automethod:: culebra.tools.Evaluation._execute
-.. automethod:: culebra.tools.Evaluation._is_reserved
+    Batch <evaluation/batch>
+    Experiment <evaluation/experiment>

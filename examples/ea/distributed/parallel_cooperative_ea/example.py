@@ -49,14 +49,20 @@ from culebra.tools import Dataset
 
 
 # Fitness function
-def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
+def KappaNumFeatsC(
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
+):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -83,7 +89,7 @@ training_data = training_data.oversample(random_seed=0)
 
 # Training fitness function
 training_fitness_func = KappaNumFeatsC(
-    training_data=training_data, cv_folds=5
+    training_data=training_data, cv_num_folds=5
 )
 
 # Test fitness function

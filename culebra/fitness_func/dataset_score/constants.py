@@ -28,11 +28,15 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-DEFAULT_CV_FOLDS = 5
+DEFAULT_CV_NUM_FOLDS = 5
 """Default number of folds for cross-validation."""
+
+DEFAULT_CV_FIXED_FOLDS = True
+"""Cross-validation folds remain fixed by default."""
 
 
 # Exported symbols for this module
 __all__ = [
-    'DEFAULT_CV_FOLDS'
+    'DEFAULT_CV_NUM_FOLDS',
+    'DEFAULT_CV_FIXED_FOLDS'
 ]

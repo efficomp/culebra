@@ -31,3 +31,7 @@ Class methods
 Methods
 -------
 .. automethod:: culebra.abc.Base.dump
+
+Private methods
+---------------
+.. automethod:: culebra.abc.Base._get_repr_properties

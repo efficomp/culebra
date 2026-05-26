@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # This file is part of culebra.
 #
 # Culebra is free software: you can redistribute it and/or modify it under the
@@ -17,12 +20,14 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Configuration file for the :class:`~culebra.tools.Evaluation` class."""
+"""Unit test for :class:`culebra.tools.decision_manager.LexicographicWithRepeatedCVDM`."""
 
-from collections import Counter
+import unittest
 
 from sklearn.svm import SVC
 
+from culebra import DEFAULT_SIMILARITY_THRESHOLD
+from culebra.abc import Fitness
 from culebra.solution.feature_selection import (
     Species as FeatureSelectionSpecies,
     BitVector as FeatureSelectionIndividual
@@ -42,18 +47,28 @@ from culebra.trainer.abc import (
     CooperativeTrainer
 )
 from culebra.trainer.ea import ElitistEA
+from culebra.tools.decision_manager import (
+    LexicographicWithRepeatedCVDM,
+    DEFAULT_CV_REPEATS
+)
 from culebra.tools import Dataset
 
 
 # Fitness function
-def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
+def KappaNumFeatsC(
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
+):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -74,17 +89,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 training_data = training_data.oversample(random_seed=0)
 
 # Training fitness function
-training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
-
-# Set the training fitness similarity threshold
-training_fitness_func.obj_thresholds = 0.001
-
-# Untie fitness function to select the best solution
-samples_per_class = Counter(training_data.outputs)
-max_folds = samples_per_class[
-    min(samples_per_class, key=samples_per_class.get)
-]
-untie_best_fitness_func = KappaNumFeatsC(training_data, cv_folds=max_folds)
+training_fitness_func = KappaNumFeatsC(training_data, cv_num_folds=5)
 
 # Test fitness function
 test_fitness_func = KappaNumFeatsC(training_data, test_data)
@@ -112,12 +117,14 @@ subtrainer_params = {
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
     "pop_size": dataset.num_feats//2,
-    "max_num_iters": 500,
-    "checkpoint_activation": False
+    # "pop_size": 3,
+    "max_num_iters": 10,
+    "checkpoint_activation": False,
+    "verbosity": False
 }
 
 # Parameters for the wrapper
-params ={
+params = {
     "num_representatives": 2
 }
 
@@ -148,13 +155,77 @@ subtrainers = (
 class MyTrainer(ParallelDistributedTrainer, CooperativeTrainer):
     """Parallel implementation of a cooperative trainer."""
 
-trainer = MyTrainer(*subtrainers, **params)
 
-# Define a base filename for the results
-results_base_filename = "my_results"
+class LexicographicWithRepeatedCVDMTester(unittest.TestCase):
+    """Test :class:`~culebra.tools.decision_manager.LexicographicWithRepeatedCVDM`."""
 
-# Parameters to appear in the results
-hyperparameters = {
-    "num_representatives": params["num_representatives"],
-    "max_num_iters": subtrainer_params["max_num_iters"]
-}
+    def test_init(self):
+        """Test the constructor."""
+        # Try default paremeters
+        trainer = MyTrainer(*subtrainers, **params)
+        dm = LexicographicWithRepeatedCVDM(trainer)
+        self.assertEqual(
+            dm.obj_thresholds,
+            (DEFAULT_SIMILARITY_THRESHOLD,) * trainer.fitness_func.num_obj
+        )
+        self.assertEqual(dm.cv_repeats, DEFAULT_CV_REPEATS)
+
+        # Try a fixed value for all the obj thresholds
+        threshold = 10
+        dm = LexicographicWithRepeatedCVDM(trainer, obj_thresholds=threshold)
+        self.assertEqual(
+            dm.obj_thresholds, (threshold,) * trainer.fitness_func.num_obj
+        )
+
+        # Try a valid value for cv_repeats
+        valid_cv_repeats = 10
+        dm = LexicographicWithRepeatedCVDM(
+            trainer, cv_repeats=valid_cv_repeats
+        )
+        self.assertEqual(dm.cv_repeats, valid_cv_repeats)
+
+        # Try a invalid types for cv_repeats. Should fail
+        invalid_cv_repeats_types = ('a', 1.1)
+        for invalid_type in invalid_cv_repeats_types:
+            with self.assertRaises(TypeError):
+                LexicographicWithRepeatedCVDM(trainer, cv_repeats=invalid_type)
+
+        # Try invalid values for cv_repeats. Should fail
+        invalid_cv_repeats_values = (-3, 0)
+        for invalid_value in invalid_cv_repeats_values:
+            with self.assertRaises(ValueError):
+                LexicographicWithRepeatedCVDM(
+                    trainer, cv_repeats=invalid_value
+                )
+
+    def test_evaluate(self):
+        """Test the generation of all combinations of Pareto optimal solutions."""
+        trainer = MyTrainer(*subtrainers, **params)
+        dm = LexicographicWithRepeatedCVDM(trainer)
+
+        # Generate populations of different individuals with the same fitness
+        fitness_values = (0.5, 5, 1)
+        for subtr in trainer.subtrainers:
+            repeated_individuals = True
+            while repeated_individuals:
+                subtr._generate_pop()
+                for ind in subtr.pop:
+                    ind.fitness.values = fitness_values
+                if len(subtr.best_solutions()[0]) == subtr.pop_size:
+                    repeated_individuals = False
+
+        all_combinations = dm._generate_all_combinations()
+
+        # Evaluate the combinations
+        all_combinations_fitness = dm._evaluate(all_combinations)
+
+        # Check the fitnesses after evaluation
+        self.assertEqual(
+            len(all_combinations), len(all_combinations_fitness)
+        )
+        for fitness in all_combinations_fitness:
+            self.assertIsInstance(fitness, Fitness)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -23,7 +23,6 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from culebra.abc import Fitness
 from culebra.fitness_func.dataset_score import (
     KappaIndex as DatasetKappaIndex,
     Accuracy as DatasetAccuracy
@@ -72,8 +71,10 @@ class C(SVCScorer):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.solution.parameter_optimization.Solution
@@ -85,17 +86,15 @@ class C(SVCScorer):
             used by cooperative problems
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
             raise ValueError("The solution is not evaluable")
 
-        # Set the value of C
-        sol.fitness.update_value(sol.values.C, self.index)
-
-        return sol.fitness
+        # Return the value of C
+        return (sol.values.C,)
 
 
 class KappaIndex(RBFSVCScorer, DatasetKappaIndex):

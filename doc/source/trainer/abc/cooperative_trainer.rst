@@ -73,6 +73,7 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._do_training
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._finish_training
+.. automethod:: culebra.trainer.abc.CooperativeTrainer._get_repr_properties
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._init_internals
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._init_training
 .. automethod:: culebra.trainer.abc.CooperativeTrainer._reset_internals

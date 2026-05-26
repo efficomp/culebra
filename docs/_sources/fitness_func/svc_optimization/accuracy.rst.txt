@@ -32,20 +32,24 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.classifier
-.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.cv_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.cv_num_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.cv_splitter
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.fitness_cls
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.index
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.num_obj
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.obj_names
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.obj_thresholds
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.obj_weights
+.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.objectives
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.test_data
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy.training_data
 
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._default_classifier
-.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._default_cv_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._default_cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._default_cv_num_folds
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._default_index
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.svc_optimization.Accuracy._worst_score
@@ -61,4 +65,5 @@ Private methods
 .. automethod:: culebra.fitness_func.svc_optimization.Accuracy._evaluate_kfcv
 .. automethod:: culebra.fitness_func.svc_optimization.Accuracy._evaluate_train_test
 .. automethod:: culebra.fitness_func.svc_optimization.Accuracy._final_training_test_data
+.. automethod:: culebra.fitness_func.svc_optimization.Accuracy._get_repr_properties
 .. automethod:: culebra.fitness_func.svc_optimization.Accuracy._score

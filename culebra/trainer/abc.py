@@ -1836,6 +1836,9 @@ class DistributedTrainer(Trainer):
 
         Delete all the internal data structures needed to perform the training.
         """
+        for subtr in self.subtrainers:
+            subtr.reset()
+
         # Reset the trainer internals
         self._reset_internals()
 
@@ -2123,6 +2126,9 @@ class ParallelDistributedTrainer(DistributedTrainer):
         self._manager = None
         for subtr in self.subtrainers:
             subtr.state_proxy = None
+            if hasattr(subtr, "process"):
+                del subtr.process
+
 
     def _do_training(self) -> None:
         """Apply the training algorithm.
@@ -2304,7 +2310,7 @@ class CooperativeTrainer(CommonFitnessFunctionDistributedTrainer):
         if anything_received:
             # Re-evaluate all the solutions
             for sol in subtrainer.pop:
-                subtrainer.evaluate(
+                subtrainer._current_iter_evals += subtrainer.evaluate(
                     sol,
                     subtrainer.fitness_func,
                     subtrainer.index,

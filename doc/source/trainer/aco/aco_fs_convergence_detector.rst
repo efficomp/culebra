@@ -27,3 +27,7 @@
 Methods
 -------
 .. automethod:: culebra.trainer.aco.ACOFSConvergenceDetector.has_converged
+
+Private methods
+---------------
+.. automethod:: culebra.trainer.aco.ACOFSConvergenceDetector._get_repr_properties

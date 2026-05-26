@@ -41,3 +41,6 @@ Methods
 .. automethod:: culebra.solution.parameter_optimization.Species.dump
 .. automethod:: culebra.solution.parameter_optimization.Species.is_member
 
+Private methods
+---------------
+.. automethod:: culebra.solution.parameter_optimization.Species._get_repr_properties

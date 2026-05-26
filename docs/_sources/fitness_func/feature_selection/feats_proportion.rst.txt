@@ -36,6 +36,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion.obj_names
 .. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion.obj_thresholds
 .. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion.obj_weights
+.. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion.objectives
 
 Private properties
 ------------------
@@ -47,3 +48,7 @@ Methods
 .. automethod:: culebra.fitness_func.feature_selection.FeatsProportion.dump
 .. automethod:: culebra.fitness_func.feature_selection.FeatsProportion.evaluate
 .. automethod:: culebra.fitness_func.feature_selection.FeatsProportion.is_evaluable
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.feature_selection.FeatsProportion._get_repr_properties

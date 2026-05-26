@@ -28,7 +28,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from functools import partial
 
-from culebra.abc import Fitness, FitnessFunction, Solution
+from culebra.abc import FitnessFunction, Solution
 from culebra.checker import (
     check_float, check_instance, check_sequence
 )
@@ -103,10 +103,10 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         return names
 
     @property
-    def obj_thresholds(self) -> list[float]:
+    def obj_thresholds(self) -> tuple[float]:
         """Objective similarity thresholds.
 
-        :rtype: list[float]
+        :rtype: tuple[float]
         :setter: Set new thresholds.
         :param values: The new values. If only a single value is provided, the
             same threshold will be used for all the objectives. Different
@@ -120,7 +120,7 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         :raises ValueError: If the length of the thresholds sequence does not
             match the number of objectives
         """
-        thresholds = []
+        thresholds = ()
 
         for obj in self.objectives:
             thresholds += obj.obj_thresholds
@@ -153,9 +153,7 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
                 item_checker=partial(check_float, ge=0)
             )
         else:
-            thresholds = (
-                [values] * self.num_obj
-            )
+            thresholds = [values] * self.num_obj
 
         for obj, th in zip(self.objectives, thresholds):
             obj.obj_thresholds = th
@@ -174,8 +172,10 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         Parameters *cooperators* and *index* are used only for cooperative
         evaluations
@@ -192,10 +192,11 @@ class MultiObjectiveFitnessFunction(FitnessFunction):
         :return: The fitness for *sol*
         :rtype: ~culebra.abc.Fitness
         """
+        fit_values = ()
         for obj in self.objectives:
-            obj.evaluate(sol, index, cooperators)
+            fit_values += obj.evaluate(sol, index, cooperators)
 
-        return sol.fitness
+        return fit_values
 
 
 # Exported symbols for this module

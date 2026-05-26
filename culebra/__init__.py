@@ -23,7 +23,8 @@ However, it has been redesigned to support different kind of problems and also
 different metaheuristics.
 
 Experiments and experiment batchs are automatized by means of the
-:class:`~culebra.tools.Experiment` and :class:`~culebra.tools.Batch`
+:class:`~culebra.tools.evaluation.Experiment` and
+:class:`~culebra.tools.evaluation.Batch`
 classes, both in the :mod:`~culebra.tools` module. Statistical analysis of
 the :class:`~culebra.tools.Results` is also provided by the
 :class:`~culebra.tools.ResultsAnalyzer` class.
@@ -53,10 +54,10 @@ from .constants import (
 from . import (
     checker,
     abc,
+    tools,
     solution,
     fitness_func,
     trainer,
-    tools
 )
 
 

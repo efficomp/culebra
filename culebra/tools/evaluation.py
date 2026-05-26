@@ -17,17 +17,24 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Evaluation of the solutions."""
+"""Tools to evaluate the trainers.
 
+Since automated experimentation is a quite valuable characteristic when a
+:class:`~culebra.abc.Trainer` method has to be run many times, culebra
+provides this features by means of the following classes:
+
+* The :class:`~culebra.tools.evaluation.Batch` class, which allows to run a
+  batch of experiments with the same configuration
+* The :class:`~culebra.tools.evaluation.Experiment` class, designed to run a
+  single experiment with a :class:`~culebra.abc.Trainer`
+"""
 from __future__ import annotations
 
-from abc import abstractmethod
 from typing import Any
+from enum import Enum
 from collections.abc import Sequence
-from copy import deepcopy
-from os import chmod, makedirs, chdir
-from os.path import isfile, join
-import importlib.util
+from os import makedirs, chdir
+from os.path import join
 
 import numpy as np
 from pandas import Series, DataFrame, concat
@@ -35,22 +42,16 @@ from deap.tools import HallOfFame, ParetoFront
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import (
-    Base,
     Solution,
     FitnessFunction,
     Trainer
 )
-from culebra.checker import (
-    check_int,
-    check_instance,
-    check_filename,
-    check_params
-)
+from culebra.checker import check_int
 from culebra.solution.feature_selection import (
-    Species as FSSpecies,
-    Metrics
+    Species as FSSpecies
 )
-from culebra.tools import Results, EXCEL_FILE_EXTENSION
+from .constants import DEFAULT_NUM_EXPERIMENTS
+from .abc import DecisionManager, Evaluation
 
 
 __author__ = 'Jesús González'
@@ -62,772 +63,47 @@ __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
 
-class _ResultKeys:
-    """Keys of the results obtained.
-
-    This class should be subclassed in every evaluation in order to define
-    the keys to access the results it produces.
-    """
-
-    @classmethod
-    def keys(cls):
-        """Return all the keys defined in the class."""
-        return list(
-            key
-            for key in dir(cls)
-            if (
-                isinstance(getattr(cls, key), str)
-                and not key.startswith("_"))
-        )
-
-
-class _Labels:
-    """Labels for the results dataframes."""
-
-    species = 'Species'
-    """Label for the species column in the dataframes"""
-
-    solution = 'Solution'
-    """Label for the solution column in the dataframes"""
-
-    feature = 'Feature'
-    """Label for the feature column in the dataframes"""
-
-    value = 'Value'
-    """Label for the Value column in the dataframes"""
-
-    fitness = 'Fitness'
-    """Label for the fitness column in the dataframes"""
-
-    relevance = 'Relevance'
-    """Label for the relevance column in the dataframes"""
-
-    rank = 'Rank'
-    """Label for the rank column in the dataframes"""
-
-    max = 'Max'
-    """Label for the max column in the dataframes"""
-
-    min = 'Min'
-    """Label for the min column in the dataframes"""
-
-    avg = 'Avg'
-    """Label for the avg column in the dataframes"""
-
-    std = 'Std'
-    """Label for the std column in the dataframes"""
-
-    best = 'Best'
-    """Label for the best column in the dataframes"""
-
-    stat = 'Stat'
-    """Label for the stat column in the dataframes"""
-
-    metric = 'Metric'
-    """Label for the metric column in the dataframes"""
-
-    runtime = "Runtime"
-    """Label for the runtime column in dataframes."""
-
-    num_evals = "NEvals"
-    """Label for the number of evaluations column in dataframes."""
-
-    num_iters = "NIters"
-    """Label for the number of iterations column in dataframes."""
-
-    experiment = "Exp"
-    """Label for the experiment column in dataframes."""
-
-    batch = "Batch"
-    """Label for the batch column in dataframes."""
-
-
-DEFAULT_STATS_FUNCS = {
-    _Labels.avg: np.mean,
-    _Labels.std: np.std,
-    _Labels.min: np.min,
-    _Labels.max: np.max
-}
-"""Default statistics calculated for the results."""
-
-DEFAULT_FEATURE_METRIC_FUNCS = {
-    _Labels.relevance: Metrics.relevance,
-    _Labels.rank: Metrics.rank
-}
-"""Default metrics calculated for the features in the set of solutions."""
-
 DEFAULT_BATCH_STATS_FUNCS = {
-    _Labels.avg: Series.mean,
-    _Labels.std: Series.std,
-    _Labels.min: Series.min,
-    _Labels.max: Series.max
+    "Avg": Series.mean,
+    "Std": Series.std,
+    "Min": Series.min,
+    "Max": Series.max
 }
 """Default statistics calculated for the results gathered from all the
 experiments."""
 
-SCRIPT_FILE_EXTENSION = ".py"
-"""File extension for python scripts."""
-
-DEFAULT_RESULTS_BASE_FILENAME = "results"
-"""Default base name for results files."""
-
-DEFAULT_NUM_EXPERIMENTS = 1
-"""Default number of experiments in the batch."""
-
-DEFAULT_RUN_SCRIPT_BASENAME = "run"
-"""Default base name for the script to run an evaluation."""
-
-DEFAULT_RUN_SCRIPT_FILENAME = (
-    DEFAULT_RUN_SCRIPT_BASENAME + SCRIPT_FILE_EXTENSION
-)
-"""Default file name for the script to run an evaluation."""
-
-DEFAULT_CONFIG_SCRIPT_BASENAME = "config"
-"""Default base name for configuration scripts."""
-
-DEFAULT_CONFIG_SCRIPT_FILENAME = (
-    DEFAULT_CONFIG_SCRIPT_BASENAME + SCRIPT_FILE_EXTENSION
-)
-"""Default file name for configuration scripts."""
-
-
-class Evaluation(Base):
-    """Base class for results evaluations."""
-
-    class _ResultKeys(_ResultKeys):
-        """Result keys for the evaluation.
-
-        It is empty, since :class:`~culebra.tools.Evaluation` is an abstract
-        class. Subclasses should override this class to fill it with the
-        appropriate result keys.
-        """
-
-    feature_metric_funcs = DEFAULT_FEATURE_METRIC_FUNCS
-    """Metrics calculated for the features in the set of solutions."""
-
-    stats_funcs = DEFAULT_STATS_FUNCS
-    """Statistics calculated for the solutions."""
-
-    _run_script_code = """#!/usr/bin/env python3
-
-#
-# This script relies on the {config_filename} configuration file.
-#
-# This script is a simple python module defining variables to be passed to
-# the {cls_name} constructor. These variables MUST have the same name than
-# the constructor parameters.
-#
-
-from culebra.tools import {cls_name}
-
-# Create the {var_name}
-{var_name} = {cls_name}.{factory_method}('{config_filename}')
-
-# Run the {var_name}
-{var_name}.run()
-
-# Print the results
-for res, val in {var_name}.results.items():
-    print(f"\\n\\n{res}:")
-    print(val)
-"""
-    """Parameterized script to evaluate the trainer."""
-
-    def __init__(
-        self,
-        trainer: Trainer,
-        untie_best_fitness_func: FitnessFunction | None = None,
-        test_fitness_func: FitnessFunction | None = None,
-        results_base_filename: str | None = None,
-        hyperparameters: dict | None = None
-    ) -> None:
-        """Set a trainer evaluation.
-
-        :param trainer: The trainer method
-        :type trainer: ~culebra.abc.Trainer
-        :param untie_best_fitness_func: The fitness function used to
-            select the best solution from those found by the trainer in case
-            of a tie. If omitted, the training fitness function will be used.
-            Defaults to :data:`None`
-        :type untie_best_fitness_func: ~culebra.abc.FitnessFunction
-        :param test_fitness_func: The fitness function used to test. If
-            omitted, the training fitness function will be used. Defaults to
-            :data:`None`
-        :type test_fitness_func: ~culebra.abc.FitnessFunction
-        :param results_base_filename: The base filename to save the results.
-            If omitted,
-            :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
-            used. Defaults to :data:`None`
-        :type results_base_filename: str
-        :param hyperparameters: Hyperparameter values used in this evaluation,
-            optional
-        :type hyperparameters: dict
-        :raises TypeError: If *trainer* is not a valid trainer
-        :raises TypeError: If *untie_best_fitness_func* or
-            *test_fitness_func* are not valid fitness functions
-        :raises TypeError: If *results_base_filename* is not a valid file name
-        :raises TypeError: If *hyperparameters* is not a dictionary
-        :raises ValueError: If the keys in *hyperparameters* are not strings
-        :raises ValueError: If any key in *hyperparameters* is reserved
-        """
-        self.trainer = trainer
-        self.untie_best_fitness_func = untie_best_fitness_func
-        self.test_fitness_func = test_fitness_func
-        self.results_base_filename = results_base_filename
-        self.hyperparameters = hyperparameters
-
-    @property
-    def trainer(self) -> Trainer:
-        """Trainer method.
-
-        :rtype: ~culebra.abc.Trainer
-        :setter: Set a new trainer method
-        :param value: New trainer
-        :type value: ~culebra.abc.Trainer
-        :raises TypeError: If *trainer* is not a valid trainer
-        """
-        return self._trainer
-
-    @trainer.setter
-    def trainer(self, value: Trainer) -> None:
-        """Set a new trainer method.
-
-        :param value: New trainer
-        :type value: ~culebra.abc.Trainer
-        :raises TypeError: If *trainer* is not a valid trainer
-        """
-        # Check the value
-        self._trainer = check_instance(value, "trainer", Trainer)
-
-        # Reset results
-        self.reset()
-
-    @property
-    def _default_untie_best_fitness_func(self) -> FitnessFunction:
-        """Default fitness function to tie-break the best solutions.
-    
-        :return: The trainer's training function
-        :rtype: ~culebra.abc.FitnessFunction
-        """
-        return self.trainer.fitness_func
-
-    @property
-    def untie_best_fitness_func(self) -> FitnessFunction:
-        """Fitness function to untie the best solutions.
-        
-        If several
-
-        :rtype: ~culebra.abc.FitnessFunction
-        :setter: Set a new fitness function to untie the best solutions
-        :param func: New tie-breaking fitness function. If set to
-            :data:`None`, the training fitness function will also be used to
-            break ties
-        :type func: ~culebra.abc.FitnessFunction
-        :raises TypeError: If *func* is not a valid fitness
-            function
-        """
-        return (
-            self._default_untie_best_fitness_func
-            if self._untie_best_fitness_func is None
-            else self._untie_best_fitness_func
-        )
-
-    @untie_best_fitness_func.setter
-    def untie_best_fitness_func(
-        self, func: FitnessFunction | None
-    ) -> None:
-        """Set a new fitness function to untie the best solutions.
-
-        :param func: New tie-breaking fitness function. If set to
-            :data:`None`, the training fitness function will also be used to
-            break ties
-        :type func: ~culebra.abc.FitnessFunction
-        :raises TypeError: If *func* is not a valid fitness
-            function
-        """
-        # Check the function
-        self._untie_best_fitness_func = (
-            None if func is None else check_instance(
-                func, "untie fitness function", FitnessFunction
-            )
-        )
-
-        # Reset results
-        self.reset()
-
-    @property
-    def _default_test_best_fitness_func(self) -> FitnessFunction:
-        """Default test fitness function.
-    
-        :return: The trainer's training function
-        :rtype: ~culebra.abc.FitnessFunction
-        """
-        return self.trainer.fitness_func
-
-    @property
-    def test_fitness_func(self) -> FitnessFunction:
-        """Test fitness function.
-
-        :rtype: ~culebra.abc.FitnessFunction
-        :setter: Set a new test fitness function.
-        :param func: New test fitness function. If set to :data:`None`,
-            the training fitness function will also be used for testing
-        :type func: ~culebra.abc.FitnessFunction
-        :raises TypeError: If *func* is not a valid fitness function
-        """
-        return (
-            self._default_test_best_fitness_func
-            if self._test_fitness_func is None
-            else self._test_fitness_func
-        )
-
-    @test_fitness_func.setter
-    def test_fitness_func(self, func: FitnessFunction | None) -> None:
-        """Set a new test fitness function.
-
-        :param func: New test fitness function. If set to :data:`None`,
-            the training fitness function will also be used for testing
-        :type func: ~culebra.abc.FitnessFunction
-        :raises TypeError: If *func* is not a valid fitness function
-        """
-        # Check the function
-        self._test_fitness_func = (
-            None if func is None else check_instance(
-                func, "test fitness function", FitnessFunction
-            )
-        )
-
-        # Reset results
-        self.reset()
-
-    @property
-    def _default_results_base_filename(self) -> str:
-        """Default base name for results files.
-
-        :return: :attr:`~culebra.tools.DEFAULT_RESULTS_BASE_FILENAME`
-        :rtype: str
-        """
-        return DEFAULT_RESULTS_BASE_FILENAME
-
-    @property
-    def results_base_filename(self) -> str | None:
-        """Results base filename.
-
-        :rtype: str
-        :setter: Set a new results base filename.
-
-        :param filename: New results base filename. If set to :data:`None`,
-            :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
-            used
-        :type filename: str
-        :raises TypeError: If *filename* is not a valid file name
-        """
-        return (
-            self._default_results_base_filename
-            if self._results_base_filename is None
-            else self._results_base_filename
-        )
-
-    @results_base_filename.setter
-    def results_base_filename(self, filename: str | None) -> None:
-        """Set a new results base filename.
-
-        :param filename: New results base filename. If set to :data:`None`,
-            :attr:`~culebra.tools.Evaluation._default_results_base_filename` is
-            used
-        :type filename: str
-        :raises TypeError: If *filename* is not a valid file name
-        """
-        # Check the filename
-        self._results_base_filename = (
-            None if filename is None else check_filename(
-                filename,
-                name="base filename to save the results"
-            )
-        )
-
-        # Reset results
-        self.reset()
-
-    @property
-    def serialized_results_filename(self) -> str:
-        """Filename used to save the serialized results.
-
-        :rtype: str
-        """
-        return self.results_base_filename + SERIALIZED_FILE_EXTENSION
-
-    @property
-    def excel_results_filename(self) -> str:
-        """Filename used to save the results in Excel format.
-
-        :rtype: str
-        """
-        return self.results_base_filename + EXCEL_FILE_EXTENSION
-
-    def _is_reserved(self, name: str) -> bool:
-        """Check if a hyperparameter name is reserved
-
-        :param name: Hyperparameter name
-        :type name: str
-        :return: :data:`True` if the given hyperparameter name is reserved
-        :rtype: bool
-        """
-        reserved_labels = (
-            label for label in dir(_Labels) if not label.startswith("_")
-        )
-
-        for label in reserved_labels:
-            if name == getattr(_Labels, label):
-                return True
-
-        return False
-
-    @property
-    def hyperparameters(self) -> dict | None:
-        """Hyperparameter values used for the evaluation.
-
-        :rtype: dict
-
-        :setter: Set the hyperparameter values used for the evaluation
-        :param values: Hyperparameter values used in this evaluation
-        :type values: dict
-        :raises TypeError: If *values* is not a dictionary
-        :raises ValueError: If the keys in *values* are not strings
-        :raises ValueError: If any key in *values* is reserved
-        """
-        return self._hyperparameters
-
-    @hyperparameters.setter
-    def hyperparameters(self, values: dict | None) -> None:
-        """Set the hyperparameter values used for the evaluation.
-
-        :param values: Hyperparameter values used in this evaluation
-        :type values: dict
-        :raises TypeError: If *values* is not a dictionary
-        :raises ValueError: If the keys in *values* are not strings
-        :raises ValueError: If any key in *values* is reserved
-        """
-        if values is None:
-            self._hyperparameters = None
-            return
-
-        self._hyperparameters = check_params(
-            values,
-            name="hyperparameters"
-        )
-
-        # Check that no parameter name is reserved
-        for name in values.keys():
-            if self._is_reserved(name):
-                raise ValueError(
-                    "Attempt to use a reserved label as a hyperparameter "
-                    f"name: {name}"
-                )
-
-        # Reset results
-        self.reset()
-
-    @property
-    def results(self) -> Results | None:
-        """Results obtained.
-
-        :rtype: ~culebra.tools.Results
-        """
-        return self._results
-
-    @classmethod
-    def from_config(
-        cls,
-        config_script_filename: str | None = None
-    ) -> Evaluation:
-        """Generate a new evaluation from a configuration file.
-
-        :param config_script_filename: Path to the configuration file. If
-            omitted,
-            :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
-            Defaults to :data:`None`
-        :type config_script_filename: str
-        :raises RuntimeError: If *config_script_filename* is an invalid file
-            path or an invalid configuration file
-        """
-        # Load the config module
-        config = cls._load_config(config_script_filename)
-
-        # Generate the Evaluation from the config module
-        return cls(
-            trainer=getattr(config, 'trainer', None),
-            untie_best_fitness_func=getattr(
-                config, 'untie_best_fitness_func', None
-            ),
-            test_fitness_func=getattr(
-                config, 'test_fitness_func', None
-            ),
-            results_base_filename=getattr(
-                config, 'results_base_filename', None
-            ),
-            hyperparameters=getattr(config, 'hyperparameters', None)
-        )
-
-    @classmethod
-    def generate_run_script(
-        cls,
-        config_filename: str | None = None,
-        run_script_filename: str | None = None
-    ) -> None:
-        """Generate a script to run an evaluation.
-
-        The parameters for the evaluation are taken from a configuration file.
-
-        :param config_filename: Path to the configuration file. It can be
-            whether a configuration script or a serialized
-            :attr:`~culebra.tools.Evaluation` instance. If omitted,
-            :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
-            Defaults to :data:`None`
-        :type config_filename: str
-        :param run_script_filename: File path to store the run script. If
-            omitted, :attr:`~culebra.tools.DEFAULT_RUN_SCRIPT_FILENAME` is
-            used. Defaults to :data:`None`
-        :type run_script_filename: str
-        :raises TypeError: If *config_filename* or *run_script_filename*
-            are not a valid filename
-        :raises ValueError: If the extensions of *config_filename* or
-            *run_script_filename* are not valid
-        """
-        if config_filename is None:
-            config_filename = DEFAULT_CONFIG_SCRIPT_FILENAME
-
-        # Check the configuration filename
-        try:
-            config_filename = check_filename(
-                config_filename,
-                name="configuration file",
-                ext=SCRIPT_FILE_EXTENSION
-            )
-            factory_method = 'from_config'
-        except ValueError:
-            try:
-                config_filename = check_filename(
-                    config_filename,
-                    name="configuration file",
-                    ext=SERIALIZED_FILE_EXTENSION
-                )
-                factory_method = 'load'
-            except ValueError as e:
-                raise ValueError(
-                    "Not valid extension for the configuration file. "
-                    f"Valid extensions are {SCRIPT_FILE_EXTENSION} for "
-                    f"python scripts or {SERIALIZED_FILE_EXTENSION} for "
-                    f"serialized evaluation objects: {config_filename}"
-                ) from e
-            except TypeError as error:
-                raise error
-
-        # Check the run script filename
-        run_script_filename = check_filename(
-            (
-                DEFAULT_RUN_SCRIPT_FILENAME
-                if run_script_filename is None
-                else run_script_filename
-            ),
-            name="run script file",
-            ext=SCRIPT_FILE_EXTENSION
-        )
-
-        cls_name = cls.__name__
-        # Create the script file
-        with open(run_script_filename, 'w', encoding="utf8") as run_script:
-            run_script.write(
-                cls._run_script_code.format_map(
-                    {
-                        "config_filename": config_filename,
-                        "factory_method": factory_method,
-                        "cls_name": cls_name,
-                        "var_name": cls_name.lower(),
-                        "res": "{res}"
-                    }
-                )
-            )
-
-        # Make the run script file executable
-        chmod(run_script_filename, 0o777)
-
-    def reset(self) -> None:
-        """Reset the results."""
-        self.trainer.reset()
-        self._results = None
-
-    def run(self) -> None:
-        """Execute the evaluation and save the results."""
-        # Forget previous results
-        self.reset()
-
-        if not isfile(self.serialized_results_filename):
-            # Init the results manager
-            self._results = Results()
-
-            # Run the evaluation
-            self._execute()
-
-            # Save the results
-            self.results.dump(self.serialized_results_filename)
-        else:
-            # Load the results
-            self._results = Results.load(self.serialized_results_filename)
-
-        if not isfile(self.excel_results_filename):
-            # Save the results to Excel
-            self.results.to_excel(self.excel_results_filename)
-
-    @abstractmethod
-    def _execute(self) -> None:
-        """Execute the evaluation.
-
-        This method must be overridden by subclasses to return a correct
-        value.
-        """
-        raise NotImplementedError(
-            "The _execute method has not been implemented in "
-            f"the {self.__class__.__name__} class"
-        )
-
-    @staticmethod
-    def _load_config(config_script_filename: str | None = None) -> object:
-        """Generate a new evaluation from a configuration file.
-
-        :param config_script_filename: Path to the configuration file. If
-            omitted,
-            :attr:`~culebra.tools.DEFAULT_CONFIG_SCRIPT_FILENAME` is used.
-            Defaults to :data:`None`
-        :type config_script_filename: str
-        :return: The configuration
-        :rtype: object
-        :raises TypeError: If *config_script_filename* is not a valid filename
-        :raises ValueError: If the extension of *config_script_filename* is
-            not '.py'
-        :raises RuntimeError: If *config_script_filename* is an invalid file
-            path or an invalid configuration script
-        """
-        # Check the configuration script filename
-        config_script_filename = check_filename(
-            (
-                DEFAULT_CONFIG_SCRIPT_FILENAME
-                if config_script_filename is None
-                else config_script_filename
-            ),
-            name="configuration script file",
-            ext=SCRIPT_FILE_EXTENSION
-        )
-
-        if not isfile(config_script_filename):
-            raise RuntimeError(
-                f"Configuration file not found: {config_script_filename}"
-            )
-
-        # Try to read the configuration script
-        try:
-            # Get the spec
-            spec = importlib.util.spec_from_file_location(
-                "config",
-                config_script_filename
-            )
-
-            # Load the module
-            config = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(config)
-        except Exception as e:
-            raise RuntimeError(
-                f"Bad configuration script: {config_script_filename}"
-            ) from e
-
-        return config
-
-    def __copy__(self) -> Evaluation:
-        """Shallow copy the object.
-
-        :return: The copied evaluation
-        :rtype: ~culebra.tools.Evaluation
-        """
-        cls = self.__class__
-        result = cls(self.trainer)
-        result.__dict__.update(self.__dict__)
-        return result
-
-    def __deepcopy__(self, memo: dict) -> Evaluation:
-        """Deepcopy the object.
-
-        :param memo: Object attributes
-        :type memo: dict
-        :return: The copied evaluation
-        :rtype: ~culebra.tools.Evaluation
-        """
-        cls = self.__class__
-        result = cls(
-            deepcopy(self.trainer, memo)
-        )
-        result.__dict__.update(
-            deepcopy(
-                self.__dict__,
-                memo | {id(self.trainer): result.trainer}
-            )
-        )
-        return result
-
-    def __reduce__(self) -> tuple:
-        """Reduce the object.
-
-        :return: The reduction
-        :rtype: tuple
-        """
-        return (self.__class__, (self.trainer, ), self.__dict__)
-
-    @classmethod
-    def __fromstate__(cls, state: dict) -> Evaluation:
-        """Return an evaluation from a state.
-
-        :param state: The state
-        :type state: dict
-        :return: The evaluation
-        :rtype: ~culebra.tools.Evaluation
-        """
-        obj = cls(state['_trainer'])
-        obj.__setstate__(state)
-        return deepcopy(obj)
-
 
 class Experiment(Evaluation):
-    """Run a trainer method from the parameters in a config file."""
+    """Run a trainer from the parameters in a config file."""
 
-    class _ResultKeys(_ResultKeys):
+    class ResultsKeys(str, Enum):
         """Handle the keys for the experiment results."""
 
-        training_stats = 'training_stats'
+        TRAINING_STATS = 'training_stats'
         """Training statistics."""
 
-        training_fitness = 'training_fitness'
+        TRAINING_FITNESS = 'training_fitness'
         """Training fitness of the best solutions found."""
 
-        train_best = 'train_best'
-        """Validation fitness of the best solution found. The best solution
-        should be chosen according to the validation fitness."""
+        TRAIN_BEST = 'train_best'
+        """Fitness of the best solution found."""
 
-        test_fitness = 'test_fitness'
+        TEST_FITNESS = 'test_fitness'
         """Test fitness of the best solutions found."""
 
-        test_best = 'test_best'
-        """Test fitness of the best solution found. The best solution should
-        be chosen according to the validation fitness."""
+        TEST_BEST = 'test_best'
+        """Test fitness of the best solution found."""
 
-        training_fitness_stats = "training_fitness_stats"
+        TRAINING_FITNESS_STATS = "training_fitness_stats"
         """Training fitness stats."""
 
-        test_fitness_stats = "test_fitness_stats"
+        TEST_FITNESS_STATS = "test_fitness_stats"
         """Test fitness stats."""
 
-        execution_metrics = 'execution_metrics'
+        EXECUTION_METRICS = 'execution_metrics'
         """Execution metrics."""
 
-        feature_metrics = 'feature_metrics'
+        FEATURE_METRICS = 'feature_metrics'
         """Feature metrics."""
 
     @property
@@ -848,10 +124,7 @@ class Experiment(Evaluation):
         return self._best_cooperators
 
     def reset(self) -> None:
-        """Reset the results.
-
-        Overridden to reset the best solutions and best cooperators.
-        """
+        """Reset the experiment."""
         super().reset()
         self._best_solutions = None
         self._best_cooperators = None
@@ -865,7 +138,8 @@ class Experiment(Evaluation):
         # Train
         self.trainer.train()
 
-        # Best solutions found by the trainer
+        # Keep the best solutions and best cooperators
+        # because the trainer will be reseted
         self._best_solutions = self.trainer.best_solutions()
         self._best_cooperators = self.trainer.best_cooperators()
 
@@ -873,10 +147,10 @@ class Experiment(Evaluation):
         self._add_training_stats()
 
         # Add the training fitness to the best solutions dataframe
-        self._add_fitness(self._ResultKeys.training_fitness)
+        self._add_fitness(self.ResultsKeys.TRAINING_FITNESS.value)
 
         # Perform the training fitness stats
-        self._add_fitness_stats(self._ResultKeys.training_fitness_stats)
+        self._add_fitness_stats(self.ResultsKeys.TRAINING_FITNESS_STATS.value)
 
     def _add_training_stats(self) -> None:
         """Add the training stats to the experiment results."""
@@ -895,8 +169,8 @@ class Experiment(Evaluation):
         # Number of entries in the logbook
         n_entries = len(logbook)
 
-        # Key of the result
-        result_key = self._ResultKeys.training_stats
+        # Results key
+        results_key = self.ResultsKeys.TRAINING_STATS.value
 
         # Create the dataframe
         df = DataFrame()
@@ -920,7 +194,7 @@ class Experiment(Evaluation):
         fitness_index = []
         for i in range(num_obj):
             fitness_index.extend([obj_names[i] for _ in range(n_entries)])
-        df[_Labels.fitness] = fitness_index
+        df[self.ResultsLabels.FITNESS.value] = fitness_index
 
         # For each objective stat
         for stat in self.trainer.iteration_obj_stats.keys():
@@ -934,18 +208,18 @@ class Experiment(Evaluation):
             df[stat.capitalize()] = stat_data
 
         # Set the dataframe index
-        df.set_index(index + [_Labels.fitness], inplace=True)
+        df.set_index(index + [self.ResultsLabels.FITNESS.value], inplace=True)
         df.sort_index(inplace=True)
-        df.columns.set_names(_Labels.stat, inplace=True)
+        df.columns.set_names(self.ResultsLabels.STAT.value, inplace=True)
 
         # Add the dataframe to the results
-        self.results[result_key] = df
+        self.results[results_key] = df
 
-    def _add_fitness(self, result_key: str) -> None:
+    def _add_fitness(self, results_key: str) -> None:
         """Add the fitness values to the solutions found.
 
-        :param result_key: Result key.
-        :type result_key: str
+        :param results_key: Results key.
+        :type results_key: str
         """
         # Objective names
         obj_names = list(self.best_solutions[0][0].fitness.names)
@@ -960,9 +234,12 @@ class Experiment(Evaluation):
             index = []
 
         index += (
-            [_Labels.species, _Labels.solution]
+            [
+                self.ResultsLabels.SPECIES.value,
+                self.ResultsLabels.SOLUTION.value
+            ]
             if num_species > 1
-            else [_Labels.solution]
+            else [self.ResultsLabels.SOLUTION.value]
         )
 
         # Column names for the dataframe
@@ -996,16 +273,16 @@ class Experiment(Evaluation):
 
         # Set the dataframe index
         df.set_index(index, inplace=True)
-        df.columns.set_names(_Labels.fitness, inplace=True)
+        df.columns.set_names(self.ResultsLabels.FITNESS.value, inplace=True)
 
         # Add the dataframe to the results
-        self.results[result_key] = df.astype(float)
+        self.results[results_key] = df.astype(float)
 
-    def _add_fitness_stats(self, result_key: str) -> None:
+    def _add_fitness_stats(self, results_key: str) -> None:
         """Perform some stats on the best solutions fitness.
 
-        :param result_key: Result key.
-        :type result_key: str
+        :param results_key: Results key.
+        :type results_key: str
         """
         # Objective names
         obj_names = list(self.best_solutions[0][0].fitness.names)
@@ -1023,9 +300,12 @@ class Experiment(Evaluation):
             index = []
 
         index += (
-            [_Labels.species, _Labels.fitness]
+            [
+                self.ResultsLabels.SPECIES.value,
+                self.ResultsLabels.FITNESS.value
+            ]
             if num_species > 1
-            else [_Labels.fitness]
+            else [self.ResultsLabels.FITNESS.value]
         )
 
         # Column names for the dataframe
@@ -1054,9 +334,11 @@ class Experiment(Evaluation):
                     species_df[name] = [value] * n_obj
 
             if num_species > 1:
-                species_df[_Labels.species] = [species_index] * n_obj
+                species_df[self.ResultsLabels.SPECIES.value] = (
+                    [species_index] * n_obj
+                )
 
-            species_df[_Labels.fitness] = obj_names
+            species_df[self.ResultsLabels.FITNESS.value] = obj_names
             for name, func in self.stats_funcs.items():
                 species_df[name] = func(fitness, axis=1)
 
@@ -1068,10 +350,10 @@ class Experiment(Evaluation):
 
         df.set_index(index, inplace=True)
         df.sort_index(inplace=True)
-        df.columns.set_names(_Labels.stat, inplace=True)
+        df.columns.set_names(self.ResultsLabels.STAT.value, inplace=True)
 
         # Add the dataframe to the results
-        self.results[result_key] = df
+        self.results[results_key] = df
 
     def _add_execution_metric(self, metric: str, value: Any) -> None:
         """Add an execution metric to the experiment results.
@@ -1081,39 +363,39 @@ class Experiment(Evaluation):
         :param value: Value of the metric
         :type value: object
         """
-        # Key of the result
-        result_key = self._ResultKeys.execution_metrics
+        # Results key
+        results_key = self.ResultsKeys.EXECUTION_METRICS.value
 
         # Create the DataFrame if it doesn't exist
-        if result_key not in self.results:
+        if results_key not in self.results:
             if self.hyperparameters is not None:
                 # Index for the dataframe
                 index = list(self.hyperparameters.keys())
-                self.results[result_key] = DataFrame()
+                self.results[results_key] = DataFrame()
                 for hyper_name, hyper_value in self.hyperparameters.items():
-                    self.results[result_key][hyper_name] = [hyper_value]
+                    self.results[results_key][hyper_name] = [hyper_value]
 
-                self.results[result_key].set_index(index, inplace=True)
-                self.results[result_key].sort_index(inplace=True)
+                self.results[results_key].set_index(index, inplace=True)
+                self.results[results_key].sort_index(inplace=True)
             else:
                 # Index for the dataframe
-                index = [_Labels.value]
-                self.results[result_key] = DataFrame(index=index)
+                index = [self.ResultsLabels.VALUE.value]
+                self.results[results_key] = DataFrame(index=index)
 
-            self.results[result_key].columns.set_names(
-                _Labels.metric, inplace=True
+            self.results[results_key].columns.set_names(
+                self.ResultsLabels.METRIC.value, inplace=True
             )
 
         # Add a new column to the dataframe
-        self.results[result_key][metric] = [value]
+        self.results[results_key][metric] = [value]
 
     def _add_feature_metrics(self) -> None:
         """Perform stats about features frequency."""
         # Flag to know if there are FS solutions in any hof
         there_are_features = False
 
-        # Name of the result
-        result_key = self._ResultKeys.feature_metrics
+        # Results key
+        results_key = self.ResultsKeys.FEATURE_METRICS.value
 
         # Index for the dataframe
         if self.hyperparameters is not None:
@@ -1121,7 +403,7 @@ class Experiment(Evaluation):
         else:
             index = []
 
-        index += [_Labels.feature]
+        index += [self.ResultsLabels.FEATURE.value]
 
         # Column names for the dataframe
         column_names = index + list(self.feature_metric_funcs.keys())
@@ -1150,7 +432,7 @@ class Experiment(Evaluation):
                 # If there is any metric
                 if metric is not None and is_first_metric:
                     is_first_metric = False
-                    df[_Labels.feature] = metric.index
+                    df[self.ResultsLabels.FEATURE.value] = metric.index
                     num_feats = len(metric.index)
                     if self.hyperparameters is not None:
                         for (
@@ -1161,10 +443,10 @@ class Experiment(Evaluation):
 
             # Set the dataframe index
             df.set_index(index, inplace=True)
-            df.columns.set_names(_Labels.metric, inplace=True)
+            df.columns.set_names(self.ResultsLabels.METRIC.value, inplace=True)
 
             # Add the dataframe to the results
-            self.results[result_key] = df
+            self.results[results_key] = df
 
     def _do_test(self) -> None:
         """Perform the test step.
@@ -1180,94 +462,34 @@ class Experiment(Evaluation):
         )
 
         # Add the test fitness to the best solutions dataframe
-        self._add_fitness(self._ResultKeys.test_fitness)
+        self._add_fitness(self.ResultsKeys.TEST_FITNESS.value)
 
         # Perform the test fitness stats
-        self._add_fitness_stats(self._ResultKeys.test_fitness_stats)
-
-    def _find_best_lexicographically(self) -> tuple[Solution]:
-        """Find the best solution in the Pareto front.
-
-        Since the Pareto front solutions are not comparable, they are ordered
-        lexicographilly and the best solution is selected.
-
-        The validation fitness should be used to sort the solutions.
-
-        :return: The solution (one per species)
-        :rtype: tuple[~culebra.abc.Solution]
-        """
-        # Tied best solutions. May be several per species
-        tied_best = []
-
-        # For each species
-        for hof in self.best_solutions:
-            # Sort the hof
-            ordered = sorted(hof, reverse=True)
-
-            # Get the individuals with best fitness within the species
-            species_best = []
-            species_best_fitness = ordered[0].fitness
-            for ind in ordered:
-                if ind.fitness == species_best_fitness:
-                    species_best.append(ind)
-                else:
-                    break
-
-            tied_best.append(species_best)
-
-        # Obtain al the combinations of solutions from each species
-        all_combinations = [[]]
-
-        for species_best in tied_best:
-            temp = all_combinations
-            all_combinations = []
-            for comb in temp:
-                for item in species_best:
-                    all_combinations.append(comb + [item])
-
-        # Evaluate each combination
-        all_combinations_fitness = []
-        for solution in all_combinations:
-            fitness = self.untie_best_fitness_func.evaluate(
-                solution[0], 0, solution
-            )
-            fitness.thresholds = [0] * fitness.num_obj
-            all_combinations_fitness.append(fitness)
-
-        # Get the best
-        sorted_indices = [
-            i[0] for i in sorted(
-                enumerate(all_combinations_fitness), key=lambda x: x[1],
-                reverse=True
-            )
-        ]
-
-        return tuple(all_combinations[sorted_indices[0]])
+        self._add_fitness_stats(self.ResultsKeys.TEST_FITNESS_STATS.value)
 
     def _add_best(
         self,
         best: Sequence[Solution],
         fitness_func: FitnessFunction,
-        result_key: str
+        results_key: str
     ) -> None:
         """Add the best solution to the experiment results.
 
-        The best solution should have been selected according to the
-        validation fitness. It is evaluated only with the species that compose
-        the best solution, without any other cooperator
+        For cooperative approaches, the solution is evaluated only with the
+        species that compose the best solution, without any other cooperator
 
         :param best: The best solution (one per species)
         :type best: ~collections.abc.Sequence[~culebra.abc.Solution]
         :param fitness_func: Fitness fuction to evaluate the best solution
         :type fitness_func: ~culebra.abc.FitnessFunction
-        :param result_key: Result key
-        :type result_key: str
+        :param results_key: Results key
+        :type results_key: str
         """
         # Number of species
         num_species = len(best)
 
         # Evaluate the best solution
-        fitness_func.evaluate(best[0], 0, best)
+        best[0].fitness.values = fitness_func.evaluate(best[0], 0, best)
         for sol in best[1:]:
             sol.fitness = best[0].fitness
 
@@ -1281,9 +503,12 @@ class Experiment(Evaluation):
             index = []
 
         index += (
-            [_Labels.species, _Labels.solution]
+            [
+                self.ResultsLabels.SPECIES.value,
+                self.ResultsLabels.SOLUTION.value
+            ]
             if num_species > 1
-            else [_Labels.solution]
+            else [self.ResultsLabels.SOLUTION.value]
         )
 
         # Column names for the dataframe
@@ -1315,26 +540,29 @@ class Experiment(Evaluation):
 
         # Set the dataframe index
         df.set_index(index, inplace=True)
-        df.columns.set_names(_Labels.fitness, inplace=True)
+        df.columns.set_names(self.ResultsLabels.FITNESS.value, inplace=True)
 
         # Add the dataframe to the results
-        self.results[result_key] = df.astype(float)
+        self.results[results_key] = df.astype(float)
 
     def _execute(self) -> None:
-        """Execute the trainer method."""
+        """Execute the trainer."""
         # Train the trainer
         self._do_training()
 
-        # Choose one solution (lexicographically) according to the validation
-        # fitness
-        best = self._find_best_lexicographically()
+        # Choose one solution
+        best = self.decision_manager.select()
 
         # Add the execution metrics
-        self._add_execution_metric(_Labels.runtime, self.trainer.runtime)
         self._add_execution_metric(
-            _Labels.num_iters, self.trainer.num_iters
+            self.ResultsLabels.RUNTIME.value, self.trainer.runtime
         )
-        self._add_execution_metric(_Labels.num_evals, self.trainer.num_evals)
+        self._add_execution_metric(
+            self.ResultsLabels.NUM_ITERS.value, self.trainer.num_iters
+        )
+        self._add_execution_metric(
+            self.ResultsLabels.NUM_EVALS.value, self.trainer.num_evals
+        )
 
         # Add the features stats
         self._add_feature_metrics()
@@ -1345,14 +573,14 @@ class Experiment(Evaluation):
         self._add_best(
             best,
             self.trainer.fitness_func,
-            self._ResultKeys.train_best
+            self.ResultsKeys.TRAIN_BEST.value
         )
 
         # Evaluate the best solution with the test data
         self._add_best(
             best,
             self.test_fitness_func,
-            self._ResultKeys.test_best
+            self.ResultsKeys.TEST_BEST.value
         )
 
         # Reset the state of the trainer to allow serialization
@@ -1362,19 +590,46 @@ class Experiment(Evaluation):
 class Batch(Evaluation):
     """Generate a batch of experiments."""
 
-    class _ResultKeys(_ResultKeys):
+    class ResultsKeys(str, Enum):
         """Handle the keys for the batch results."""
 
-        batch_execution_metrics_stats = 'batch_execution_metrics_stats'
+        TRAINING_STATS = 'training_stats'
+        """Training statistics."""
+
+        TRAINING_FITNESS = 'training_fitness'
+        """Training fitness of the best solutions found."""
+
+        TRAIN_BEST = 'train_best'
+        """Fitness of the best solution found."""
+
+        TEST_FITNESS = 'test_fitness'
+        """Test fitness of the best solutions found."""
+
+        TEST_BEST = 'test_best'
+        """Test fitness of the best solution found."""
+
+        TRAINING_FITNESS_STATS = "training_fitness_stats"
+        """Training fitness stats."""
+
+        TEST_FITNESS_STATS = "test_fitness_stats"
+        """Test fitness stats."""
+
+        EXECUTION_METRICS = 'execution_metrics'
+        """Execution metrics."""
+
+        FEATURE_METRICS = 'feature_metrics'
+        """Feature metrics."""
+
+        BATCH_EXECUTION_METRICS_STATS = 'batch_execution_metrics_stats'
         """Batch execution metrics stats."""
 
-        batch_feature_metrics_stats = 'batch_feature_metrics_stats'
+        BATCH_FEATURE_METRICS_STATS = 'batch_feature_metrics_stats'
         """Batch feature metrics stats."""
 
-        batch_training_fitness_stats = "batch_training_fitness_stats"
+        BATCH_TRAINING_FITNESS_STATS = "batch_training_fitness_stats"
         """Batch training fitness stats."""
 
-        batch_test_fitness_stats = "batch_test_fitness_stats"
+        BATCH_TEST_FITNESS_STATS = "batch_test_fitness_stats"
         """Batch test fitness stats."""
 
     stats_funcs = DEFAULT_BATCH_STATS_FUNCS
@@ -1385,7 +640,7 @@ class Batch(Evaluation):
     def __init__(
         self,
         trainer: Trainer,
-        untie_best_fitness_func: FitnessFunction | None = None,
+        decision_manager: DecisionManager,
         test_fitness_func: FitnessFunction | None = None,
         results_base_filename: str | None = None,
         hyperparameters: dict | None = None,
@@ -1393,43 +648,31 @@ class Batch(Evaluation):
     ) -> None:
         """Generate a batch of experiments.
 
-        :param trainer: The trainer method
+        :param trainer: The trainer
         :type trainer: ~culebra.abc.Trainer
-        :param untie_best_fitness_func: The fitness function used to
-            select the best solution from those found by the trainer in case
-            of a tie. If omitted, the training fitness function will be used.
-            Defaults to :data:`None`
-        :type untie_best_fitness_func: ~culebra.abc.FitnessFunction
-        :param test_fitness_func: The fitness used to test. If omitted,
-            the training fitness function will be used. Defaults to
+        :param test_fitness_func: The fitness function used to test. If
+            omitted, the training fitness function will be used. Defaults to
             :data:`None`
         :type test_fitness_func: ~culebra.abc.FitnessFunction
         :param results_base_filename: The base filename to save the results
             If omitted,
-            :attr:`~culebra.tools.Batch._default_results_base_filename` is
+            :attr:`~culebra.tools.evaluation.Batch._default_results_base_filename` is
             used. Defaults to :data:`None`
         :type results_base_filename: str
         :param hyperparameters: Hyperparameter values used in this evaluation,
             optional
         :type hyperparameters: dict
         :param num_experiments: Number of experiments in the batch. If omitted,
-            :attr:`~culebra.tools.Batch._default_num_experiments`
+            :attr:`~culebra.tools.evaluation.Batch._default_num_experiments`
             is used. Defaults to :data:`None`
         :type num_experiments: int
-        :raises TypeError: If *trainer* is not a valid trainer
-        :raises TypeError: If *untie_best_fitness_func* or
-            *test_fitness_func* are not valid fitness functions
-        :raises TypeError: If *results_base_filename* is not a valid file name
-        :raises TypeError: If *hyperparameters* is not a dictionary
-        :raises ValueError: If the keys in *hyperparameters* are not strings
-        :raises ValueError: If any key in *hyperparameters* is reserved
-        :raises TypeError: If *num_experiments* is not an integer
-        :raises ValueError: If *num_experiments* is not greater than zero
+        :raises TypeError: If any of the parameters has an incorrect type
+        :raises ValueError: If any of the parameters has an incorrect value
         """
         # Init the super class
         super().__init__(
             trainer,
-            untie_best_fitness_func,
+            decision_manager,
             test_fitness_func,
             results_base_filename,
             hyperparameters
@@ -1454,7 +697,7 @@ class Batch(Evaluation):
         :rtype: int
         :setter: Set a new number of experiments
         :param value: New number of experiments. If set to :data:`None`,
-            :attr:`~culebra.tools.Batch._default_num_experiments` is used
+            :attr:`~culebra.tools.evaluation.Batch._default_num_experiments` is used
         :type value: int
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not greater than
@@ -1471,7 +714,7 @@ class Batch(Evaluation):
         """Set a new number of experiments.
 
         :param value: New number of experiments. If set to :data:`None`,
-            :attr:`~culebra.tools.Batch._default_num_experiments` is used
+            :attr:`~culebra.tools.evaluation.Batch._default_num_experiments` is used
         :type value: int
         :raises TypeError: If set to a value which is not an integer
         :raises ValueError: If set to a value which is not greater than
@@ -1493,7 +736,7 @@ class Batch(Evaluation):
 
         :rtype: str
         """
-        return _Labels.experiment.lower()
+        return self.ResultsLabels.EXPERIMENT.value.lower()
 
     @property
     def experiment_labels(self) -> tuple[str]:
@@ -1530,8 +773,8 @@ class Batch(Evaluation):
         # Generate the Batch from the config module
         return cls(
             trainer=getattr(config, 'trainer', None),
-            untie_best_fitness_func=getattr(
-                config, 'untie_best_fitness_func', None
+            decision_manager=getattr(
+                config, 'decision_manager', None
             ),
             test_fitness_func=getattr(
                 config, 'test_fitness_func', None
@@ -1550,14 +793,14 @@ class Batch(Evaluation):
 
     def _append_data(
         self,
-        result_key: str,
+        results_key: str,
         exp_label: str,
         exp_data: Series | DataFrame
     ) -> None:
         """Append data from an experiment to a results dataframe.
 
-        :param result_key: Key of the result
-        :type result_key: str
+        :param results_key: Results key
+        :type results_key: str
         :param exp_label: Label of the experiment
         :type exp_label: str
         :param exp_data: Data of the result
@@ -1567,12 +810,9 @@ class Batch(Evaluation):
         column_names = []
 
         # Create the dataframe if hasn't been created yet
-        if result_key not in self.results:
+        if results_key not in self.results:
             # Create the dataframe
-            self.results[result_key] = DataFrame()
-
-            # Add the result key
-            setattr(self._ResultKeys, result_key, result_key)
+            self.results[results_key] = DataFrame()
 
             # Create the dataframe index
             if self.hyperparameters is not None:
@@ -1580,7 +820,7 @@ class Batch(Evaluation):
             else:
                 index = []
 
-            index += [_Labels.experiment]
+            index += [self.ResultsLabels.EXPERIMENT.value]
 
             if isinstance(exp_data, DataFrame):
                 if exp_data.index.names[0] is not None:
@@ -1590,10 +830,10 @@ class Batch(Evaluation):
                     else:
                         index += exp_data.index.names
 
-            self._results_indices[result_key] = index
+            self._results_indices[results_key] = index
 
         # Reference to the batch results dataframe
-        df = self.results[result_key]
+        df = self.results[results_key]
 
         # Complete the list of columns
         if exp_data.index.names[0] is not None:
@@ -1602,7 +842,9 @@ class Batch(Evaluation):
 
         # Dataframe with the experiment results
         exp_df = DataFrame()
-        exp_df[_Labels.experiment] = [exp_label]*len(exp_data.index)
+        exp_df[self.ResultsLabels.EXPERIMENT.value] = (
+            [exp_label] * len(exp_data.index)
+        )
 
         # Append the experiment data
         if isinstance(exp_data, DataFrame):
@@ -1620,15 +862,15 @@ class Batch(Evaluation):
         )
 
         # Update the batch results dataframe
-        self.results[result_key] = df
+        self.results[results_key] = df
 
     def _add_execution_metrics_stats(self) -> None:
         """Perform some stats on the execution metrics."""
-        # Name of the result
-        result_key = self._ResultKeys.batch_execution_metrics_stats
+        # Results key
+        results_key = self.ResultsKeys.BATCH_EXECUTION_METRICS_STATS.value
 
         # Input data
-        input_data_name = self._ResultKeys.execution_metrics
+        input_data_name = self.ResultsKeys.EXECUTION_METRICS.value
         input_data = self.results[input_data_name]
 
         # Index for the dataframe
@@ -1637,7 +879,7 @@ class Batch(Evaluation):
         else:
             index = []
 
-        index += [_Labels.metric]
+        index += [self.ResultsLabels.METRIC.value]
 
         # Column names for the dataframe
         column_names = index + list(self.stats_funcs.keys())
@@ -1664,17 +906,17 @@ class Batch(Evaluation):
 
         df.set_index(index, inplace=True)
         df.sort_index(inplace=True)
-        df.columns.set_names(_Labels.stat, inplace=True)
-        self.results[result_key] = df
+        df.columns.set_names(self.ResultsLabels.STAT.value, inplace=True)
+        self.results[results_key] = df
 
     def _add_feature_metrics_stats(self) -> None:
         """Perform stats on the feature metrics of all the experiments."""
         try:
-            # Name of the result
-            result_key = self._ResultKeys.batch_feature_metrics_stats
+            # Results key
+            results_key = self.ResultsKeys.BATCH_FEATURE_METRICS_STATS.value
 
             # Input data
-            input_data_name = self._ResultKeys.feature_metrics
+            input_data_name = self.ResultsKeys.FEATURE_METRICS.value
             input_data = self.results[input_data_name]
 
             # Index for the dataframe
@@ -1683,7 +925,10 @@ class Batch(Evaluation):
             else:
                 index = []
 
-            index += [_Labels.metric, _Labels.feature]
+            index += [
+                self.ResultsLabels.METRIC.value,
+                self.ResultsLabels.FEATURE.value
+            ]
 
             # Column names for the dataframe
             column_names = index + list(self.stats_funcs.keys())
@@ -1692,7 +937,9 @@ class Batch(Evaluation):
             df = DataFrame(columns=column_names)
 
             # Get the features
-            features_index = input_data.index.names.index(_Labels.feature)
+            features_index = (
+                input_data.index.names.index(self.ResultsLabels.FEATURE.value)
+            )
             the_features = input_data.index.levels[features_index]
             feature_indices_slices = (slice(None),)
             if self.hyperparameters is not None:
@@ -1728,27 +975,29 @@ class Batch(Evaluation):
                     df.loc[len(df)] = stats
 
             # Feature indices should be int
-            df[_Labels.feature] = df[_Labels.feature].astype(int)
+            df[self.ResultsLabels.FEATURE.value] = (
+                df[self.ResultsLabels.FEATURE.value].astype(int)
+            )
 
             df.set_index(index, inplace=True)
             df.sort_index(inplace=True)
-            df.columns.set_names(_Labels.stat, inplace=True)
-            self.results[result_key] = df
-        except AttributeError:
+            df.columns.set_names(self.ResultsLabels.STAT.value, inplace=True)
+            self.results[results_key] = df
+        except KeyError:
             # The experiments do not have feature metrics
             pass
 
     def _add_fitness_stats(
         self,
         input_data_key: str,
-        result_key: str
+        results_key: str
     ) -> None:
         """Perform some stats on the best solutions fitness.
 
         :param input_data_key: Input data key.
         :type input_data_key: str
-        :param result_key: Result key.
-        :type result_key: str
+        :param results_key: Results key.
+        :type results_key: str
         """
         # Input data
         input_data = self.results[input_data_key]
@@ -1759,7 +1008,7 @@ class Batch(Evaluation):
         else:
             index = []
 
-        index += [_Labels.fitness]
+        index += [self.ResultsLabels.FITNESS.value]
 
         # Column names for the dataframe
         column_names = index + list(self.stats_funcs.keys())
@@ -1789,8 +1038,8 @@ class Batch(Evaluation):
 
         df.set_index(index, inplace=True)
         df.sort_index(inplace=True)
-        df.columns.set_names(_Labels.stat, inplace=True)
-        self.results[result_key] = df
+        df.columns.set_names(self.ResultsLabels.STAT.value, inplace=True)
+        self.results[results_key] = df
 
     def setup(self) -> None:
         """Set up the batch.
@@ -1800,7 +1049,7 @@ class Batch(Evaluation):
         # Create the experiment
         experiment = Experiment(
             self.trainer,
-            self.untie_best_fitness_func,
+            self.decision_manager,
             self.test_fitness_func,
             self.results_base_filename,
             self.hyperparameters
@@ -1864,35 +1113,27 @@ class Batch(Evaluation):
             chdir("..")
 
         # Sort the results dataframes
-        for result_key in self.results:
-            self.results[result_key].set_index(
-                self._results_indices[result_key], inplace=True
+        for results_key in self.results:
+            self.results[results_key].set_index(
+                self._results_indices[results_key], inplace=True
             )
-            self.results[result_key].sort_index(inplace=True)
+            self.results[results_key].sort_index(inplace=True)
 
         # Perform some stats
         self._add_execution_metrics_stats()
         self._add_feature_metrics_stats()
         self._add_fitness_stats(
-            self._ResultKeys.training_fitness,
-            self._ResultKeys.batch_training_fitness_stats
+            self.ResultsKeys.TRAINING_FITNESS.value,
+            self.ResultsKeys.BATCH_TRAINING_FITNESS_STATS.value
         )
         self._add_fitness_stats(
-            self._ResultKeys.test_fitness,
-            self._ResultKeys.batch_test_fitness_stats
+            self.ResultsKeys.TEST_FITNESS.value,
+            self.ResultsKeys.BATCH_TEST_FITNESS_STATS.value
         )
 
 
 # Exported symbols for this module
 __all__ = [
-    'Evaluation',
     'Experiment',
-    'Batch',
-    'DEFAULT_STATS_FUNCS',
-    'DEFAULT_FEATURE_METRIC_FUNCS',
-    'DEFAULT_BATCH_STATS_FUNCS',
-    'DEFAULT_NUM_EXPERIMENTS',
-    'DEFAULT_RUN_SCRIPT_FILENAME',
-    'DEFAULT_CONFIG_SCRIPT_FILENAME',
-    'DEFAULT_RESULTS_BASE_FILENAME'
+    'Batch'
 ]

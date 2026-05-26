@@ -26,14 +26,17 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 
-
+import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import cohen_kappa_score, make_scorer
 
 from culebra import DEFAULT_SIMILARITY_THRESHOLD, SERIALIZED_FILE_EXTENSION
-from culebra.fitness_func.dataset_score import DEFAULT_CV_FOLDS
+from culebra.fitness_func.dataset_score import (
+    DEFAULT_CV_NUM_FOLDS,
+    DEFAULT_CV_FIXED_FOLDS
+)
 from culebra.fitness_func.dataset_score.abc import ClassificationScorer
 
 from culebra.solution.feature_selection import (
@@ -93,10 +96,11 @@ class ClassificationScorerTester(unittest.TestCase):
         )
         self.assertEqual(func.test_data, None)
         self.assertTrue(isinstance(func.classifier, GaussianNB))
-        self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
+        self.assertEqual(func.cv_num_folds, DEFAULT_CV_NUM_FOLDS)
+        self.assertEqual(func.cv_fixed_folds, DEFAULT_CV_FIXED_FOLDS)
         self.assertEqual(func.index, 0)
         self.assertEqual(
-            func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD]
+            func.obj_thresholds, (DEFAULT_SIMILARITY_THRESHOLD,)
         )
 
         # Try a valid classifier
@@ -136,7 +140,7 @@ class ClassificationScorerTester(unittest.TestCase):
             sol,
             training_data,
             test_data
-        ).values
+        )
 
         outputs_pred = func.classifier.fit(
             training_data.inputs,
@@ -145,36 +149,43 @@ class ClassificationScorerTester(unittest.TestCase):
 
         self.assertEqual(
             cohen_kappa_score(test_data.outputs, outputs_pred),
-            sol.fitness.values[0]
+            fit_values[0]
         )
-        self.assertEqual(fit_values, sol.fitness.values)
 
     def test_evaluate_kfcv(self):
         """Test the _evaluate_kfcv method."""
         training_data = dataset
         func = MyClassificationScorer(
             training_data=training_data,
+            cv_fixed_folds=True
         )
 
         species = FSSpecies(training_data.num_feats)
         selected_feats = [0, 1, 2]
         sol = FSSolution(species, func.fitness_cls, features=selected_feats)
-
-        fit_values = func._evaluate_kfcv(sol, training_data).values
+        num_repetitions = 10
 
         fold_scores = cross_val_score(
             func.classifier,
             training_data.inputs,
             training_data.outputs,
-            cv=StratifiedKFold(n_splits=func.cv_folds),
+            cv=func.cv_splitter,
             scoring=make_scorer(func.__class__._score)
         )
+        mean_score = fold_scores.mean()
 
-        self.assertEqual(
-            fold_scores.mean(),
-            sol.fitness.values[0]
-        )
-        self.assertEqual(fit_values, sol.fitness.values)
+        # Assess that folds are fixed
+        for _ in range(num_repetitions):
+            fit_values = func._evaluate_kfcv(sol, training_data)
+            self.assertEqual(mean_score, fit_values)
+
+        func.cv_fixed_folds=False
+        # Assess that folds vary accros evaluations
+        fit_values = []
+        for _ in range(num_repetitions):
+            fit_values.append(func._evaluate_kfcv(sol, training_data))
+
+        self.assertGreater(np.std(fit_values), 0)
 
     def test_copy(self):
         """Test the __copy__ method."""

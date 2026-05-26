@@ -53,6 +53,7 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.solution.feature_selection.BitVector._get_repr_properties
 .. automethod:: culebra.solution.feature_selection.BitVector._setup
 
 Dunder methods

@@ -41,6 +41,11 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from culebra.abc import Base
 from culebra.checker import check_str, check_int, check_float, check_sequence
+from .constants import (
+    DEFAULT_SEP,
+    DEFAULT_OUTLIER_PROPORTION,
+    DEFAULT_SMOTE_NUM_NEIGHBORS
+)
 
 FilePath = str | PathLike[str]
 Url = str
@@ -53,16 +58,6 @@ __version__ = '0.6.1'
 __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
-
-
-DEFAULT_SEP = '\\s+'
-"""Default column separator used within dataset files."""
-
-DEFAULT_OUTLIER_PROPORTION = 0.05
-"""Expected outlier proportion por class."""
-
-DEFAULT_SMOTE_NUM_NEIGHBORS = 5
-"""Default number of neighbors for :class:`~imblearn.over_sampling.SMOTE`"""
 
 
 class Dataset(Base):
@@ -545,7 +540,7 @@ class Dataset(Base):
 
         for col_name in dataframe:
             col_series = dataframe[col_name]
-            
+
             # If the column values are not numeric
             if not np.issubdtype(col_series.dtype, np.number):
                 labels = np.unique(col_series.dropna()) # dropna evita errores con nulos
@@ -556,10 +551,10 @@ class Dataset(Base):
             else:
                 # Is already numeric
                 columns_to_concat.append(col_series)
-    
+
         # 2. Concat all the columns
         output_df = concat(columns_to_concat, axis=1)
-        
+
         return output_df
 
     @staticmethod
@@ -697,8 +692,5 @@ class Dataset(Base):
 
 # Exported symbols for this module
 __all__ = [
-    'Dataset',
-    'DEFAULT_SEP',
-    'DEFAULT_OUTLIER_PROPORTION',
-    'DEFAULT_SMOTE_NUM_NEIGHBORS'
+    'Dataset'
 ]

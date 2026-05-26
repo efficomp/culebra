@@ -26,7 +26,12 @@
 
 Attributes:
 -----------
-.. attribute:: DEFAULT_CV_FOLDS
+.. attribute:: DEFAULT_CV_FIXED_FOLDS
+    :annotation: = True
+    
+    Cross-validation folds remain fixed by default.
+
+.. attribute:: DEFAULT_CV_NUM_FOLDS
     :annotation: = 5
 
     Default number of folds for cross-validation.

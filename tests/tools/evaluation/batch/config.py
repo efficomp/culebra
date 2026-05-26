@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # This file is part of culebra.
 #
 # Culebra is free software: you can redistribute it and/or modify it under the
@@ -20,14 +17,8 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :class:`~culebra.tools.Experiment`."""
+"""Configuration file to test the :class:`culebra.tools.evaluation.Batch` class."""
 
-import unittest
-from os import remove
-from os.path import isfile
-from collections import Counter
-
-from pandas import DataFrame
 from sklearn.svm import SVC
 
 from culebra.solution.feature_selection import (
@@ -49,18 +40,25 @@ from culebra.trainer.abc import (
     CooperativeTrainer
 )
 from culebra.trainer.ea import ElitistEA
-from culebra.tools import Dataset, Experiment, Results
+from culebra.tools import Dataset
+from culebra.tools.decision_manager import LexicographicDM
 
 
 # Fitness function
-def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
+def KappaNumFeatsC(
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
+):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -80,22 +78,8 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 # of samples
 training_data = training_data.oversample(random_seed=0)
 
-
 # Training fitness function
-training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
-
-# Set the training fitness similarity threshold
-training_fitness_func.obj_thresholds = 0.001
-
-# Untie fitness function to select the best solution
-samples_per_class = Counter(training_data.outputs)
-max_folds = samples_per_class[
-    min(samples_per_class, key=samples_per_class.get)
-]
-untie_best_fitness_func = KappaNumFeatsC(training_data, cv_folds=max_folds)
-
-# Test fitness function
-test_fitness_func = KappaNumFeatsC(training_data, test_data)
+training_fitness_func = KappaNumFeatsC(training_data, cv_num_folds=5)
 
 # Species to optimize a SVM-based classifier
 classifierOptimizationSpecies = ClassifierOptimizationSpecies(
@@ -120,13 +104,12 @@ subtrainer_params = {
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
     "pop_size": dataset.num_feats//2,
-    "max_num_iters": 5,
-    "checkpoint_activation": False,
-    "verbosity": False
+    "max_num_iters": 500,
+    "checkpoint_activation": False
 }
 
 # Parameters for the wrapper
-params = {
+params ={
     "num_representatives": 2
 }
 
@@ -159,74 +142,17 @@ class MyTrainer(ParallelDistributedTrainer, CooperativeTrainer):
 
 trainer = MyTrainer(*subtrainers, **params)
 
+# Decision manager
+decision_manager = LexicographicDM(trainer)
 
-class ExperimentTester(unittest.TestCase):
-    """Test :class:`~culebra.tools.Experiment`."""
+# Test fitness function
+test_fitness_func = KappaNumFeatsC(training_data, test_data)
 
-    def test_reset(self):
-        """Test the reset method."""
-        experiment = Experiment(trainer)
-        experiment._results = 1
-        experiment._best_solutions = 2
-        experiment._best_cooperators = 3
-        experiment.reset()
-        self.assertEqual(experiment.results, None)
-        self.assertEqual(experiment.best_solutions, None)
-        self.assertEqual(experiment.best_cooperators, None)
+# Number of experiments
+num_experiments = 10
 
-    def test_execute(self):
-        """Test the _execute method."""
-        # Create the experiment
-        experiment = Experiment(
-            trainer,
-            untie_best_fitness_func,
-            test_fitness_func,
-            hyperparameters={"a": 0, "b": 1}
-        )
-
-        # Execute the trainer
-        experiment.run()
-
-        # Check the results
-        self.assertNotEqual(experiment.results, None)
-        self.assertNotEqual(experiment.best_solutions, None)
-        self.assertNotEqual(experiment.best_cooperators, None)
-        self.assertIsInstance(experiment.results, Results)
-
-        for key in Experiment._ResultKeys.keys():
-            self.assertTrue(key in experiment.results.keys())
-
-        for key in experiment.results:
-            self.assertIsInstance(experiment.results[key], DataFrame)
-
-        # Check the result files
-        isfile(experiment.serialized_results_filename)
-        isfile(experiment.excel_results_filename)
-
-        # Remove the files
-        remove(experiment.serialized_results_filename)
-        remove(experiment.excel_results_filename)
-
-        # Try a different results base filename
-        filename = "the_results"
-        experiment = Experiment(
-            trainer,
-            untie_best_fitness_func,
-            test_fitness_func,
-            filename
-        )
-
-        # Execute the trainer
-        experiment.run()
-
-        # Check the result files
-        isfile(experiment.serialized_results_filename)
-        isfile(experiment.excel_results_filename)
-
-        # Remove the files
-        remove(experiment.serialized_results_filename)
-        remove(experiment.excel_results_filename)
-
-
-if __name__ == '__main__':
-    unittest.main()
+# Parameters to appear in the results
+hyperparameters = {
+    "num_representatives": params["num_representatives"],
+    "max_num_iters": subtrainer_params["max_num_iters"]
+}

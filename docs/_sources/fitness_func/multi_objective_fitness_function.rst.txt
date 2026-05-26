@@ -45,3 +45,7 @@ Methods
 -------
 .. automethod:: culebra.fitness_func.MultiObjectiveFitnessFunction.dump
 .. automethod:: culebra.fitness_func.MultiObjectiveFitnessFunction.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.MultiObjectiveFitnessFunction._get_repr_properties

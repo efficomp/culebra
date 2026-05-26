@@ -121,6 +121,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._generate_cooperators
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._get_iteration_metrics
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._get_objective_stats
+.. automethod:: culebra.trainer.aco.ElitistAntSystem._get_repr_properties
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._get_state
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._has_converged
 .. automethod:: culebra.trainer.aco.ElitistAntSystem._increase_pheromone

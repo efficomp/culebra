@@ -121,6 +121,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ACOFS._generate_cooperators
 .. automethod:: culebra.trainer.aco.abc.ACOFS._get_iteration_metrics
 .. automethod:: culebra.trainer.aco.abc.ACOFS._get_objective_stats
+.. automethod:: culebra.trainer.aco.abc.ACOFS._get_repr_properties
 .. automethod:: culebra.trainer.aco.abc.ACOFS._get_state
 .. automethod:: culebra.trainer.aco.abc.ACOFS._init_internals
 .. automethod:: culebra.trainer.aco.abc.ACOFS._init_pheromone

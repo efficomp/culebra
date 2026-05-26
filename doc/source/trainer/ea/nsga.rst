@@ -112,6 +112,7 @@ Private methods
 .. automethod:: culebra.trainer.ea.NSGA._generate_pop
 .. automethod:: culebra.trainer.ea.NSGA._get_iteration_metrics
 .. automethod:: culebra.trainer.ea.NSGA._get_objective_stats
+.. automethod:: culebra.trainer.ea.NSGA._get_repr_properties
 .. automethod:: culebra.trainer.ea.NSGA._get_state
 .. automethod:: culebra.trainer.ea.NSGA._init_internals
 .. automethod:: culebra.trainer.ea.NSGA._init_state

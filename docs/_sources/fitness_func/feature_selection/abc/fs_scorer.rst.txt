@@ -36,6 +36,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSScorer.obj_names
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSScorer.obj_weights
+.. autoproperty:: culebra.fitness_func.feature_selection.abc.FSScorer.objectives
 
 Private properties
 ------------------
@@ -47,3 +48,7 @@ Methods
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSScorer.dump
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSScorer.evaluate
 .. automethod:: culebra.fitness_func.feature_selection.abc.FSScorer.is_evaluable
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.feature_selection.abc.FSScorer._get_repr_properties

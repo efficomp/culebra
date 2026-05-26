@@ -71,11 +71,8 @@ class CTester(unittest.TestCase):
         # Create the solution
         sol = Solution(species=species, fitness_cls=func.fitness_cls)
 
-        fit_values = func.evaluate(sol).values
-
         # Check the fitness function
-        self.assertEqual(sol.fitness.values[0], sol.values.C)
-        self.assertEqual(fit_values, sol.fitness.values)
+        self.assertEqual(func.evaluate(sol)[0], sol.values.C)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -102,19 +99,16 @@ class KappaIndexTester(unittest.TestCase):
         # Check that the Kappa index is in [-1, 1]
 
         # Test kfcv evaluation
-        fit_values = func.evaluate(sol).values
-        self.assertGreaterEqual(sol.fitness.values[0], -1)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-        self.assertEqual(fit_values, sol.fitness.values)
-
+        fit_values = func.evaluate(sol)
+        self.assertGreaterEqual(fit_values[0], -1)
+        self.assertLessEqual(fit_values[0], 1)
         del sol.fitness.values
 
         # Test train_test evaluation
         func = self.FitnessFunc(training_data, test_data)
-        fit_values = func.evaluate(sol).values
-        self.assertGreaterEqual(sol.fitness.values[0], -1)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-        self.assertEqual(fit_values, sol.fitness.values)
+        fit_values = func.evaluate(sol)
+        self.assertGreaterEqual(fit_values[0], -1)
+        self.assertLessEqual(fit_values[0], 1)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
@@ -141,18 +135,16 @@ class AccuracyTester(unittest.TestCase):
         # Check that the accuracy is in [0, 1]
 
         # Test kfcv evaluation
-        fit_values = func.evaluate(sol).values
-        self.assertGreaterEqual(sol.fitness.values[0], 0)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-        self.assertEqual(fit_values, sol.fitness.values)
+        fit_values = func.evaluate(sol)
+        self.assertGreaterEqual(fit_values[0], 0)
+        self.assertLessEqual(fit_values[0], 1)
         del sol.fitness.values
 
         # Test train_test evaluation
         func = self.FitnessFunc(training_data, test_data)
-        fit_values = func.evaluate(sol).values
-        self.assertGreaterEqual(sol.fitness.values[0], 0)
-        self.assertLessEqual(sol.fitness.values[0], 1)
-        self.assertEqual(fit_values, sol.fitness.values)
+        fit_values = func.evaluate(sol)
+        self.assertGreaterEqual(fit_values[0], 0)
+        self.assertLessEqual(fit_values[0], 1)
 
     test_repr = KappaIndexTester.test_repr
 

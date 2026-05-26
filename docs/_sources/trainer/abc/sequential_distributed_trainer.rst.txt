@@ -73,6 +73,7 @@ Private methods
 ---------------
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._do_training
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._finish_training
+.. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._get_repr_properties
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_internals
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._init_training
 .. automethod:: culebra.trainer.abc.SequentialDistributedTrainer._reset_internals

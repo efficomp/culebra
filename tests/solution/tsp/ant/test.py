@@ -89,16 +89,10 @@ class AntTester(unittest.TestCase):
         # Test repeated nodes, should fail
         for index in indices:
             # Evaluate the ant
-            fitness_func.evaluate(ant)
-
-            # Check that the ant has been evaluated
-            self.assertNotEqual(ant.fitness.values, (None, ))
+            ant.fitness.values = fitness_func.evaluate(ant)
 
             # Append a new node
             ant.append(index)
-
-            # Check that the ant has not been evaluated yet
-            self.assertEqual(ant.fitness.values, (None, ))
 
             # Try to append a repeated node, should fail
             with self.assertRaises(ValueError):
@@ -112,15 +106,16 @@ class AntTester(unittest.TestCase):
 
         # Try correct indices
         ant = Ant(species, fitness_cls)
+
+        # Check that the ant has not been evaluated yet
+        self.assertEqual(ant.fitness.values, None)
+
         for index, node in enumerate(indices):
             # Evaluate the ant
-            fitness_func.evaluate(ant)
+            ant.fitness.values = fitness_func.evaluate(ant)
 
             # Append a new node
             ant.append(node)
-
-            # Check that the ant has not been evaluated yet
-            self.assertEqual(ant.fitness.values, (None, ))
 
             # Check the number of features and the current node
             self.assertEqual(index + 1, len(ant.path))

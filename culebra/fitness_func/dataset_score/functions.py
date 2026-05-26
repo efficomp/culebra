@@ -47,7 +47,7 @@ class KappaIndex(DatasetScorer):
     def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
-        Maximize the validation Kappa index.
+        Maximize the Kappa index.
 
         :return: (1, )
         :rtype: tuple[int]
@@ -91,7 +91,7 @@ class Accuracy(DatasetScorer):
     def obj_weights(self) -> tuple[int, ...]:
         """Objective weights.
 
-        Maximize the validation accuracy.
+        Maximize the accuracy.
 
         :return: (1, )
         :rtype: tuple[int]

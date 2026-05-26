@@ -86,9 +86,10 @@ class ResultsAnalyzerTester(unittest.TestCase):
             )
 
     def check_invalid_df_col(self, method):
+        """Check the dataframe column for the given method"""
         df_keys = [self.dataframe_key, "Invalid"]
         col_keys = ["invalid", self.column_key]
-        
+
         for df_key, col_key in zip(df_keys, col_keys):
             with self.assertRaises(ValueError):
                 method(df_key, col_key)
@@ -241,7 +242,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             :return: The expected success
             """
             return True
-    
+
         def update_1():
             """Try with non constant heteroscedastic samples.
             
@@ -270,26 +271,26 @@ class ResultsAnalyzerTester(unittest.TestCase):
             for batch in self.valid_batches:
                 self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
             return True
-        
+
         update_funcs = [update_0, update_1, update_2, update_3]
-        
+
         for func in update_funcs:
             expected_success = func()
-    
+
             for test in valid_tests:
                 test_result = method(df_key, col_key, test=test)
-    
+
                 # Check that all the valid batches have been considered
                 for batch in self.valid_batches:
                     self.assertTrue(batch in test_result.batches)
-    
+
                 # Check that invalid batches have not been considered
                 for batch in self.discarded_batches:
                     self.assertFalse(batch in test_result.batches)
 
                 # Assert the success
                 self.assertEqual(expected_success, test_result.success)
-    
+
     def test_parametric_test(self):
         """Test the parametric_test method."""
         df_key = self.dataframe_key
@@ -306,7 +307,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             :return: The expected success and applied test
             """
             return True, "One-way ANOVA test"
-    
+
         def update_1():
             """Change the first series.
             
@@ -339,12 +340,12 @@ class ResultsAnalyzerTester(unittest.TestCase):
             return False, "T-test"
 
         update_funcs = [update_0, update_1, update_2, update_3]
-        
+
         for func in update_funcs:
             expected_success, expected_test = func()
-    
+
             test_result = method(df_key, col_key)
-            
+
             # Assert the test
             self.assertEqual(expected_test, test_result.test)
 
@@ -473,7 +474,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         for func in update_funcs:
             expected_success, expected_test = func()
-    
+
             test_result = method(df_key, col_key)
 
             # Assert the test
@@ -492,10 +493,11 @@ class ResultsAnalyzerTester(unittest.TestCase):
                 self.assertFalse(batch in test_result.batches)
 
     def test_parametric_pairwise_test(self):
+        """Test the parametric_pairwise_test method."""
         df_key = self.dataframe_key
         col_key = self.column_key
         method = self.analyzer.parametric_pairwise_test
-        
+
         # Prepare the data
         batch = self.valid_batches[0]
         self.analyzer[batch][df_key][col_key] = (
@@ -536,7 +538,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
         # Check the test parameters
         self.check_invalid_df_col(method)
         self.check_invalid_alpha(method)
-        
+
         # Try without p-adjustment
         method(df_key, col_key, p_adjust=None)
 
@@ -563,7 +565,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.normal(size=N_SAMPLES, loc=5)
             )
-            
+
             return [
                 [True, False, False], [False, True, True], [False, True, True]
             ]
@@ -575,7 +577,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[1]
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             return [
                 [True, False, False], [False, True, False], [False, False, True]
             ]
@@ -587,7 +589,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[0]
             self.analyzer[batch][df_key][col_key] = np.full((N_SAMPLES,), 100)
-            
+
             return [
                 [True, False, False], [False, True, False], [False, False, True]
             ]
@@ -599,7 +601,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[2]
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             return [
                 [True, False, False], [False, True, True], [False, True, True]
             ]
@@ -611,7 +613,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[0]
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             num_batches = len(self.valid_batches)
             return [
                 [True for _ in range(num_batches)] for _ in range(num_batches)
@@ -624,7 +626,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         for func in update_funcs:
             expected_success = func()
-    
+
             test_result = method(df_key, col_key)
 
             # Check that all the valid batches have been considered
@@ -654,18 +656,17 @@ class ResultsAnalyzerTester(unittest.TestCase):
             :param where: Coordinates for *val*
             """
             num_batches = len(self.valid_batches)
-            
+
             cut_off = [
                 [0 for _ in range(num_batches)] for _ in range(num_batches)
             ]
-            
+
             if val is not None and where is not None:
                 for coor in where:
                     cut_off[coor[0]][coor[1]] = val
 
             return cut_off
-            
-        
+
         def update_0():
             """No changes. The three series follow the same distribution.
             
@@ -676,9 +677,9 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
             for batch in self.valid_batches[1:]:
                 self.analyzer[batch][df_key][col_key] = first_batch_data
-            
+
             return gen_cut_off()
-            
+
         def update_1():
             """The first series is shifted.
             
@@ -688,9 +689,9 @@ class ResultsAnalyzerTester(unittest.TestCase):
             diff = 0.2
 
             self.analyzer[batch][df_key][col_key] += diff
-            
+
             return gen_cut_off(diff, [(0, 1), (0, 2), (1, 0), (2, 0)])
-                    
+
         def update_2():
             """The first series is constant.
             
@@ -700,7 +701,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             diff = 1.5
 
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             return gen_cut_off(diff, [(0, 1), (0, 2), (1, 0), (2, 0)])
 
         def update_3():
@@ -712,7 +713,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             diff = 1.5
 
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             return gen_cut_off(diff, [(0, 2), (1, 2), (2, 0), (2, 1)])
 
         def update_4():
@@ -724,16 +725,16 @@ class ResultsAnalyzerTester(unittest.TestCase):
             diff = np.inf
 
             self.analyzer[batch][df_key][col_key] = np.zeros((N_SAMPLES,))
-            
+
             return gen_cut_off(diff, [(0, 2), (1, 2), (2, 0), (2, 1)])
-        
+
         update_funcs = [
             update_0, update_1, update_2, update_3, update_4
         ]
 
         for func in update_funcs:
             cut_off = func()
-    
+
             test_result = method(df_key, col_key)
 
             # Check that all the valid batches have been considered
@@ -746,7 +747,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
             # Assert the success
             self.assertTrue((test_result.value <= cut_off).all())
-    
+
     def test_compare(self):
         """Test the compare method."""
         df_key = self.dataframe_key
@@ -767,7 +768,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
                     first_batch_data +
                     np.random.uniform(low=-0.001, high=0.001, size=N_SAMPLES)
                 )
-            
+
                 success = [
                     [True for _ in range(num_batches)]
                     for _ in range(num_batches)
@@ -783,12 +784,12 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.normal(size=N_SAMPLES, loc=5)
             )
-            
+
             success = [
                 [True, False, False], [False, True, True], [False, True, True]
             ]
             return success, "Tukey's HSD test"
-        
+
         def update_2():
             """Change the first series for an exponential distribution.
             
@@ -798,7 +799,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.exponential(scale=3.0, size=N_SAMPLES)
             )
-            
+
             success = [
                 [True, False, False], [False, True, True], [False, True, True]
             ]
@@ -818,7 +819,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
                     first_batch_data +
                     np.random.uniform(low=-0.001, high=0.001, size=N_SAMPLES)
                 )
-            
+
                 success = [
                     [True for _ in range(num_batches)]
                     for _ in range(num_batches)
@@ -832,7 +833,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[1]
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             success = [
                 [True, False, True], [False, True, False], [True, False, True]
             ]
@@ -845,7 +846,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[0]
             self.analyzer[batch][df_key][col_key] = np.full((N_SAMPLES,), 100)
-            
+
             success = [
                 [True, False, False], [False, True, False], [False, False, True]
             ]
@@ -858,7 +859,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[2]
             self.analyzer[batch][df_key][col_key] = np.ones((N_SAMPLES,))
-            
+
             success = [
                 [True, False, False], [False, True, True], [False, True, True]
             ]
@@ -871,7 +872,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[0]
             del self.analyzer[batch]
-            
+
             success = [
                 [True, True], [True, True]
             ]
@@ -884,7 +885,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             """
             batch = self.valid_batches[1]
             self.analyzer[batch][df_key][col_key] = np.zeros((N_SAMPLES,))
-            
+
             success = [
                 [True, False], [False, True]
             ]
@@ -899,7 +900,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.exponential(scale=3.0, size=N_SAMPLES)
             )
-            
+
             success = [
                 [True, False], [False, True]
             ]
@@ -914,7 +915,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.normal(size=N_SAMPLES)
             )
-            
+
             success = [
                 [True, False], [False, True]
             ]
@@ -929,7 +930,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.normal(size=N_SAMPLES)
             )
-            
+
             success = [
                 [True, True], [True, True]
             ]
@@ -944,21 +945,21 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][df_key][col_key] = (
                 np.random.normal(size=N_SAMPLES, loc=5)
             )
-            
+
             success = [
                 [True, False], [False, True]
             ]
             return success, "T-test"
 
         update_funcs = [
-            update_0, update_1, update_2, update_3, update_4, update_5, 
+            update_0, update_1, update_2, update_3, update_4, update_5,
             update_6, update_7, update_8, update_9, update_10, update_11,
             update_12
         ]
 
         for func in update_funcs:
             expected_success, expected_test = func()
-    
+
             test_result = method(df_key, col_key).pairwise_comparison
 
             # Assert the test
@@ -1002,7 +1003,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch] = Results()
             self.analyzer[batch][df_key] = DataFrame()
             self.analyzer[batch][df_key][col_key] = d
-        
+
         # Expected ranks
         expected_ranks = [0.5, 0.5, 2, 3.5, 3.5]
 
@@ -1056,7 +1057,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.analyzer[batch][test_fitness_key][nf_key] = nf
             self.analyzer[batch][execution_metrics_key] = DataFrame()
             self.analyzer[batch][execution_metrics_key][runtime_key] = runtime
-        
+
         # Expected ranks
         expected_ranks = {
             nf_key: [1.5, 1.5, 3.0, 0.0],

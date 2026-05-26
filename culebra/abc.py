@@ -54,7 +54,6 @@ from culebra import (
     DEFAULT_SIMILARITY_THRESHOLD
 )
 from culebra.checker import (
-    check_int,
     check_float,
     check_instance,
     check_sequence,
@@ -153,6 +152,27 @@ class Base:
         """
         return (self.__class__, (), self.__dict__)
 
+    def _get_repr_properties(self) -> dict[str, object]:
+        """Return the subset of properties used for ``__repr__``.
+    
+        Filters and evaluates all class-level ``@property`` attributes,
+        returning only those intended for representation purposes. Private
+        properties (names starting with ``_``) are excluded.
+    
+        :return: Mapping of property names to their corresponding values.
+        :rtype: dict[str, object]
+        """
+        cls = self.__class__
+
+        return {
+            p: getattr(self, p)
+            for p in dir(cls)
+            if (
+                isinstance(getattr(cls, p), property)
+                and not p.startswith("_")
+            )
+        }
+
     def __repr__(self) -> str:
         """Object representation.
 
@@ -160,24 +180,16 @@ class Base:
         """
         cls = self.__class__
         cls_name = cls.__name__
-
-        properties = (
-            p
-            for p in dir(cls)
-            if (
-                isinstance(getattr(cls, p), property)
-                and not p.startswith("_"))
-        )
+        properties = self._get_repr_properties()
 
         msg = cls_name
         sep = "("
-        for prop in properties:
-            value = getattr(self, prop)
+        for prop, value in properties.items():
             value_str = (
                 value.__module__ + "." + value.__name__
                 if isinstance(value, type) else repr(value)
             )
-            msg += sep + prop + ": " + value_str
+            msg += sep + prop + "=" + value_str
             sep = ", "
 
         if sep[0] == "(":
@@ -242,27 +254,23 @@ class Fitness(Base):
         :return: :data:`True` if the fitness is valid
         :rtype: bool
         """
-        if (
-                self._values is None or
-                len(self._values) == 0 or
-                any(val is None for val in self._values)
-        ):
+        if self._values is None:
             return False
 
         return True
 
     @property
-    def values(self) -> tuple[float | None]:
+    def values(self) -> tuple[float] | None:
         """Fitness values.
 
-        :rtype: tuple[float | None]
+        :rtype: tuple[float] | None
 
         :setter: Set the new fitness values
         :param fit_values: The new values
         :type fit_values: tuple[float]
         :raises TypeError: If any element in *fit_values* is not a real number
         """
-        return tuple(self._values)
+        return self._values
 
     @values.setter
     def values(self, fit_values: Sequence[float]):
@@ -272,17 +280,19 @@ class Fitness(Base):
         :type fit_values: tuple[float]
         :raises TypeError: If any element in *fit_values* is not a real number
         """
-        self._values = check_sequence(
-            fit_values,
-            "fitness values",
-            size=self.num_obj,
-            item_checker=partial(check_float)
+        self._values = tuple(
+            check_sequence(
+                fit_values,
+                "fitness values",
+                size=self.num_obj,
+                item_checker=partial(check_float)
+            )
         )
 
     @values.deleter
     def values(self):
         """Delete the current fitness values."""
-        self._values = [None] * self.num_obj
+        self._values = None
 
     @property
     def wvalues(self) -> tuple[float]:
@@ -290,9 +300,8 @@ class Fitness(Base):
 
         :rtype: tuple[float | None]
         """
-        return tuple(
-            v * w if v is not None else None
-            for (v, w) in zip(self.values, self.weights)
+        return None if self.values is None else tuple(
+            v * w for (v, w) in zip(self.values, self.weights)
         )
 
     @property
@@ -302,28 +311,6 @@ class Fitness(Base):
         :rtype: int
         """
         return len(self.weights)
-
-    def update_value(self, value: float, obj_index: int) -> None:
-        """Update the value of a fitnes objective.
-
-        :param value: The new value
-        :type value: float
-        :param obj_index: Index of the objective
-        :type obj_index: int
-        :raises TypeError: If *value* is not a real number or *index* is not
-            an integer number
-        :raises ValueError: If *index* is negative or greatuer to or equal
-            than the number of objectives
-        """
-        # Check the objective ndex
-        obj_index = check_int(
-            obj_index, "objective index", ge=0, lt=self.num_obj
-        )
-
-        # Check the value
-        value = check_float(value, f"new value for objective {obj_index}")
-
-        self._values[obj_index] = value
 
     def dominates(self, other: Fitness, which: slice = slice(None)) -> bool:
         """Check if this fitness dominates another one.
@@ -446,13 +433,6 @@ class Fitness(Base):
         """
         return not self.__eq__(other)
 
-    def __repr__(self) -> str:
-        """Object representation.
-
-        :rtype: str
-        """
-        return Base.__repr__(self)
-
     def __str__(self) -> str:
         """Object as a string.
 
@@ -511,10 +491,10 @@ class FitnessFunction(Base):
         return DEFAULT_SIMILARITY_THRESHOLD
 
     @property
-    def obj_thresholds(self) -> list[float]:
+    def obj_thresholds(self) -> tuple[float]:
         """Objective similarity thresholds.
 
-        :rtype: list[float]
+        :rtype: tuple[float]
         :setter: Set new thresholds.
         :param values: The new values. If only a single value is provided, the
             same threshold will be used for all the objectives. Different
@@ -529,9 +509,9 @@ class FitnessFunction(Base):
             match the number of objectives
         """
         if self._obj_thresholds is None:
-            return [
-                self._default_similarity_threshold
-            ] * self.num_obj
+            return (
+                self._default_similarity_threshold,
+            ) * self.num_obj
 
         return self._obj_thresholds
 
@@ -556,16 +536,33 @@ class FitnessFunction(Base):
         if values is None:
             self._obj_thresholds = None
         elif isinstance(values, Sequence):
-            self._obj_thresholds = check_sequence(
-                values,
-                "objective similarity thresholds",
-                size=self.num_obj,
-                item_checker=partial(check_float, ge=0)
+            self._obj_thresholds = tuple(
+                check_sequence(
+                    values,
+                    "objective similarity thresholds",
+                    size=self.num_obj,
+                    item_checker=partial(check_float, ge=0)
+                )
             )
         else:
-            self._obj_thresholds = [
-                check_float(values, "objective similarity threshold", ge=0)
-            ] * self.num_obj
+            self._obj_thresholds = (
+                check_float(values, "objective similarity threshold", ge=0),
+            ) * self.num_obj
+
+    @property
+    @abstractmethod
+    def objectives(self) -> tuple[FitnessFunction]:
+        """Objectives to be optimized.
+
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :rtype:
+            tuple[~culebra.abc.FitnessFunction]
+        """
+        raise NotImplementedError(
+            "The objectives property has not been implemented in the "
+            f"{self.__class__.__name__} class")
 
     @property
     def num_obj(self) -> int:
@@ -599,8 +596,10 @@ class FitnessFunction(Base):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         Parameters *cooperators* and *index* are used only for cooperative
         evaluations
@@ -617,13 +616,30 @@ class FitnessFunction(Base):
             optional
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
             "The evaluate method has not been implemented in the "
             f"{self.__class__.__name__} class")
+
+    def _get_repr_properties(self) -> dict[str, object]:
+        """Return the subset of properties used for ``__repr__``.
+    
+        Filters and evaluates all class-level ``@property`` attributes,
+        returning only those intended for representation purposes. Private
+        properties (names starting with ``_``) are excluded.
+    
+        :return: Mapping of property names to their corresponding values.
+        :rtype: dict[str, object]
+        """
+        the_properties = super()._get_repr_properties()
+        the_objectives = tuple(
+            obj if obj is not self else 'self' for obj in self.objectives
+            )
+        the_properties['objectives'] = the_objectives
+        return the_properties
 
 
 class Species(Base):
@@ -930,7 +946,7 @@ class Trainer(Base):
     @abstractmethod
     def training_finished(self) -> bool:
         """Check if training has finished.
-        
+
         This property must be overridden by subclasses to return a correct
         value.
 
@@ -1040,13 +1056,18 @@ class Trainer(Base):
         :return: The number of evaluations performed
         :rtype: int
         """
+        # Get the fitness function
         if fitness_func is None:
             fitness_func = self.fitness_func
-        elif fitness_func is not self.fitness_func:
-            # Check the fitness function
+        else:
             fitness_func = check_instance(
                 fitness_func, "fitness function", FitnessFunction
             )
+
+        # Change the fitness class in necessary
+        last_fitness_params = sol.fitness.__class__.__dict__
+        fitness_func_params = fitness_func.fitness_cls.__dict__
+        if last_fitness_params != fitness_func_params:
             sol.fitness = fitness_func.fitness_cls()
 
         # If cooperators is not None -> cooperation
@@ -1059,13 +1080,13 @@ class Trainer(Base):
                         sol,
                         index=index,
                         cooperators=context
-                    ).values
+                    )
                 )
             sol.fitness.values = self.cooperative_fitness_estimation_func(
                 fitness_trials_values
             )
         else:
-            fitness_func.evaluate(sol, index=index)
+            sol.fitness.values = fitness_func.evaluate(sol, index=index)
 
         # Return the number of evaluations performed
         return 1 if cooperators is None else len(cooperators)
@@ -1075,7 +1096,7 @@ class Trainer(Base):
         self
     ) -> Callable[Sequence[Sequence[float]], Sequence[float]]:
         """Default cooperative fitness estimation function.
-        
+
         Return the average of all fitness trials.
         """
         return lambda fitness_trials: np.average(fitness_trials, axis=0)

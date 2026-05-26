@@ -33,7 +33,6 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from culebra.abc import Fitness
 from culebra.fitness_func.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_func.dataset_score.abc import (
     DatasetScorer,
@@ -79,8 +78,10 @@ class FSDatasetScorer(DatasetScorer, FSScorer):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.solution.feature_selection.Solution
@@ -92,19 +93,17 @@ class FSDatasetScorer(DatasetScorer, FSScorer):
             used by cooperative problems
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
             raise ValueError("The solution is not evaluable")
 
         if sol.features.size > 0:
-            super().evaluate(sol, index, cooperators)
-        else:
-            sol.fitness.update_value(self._worst_score, self.index)
+            return super().evaluate(sol, index, cooperators)
 
-        return sol.fitness
+        return (self._worst_score,)
 
     def _final_training_test_data(
         self,

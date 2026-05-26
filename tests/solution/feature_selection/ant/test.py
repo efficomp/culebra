@@ -91,7 +91,7 @@ class AntTester(unittest.TestCase):
                     f'Discarded: {empty_ant.discarded}'
                 )
                 # Check that the ant has not been evaluated yet
-                self.assertEqual(empty_ant.fitness.values, (None,))
+                self.assertEqual(empty_ant.fitness.values, None)
 
                 # Create an ant with an full path
                 full_ant = Ant(
@@ -110,7 +110,7 @@ class AntTester(unittest.TestCase):
                     f'Discarded: {full_ant.discarded}'
                 )
                 # Checks that the ant has not been evaluated yet
-                self.assertEqual(full_ant.fitness.values, (None,))
+                self.assertEqual(full_ant.fitness.values, None)
 
     def test_setup(self):
         """Test the _setup method."""
@@ -133,7 +133,7 @@ class AntTester(unittest.TestCase):
                     f'Ant size: {ant.num_feats}'
                 )
                 # Checks that the ant has not been evaluated yet
-                self.assertEqual(ant.fitness.values, (None, ))
+                self.assertEqual(ant.fitness.values, None)
 
     def test_features(self):
         """Test the features property."""
@@ -233,16 +233,10 @@ class AntTester(unittest.TestCase):
         # Test repeated features, should fail
         for index in indices:
             # Evaluate the ant
-            fitness_func.evaluate(ant)
-
-            # Check that the ant has been evaluated
-            self.assertNotEqual(ant.fitness.values, (None, ))
+            ant.fitness.values = fitness_func.evaluate(ant)
 
             # Append a new node
             ant.append(index)
-
-            # Check that the ant has not been evaluated yet
-            self.assertEqual(ant.fitness.values, (None, ))
 
             # Try to append a repeated node, should fail
             with self.assertRaises(ValueError):
@@ -257,15 +251,16 @@ class AntTester(unittest.TestCase):
 
         # Try correct indices
         ant = Ant(species, fitness_cls)
+
+        # Check that the ant has not been evaluated yet
+        self.assertEqual(ant.fitness.values, None)
+
         for index, feature in enumerate(indices):
             # Evaluate the ant
-            fitness_func.evaluate(ant)
+            ant.fitness.values = fitness_func.evaluate(ant)
 
             # Append a new node
             ant.append(feature)
-
-            # Check that the ant has not been evaluated yet
-            self.assertEqual(ant.fitness.values, (None, ))
 
             # Check the number of features and the current node
             self.assertEqual(index + 1, ant.num_feats)

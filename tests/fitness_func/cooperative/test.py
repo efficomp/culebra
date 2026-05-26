@@ -36,7 +36,6 @@ from culebra.solution.parameter_optimization import (
     Species as ClassifierOptimizationSpecies,
     Solution as ClassifierOptimizationSolution
 )
-
 from culebra.fitness_func.feature_selection.abc import (
     FSClassificationScorer
 )
@@ -48,7 +47,6 @@ from culebra.fitness_func.svc_optimization import (
     C,
     KappaIndex as SVCKappaIndex
 )
-
 from culebra.fitness_func.cooperative import FSSVCScorer
 from culebra.tools import Dataset
 

@@ -50,6 +50,7 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.solution.tsp.Ant._get_repr_properties
 .. automethod:: culebra.solution.tsp.Ant._setup
 
 Dunder methods

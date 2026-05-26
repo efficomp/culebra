@@ -36,6 +36,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.svc_optimization.C.obj_names
 .. autoproperty:: culebra.fitness_func.svc_optimization.C.obj_thresholds
 .. autoproperty:: culebra.fitness_func.svc_optimization.C.obj_weights
+.. autoproperty:: culebra.fitness_func.svc_optimization.C.objectives
 
 Private properties
 ------------------
@@ -48,3 +49,6 @@ Methods
 .. automethod:: culebra.fitness_func.svc_optimization.C.evaluate
 .. automethod:: culebra.fitness_func.svc_optimization.C.is_evaluable
 
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.svc_optimization.C._get_repr_properties

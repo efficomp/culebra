@@ -20,13 +20,12 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Unit test for :class:`culebra.tools.Evaluation`."""
+"""Unit test for :class:`culebra.tools.abc.Evaluation`."""
 
 import unittest
 from os import remove
 from os.path import exists
 from copy import copy, deepcopy
-from collections import Counter
 
 from pandas import DataFrame
 from sklearn.svm import SVC
@@ -52,27 +51,32 @@ from culebra.trainer.abc import (
     CooperativeTrainer
 )
 from culebra.trainer.ea import ElitistEA
+from culebra.tools.abc import Evaluation, DecisionManager
 from culebra.tools import (
     Dataset,
-    Evaluation,
     Results,
+    DEFAULT_SCRIPT_FILE_EXTENSION,
     DEFAULT_RESULTS_BASE_FILENAME,
     DEFAULT_RUN_SCRIPT_FILENAME
 )
-
-SCRIPT_FILE_EXTENSION = ".py"
-"""File extension for python scripts."""
+from culebra.tools.decision_manager import LexicographicDM
 
 
 # Fitness function
-def KappaNumFeatsC(training_data, test_data=None, cv_folds=None):
+def KappaNumFeatsC(
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
+):
     """Fitness Function."""
     return FSSVCScorer(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -93,17 +97,7 @@ dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 training_data = training_data.oversample(random_seed=0)
 
 # Training fitness function
-training_fitness_func = KappaNumFeatsC(training_data, cv_folds=5)
-
-# Set the training fitness similarity threshold
-training_fitness_func.obj_thresholds = 0.001
-
-# Untie fitness function to select the best solution
-samples_per_class = Counter(training_data.outputs)
-max_folds = samples_per_class[
-    min(samples_per_class, key=samples_per_class.get)
-]
-untie_best_fitness_func = KappaNumFeatsC(training_data, cv_folds=max_folds)
+training_fitness_func = KappaNumFeatsC(training_data, cv_num_folds=5)
 
 # Test fitness function
 test_fitness_func = KappaNumFeatsC(training_data, test_data)
@@ -131,8 +125,9 @@ subtrainer_params = {
     "crossover_prob": 0.8,
     "mutation_prob": 0.2,
     "pop_size": dataset.num_feats//2,
-    "max_num_iters": 500,
-    "checkpoint_activation": False
+    "max_num_iters": 10,
+    "checkpoint_activation": False,
+    "verbosity": False
 }
 
 # Parameters for the wrapper
@@ -178,19 +173,22 @@ class MyEvaluation(Evaluation):
 
 
 class EvaluationTester(unittest.TestCase):
-    """Test :class:`~culebra.tools.Evaluation`."""
+    """Test :class:`~culebra.tools.abc.Evaluation`."""
 
     def test_init(self):
         """Test the constructor."""
         trainer = MyTrainer(*subtrainers, **params)
+        dm = LexicographicDM(trainer)
 
         # Try default params
-        evaluation = MyEvaluation(trainer)
+        evaluation = MyEvaluation(trainer, dm)
 
         self.assertEqual(evaluation.trainer, trainer)
-        self.assertEqual(evaluation.untie_best_fitness_func, None)
+        self.assertEqual(evaluation.decision_manager, dm)
 
-        self.assertEqual(evaluation.test_fitness_func, None)
+        self.assertEqual(
+            evaluation.test_fitness_func, evaluation.trainer.fitness_func
+        )
         self.assertEqual(
             evaluation.results_base_filename,
             DEFAULT_RESULTS_BASE_FILENAME
@@ -198,41 +196,35 @@ class EvaluationTester(unittest.TestCase):
         self.assertEqual(evaluation.hyperparameters, None)
         self.assertEqual(evaluation.results, None)
 
-        # Try an invalid untie fitness function
+        # Try an invalid decision manager
         with self.assertRaises(TypeError):
-            MyEvaluation(trainer, untie_best_fitness_func="a")
+            MyEvaluation(trainer, decision_manager="a")
 
         # Try an invalid test fitness function
         with self.assertRaises(TypeError):
-            MyEvaluation(trainer, test_fitness_func="a")
+            MyEvaluation(trainer, dm, test_fitness_func="a")
 
         # Try an invalid results base filename
         with self.assertRaises(TypeError):
-            MyEvaluation(trainer, results_base_filename=1)
+            MyEvaluation(trainer, dm, results_base_filename=1)
 
         # Try an invalid hyperparameter specification
         with self.assertRaises(TypeError):
-            MyEvaluation(trainer, hyperparameters=1)
+            MyEvaluation(trainer, dm, hyperparameters=1)
 
         # Try an invalid hyperparameter name
         with self.assertRaises(ValueError):
-            MyEvaluation(trainer, hyperparameters={1: 1})
+            MyEvaluation(trainer, dm, hyperparameters={1: 1})
 
         # Try a reserved hyperparameter name
-        with self.assertRaises(ValueError):
-            MyEvaluation(trainer, hyperparameters={'Solution': 1})
-
-        # Try an evaluation with a custom untie fitness function
-        evaluation = MyEvaluation(
-            trainer, untie_best_fitness_func=untie_best_fitness_func
-        )
-        self.assertEqual(
-            evaluation.untie_best_fitness_func, untie_best_fitness_func
-        )
+        rsv_names= ["SPECIES  ", "solution"]
+        for hyper_name in rsv_names:
+            with self.assertRaises(ValueError):
+                MyEvaluation(trainer, dm, hyperparameters={hyper_name: 1})
 
         # Try an evaluation with a custom test fitness function
         evaluation = MyEvaluation(
-            trainer, test_fitness_func=test_fitness_func
+            trainer, dm, test_fitness_func=test_fitness_func
         )
         self.assertEqual(
             evaluation.test_fitness_func, test_fitness_func
@@ -240,14 +232,18 @@ class EvaluationTester(unittest.TestCase):
 
         # Try an evaluation with a custom results base name
         my_basename = "my_base"
-        evaluation = MyEvaluation(trainer, results_base_filename=my_basename)
+        evaluation = MyEvaluation(
+            trainer, dm, results_base_filename=my_basename
+        )
         self.assertEqual(
             evaluation.results_base_filename, my_basename
         )
 
         # Try an evaluation with custom hyperparameters
         my_hyperparameters = {"a": 1, "b": 2}
-        evaluation = MyEvaluation(trainer, hyperparameters=my_hyperparameters)
+        evaluation = MyEvaluation(
+            trainer, dm, hyperparameters=my_hyperparameters
+        )
         self.assertEqual(
             evaluation.hyperparameters, my_hyperparameters
         )
@@ -260,7 +256,9 @@ class EvaluationTester(unittest.TestCase):
         with self.assertRaises(ValueError):
             MyEvaluation.from_config("bad_config.txt")
         with self.assertRaises(RuntimeError):
-            MyEvaluation.from_config("bad_config" + SCRIPT_FILE_EXTENSION)
+            MyEvaluation.from_config(
+                "bad_config" + DEFAULT_SCRIPT_FILE_EXTENSION
+            )
 
         # Generate the evaluation
         evaluation = MyEvaluation.from_config()
@@ -268,9 +266,8 @@ class EvaluationTester(unittest.TestCase):
         # Check the trainer
         self.assertIsInstance(evaluation.trainer, Trainer)
 
-        # Check the untie fitness function
-        self.assertIsInstance(
-            evaluation.untie_best_fitness_func, FitnessFunction)
+        # Check the decision manager
+        self.assertIsInstance(evaluation.decision_manager, DecisionManager)
 
         # Check the test fitness function
         self.assertIsInstance(
@@ -289,7 +286,7 @@ class EvaluationTester(unittest.TestCase):
         """Test the reset method."""
         trainer = MyTrainer(*subtrainers, **params)
 
-        evaluation = MyEvaluation(trainer)
+        evaluation = MyEvaluation(trainer, LexicographicDM(trainer))
         evaluation._results = 1
         evaluation.reset()
         self.assertEqual(evaluation.results, None)
@@ -299,7 +296,11 @@ class EvaluationTester(unittest.TestCase):
         trainer = MyTrainer(*subtrainers, **params)
 
         # Create the evaluation
-        evaluation = MyEvaluation(trainer, test_fitness_func)
+        evaluation = MyEvaluation(
+            trainer,
+            LexicographicDM(trainer),
+            test_fitness_func=test_fitness_func
+        )
 
         # Init the results manager
         evaluation._results = Results()
@@ -347,7 +348,7 @@ class EvaluationTester(unittest.TestCase):
 
         # Try with a custom configuration script filename
         MyEvaluation.generate_run_script(
-            config_filename="custom-config" + SCRIPT_FILE_EXTENSION
+            config_filename="custom-config" + DEFAULT_SCRIPT_FILE_EXTENSION
         )
 
         # Check that file exists
@@ -368,7 +369,7 @@ class EvaluationTester(unittest.TestCase):
         remove(DEFAULT_RUN_SCRIPT_FILENAME)
 
         # Try a custom script name
-        my_run_script_filename = "my_script" + SCRIPT_FILE_EXTENSION
+        my_run_script_filename = "my_script" + DEFAULT_SCRIPT_FILE_EXTENSION
         MyEvaluation.generate_run_script(
             run_script_filename=my_run_script_filename
         )
@@ -386,7 +387,7 @@ class EvaluationTester(unittest.TestCase):
         # Create the evaluation
         evaluation = MyEvaluation(
             trainer,
-            untie_best_fitness_func,
+            LexicographicDM(trainer),
             test_fitness_func,
             "the_results"
         )
@@ -406,12 +407,12 @@ class EvaluationTester(unittest.TestCase):
         remove(evaluation.excel_results_filename)
 
     def test_copy(self):
-        """Test the :meth:`~culebra.tools.Evaluation.__copy__` method."""
+        """Test the :meth:`~culebra.tools.abc.Evaluation.__copy__` method."""
         trainer = MyTrainer(*subtrainers, **params)
 
         evaluation1 = MyEvaluation(
             trainer,
-            untie_best_fitness_func,
+            LexicographicDM(trainer),
             test_fitness_func
         )
 
@@ -429,12 +430,12 @@ class EvaluationTester(unittest.TestCase):
         remove(evaluation1.excel_results_filename)
 
     def test_deepcopy(self):
-        """Test :meth:`~culebra.tools.Evaluation.__deepcopy__`."""
+        """Test :meth:`~culebra.tools.abc.Evaluation.__deepcopy__`."""
         trainer = MyTrainer(*subtrainers, **params)
 
         evaluation1 = MyEvaluation(
             trainer,
-            untie_best_fitness_func,
+            LexicographicDM(trainer),
             test_fitness_func
         )
         evaluation1.run()
@@ -450,14 +451,14 @@ class EvaluationTester(unittest.TestCase):
     def test_serialization(self):
         """Serialization test.
 
-        Test the :meth:`~culebra.tools.Evaluation.__setstate__` and
-        :meth:`~culebra.tools.Evaluation.__reduce__` methods.
+        Test the :meth:`~culebra.tools.abc.Evaluation.__setstate__` and
+        :meth:`~culebra.tools.abc.Evaluation.__reduce__` methods.
         """
         trainer = MyTrainer(*subtrainers, **params)
 
         evaluation1 = MyEvaluation(
             trainer,
-            untie_best_fitness_func,
+            LexicographicDM(trainer),
             test_fitness_func
         )
         evaluation1.run()
@@ -480,9 +481,9 @@ class EvaluationTester(unittest.TestCase):
         """Check if *evaluation1* is a deepcopy of *evaluation2*.
 
         :param evaluation1: The first evaluation
-        :type evaluation1: ~culebra.tools.Evaluation
+        :type evaluation1: ~culebra.tools.abc.Evaluation
         :param evaluation2: The second evaluation
-        :type evaluation2: ~culebra.tools.Evaluation
+        :type evaluation2: ~culebra.tools.abc.Evaluation
         """
         # Copies all the levels
         self.assertTrue(evaluation1 is not evaluation2)
@@ -494,7 +495,7 @@ class EvaluationTester(unittest.TestCase):
                 self.assertTrue(
                     evaluation1.results[key].equals(evaluation2.results[key])
                 )
-            
+
 
 if __name__ == '__main__':
     unittest.main()

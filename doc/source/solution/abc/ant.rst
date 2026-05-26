@@ -48,6 +48,10 @@ Methods
 .. automethod:: culebra.solution.abc.Ant.dominates
 .. automethod:: culebra.solution.abc.Ant.dump
 
+Private methods
+---------------
+.. automethod:: culebra.solution.abc.Ant._get_repr_properties
+
 Dunder methods
 --------------
 Intended to compare (lexicographically) two ants according to their fitness.

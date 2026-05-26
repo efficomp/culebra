@@ -39,7 +39,6 @@ from sklearn.base import ClassifierMixin
 from sklearn.svm import SVC
 
 from culebra.checker import check_instance
-from culebra.abc import Fitness
 from culebra.fitness_func.abc import SingleObjectiveFitnessFunction
 from culebra.fitness_func.dataset_score.abc import ClassificationScorer
 from culebra.solution.parameter_optimization import Solution
@@ -117,8 +116,10 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.solution.parameter_optimization.Solution
@@ -128,8 +129,8 @@ class RBFSVCScorer(ClassificationScorer, SVCScorer):
         :param cooperators: Cooperators of each species being optimized
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):

@@ -36,6 +36,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer.obj_names
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer.obj_weights
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer.objectives
 
 Private properties
 ------------------
@@ -47,3 +48,7 @@ Methods
 .. automethod:: culebra.fitness_func.svc_optimization.abc.SVCScorer.dump
 .. automethod:: culebra.fitness_func.svc_optimization.abc.SVCScorer.evaluate
 .. automethod:: culebra.fitness_func.svc_optimization.abc.SVCScorer.is_evaluable
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.svc_optimization.abc.SVCScorer._get_repr_properties

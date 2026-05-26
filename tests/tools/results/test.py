@@ -29,7 +29,7 @@ from os.path import exists
 from copy import copy, deepcopy
 from pandas import DataFrame
 from culebra import SERIALIZED_FILE_EXTENSION
-from culebra.tools import Results, EXCEL_FILE_EXTENSION
+from culebra.tools import Results, DEFAULT_EXCEL_FILE_EXTENSION
 
 CSV_FILE_EXTENSION = ".csv"
 """Extension for csv files."""
@@ -178,7 +178,7 @@ class ResultsTester(unittest.TestCase):
         data_keys = ("test_fitness", "execution_metrics")
         bad_excel_filename_type = 1
         bad_excel_filename_values = ["file", "file.tar"]
-        good_excel_filename = "myresults" + EXCEL_FILE_EXTENSION
+        good_excel_filename = "myresults" + DEFAULT_EXCEL_FILE_EXTENSION
 
         results = Results.from_csv_files(data_filenames, data_keys)
 

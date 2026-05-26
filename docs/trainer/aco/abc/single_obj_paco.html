@@ -1604,6 +1604,23 @@ overridden to perform any treatment of the solutions found.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleObjPACO._get_repr_properties">
+<span class="sig-prename descclassname"><span class="pre">SingleObjPACO.</span></span><span class="sig-name descname"><span class="pre">_get_repr_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleObjPACO._get_repr_properties" title="Link to this definition">¶</a></dt>
+<dd><p>Return the subset of properties used for <code class="docutils literal notranslate"><span class="pre">__repr__</span></code>.</p>
+<p>Filters and evaluates all class-level <code class="docutils literal notranslate"><span class="pre">&#64;property</span></code> attributes,
+returning only those intended for representation purposes. Private
+properties (names starting with <code class="docutils literal notranslate"><span class="pre">_</span></code>) are excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping of property names to their corresponding values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)">object</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="culebra.trainer.aco.abc.SingleObjPACO._get_state">
 <span class="sig-prename descclassname"><span class="pre">SingleObjPACO.</span></span><span class="sig-name descname"><span class="pre">_get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.trainer.aco.abc.SingleObjPACO._get_state" title="Link to this definition">¶</a></dt>
 <dd><p>Return the state of this trainer.</p>

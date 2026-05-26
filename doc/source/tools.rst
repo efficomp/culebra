@@ -31,21 +31,15 @@ Attributes
 
     Default significance level for statistical tests.
 
-.. attribute:: DEFAULT_BATCH_STATS_FUNCS
-    :annotation: = {'Avg': <function NDFrame._add_numeric_operations.<locals>.mean>, 'Max': <function NDFrame._add_numeric_operations.<locals>.max>, 'Min': <function NDFrame._add_numeric_operations.<locals>.min>, 'Std': <function NDFrame._add_numeric_operations.<locals>.std>}
-
-    Default statistics calculated for the results gathered from all the
-    experiments.
-
 .. attribute:: DEFAULT_CONFIG_SCRIPT_FILENAME
     :annotation: = 'config.py'
 
     Default file name for configuration files.
 
-.. attribute:: DEFAULT_FEATURE_METRIC_FUNCS
-    :annotation: = {'Rank': <function Metrics.rank>, 'Relevance': <function Metrics.relevance>}
+.. attribute:: DEFAULT_EXCEL_FILE_EXTENSION
+    :annotation: = '.xlsx'
 
-    Default metrics calculated for the features in the set of solutions.
+    File extension for Excel datasheets.
 
 .. attribute:: DEFAULT_HOMOSCEDASTICITY_TEST
     :annotation: = <function bartlett>
@@ -82,6 +76,11 @@ Attributes
 
     Default file name for the script to run an evaluation.
 
+.. attribute:: DEFAULT_SCRIPT_FILE_EXTENSION
+    :annotation: = '.py'
+
+    Default file extension for python scripts.
+
 .. attribute:: DEFAULT_SEP
     :annotation: = '\\s+'
 
@@ -92,26 +91,16 @@ Attributes
 
     Default number of neighbors for :class:`~imblearn.over_sampling.SMOTE`.
 
-.. attribute:: DEFAULT_STATS_FUNCS
-    :annotation: = {'Avg': <function mean>, 'Max': <function amax>, 'Min': <function amin>, 'Std': <function std>}
-
-    Default statistics calculated for the results.
-
-.. attribute:: EXCEL_FILE_EXTENSION
-    :annotation: = '.xlsx'
-
-    File extension for Excel datasheets.
-
 
 .. toctree::
     :hidden:
 
+    abc <tools/abc>
+    evaluation <tools/evaluation>
+    decision_manager <tools/decision_manager>
     Dataset <tools/dataset>
     Results <tools/results>
     TestOutcome <tools/test_outcome>
     ResultsComparison <tools/results_comparison>
     EffectSize <tools/effect_size>
     ResultsAnalyzer <tools/results_analyzer>
-    Evaluation <tools/evaluation>
-    Experiment <tools/experiment>
-    Batch <tools/batch>

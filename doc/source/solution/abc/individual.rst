@@ -45,6 +45,10 @@ Methods
 .. automethod:: culebra.solution.abc.Individual.dump
 .. automethod:: culebra.solution.abc.Individual.mutate
 
+Private methods
+---------------
+.. automethod:: culebra.solution.abc.Individual._get_repr_properties
+
 Dunder methods
 --------------
 Intended to compare (lexicographically) two individuals according to their

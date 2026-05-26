@@ -42,6 +42,10 @@ Methods
 .. automethod:: culebra.tools.ResultsAnalyzer.parametric_test
 .. automethod:: culebra.tools.ResultsAnalyzer.rank
 
+Private methods
+---------------
+.. automethod:: culebra.tools.ResultsAnalyzer._get_repr_properties
+
 Dunder methods
 --------------
 .. automethod:: culebra.tools.ResultsAnalyzer.__setitem__

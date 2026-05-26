@@ -30,19 +30,23 @@ Class methods
 
 Properties
 ----------
-.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_folds
+.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_num_folds
+.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_splitter
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.fitness_cls
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.index
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.num_obj
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.obj_names
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.obj_weights
+.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.objectives
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.test_data
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer.training_data
 
 Private properties
 ------------------
-.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_folds
+.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_num_folds
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer._default_index
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.DatasetScorer._worst_score
@@ -58,4 +62,5 @@ Private methods
 .. automethod:: culebra.fitness_func.dataset_score.abc.DatasetScorer._evaluate_kfcv
 .. automethod:: culebra.fitness_func.dataset_score.abc.DatasetScorer._evaluate_train_test
 .. automethod:: culebra.fitness_func.dataset_score.abc.DatasetScorer._final_training_test_data
+.. automethod:: culebra.fitness_func.dataset_score.abc.DatasetScorer._get_repr_properties
 .. automethod:: culebra.fitness_func.dataset_score.abc.DatasetScorer._score

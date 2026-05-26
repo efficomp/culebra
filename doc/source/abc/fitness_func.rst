@@ -35,6 +35,7 @@ Properties
 .. autoproperty:: culebra.abc.FitnessFunction.obj_names
 .. autoproperty:: culebra.abc.FitnessFunction.obj_thresholds
 .. autoproperty:: culebra.abc.FitnessFunction.obj_weights
+.. autoproperty:: culebra.abc.FitnessFunction.objectives
 
 Private properties
 ------------------
@@ -44,3 +45,7 @@ Methods
 -------
 .. automethod:: culebra.abc.FitnessFunction.dump
 .. automethod:: culebra.abc.FitnessFunction.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.abc.FitnessFunction._get_repr_properties

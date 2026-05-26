@@ -19,22 +19,18 @@
 
 """Tools to automate the execution of experiments.
 
-Since many interesting problems are based on data processing, this module
-provides the :class:`~culebra.tools.Dataset` class to hold and manage the
-data samples.
+This module is composed by:
 
-Besides, since automated experimentation is also a quite valuable
-characteristic when a :class:`~culebra.abc.Trainer` method has to be run
-many times, culebra provides this features by means of the following classes:
-
-* The :class:`~culebra.tools.Batch` class, which allows to run a batch of
-  experiments with the same configuration
+* The :mod:`~culebra.tools.abc` sub-module, where some abstract base
+  classes are defined to support the evaluation of trainers and decision
+  managers that let select an adequate solution
+* The :mod:`~culebra.tools.evaluation` sub-module, providing several classes
+  to make automated experimentation easier.
+* The :mod:`~culebra.tools.decision_manager` sub-module, which offers several
+  decision managers.
+* The :class:`~culebra.tools.Dataset` class to hold and manage the datasets.
 * The :class:`~culebra.tools.EffectSize` class, to keep the outcome
   of an effect size estimation of several batches results
-* The :class:`~culebra.tools.Evaluation` class, a base class for the
-  evaluation of trainers
-* The :class:`~culebra.tools.Experiment` class, designed to run a single
-  experiment with a :class:`~culebra.abc.Trainer`
 * The :class:`~culebra.tools.Results` class, to manage the results
   provided by the evaluation of any :class:`~culebra.abc.Trainer`
 * The :class:`~culebra.tools.ResultsAnalyzer` class, to perform
@@ -45,35 +41,35 @@ many times, culebra provides this features by means of the following classes:
   statistical test
 """
 
-from .dataset import (
-    Dataset,
+from .constants import (
     DEFAULT_SEP,
     DEFAULT_OUTLIER_PROPORTION,
-    DEFAULT_SMOTE_NUM_NEIGHBORS
-)
-
-from .results import Results, EXCEL_FILE_EXTENSION
-from .results_analyzer import (
-    TestOutcome,
-    ResultsComparison,
-    EffectSize,
-    ResultsAnalyzer,
+    DEFAULT_SMOTE_NUM_NEIGHBORS,
+    DEFAULT_EXCEL_FILE_EXTENSION,
+    DEFAULT_NUM_EXPERIMENTS,
+    DEFAULT_SCRIPT_FILE_EXTENSION,
+    DEFAULT_RUN_SCRIPT_FILENAME,
+    DEFAULT_CONFIG_SCRIPT_FILENAME,
+    DEFAULT_RESULTS_BASE_FILENAME,
     DEFAULT_ALPHA,
     DEFAULT_NORMALITY_TEST,
     DEFAULT_HOMOSCEDASTICITY_TEST,
     DEFAULT_P_ADJUST
 )
-from .evaluation import (
-    Evaluation,
-    Experiment,
-    Batch,
-    DEFAULT_STATS_FUNCS,
-    DEFAULT_FEATURE_METRIC_FUNCS,
-    DEFAULT_BATCH_STATS_FUNCS,
-    DEFAULT_NUM_EXPERIMENTS,
-    DEFAULT_RUN_SCRIPT_FILENAME,
-    DEFAULT_CONFIG_SCRIPT_FILENAME,
-    DEFAULT_RESULTS_BASE_FILENAME
+from .dataset import (
+    Dataset
+)
+from .results import Results
+from .results_analyzer import (
+    TestOutcome,
+    ResultsComparison,
+    EffectSize,
+    ResultsAnalyzer
+)
+from . import (
+    abc,
+    decision_manager,
+    evaluation
 )
 
 
@@ -87,28 +83,26 @@ __status__ = 'Development'
 
 
 __all__ = [
+    'abc',
+    'decision_manager',
+    'evaluation',
     'Dataset',
     'Results',
     'TestOutcome',
     'ResultsComparison',
     'EffectSize',
     'ResultsAnalyzer',
-    'Evaluation',
-    'Experiment',
-    'Batch',
     'DEFAULT_SEP',
     'DEFAULT_OUTLIER_PROPORTION',
     'DEFAULT_SMOTE_NUM_NEIGHBORS',
-    'EXCEL_FILE_EXTENSION',
+    'DEFAULT_EXCEL_FILE_EXTENSION',
+    'DEFAULT_NUM_EXPERIMENTS',
+    'DEFAULT_SCRIPT_FILE_EXTENSION',
+    'DEFAULT_RUN_SCRIPT_FILENAME',
+    'DEFAULT_CONFIG_SCRIPT_FILENAME',
+    'DEFAULT_RESULTS_BASE_FILENAME',    
     'DEFAULT_ALPHA',
     'DEFAULT_NORMALITY_TEST',
     'DEFAULT_HOMOSCEDASTICITY_TEST',
-    'DEFAULT_P_ADJUST',
-    'DEFAULT_STATS_FUNCS',
-    'DEFAULT_FEATURE_METRIC_FUNCS',
-    'DEFAULT_BATCH_STATS_FUNCS',
-    'DEFAULT_NUM_EXPERIMENTS',
-    'DEFAULT_RUN_SCRIPT_FILENAME',
-    'DEFAULT_CONFIG_SCRIPT_FILENAME',
-    'DEFAULT_RESULTS_BASE_FILENAME'
+    'DEFAULT_P_ADJUST'
 ]

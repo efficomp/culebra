@@ -122,6 +122,15 @@ class SingleObjectiveFitnessFunction(FitnessFunction):
         """
         return (f"obj_{self.index}",)
 
+    @property
+    def objectives(self) -> tuple[SingleObjectiveFitnessFunction]:
+        """Objectives to be optimized.
+
+        :rtype:
+            tuple[~culebra.fitness_func.abc.SingleObjectiveFitnessFunction]
+        """
+        return (self, )
+
     @abstractmethod
     def is_evaluable(self, sol: Solution) -> bool:
         """Assess the evaluability of a solution.

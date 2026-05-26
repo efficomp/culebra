@@ -43,7 +43,7 @@ def init_analyzer(batches_results, csv_batches_results):
     """Load the results of several approaches.
 
     :param batches_results: Results from a culebra's batch
-    :type batches_results: list[~culebra.tools.Batch]
+    :type batches_results: list[~culebra.tools.evaluation.Batch]
     :param csv_batches_results: Results in csv format
     :type csv_batches_results: list[str]
     :return: A results analyzer for the loaded results

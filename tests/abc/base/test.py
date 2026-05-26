@@ -51,6 +51,11 @@ class BaseSubclass(Base):
         """
         self._my_list = value
 
+    @property
+    def _private (self):
+        """Dummy private property."""
+        return 4
+
 
 the_list = [[1, 2, 3], [4, 5, 6]]
 
@@ -97,15 +102,22 @@ class BaseTester(unittest.TestCase):
         # Remove the serialized file
         remove(serialized_filename)
 
+    def test_get_repr_properties(self):
+        """Test the: meth:`~culebra.abc.Base._get_repr_properties()` method."""
+        base = BaseSubclass(my_list=the_list)
+        properties = base._get_repr_properties()
+        self.assertEqual( properties, {'my_list': the_list})
+
     def test_repr(self):
         """Test the: meth:`~culebra.abc.Base.__repr__` method."""
         lists = [[], the_list]
 
         for value in lists:
             base = BaseSubclass(my_list=value)
-            self.assertEqual(repr(base),
-                             base.__class__.__name__ +
-                             f"(my_list: {base.my_list})")
+            self.assertEqual(
+                repr(base),
+                base.__class__.__name__ + f"(my_list={base.my_list})"
+            )
 
     def _check_deepcopy(self, obj1, obj2):
         """Check if *obj1* is a deepcopy of *obj2*.

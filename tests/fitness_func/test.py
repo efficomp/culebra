@@ -55,25 +55,15 @@ class MySingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
 
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate a solution."""
-        sol.fitness.update_value(0, self.index)
-        return sol.fitness
+        return (self.index,)
 
 
-class AnotherSingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
+class AnotherSingleObjectiveFitnessFunction(MySingleObjectiveFitnessFunction):
     """Dummy implementation of a fitness function."""
-
-    @property
-    def obj_weights(self):
-        """Objective weights."""
-        return (1, )
-
-    def is_evaluable(self, sol):
-        return True
 
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate a solution."""
-        sol.fitness.update_value(1, self.index)
-        return sol.fitness
+        return (self.index * 2,)
 
 
 class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
@@ -122,22 +112,25 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
         func = MultiObjectiveFitnessFunction(obj0, obj1)
 
         # Test default threshold
-        for th in func.obj_thresholds:
-            self.assertEqual(th, DEFAULT_SIMILARITY_THRESHOLD)
-
+        self.assertEqual(
+            func.obj_thresholds,
+            (DEFAULT_SIMILARITY_THRESHOLD,) * func.num_obj
+        )
 
         # Try differnt objective similarity thresholds
-        obj_thresholds = [0.1, 0.2]
+        obj_thresholds = (0.1, 0.2)
         func.obj_thresholds = obj_thresholds
-        self.assertEqual(obj0.obj_thresholds, [obj_thresholds[0]])
-        self.assertEqual(obj1.obj_thresholds, [obj_thresholds[1]])
+        self.assertEqual(obj0.obj_thresholds, (obj_thresholds[0],))
+        self.assertEqual(obj1.obj_thresholds, (obj_thresholds[1],))
         self.assertEqual(func.obj_thresholds, obj_thresholds)
 
         single_threshold = 0.4
         func.obj_thresholds = single_threshold
-        self.assertEqual(obj0.obj_thresholds, [single_threshold])
-        self.assertEqual(obj1.obj_thresholds, [single_threshold])
-        self.assertEqual(func.obj_thresholds, [single_threshold]*func.num_obj)
+        self.assertEqual(obj0.obj_thresholds, (single_threshold,))
+        self.assertEqual(obj1.obj_thresholds, (single_threshold,))
+        self.assertEqual(
+            func.obj_thresholds, (single_threshold,) * func.num_obj
+        )
 
         invalid_threshold_types = (type, {}, len)
         invalid_threshold_value = -1
@@ -166,10 +159,7 @@ class MultiObjectiveFitnessFunctionTester(unittest.TestCase):
 
         sol = MySolution(MySpecies(), func.fitness_cls)
 
-        fit_values = func.evaluate(sol).values
-
-        self.assertEqual(sol.fitness.values, (0, 1))
-        self.assertEqual(fit_values, sol.fitness.values)
+        self.assertEqual(func.evaluate(sol), (0, 2))
 
 
 if __name__ == '__main__':

@@ -41,8 +41,7 @@ class MySingleObjectiveFitnessFunction(SingleObjectiveFitnessFunction):
 
     def evaluate(self, sol, index=None, cooperators=None):
         """Evaluate a solution."""
-        sol.fitness.values = (0,)
-        return sol.fitness
+        return (0,)
 
 
 class SingleObjectiveFitnessFunctionTester(unittest.TestCase):
@@ -76,6 +75,12 @@ class SingleObjectiveFitnessFunctionTester(unittest.TestCase):
         self.assertEqual(func.index, 8)
         self.assertEqual(func.obj_names, ("obj_8",))
 
+    def test_objectives(self):
+        """Test the objectives property."""
+        # Check default parameter values
+        func = MySingleObjectiveFitnessFunction()
+        self.assertEqual(func.objectives, (func,))
+
     def test_obj_thresholds(self):
         """Test the obj_thresholds property."""
         # Try default objective similarity thresholds
@@ -83,7 +88,7 @@ class SingleObjectiveFitnessFunctionTester(unittest.TestCase):
 
         self.assertEqual(
             func.obj_thresholds,
-            [DEFAULT_SIMILARITY_THRESHOLD] * func.num_obj
+            (DEFAULT_SIMILARITY_THRESHOLD,) * func.num_obj
         )
 
         invalid_threshold_types = (type, {}, len)
@@ -102,12 +107,10 @@ class SingleObjectiveFitnessFunctionTester(unittest.TestCase):
         # Try a fixed value for all the thresholds
         for threshold in valid_thresholds:
             func.obj_thresholds = threshold
-            # Check the length of the sequence
-            self.assertEqual(len(func.obj_thresholds), func.num_obj)
-
-            # Check that all the values match
-            for th in func.obj_thresholds:
-                self.assertEqual(threshold, th)
+            # Check the threshold
+            self.assertEqual(
+                func.obj_thresholds, (threshold,) * func.num_obj
+            )
 
         # Try different values of threshold for each objective
         func.obj_thresholds = valid_thresholds[:func.num_obj]

@@ -49,6 +49,7 @@ Methods
 
 Private methods
 ---------------
+.. automethod:: culebra.solution.feature_selection.Solution._get_repr_properties
 .. automethod:: culebra.solution.feature_selection.Solution._setup
 
 Dunder methods

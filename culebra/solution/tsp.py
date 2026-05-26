@@ -311,19 +311,17 @@ class Solution(BaseSolution):
 
         return str(the_path)
 
-    def __repr__(self) -> str:
-        """Solution representation.
+    def _get_repr_properties(self) -> dict[str, object]:
+        """Return the subset of properties used for ``__repr__``.
 
-        :rtype: str
+        :return: Mapping of property names to their corresponding values.
+        :rtype: dict[str, object]
         """
-        cls_name = self.__class__.__name__
-        species_info = str(self.species)
-        fitness_info = self.fitness.values
-
-        return (
-            f"{cls_name}(species={species_info}, fitness={fitness_info}, "
-            f"path={str(self)})"
-        )
+        return {
+            'species': self.species,
+            'fitness': self.fitness.values,
+            'path': self.path
+        }
 
 
 class Ant(Solution, BaseAnt):
@@ -386,9 +384,13 @@ class Ant(Solution, BaseAnt):
             "Nodes can not be discarded for the TSP problem"
         )
 
-    def __repr__(self) -> str:
-        """Return the ant representation."""
-        return BaseAnt.__repr__(self)
+    def _get_repr_properties(self) -> dict[str, object]:
+        """Return the subset of properties used for ``__repr__``.
+
+        :return: Mapping of property names to their corresponding values.
+        :rtype: dict[str, object]
+        """
+        return BaseAnt._get_repr_properties(self)
 
 
 # Exported symbols for this module

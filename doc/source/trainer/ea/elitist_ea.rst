@@ -110,6 +110,7 @@ Private methods
 .. automethod:: culebra.trainer.ea.ElitistEA._generate_pop
 .. automethod:: culebra.trainer.ea.ElitistEA._get_iteration_metrics
 .. automethod:: culebra.trainer.ea.ElitistEA._get_objective_stats
+.. automethod:: culebra.trainer.ea.ElitistEA._get_repr_properties
 .. automethod:: culebra.trainer.ea.ElitistEA._get_state
 .. automethod:: culebra.trainer.ea.ElitistEA._init_internals
 .. automethod:: culebra.trainer.ea.ElitistEA._init_state

@@ -28,7 +28,10 @@ from sklearn.svm import SVC
 from sklearn.metrics import cohen_kappa_score
 
 from culebra import DEFAULT_SIMILARITY_THRESHOLD
-from culebra.fitness_func.dataset_score import DEFAULT_CV_FOLDS
+from culebra.fitness_func.dataset_score import (
+    DEFAULT_CV_NUM_FOLDS,
+    DEFAULT_CV_FIXED_FOLDS
+)
 from culebra.fitness_func.svc_optimization.abc import RBFSVCScorer
 from culebra.solution.parameter_optimization import (
     Species as ParamOptSpecies,
@@ -90,10 +93,11 @@ class RBFSVCScorerTester(unittest.TestCase):
         )
         self.assertEqual(func.test_data, None)
         self.assertTrue(isinstance(func.classifier, SVC))
-        self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
+        self.assertEqual(func.cv_num_folds, DEFAULT_CV_NUM_FOLDS)
+        self.assertEqual(func.cv_fixed_folds, DEFAULT_CV_FIXED_FOLDS)
         self.assertEqual(func.index, 0)
         self.assertEqual(
-            func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD]
+            func.obj_thresholds, (DEFAULT_SIMILARITY_THRESHOLD,)
         )
 
     def test_classifier(self):
@@ -125,11 +129,10 @@ class RBFSVCScorerTester(unittest.TestCase):
 
         # Try a valid solution
         ind = ParamOptIndividual(species, func.fitness_cls)
-        fit_values = func.evaluate(ind).values
+        fit_values = func.evaluate(ind)
         self.assertEqual(func.classifier.C, ind.values.C)
         self.assertEqual(func.classifier.gamma, ind.values.gamma)
-        self.assertTrue(-1 <= ind.fitness.values[0] <= 1)
-        self.assertEqual(fit_values, ind.fitness.values)
+        self.assertTrue(-1 <= fit_values[0] <= 1)
 
     def test_repr(self):
         """Test the repr and str dunder methods."""

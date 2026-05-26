@@ -56,7 +56,10 @@ from culebra.tools import Dataset
 
 # Fitness function
 def KappaNumFeatsC(
-    training_data, test_data=None, cv_folds=None
+    training_data,
+    test_data=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None
 ):
     """Fitness Function."""
     return FSSVCScorer(
@@ -64,7 +67,8 @@ def KappaNumFeatsC(
             training_data=training_data,
             test_data=test_data,
             classifier=SVC(kernel='rbf'),
-            cv_folds=cv_folds
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds
         ),
         NumFeats(),
         C()
@@ -78,7 +82,7 @@ dataset = Dataset.load_from_uci(name="Wine")
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
 
 # Training fitness function
-fitness_func = KappaNumFeatsC(dataset, cv_folds=5)
+fitness_func = KappaNumFeatsC(dataset, cv_num_folds=5)
 
 
 class MySubtrainer(CentralizedTrainer):
@@ -322,11 +326,20 @@ class TrainerTester(unittest.TestCase):
             # Wait for the parallel queue processing
             sleep(1)
 
+        # Gather the subtrainers' current iteration evaluations before
+        subtr_current_iter_evals_before = [
+            subtr._current_iter_evals for subtr in trainer.subtrainers
+        ]
 
         # Call to receive representatives, assigned to
         # subtrainer.receive_representatives_func
         for subtr in trainer.subtrainers:
             subtr.receive_representatives_func(subtr)
+
+        # Gather the subtrainers' current iteration evaluations after
+        subtr_current_iter_evals_after = [
+            subtr._current_iter_evals for subtr in trainer.subtrainers
+        ]
 
         # Check the received values
         for recv_index, subtr in enumerate(trainer.subtrainers):
@@ -339,6 +352,19 @@ class TrainerTester(unittest.TestCase):
                 # Check that all the individuals have been reevaluated
                 for sol in subtr.pop:
                     self.assertTrue(sol.fitness.is_valid)
+
+        # Check that the population has been re-evaluated
+        for (subtr, evals_before, evals_after) in zip(
+            trainer.subtrainers,
+            subtr_current_iter_evals_before,
+            subtr_current_iter_evals_after
+        ):
+            num_cooperators = len(subtr.cooperators)
+            pop_size = len(subtr.pop)
+            self.assertEqual(
+                evals_after,
+                evals_before + num_cooperators * pop_size
+            )
 
     def test_send_representatives(self):
         """Test send_representatives."""

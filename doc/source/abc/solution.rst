@@ -43,6 +43,10 @@ Methods
 .. automethod:: culebra.abc.Solution.dominates
 .. automethod:: culebra.abc.Solution.dump
 
+Private methods
+---------------
+.. automethod:: culebra.abc.Solution._get_repr_properties
+
 Dunder methods
 --------------
 Intended to compare (lexicographically) two solutions according to their

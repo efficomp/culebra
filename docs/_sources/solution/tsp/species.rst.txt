@@ -39,3 +39,7 @@ Methods
 .. automethod:: culebra.solution.tsp.Species.is_banned
 .. automethod:: culebra.solution.tsp.Species.is_feasible
 .. automethod:: culebra.solution.tsp.Species.is_member
+
+Private methods
+---------------
+.. automethod:: culebra.solution.tsp.Species._get_repr_properties

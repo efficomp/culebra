@@ -31,20 +31,24 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.classifier
-.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_num_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.cv_splitter
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.fitness_cls
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.index
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.num_obj
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.obj_names
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.obj_thresholds
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.obj_weights
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.objectives
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.test_data
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer.training_data
 
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_classifier
-.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_cv_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_cv_fixed_folds
+.. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_cv_num_folds
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_index
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._worst_score
@@ -60,4 +64,5 @@ Private methods
 .. automethod:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._evaluate_kfcv
 .. automethod:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._evaluate_train_test
 .. automethod:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._final_training_test_data
+.. automethod:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._get_repr_properties
 .. automethod:: culebra.fitness_func.svc_optimization.abc.RBFSVCScorer._score

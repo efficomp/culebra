@@ -49,7 +49,8 @@ from culebra.tools import Dataset
 def KappaNumFeats(
     training_data,
     test_data=None,
-    cv_folds=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None,
     classifier=None
 ):
     """Fitness Function."""
@@ -57,7 +58,8 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            cv_folds=cv_folds,
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds,
             classifier=classifier
         ),
         NumFeats()
@@ -89,7 +91,7 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 
 # Training fitness function
 training_fitness_func = KappaNumFeats(
-    training_data=training_data, classifier=knn_classifier, cv_folds=5
+    training_data=training_data, classifier=knn_classifier, cv_num_folds=5
 )
 
 # Test fitness function

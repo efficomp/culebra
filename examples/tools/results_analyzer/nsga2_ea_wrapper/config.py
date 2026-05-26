@@ -20,7 +20,6 @@
 """Example of the batch class to evaluate an NSGA-2-based wrapper."""
 
 from os import cpu_count
-from collections import Counter
 
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -36,13 +35,15 @@ from culebra.trainer.abc import (
 )
 from culebra.trainer.ea import NSGA
 from culebra.tools import Dataset
+from culebra.tools.decision_manager import LexicographicWithRepeatedCVDM
 
 
 # Fitness function
 def KappaNumFeats(
     training_data,
     test_data=None,
-    cv_folds=None,
+    cv_num_folds=None,
+    cv_fixed_folds=None,
     classifier=None
 ):
     """Fitness Function."""
@@ -50,7 +51,8 @@ def KappaNumFeats(
         KappaIndex(
             training_data=training_data,
             test_data=test_data,
-            cv_folds=cv_folds,
+            cv_num_folds=cv_num_folds,
+            cv_fixed_folds=cv_fixed_folds,
             classifier=classifier
         ),
         NumFeats()
@@ -82,21 +84,7 @@ knn_classifier = KNeighborsClassifier(n_neighbors)
 
 # Training fitness function
 training_fitness_func = KappaNumFeats(
-    training_data=training_data, classifier=knn_classifier, cv_folds=5
-)
-
-# Set the training fitness similarity threshold
-training_fitness_func.obj_thresholds = 0.001
-
-# Untie fitness function to select the best solution
-samples_per_class = Counter(training_data.outputs)
-max_folds = samples_per_class[
-    min(samples_per_class, key=samples_per_class.get)
-]
-untie_best_fitness_func = KappaNumFeats(
-    training_data=training_data,
-    classifier=knn_classifier,
-    cv_folds=max_folds
+    training_data=training_data, classifier=knn_classifier, cv_num_folds=5
 )
 
 # Test fitness function
@@ -129,6 +117,10 @@ subtrainers = tuple(
 )
 
 trainer = Trainer(*subtrainers, **params)
+
+# Decision manager
+obj_threshold = 0.01
+decision_manager = LexicographicWithRepeatedCVDM(trainer, obj_threshold)
 
 # Set the number of experiments
 num_experiments = 5

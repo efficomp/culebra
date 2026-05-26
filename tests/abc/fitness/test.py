@@ -35,7 +35,7 @@ class MyFitness(Fitness):
 
     weights = (1, -1)
     names = ("obj1", "obj2")
-    thresholds = [0.1, 0.2]
+    thresholds = (0.1, 0.2)
 
 
 class FitnessTester(unittest.TestCase):
@@ -45,7 +45,7 @@ class FitnessTester(unittest.TestCase):
         """Test the :meth:`~culebra.abc.Fitness.__init__` constructor."""
         # Try the base Fitness
         fitness = Fitness()
-        self.assertEqual(fitness.values, ())
+        self.assertEqual(fitness.values, None)
         self.assertEqual(fitness.weights, ())
         self.assertEqual(fitness.names, ())
         self.assertEqual(fitness.thresholds, ())
@@ -58,7 +58,7 @@ class FitnessTester(unittest.TestCase):
 
         # Check default values
         fitness = MyFitness()
-        self.assertEqual(fitness.values, (None,) * fitness.num_obj)
+        self.assertEqual(fitness.values, None)
         self.assertEqual(fitness.weights, MyFitness.weights)
         self.assertEqual(fitness.names, MyFitness.names)
         self.assertEqual(fitness.thresholds, MyFitness.thresholds)
@@ -76,19 +76,20 @@ class FitnessTester(unittest.TestCase):
     def test_values(self):
         """Test :meth:~culebra.abc.Fitness.values`."""
         fitness = MyFitness()
-        self.assertEqual(fitness.values, (None,) * fitness.num_obj)
+        self.assertEqual(fitness.values, None)
 
         values = (2, 3)
         fitness.values = values
         self.assertEqual(fitness.values, values)
 
         del fitness.values
+        self.assertEqual(fitness.values, None)
 
     def test_vwalues(self):
         """Test :meth:~culebra.abc.Fitness.wvalues`."""
         # Check default objective names
         fitness = MyFitness()
-        self.assertEqual(fitness.wvalues, (None, None))
+        self.assertEqual(fitness.wvalues, None)
 
         values = (2, 3)
         fitness.values = values
@@ -100,30 +101,6 @@ class FitnessTester(unittest.TestCase):
         """Test the :attr:`~culebra.abc.Fitness.num_obj` property."""
         fitness = MyFitness()
         self.assertEqual(fitness.num_obj, 2)
-
-    def test_update_value(self):
-        """Test the update_value method."""
-        # Construct a fitness
-        fitness = MyFitness()
-
-        # Try to update objectives with an invalid index, should fail ...
-        with self.assertRaises(TypeError):
-            fitness.update_value(4, 'a')
-        with self.assertRaises(ValueError):
-            fitness.update_value(4, -1)
-        with self.assertRaises(ValueError):
-            fitness.update_value(4, 2)
-
-        # Try to update an objective with an invalid value, should fail ...
-        with self.assertRaises(TypeError):
-            fitness.update_value('a', 0)
-
-        # Try several updates
-        times = 10
-        for i in range(times):
-            for obj_index in range(fitness.num_obj):
-                fitness.update_value(i, obj_index)
-                self.assertEqual(fitness.values[obj_index], i)
 
     def test_dominates(self):
         """Test the :meth:`~culebra.abc.Fitness.dominates` method."""
@@ -570,7 +547,6 @@ class FitnessTester(unittest.TestCase):
         """
         # Copies all the levels
         self.assertNotEqual(id(fitness1), id(fitness2))
-        self.assertNotEqual(id(fitness1._values), id(fitness2._values))
         self.assertEqual(fitness1.values, fitness2.values)
 
 

@@ -34,16 +34,19 @@ from abc import abstractmethod
 from collections.abc import Sequence
 from copy import deepcopy
 
+import secrets
 from sklearn.base import ClassifierMixin
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 from sklearn.metrics import make_scorer
 
-from culebra.abc import Fitness, Solution
-from culebra.checker import check_int, check_instance
+from culebra.abc import Solution
+from culebra.checker import check_int, check_instance, check_bool
 from culebra.fitness_func.abc import SingleObjectiveFitnessFunction
-from culebra.fitness_func.dataset_score import DEFAULT_CV_FOLDS
-
+from culebra.fitness_func.dataset_score import (
+    DEFAULT_CV_NUM_FOLDS,
+    DEFAULT_CV_FIXED_FOLDS
+)
 from culebra.tools import Dataset
 
 __author__ = 'Jesús González'
@@ -62,7 +65,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         self,
         training_data: Dataset,
         test_data: Dataset | None = None,
-        cv_folds: int | None = None,
+        cv_num_folds: int | None = None,
+        cv_fixed_folds: bool | None = None,
         index: int | None = None
     ) -> None:
         """Construct the fitness function.
@@ -74,29 +78,46 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         :type training_data: ~culebra.tools.Dataset
         :param test_data: The test dataset, defaults to :data:`None`
         :type test_data: ~culebra.tools.Dataset
-        :param cv_folds: The number of folds for *k*-fold cross-validation.
+        :param cv_num_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
-            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_folds`
+            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_num_folds`
             is used. Defaults to :data:`None`
-        :type cv_folds: int
+        :type cv_num_folds: int
+        :param cv_fixed_folds: If :data:`True`, the same folds are used across
+            all evaluations, ensuring deterministic results. If :data:`False`,
+            new folds are generated randomly for each evaluation, introducing
+            variability in the results. If omitted,
+            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_fixed_folds`
+            is used. Defaults to :data:`None`
+        :type cv_fixed_folds: bool
         :param index: Index of this objective when it is used for
             multi-objective fitness functions
         :type index: int
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
-        :raises TypeError: If *cv_folds* is not an integer value
-        :raises ValueError: If *cv_folds* is not positive
+        :raises TypeError: If *cv_num_folds* is not an integer value
+        :raises ValueError: If *cv_num_folds* is not positive
+        :raises TypeError: If *cv_fixed_folds* is not boolean
         :raises TypeError: If *index* is not an integer number
         :raises ValueError: If *index* is not positive
         """
         # Init the superclass
         super().__init__(index)
 
+        # The cv_splitter can't be created until
+        # cv_num_folds and cv_fixed_folds are defined
+        # _init_complete become True when both are ready
+        self._init_complete = False
+
         # Set the attributes to default values
         self.training_data = training_data
         self.test_data = test_data
-        self.cv_folds = cv_folds
+        self.cv_num_folds = cv_num_folds
+        self.cv_fixed_folds = cv_fixed_folds
+
+        self._init_complete = True
+        self._reset_cv_splitter()
 
     @property
     def training_data(self) -> Dataset:
@@ -150,50 +171,123 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         )
 
     @property
-    def _default_cv_folds(self) -> int:
+    def _default_cv_num_folds(self) -> int:
         """Default number of folds for cross-validation.
 
         :return:
-            :attr:`~culebra.fitness_func.dataset_score.DEFAULT_CV_FOLDS`
+            :attr:`~culebra.fitness_func.dataset_score.DEFAULT_CV_NUM_FOLDS`
         :rtype: int
         """
-        return DEFAULT_CV_FOLDS
+        return DEFAULT_CV_NUM_FOLDS
 
     @property
-    def cv_folds(self) -> int:
+    def cv_num_folds(self) -> int:
         """Number of cross-validation folds.
 
         :rtype: int
 
         :setter: Set a new value for the number of cross-validation folds
         :param value: A positive integer value. If set to :data:`None`,
-            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_folds`
+            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_num_folds`
             is assumed
         :type value: int
         :raises TypeError: If *value* is not an integer value
         :raises ValueError: If *value* is not positive
         """
         return (
-            self._default_cv_folds
-            if self._cv_folds is None
-            else self._cv_folds
+            self._default_cv_num_folds
+            if self._cv_num_folds is None
+            else self._cv_num_folds
         )
 
-    @cv_folds.setter
-    def cv_folds(self, value: int | None) -> None:
+    @cv_num_folds.setter
+    def cv_num_folds(self, value: int | None) -> None:
         """Set a value for the number of cross-validation folds.
 
         :param value: A positive integer value. If set to :data:`None`,
-            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_folds`
+            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_num_folds`
             is assumed
         :type value: int
         :raises TypeError: If *value* is not an integer value
         :raises ValueError: If *value* is not positive
         """
-        self._cv_folds = (
+        self._cv_num_folds = (
             None if value is None else check_int(
                 value, "number of cross-validation folds", gt=0
             )
+        )
+        self._reset_cv_splitter()
+
+    @property
+    def _default_cv_fixed_folds(self) -> bool:
+        """Default value for the fixed folds flag.
+
+        :return:
+            :attr:`~culebra.fitness_func.dataset_score.DEFAULT_CV_FIXED_FOLDS`
+        :rtype: bool
+        """
+        return DEFAULT_CV_FIXED_FOLDS
+
+    @property
+    def cv_fixed_folds(self) -> bool:
+        """Whether the folds are fixed or not across evaluations.
+
+        :rtype: bool
+
+        :setter: Set a new value for the fixed folds flag. If set to
+            :data:`None`,
+            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_fixed_folds`
+            is assumed
+        :type value: bool
+        :raises TypeError: If *value* is not boolean
+        """
+        return (
+            self._default_cv_fixed_folds
+            if self._cv_fixed_folds is None
+            else self._cv_fixed_folds
+        )
+
+    @cv_fixed_folds.setter
+    def cv_fixed_folds(self, value: bool | None) -> None:
+        """Set the fixed folds flag.
+
+        :param value: :data:`True` to keep the folds fixed across evaluations.
+            If set to :data:`None`,
+            :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer._default_cv_fixed_folds`
+            is assumed
+        :type value: bool
+        :raises TypeError: If *value* is not boolean
+        """
+        self._cv_fixed_folds = (
+            None if value is None else check_bool(value, "cv_fixed_folds")
+        )
+        self._reset_cv_splitter()
+
+    @property
+    def cv_splitter(self) -> StratifiedKFold:
+        """Return the dataset splitter.
+        
+        :rtype: ~sklearn.model_selection.StratifiedKFold
+        """
+        return self._cv_splitter
+
+    def _reset_cv_splitter(self) -> None:
+        """Reset the dataset splitter."""
+        # The cv_splitter can't be created until
+        # cv_num_folds and cv_fixed_folds are defined
+        # _init_complete become True when both are ready
+        if not self._init_complete:
+            return
+
+        if self.cv_fixed_folds is True:
+            random_seed = secrets.randbits(32)
+        else:
+            random_seed = None
+
+        self._cv_splitter = StratifiedKFold(
+            n_splits=self.cv_num_folds,
+            shuffle=True,
+            random_state=random_seed
         )
 
     @property
@@ -248,8 +342,10 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         sol: Solution,
         training_data: Dataset,
         test_data: Dataset
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         This method must be overridden by subclasses to return a correct
         value.
@@ -260,8 +356,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         :type training_data: ~culebra.tools.Dataset
         :param test_data: The test dataset
         :type test_data: ~culebra.tools.Dataset
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
@@ -273,12 +369,14 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         self,
         sol: Solution,
         training_data: Dataset,
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
 
         A *k*-fold cross-validation is applied using the *training_data* with
-        :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_folds`
+        :attr:`~culebra.fitness_func.dataset_score.abc.DatasetScorer.cv_num_folds`
         folds.
+
+        Neither the solution nor its fitness should be modified.
 
         This method must be overridden by subclasses to return a correct
         value.
@@ -287,8 +385,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         :type sol: ~culebra.abc.Solution
         :param training_data: The training dataset
         :type training_data: ~culebra.tools.Dataset
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises NotImplementedError: If has not been overridden
         """
         raise NotImplementedError(
@@ -300,8 +398,10 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
         sol: Solution,
         index: int | None = None,
         cooperators: Sequence[Solution | None] | None = None
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.abc.Solution
@@ -313,8 +413,8 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
             used by cooperative problems
         :type cooperators:
             ~collections.abc.Sequence[~culebra.abc.Solution]
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         :raises ValueError: If *sol* is not evaluable
         """
         if not self.is_evaluable(sol):
@@ -390,7 +490,8 @@ class ClassificationScorer(DatasetScorer):
         self,
         training_data: Dataset,
         test_data: Dataset | None = None,
-        cv_folds: int | None = None,
+        cv_num_folds: int | None = None,
+        cv_fixed_folds: bool | None = None,
         classifier: ClassifierMixin | None = None,
         index: int | None = None
     ) -> None:
@@ -403,11 +504,18 @@ class ClassificationScorer(DatasetScorer):
         :type training_data: ~culebra.tools.Dataset
         :param test_data: The test dataset, defaults to :data:`None`
         :type test_data: ~culebra.tools.Dataset
-        :param cv_folds: The number of folds for *k*-fold cross-validation.
+        :param cv_num_folds: The number of folds for *k*-fold cross-validation.
             If omitted,
-            :attr:`~culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_cv_folds`
+            :attr:`~culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_cv_num_folds`
             is used. Defaults to :data:`None`
-        :type cv_folds: int
+        :type cv_num_folds: int
+        :param cv_fixed_folds: If :data:`True`, the same folds are used across
+            all evaluations, ensuring deterministic results. If :data:`False`,
+            new folds are generated randomly for each evaluation, introducing
+            variability in the results. If omitted,
+            :attr:`~culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_cv_fixed_folds`
+            is used. Defaults to :data:`None`
+        :type cv_fixed_folds: bool
         :param classifier: The classifier. If omitted,
             :attr:`~culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_classifier`
             will be used. Defaults to :data:`None`
@@ -418,8 +526,9 @@ class ClassificationScorer(DatasetScorer):
         :raises RuntimeError: If the number of objectives is not 1
         :raises TypeError: If *training_data* or *test_data* is an invalid
             dataset
-        :raises TypeError: If *cv_folds* is not an integer value
-        :raises ValueError: If *cv_folds* is not positive
+        :raises TypeError: If *cv_num_folds* is not an integer value
+        :raises ValueError: If *cv_num_folds* is not positive
+        :raises TypeError: If *cv_fixed_folds* is not boolean
         :raises TypeError: If *classifier* is not a valid classifier
         :raises TypeError: If *index* is not an integer number
         :raises ValueError: If *index* is not positive
@@ -428,7 +537,8 @@ class ClassificationScorer(DatasetScorer):
         super().__init__(
             training_data,
             test_data,
-            cv_folds,
+            cv_num_folds,
+            cv_fixed_folds,
             index
         )
         self.classifier = classifier
@@ -477,8 +587,10 @@ class ClassificationScorer(DatasetScorer):
         sol: Solution,
         training_data: Dataset,
         test_data: Dataset
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
+
+        Neither the solution nor its fitness should be modified.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.abc.Solution
@@ -486,49 +598,45 @@ class ClassificationScorer(DatasetScorer):
         :type training_data: ~culebra.tools.Dataset
         :param test_data: The test dataset
         :type test_data: ~culebra.tools.Dataset
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         """
         outputs_pred = self.classifier.fit(
             training_data.inputs,
             training_data.outputs
         ).predict(test_data.inputs)
 
-        sol.fitness.update_value(
-            type(self)._score(test_data.outputs, outputs_pred),
-            self.index
-        )
-
-        return sol.fitness
+        return (type(self)._score(test_data.outputs, outputs_pred),)
 
     def _evaluate_kfcv(
         self,
         sol: Solution,
         training_data: Dataset,
-    ) -> Fitness:
+    ) -> tuple[float, ...]:
         """Evaluate a solution.
 
+        Neither the solution nor its fitness should be modified.
+
         A *k*-fold cross-validation is applied using the *training_data* with
-        :attr:`~culebra.fitness_func.dataset_score.abc.ClassificationScorer.cv_folds`
+        :attr:`~culebra.fitness_func.dataset_score.abc.ClassificationScorer.cv_num_folds`
         folds.
 
         :param sol: Solution to be evaluated.
         :type sol: ~culebra.abc.Solution
         :param training_data: The training dataset
         :type training_data: ~culebra.tools.Dataset
-        :return: The fitness for *sol*
-        :rtype: ~culebra.abc.Fitness
+        :return: The fitness values for *sol*
+        :rtype: tuple[float, ...]
         """
         scores = cross_val_score(
             self.classifier,
             training_data.inputs,
             training_data.outputs,
-            cv=StratifiedKFold(n_splits=self.cv_folds),
+            cv=self.cv_splitter,
             scoring=make_scorer(self.__class__._score)
         )
-        sol.fitness.update_value(scores.mean(), self.index)
 
-        return sol.fitness
+        return(scores.mean(),)
 
 
 # Exported symbols for this module

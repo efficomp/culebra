@@ -46,3 +46,7 @@ Methods
 .. automethod:: culebra.fitness_func.cooperative.FSSVCScorer.construct_solutions
 .. automethod:: culebra.fitness_func.cooperative.FSSVCScorer.dump
 .. automethod:: culebra.fitness_func.cooperative.FSSVCScorer.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.cooperative.FSSVCScorer._get_repr_properties

@@ -37,6 +37,7 @@ Properties
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.obj_names
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.obj_thresholds
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.obj_weights
+.. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.objectives
 
 Private properties
 ------------------
@@ -46,3 +47,7 @@ Methods
 -------
 .. automethod:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.dump
 .. automethod:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.evaluate
+
+Private methods
+---------------
+.. automethod:: culebra.fitness_func.tsp.abc.TSPFitnessFunction._get_repr_properties

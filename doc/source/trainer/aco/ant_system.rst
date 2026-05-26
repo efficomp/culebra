@@ -117,6 +117,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.AntSystem._generate_cooperators
 .. automethod:: culebra.trainer.aco.AntSystem._get_iteration_metrics
 .. automethod:: culebra.trainer.aco.AntSystem._get_objective_stats
+.. automethod:: culebra.trainer.aco.AntSystem._get_repr_properties
 .. automethod:: culebra.trainer.aco.AntSystem._get_state
 .. automethod:: culebra.trainer.aco.AntSystem._increase_pheromone
 .. automethod:: culebra.trainer.aco.AntSystem._init_internals

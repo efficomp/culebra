@@ -27,7 +27,10 @@ from os import remove
 from copy import copy, deepcopy
 
 from culebra import DEFAULT_SIMILARITY_THRESHOLD, SERIALIZED_FILE_EXTENSION
-from culebra.fitness_func.dataset_score import DEFAULT_CV_FOLDS
+from culebra.fitness_func.dataset_score import (
+    DEFAULT_CV_NUM_FOLDS,
+    DEFAULT_CV_FIXED_FOLDS
+    )
 from culebra.fitness_func.dataset_score.abc import DatasetScorer
 
 from culebra.solution.feature_selection import (
@@ -59,13 +62,11 @@ class MyDatasetScorer(DatasetScorer):
 
     def _evaluate_train_test(self, sol, training_data, test_data):
         """Evaluate with a training and test datasets."""
-        sol.fitness.update_value(1, self.index)
-        return sol.fitness
+        return (1,)
 
     def _evaluate_kfcv(self, sol, training_data):
         """Perform a k-fold cross-validation."""
-        sol.fitness.update_value(3, self.index)
-        return sol.fitness
+        return (3,)
 
     def is_evaluable(self, sol):
         """Return True if the solution is evaluable."""
@@ -89,11 +90,13 @@ class DatasetScorerTester(unittest.TestCase):
             (func.training_data.outputs == training_data.outputs).all()
         )
         self.assertEqual(func.test_data, None)
-        self.assertEqual(func.cv_folds, DEFAULT_CV_FOLDS)
+        self.assertEqual(func.cv_num_folds, DEFAULT_CV_NUM_FOLDS)
+        self.assertEqual(func.cv_fixed_folds, DEFAULT_CV_FIXED_FOLDS)
         self.assertEqual(func.index, 0)
         self.assertEqual(
-            func.obj_thresholds, [DEFAULT_SIMILARITY_THRESHOLD]
+            func.obj_thresholds, (DEFAULT_SIMILARITY_THRESHOLD,)
         )
+        self.assertIsNotNone(func.cv_splitter)
 
         # Try an invalid training dataset, should fail
         with self.assertRaises(TypeError):
@@ -114,30 +117,47 @@ class DatasetScorerTester(unittest.TestCase):
                 test_data='a'
                 )
 
-        # Try a valid value for cv_folds
-        valid_cv_folds = 10
+        # Try a valid value for cv_num_folds
+        valid_cv_num_folds = 10
         func = MyDatasetScorer(
             training_data=training_data,
-            cv_folds=valid_cv_folds
+            cv_num_folds=valid_cv_num_folds
         )
-        self.assertEqual(func.cv_folds, valid_cv_folds)
+        self.assertEqual(func.cv_num_folds, valid_cv_num_folds)
 
-        # Try a invalid types for cv_folds. Should fail
-        invalid_cv_folds_types = ('a', 1.1)
-        for invalid_type in invalid_cv_folds_types:
+        # Try a invalid types for cv_num_folds. Should fail
+        invalid_cv_num_folds_types = ('a', 1.1)
+        for invalid_type in invalid_cv_num_folds_types:
             with self.assertRaises(TypeError):
                 MyDatasetScorer(
                     training_data=training_data,
-                    cv_folds=invalid_type
+                    cv_num_folds=invalid_type
                 )
 
-        # Try invalid values for cv_folds. Should fail
-        invalid_cv_folds_values = (-3, 0)
-        for invalid_value in invalid_cv_folds_values:
+        # Try invalid values for cv_num_folds. Should fail
+        invalid_cv_num_folds_values = (-3, 0)
+        for invalid_value in invalid_cv_num_folds_values:
             with self.assertRaises(ValueError):
                 MyDatasetScorer(
                     training_data=training_data,
-                    cv_folds=invalid_value
+                    cv_num_folds=invalid_value
+                )
+
+        # Try a valid value for cv_fixed_folds
+        valid_cv_fixed_folds = True
+        func = MyDatasetScorer(
+            training_data=training_data,
+            cv_fixed_folds=valid_cv_fixed_folds
+        )
+        self.assertEqual(func.cv_fixed_folds, valid_cv_fixed_folds)
+
+        # Try invalid types for cv_fixed_folds. Should fail
+        invalid_cv_fixed_folds_types = ('a', 1.1)
+        for invalid_type in invalid_cv_fixed_folds_types:
+            with self.assertRaises(TypeError):
+                MyDatasetScorer(
+                    training_data=training_data,
+                    cv_fixed_folds=invalid_type
                 )
 
         # Check a valid index
@@ -147,6 +167,23 @@ class DatasetScorerTester(unittest.TestCase):
             index=valid_index
         )
         self.assertEqual(func.index, valid_index)
+
+    def test_cv_splitter(self):
+        """Test the cv_splitter property."""
+        training_data, _ = dataset.split(0.3)
+        func = MyDatasetScorer(training_data)
+
+        # Get the splitter
+        cv_splitter = func.cv_splitter
+
+        # Change the number of folds. The splitter should be reset
+        func.cv_num_folds = 12
+        self.assertNotEqual(func.cv_splitter, cv_splitter)
+        cv_splitter = func.cv_splitter
+
+        # Let the folds become not fixed
+        func.cv_fixed_folds = False
+        self.assertNotEqual(func.cv_splitter, cv_splitter)
 
     def test_final_training_test_data(self):
         """Test the generation of final training and test data."""
@@ -187,16 +224,11 @@ class DatasetScorerTester(unittest.TestCase):
 
         func = MyDatasetScorer(training_data, test_data)
         sol = FSSolution(species, func.fitness_cls, features=selected_feats)
-        fit_values = func.evaluate(sol).values
-        self.assertEqual(sol.fitness.values, (1, ))
-        self.assertEqual(fit_values, sol.fitness.values)
-
+        self.assertEqual(func.evaluate(sol), (1, ))
         del sol.fitness.values
 
         func = MyDatasetScorer(training_data)
-        fit_values = func.evaluate(sol).values
-        self.assertEqual(sol.fitness.values, (3, ))
-        self.assertEqual(fit_values, sol.fitness.values)
+        self.assertEqual(func.evaluate(sol), (3, ))
 
     def test_copy(self):
         """Test the __copy__ method."""

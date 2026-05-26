@@ -34,6 +34,10 @@ Methods
 .. automethod:: culebra.tools.Results.dump
 .. automethod:: culebra.tools.Results.to_excel
 
+Private methods
+---------------
+.. automethod:: culebra.tools.Results._get_repr_properties
+
 Dunder methods
 --------------
 .. automethod:: culebra.tools.Results.__setitem__

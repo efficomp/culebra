@@ -47,3 +47,7 @@ Methods
 .. automethod:: culebra.tools.Dataset.scale
 .. automethod:: culebra.tools.Dataset.select_features
 .. automethod:: culebra.tools.Dataset.split
+
+Private methods
+---------------
+.. automethod:: culebra.tools.Dataset._get_repr_properties

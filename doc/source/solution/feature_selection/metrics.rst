@@ -29,3 +29,7 @@ Static methods
 
 .. automethod:: culebra.solution.feature_selection.Metrics.rank
 .. automethod:: culebra.solution.feature_selection.Metrics.relevance
+
+Private methods
+---------------
+.. automethod:: culebra.solution.feature_selection.Metrics._get_repr_properties
