@@ -226,6 +226,35 @@ class Dataset(Base):
             raise RuntimeError(str(e)) from e
 
         return dataset
+    
+    def save(
+        self,
+        filename: FilePath,
+        sep: str = DEFAULT_SEP
+    ) -> None:
+        """Save the dataset.
+        
+        :param filename: Destination file name
+        :type filename: ~os.PathLike[str]
+        :param sep: Column separator used within the files. Defaults to
+            :attr:`~culebra.tools.DEFAULT_SEP`
+        :type sep: str        
+        """
+        # Fallback if a regex-style whitespace separator is passed
+        if sep == DEFAULT_SEP:
+            sep = " "
+    
+        # Stack inputs and outputs horizontally (outputs becomes the last
+        # column)
+        # We cast to 'object' type so outputs preserve their native types
+        combined_data = np.column_stack(
+            (self.inputs, self.outputs.astype(object))
+        )
+    
+        # 3. Save to a plain text file
+        # fmt="%s" will now call the string representation of each native type,
+        # preventing integers (like 1) from being written as floats (like 1.0)
+        np.savetxt(filename, combined_data, delimiter=sep, fmt="%s")
 
     def normalize(self) -> Dataset:
         """Normalize the dataset between 0 and 1.

@@ -154,6 +154,17 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(dataset.num_feats, WINE_NUM_FEATS)
         self.assertEqual(dataset.size, WINE_SIZE)
 
+    def test_save(self):
+        """Test the save method."""
+        dataset = Dataset.load_from_uci(name=WINE_NAME)
+        filename = "data_copy.dat"
+        output_index = -1
+        dataset.save(filename)
+        dataset_copy = Dataset(filename, output_index=output_index)
+        self.assertTrue((dataset.inputs == dataset_copy.inputs).all())
+        self.assertTrue((dataset.outputs == dataset_copy.outputs).all())
+        remove(filename)
+
     def test_normalize(self):
         """Test the normalization method."""
         # Load the data
