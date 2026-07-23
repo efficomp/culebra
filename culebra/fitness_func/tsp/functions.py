@@ -242,7 +242,7 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
                 current_heuristic[current_path] = 0
                 current_node = np.argwhere(
                     current_heuristic == np.max(current_heuristic)
-                ).flatten()[0]
+                ).ravel()[0]
                 current_path.append(current_node)
 
         # Construct the solution form the greedy path

@@ -143,7 +143,7 @@ class MyTrainer(SequentialDistributedTrainer, IslandsTrainer):
 
 
 # Dataset
-dataset = Dataset.load_from_uci(name="Wine")
+dataset = Dataset.from_uci(name="Wine")
 
 # Preprocess the dataset
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)

@@ -302,7 +302,7 @@ class Solution(BaseSolution):
         :rtype: str
         """
         if len(self.path) > 0:
-            offset = np.argwhere(self.path == np.min(self.path)).flatten()[0]
+            offset = np.argwhere(self.path == np.min(self.path)).ravel()[0]
             the_path = np.roll(self.path, -offset)
             if len(the_path) > 1 and the_path[-1] < the_path[1]:
                 the_path[1:] = np.flip(the_path[1:])

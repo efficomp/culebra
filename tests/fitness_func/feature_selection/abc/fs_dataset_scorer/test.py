@@ -38,7 +38,7 @@ from culebra.solution.feature_selection import (
 from culebra.tools import Dataset
 
 # Dataset
-dataset = Dataset.load_from_uci(name="Wine")
+dataset = Dataset.from_uci(name="Wine")
 
 # Preprocess the dataset
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
@@ -131,7 +131,7 @@ class FSDatasetScorerTester(unittest.TestCase):
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
-        func = MyFSDatasetScorer(Dataset())
+        func = MyFSDatasetScorer(dataset)
         self.assertIsInstance(repr(func), str)
         self.assertIsInstance(str(func), str)
 

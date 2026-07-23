@@ -20,7 +20,7 @@
 # Innovación y Universidades" and by the European Regional Development Fund
 # (ERDF).
 
-"""Usage example of the the Elitist ACO-FS wrapper."""
+"""Usage example of the Elitist ACO-FS wrapper."""
 
 from pandas import Series, DataFrame, MultiIndex
 
@@ -58,7 +58,7 @@ def KappaNumFeats(
 
 
 # Dataset
-dataset = Dataset.load_from_uci(name="Wine")
+dataset = Dataset.from_uci(name="Wine")
 
 # Preprocess the dataset
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)

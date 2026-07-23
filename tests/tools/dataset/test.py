@@ -26,13 +26,16 @@ import unittest
 from os import remove
 from copy import copy, deepcopy
 from collections import Counter
+from io import BytesIO
 
 import numpy as np
+from pandas import DataFrame, Series, concat
+import requests
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.tools import Dataset
 
-AUSTRALIAN_PATH = (
+AUSTRALIAN_SRC = (
     'https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/'
     'australian/australian.dat')
 """Path to the Australian dataset."""
@@ -46,121 +49,266 @@ AUSTRALIAN_SIZE = 690
 WINE_NAME = "wine"
 """Name of the Wine dataset in the UCI ML repo."""
 
+WINE_ID = 109
+"""Id of the Wine dataset in the UCI ML repo."""
+
 WINE_NUM_FEATS = 13
 """Number of features of the Wine dataset."""
 
 WINE_SIZE = 178
 """Number of samples of the Wine dataset."""
 
+YALE_FACE_SRC = (
+    "https://jundongl.github.io/scikit-feature/files/datasets/Yale.mat"
+)
+
+YALE_FACE_NUM_FEATS = 1024
+"""Number of features of the Yale Face dataset."""
+
+YALE_FACE_SIZE = 165
+"""Number of samples of the Yale Face dataset."""
+
 
 class DatasetTester(unittest.TestCase):
     """Test :class:`culebra.tools.Dataset`."""
 
     def test_init(self):
-        """Test the :meth:`~culebra.tools.Dataset.__init__` constructor."""
-        # Empty dataset
-        dataset = Dataset()
+        """Test the constructor."""
+        # Try invalid inputs. Should fail ...
+        with self.assertRaises(ValueError):
+            Dataset(max, [])
 
-        # Check that input features is an empty ndarray
-        self.assertIsInstance(dataset.inputs, np.ndarray)
-        self.assertEqual(dataset.inputs.shape[0], 0)
+        # Try invalid outputs. Should fail ...
+        with self.assertRaises(ValueError):
+            Dataset([], max)
 
-        # Check that outputs is an empty ndarray
-        self.assertIsInstance(dataset.outputs, np.ndarray)
-        self.assertEqual(dataset.outputs.shape[0], 0)
+        # Try empty inputs. Should fail ...
+        with self.assertRaises(ValueError):
+            Dataset([[]], [1])
 
-        # Check that num_feats and size are coherent
-        self.assertEqual(dataset.num_feats, 0)
-        self.assertEqual(dataset.size, 0)
+        # Try empty outputs. Should fail ...
+        with self.assertRaises(ValueError):
+            Dataset([[1]], [])
 
+        # Try inputs and outputs with different sizes. Should fail...
+        inputs = [[1, 2, 3], [2, 3, 4]]
+        outputs = [1, 2, 3]
+
+        with self.assertRaises(ValueError):
+            Dataset(inputs, outputs)
+
+        # Try a valid dataset
+        inputs = np.array([[1, 2, 3], [2, 3, 4]])
+        outputs = np.array([[1, 2], [3, 4]])
+
+        dataset = Dataset(inputs, outputs)
+
+        # Only the first column of outputs should be considered
+        self.assertTrue((dataset.inputs == inputs).all())
+        self.assertTrue((dataset.outputs == outputs[:,0]).all())
+
+    def test_categorical_to_numeric(self):
+        """Test the _categorical_to_numeric method."""
+        df = DataFrame(
+            [
+                [0, 2, None],
+                ['a', 2, 3],
+                [float('nan'), 2, 3],
+                ['a', 2, 3],
+                ['b', 2, 3],
+                [1, 2, 3],
+                ['b', 2, 3],
+                [None, 3, float('nan')]
+            ]
+        )
+
+        converted_df = DataFrame(
+            [
+                [0, 2, float('nan')],
+                [1, 2, 3],
+                [float('nan'), 2, 3],
+                [1, 2, 3],
+                [2, 2, 3],
+                [3, 2, 3],
+                [2, 2, 3],
+                [float('nan'), 3, float('nan')]
+            ]
+        )
+
+        self.assertTrue(
+            Dataset._categorical_to_numeric(df).equals(converted_df)
+        )
+
+    def test_separate_input_output(self):
+        """Test the _separate_input_output method."""
+        cols = [Series([1, 2]), Series([2, 3]), Series([3, 4])]
+
+        data = concat(cols, axis=1)
+
+        # Try an invalid output index
+        idx = 124
+        with self.assertRaises(ValueError):
+            Dataset._separate_input_output(data, idx)
+
+        for idx, col in enumerate(cols):
+            inputs, outputs = Dataset._separate_input_output(data, idx)
+
+            self.assertTrue(
+                (col == outputs.iloc[:, 0]).all()
+            )
+
+            inputs2 = concat(cols[:idx] + cols[idx + 1:], axis=1)
+            self.assertTrue(
+                (inputs.to_numpy() == inputs2.to_numpy()).all()
+            )
+
+    def test_text_to_dataframe(self):
+        """Test the _text_to_dataframe method."""
+        # Try an invalid separator. Should fail ...
+        with self.assertRaises(TypeError):
+            Dataset._text_to_dataframe("numeric_1.dat", sep=1)
+
+        # Try an empty dataset. Should fail ...
+        with self.assertRaises(RuntimeError):
+            Dataset._text_to_dataframe("empty.dat")
+
+        # Try an wrong file name. Should fail ...
+        with self.assertRaises(RuntimeError):
+            Dataset._text_to_dataframe("wrong.dat")
+
+    def test_from_text(self):
+        """Test the :meth:`~culebra.tools.Dataset.from_text` method."""
         # Try to load a mixed dataset with an invalid separator.
         # It should fail
         with self.assertRaises(TypeError):
-            Dataset("numeric_1.dat", output_index=0, sep=1)
+            Dataset.from_text("numeric_1.dat", output_index=0, sep=1)
 
         # Try to load a mixed empty dataset. It should fail
         with self.assertRaises(RuntimeError):
-            Dataset("empty.dat", output_index=0)
-
-        # Try to load a mixed dataset with missing data
-        dataset = Dataset("missing.dat", output_index=0)
+            Dataset.from_text("empty.dat", output_index=0)
 
         # Try to load a mixed dataset with non-numeric input data.
-        dataset = Dataset("non_numeric.dat", output_index=1)
+        dataset = Dataset.from_text("non_numeric.dat", output_index=1)
         self.assertEqual(dataset.inputs[0, 0], 0)
         self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
 
         # Try to load a mixed dataset with numeric labels.
-        dataset = Dataset("numeric_1.dat", output_index=0)
+        dataset = Dataset.from_text("numeric_1.dat", output_index=0)
         self.assertEqual(dataset.num_feats, 3)
         self.assertEqual(dataset.size, 10)
 
         # Try to load a mixed dataset with non-numeric labels.
-        dataset = Dataset("non_numeric.dat", output_index=0)
+        dataset = Dataset.from_text("non_numeric.dat", output_index=0)
         self.assertEqual(dataset.num_feats, 4)
         self.assertEqual(dataset.size, 10)
 
         # Try to load a mixed dataset from the Internet
-        dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
+        dataset = Dataset.from_text(AUSTRALIAN_SRC, output_index=-1)
         self.assertEqual(dataset.num_feats, AUSTRALIAN_NUM_FEATS)
         self.assertEqual(dataset.size, AUSTRALIAN_SIZE)
 
         # Try to load a dataset stored in one file, but without output_index.
         # It should fail
         with self.assertRaises(RuntimeError):
-            Dataset("numeric_1.dat")
+            Dataset.from_text("numeric_1.dat")
 
         # Try to load a split dataset with an invalid separator.
         # It should fail
         with self.assertRaises(TypeError):
-            Dataset("numeric_1.dat", "non_numeric.dat", sep=1)
+            Dataset.from_text("numeric_1.dat", "non_numeric.dat", sep=1)
 
         # Try to load a split dataset with an empty labels file. It should fail
         with self.assertRaises(RuntimeError):
-            Dataset("numeric_1.dat", "empty.dat")
+            Dataset.from_text("numeric_1.dat", "empty.dat")
 
         # Try to load a split dataset with an empty inputs file. It should fail
         with self.assertRaises(RuntimeError):
-            Dataset("empty.dat", "numeric_1.dat")
-
-        # Try to load a split dataset with missing input data. It should fail
-        with self.assertRaises(RuntimeError):
-            Dataset("missing.dat", "numeric_1.dat")
+            Dataset.from_text("empty.dat", "numeric_1.dat")
 
         # Try to load a split dataset with different number of inputs and
         # outputs. It should fail
         with self.assertRaises(RuntimeError):
-            Dataset("numeric_1.dat", "numeric_2.dat")
+            Dataset.from_text("numeric_1.dat", "numeric_2.dat")
 
         # Try to load a split dataset with non-numeric input data.
-        dataset = Dataset("non_numeric.dat", "numeric_1.dat")
+        dataset = Dataset.from_text("non_numeric.dat", "numeric_1.dat")
         self.assertEqual(dataset.inputs[0, 0], 0)
         self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
 
         # Try to a split dataset with numeric labels.
-        dataset = Dataset("numeric_1.dat", "numeric_1.dat")
+        dataset = Dataset.from_text("numeric_1.dat", "numeric_1.dat")
         self.assertEqual(dataset.num_feats, 4)
         self.assertEqual(dataset.size, 10)
 
         # Try to load a mixed dataset with non-numeric labels.
-        dataset = Dataset("numeric_1.dat", "non_numeric.dat")
+        dataset = Dataset.from_text("numeric_1.dat", "non_numeric.dat")
         self.assertEqual(dataset.num_feats, 4)
         self.assertEqual(dataset.size, 10)
 
-    def test_load_from_uci(self):
-        """Test the load_from_uci class method."""
-        # Dataset
-        dataset = Dataset.load_from_uci(name=WINE_NAME)
+    def test_from_uci(self):
+        """Test the from_uci class method."""
+        # Try an invalid name. Should fail...
+        with self.assertRaises(RuntimeError):
+            Dataset.from_uci(name="INVALID_NAME")
+
+        # Try an invalid id. Should fail...
+        with self.assertRaises(RuntimeError):
+            Dataset.from_uci(id_number=-123)
+
+        # Try with the dataset name
+        dataset = Dataset.from_uci(name=WINE_NAME)
         self.assertEqual(dataset.num_feats, WINE_NUM_FEATS)
         self.assertEqual(dataset.size, WINE_SIZE)
 
-    def test_save(self):
+        # Try with the dataset id
+        dataset = Dataset.from_uci(id_number=WINE_ID)
+        self.assertEqual(dataset.num_feats, WINE_NUM_FEATS)
+        self.assertEqual(dataset.size, WINE_SIZE)
+
+    def test_from_mat(self):
+        """Test the from_mat class method."""
+        # Try a wrong URL. Should fail ...
+        wrong_url = "https://bad.server/bad_file.mat"
+        with self.assertRaises(ValueError):
+            Dataset.from_mat(wrong_url)
+
+        # Try a wrong file path. Should fail ...
+        wrong_filepath = "wrong.dat"
+        with self.assertRaises(ValueError):
+            Dataset.from_mat(wrong_filepath)
+
+        # Try an invalid file. Should fail ...
+        invalid_filepath = "numeric_1.dat"
+        with self.assertRaises(ValueError):
+            Dataset.from_mat(invalid_filepath)
+
+        # Try a valid url
+        dataset = Dataset.from_mat(YALE_FACE_SRC)
+        self.assertEqual(dataset.num_feats, YALE_FACE_NUM_FEATS)
+        self.assertEqual(dataset.size, YALE_FACE_SIZE)
+
+        # Try a BytesIO
+        dataset = Dataset.from_mat(
+            BytesIO(requests.get(YALE_FACE_SRC, timeout=(3.05, 10)).content)
+        )
+        self.assertEqual(dataset.num_feats, YALE_FACE_NUM_FEATS)
+        self.assertEqual(dataset.size, YALE_FACE_SIZE)
+
+        # Try an invalid inputs key. Should fail ...
+        with self.assertRaises(ValueError):
+            Dataset.from_mat(YALE_FACE_SRC, inputs_key="BAD")
+
+        # Try an invalid oututs key. Should fail ...
+        with self.assertRaises(ValueError):
+            Dataset.from_mat(YALE_FACE_SRC, outputs_key="BAD")
+
+    def test_to_text(self):
         """Test the save method."""
-        dataset = Dataset.load_from_uci(name=WINE_NAME)
+        dataset = Dataset.from_uci(name=WINE_NAME)
         filename = "data_copy.dat"
         output_index = -1
-        dataset.save(filename)
-        dataset_copy = Dataset(filename, output_index=output_index)
+        dataset.to_text(filename)
+        dataset_copy = Dataset.from_text(filename, output_index=output_index)
         self.assertTrue((dataset.inputs == dataset_copy.inputs).all())
         self.assertTrue((dataset.outputs == dataset_copy.outputs).all())
         remove(filename)
@@ -168,7 +316,7 @@ class DatasetTester(unittest.TestCase):
     def test_normalize(self):
         """Test the normalization method."""
         # Load the data
-        dataset = Dataset(AUSTRALIAN_PATH, output_index=-1)
+        dataset = Dataset.from_text(AUSTRALIAN_SRC, output_index=-1)
         normalized = dataset.normalize()
 
         # Check that the minimum value for each feature is zero
@@ -187,8 +335,7 @@ class DatasetTester(unittest.TestCase):
         size = 100
 
         # Create a dataset with similar samples, there isn't any outlier
-        dataset = Dataset()
-        dataset._inputs = np.concatenate(
+        inputs = np.concatenate(
             (
                 np.random.random_sample(
                     (size//2, num_feats)
@@ -198,10 +345,10 @@ class DatasetTester(unittest.TestCase):
                 ) * 0.001 + 10
             )
         )
-
-        dataset._outputs = np.asarray(
+        outputs = np.asarray(
             [0] * (size//2) + [10] * (size//2)
         )
+        dataset = Dataset(inputs, outputs)
 
         # Try scale
         scaled = dataset.scale()
@@ -211,7 +358,7 @@ class DatasetTester(unittest.TestCase):
         self.assertAlmostEqual(np.max(scaled.inputs), 0.5, places=1)
 
         # Insert outliers
-        dataset._inputs = np.concatenate(
+        inputs = np.concatenate(
             (
                 [[-1000] * num_feats],
                 np.concatenate(
@@ -223,7 +370,7 @@ class DatasetTester(unittest.TestCase):
                 [[1000] * num_feats]
             )
         )
-        dataset._outputs = np.concatenate(
+        outputs = np.concatenate(
             (
                 [[-1000]],
                 np.concatenate(
@@ -235,23 +382,37 @@ class DatasetTester(unittest.TestCase):
                 [[1000]]
             )
         )
+        dataset = Dataset(inputs, outputs)
 
         # Try scale again
         scaled = dataset.scale()
 
         # Remove the outliers
-        scaled._inputs = np.delete(scaled._inputs, (0), axis=0)
-        scaled._inputs = np.delete(scaled._inputs, (size), axis=0)
-        scaled._outputs = np.delete(scaled._outputs, (0), axis=0)
-        scaled._outputs = np.delete(scaled._outputs, (size), axis=0)
+        scaled_inputs = scaled.inputs
+        scaled_inputs = np.delete(scaled_inputs, (0), axis=0)
+        scaled_inputs = np.delete(scaled_inputs, (size), axis=0)
 
         # The scale should be the same than without outliers
-        self.assertAlmostEqual(np.min(scaled.inputs), -0.5, places=1)
-        self.assertAlmostEqual(np.max(scaled.inputs), 0.5, places=1)
+        self.assertAlmostEqual(np.min(scaled_inputs), -0.5, places=1)
+        self.assertAlmostEqual(np.max(scaled_inputs), 0.5, places=1)
 
     def test_drop_missing(self):
         """Test the mising values removal method."""
-        dataset = Dataset("missing.dat", output_index=-1)
+        inputs = DataFrame(
+            [
+                [0, 2, None],
+                [1, 2, 3],
+                [1, 2, 3],
+                [2, 2, 3],
+                [1, 2, 3],
+                [1, 2, 3],
+                [3, 2, 3],
+                [0, 3, float('nan')]
+            ]
+        )
+        outputs = DataFrame([1, 2, 3, None, 5, 6, 7, 8])
+
+        dataset = Dataset(inputs, outputs)
 
         self.assertTrue(np.isnan(dataset.inputs).any())
         self.assertTrue(np.isnan(dataset.outputs).any())
@@ -267,8 +428,7 @@ class DatasetTester(unittest.TestCase):
         size = 100
 
         # Create a dataset with similar samples, there isn't any outlier
-        dataset = Dataset()
-        dataset._inputs = np.concatenate(
+        inputs = np.concatenate(
             (
                 np.ones(
                     (int(size/2), num_feats)
@@ -279,42 +439,44 @@ class DatasetTester(unittest.TestCase):
             )
         )
 
-        dataset._outputs = np.asarray(
+        outputs = np.asarray(
             [1] * (size//2) + [10] * (size//2)
         )
+        dataset = Dataset(inputs, outputs)
 
         # Try to remove the outliers
         clean_data = dataset.remove_outliers()
 
         # Check that all the samples remain
         self.assertEqual(clean_data.size, size)
-        self.assertEqual(clean_data._inputs.shape[0], size)
-        self.assertEqual(clean_data._outputs.shape[0], size)
+        self.assertEqual(clean_data.inputs.shape[0], size)
+        self.assertEqual(clean_data.outputs.shape[0], size)
 
         # Insert outliers
-        dataset._inputs = np.concatenate(
-            ([[-100] * num_feats], dataset._inputs, [[100] * num_feats])
+        inputs = np.concatenate(
+            ([[-100] * num_feats], dataset.inputs, [[100] * num_feats])
         )
-        dataset._outputs = np.concatenate(
-            ([1], dataset._outputs, [10])
+        outputs = np.concatenate(
+            ([1], dataset.outputs, [10])
         )
+        dataset = Dataset(inputs, outputs)
 
         # Check that the size has increased
         self.assertEqual(dataset.size, size + 2)
-        self.assertEqual(dataset._inputs.shape[0], size + 2)
-        self.assertEqual(dataset._outputs.shape[0], size + 2)
+        self.assertEqual(dataset.inputs.shape[0], size + 2)
+        self.assertEqual(dataset.outputs.shape[0], size + 2)
 
         # Try to remove the outliers again
         clean_data = dataset.remove_outliers()
 
         # The outlier should have dissapeared
         self.assertEqual(clean_data.size, size)
-        self.assertEqual(clean_data._inputs.shape[0], size)
-        self.assertEqual(clean_data._outputs.shape[0], size)
+        self.assertEqual(clean_data.inputs.shape[0], size)
+        self.assertEqual(clean_data.outputs.shape[0], size)
 
     def test_oversample(self):
         """Test the :meth:`~culebra.tools.Dataset.oversample` method."""
-        dataset1 = Dataset("numeric_1.dat", output_index=0)
+        dataset1 = Dataset.from_text("numeric_1.dat", output_index=0)
         samples_per_class_dataset1 = Counter(dataset1.outputs)
         samples_majority_class = max(samples_per_class_dataset1.values())
         dataset2 = dataset1.oversample()
@@ -328,7 +490,7 @@ class DatasetTester(unittest.TestCase):
 
     def test_select_features(self):
         """Test the select_features method."""
-        dataset = Dataset("numeric_1.dat", output_index=0)
+        dataset = Dataset.from_text("numeric_1.dat", output_index=0)
 
         # Try a valid sequence of feature indices
         valid_feats = [0, 2]
@@ -351,7 +513,7 @@ class DatasetTester(unittest.TestCase):
 
     def test_append_random_features(self):
         """Test the append_random_features method."""
-        dataset = Dataset("numeric_1.dat", output_index=0)
+        dataset = Dataset.from_text("numeric_1.dat", output_index=0)
 
         random_feats = 4
         new_dataset = dataset.append_random_features(random_feats)
@@ -372,7 +534,9 @@ class DatasetTester(unittest.TestCase):
 
     def test_split(self):
         """Test the split method."""
-        dataset = Dataset("numeric_1.dat", output_index=0).oversample()
+        dataset = Dataset.from_text(
+            "numeric_1.dat", output_index=0
+        ).oversample()
 
         test_prop = 0.25
         training, test = dataset.split(test_prop)
@@ -396,7 +560,7 @@ class DatasetTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the :meth:`~culebra.tools.Dataset.__copy__` method."""
-        dataset1 = Dataset("numeric_1.dat", output_index=0)
+        dataset1 = Dataset.from_text("numeric_1.dat", output_index=0)
         dataset2 = copy(dataset1)
 
         # Copy only copies the first level (dataset1 != dataset2)
@@ -408,7 +572,7 @@ class DatasetTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test the :meth:`~culebra.abc.Base.__deepcopy__` method."""
-        dataset1 = Dataset("numeric_1.dat", output_index=0)
+        dataset1 = Dataset.from_text("numeric_1.dat", output_index=0)
         dataset2 = deepcopy(dataset1)
 
         # Check the copy
@@ -420,7 +584,7 @@ class DatasetTester(unittest.TestCase):
         Test the :meth:`~culebra.abc.Base.__setstate__` and
         :meth:`~culebra.abc.Base.__reduce__` methods.
         """
-        dataset1 = Dataset("numeric_1.dat", output_index=0)
+        dataset1 = Dataset.from_text("numeric_1.dat", output_index=0)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         dataset1.dump(serialized_filename)

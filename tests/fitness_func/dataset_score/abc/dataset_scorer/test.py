@@ -41,7 +41,7 @@ from culebra.tools import Dataset
 
 
 # Dataset
-dataset = Dataset.load_from_uci(name="Wine")
+dataset = Dataset.from_uci(name="Wine")
 
 # Preprocess the dataset
 dataset = dataset.drop_missing().scale().remove_outliers(random_seed=0)
@@ -232,7 +232,7 @@ class DatasetScorerTester(unittest.TestCase):
 
     def test_copy(self):
         """Test the __copy__ method."""
-        func1 = MyDatasetScorer(Dataset(), index=2)
+        func1 = MyDatasetScorer(dataset, index=2)
         func2 = copy(func1)
 
         # Copy only copies the first level (func1 != func2)
@@ -246,7 +246,7 @@ class DatasetScorerTester(unittest.TestCase):
 
     def test_deepcopy(self):
         """Test the __deepcopy__ method."""
-        func1 = MyDatasetScorer(Dataset())
+        func1 = MyDatasetScorer(dataset)
         func2 = deepcopy(func1)
 
         # Check the copy
@@ -254,7 +254,7 @@ class DatasetScorerTester(unittest.TestCase):
 
     def test_serialization(self):
         """Serialization test."""
-        func1 = MyDatasetScorer(Dataset())
+        func1 = MyDatasetScorer(dataset)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         func1.dump(serialized_filename)
@@ -268,7 +268,7 @@ class DatasetScorerTester(unittest.TestCase):
 
     def test_repr(self):
         """Test the repr and str dunder methods."""
-        func = MyDatasetScorer(Dataset())
+        func = MyDatasetScorer(dataset)
         self.assertIsInstance(repr(func), str)
         self.assertIsInstance(str(func), str)
 

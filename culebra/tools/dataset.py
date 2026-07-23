@@ -23,13 +23,18 @@ from __future__ import annotations
 
 from os import PathLike
 from copy import deepcopy
-from typing import TextIO
 from collections import Counter
 from collections.abc import Sequence
 from functools import partial
+from numbers import Number
+from io import BytesIO, TextIOBase
+from urllib.request import urlopen
+from urllib.parse import urlparse
+from urllib.error import URLError
 
 import numpy as np
-from pandas import Series, DataFrame, read_csv, concat
+from numpy.typing import ArrayLike
+from pandas import DataFrame, read_csv, concat, notna
 from pandas.errors import EmptyDataError
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
@@ -37,10 +42,11 @@ from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
 from sklearn.preprocessing import MinMaxScaler, RobustScaler
 from ucimlrepo import fetch_ucirepo
+from scipy.io import loadmat
 from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from culebra.abc import Base
-from culebra.checker import check_str, check_int, check_float, check_sequence
+from culebra.checker import check_int, check_float, check_sequence
 from .constants import (
     DEFAULT_SEP,
     DEFAULT_OUTLIER_PROPORTION,
@@ -73,77 +79,66 @@ class Dataset(Base):
 
     def __init__(
         self,
-        *files: tuple[FilePath | Url | TextIO],
-        output_index: int | None = None,
-        sep: str = DEFAULT_SEP
+        inputs: ArrayLike,
+        outputs: ArrayLike
     ) -> None:
-        """Create a dataset.
+        """Create a dataset from input and output data.
 
-        Datasets can be organized in only one file or in two files. If one
-        file per dataset is used, then *output_index* must be used to indicate
-        which column stores the output values. If *output_index* is omitted,
-        it will be assumed that the dataset is composed by two consecutive
-        files, the first one containing the input columns and the second one
-        storing the output column. Only the first column of the second file
-        will be loaded in this case (just one output value per sample).
+        Both *inputs* and *outputs* must be array-like objects, such as NumPy
+        arrays, lists of lists, tuples of tuples, pandas ``Series`` or pandas
+        ``DataFrame`` objects.
 
-        If no files are provided, an empty dataset is returned.
+        *inputs* must represent a two-dimensional structure where each row is
+        a sample and each column is a feature.
 
-        :param files: Files containing the dataset. If *output_index* is
-            omitted, two files are necessary, the first one containing
-            the input columns and the second one containing the output column.
-            Otherwise, only one file will be used to access to the whole
-            dataset (input and output columns)
-        :type files: tuple[str | ~os.PathLike[str] | ~typing.TextIO]
-        :param output_index: If the dataset is provided with only one file,
-            this parameter indicates which column in the file does contain the
-            output values. Otherwise this parameter must be omitted (set to
-            :data:`None`) to express that inputs and ouputs are stored in
-            two different files. Its default value is :data:`None`
-        :type output_index: int
-        :param sep: Column separator used within the files. Defaults to
-            :attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: str
-        :raises TypeError: If *output_index* is not :data:`None` or
-            :class:`int`
-        :raises TypeError: If *sep* is not a string
-        :raises IndexError: If *output_index* is out of range
-        :raises RuntimeError: If *output_index* is :data:`None` and only
-            one file is provided
-        :raises RuntimeError: When loading a dataset composed of two files, if
-            the file containing the input columns and the file containing the
-            output column do not have the same number of rows.
-        :raises RuntimeError: If any file is empty
-        :return: The dataset
-        :rtype: ~culebra.tools.Dataset
+        *outputs* may be either one-dimensional or two-dimensional. When a
+        two-dimensional structure is provided, only its first column is used,
+        assuming a single output value per sample.
+
+        :param inputs: Input samples. Rows correspond to samples and columns
+            correspond to features.
+        :type inputs: numpy.typing.ArrayLike
+
+        :param outputs: Output values associated with the input samples. It
+            may be one-dimensional or two-dimensional. If it is
+            two-dimensional, only the first column is considered.
+        :type outputs: numpy.typing.ArrayLike
+
+        :raises ValueError: If *inputs* and *outputs* do not contain the same
+            number of samples.
+        :raises ValueError: If no input samples are provided.
+        :raises ValueError: If no output values are provided.
         """
         # Init the superclass
         super().__init__()
 
-        # If no files are provided
-        if len(files) == 0:
-            # An empty dataset is returned
-            self._inputs = self._outputs = np.arange(0, dtype=float)
-        else:
-            # If inputs and output data are in separate files
-            if output_index is None:
-                if len(files) < 2:
-                    raise RuntimeError(
-                        "Only one file is provided and output_index is None"
-                    )
+        try:
+            inputs_df = DataFrame(inputs)
+        except ValueError as e:
+            raise ValueError("Invalid inputs") from e
 
-                # Load the training data
-                data_x, data_y = Dataset.__load_split_dataset(*files, sep=sep)
-            # If inputs and output data are in the same file
-            else:
-                # Load the training data
-                (data_x, data_y) = Dataset.__load_mixed_dataset(
-                    files[0], output_index=output_index, sep=sep
-                )
+        try:
+            outputs_df = DataFrame(outputs)
+        except ValueError as e:
+            raise ValueError("Invalid outputs") from e
 
-            # Convert data to numpy ndarrays
-            self._inputs = data_x.to_numpy(dtype=float)
-            self._outputs = data_y.to_numpy()
+        if inputs_df.empty:
+            raise ValueError("No inputs have been provided")
+        if outputs_df.shape[1] == 0:
+            raise ValueError("No outputs have been provided")
+
+        outputs_first_column_df = outputs_df.iloc[:, [0]]
+        if len(inputs_df) != len(outputs_first_column_df):
+            raise ValueError(
+                "The inputs and output do not have the same number of rows"
+            )
+
+        self._inputs = Dataset._categorical_to_numeric(
+            inputs_df
+        ).to_numpy(dtype=float)
+        self._outputs = Dataset._categorical_to_numeric(
+            outputs_first_column_df
+        ).to_numpy().ravel()
 
     @property
     def num_feats(self) -> int:
@@ -178,12 +173,85 @@ class Dataset(Base):
         return self._outputs
 
     @classmethod
-    def load_from_uci(
+    def from_text(
+        cls,
+        *files: tuple[FilePath | Url | TextIOBase],
+        output_index: int | None = None,
+        sep: str = DEFAULT_SEP
+    ) -> None:
+        """Load a dataset from one or two text files.
+
+        Datasets can be organized in only one file or in two files. If only one
+        file is used, then *output_index* must be used to indicate which column
+        stores the output values. If *output_index* is omitted, it will be
+        assumed that the dataset is composed by two consecutive files, the
+        first one containing the input columns and the second one storing the
+        output column. Only the first column of the second file will be loaded
+        in this case (just one output value per sample).
+
+        :param files: Files containing the dataset. If *output_index* is
+            omitted, two files are necessary, the first one containing
+            the input columns and the second one containing the output column.
+            Otherwise, only one file will be used to access to the whole
+            dataset (input and output columns)
+        :type files: tuple[str | ~os.PathLike[str] | ~io.TextIOBase]
+        :param output_index: If the dataset is provided with only one file,
+            this parameter indicates which column in the file does contain the
+            output values. Otherwise this parameter must be omitted (set to
+            :data:`None`) to express that inputs and ouputs are stored in
+            two different files. Its default value is :data:`None`
+        :type output_index: int
+        :param sep: Column separator used within the files. Defaults to
+            :attr:`~culebra.tools.DEFAULT_SEP`
+        :type sep: str
+        :raises ValueError: If *files* is empty
+        :raises TypeError: If *output_index* is not :data:`None` or
+            :class:`int`
+        :raises TypeError: If *sep* is not a string
+        :raises IndexError: If *output_index* is out of range
+        :raises RuntimeError: If *output_index* is :data:`None` and only
+            one file is provided
+        :raises RuntimeError: When loading a dataset composed of two files, if
+            the file containing the input columns and the file containing the
+            output column do not have the same number of rows.
+        :raises RuntimeError: If any file is empty
+        :return: The dataset
+        :rtype: ~culebra.tools.Dataset
+        """
+        # If no files are provided
+        if len(files) == 0:
+            raise ValueError("No files are provided")
+
+        # If inputs and output data are in separate files
+        if output_index is None:
+            if len(files) < 2:
+                raise RuntimeError(
+                    "Only one file is provided and output_index is None"
+                )
+
+            # Load the dataset
+            inputs_df = Dataset._text_to_dataframe(files[0], sep=sep)
+            outputs_df = Dataset._text_to_dataframe(files[1], sep=sep)
+        # If inputs and output data are in the same file
+        else:
+            # Load the dataset
+            inputs_df, outputs_df = Dataset._separate_input_output(
+                Dataset._text_to_dataframe(files[0], sep=sep),
+                output_index
+            )
+
+        try:
+            return cls(inputs_df, outputs_df)
+        except ValueError as e:
+            raise RuntimeError(str(e)) from e
+
+    @classmethod
+    def from_uci(
         cls,
         name: str | None = None,
-        id_number: int | None = None,
+        id_number: int | None = None
     ) -> Dataset:
-        """Load the dataset from the UCI ML repository.
+        """Load a dataset from the UCI ML repository.
 
         The dataset can be identified by either its *id_number* or its *name*,
         but only one of these should be provided.
@@ -195,62 +263,85 @@ class Dataset(Base):
         :type name: str
         :param id_number: Dataset ID for UCI ML Repository, optional
         :type id_number: int
+
         :raises RuntimeError: If the dataset can not be loaded
         :return: The dataset
         :rtype: ~culebra.tools.Dataset
         """
-        dataset = None
-
         try:
-            # Fetch the dataset
             uci_dataset = fetch_ucirepo(name, id_number)
-
-            inputs_df = Dataset.__categorical_to_numeric(
-                uci_dataset.data.features
-            )
-            output_s = Dataset.__categorical_to_numeric(
+            return cls(
+                uci_dataset.data.features,
                 uci_dataset.data.targets
-            ).iloc[:, 0]
-
-            # Check that both dataframes have the same number of rows
-            if not len(inputs_df.index) == len(output_s.index):
-                raise RuntimeError(
-                    "The inputs and output do not have the same number of rows"
-                )
-
-            # Convert data to numpy ndarrays and create the dataset
-            dataset = Dataset()
-            dataset._inputs = inputs_df.to_numpy(dtype=float)
-            dataset._outputs = output_s.to_numpy()
+            )
         except Exception as e:
             raise RuntimeError(str(e)) from e
 
-        return dataset
-    
-    def save(
+    @classmethod
+    def from_mat(
+        cls,
+        src: FilePath | Url | BytesIO,
+        inputs_key: str = 'X',
+        outputs_key: str = 'Y'
+    ) -> None:
+        """Load a dataset from a mat file.
+
+        :param src: Source
+        :type src: str | ~os.PathLike[str] | io.BytesIO
+        :param inputs_key: Key to access the dataset inputs. Defaults to 'X'
+        :type inputs_key: str
+        :param outputs_key: Key to access the dataset oututs. Defaults to 'Y'
+        :type outputs_key: str
+        :raises ValueError: If *src* is not a valid source
+        :raises ValueError: If either *inputs_key* or *outputs_key* is not a
+            valid key
+        :return: The dataset
+        :rtype: ~culebra.tools.Dataset
+        """
+        try:
+            if (
+                isinstance(src, str) and
+                (parsed := urlparse(src)).scheme in ('http', 'https') and
+                parsed.netloc
+            ):
+                with urlopen(src) as response:
+                    mat = loadmat(BytesIO(response.read()))
+            else:
+                mat = loadmat(src)
+        except (ValueError, URLError, FileNotFoundError) as e:
+            raise ValueError(f"Invalid mat source '{src}'") from e
+
+        # Check the key
+        for key in (inputs_key, outputs_key):
+            if key not in mat:
+                raise ValueError(f"Bad key '{key}'")
+
+        return cls(mat[inputs_key], mat[outputs_key])
+
+    def to_text(
         self,
         filename: FilePath,
         sep: str = DEFAULT_SEP
     ) -> None:
-        """Save the dataset.
-        
+        """Save the dataset to a text file.
+
         :param filename: Destination file name
         :type filename: ~os.PathLike[str]
         :param sep: Column separator used within the files. Defaults to
             :attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: str        
+        :type sep: str
         """
         # Fallback if a regex-style whitespace separator is passed
         if sep == DEFAULT_SEP:
             sep = " "
-    
+
         # Stack inputs and outputs horizontally (outputs becomes the last
         # column)
         # We cast to 'object' type so outputs preserve their native types
         combined_data = np.column_stack(
             (self.inputs, self.outputs.astype(object))
         )
-    
+
         # 3. Save to a plain text file
         # fmt="%s" will now call the string representation of each native type,
         # preventing integers (like 1) from being written as floats (like 1.0)
@@ -262,12 +353,10 @@ class Dataset(Base):
         :return: A normalized dataset
         :rtype: ~culebra.tools.Dataset
         """
-        normalized_dataset = Dataset()
-        normalized_dataset._inputs = MinMaxScaler().fit(
+        normalized_inputs = MinMaxScaler().fit(
             self._inputs
         ).transform(self._inputs)
-        normalized_dataset._outputs = deepcopy(self.outputs)
-        return normalized_dataset
+        return Dataset(normalized_inputs, self.outputs)
 
     def scale(self) -> Dataset:
         """Scale features robust to outliers.
@@ -275,12 +364,10 @@ class Dataset(Base):
         :return: A scaled dataset
         :rtype: ~culebra.tools.Dataset
         """
-        scaled_dataset = Dataset()
-        scaled_dataset._inputs = RobustScaler().fit(
+        scaled_inputs = RobustScaler().fit(
             self._inputs
         ).transform(self._inputs)
-        scaled_dataset._outputs = deepcopy(self.outputs)
-        return scaled_dataset
+        return Dataset(scaled_inputs, self.outputs)
 
     def drop_missing(self) -> Dataset:
         """Drop samples with missing values.
@@ -288,8 +375,6 @@ class Dataset(Base):
         :return: A clean dataset
         :rtype: ~culebra.tools.Dataset
         """
-        clean_dataset = Dataset()
-
         # Samples with missing inputs
         samples_to_be_dropped = [
             sample[0] for sample in np.argwhere(np.isnan(self.inputs))
@@ -303,15 +388,15 @@ class Dataset(Base):
         # remove duplicated indices
         samples_to_be_dropped = list(set(samples_to_be_dropped))
 
-        clean_dataset._inputs = np.delete(
+        clean_inputs = np.delete(
             self.inputs, samples_to_be_dropped, axis=0
         )
 
-        clean_dataset._outputs = np.delete(
+        clean_outputs = np.delete(
             self.outputs, samples_to_be_dropped, axis=0
         )
 
-        return clean_dataset
+        return Dataset(clean_inputs, clean_outputs)
 
     def remove_outliers(
         self,
@@ -370,10 +455,9 @@ class Dataset(Base):
             filtered_inputs.append(inputs_class)
             filtered_outputs.append([class_label]*len(inputs_class))
 
-        clean_dataset = Dataset()
-        clean_dataset._inputs = np.vstack(filtered_inputs)
-        clean_dataset._outputs = np.concatenate(filtered_outputs)
-        return clean_dataset
+        clean_inputs = np.vstack(filtered_inputs)
+        clean_outputs = np.concatenate(filtered_outputs)
+        return Dataset(clean_inputs, clean_outputs)
 
     def oversample(
         self,
@@ -423,26 +507,24 @@ class Dataset(Base):
                 random_state=random_seed
             )
 
-            # Oversample the current dataset
-            resampled_dataset = Dataset()
             (
-                resampled_dataset._inputs,
-                resampled_dataset._outputs
+                resampled_inputs,
+                resampled_outputs
             ) = random_over_sampler.fit_resample(self.inputs, self.outputs)
         else:
             # Keep the current dataset
-            resampled_dataset = self
+            resampled_inputs, resampled_outputs = self.inputs, self.outputs
 
         # Apply SMOTE
         (
-            resampled_dataset._inputs,
-            resampled_dataset._outputs
+            resampled_inputs,
+            resampled_outputs
         ) = SMOTE(
             k_neighbors=n_neighbors,
             random_state=random_seed
-        ).fit_resample(resampled_dataset.inputs, resampled_dataset.outputs)
+        ).fit_resample(resampled_inputs, resampled_outputs)
 
-        return resampled_dataset
+        return Dataset(resampled_inputs, resampled_outputs)
 
     def select_features(self, feats: Sequence[int]) -> Dataset:
         """Return a new dataset only with some selected features.
@@ -458,11 +540,7 @@ class Dataset(Base):
             item_checker=partial(check_int, ge=0, lt=self.num_feats)
         )
 
-        new_dataset = Dataset()
-        new_dataset._inputs = self.inputs[:, feats]
-        new_dataset._outputs = self.outputs
-
-        return new_dataset
+        return Dataset(self.inputs[:, feats], self.outputs)
 
     def append_random_features(
             self,
@@ -492,20 +570,14 @@ class Dataset(Base):
         else:
             random_generator = np.random.default_rng(random_seed)
 
-        # Create an empty dataset
-        new_dataset = self.__class__()
-
         # Append num_feats random features to the input data
-        new_dataset._inputs = np.concatenate(
-            (self._inputs, random_generator.random((self.size, num_feats))),
+        new_inputs = np.concatenate(
+            (self.inputs, random_generator.random((self.size, num_feats))),
             axis=1
         )
 
-        # Copy the output data
-        new_dataset._outputs = deepcopy(self._outputs)
-
         # Return the new dataset
-        return new_dataset
+        return Dataset(new_inputs, self.outputs)
 
     def split(
             self,
@@ -547,17 +619,13 @@ class Dataset(Base):
             stratify=self._outputs,
             random_state=random_seed
         )
-        training = self.__class__()
-        training._inputs = training_inputs
-        training._outputs = training_outputs
-        test = self.__class__()
-        test._inputs = test_inputs
-        test._outputs = test_outputs
+        training = Dataset(training_inputs, training_outputs)
+        test = Dataset(test_inputs, test_outputs)
 
         return training, test
 
     @staticmethod
-    def __categorical_to_numeric(dataframe: DataFrame) -> DataFrame:
+    def _categorical_to_numeric(dataframe: DataFrame) -> DataFrame:
         """Replace categorical values by numeric values.
 
         :param dataframe: A dataframe
@@ -568,30 +636,31 @@ class Dataset(Base):
         columns_to_concat = []
 
         for col_name in dataframe:
-            col_series = dataframe[col_name]
+            col = dataframe[col_name]
 
-            # If the column values are not numeric
-            if not np.issubdtype(col_series.dtype, np.number):
-                labels = np.unique(col_series.dropna()) # dropna evita errores con nulos
+            # If any column value is not numeric
+            if col.map(
+                lambda x: notna(x) and not isinstance(x, Number)
+            ).any():
+                labels = col.dropna().unique()
                 rep = {val: i for i, val in enumerate(labels)}
                 # Keep the column name
-                new_col = col_series.map(rep)
+                new_col = col.map(rep)
                 columns_to_concat.append(new_col)
             else:
                 # Is already numeric
-                columns_to_concat.append(col_series)
+                columns_to_concat.append(col)
 
-        # 2. Concat all the columns
         output_df = concat(columns_to_concat, axis=1)
 
         return output_df
 
     @staticmethod
-    def __split_input_output(
+    def _separate_input_output(
             data: DataFrame,
             output_index: int
-    ) -> tuple[DataFrame, Series]:
-        """Split a dataframe into input and output data.
+    ) -> tuple[DataFrame, DataFrame]:
+        """Separate a dataframe into input and output data.
 
         :param data: A dataframe containing input and output data
         :type data: ~pandas.DataFrame
@@ -599,9 +668,8 @@ class Dataset(Base):
         :type output_index: int
         :raises TypeError: If *output_index* is not an integer value
         :raises IndexError: If *output_index* is out of range
-        :return: A :class:`~pandas.DataFrame` with the input columns and a
-            :class:`~pandas.Series` with the output column
-        :rtype: tuple[~pandas.DataFrame, ~pandas.Series]
+        :return: The inputs and outputs in separated DataFrames
+        :rtype: tuple[~pandas.DataFrame, ~pandas.DataFrame]
         """
         # Check the type of output_index
         output_index = check_int(
@@ -611,112 +679,91 @@ class Dataset(Base):
             lt=len(data.columns)
         )
 
-        output_s = data.iloc[:, output_index]
-        inputs_df = data
-        inputs_df.drop(inputs_df.columns[output_index], axis=1, inplace=True)
+        outputs_df = data.iloc[:, [output_index]]
+        inputs_df = data.drop(data.columns[output_index], axis=1)
 
-        return inputs_df, output_s
+        return inputs_df, outputs_df
 
     @staticmethod
-    def __load_dataframe(
-        path: FilePath | Url | TextIO,
+    def _text_to_dataframe(
+        path: FilePath | Url | TextIOBase,
         sep: str = DEFAULT_SEP
     ) -> DataFrame:
         """Load a dataframe.
 
-        Also replace categorical data by numerical data.
-
         :param path: Path to the file contining the data
-        :type path: str | ~os.PathLike[str] | ~typing.TextIO
+        :type path: str | ~os.PathLike[str] | ~io.TextIOBase
         :param sep: Separator between columns
         :type sep: str
         :return: The dataframe
         :rtype: ~pandas.DataFrame
         """
-        # Check sep
-        sep = check_str(sep, "separator")
-
-        df = None
         try:
-            # Read the data
-            df = Dataset.__categorical_to_numeric(
-                read_csv(path, sep=sep, header=None)
-            )
+            return read_csv(path, sep=sep, header=None)
+        except TypeError as error:
+            raise TypeError(f"Invalid separator: {sep}") from error
         except EmptyDataError as error:
-            raise RuntimeError(f"No data in {path}") from error
+            raise RuntimeError(f"No data in '{path}'") from error
+        except FileNotFoundError as error:
+            raise RuntimeError(f"Can't access to '{path}'") from error
 
-        return df
+    def __copy__(self) -> Dataset:
+        """Shallow copy the dataset.
 
-    @staticmethod
-    def __load_mixed_dataset(
-        file: FilePath | Url | TextIO,
-        output_index: int,
-        sep: str = DEFAULT_SEP
-    ) -> tuple[DataFrame, Series]:
-        """Load a mixed data set.
-
-        Inputs and output are in the same file.
-
-        :param file: Name of the file containing the input and output data
-        :type file: str | ~os.PathLike[str] | ~typing.TextIO
-        :param output_index: Index of the column containing the outuput data
-        :type output_index: int
-        :param sep: Separator between columns, defaults to
-            :attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: str
-        :raises TypeError: If *sep* is not a string
-        :return: A :class:`~pandas.DataFrame` with the input columns and a
-            :class:`~pandas.Series` with the output column
-        :rtype: tuple[~pandas.DataFrame, ~pandas.Series]
+        :return: The copied object
+        :rtype: ~culebra.tools.Dataset
         """
-        # Load the data
-        dataframe = Dataset.__load_dataframe(file, sep)
+        cls = self.__class__
+        result = cls(self.inputs, self.outputs)
+        result.__dict__.update(self.__dict__)
+        return result
 
-        # Separate inputs and outputs
-        inputs_df, output_s = Dataset.__split_input_output(
-            dataframe, output_index
+    def __deepcopy__(self, memo: dict) -> Dataset:
+        """Deepcopy the dataset.
+
+        :param memo: Dataset attributes
+        :type memo: dict
+        :return:  The copied dataset
+        :rtype: ~culebra.tools.Dataset
+        """
+        cls = self.__class__
+        result = cls(
+            deepcopy(self.inputs, memo),
+            deepcopy(self.outputs, memo)
         )
-
-        return inputs_df, output_s
-
-    @staticmethod
-    def __load_split_dataset(
-            *files: tuple[FilePath | Url | TextIO],
-            sep: str = DEFAULT_SEP
-    ) -> tuple[DataFrame, Series]:
-        """Load a separated data set.
-
-        Inputs and output are in separated files. If the output file has more
-        than one column, only the first column is read.
-
-        :param files: Tuple of files containing the dataset. The first file
-            contains the input columns and the second one the output column
-        :type files: tuple[str | ~os.PathLike[str] | ~typing.TextIO]
-        :param sep: Separator between columns, defaults to
-            :attr:`~culebra.tools.DEFAULT_SEP`
-        :type sep: str
-        :raises TypeError: If *sep* is not a string
-        :raises RuntimeError: If the *files* do not have the same number of
-            rows
-        :return: A :class:`~pandas.DataFrame` with the input columns and a
-            :class:`~pandas.Series` with the output column
-        :rtype: tuple[~pandas.DataFrame, ~pandas.Series]
-        """
-        # Load the input data
-        inputs_df = Dataset.__load_dataframe(files[0], sep)
-
-        # Load the output data
-        output_df = Dataset.__load_dataframe(files[1], sep)
-        output_s = output_df.iloc[:, 0]
-
-        # Check that both dataframes have the same number of rows
-        if not len(inputs_df.index) == len(output_s.index):
-            raise RuntimeError(
-                f"{files[0]} and {files[1]} do not have the same number of "
-                "rows"
+        result.__dict__.update(
+            deepcopy(
+                self.__dict__,
+                memo |
+                {id(self.inputs): result.inputs} |
+                {id(self.outputs): result.outputs}
             )
+        )
+        return result
 
-        return inputs_df, output_s
+    def __reduce__(self) -> tuple:
+        """Reduce the dataset.
+
+        :return: The reduction
+        :rtype: tuple
+        """
+        return (
+            self.__class__,
+            (self.inputs, self.outputs),
+            self.__dict__)
+
+    @classmethod
+    def __fromstate__(cls, state: dict) -> Dataset:
+        """Return a dataset from a state.
+
+        :param state: The state
+        :type state: dict
+        :return: The dataset
+        :rtype: ~culebra.tools.Dataset
+        """
+        obj = cls(state['_inputs'], state['_outputs'])
+        obj.__setstate__(state)
+        return deepcopy(obj)
 
 
 # Exported symbols for this module
