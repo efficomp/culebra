@@ -1,0 +1,62 @@
+# This file is part of culebra.
+#
+# Culebra is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# Culebra is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# Culebra. If not, see <http://www.gnu.org/licenses/>.
+#
+# This work is supported by projects PGC2018-098813-B-C31 and
+# PID2022-137461NB-C31, both funded by the Spanish "Ministerio de Ciencia,
+# Innovación y Universidades" and by the European Regional Development Fund
+# (ERDF).
+
+"""Abstract base classes for tool development.
+
+This module is composed by:
+
+* The :class:`~culebra.tools.abc.scripts` sub-module, where some abstract base
+  classes for several kinds of typical scripts are provided
+  managers that let select an adequate solution
+* The :class:`~culebra.tools.abc.DecisionManager` class, which is responsible
+  for selecting a solution from among the best candidates identified by the
+  trainer.
+* The :class:`~culebra.tools.abc.Evaluation` class, which provides the
+  interface for evaluating a trainer.
+* The :class:`~culebra.tools.abc.GeneratorScript` class, which is useful to
+  develop scripts that generate files or objects
+* The :class:`~culebra.tools.abc.Script` class, which is the base for
+  command-line scripts
+"""
+
+from .abc import (
+    DecisionManager,
+    Evaluation,
+    Script,
+    GeneratorScript
+)
+from . import scripts
+
+
+__author__ = 'Jesús González'
+__copyright__ = 'Copyright 2026, EFFICOMP'
+__license__ = 'GNU GPL-3.0-or-later'
+__version__ = '0.6.1'
+__maintainer__ = 'Jesús González'
+__email__ = 'jesusgonzalez@ugr.es'
+__status__ = 'Development'
+
+
+__all__ = [
+    'DecisionManager',
+    'Evaluation',
+    'Script',
+    'GeneratorScript',
+    'scripts'
+]

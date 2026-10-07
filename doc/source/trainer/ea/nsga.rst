@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.ea.NSGA
 
-Class methods
--------------
-.. automethod:: culebra.trainer.ea.NSGA.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.NSGA.checkpoint_activation
@@ -87,6 +83,10 @@ Private properties
 .. autoproperty:: culebra.trainer.ea.NSGA._default_selection_func
 .. autoproperty:: culebra.trainer.ea.NSGA._default_send_representatives_func
 .. autoproperty:: culebra.trainer.ea.NSGA._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.ea.NSGA.load
 
 Methods
 -------

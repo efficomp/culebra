@@ -30,3 +30,6 @@
 
     decision_manager <abc/decision_manager>
     evaluation <abc/evaluation>
+    script <abc/script>
+    generator_script <abc/generator_script>
+    scripts <abc/scripts>

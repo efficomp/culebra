@@ -207,33 +207,6 @@ class PathLengthTester(unittest.TestCase):
             fitness_func = PathLength(np.ones((num_nodes, num_nodes)))
             self.assertEqual(fitness_func.num_nodes, num_nodes)
 
-    def test_heuristic(self):
-        """Test the heuristic method."""
-        distance_matrix = [
-            [0, 1, 2, 3, 4, 5],
-            [1, 0, 6, 7, 8, 9],
-            [2, 6, 0, 1, 2, 3],
-            [3, 7, 1, 0, 4, 5],
-            [4, 8, 2, 4, 0, 6],
-            [5, 9, 3, 5, 6, 0]
-        ]
-
-        fitness_func = PathLength(distance_matrix)
-
-        heuristic = fitness_func.heuristic
-        self.assertIsInstance(heuristic, Sequence)
-
-        # Check the heuristic_matrix
-        for i in range(fitness_func.num_nodes):
-            for j in range(fitness_func.num_nodes):
-                if i == j:
-                    self.assertEqual(heuristic[0][i][j], 0)
-                else:
-                    self.assertAlmostEqual(
-                        heuristic[0][i][j],
-                        1/distance_matrix[i][j]
-                    )
-
     def test_greddy_solution(self):
         """Test the greedy solution method."""
         distance_matrix = [
@@ -769,21 +742,6 @@ class MultiObjectivePathLengthTester(unittest.TestCase):
         obj2 = PathLength.from_path(np.random.permutation(num_nodes))
         func = MultiObjectivePathLength(obj1, obj2)
         self.assertEqual(func.obj_names, ('Len_0', 'Len_1'))
-
-    def test_heuristic(self):
-        """Test the heuristic method."""
-        num_nodes = 5
-        obj1 = PathLength.from_path(np.random.permutation(num_nodes))
-        obj2 = PathLength.from_path(np.random.permutation(num_nodes))
-        func = MultiObjectivePathLength(obj1, obj2)
-
-        heur1 = obj1.heuristic
-        heur2 = obj2.heuristic
-        heur = func.heuristic
-
-        self.assertEqual(len(heur), 2)
-        self.assertTrue((heur[0] == heur1[0]).all())
-        self.assertTrue((heur[1] == heur2[0]).all())
 
 
 if __name__ == '__main__':

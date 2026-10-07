@@ -32,6 +32,10 @@ Attributes
 .. autoattribute:: culebra.tools.EffectSize.test
 .. autoattribute:: culebra.tools.EffectSize.value
 
+Properties
+----------
+.. autoproperty:: culebra.tools.EffectSize.series
+
 Dunder methods
 --------------
 .. automethod:: culebra.tools.EffectSize.__repr__

@@ -35,7 +35,6 @@ Class methods
 -------------
 .. automethod:: culebra.tools.evaluation.Experiment.from_config
 .. automethod:: culebra.tools.evaluation.Experiment.generate_run_script
-.. automethod:: culebra.tools.evaluation.Experiment.load
 
 Properties
 ----------
@@ -54,6 +53,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.tools.evaluation.Experiment._default_results_base_filename
 .. autoproperty:: culebra.tools.evaluation.Experiment._default_test_fitness_func
+
+Static methods
+--------------
+.. automethod:: culebra.tools.evaluation.Experiment.load
 
 Methods
 -------

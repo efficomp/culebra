@@ -28,10 +28,6 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.BinarySolution.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.feature_selection.BinarySolution.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.feature_selection.BinarySolution.features
@@ -41,6 +37,9 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.BinarySolution.num_feats
 .. autoproperty:: culebra.solution.feature_selection.BinarySolution.species
 
+Static methods
+--------------
+.. automethod:: culebra.solution.feature_selection.BinarySolution.load
 
 Methods
 -------

@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.abc.DistributedTrainer
 
-Class methods
--------------
-.. automethod:: culebra.trainer.abc.DistributedTrainer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.DistributedTrainer.cooperative_fitness_estimation_func
@@ -56,6 +52,7 @@ Private properties
 
 Static methods
 --------------
+.. automethod:: culebra.trainer.abc.DistributedTrainer.load
 .. automethod:: culebra.trainer.abc.DistributedTrainer.receive_representatives
 .. automethod:: culebra.trainer.abc.DistributedTrainer.send_representatives
 

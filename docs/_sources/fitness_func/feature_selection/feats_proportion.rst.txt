@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.feature_selection.FeatsProportion
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.feature_selection.FeatsProportion.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion.fitness_cls
@@ -42,6 +38,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion._default_index
 .. autoproperty:: culebra.fitness_func.feature_selection.FeatsProportion._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.feature_selection.FeatsProportion.load
 
 Methods
 -------

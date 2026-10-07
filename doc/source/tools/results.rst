@@ -27,6 +27,9 @@
 Class methods
 -------------
 .. automethod:: culebra.tools.Results.from_csv_files
+
+Static methods
+--------------
 .. automethod:: culebra.tools.Results.load
 
 Methods

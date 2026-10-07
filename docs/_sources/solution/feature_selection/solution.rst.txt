@@ -28,10 +28,6 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.Solution.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.feature_selection.Solution.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.feature_selection.Solution.features
@@ -40,6 +36,10 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.Solution.min_feat
 .. autoproperty:: culebra.solution.feature_selection.Solution.num_feats
 .. autoproperty:: culebra.solution.feature_selection.Solution.species
+
+Static methods
+--------------
+.. automethod:: culebra.solution.feature_selection.Solution.load
 
 Methods
 -------

@@ -24,8 +24,8 @@
 
 .. autoclass:: culebra.tools.abc.DecisionManager
 
-Class methods
--------------
+Static methods
+--------------
 .. automethod:: culebra.tools.abc.DecisionManager.load
 
 Methods

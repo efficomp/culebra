@@ -26,7 +26,6 @@
 
 Class methods
 -------------
-.. automethod:: culebra.tools.Dataset.load
 .. automethod:: culebra.tools.Dataset.from_mat
 .. automethod:: culebra.tools.Dataset.from_text
 .. automethod:: culebra.tools.Dataset.from_uci
@@ -37,6 +36,10 @@ Properties
 .. autoproperty:: culebra.tools.Dataset.num_feats
 .. autoproperty:: culebra.tools.Dataset.outputs
 .. autoproperty:: culebra.tools.Dataset.size
+
+Static methods
+--------------
+.. automethod:: culebra.tools.Dataset.load
 
 Methods
 -------

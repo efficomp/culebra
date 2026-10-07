@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>culebra.tools.abc.scripts.TrainingTestDataGenerator class &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css?v=279e0f84" />
+    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator class" href="training_test_fitness_function_generator.html" />
+    <link rel="prev" title="culebra.tools.abc.scripts.TrainerGenerator class" href="trainer_generator.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="training_test_fitness_function_generator.html" title="culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="trainer_generator.html" title="culebra.tools.abc.scripts.TrainerGenerator class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../abc.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../scripts.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts.TrainingTestDataGenerator</span></code> class</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="culebra-tools-abc-scripts-trainingtestdatagenerator-class">
+<h1><a class="reference internal" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator" title="culebra.tools.abc.scripts.TrainingTestDataGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts.TrainingTestDataGenerator</span></code></a> class<a class="headerlink" href="#culebra-tools-abc-scripts-trainingtestdatagenerator-class" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TrainingTestDataGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../generator_script.html#culebra.tools.abc.GeneratorScript" title="culebra.tools.abc.abc.GeneratorScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeneratorScript</span></code></a></p>
+<p>Construct the generator.</p>
+<p>Define the command-line arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – Sequence of command-line arguments to parse. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(default), arguments are read from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>. This parameter
+is mainly intended for testing, allowing command-line arguments
+to be supplied programmatically.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="static-methods">
+<h2>Static methods<a class="headerlink" href="#static-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator.load">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../../abc/base.html#culebra.abc.Base" title="culebra.abc.Base"><span class="pre">Base</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a serialized object from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded object</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator.dump">
+<span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator.dump" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize this object and save it to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file name.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>filename</em> is not a valid file name</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the <em>filename</em> extension is not
+<a class="reference internal" href="../../../index.html#culebra.SERIALIZED_FILE_EXTENSION" title="culebra.SERIALIZED_FILE_EXTENSION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SERIALIZED_FILE_EXTENSION</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator.generate">
+<span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator.generate" title="Link to this definition">¶</a></dt>
+<dd><p>Generate the training and test data files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator.get_dataset">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../dataset.html#culebra.tools.Dataset" title="culebra.tools.dataset.Dataset"><span class="pre">Dataset</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator.get_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Get and validate the dataset.</p>
+<p>Subclasses must implement this method to get a concrete dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dataset.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../dataset.html#culebra.tools.Dataset" title="culebra.tools.Dataset"><em>Dataset</em></a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the dataset does not match the expected
+number of features, samples, or classes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator.parse_args">
+<span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">parse_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator.parse_args" title="Link to this definition">¶</a></dt>
+<dd><p>Parse and validate command-line arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#SystemExit" title="(in Python v3.14)"><strong>SystemExit</strong></a> – If the command-line arguments are invalid or
+<code class="docutils literal notranslate"><span class="pre">--help</span></code> is requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator.process">
+<span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator.process" title="Link to this definition">¶</a></dt>
+<dd><p>Process the dataset.</p>
+<p>Get the dataset, remove missing values, scale features, split the
+dataset into training and test sets, remove outliers from the training
+set, balance the training set through oversampling and save both
+datasets.</p>
+</dd></dl>
+
+</section>
+<section id="private-methods">
+<h2>Private methods<a class="headerlink" href="#private-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.scripts.TrainingTestDataGenerator._get_repr_properties">
+<span class="sig-prename descclassname"><span class="pre">TrainingTestDataGenerator.</span></span><span class="sig-name descname"><span class="pre">_get_repr_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#culebra.tools.abc.scripts.TrainingTestDataGenerator._get_repr_properties" title="Link to this definition">¶</a></dt>
+<dd><p>Return the subset of properties used for <code class="docutils literal notranslate"><span class="pre">__repr__</span></code>.</p>
+<p>Filters and evaluates all class-level <code class="docutils literal notranslate"><span class="pre">&#64;property</span></code> attributes,
+returning only those intended for representation purposes. Private
+properties (names starting with <code class="docutils literal notranslate"><span class="pre">_</span></code>) are excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping of property names to their corresponding values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)">object</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="training_test_fitness_function_generator.html" title="culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="trainer_generator.html" title="culebra.tools.abc.scripts.TrainerGenerator class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../abc.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../scripts.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts.TrainingTestDataGenerator</span></code> class</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../../../_sources/tools/abc/scripts/training_test_data_generator.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work is supported by projects <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish State
+        Research Agency <a href="https://doi.org/10.13039/501100011033">
+        MCIN/AEI/10.13039/501100011033</a>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../../../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../../../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

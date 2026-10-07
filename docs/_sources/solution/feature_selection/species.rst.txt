@@ -35,6 +35,9 @@ Properties
 Class methods
 -------------
 .. automethod:: culebra.solution.feature_selection.Species.from_proportion
+
+Static methods
+--------------
 .. automethod:: culebra.solution.feature_selection.Species.load
 
 Methods

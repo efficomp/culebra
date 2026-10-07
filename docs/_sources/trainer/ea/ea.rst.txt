@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.ea.EA
 
-Class methods
--------------
-.. automethod:: culebra.trainer.ea.EA.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.ea.EA.checkpoint_activation
@@ -83,6 +79,10 @@ Private properties
 .. autoproperty:: culebra.trainer.ea.EA._default_selection_func
 .. autoproperty:: culebra.trainer.ea.EA._default_send_representatives_func
 .. autoproperty:: culebra.trainer.ea.EA._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.ea.EA.load
 
 Methods
 -------

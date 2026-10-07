@@ -105,6 +105,7 @@ from .constants import (
     DEFAULT_ACOFS_EXPLOITATION_PROB,
     DEFAULT_ACOFS_DISCARD_PROB
 )
+from .heuristic import tsp_default_heuristic
 
 
 __author__ = 'Jesús González & Alberto Ortega'
@@ -794,7 +795,7 @@ class ACO(CentralizedTrainer):
 
         Subclasses should also filter out any node forbidden by the
         constraints of the :class:~culebra.abc.Species defining the problem.
-        
+
         :param ant: The ant
         :type ant: ~culebra.solution.abc.Ant
         :return: All nodes visited by the ant, whether selected or discarded
@@ -2684,7 +2685,7 @@ class ACOTSP(ACO):
             :attr:`~culebra.trainer.aco.abc.ACOTSP.fitness_func`
         :rtype: tuple[~numpy.ndarray[float]]
         """
-        return self.fitness_func.heuristic
+        return tsp_default_heuristic(self.fitness_func)
 
     @property
     def _default_col_size(self) -> int:
@@ -2734,7 +2735,7 @@ class ACOTSP(ACO):
 
     def _unfeasible_nodes(self, ant: Ant) -> np.ndarray[float]:
         """Return the indices of all unfeasible nodes.
-        
+
         :param ant: The ant
         :type ant: ~culebra.solution.abc.Ant
         :return: All nodes visited by the ant, whether selected or discarded.
@@ -3034,7 +3035,7 @@ class ACOFS(MaxPheromonePACO):
     def _default_max_pheromone(self) -> tuple[float, ...]:
         """Default value for the maximum pheromone.
 
-        :return: 
+        :return:
             :attr:`~culebra.trainer.aco.DEFAULT_ACOFS_MAX_PHEROMONE`
             for each pheromone matrix
         :rtype: tuple[float]
@@ -3147,7 +3148,7 @@ class ACOFS(MaxPheromonePACO):
 
     def _unfeasible_nodes(self, ant: Ant) -> np.ndarray[float]:
         """Return the indices of all unfeasible nodes.
-        
+
         :param ant: The ant
         :type ant: ~culebra.solution.abc.Ant
         :return: All nodes visited by the ant, whether selected or discarded.

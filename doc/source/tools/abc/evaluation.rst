@@ -34,7 +34,6 @@ Class methods
 -------------
 .. automethod:: culebra.tools.abc.Evaluation.from_config
 .. automethod:: culebra.tools.abc.Evaluation.generate_run_script
-.. automethod:: culebra.tools.abc.Evaluation.load
 
 Properties
 ----------
@@ -51,6 +50,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.tools.abc.Evaluation._default_results_base_filename
 .. autoproperty:: culebra.tools.abc.Evaluation._default_test_fitness_func
+
+Static methods
+--------------
+.. automethod:: culebra.tools.abc.Evaluation.load
 
 Methods
 -------

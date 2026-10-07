@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.ElitistAntSystem
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.ElitistAntSystem.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem.checkpoint_activation
@@ -92,6 +88,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.ElitistAntSystem._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.ElitistAntSystem.load
 
 Methods
 -------

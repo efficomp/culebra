@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.abc.Trainer
 
-Class methods
--------------
-.. automethod:: culebra.abc.Trainer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.abc.Trainer.cooperative_fitness_estimation_func
@@ -43,6 +39,10 @@ Properties
 Private properties
 ------------------
 .. autoproperty:: culebra.abc.Trainer._default_cooperative_fitness_estimation_func
+
+Static methods
+--------------
+.. automethod:: culebra.abc.Trainer.load
 
 Methods
 -------

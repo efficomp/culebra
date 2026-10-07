@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.MultiObjectiveFitnessFunction
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.MultiObjectiveFitnessFunction.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.MultiObjectiveFitnessFunction.fitness_cls
@@ -40,6 +36,10 @@ Properties
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.MultiObjectiveFitnessFunction._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.MultiObjectiveFitnessFunction.load
 
 Methods
 -------

@@ -1083,6 +1083,94 @@ class ResultsAnalyzerTester(unittest.TestCase):
                     expected_ranks[col_key][batch_idx]
                 )
 
+    def test_multiple_effect_size(self):
+        """Test the multiple_effect_size method."""
+        # Test fitness related results
+        test_fitness_key = "test_fitness"
+        kappa_key = "Kappa"
+        nf_key = "NF"
+
+        # Execution metrics related results
+        execution_metrics_key = "execution_metrics"
+        runtime_key = "Runtime"
+
+        # Prepare the batches
+        self.analyzer = ResultsAnalyzer()
+        batch_names = [f"Results{i}" for i in range(4)]
+
+        kappa_data = [
+            np.random.normal(size=N_SAMPLES, loc=0.9),
+            np.random.normal(size=N_SAMPLES, loc=0.8),
+            np.random.normal(size=N_SAMPLES, loc=0.4),
+            np.random.normal(size=N_SAMPLES, loc=0.9),
+        ]
+        nf_data = [
+            np.random.normal(size=N_SAMPLES, loc=6),
+            np.random.normal(size=N_SAMPLES, loc=6),
+            np.random.normal(size=N_SAMPLES, loc=8),
+            np.random.normal(size=N_SAMPLES, loc=4)
+        ]
+        runtime_data = [
+            np.random.normal(size=N_SAMPLES, loc=125),
+            np.random.normal(size=N_SAMPLES, loc=80),
+            np.random.normal(size=N_SAMPLES, loc=50),
+            np.random.normal(size=N_SAMPLES, loc=80)
+        ]
+        for batch, kappa, nf, runtime in zip(
+            batch_names, kappa_data, nf_data, runtime_data
+        ):
+            self.analyzer[batch] = Results()
+            self.analyzer[batch][test_fitness_key] = DataFrame()
+            self.analyzer[batch][test_fitness_key][kappa_key] = kappa
+            self.analyzer[batch][test_fitness_key][nf_key] = nf
+            self.analyzer[batch][execution_metrics_key] = DataFrame()
+            self.analyzer[batch][execution_metrics_key][runtime_key] = runtime
+
+        # Expected effect sizes
+        expected_effect_sizes = DataFrame()
+        expected_effect_sizes[(execution_metrics_key, runtime_key)] = [
+            48.04573,
+            76.05612,
+            45.55160,
+            30.88207,
+            0.03567,
+            29.43545,
+        ]
+        expected_effect_sizes[(test_fitness_key, kappa_key)] = [
+            0.20644,
+            0.61102,
+            0.09969,
+            0.39990,
+            0.09994,
+            0.48976,
+        ]
+        expected_effect_sizes[(test_fitness_key, nf_key)] = [
+            0.00326,
+            2.10600,
+            2.10836,
+            2.02229,
+            2.01873,
+            4.18507
+        ]
+
+        # Effect sizes
+        dataframe_keys = (
+            test_fitness_key, test_fitness_key, execution_metrics_key
+        )
+        column_keys = (nf_key, kappa_key, runtime_key)
+        multiple_effect_sizes = self.analyzer.multiple_effect_size(
+            dataframe_keys, column_keys
+        )
+
+        # Check the effect sizes
+        for df_key, col_key in zip(dataframe_keys, column_keys):
+            self.assertTrue(
+                np.allclose(
+                    multiple_effect_sizes[df_key][col_key],
+                    expected_effect_sizes[(df_key, col_key)]
+                )
+            )
+
 
 if __name__ == '__main__':
     unittest.main()

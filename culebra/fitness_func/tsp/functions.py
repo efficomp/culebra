@@ -162,28 +162,6 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         """
         return self.distance.shape[0]
 
-    @property
-    def heuristic(self) -> tuple[np.ndarray[float], ...]:
-        """Heuristic matrices.
-
-        :return: A sequence of heuristic matrices. One for each objective.
-            Arcs from a node to itself have a heuristic value of 0. For the
-            rest of arcs, the reciprocal of their nodes distance is used as
-            heuristic
-        :rtype: tuple[~numpy.ndarray[float]]
-        """
-        with np.errstate(divide='ignore'):
-            heur = np.where(
-                self.distance != 0.,
-                1 / self.distance,
-                0.
-            )
-
-        for node in range(self.num_nodes):
-            heur[node][node] = 0
-
-        return (heur,)
-
     def is_evaluable(self, sol: Solution) -> bool:
         """Assess the evaluability of a solution.
 
@@ -221,9 +199,14 @@ class PathLength(SingleObjectiveFitnessFunction, TSPFitnessFunction):
         # If the path can be constructed ...
         if max_len > 0:
             # Get the heuristic matrix
-            the_heuristic = self.heuristic[0]
+            with np.errstate(divide='ignore'):
+                the_heuristic = np.where(
+                    self.distance != 0.,
+                    1 / self.distance,
+                    0.
+                )
 
-           # Ignore banned nodes and arcs from a node to itself
+            # Ignore banned nodes and arcs from a node to itself
             for node in range(species.num_nodes):
                 the_heuristic[node][node] = 0
                 for ignored in species.banned_nodes:
@@ -935,23 +918,6 @@ class MultiObjectivePathLength(
         :rtype: int
         """
         return self.objectives[0].num_nodes
-
-    @property
-    def heuristic(self) -> tuple[np.ndarray[float], ...]:
-        """Heuristic matrices.
-
-        :return: A sequence of heuristic matrices. One for each objective.
-            Arcs from a node to itself have a heuristic value of 0. For the
-            rest of arcs, the reciprocal of their nodes distance is used as
-            heuristic
-        :rtype: tuple[~numpy.ndarray[float]]
-        """
-        heuristics = ()
-
-        for obj in self.objectives:
-            heuristics += obj.heuristic
-
-        return heuristics
 
 
 # Exported symbols for this module

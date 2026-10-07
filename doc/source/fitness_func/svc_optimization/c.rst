@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.svc_optimization.C
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.svc_optimization.C.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.svc_optimization.C.fitness_cls
@@ -42,6 +38,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.svc_optimization.C._default_index
 .. autoproperty:: culebra.fitness_func.svc_optimization.C._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.svc_optimization.C.load
 
 Methods
 -------

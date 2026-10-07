@@ -29,16 +29,16 @@ Class attributes
 .. autoattribute:: culebra.solution.parameter_optimization.Individual.eta
 .. autoattribute:: culebra.solution.parameter_optimization.Individual.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.parameter_optimization.Individual.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.parameter_optimization.Individual.fitness
 .. autoproperty:: culebra.solution.parameter_optimization.Individual.named_values_cls
 .. autoproperty:: culebra.solution.parameter_optimization.Individual.species
 .. autoproperty:: culebra.solution.parameter_optimization.Individual.values
+
+Static methods
+--------------
+.. automethod:: culebra.solution.parameter_optimization.Individual.load
 
 Methods
 -------

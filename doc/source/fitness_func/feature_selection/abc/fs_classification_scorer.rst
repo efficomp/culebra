@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.classifier
@@ -52,6 +48,10 @@ Private properties
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_index
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer._worst_score
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.feature_selection.abc.FSClassificationScorer.load
 
 Methods
 -------

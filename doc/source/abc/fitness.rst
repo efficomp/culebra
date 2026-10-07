@@ -30,16 +30,16 @@ Class attributes
 .. autoattribute:: culebra.abc.Fitness.thresholds
 .. autoattribute:: culebra.abc.Fitness.weights
 
-Class methods
--------------
-.. automethod:: culebra.abc.Fitness.load
-
 Properties
 ----------
 .. autoproperty:: culebra.abc.Fitness.is_valid
 .. autoproperty:: culebra.abc.Fitness.num_obj
 .. autoproperty:: culebra.abc.Fitness.values
 .. autoproperty:: culebra.abc.Fitness.wvalues
+
+Static methods
+--------------
+.. automethod:: culebra.abc.Fitness.load
 
 Methods
 -------

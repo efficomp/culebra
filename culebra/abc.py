@@ -92,8 +92,8 @@ class Base:
         with gzip.open(filename, 'wb') as f:
             dill.dump(self, f)
 
-    @classmethod
-    def load(cls, filename: str) -> Base:
+    @staticmethod
+    def load(filename: str) -> Base:
         """Load a serialized object from a file.
 
         :param filename: The file name.
@@ -110,7 +110,9 @@ class Base:
         )
 
         with gzip.open(filename, 'rb') as f:
-            return cls.__fromstate__(dill.load(f).__dict__)
+            obj = dill.load(f)
+            obj_cls = obj.__class__
+            return obj_cls.__fromstate__(obj.__dict__)
 
     def __copy__(self) -> Base:
         """Shallow copy the object.
@@ -154,11 +156,11 @@ class Base:
 
     def _get_repr_properties(self) -> dict[str, object]:
         """Return the subset of properties used for ``__repr__``.
-    
+
         Filters and evaluates all class-level ``@property`` attributes,
         returning only those intended for representation purposes. Private
         properties (names starting with ``_``) are excluded.
-    
+
         :return: Mapping of property names to their corresponding values.
         :rtype: dict[str, object]
         """
@@ -626,11 +628,11 @@ class FitnessFunction(Base):
 
     def _get_repr_properties(self) -> dict[str, object]:
         """Return the subset of properties used for ``__repr__``.
-    
+
         Filters and evaluates all class-level ``@property`` attributes,
         returning only those intended for representation purposes. Private
         properties (names starting with ``_``) are excluded.
-    
+
         :return: Mapping of property names to their corresponding values.
         :rtype: dict[str, object]
         """

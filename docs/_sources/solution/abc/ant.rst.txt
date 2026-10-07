@@ -28,10 +28,6 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.abc.Ant.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.abc.Ant.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.abc.Ant.current
@@ -39,6 +35,10 @@ Properties
 .. autoproperty:: culebra.solution.abc.Ant.fitness
 .. autoproperty:: culebra.solution.abc.Ant.path
 .. autoproperty:: culebra.solution.abc.Ant.species
+
+Static methods
+--------------
+.. automethod:: culebra.solution.abc.Ant.load
 
 Methods
 -------

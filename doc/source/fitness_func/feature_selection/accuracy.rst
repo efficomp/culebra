@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.feature_selection.Accuracy
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.feature_selection.Accuracy.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.feature_selection.Accuracy.classifier
@@ -52,6 +48,10 @@ Private properties
 .. autoproperty:: culebra.fitness_func.feature_selection.Accuracy._default_index
 .. autoproperty:: culebra.fitness_func.feature_selection.Accuracy._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.feature_selection.Accuracy._worst_score
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.feature_selection.Accuracy.load
 
 Methods
 -------

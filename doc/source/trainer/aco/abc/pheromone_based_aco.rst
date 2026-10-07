@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.abc.PheromoneBasedACO
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO.checkpoint_activation
@@ -88,6 +84,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.PheromoneBasedACO._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.abc.PheromoneBasedACO.load
 
 Methods
 -------

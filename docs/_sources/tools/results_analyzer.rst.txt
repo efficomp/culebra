@@ -24,8 +24,8 @@
 
 .. autoclass:: culebra.tools.ResultsAnalyzer
 
-Class methods
--------------
+Static methods
+--------------
 .. automethod:: culebra.tools.ResultsAnalyzer.load
 
 Methods
@@ -34,6 +34,7 @@ Methods
 .. automethod:: culebra.tools.ResultsAnalyzer.dump
 .. automethod:: culebra.tools.ResultsAnalyzer.effect_size
 .. automethod:: culebra.tools.ResultsAnalyzer.homoscedasticity_test
+.. automethod:: culebra.tools.ResultsAnalyzer.multiple_effect_size
 .. automethod:: culebra.tools.ResultsAnalyzer.multiple_rank
 .. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_pairwise_test
 .. automethod:: culebra.tools.ResultsAnalyzer.non_parametric_test

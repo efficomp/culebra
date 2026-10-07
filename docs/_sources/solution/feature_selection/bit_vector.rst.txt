@@ -28,10 +28,6 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.feature_selection.BitVector.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.feature_selection.BitVector.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.feature_selection.BitVector.features
@@ -40,6 +36,10 @@ Properties
 .. autoproperty:: culebra.solution.feature_selection.BitVector.min_feat
 .. autoproperty:: culebra.solution.feature_selection.BitVector.num_feats
 .. autoproperty:: culebra.solution.feature_selection.BitVector.species
+
+Static methods
+--------------
+.. automethod:: culebra.solution.feature_selection.BitVector.load
 
 Methods
 -------

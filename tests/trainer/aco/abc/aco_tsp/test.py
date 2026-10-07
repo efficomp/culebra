@@ -33,6 +33,7 @@ from culebra.trainer.aco import (
     DEFAULT_EXPLOITATION_PROB
 )
 from culebra.trainer.aco.abc import ACOTSP
+from culebra.trainer.aco.heuristic import tsp_default_heuristic
 from culebra.solution.tsp import Species, Ant
 from culebra.abc import Species as GenericSpecies
 from culebra.solution.abc import Ant as GenericAnt
@@ -206,8 +207,8 @@ class TrainerTester(unittest.TestCase):
             heuristic1,
             heuristic2
         ) in zip(
-            tsp_fitness_func_single.heuristic +
-            tsp_fitness_func_multi.heuristic,
+            tsp_default_heuristic(tsp_fitness_func_single) +
+            tsp_default_heuristic(tsp_fitness_func_multi),
             single_path_trainer.heuristic + multi_path_trainer.heuristic
         ):
             self.assertTrue((heuristic1==heuristic2).all())

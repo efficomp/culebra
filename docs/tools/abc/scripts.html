@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>culebra.tools.abc.scripts module &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
+    <script src="../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="culebra.tools.abc.scripts.BatchGenerator class" href="scripts/batch_generator.html" />
+    <link rel="prev" title="culebra.tools.abc.GeneratorScript class" href="generator_script.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts/batch_generator.html" title="culebra.tools.abc.scripts.BatchGenerator class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generator_script.html" title="culebra.tools.abc.GeneratorScript class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../abc.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts</span></code> module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-culebra.tools.abc.scripts">
+<span id="culebra-tools-abc-scripts-module"></span><h1><a class="reference internal" href="#module-culebra.tools.abc.scripts" title="culebra.tools.abc.scripts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts</span></code></a> module<a class="headerlink" href="#module-culebra.tools.abc.scripts" title="Link to this heading">¶</a></h1>
+<p>Absctract base classes for some common scripts.</p>
+<p>This module provides the following classes:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="scripts/training_test_data_generator.html#culebra.tools.abc.scripts.TrainingTestDataGenerator" title="culebra.tools.abc.scripts.TrainingTestDataGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingTestDataGenerator</span></code></a>, which
+implements the common preprocessing pipeline shared by all datasets</p></li>
+<li><p><a class="reference internal" href="scripts/training_test_fitness_function_generator.html#culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator" title="culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingTestFitnessFunctionsGenerator</span></code></a>,
+which generate the training and test fitness functions from the training and
+test datasets</p></li>
+<li><p><a class="reference internal" href="scripts/trainer_generator.html#culebra.tools.abc.scripts.TrainerGenerator" title="culebra.tools.abc.scripts.TrainerGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainerGenerator</span></code></a>, to generate a trainer
+from command-line parameters</p></li>
+<li><p><a class="reference internal" href="scripts/batch_generator.html#culebra.tools.abc.scripts.BatchGenerator" title="culebra.tools.abc.scripts.BatchGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchGenerator</span></code></a>, to generate a batch of
+experiments from command-line parameters</p></li>
+<li><p><a class="reference internal" href="scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer" title="culebra.tools.abc.scripts.BatchResultsAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchResultsAnalyzer</span></code></a>, to analyze the
+results of trainer batches</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts/batch_generator.html" title="culebra.tools.abc.scripts.BatchGenerator class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generator_script.html" title="culebra.tools.abc.GeneratorScript class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../abc.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc.scripts</span></code> module</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../../_sources/tools/abc/scripts.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work is supported by projects <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish State
+        Research Agency <a href="https://doi.org/10.13039/501100011033">
+        MCIN/AEI/10.13039/501100011033</a>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

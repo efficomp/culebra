@@ -35,7 +35,6 @@ Class methods
 -------------
 .. automethod:: culebra.tools.evaluation.Batch.from_config
 .. automethod:: culebra.tools.evaluation.Batch.generate_run_script
-.. automethod:: culebra.tools.evaluation.Batch.load
 
 Properties
 ----------
@@ -56,6 +55,10 @@ Private properties
 .. autoproperty:: culebra.tools.evaluation.Batch._default_num_experiments
 .. autoproperty:: culebra.tools.evaluation.Batch._default_results_base_filename
 .. autoproperty:: culebra.tools.evaluation.Batch._default_test_fitness_func
+
+Static methods
+--------------
+.. automethod:: culebra.tools.evaluation.Batch.load
 
 Methods
 -------

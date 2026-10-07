@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.solution.parameter_optimization.Species
 
-Class methods
--------------
-.. automethod:: culebra.solution.parameter_optimization.Species.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.parameter_optimization.Species.lower_bounds
@@ -35,6 +31,10 @@ Properties
 .. autoproperty:: culebra.solution.parameter_optimization.Species.num_params
 .. autoproperty:: culebra.solution.parameter_optimization.Species.types
 .. autoproperty:: culebra.solution.parameter_optimization.Species.upper_bounds
+
+Static methods
+--------------
+.. automethod:: culebra.solution.parameter_optimization.Species.load
 
 Methods
 -------

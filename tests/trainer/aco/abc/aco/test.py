@@ -39,6 +39,7 @@ from culebra.trainer.aco import (
     DEFAULT_EXPLOITATION_PROB
 )
 from culebra.trainer.aco.abc import ACO
+from culebra.trainer.aco.heuristic import tsp_default_heuristic
 from culebra.solution.tsp import Species, Solution, Ant
 from culebra.fitness_func.tsp import (
     PathLength,
@@ -62,7 +63,7 @@ class MySingleObjTrainer(ACO):
     @property
     def _default_heuristic(self):
         """Default heuristic matrices."""
-        return self.fitness_func.heuristic
+        return tsp_default_heuristic(self.fitness_func)
 
     @property
     def pheromone_shapes(self):
@@ -518,7 +519,7 @@ class TrainerTester(unittest.TestCase):
             initial_pheromone
         )
         for heur1, heur2 in zip(
-            tsp_fitness_func_single.heuristic, trainer.heuristic
+            tsp_default_heuristic(tsp_fitness_func_single), trainer.heuristic
         ):
             self.assertTrue(np.all(heur1 == heur2))
 
@@ -662,7 +663,7 @@ class TrainerTester(unittest.TestCase):
 
         )
         for heur1, heur2 in zip(
-            tsp_fitness_func_single.heuristic, trainer.heuristic
+            tsp_default_heuristic(tsp_fitness_func_multi), trainer.heuristic
         ):
             self.assertTrue(np.all(heur1 == heur2))
 

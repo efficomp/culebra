@@ -28,11 +28,16 @@ includes the following classes:
   trainer.
 * :class:`~culebra.tools.abc.Evaluation`, which provides the interface for
   evaluating a trainer.
+* :class:`~culebra.tools.abc.GeneratorScript`, which is useful to develop
+  scripts that generate files or objects
+* :class:`~culebra.tools.abc.Script`, which is the base for command-line
+  scripts
 """
 
 from __future__ import annotations
 
 from abc import abstractmethod
+import argparse
 from enum import Enum
 from copy import deepcopy
 from os import chmod
@@ -55,14 +60,14 @@ from culebra.checker import (
     check_params
 )
 from culebra.solution.feature_selection import Metrics
-from .constants import (
+from ..constants import (
     DEFAULT_SCRIPT_FILE_EXTENSION,
     DEFAULT_RESULTS_BASE_FILENAME,
     DEFAULT_EXCEL_FILE_EXTENSION,
     DEFAULT_RUN_SCRIPT_FILENAME,
     DEFAULT_CONFIG_SCRIPT_FILENAME,
 )
-from .results import Results
+from ..results import Results
 
 
 __author__ = 'Jesús González'
@@ -859,8 +864,84 @@ for res, val in {var_name}.results.items():
         return deepcopy(obj)
 
 
+class Script(Base):
+    """
+    Abstract base class for python scripts.
+
+    The expected workflow is:
+
+        script = ConcreteScript()
+        script.process()
+
+    :ivar _parser: Argument parser.
+    :vartype _parser: ~argparse.ArgumentParser
+    :ivar _debug_args: Sequence of debug arguments.
+    :vartype _debug_args: list[str, ...]
+    :ivar _args: Parsed command-line arguments.
+    :vartype _args: ~argparse.Namespace
+    """
+    def __init__(self, args: list[str] | None = None) -> None:
+        """
+        Construct the generator.
+
+        Generate an empty argument parser. Subclasses should add arguments to
+        the parser.
+
+        :param args: Sequence of command-line arguments to parse. If ``None``
+            (default), arguments are read from ``sys.argv``. This parameter
+            is mainly intended for testing, allowing command-line arguments
+            to be supplied programmatically.
+        :type args: list[str] | None
+        """
+        self._parser = argparse.ArgumentParser()
+        self._debug_args = args
+        self._args = None
+
+    def parse_args(self) -> None:
+        """
+        Parse command-line arguments.
+
+        Subclasses should validate the arguments.
+
+        :raises SystemExit: If the command-line arguments are invalid or
+            ``--help`` is requested.
+        """
+        self._args = self._parser.parse_args(self._debug_args)
+
+    @abstractmethod
+    def process(self) -> None:
+        """
+        Execute the main processing logic of the script.
+        """
+
+
+class GeneratorScript(Script):
+    """
+    Abstract base class for python scripts for generators from command-line arguments.
+
+    The expected workflow is:
+
+        generator = ConcreteGenerator()
+        generator.generate()
+
+    :ivar _parser: Argument parser.
+    :vartype _parser: ~argparse.ArgumentParser
+    :ivar _debug_args: Sequence of debug arguments.
+    :vartype _debug_args: list[str, ...]
+    :ivar _args: Parsed command-line arguments.
+    :vartype _args: ~argparse.Namespace
+    """
+    @abstractmethod
+    def generate(self) -> None:
+        """
+        Generate the output files.
+        """
+
+
 # Exported symbols for this module
 __all__ = [
     'DecisionManager',
-    'Evaluation'
+    'Evaluation',
+    'Script',
+    'GeneratorScript'
 ]

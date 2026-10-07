@@ -24,8 +24,8 @@
 
 .. autoclass:: culebra.abc.Species
 
-Class methods
--------------
+Static methods
+--------------
 .. automethod:: culebra.abc.Species.load
 
 Methods

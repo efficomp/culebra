@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.cooperative.FSSVCScorer
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.cooperative.FSSVCScorer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.cooperative.FSSVCScorer.fitness_cls
@@ -40,6 +36,10 @@ Properties
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.cooperative.FSSVCScorer._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.cooperative.FSSVCScorer.load
 
 Methods
 -------

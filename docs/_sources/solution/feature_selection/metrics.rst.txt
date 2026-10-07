@@ -26,7 +26,6 @@
 
 Static methods
 --------------
-
 .. automethod:: culebra.solution.feature_selection.Metrics.rank
 .. automethod:: culebra.solution.feature_selection.Metrics.relevance
 

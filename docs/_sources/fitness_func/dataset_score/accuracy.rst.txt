@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.dataset_score.Accuracy
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.dataset_score.Accuracy.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.dataset_score.Accuracy.cv_fixed_folds
@@ -50,6 +46,10 @@ Private properties
 .. autoproperty:: culebra.fitness_func.dataset_score.Accuracy._default_index
 .. autoproperty:: culebra.fitness_func.dataset_score.Accuracy._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.dataset_score.Accuracy._worst_score
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.dataset_score.Accuracy.load
 
 Methods
 -------

@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.abc.CentralizedTrainer
 
-Class methods
--------------
-.. automethod:: culebra.trainer.abc.CentralizedTrainer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.CentralizedTrainer.checkpoint_activation
@@ -68,6 +64,10 @@ Private properties
 .. autoproperty:: culebra.trainer.abc.CentralizedTrainer._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.abc.CentralizedTrainer._default_send_representatives_func
 .. autoproperty:: culebra.trainer.abc.CentralizedTrainer._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.abc.CentralizedTrainer.load
 
 Methods
 -------

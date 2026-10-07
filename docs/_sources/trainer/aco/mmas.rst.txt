@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.MMAS
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.MMAS.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.MMAS.checkpoint_activation
@@ -93,6 +89,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.MMAS._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.MMAS._default_verbosity
 .. autoproperty:: culebra.trainer.aco.MMAS._global_best_freq
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.MMAS.load
 
 Methods
 -------

@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.QualityBasedPACO
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.QualityBasedPACO.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO.checkpoint_activation
@@ -92,6 +88,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.QualityBasedPACO._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.QualityBasedPACO.load
 
 Methods
 -------

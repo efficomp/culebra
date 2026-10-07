@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.abc.IslandsTrainer
 
-Class methods
--------------
-.. automethod:: culebra.trainer.abc.IslandsTrainer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.abc.IslandsTrainer.cooperative_fitness_estimation_func
@@ -56,6 +52,7 @@ Private properties
 
 Static methods
 --------------
+.. automethod:: culebra.trainer.abc.IslandsTrainer.load
 .. automethod:: culebra.trainer.abc.IslandsTrainer.receive_representatives
 .. automethod:: culebra.trainer.abc.IslandsTrainer.send_representatives
 

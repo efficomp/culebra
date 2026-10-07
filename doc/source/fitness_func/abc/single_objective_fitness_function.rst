@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.fitness_cls
@@ -42,6 +38,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction._default_index
 .. autoproperty:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.abc.SingleObjectiveFitnessFunction.load
 
 Methods
 -------

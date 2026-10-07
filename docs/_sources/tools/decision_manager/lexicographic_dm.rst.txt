@@ -24,17 +24,17 @@
 
 .. autoclass:: culebra.tools.decision_manager.LexicographicDM
 
-Class methods
--------------
-.. automethod:: culebra.tools.decision_manager.LexicographicDM.load
-
 Properties
-------------------
+----------
 .. autoproperty:: culebra.tools.decision_manager.LexicographicDM.obj_thresholds
 
 Private properties
 ------------------
 .. autoproperty:: culebra.tools.decision_manager.LexicographicDM._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.tools.decision_manager.LexicographicDM.load
 
 Methods
 -------

@@ -24,14 +24,9 @@
 
 .. autoclass:: culebra.fitness_func.tsp.MultiObjectivePathLength
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.tsp.MultiObjectivePathLength.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.tsp.MultiObjectivePathLength.fitness_cls
-.. autoproperty:: culebra.fitness_func.tsp.MultiObjectivePathLength.heuristic
 .. autoproperty:: culebra.fitness_func.tsp.MultiObjectivePathLength.num_nodes
 .. autoproperty:: culebra.fitness_func.tsp.MultiObjectivePathLength.num_obj
 .. autoproperty:: culebra.fitness_func.tsp.MultiObjectivePathLength.obj_names
@@ -42,6 +37,10 @@ Properties
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.tsp.MultiObjectivePathLength._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.tsp.MultiObjectivePathLength.load
 
 Methods
 -------

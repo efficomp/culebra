@@ -28,15 +28,15 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.tsp.Solution.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.tsp.Solution.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.tsp.Solution.fitness
 .. autoproperty:: culebra.solution.tsp.Solution.path
 .. autoproperty:: culebra.solution.tsp.Solution.species
+
+Static methods
+--------------
+.. automethod:: culebra.solution.tsp.Solution.load
 
 Methods
 -------

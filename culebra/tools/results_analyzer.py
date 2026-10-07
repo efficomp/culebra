@@ -348,8 +348,13 @@ class EffectSize(NamedTuple):
     value: np.ndarray
     """Effect size values."""
 
-    def __str__(self) -> str:
-        """Pretty print of the effect sizes."""
+    @property
+    def series(self) -> Series:
+        """Test outcome as a Series.
+
+        :return: A series with the test outcome
+        :rtype: ~pandas.Series
+        """
         sorted_batches = list(
             sorted(
                 dict(
@@ -359,25 +364,25 @@ class EffectSize(NamedTuple):
             )
         )
 
-        data = []
-        headers = ('Batch0', 'Batch1', 'Effect size')
+        data = {}
         num_batches = len(self.batches)
         for i in range(num_batches):
             index_i, batch_i = sorted_batches[i]
             for j in range(i+1, num_batches):
                 index_j, batch_j = sorted_batches[j]
-                data += [
-                    [
-                        batch_i,
-                        batch_j,
-                        round(
-                            self.value[index_i][index_j],
-                            DEFAULT_PRECISION
-                        )
-                    ]
-                ]
+                data[(batch_i, batch_j)] = round(
+                    self.value[index_i][index_j],
+                    DEFAULT_PRECISION
+                )
+        series = Series(data)
+        series.index.names = ['Batch0', 'Batch1']
+        series.name = 'Effect size'
 
-        return tabulate(data, headers=headers, showindex=None)
+        return DataFrame(series)
+
+    def __str__(self) -> str:
+        """Pretty print of the effect sizes."""
+        return str(self.series)
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs."""
@@ -406,21 +411,21 @@ class ResultsAnalyzer(UserDict, Base):
         self, data: Series, cv_threshold: float = 0.0001
     ) -> bool:
         """
-        Check if a data series has enough statistical variance to be used in 
+        Check if a data series has enough statistical variance to be used in
         inferential tests (e.g., normality, homoscedasticity, or t-tests).
 
-        This method acts as a safeguard to prevent mathematical errors such as 
-        division by zero or 'NaN' results in tests that rely on the standard 
+        This method acts as a safeguard to prevent mathematical errors such as
+        division by zero or 'NaN' results in tests that rely on the standard
         deviation or the variance of the sample.
 
         :param data: The pandas Series to be evaluated.
         :type data: pandas.Series
-        :param cv_threshold: The minimum Coefficient of Variation (CV) required. 
-                          If the mean is zero, the absolute standard deviation 
-                          is compared against this threshold instead. 
+        :param cv_threshold: The minimum Coefficient of Variation (CV) required.
+                          If the mean is zero, the absolute standard deviation
+                          is compared against this threshold instead.
                           Defaults to 0.001.
         :type cv_threshold: float
-        :return: True if the series is informative enough for statistical 
+        :return: True if the series is informative enough for statistical
                  analysis, False if it is constant or near-constant.
         :rtype: bool
 
@@ -872,7 +877,9 @@ class ResultsAnalyzer(UserDict, Base):
 
         # If not all the series are constant
         if len(constant_info) < num_batches:
-            pvalue = posthoc_dunn(batches, p_adjust=p_adjust).to_numpy()
+            pvalue = posthoc_dunn(batches, p_adjust=p_adjust).to_numpy(
+                copy=True
+            )
         else:
             pvalue = np.zeros((num_batches, num_batches))
 
@@ -1294,6 +1301,49 @@ class ResultsAnalyzer(UserDict, Base):
 
         return rank_series
 
+    def multiple_effect_size(
+        self,
+        dataframe_keys: Sequence[str],
+        columns: Sequence[str]
+    ) -> DataFrame:
+        """Effect size for multiple results.
+
+        The *dataframe_keys* and *columns* must have the same length, and will
+        be used to obtain different effect sizes for the results.
+
+        :param dataframe_keys: Sequence of dataframe keys to select the
+            different results of the batches
+        :type dataframe_keys: ~collections.abc.Sequence[str]
+        :param columns: Sequence of column labels to select the different
+            results of the batches
+        :type columns: ~collections.abc.Sequence[str]
+        :return: The effect size of every couple of batches for all the
+            results
+        :rtype: ~pandas.DataFrame
+        :raises ValueError: If there aren't sufficient data in the analyzed
+            results with any given dataframe key and column label
+        """
+        multiple_effect_size = DataFrame()
+        index_tuples = []
+        for (
+            dataframe_key,
+            column,
+        ) in zip(dataframe_keys, columns):
+            effect_sizes = self.effect_size(
+                dataframe_key,
+                column)
+            index_tuples += [(dataframe_key, column)]
+            multiple_effect_size[column] = effect_sizes.series
+
+        multi_index = MultiIndex.from_tuples(
+            index_tuples, names=(
+                "Effect size", "Batches"
+            )
+        )
+        multiple_effect_size.columns = multi_index
+        multiple_effect_size.sort_index(axis=1, inplace=True)
+        return multiple_effect_size
+
     def multiple_rank(
         self,
         dataframe_keys: Sequence[str],
@@ -1378,11 +1428,12 @@ class ResultsAnalyzer(UserDict, Base):
 
         multi_index = MultiIndex.from_tuples(
             index_tuples, names=(
-                "DataFrame", "Batch"
+                "Rank", "Batch"
             )
         )
         multiple_ranking.columns = multi_index
         multiple_ranking.sort_index(axis=1, inplace=True)
+
         return multiple_ranking
 
     def __setitem__(self, batch_key: str, batch_results: Results) -> Results:

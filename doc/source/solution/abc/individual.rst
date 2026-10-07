@@ -28,14 +28,14 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.abc.Individual.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.abc.Individual.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.abc.Individual.fitness
 .. autoproperty:: culebra.solution.abc.Individual.species
+
+Static methods
+--------------
+.. automethod:: culebra.solution.abc.Individual.load
 
 Methods
 -------

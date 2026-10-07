@@ -235,7 +235,7 @@ class DatasetTester(unittest.TestCase):
         self.assertEqual(dataset.inputs[0, 0], 0)
         self.assertEqual(dataset.inputs[dataset.size-1, 0], 1)
 
-        # Try to a split dataset with numeric labels.
+        # Try to load a split dataset with numeric labels.
         dataset = Dataset.from_text("numeric_1.dat", "numeric_1.dat")
         self.assertEqual(dataset.num_feats, 4)
         self.assertEqual(dataset.size, 10)

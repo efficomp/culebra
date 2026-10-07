@@ -24,14 +24,9 @@
 
 .. autoclass:: culebra.fitness_func.tsp.abc.TSPFitnessFunction
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.fitness_cls
-.. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.heuristic
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.num_nodes
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.num_obj
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.obj_names
@@ -42,6 +37,10 @@ Properties
 Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.tsp.abc.TSPFitnessFunction._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.tsp.abc.TSPFitnessFunction.load
 
 Methods
 -------

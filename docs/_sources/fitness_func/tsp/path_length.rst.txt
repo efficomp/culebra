@@ -28,13 +28,11 @@ Class methods
 -------------
 .. automethod:: culebra.fitness_func.tsp.PathLength.from_path
 .. automethod:: culebra.fitness_func.tsp.PathLength.from_tsplib
-.. automethod:: culebra.fitness_func.tsp.PathLength.load
 
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.distance
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.fitness_cls
-.. autoproperty:: culebra.fitness_func.tsp.PathLength.heuristic
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.index
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.num_nodes
 .. autoproperty:: culebra.fitness_func.tsp.PathLength.num_obj
@@ -47,6 +45,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.tsp.PathLength._default_index
 .. autoproperty:: culebra.fitness_func.tsp.PathLength._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.tsp.PathLength.load
 
 Methods
 -------

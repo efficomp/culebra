@@ -101,6 +101,7 @@ Attributes
     :hidden:
 
     abc <aco/abc>
+    heuristic <aco/heuristic>
 
     AntSystem <aco/ant_system>
     ElitistAntSystem <aco/elitist_ant_system>

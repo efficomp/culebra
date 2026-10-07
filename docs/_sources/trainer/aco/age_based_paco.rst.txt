@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.AgeBasedPACO
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.AgeBasedPACO.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO.checkpoint_activation
@@ -92,6 +88,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.AgeBasedPACO._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.AgeBasedPACO.load
 
 Methods
 -------

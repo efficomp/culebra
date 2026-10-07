@@ -28,10 +28,6 @@ Class attributes
 ----------------
 .. autoattribute:: culebra.solution.parameter_optimization.Solution.species_cls
 
-Class methods
--------------
-.. automethod:: culebra.solution.parameter_optimization.Solution.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.parameter_optimization.Solution.fitness
@@ -39,6 +35,9 @@ Properties
 .. autoproperty:: culebra.solution.parameter_optimization.Solution.species
 .. autoproperty:: culebra.solution.parameter_optimization.Solution.values
 
+Static methods
+--------------
+.. automethod:: culebra.solution.parameter_optimization.Solution.load
 
 Methods
 -------

@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.dataset_score.abc.ClassificationScorer
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.dataset_score.abc.ClassificationScorer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.ClassificationScorer.classifier
@@ -52,6 +48,10 @@ Private properties
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_index
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.ClassificationScorer._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.dataset_score.abc.ClassificationScorer._worst_score
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.dataset_score.abc.ClassificationScorer.load
 
 Methods
 -------

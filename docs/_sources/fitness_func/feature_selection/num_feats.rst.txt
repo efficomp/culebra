@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.feature_selection.NumFeats
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.feature_selection.NumFeats.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.feature_selection.NumFeats.fitness_cls
@@ -42,6 +38,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.feature_selection.NumFeats._default_index
 .. autoproperty:: culebra.fitness_func.feature_selection.NumFeats._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.feature_selection.NumFeats.load
 
 Methods
 -------

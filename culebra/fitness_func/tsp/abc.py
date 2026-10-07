@@ -29,8 +29,6 @@ from __future__ import annotations
 
 from abc import abstractmethod
 
-from numpy import ndarray
-
 from culebra.abc import FitnessFunction
 
 
@@ -59,24 +57,6 @@ class TSPFitnessFunction(FitnessFunction):
         """
         raise NotImplementedError(
             "The num_nodes property has not been implemented in the "
-            f"{self.__class__.__name__} class")
-
-    @property
-    @abstractmethod
-    def heuristic(self) -> tuple[ndarray[float], ...]:
-        """Heuristic matrices.
-
-        This property must be overridden by subclasses.
-
-        :return: A sequence of heuristic matrices. One for each objective.
-            Arcs from a node to itself have a heuristic value of 0. For the
-            rest of arcs, the reciprocal of their nodes distance is used as
-            heuristic
-        :rtype: tuple[~numpy.ndarray[float]]
-        :raises NotImplementedError: If has not been overridden
-        """
-        raise NotImplementedError(
-            "The heuristic method has not been implemented in the "
             f"{self.__class__.__name__} class")
 
 

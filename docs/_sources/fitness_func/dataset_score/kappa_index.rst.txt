@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.dataset_score.KappaIndex
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.dataset_score.KappaIndex.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.dataset_score.KappaIndex.cv_fixed_folds
@@ -50,6 +46,10 @@ Private properties
 .. autoproperty:: culebra.fitness_func.dataset_score.KappaIndex._default_index
 .. autoproperty:: culebra.fitness_func.dataset_score.KappaIndex._default_similarity_threshold
 .. autoproperty:: culebra.fitness_func.dataset_score.KappaIndex._worst_score
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.dataset_score.KappaIndex.load
 
 Methods
 -------

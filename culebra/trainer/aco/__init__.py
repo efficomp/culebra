@@ -24,6 +24,9 @@ This module is composed by:
 * The :mod:`~culebra.trainer.aco.abc` sub-module, where some abstract base
   classes are defined to support the ACO trainers developed in this module
 
+* The :mod:`~culebra.trainer.aco.heuristic` sub-module, where some functions
+  defining different heuristics are provided
+
 * Some popular single-objective ACO algorithms:
 
   * Algorithms relying on pheromone evaporation:
@@ -74,7 +77,7 @@ from .constants import (
     DEFAULT_ACOFS_DISCARD_PROB
 )
 
-from . import abc
+from . import abc, heuristic
 
 from .single_obj_aco import (
     AntSystem,
@@ -111,6 +114,7 @@ __status__ = 'Development'
 # Exported symbols for this module
 __all__ = [
     'abc',
+    'heuristic',
     'AntSystem',
     'ElitistAntSystem',
     'MMAS',

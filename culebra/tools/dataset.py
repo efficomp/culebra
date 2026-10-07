@@ -21,6 +21,7 @@
 
 from __future__ import annotations
 
+import warnings
 from os import PathLike
 from copy import deepcopy
 from collections import Counter
@@ -443,8 +444,19 @@ class Dataset(Base):
             majority_voting = np.zeros((len(inputs_class),))
 
             # Apply the detectors
-            for detector in detectors:
-                majority_voting += (detector.fit_predict(inputs_class) < 0)
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    category=UserWarning,
+                    module=r"sklearn\.neighbors\..*",
+                    message= (
+                        r"n_neighbors \(\d+\) is greater than the total "
+                        "number of samples \(\d+\).*"
+                    )
+                )
+
+                for detector in detectors:
+                    majority_voting += (detector.fit_predict(inputs_class) < 0)
 
             # Get the outliers indices
             outlier_indices = majority_voting > detection_th

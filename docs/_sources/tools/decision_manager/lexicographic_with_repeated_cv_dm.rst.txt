@@ -24,12 +24,8 @@
 
 .. autoclass:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM
 
-Class methods
--------------
-.. automethod:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.load
-
 Properties
-------------------
+----------
 .. autoproperty:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.cv_repeats
 .. autoproperty:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.obj_thresholds
 
@@ -37,6 +33,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._default_cv_repeats
 .. autoproperty:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.tools.decision_manager.LexicographicWithRepeatedCVDM.load
 
 Methods
 -------

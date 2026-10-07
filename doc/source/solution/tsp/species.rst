@@ -24,14 +24,14 @@
 
 .. autoclass:: culebra.solution.tsp.Species
 
-Class methods
--------------
-.. automethod:: culebra.solution.tsp.Species.load
-
 Properties
 ----------
 .. autoproperty:: culebra.solution.tsp.Species.banned_nodes
 .. autoproperty:: culebra.solution.tsp.Species.num_nodes
+
+Static methods
+--------------
+.. automethod:: culebra.solution.tsp.Species.load
 
 Methods
 -------

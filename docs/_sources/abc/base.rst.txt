@@ -24,8 +24,8 @@
 
 .. autoclass:: culebra.abc.Base
 
-Class methods
--------------
+Static methods
+--------------
 .. automethod:: culebra.abc.Base.load
 
 Methods

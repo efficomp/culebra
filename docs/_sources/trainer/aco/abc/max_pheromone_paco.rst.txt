@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.abc.MaxPheromonePACO
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO.checkpoint_activation
@@ -90,6 +86,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.MaxPheromonePACO._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.abc.MaxPheromonePACO.load
 
 Methods
 -------

@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.fitness_func.svc_optimization.abc.SVCScorer
 
-Class methods
--------------
-.. automethod:: culebra.fitness_func.svc_optimization.abc.SVCScorer.load
-
 Properties
 ----------
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer.fitness_cls
@@ -42,6 +38,10 @@ Private properties
 ------------------
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer._default_index
 .. autoproperty:: culebra.fitness_func.svc_optimization.abc.SVCScorer._default_similarity_threshold
+
+Static methods
+--------------
+.. automethod:: culebra.fitness_func.svc_optimization.abc.SVCScorer.load
 
 Methods
 -------

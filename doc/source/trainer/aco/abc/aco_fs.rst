@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.abc.ACOFS
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.abc.ACOFS.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.checkpoint_activation
@@ -93,6 +89,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.abc.ACOFS.load
 
 Methods
 -------

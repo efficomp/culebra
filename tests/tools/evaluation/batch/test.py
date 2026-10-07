@@ -48,8 +48,7 @@ from culebra.fitness_func.feature_selection import (
 from culebra.fitness_func.svc_optimization import C
 from culebra.fitness_func.cooperative import FSSVCScorer
 from culebra.trainer.abc import (
-#    ParallelDistributedTrainer,
-    SequentialDistributedTrainer,
+    ParallelDistributedTrainer,
     CooperativeTrainer
 )
 from culebra.trainer.ea import ElitistEA
@@ -171,7 +170,7 @@ subtrainers = (
 )
 
 # Trainer
-class MyTrainer(SequentialDistributedTrainer, CooperativeTrainer):
+class MyTrainer(ParallelDistributedTrainer, CooperativeTrainer):
     """Parallel implementation of a cooperative trainer."""
 
 
@@ -333,9 +332,10 @@ class BatchTester(unittest.TestCase):
         for key in batch.results:
             self.assertIsInstance(batch.results[key], DataFrame)
 
-        # Remove the experiments
+        # Remove the batch setup files
         for exp in batch.experiment_labels:
             rmtree(exp)
+        remove(batch.experiment_basename + SERIALIZED_FILE_EXTENSION)
 
         # Check the result files
         isfile(batch.serialized_results_filename)

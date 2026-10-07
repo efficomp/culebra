@@ -44,15 +44,20 @@
   <section id="module-culebra.tools.abc">
 <span id="culebra-tools-abc-module"></span><h1><a class="reference internal" href="#module-culebra.tools.abc" title="culebra.tools.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code></a> module<a class="headerlink" href="#module-culebra.tools.abc" title="Link to this heading">¶</a></h1>
 <p>Abstract base classes for tool development.</p>
-<p>The <a class="reference internal" href="#module-culebra.tools.abc" title="culebra.tools.abc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a> module defines the abstract base classes used to
-support experimentation and the selection of optimal solutions. Currently, it
-includes the following classes:</p>
+<p>This module is composed by:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="abc/decision_manager.html#culebra.tools.abc.DecisionManager" title="culebra.tools.abc.DecisionManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionManager</span></code></a>, which is responsible for
-selecting a solution from among the best candidates identified by the
+<li><p>The <a class="reference internal" href="abc/scripts.html#module-culebra.tools.abc.scripts" title="culebra.tools.abc.scripts"><code class="xref py py-class docutils literal notranslate"><span class="pre">scripts</span></code></a> sub-module, where some abstract base
+classes for several kinds of typical scripts are provided
+managers that let select an adequate solution</p></li>
+<li><p>The <a class="reference internal" href="abc/decision_manager.html#culebra.tools.abc.DecisionManager" title="culebra.tools.abc.DecisionManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionManager</span></code></a> class, which is responsible
+for selecting a solution from among the best candidates identified by the
 trainer.</p></li>
-<li><p><a class="reference internal" href="abc/evaluation.html#culebra.tools.abc.Evaluation" title="culebra.tools.abc.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluation</span></code></a>, which provides the interface for
-evaluating a trainer.</p></li>
+<li><p>The <a class="reference internal" href="abc/evaluation.html#culebra.tools.abc.Evaluation" title="culebra.tools.abc.Evaluation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluation</span></code></a> class, which provides the
+interface for evaluating a trainer.</p></li>
+<li><p>The <a class="reference internal" href="abc/generator_script.html#culebra.tools.abc.GeneratorScript" title="culebra.tools.abc.GeneratorScript"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeneratorScript</span></code></a> class, which is useful to
+develop scripts that generate files or objects</p></li>
+<li><p>The <a class="reference internal" href="abc/script.html#culebra.tools.abc.Script" title="culebra.tools.abc.Script"><code class="xref py py-class docutils literal notranslate"><span class="pre">Script</span></code></a> class, which is the base for
+command-line scripts</p></li>
 </ul>
 <div class="toctree-wrapper compound">
 </div>

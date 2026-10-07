@@ -24,10 +24,6 @@
 
 .. autoclass:: culebra.trainer.aco.PACOMO
 
-Class methods
--------------
-.. automethod:: culebra.trainer.aco.PACOMO.load
-
 Properties
 ----------
 .. autoproperty:: culebra.trainer.aco.PACOMO.checkpoint_activation
@@ -90,6 +86,10 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.PACOMO._default_receive_representatives_func
 .. autoproperty:: culebra.trainer.aco.PACOMO._default_send_representatives_func
 .. autoproperty:: culebra.trainer.aco.PACOMO._default_verbosity
+
+Static methods
+--------------
+.. automethod:: culebra.trainer.aco.PACOMO.load
 
 Methods
 -------
