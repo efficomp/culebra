@@ -43,10 +43,10 @@ NUM_SAMPLES = 351
 NUM_CLASSES = 2
 
 # Script parameters
-test_prop = "0.3"
-training_file = "training.data"
-test_file = "test.data"
-seed = "0"
+test_prop = "0.4"
+training_data = "tr.dat"
+test_data = "tst.dat"
+random_seed = "18"
 
 
 class MyTrainingTestDataGenerator(TrainingTestDataGenerator):
@@ -96,32 +96,22 @@ class TrainingTestDataGeneratorTester(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Remove the training and test data files."""
-        if Path(training_file).exists():
-            remove(training_file)
-        if Path(test_file).exists():
-            remove(test_file)
+        if Path(training_data).exists():
+            remove(training_data)
+        if Path(test_data).exists():
+            remove(test_data)
 
     def test_parse_args(self):
         """Test the parse_args method."""
 
         stderr = StringIO()
         with redirect_stderr(stderr):
-            # Try without parameters. Should fail ...
-            with self.assertRaises(SystemExit):
-                generator = MyTrainingTestDataGenerator()
-                generator.parse_args()
-
             # Try a wrong test_prop. Should fail ...
             wrong_test_prop_values = ["a", "-1", "0", "1", "2"]
             for wrong_test_prop in wrong_test_prop_values:
                 with self.assertRaises(SystemExit):
                     generator = MyTrainingTestDataGenerator(
-                        [
-                            wrong_test_prop,
-                            training_file,
-                            test_file,
-                            seed
-                        ]
+                        ["--test-prop", wrong_test_prop]
                     )
                     generator.parse_args()
 
@@ -129,100 +119,104 @@ class TrainingTestDataGeneratorTester(unittest.TestCase):
             wrong_filepath = "kk/file.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestDataGenerator(
-                    [
-                        test_prop,
-                        wrong_filepath,
-                        test_file,
-                        seed
-                    ]
+                    ["--training-data", wrong_filepath]
                 )
                 generator.parse_args()
 
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestDataGenerator(
-                    [
-                        test_prop,
-                        training_file,
-                        wrong_filepath,
-                        seed
-                    ]
+                    ["--test-data", wrong_filepath]
                 )
                 generator.parse_args()
 
-            # Try a wrong seed. Should fail ...
-            wrong_seed_values = ["a", "-1.5", "1.4"]
-            for wrong_seed in wrong_seed_values:
+            # Try a wrong random seed. Should fail ...
+            wrong_random_seed_values = ["a", "-1.5", "1.4"]
+            for wrong_random_seed in wrong_random_seed_values:
                 with self.assertRaises(SystemExit):
                     generator = MyTrainingTestDataGenerator(
-                        [
-                            test_prop,
-                            training_file,
-                            test_file,
-                            wrong_seed
-                        ]
+                        ["--random-seed", wrong_random_seed]
                     )
                     generator.parse_args()
+
+        # Try with the default parameters
+        generator = MyTrainingTestDataGenerator()
+        generator.parse_args()
+        # Assess the parameters
+        self.assertEqual(
+            generator._args.test_prop, generator.default_test_prop
+        )
+        self.assertEqual(
+            generator._args.training_data, generator.default_training_data
+        )
+        self.assertEqual(
+            generator._args.test_data,
+            generator.default_test_data
+        )
+        self.assertEqual(
+            generator._args.random_seed,
+            generator.default_random_seed
+        )
 
         # Try valid values
         generator = MyTrainingTestDataGenerator(
             [
-                test_prop,
-                training_file,
-                test_file,
-                seed
+                "--test-prop", test_prop,
+                "--training-data", training_data,
+                "--test-data", test_data,
+                "--random-seed", random_seed
             ]
         )
         generator.parse_args()
 
         # Assess the parameters
         self.assertEqual(generator._args.test_prop, float(test_prop))
-        self.assertEqual(generator._args.training_file, training_file)
-        self.assertEqual(generator._args.test_file, test_file)
-        self.assertEqual(generator._args.seed, int(seed))
+        self.assertEqual(generator._args.training_data, training_data)
+        self.assertEqual(generator._args.test_data, test_data)
+        self.assertEqual(generator._args.random_seed, int(random_seed))
 
     def test_process(self):
         """Test the process method."""
         generator = MyTrainingTestDataGenerator(
             [
-                test_prop,
-                training_file,
-                test_file,
-                seed
+                "--test-prop", test_prop,
+                "--training-data", training_data,
+                "--test-data", test_data,
+                "--random-seed", random_seed
             ]
         )
 
         # Check that the training and test datasets are None
-        self.assertIsNone(generator._training_data)
-        self.assertIsNone(generator._test_data)
+        self.assertIsNone(generator._training_dataset)
+        self.assertIsNone(generator._test_dataset)
 
         # Process the dataset
         generator.process()
 
         # Check that the training and test datasete arfe not None
-        self.assertIsNotNone(generator._training_data)
-        self.assertIsNotNone(generator._test_data)
+        self.assertIsNotNone(generator._training_dataset)
+        self.assertIsNotNone(generator._test_dataset)
 
     def test_generate(self):
         """Test the process method."""
         generator = MyTrainingTestDataGenerator(
             [
-                test_prop,
-                training_file,
-                test_file,
-                seed
+                "--test-prop", test_prop,
+                "--training-data", training_data,
+                "--test-data", test_data,
+                "--random-seed", random_seed
             ]
         )
 
         # Check that the training and test files don't exist yet
-        self.assertFalse(Path(training_file).exists())
-        self.assertFalse(Path(test_file).exists())
+        self.assertFalse(Path(training_data).exists())
+        self.assertFalse(Path(test_data).exists())
 
         # Process the dataset
         generator.generate()
 
         # Check that the training and test files exist now
-        self.assertTrue(Path(training_file).exists())
-        self.assertTrue(Path(test_file).exists())
+        self.assertTrue(Path(training_data).exists())
+        self.assertTrue(Path(test_data).exists())
 
 
 if __name__ == '__main__':

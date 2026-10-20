@@ -41,11 +41,11 @@ from culebra.tools.abc.scripts import BatchGenerator
 
 
 # Script parameters
-trainer_file = "trainer" + SERIALIZED_FILE_EXTENSION
+trainer_obj = "trainer" + SERIALIZED_FILE_EXTENSION
 dm_obj_threshold = "0.01"
-test_func_file = "test_func" + SERIALIZED_FILE_EXTENSION
+test_func_obj = "test_func" + SERIALIZED_FILE_EXTENSION
 experiments_per_batch = "10"
-batch_file = "batch" + SERIALIZED_FILE_EXTENSION
+batch_obj = "batch" + SERIALIZED_FILE_EXTENSION
 
 # Experiment prefix
 exp_prefix = "exp"
@@ -66,7 +66,7 @@ class MyBatchGenerator(BatchGenerator):
 
         # Load the trainer
         trainer = Trainer.load(
-            self._args.trainer_file
+            self._args.trainer_obj
         )
 
         # Generate the decision manager
@@ -77,7 +77,7 @@ class MyBatchGenerator(BatchGenerator):
 
         # Load the test fitness function
         test_fitness_func = FitnessFunction.load(
-            self._args.test_func_file
+            self._args.test_func_obj
         )
 
         self._batch = Batch(
@@ -110,22 +110,28 @@ class BatchGeneratorTester(unittest.TestCase):
         )
 
         # Dump the trainer
-        trainer.dump(trainer_file)
+        trainer.dump(trainer_obj)
+        trainer.dump(BatchGenerator.default_trainer_obj)
 
         # Create and dump the test fitness function
         test_fitness_func = NumFeats()
-        test_fitness_func.dump(test_func_file)
+        test_fitness_func.dump(test_func_obj)
+        test_fitness_func.dump(BatchGenerator.default_test_func_obj)
 
     @classmethod
     def tearDownClass(cls):
         """Remove the training fitness function and trainer files."""
-        # Remove the trainer file
-        if Path(trainer_file).exists():
-            remove(trainer_file)
-
-        # Remove the test fitness function file
-        if Path(test_func_file).exists():
-            remove(test_func_file)
+        for file in (
+             trainer_obj,
+             test_func_obj,
+             batch_obj,
+             BatchGenerator.default_trainer_obj,
+             BatchGenerator.default_test_func_obj,
+             BatchGenerator.default_batch_obj,
+             DEFAULT_RUN_SCRIPT_FILENAME
+        ):
+            if Path(file).exists():
+                remove(file)
 
         # Remove the experiment-related files and folders
         for item in Path(".").glob(exp_prefix + "*"):
@@ -134,35 +140,16 @@ class BatchGeneratorTester(unittest.TestCase):
             else:
                 remove(item)
 
-        # Remove the batch file
-        if Path(batch_file).exists():
-            remove(batch_file)
-
-        # Remove the run script
-        if Path(DEFAULT_RUN_SCRIPT_FILENAME).exists():
-            remove(DEFAULT_RUN_SCRIPT_FILENAME)
-
     def test_parse_args(self):
         """Test the parse_args method."""
 
         stderr = StringIO()
         with redirect_stderr(stderr):
-        # Try without parameters. Should fail ...
-            with self.assertRaises(SystemExit):
-                generator = MyBatchGenerator()
-                generator.parse_args()
-
             # Try a wrong trainer file
             wrong_file = "kk/wrong.dat"
             with self.assertRaises(SystemExit):
                 generator = MyBatchGenerator(
-                    [
-                        wrong_file,
-                        dm_obj_threshold,
-                        test_func_file,
-                        experiments_per_batch,
-                        batch_file
-                    ]
+                    ["--trainer-obj", wrong_file]
                 )
                 generator.parse_args()
 
@@ -170,13 +157,7 @@ class BatchGeneratorTester(unittest.TestCase):
             wrong_extension = "test.py"
             with self.assertRaises(SystemExit):
                 generator = MyBatchGenerator(
-                    [
-                        wrong_extension,
-                        dm_obj_threshold,
-                        test_func_file,
-                        experiments_per_batch,
-                        batch_file
-                    ]
+                    ["--trainer-obj", wrong_extension]
                 )
                 generator.parse_args()
 
@@ -186,39 +167,21 @@ class BatchGeneratorTester(unittest.TestCase):
             for wrong_dm_obj_threshold in wrong_dm_obj_threshold_values:
                 with self.assertRaises(SystemExit):
                     generator = MyBatchGenerator(
-                        [
-                            trainer_file,
-                            wrong_dm_obj_threshold,
-                            test_func_file,
-                            experiments_per_batch,
-                            batch_file
-                        ]
+                        ["--dm-obj-threshold", wrong_dm_obj_threshold]
                     )
                     generator.parse_args()
 
             # Try a wrong test fitness function file
             with self.assertRaises(SystemExit):
                 generator = MyBatchGenerator(
-                    [
-                        trainer_file,
-                        dm_obj_threshold,
-                        wrong_file,
-                        experiments_per_batch,
-                        batch_file
-                    ]
+                    ["--test-func-obj", wrong_file]
                 )
                 generator.parse_args()
 
             # Try a wrong test fitness function file extension
             with self.assertRaises(SystemExit):
                 generator = MyBatchGenerator(
-                    [
-                        trainer_file,
-                        dm_obj_threshold,
-                        wrong_extension,
-                        experiments_per_batch,
-                        batch_file
-                    ]
+                    ["--test-func-obj", wrong_extension]
                 )
                 generator.parse_args()
 
@@ -228,11 +191,8 @@ class BatchGeneratorTester(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     generator = MyBatchGenerator(
                         [
-                            trainer_file,
-                            dm_obj_threshold,
-                            test_func_file,
-                            wrong_experiments_per_batch,
-                            batch_file
+                            "--experiments-per-batch",
+                            wrong_experiments_per_batch
                         ]
                     )
                     generator.parse_args()
@@ -240,53 +200,67 @@ class BatchGeneratorTester(unittest.TestCase):
             # Try a wrong batch file
             with self.assertRaises(SystemExit):
                 generator = MyBatchGenerator(
-                    [
-                        trainer_file,
-                        dm_obj_threshold,
-                        test_func_file,
-                        experiments_per_batch,
-                        wrong_file
-                    ]
+                    ["--batch-obj", wrong_file]
                 )
                 generator.parse_args()
 
             # Try a wrong batch file extension
             with self.assertRaises(SystemExit):
                 generator = MyBatchGenerator(
-                    [
-                        trainer_file,
-                        dm_obj_threshold,
-                        test_func_file,
-                        experiments_per_batch,
-                        wrong_extension
-                    ]
+                    ["--batch-obj", wrong_extension]
                 )
                 generator.parse_args()
+
+        # Try the dafault parameters
+        generator = MyBatchGenerator()
+        generator.parse_args()
+
+        # Assess the parameters
+        self.assertEqual(
+            generator._args.trainer_obj,
+            generator.default_trainer_obj
+        )
+        self.assertEqual(
+            generator._args.dm_obj_threshold,
+            generator.default_dm_obj_threshold
+        )
+        self.assertEqual(
+            generator._args.test_func_obj,
+            generator.default_test_func_obj
+        )
+        self.assertEqual(
+            generator._args.experiments_per_batch,
+            generator.default_experiments_per_batch
+        )
+        self.assertEqual(
+            generator._args.batch_obj,
+            generator.default_batch_obj
+        )
 
         # Try valid values
         generator = MyBatchGenerator(
             [
-                trainer_file,
-                dm_obj_threshold,
-                test_func_file,
-                experiments_per_batch,
-                batch_file
+                "--trainer-obj", trainer_obj,
+                "--dm-obj-threshold", dm_obj_threshold,
+                "--test-func-obj", test_func_obj,
+                "--experiments-per-batch", experiments_per_batch,
+                "--batch-obj", batch_obj
             ]
         )
         generator.parse_args()
 
         # Assess the parameters
-        self.assertEqual(generator._args.trainer_file, trainer_file)
+        self.assertEqual(generator._args.trainer_obj, trainer_obj)
         self.assertEqual(
             generator._args.dm_obj_threshold,
             float(dm_obj_threshold)
         )
-        self.assertEqual(generator._args.test_func_file, test_func_file)
+        self.assertEqual(generator._args.test_func_obj, test_func_obj)
         self.assertEqual(
             generator._args.experiments_per_batch,
             int(experiments_per_batch)
         )
-        self.assertEqual(generator._args.batch_file, batch_file)
+        self.assertEqual(generator._args.batch_obj, batch_obj)
 
     def test_generate(self):
         """Test the generate method."""
@@ -303,11 +277,11 @@ class BatchGeneratorTester(unittest.TestCase):
 
         generator = MyBatchGenerator(
             [
-                trainer_file,
-                dm_obj_threshold,
-                test_func_file,
-                experiments_per_batch,
-                batch_file
+                "--trainer-obj", trainer_obj,
+                "--dm-obj-threshold", dm_obj_threshold,
+                "--test-func-obj", test_func_obj,
+                "--experiments-per-batch", experiments_per_batch,
+                "--batch-obj", batch_obj
             ]
         )
 
@@ -316,16 +290,16 @@ class BatchGeneratorTester(unittest.TestCase):
 
         # Check that the experiment and batch related files do not exist yet
         self.assertFalse(Path(exp_file).exists())
-        self.assertFalse(Path(batch_file).exists())
+        self.assertFalse(Path(batch_obj).exists())
         for exp_folder in exp_folder_names:
             self.assertFalse(Path(exp_folder).exists())
 
-        # Generate the trainer
+        # Generate the batch
         generator.generate()
 
         # Check that the experiment and batch related files exist now
         self.assertTrue(Path(exp_file).exists())
-        self.assertTrue(Path(batch_file).exists())
+        self.assertTrue(Path(batch_obj).exists())
         for exp_folder in exp_folder_names:
             self.assertTrue(Path(exp_folder).exists())
 

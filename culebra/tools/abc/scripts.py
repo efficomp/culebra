@@ -41,7 +41,10 @@ from abc import abstractmethod
 import os
 from pathlib import Path
 
-from culebra import SERIALIZED_FILE_EXTENSION
+from culebra import SERIALIZED_FILE_EXTENSION, DEFAULT_SIMILARITY_THRESHOLD
+from culebra.trainer import DEFAULT_MAX_NUM_ITERS
+from culebra.fitness_func.dataset_score import DEFAULT_CV_NUM_FOLDS
+from culebra.tools import DEFAULT_NUM_EXPERIMENTS
 from ..dataset import Dataset
 from .abc import Script, GeneratorScript
 
@@ -71,11 +74,24 @@ class TrainingTestDataGenerator(GeneratorScript):
     :vartype _debug_args: list[str, ...]
     :ivar _args: Parsed command-line arguments.
     :vartype _args: ~argparse.Namespace
-    :ivar _training_data: Training dataset
-    :vartype _training_data: ~culebra.tools.Dataset
-    :ivar _test_data: Test dataset
-    :vartype _test_data: ~culebra.tools.Dataset
+    :ivar _training_dataset: Training dataset
+    :vartype _training_dataset: ~culebra.tools.Dataset
+    :ivar _test_dataset: Test dataset
+    :vartype _test_dataset: ~culebra.tools.Dataset
     """
+
+    default_test_prop = 0.3
+    """Default proportion of samples assigned to the test set."""
+
+    default_training_data = "training.data"
+    """Default output file for the training dataset."""
+
+    default_test_data = "test.data"
+    """Default output file for the test dataset."""
+
+    default_random_seed = 0
+    """Default random seed."""
+
     def __init__(self, args: list[str] | None = None) -> None:
         """
         Construct the generator.
@@ -89,38 +105,45 @@ class TrainingTestDataGenerator(GeneratorScript):
         :type args: list[str] | None
         """
         super().__init__(args)
-        self._training_data = None
-        self._test_data = None
+        self._training_dataset = None
+        self._test_dataset = None
 
         self._parser.description = "Load and split a dataset."
 
         self._parser.add_argument(
-            "test_prop",
+            "--test-prop",
             type=float,
+            default=self.default_test_prop,
             metavar="TEST_PROP",
             help=(
                 "Proportion of samples assigned to the test set "
-                "(0 < value < 1)."
+                "(0 < value < 1). Default: %(default)s."
             )
         )
 
         self._parser.add_argument(
-            "training_file",
-            metavar="TRAINING_FILE",
-            help="Output file for the training set."
+            "--training-data",
+            default=self.default_training_data,
+            metavar="TRAINING_DATA",
+            help="Output file for the training dataset. Default: %(default)s."
         )
 
         self._parser.add_argument(
-            "test_file",
-            metavar="TEST_FILE",
-            help="Output file for the test set."
+            "--test-data",
+            default=self.default_test_data,
+            metavar="TEST_DATA",
+            help="Output file for the test dataset. Default: %(default)s."
         )
 
         self._parser.add_argument(
-            "seed",
+            "--random-seed",
             type=int,
-            metavar="SEED",
-            help="Random seed used for reproducible splitting."
+            default=self.default_random_seed,
+            metavar="RANDOM_SEED",
+            help=(
+                "Random seed used for reproducible splitting. "
+                "Default: %(default)s."
+            )
         )
 
     def parse_args(self) -> None:
@@ -140,17 +163,17 @@ class TrainingTestDataGenerator(GeneratorScript):
             )
 
         # Check the training and test data filenames
-        path = Path(self._args.training_file)
+        path = Path(self._args.training_data)
         if not path.parent.is_dir() or not os.access(path.parent, os.W_OK):
             self._parser.error(
                 "Wrong training data file path: "
-                f"{self._args.training_file}"
+                f"{self._args.training_data}"
             )
-        path = Path(self._args.test_file)
+        path = Path(self._args.test_data)
         if not path.parent.is_dir() or not os.access(path.parent, os.W_OK):
             self._parser.error(
                 "Wrong test data file path: "
-                f"{self._args.test_file}"
+                f"{self._args.test_data}"
             )
 
     @abstractmethod
@@ -183,16 +206,16 @@ class TrainingTestDataGenerator(GeneratorScript):
         data = self.get_dataset().drop_missing().scale()
 
         # Split the data into training and test (stratified)
-        (self._training_data, self._test_data) = data.split(
-            test_prop=self._args.test_prop, random_seed=self._args.seed
+        (self._training_dataset, self._test_dataset) = data.split(
+            test_prop=self._args.test_prop, random_seed=self._args.random_seed
         )
 
         # Oversample the training data so that all the classes have the same
         # number of samples
-        self._training_data = self._training_data.remove_outliers(
-            random_seed=self._args.seed
+        self._training_dataset = self._training_dataset.remove_outliers(
+            random_seed=self._args.random_seed
         ).oversample(
-            random_seed=self._args.seed
+            random_seed=self._args.random_seed
         )
 
     def generate(self) -> None:
@@ -203,8 +226,8 @@ class TrainingTestDataGenerator(GeneratorScript):
         self.process()
 
         # Save the training and test datasets
-        self._training_data.to_text(self._args.training_file)
-        self._test_data.to_text(self._args.test_file)
+        self._training_dataset.to_text(self._args.training_data)
+        self._test_dataset.to_text(self._args.test_data)
 
 
 class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
@@ -213,7 +236,7 @@ class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
     command-line arguments.
 
     This class implements the command-line argument parsing and fitness
-    funtions dumping.
+    functions dumping.
 
     Subclasses must implement the :meth:`process` method to
     provide the logic required to define particular fitness functions.
@@ -234,6 +257,29 @@ class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
     :ivar _test_fitness_func: Test fitness function
     :vartype _test_fitness_func: ~culebra.abc.FitnessFunction
     """
+
+    default_training_data = TrainingTestDataGenerator.default_training_data
+    """Default input file for the training dataset."""
+
+    default_test_data = TrainingTestDataGenerator.default_test_data
+    """Default input file for the test dataset."""
+
+    default_training_cv_num_folds = DEFAULT_CV_NUM_FOLDS
+    """Default number of training cross-validation folds."""
+
+    default_training_sim_threshold = DEFAULT_SIMILARITY_THRESHOLD
+    """Default training similarity threshold"""
+
+    default_training_func_obj = default_training_data.replace(
+        ".data", "_func" + SERIALIZED_FILE_EXTENSION
+    )
+    """Default output file for the serialized training fitness function."""
+
+    default_test_func_obj = default_test_data.replace(
+        ".data", "_func" + SERIALIZED_FILE_EXTENSION
+    )
+    """Default output file for the serialized test fitness function."""
+
     def __init__(self, args: list[str] | None = None) -> None:
         """
         Construct the generator.
@@ -251,45 +297,59 @@ class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
         self._test_fitness_func = None
 
         self._parser.add_argument(
-            "training_file",
-            metavar="TRAINING_FILE",
-            help="Input file for the training set."
+            "--training-data",
+            default=self.default_training_data,
+            metavar="TRAINING_DATA",
+            help="Input file for the training dataset. Default: %(default)s."
         )
 
         self._parser.add_argument(
-            "test_file",
-            metavar="TEST_FILE",
-            help="Input file for the test set."
+            "--test-data",
+            default=self.default_test_data,
+            metavar="TEST_DATA",
+            help="Input file for the test dataset. Default: %(default)s."
         )
 
         self._parser.add_argument(
-            "training_cv_num_folds",
+            "--training-cv-num-folds",
             type=int,
+            default=self.default_training_cv_num_folds,
             metavar="TRAINING_CV_NUM_FOLDS",
             help=(
-                "Number of training cross-validation folds (value >= 2)."
+                "Number of training cross-validation folds (value >= 2). "
+                "Default: %(default)s."
             )
         )
 
         self._parser.add_argument(
-            "training_obj_threshold",
+            "--training-sim-threshold",
             type=float,
-            metavar="TRAINING_OBJ_THRESHOLD",
+            default=self.default_training_sim_threshold,
+            metavar="TRAINING_SIM_THRESHOLD",
             help=(
-                "Training similarity threshold (value >= 0)."
+                "Training similarity threshold (value >= 0). "
+                "Default: %(default)s."
             )
         )
 
         self._parser.add_argument(
-            "training_func_file",
-            metavar="TRAINING_FUNC_FILE",
-            help="Output file for the training fitness funtion."
+            "--training-func-obj",
+            default=self.default_training_func_obj,
+            metavar="TRAINING_FUNC_OBJ",
+            help=(
+                "Output file for the serialized training fitness function. "
+                "Default: %(default)s."
+            )
         )
 
         self._parser.add_argument(
-            "test_func_file",
-            metavar="TEST_FUNC_FILE",
-            help="Output file for the test fitness funtion."
+            "--test-func-obj",
+            default=self.default_test_func_obj,
+            metavar="TEST_FUNC_OBJ",
+            help=(
+                "Output file for the serialized test fitness function. "
+                "Default: %(default)s."
+            )
         )
 
     def parse_args(self) -> None:
@@ -302,14 +362,14 @@ class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
         super().parse_args()
 
         # Check the training and test data files
-        if not Path(self._args.training_file).is_file():
+        if not Path(self._args.training_data).is_file():
             self._parser.error(
                 "Can't open the training data file: "
-                f"{self._args.training_file}"
+                f"{self._args.training_data}"
             )
-        if not Path(self._args.test_file).is_file():
+        if not Path(self._args.test_data).is_file():
             self._parser.error(
-                f"Can't open the test data file: {self._args.test_file}"
+                f"Can't open the test data file: {self._args.test_data}"
             )
 
         # Check the number of training cross-validation folds
@@ -320,36 +380,35 @@ class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
             )
 
         # Check the training similarity threshold
-        if self._args.training_obj_threshold < 0:
+        if self._args.training_sim_threshold < 0:
             self._parser.error(
                 "The training similarity threshold can't be negative: "
-                f"{self._args.training_obj_threshold}"
+                f"{self._args.training_sim_threshold}"
             )
 
         # Check the fitness functions filenames
-        path = Path(self._args.training_func_file)
+        path = Path(self._args.training_func_obj)
         if not path.parent.is_dir() or not os.access(path.parent, os.W_OK):
             self._parser.error(
-                "Wrong training fitness function file path: "
-                f"{self._args.training_func_file}"
+                "Wrong serialized training fitness function file path: "
+                f"{self._args.training_func_obj}"
             )
-        if not self._args.training_func_file.endswith(SERIALIZED_FILE_EXTENSION):
+        if not self._args.training_func_obj.endswith(SERIALIZED_FILE_EXTENSION):
             self._parser.error(
-                "Wrong training fitness function file extension: "
-                f"{self._args.training_func_file}"
+                "Wrong serialized training fitness function file extension: "
+                f"{self._args.training_func_obj}"
             )
-        path = Path(self._args.test_func_file)
+        path = Path(self._args.test_func_obj)
         if not path.parent.is_dir() or not os.access(path.parent, os.W_OK):
             self._parser.error(
-                "Wrong test fitness function file path: "
-                f"{self._args.test_func_file}"
+                "Wrong serialized test fitness function file path: "
+                f"{self._args.test_func_obj}"
             )
-        if not self._args.test_func_file.endswith(SERIALIZED_FILE_EXTENSION):
+        if not self._args.test_func_obj.endswith(SERIALIZED_FILE_EXTENSION):
             self._parser.error(
-                "Wrong test fitness function file extension: "
-                f"{self._args.test_func_file}"
+                "Wrong serialized test fitness function file extension: "
+                f"{self._args.test_func_obj}"
             )
-
 
     def generate(self) -> None:
         """
@@ -359,8 +418,8 @@ class TrainingTestFitnessFunctionsGenerator(GeneratorScript):
         self.process()
 
         # Dump the fitness functions
-        self._training_fitness_func.dump(self._args.training_func_file)
-        self._test_fitness_func.dump(self._args.test_func_file)
+        self._training_fitness_func.dump(self._args.training_func_obj)
+        self._test_fitness_func.dump(self._args.test_func_obj)
 
 
 class TrainerGenerator(GeneratorScript):
@@ -387,6 +446,24 @@ class TrainerGenerator(GeneratorScript):
     :ivar _trainer: Trainer
     :vartype _trainer: ~culebra.abc.Trainer
     """
+
+    default_training_func_obj = (
+        TrainingTestFitnessFunctionsGenerator.default_training_func_obj
+    )
+    """Default intput file for the serialized training fitness function."""
+
+    default_num_solutions = None
+    """The default number of solutions evaluated each iteration will be fixed
+    according to each particular problem."""
+
+    default_max_num_iters = DEFAULT_MAX_NUM_ITERS
+    """The default number of solutions evaluated each iteration will be fixed
+    according to each particular problem.
+    E.g., the number of features/nodes."""
+
+    default_trainer_obj = "trainer" + SERIALIZED_FILE_EXTENSION
+    """Default output file for the serialized trainer."""
+
     def __init__(self, args: list[str] | None = None) -> None:
         """
         Construct the generator.
@@ -403,29 +480,44 @@ class TrainerGenerator(GeneratorScript):
         self._trainer = None
 
         self._parser.add_argument(
-            "training_func_file",
-            metavar="TRAINING_FUNC_FILE",
-            help="Input file for the training fitness funtion."
+            "--training-func-obj",
+            default=self.default_training_func_obj,
+            metavar="TRAINING_FUNC_OBJ",
+            help=(
+                "Input file for the serialized training fitness function. "
+                "Default: %(default)s."
+            )
         )
 
         self._parser.add_argument(
-            "num_solutions",
+            "--num-solutions",
             type=int,
+            default=self.default_num_solutions,
             metavar="NUM_SOLUTIONS",
-            help="Number of solutions evaluated each iteration (value > 0)."
+            help=(
+                "Number of solutions evaluated each iteration (value > 0)."
+                "If omitted, it will be set according to the particular "
+                "problem, such as the number of features or nodes.")
         )
 
         self._parser.add_argument(
-            "max_num_iters",
+            "--max-num-iters",
             type=int,
+            default=self.default_max_num_iters,
             metavar="MAX_NUM_ITERS",
-            help="Maximum number of iterations (value > 0)."
+            help=(
+                "Maximum number of iterations (value > 0). "
+                "Default: %(default)s."
+            )
         )
 
         self._parser.add_argument(
-            "trainer_file",
-            metavar="TRAINER_FILE",
-            help="Output file for the trainer."
+            "--trainer-obj",
+            default=self.default_trainer_obj,
+            metavar="TRAINER_OBJ",
+            help=(
+                "Output file for the serialized trainer. Default: %(default)s."
+            )
         )
 
     def parse_args(self) -> None:
@@ -438,21 +530,24 @@ class TrainerGenerator(GeneratorScript):
         super().parse_args()
 
         # Check the training fitness function
-        if not Path(self._args.training_func_file).is_file():
+        if not Path(self._args.training_func_obj).is_file():
             self._parser.error(
-                "Can't open the training fitness function file: "
-                f"{self._args.training_func_file}"
+                "Can't open the serialized training fitness function file: "
+                f"{self._args.training_func_obj}"
             )
-        if not self._args.training_func_file.endswith(
+        if not self._args.training_func_obj.endswith(
             SERIALIZED_FILE_EXTENSION
         ):
             self._parser.error(
-                "Wrong training fitness function file extension: "
-                f"{self._args.training_func_file}"
+                "Wrong serialized training fitness function file extension: "
+                f"{self._args.training_func_obj}"
             )
 
         # Check the number of solutions
-        if self._args.num_solutions <= 0:
+        if (
+            self._args.num_solutions is not None and
+            self._args.num_solutions <= 0
+        ):
             self._parser.error(
                 "The number of solutions must be positive: "
                 f"{self._args.num_solutions}"
@@ -466,14 +561,16 @@ class TrainerGenerator(GeneratorScript):
             )
 
         # Check the trainer filename
-        path = Path(self._args.trainer_file)
+        path = Path(self._args.trainer_obj)
         if not path.parent.is_dir() or not os.access(path.parent, os.W_OK):
             self._parser.error(
-                f"Wrong trainer file path: {self._args.trainer_file}"
+                "Wrong serialized trainer file path: "
+                f"{self._args.trainer_obj}"
             )
-        if not self._args.trainer_file.endswith(SERIALIZED_FILE_EXTENSION):
+        if not self._args.trainer_obj.endswith(SERIALIZED_FILE_EXTENSION):
             self._parser.error(
-                f"Wrong trainer file extension: {self._args.trainer_file}"
+                "Wrong serialized trainer file extension: "
+                f"{self._args.trainer_obj}"
             )
 
     def generate(self) -> None:
@@ -484,7 +581,7 @@ class TrainerGenerator(GeneratorScript):
         self.process()
 
         # Dump the trainer
-        self._trainer.dump(self._args.trainer_file)
+        self._trainer.dump(self._args.trainer_obj)
 
 
 class BatchGenerator(GeneratorScript):
@@ -512,6 +609,23 @@ class BatchGenerator(GeneratorScript):
     :vartype _batch: ~culebra.tools.evaluation.Batch
     """
 
+    default_trainer_obj = TrainerGenerator.default_trainer_obj
+    """Default input file for the serialized trainer."""
+
+    default_dm_obj_threshold = DEFAULT_SIMILARITY_THRESHOLD
+    """Default objective threshold for the decision manager. """
+
+    default_test_func_obj = (
+        TrainingTestFitnessFunctionsGenerator.default_test_func_obj
+    )
+    """Default input file for the serialized test fitness function."""
+
+    default_experiments_per_batch = DEFAULT_NUM_EXPERIMENTS
+    """Default number of experiments per batch."""
+
+    default_batch_obj = "batch" + SERIALIZED_FILE_EXTENSION
+    """Default output file for the serialized batch."""
+
     def __init__(self, args: list[str] | None = None) -> None:
         """
         Construct the generator.
@@ -528,35 +642,49 @@ class BatchGenerator(GeneratorScript):
         self._batch = None
 
         self._parser.add_argument(
-            "trainer_file",
-            metavar="TRAINER_FILE",
-            help="Input file for the trainer."
+            "--trainer-obj",
+            default=self.default_trainer_obj,
+            metavar="TRAINER_OBJ",
+            help="Input file for the serialized trainer. Default: %(default)s."
         )
 
         self._parser.add_argument(
-            "dm_obj_threshold",
+            "--dm-obj-threshold",
             type=float,
+            default=self.default_dm_obj_threshold,
             metavar="DM_OBJ_THRESHOLD",
-            help="Objective threshold for the decision manager (value >= 0)."
+            help=(
+                "Objective threshold for the decision manager (value >= 0). "
+                "Default: %(default)s."
+            )
         )
 
         self._parser.add_argument(
-            "test_func_file",
-            metavar="TEST_FUNC_FILE",
-            help="Input file for the test fitness funtion."
+            "--test-func-obj",
+            default=self.default_test_func_obj,
+            metavar="TEST_FUNC_OBJ",
+            help=(
+                "Input file for the serialized test fitness function. "
+                "Default: %(default)s."
+            )
         )
 
         self._parser.add_argument(
-            "experiments_per_batch",
+            "--experiments-per-batch",
             type=int,
+            default=self.default_experiments_per_batch,
             metavar="EXPERIMENTS_PER_BATCH",
-            help="Number of experiments per batch (value > 0)."
+            help=(
+                "Number of experiments per batch (value > 0). "
+                "Default: %(default)s."
+            )
         )
 
         self._parser.add_argument(
-            "batch_file",
-            metavar="BATCH_FILE",
-            help="Output file for the batch."
+            "--batch-obj",
+            default=self.default_batch_obj,
+            metavar="BATCH_OBJ",
+            help="Output file for the serialized batch. Default: %(default)s."
         )
 
     def parse_args(self) -> None:
@@ -569,16 +697,17 @@ class BatchGenerator(GeneratorScript):
         super().parse_args()
 
         # Check the trainer filename
-        if not Path(self._args.trainer_file).is_file():
+        if not Path(self._args.trainer_obj).is_file():
             self._parser.error(
-                "Can't open the trainer file: "
-                f"{self._args.trainer_file}"
+                "Can't open the serialized trainer file: "
+                f"{self._args.trainer_obj}"
             )
-        if not self._args.trainer_file.endswith(
+        if not self._args.trainer_obj.endswith(
             SERIALIZED_FILE_EXTENSION
         ):
             self._parser.error(
-                f"Wrong trainer file extension: {self._args.trainer_file}"
+                "Wrong serialized trainer file extension: "
+                f"{self._args.trainer_obj}"
             )
 
         # Check the objective threshold for the decision manager
@@ -588,18 +717,18 @@ class BatchGenerator(GeneratorScript):
                 f"negative: {self._args.dm_obj_threshold}"
             )
 
-        # Check the test fitness funtion filename
-        if not Path(self._args.test_func_file).is_file():
+        # Check the test fitness function filename
+        if not Path(self._args.test_func_obj).is_file():
             self._parser.error(
-                "Can't open the test fitness funtion file: "
-                f"{self._args.test_func_file}"
+                "Can't open the serialized test fitness function file: "
+                f"{self._args.test_func_obj}"
             )
-        if not self._args.test_func_file.endswith(
+        if not self._args.test_func_obj.endswith(
             SERIALIZED_FILE_EXTENSION
         ):
             self._parser.error(
-                "Wrong test fitness funtion file extension: "
-                f"{self._args.test_func_file}"
+                "Wrong serialized test fitness function file extension: "
+                f"{self._args.test_func_obj}"
             )
 
         # Check the number of experiments per batch
@@ -610,14 +739,15 @@ class BatchGenerator(GeneratorScript):
             )
 
         # Check the batch filename
-        path = Path(self._args.batch_file)
+        path = Path(self._args.batch_obj)
         if not path.parent.is_dir() or not os.access(path.parent, os.W_OK):
             self._parser.error(
-                f"Wrong batch file path: {self._args.batch_file}"
+                f"Wrong serialized batch file path: {self._args.batch_obj}"
             )
-        if not self._args.batch_file.endswith(SERIALIZED_FILE_EXTENSION):
+        if not self._args.batch_obj.endswith(SERIALIZED_FILE_EXTENSION):
             self._parser.error(
-                f"Wrong batch file extension: {self._args.batch_file}"
+                "Wrong serialized batch file extension: "
+                f"{self._args.batch_obj}"
             )
 
     def generate(self) -> None:
@@ -631,10 +761,10 @@ class BatchGenerator(GeneratorScript):
         self._batch.setup()
 
         # Generate the run script
-        self._batch.generate_run_script(self._args.batch_file)
+        self._batch.generate_run_script(self._args.batch_obj)
 
         # Dump the batch
-        self._batch.dump(self._args.batch_file)
+        self._batch.dump(self._args.batch_obj)
 
 
 class BatchResultsAnalyzer(Script):
@@ -659,6 +789,9 @@ class BatchResultsAnalyzer(Script):
     :vartype _args: ~argparse.Namespace
     """
 
+    default_method = None
+    """Default analysis method. Subclasses should override this attribute."""
+
     def __init__(self, args: list[str] | None = None) -> None:
         """
         Construct the analyzer.
@@ -674,7 +807,8 @@ class BatchResultsAnalyzer(Script):
         super().__init__(args)
 
         self._parser.add_argument(
-            "method",
+            "--method",
+            default=self.default_method,
             metavar="METHOD",
             help="Analysis method."
         )

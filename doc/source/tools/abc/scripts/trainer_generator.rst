@@ -24,6 +24,13 @@
 
 .. autoclass:: culebra.tools.abc.scripts.TrainerGenerator
 
+Class attributes
+----------------
+.. autoattribute:: culebra.tools.abc.scripts.TrainerGenerator.default_max_num_iters
+.. autoattribute:: culebra.tools.abc.scripts.TrainerGenerator.default_num_solutions
+.. autoattribute:: culebra.tools.abc.scripts.TrainerGenerator.default_trainer_obj
+.. autoattribute:: culebra.tools.abc.scripts.TrainerGenerator.default_training_func_obj
+
 Static methods
 --------------
 .. automethod:: culebra.tools.abc.scripts.TrainerGenerator.load

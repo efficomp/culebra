@@ -24,6 +24,14 @@
 
 .. autoclass:: culebra.tools.abc.scripts.BatchGenerator
 
+Class attributes
+----------------
+.. autoattribute:: culebra.tools.abc.scripts.BatchGenerator.default_batch_obj
+.. autoattribute:: culebra.tools.abc.scripts.BatchGenerator.default_dm_obj_threshold
+.. autoattribute:: culebra.tools.abc.scripts.BatchGenerator.default_experiments_per_batch
+.. autoattribute:: culebra.tools.abc.scripts.BatchGenerator.default_test_func_obj
+.. autoattribute:: culebra.tools.abc.scripts.BatchGenerator.default_trainer_obj
+
 Static methods
 --------------
 .. automethod:: culebra.tools.abc.scripts.BatchGenerator.load

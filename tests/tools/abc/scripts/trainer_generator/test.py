@@ -40,10 +40,10 @@ from culebra.tools.abc.scripts import TrainerGenerator
 KNN_N_NEIGHBORS = 5
 
 # Script parameters
-training_func_file = "training_func" + SERIALIZED_FILE_EXTENSION
-num_solutions = "50"
-max_num_iters = "100"
-trainer_file = "trainer" + SERIALIZED_FILE_EXTENSION
+training_func_obj = "tr_func" + SERIALIZED_FILE_EXTENSION
+num_solutions = "53"
+max_num_iters = "1001"
+trainer_obj = "trainer_obj" + SERIALIZED_FILE_EXTENSION
 
 
 class MyTrainerGenerator(TrainerGenerator):
@@ -58,7 +58,7 @@ class MyTrainerGenerator(TrainerGenerator):
 
         # Load the training fitness function
         training_fitness_func = FitnessFunction.load(
-            self._args.training_func_file
+            self._args.training_func_obj
         )
 
         # Construct the species
@@ -81,35 +81,30 @@ class TrainerGeneratorTester(unittest.TestCase):
     def setUpClass(cls):
         """Generate a training fitness function and dump it."""
         training_fitness_func = NumFeats()
-        training_fitness_func.dump(training_func_file)
+        training_fitness_func.dump(training_func_obj)
+        training_fitness_func.dump(TrainerGenerator.default_training_func_obj)
 
     @classmethod
     def tearDownClass(cls):
         """Remove the training fitness function and trainer files."""
-        if Path(training_func_file).exists():
-            remove(training_func_file)
-        if Path(trainer_file).exists():
-            remove(trainer_file)
+        for file in (
+              TrainerGenerator.default_training_func_obj,
+              TrainerGenerator.default_trainer_obj,
+              training_func_obj,
+              trainer_obj              
+        ):
+            if Path(file).exists():
+                remove(file)
 
     def test_parse_args(self):
         """Test the parse_args method."""
         stderr = StringIO()
         with redirect_stderr(stderr):
-        # Try without parameters. Should fail ...
-            with self.assertRaises(SystemExit):
-                generator = MyTrainerGenerator()
-                generator.parse_args()
-
             # Try a wrong training fitness function file
             wrong_file = "wrong.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainerGenerator(
-                    [
-                        wrong_file,
-                        num_solutions,
-                        max_num_iters,
-                        trainer_file
-                    ]
+                    ["--training-func-obj", wrong_file]
                 )
                 generator.parse_args()
 
@@ -117,12 +112,7 @@ class TrainerGeneratorTester(unittest.TestCase):
             wrong_extension = "test.py"
             with self.assertRaises(SystemExit):
                 generator = MyTrainerGenerator(
-                    [
-                        wrong_extension,
-                        num_solutions,
-                        max_num_iters,
-                        trainer_file
-                    ]
+                    ["--training-func-obj", wrong_extension]
                 )
                 generator.parse_args()
 
@@ -131,12 +121,7 @@ class TrainerGeneratorTester(unittest.TestCase):
             for wrong_num_solutions in wrong_positive_int_values:
                 with self.assertRaises(SystemExit):
                     generator = MyTrainerGenerator(
-                        [
-                            training_func_file,
-                            wrong_num_solutions,
-                            max_num_iters,
-                            trainer_file
-                        ]
+                        ["--num-solutions", wrong_num_solutions]
                     )
                     generator.parse_args()
 
@@ -144,12 +129,7 @@ class TrainerGeneratorTester(unittest.TestCase):
             for wrong_max_num_iters in wrong_positive_int_values:
                 with self.assertRaises(SystemExit):
                     generator = MyTrainerGenerator(
-                        [
-                            training_func_file,
-                            num_solutions,
-                            wrong_max_num_iters,
-                            trainer_file
-                        ]
+                        ["--max-num-iters", wrong_max_num_iters]
                     )
                     generator.parse_args()
 
@@ -157,67 +137,79 @@ class TrainerGeneratorTester(unittest.TestCase):
             wrong_filepath = "kk/file.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainerGenerator(
-                    [
-                        training_func_file,
-                        num_solutions,
-                        max_num_iters,
-                        wrong_filepath
-                    ]
+                    ["--trainer-obj", wrong_filepath]
                 )
                 generator.parse_args()
-
+        
             # Try wrong trainer file extension. Should fail ...
             wrong_file_ext = "file.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainerGenerator(
-                    [
-                        training_func_file,
-                        num_solutions,
-                        max_num_iters,
-                        wrong_file_ext,
-                    ]
+                    ["--trainer-obj", wrong_file_ext]
                 )
                 generator.parse_args()
 
-        # Try valid values
+        # Try the default parameters
+        generator = MyTrainerGenerator()
+        generator.parse_args()
+
+        # Assess the parameters
+        self.assertEqual(
+            generator._args.training_func_obj,
+            generator.default_training_func_obj
+        )
+        self.assertEqual(
+            generator._args.num_solutions,
+            generator.default_num_solutions
+        )
+        self.assertEqual(
+            generator._args.max_num_iters,
+            generator.default_max_num_iters
+        )
+        self.assertEqual(
+            generator._args.trainer_obj,
+            generator.default_trainer_obj
+        )
+
+        # Try valid parameters
         generator = MyTrainerGenerator(
             [
-                training_func_file,
-                num_solutions,
-                max_num_iters,
-                trainer_file
+                "--training-func-obj", training_func_obj,
+                "--num-solutions", num_solutions,
+                "--max-num-iters", max_num_iters,
+                "--trainer-obj", trainer_obj
             ]
         )
         generator.parse_args()
 
         # Assess the parameters
         self.assertEqual(
-            generator._args.training_func_file,
-            training_func_file
+            generator._args.training_func_obj,
+            training_func_obj
         )
         self.assertEqual(generator._args.num_solutions, int(num_solutions))
         self.assertEqual(generator._args.max_num_iters, int(max_num_iters))
-        self.assertEqual(generator._args.trainer_file, trainer_file)
+        self.assertEqual(generator._args.trainer_obj, trainer_obj)
 
     def test_generate(self):
         """Test the generate method."""
         generator = MyTrainerGenerator(
             [
-                training_func_file,
-                num_solutions,
-                max_num_iters,
-                trainer_file
+                "--training-func-obj", training_func_obj,
+                "--num-solutions", num_solutions,
+                "--max-num-iters", max_num_iters,
+                "--trainer-obj", trainer_obj
             ]
         )
 
         # Check that the trainer file does not exist yet
-        self.assertFalse(Path(trainer_file).exists())
+        self.assertFalse(Path(trainer_obj).exists())
 
         # Generate the trainer
         generator.generate()
 
         # Check that the trainer file exists now
-        self.assertTrue(Path(trainer_file).exists())
+        self.assertTrue(Path(trainer_obj).exists())
 
 
 if __name__ == '__main__':

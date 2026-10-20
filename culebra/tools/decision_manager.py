@@ -63,7 +63,7 @@ class LexicographicDM(DecisionManager):
     def __init__(
         self,
         trainer: Trainer,
-        obj_thresholds : float | None = None
+        obj_thresholds : float | Sequence[float] | None = None
     ) -> None:
         """
         Init the decesion manager.
@@ -74,7 +74,7 @@ class LexicographicDM(DecisionManager):
             If omitted,
             :attr:`~culebra.tools.decision_manager.LexicographicDM._default_similarity_threshold`
             is used. Defaults to :data:`None`
-        :type obj_thresholds: float
+        :type obj_thresholds: float | ~collections.abc.Sequence[float]
         """
         # Init the superclass
         super().__init__(trainer)
@@ -262,7 +262,7 @@ class LexicographicWithRepeatedCVDM(LexicographicDM):
     def __init__(
         self,
         trainer: Trainer,
-        obj_thresholds : float | None = None,
+        obj_thresholds : float | Sequence[float] | None = None,
         cv_repeats: int | None = None
     ) -> None:
         """
@@ -274,7 +274,7 @@ class LexicographicWithRepeatedCVDM(LexicographicDM):
             If omitted,
             :attr:`~culebra.tools.decision_manager.LexicographicDM._default_similarity_threshold`
             is used. Defaults to :data:`None`
-        :type obj_thresholds: float
+        :type obj_thresholds: float | ~collections.abc.Sequence[float]
         :param cv_repeats: Number of cross-validation repeats.
             If omitted,
             :attr:`~culebra.tools.decision_manager.LexicographicWithRepeatedCVDM._default_cv_repeats`

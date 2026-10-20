@@ -41,16 +41,19 @@ from culebra.tools import Dataset
 from culebra.tools.abc.scripts import TrainingTestFitnessFunctionsGenerator
 
 
+# Dataset ID
+DATASET_ID = 52
+
 # Number of neighbors for KNN
 KNN_N_NEIGHBORS = 5
 
 # Script parameters
-training_file = "training.data"
-test_file = "test.data"
-training_cv_num_folds = "5"
-training_obj_threshold = "0.01"
-training_func_file = "training_func" + SERIALIZED_FILE_EXTENSION
-test_func_file = "test_func" + SERIALIZED_FILE_EXTENSION
+training_data = "tr.dat"
+test_data = "tst.dat"
+training_cv_num_folds = "10"
+training_sim_threshold = "0.01"
+training_func_obj = "tr_func" + SERIALIZED_FILE_EXTENSION
+test_func_obj = "tst_func" + SERIALIZED_FILE_EXTENSION
 
 
 # Training fitness function class
@@ -109,30 +112,30 @@ class MyTrainingTestFitnessFunctionsGenerator(
         self.parse_args()
 
         # Load the training and test data
-        training_data = Dataset.from_text(
-            self._args.training_file, output_index=-1
+        training_dataset = Dataset.from_text(
+            self._args.training_data, output_index=-1
         )
-        test_data = Dataset.from_text(self._args.test_file, output_index=-1)
+        test_dataset = Dataset.from_text(self._args.test_data, output_index=-1)
 
         # Construct the classifier
         knn_classifier = KNeighborsClassifier(KNN_N_NEIGHBORS)
 
         # Construct the training fitness function
         self._training_fitness_func = KappaNumFeats(
-            training_data=training_data,
+            training_data=training_dataset,
             classifier=knn_classifier,
             cv_num_folds=self._args.training_cv_num_folds
         )
 
         # Set the training fitness similarity threshold
         self._training_fitness_func.obj_thresholds = (
-            self._args.training_obj_threshold
+            self._args.training_sim_threshold
         )
 
         # Construct the test fitness function
         self._test_fitness_func = AccuracyNumFeats(
-            training_data=training_data,
-            test_data=test_data,
+            training_data=training_dataset,
+            test_data=test_dataset,
             classifier=knn_classifier
         )
 
@@ -141,48 +144,60 @@ class TrainingTestFitnessFunctionsGeneratorTester(unittest.TestCase):
     """Test :class:`~culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator`."""
 
     @classmethod
+    def setUpClass(cls):
+        """Generate the training and test data files."""
+
+        # Load the dataset from UCI
+        data = Dataset.from_uci(id_number=DATASET_ID).drop_missing().scale()
+
+        # Split the data into training and test (stratified)
+        (training_dataset, test_dataset) = data.split(
+            test_prop=0.3
+        )
+
+        # Save the training and test datasets
+        training_dataset.to_text(
+            TrainingTestFitnessFunctionsGenerator.default_training_data
+        )
+
+        test_dataset.to_text(
+            TrainingTestFitnessFunctionsGenerator.default_test_data
+        )
+        training_dataset.to_text(training_data)
+        test_dataset.to_text(test_data)
+
+    @classmethod
     def tearDownClass(cls):
-        """Remove the training and test fitness functions files."""
-        if Path(training_func_file).exists():
-            remove(training_func_file)
-        if Path(test_func_file).exists():
-            remove(test_func_file)
+        """Remove the datasets and fitness functions files."""
+        for file in (
+            TrainingTestFitnessFunctionsGenerator.default_training_data,
+            TrainingTestFitnessFunctionsGenerator.default_test_data,
+            TrainingTestFitnessFunctionsGenerator.default_training_func_obj,
+            TrainingTestFitnessFunctionsGenerator.default_test_func_obj,
+            training_data,
+            test_data,
+            training_func_obj,
+            test_func_obj
+        ):
+            if Path(file).exists():
+                remove(file)
 
     def test_parse_args(self):
         """Test the parse_args method."""
         stderr = StringIO()
         with redirect_stderr(stderr):
-        # Try without parameters. Should fail ...
-            with self.assertRaises(SystemExit):
-                generator = MyTrainingTestFitnessFunctionsGenerator()
-                generator.parse_args()
-
             # Try a wrong training dataset
             wrong_file = "wrong.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestFitnessFunctionsGenerator(
-                    [
-                        wrong_file,
-                        test_file,
-                        training_cv_num_folds,
-                        training_obj_threshold,
-                        training_func_file,
-                        test_func_file
-                    ]
+                    ["--training-data", wrong_file]
                 )
                 generator.parse_args()
 
             # Try a wrong training dataset
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestFitnessFunctionsGenerator(
-                    [
-                        training_file,
-                        wrong_file,
-                        training_cv_num_folds,
-                        training_obj_threshold,
-                        training_func_file,
-                        test_func_file
-                    ]
+                    ["--test-data", wrong_file]
                 )
                 generator.parse_args()
 
@@ -191,30 +206,16 @@ class TrainingTestFitnessFunctionsGeneratorTester(unittest.TestCase):
             for wrong_cv_num_folds in wrong_cv_num_folds_values:
                 with self.assertRaises(SystemExit):
                     generator = MyTrainingTestFitnessFunctionsGenerator(
-                        [
-                            training_file,
-                            test_file,
-                            wrong_cv_num_folds,
-                            training_obj_threshold,
-                            training_func_file,
-                            test_func_file
-                        ]
+                        ["--training-cv-num-folds", wrong_cv_num_folds]
                     )
                     generator.parse_args()
 
             # Try a wrong training obj similarity threshold. Should fail ...
-            wrong_obj_threshold_values = ["a", "-1.5"]
-            for wrong_obj_threshold in wrong_obj_threshold_values:
+            wrong_sim_threshold_values = ["a", "-1.5"]
+            for wrong_sim_threshold in wrong_sim_threshold_values:
                 with self.assertRaises(SystemExit):
                     generator = MyTrainingTestFitnessFunctionsGenerator(
-                        [
-                            training_file,
-                            test_file,
-                            training_cv_num_folds,
-                            wrong_obj_threshold,
-                            training_func_file,
-                            test_func_file
-                        ]
+                        ["--training-sim-threshold", wrong_sim_threshold]
                     )
                     generator.parse_args()
 
@@ -223,27 +224,13 @@ class TrainingTestFitnessFunctionsGeneratorTester(unittest.TestCase):
             wrong_filepath = "kk/file.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestFitnessFunctionsGenerator(
-                    [
-                        training_file,
-                        test_file,
-                        training_cv_num_folds,
-                        training_obj_threshold,
-                        wrong_filepath,
-                        test_func_file
-                    ]
+                    ["--training-func-obj", wrong_filepath]
                 )
                 generator.parse_args()
 
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestFitnessFunctionsGenerator(
-                    [
-                        training_file,
-                        test_file,
-                        training_cv_num_folds,
-                        training_obj_threshold,
-                        training_func_file,
-                        wrong_filepath
-                    ]
+                    ["--test-func-obj", wrong_filepath]
                 )
                 generator.parse_args()
 
@@ -252,87 +239,101 @@ class TrainingTestFitnessFunctionsGeneratorTester(unittest.TestCase):
             wrong_file_ext = "file.dat"
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestFitnessFunctionsGenerator(
-                    [
-                        training_file,
-                        test_file,
-                        training_cv_num_folds,
-                        training_obj_threshold,
-                        wrong_file_ext,
-                        test_func_file
-                    ]
+                    ["--training-func-obj", wrong_file_ext]
                 )
                 generator.parse_args()
 
             with self.assertRaises(SystemExit):
                 generator = MyTrainingTestFitnessFunctionsGenerator(
-                    [
-                        training_file,
-                        test_file,
-                        training_cv_num_folds,
-                        training_obj_threshold,
-                        training_func_file,
-                        wrong_file_ext
-                    ]
+                    ["--test-func-obj", wrong_file_ext]
                 )
                 generator.parse_args()
+
+        # Try the default parameters
+        generator = MyTrainingTestFitnessFunctionsGenerator()
+        generator.parse_args()
+
+        # Assess the parameters
+        self.assertEqual(
+            generator._args.training_data,
+            generator.default_training_data
+        )
+        self.assertEqual(
+            generator._args.test_data,
+            generator.default_test_data
+        )
+        self.assertEqual(
+            generator._args.training_cv_num_folds,
+            generator.default_training_cv_num_folds
+        )
+        self.assertEqual(
+            generator._args.training_sim_threshold,
+            generator.default_training_sim_threshold
+        )
+        self.assertEqual(
+            generator._args.training_func_obj,
+            generator.default_training_func_obj
+        )
+        self.assertEqual(
+            generator._args.test_func_obj,
+            generator.default_test_func_obj
+        )
 
         # Try valid values
         generator = MyTrainingTestFitnessFunctionsGenerator(
             [
-                training_file,
-                test_file,
-                training_cv_num_folds,
-                training_obj_threshold,
-                training_func_file,
-                test_func_file
+                "--training-data", training_data,
+                "--test-data", test_data,
+                "--training-cv-num-folds", training_cv_num_folds,
+                "--training-sim-threshold", training_sim_threshold,
+                "--training-func-obj", training_func_obj,
+                "--test-func-obj", test_func_obj
             ]
         )
         generator.parse_args()
 
         # Assess the parameters
-        self.assertEqual(generator._args.training_file, training_file)
-        self.assertEqual(generator._args.test_file, test_file)
+        self.assertEqual(generator._args.training_data, training_data)
+        self.assertEqual(generator._args.test_data, test_data)
         self.assertEqual(
             generator._args.training_cv_num_folds,
             int(training_cv_num_folds)
         )
         self.assertEqual(
-            generator._args.training_obj_threshold,
-            float(training_obj_threshold)
+            generator._args.training_sim_threshold,
+            float(training_sim_threshold)
         )
         self.assertEqual(
-            generator._args.training_func_file,
-            training_func_file
+            generator._args.training_func_obj,
+            training_func_obj
         )
-        self.assertEqual(generator._args.test_func_file, test_func_file)
+        self.assertEqual(generator._args.test_func_obj, test_func_obj)
 
     def test_generate(self):
         """Test the generate method."""
         generator = MyTrainingTestFitnessFunctionsGenerator(
             [
-                training_file,
-                test_file,
-                training_cv_num_folds,
-                training_obj_threshold,
-                training_func_file,
-                test_func_file
+                "--training-data", training_data,
+                "--test-data", test_data,
+                "--training-func-obj", training_func_obj,
+                "--test-func-obj", test_func_obj
             ]
         )
 
         # Check that the training and test data files exist
-        self.assertTrue(Path(training_file).exists())
-        self.assertTrue(Path(test_file).exists())
+        self.assertTrue(Path(training_data).exists())
+        self.assertTrue(Path(test_data).exists())
 
         # Check that the fitness function files don't exist yet
-        self.assertFalse(Path(training_func_file).exists())
-        self.assertFalse(Path(test_func_file).exists())
+        self.assertFalse(Path(training_func_obj).exists())
+        self.assertFalse(Path(test_func_obj).exists())
 
         # Generate the fitness functions
         generator.generate()
 
         # Check that the fitness function files exist now
-        self.assertTrue(Path(training_func_file).exists())
-        self.assertTrue(Path(test_func_file).exists())
+        self.assertTrue(Path(training_func_obj).exists())
+        self.assertTrue(Path(test_func_obj).exists())
 
 
 if __name__ == '__main__':

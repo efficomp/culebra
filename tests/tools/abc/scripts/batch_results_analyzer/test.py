@@ -31,7 +31,7 @@ from culebra.tools.abc.scripts import BatchResultsAnalyzer
 
 
 # Analysis method
-method = "rank"
+method = "other"
 
 # List of batches
 batches = ["batch1", "batch2"]
@@ -41,6 +41,9 @@ class MyBatchResultsAnalyzer(BatchResultsAnalyzer):
     """
     Dummy analyzer.
     """
+
+    default_method = "rank"
+    """Default analysis method."""
 
     def process(self):
         pass
@@ -65,19 +68,14 @@ class BatchResultsAnalyzerTester(unittest.TestCase):
         """Test the parse_args method."""
         stderr = StringIO()
         with redirect_stderr(stderr):
-            # Try without parameters. Should fail ...
+        # Try without batches. Sould fail ...
             with self.assertRaises(SystemExit):
                 analyzer = MyBatchResultsAnalyzer()
                 analyzer.parse_args()
 
-            # Try without batches. Sould fail ...
-            with self.assertRaises(SystemExit):
-                analyzer = MyBatchResultsAnalyzer([method])
-                analyzer.parse_args()
-
             # Try with only one batch. Sould fail ...
             with self.assertRaises(SystemExit):
-                analyzer = MyBatchResultsAnalyzer([method] + [batches[0]])
+                analyzer = MyBatchResultsAnalyzer([batches[0]])
                 analyzer.parse_args()
 
             # Try with a wrong batch folder. Sould fail ...
@@ -87,8 +85,15 @@ class BatchResultsAnalyzerTester(unittest.TestCase):
                 )
                 analyzer.parse_args()
 
+        # Try default analysis method
+        analyzer = MyBatchResultsAnalyzer(batches)
+        analyzer.parse_args()
+
+        self.assertEqual(analyzer._args.method, analyzer.default_method)
+        self.assertEqual(analyzer._args.batches, batches)
+
         # Try valid values
-        analyzer = MyBatchResultsAnalyzer([method] + batches)
+        analyzer = MyBatchResultsAnalyzer(["--method", method] + batches)
         analyzer.parse_args()
 
         self.assertEqual(analyzer._args.method, method)

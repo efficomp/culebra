@@ -24,6 +24,15 @@
 
 .. autoclass:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator
 
+Class attributes
+----------------
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.default_test_data
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.default_test_func_obj
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.default_training_cv_num_folds
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.default_training_data
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.default_training_func_obj
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.default_training_sim_threshold
+
 Static methods
 --------------
 .. automethod:: culebra.tools.abc.scripts.TrainingTestFitnessFunctionsGenerator.load

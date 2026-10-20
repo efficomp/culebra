@@ -24,6 +24,13 @@
 
 .. autoclass:: culebra.tools.abc.scripts.TrainingTestDataGenerator
 
+Class attributes
+----------------
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestDataGenerator.default_random_seed
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestDataGenerator.default_test_data
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestDataGenerator.default_test_prop
+.. autoattribute:: culebra.tools.abc.scripts.TrainingTestDataGenerator.default_training_data
+
 Static methods
 --------------
 .. automethod:: culebra.tools.abc.scripts.TrainingTestDataGenerator.load

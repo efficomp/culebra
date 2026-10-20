@@ -24,6 +24,10 @@
 
 .. autoclass:: culebra.tools.abc.scripts.BatchResultsAnalyzer
 
+Class attributes
+----------------
+.. autoattribute:: culebra.tools.abc.scripts.BatchResultsAnalyzer.default_method
+
 Static methods
 --------------
 .. automethod:: culebra.tools.abc.scripts.BatchResultsAnalyzer.load
