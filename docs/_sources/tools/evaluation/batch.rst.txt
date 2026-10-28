@@ -39,7 +39,6 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.tools.evaluation.Batch.decision_manager
-.. autoproperty:: culebra.tools.evaluation.Batch.excel_results_filename
 .. autoproperty:: culebra.tools.evaluation.Batch.experiment_basename
 .. autoproperty:: culebra.tools.evaluation.Batch.experiment_labels
 .. autoproperty:: culebra.tools.evaluation.Batch.hyperparameters

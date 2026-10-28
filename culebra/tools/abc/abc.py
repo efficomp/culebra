@@ -32,10 +32,13 @@ includes the following classes:
   scripts that generate files or objects
 * :class:`~culebra.tools.abc.Script`, which is the base for command-line
   scripts
+* :class:`~culebra.tools.abc.StatsOutcome`, which is the base to keep the
+  outcome of statistical analysis of results
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from abc import abstractmethod
 import argparse
 from enum import Enum
@@ -45,6 +48,7 @@ from os.path import isfile
 import importlib.util
 
 import numpy as np
+from pandas import DataFrame
 
 from culebra import SERIALIZED_FILE_EXTENSION
 from culebra.abc import (
@@ -63,7 +67,6 @@ from culebra.solution.feature_selection import Metrics
 from ..constants import (
     DEFAULT_SCRIPT_FILE_EXTENSION,
     DEFAULT_RESULTS_BASE_FILENAME,
-    DEFAULT_EXCEL_FILE_EXTENSION,
     DEFAULT_RUN_SCRIPT_FILENAME,
     DEFAULT_CONFIG_SCRIPT_FILENAME,
 )
@@ -519,14 +522,6 @@ for res, val in {var_name}.results.items():
         return self.results_base_filename + SERIALIZED_FILE_EXTENSION
 
     @property
-    def excel_results_filename(self) -> str:
-        """Filename used to save the results in Excel format.
-
-        :rtype: str
-        """
-        return self.results_base_filename + DEFAULT_EXCEL_FILE_EXTENSION
-
-    @property
     def hyperparameters(self) -> dict | None:
         """Hyperparameter values used for the evaluation.
 
@@ -735,10 +730,6 @@ for res, val in {var_name}.results.items():
             # Load the results
             self._results = Results.load(self.serialized_results_filename)
 
-        if not isfile(self.excel_results_filename):
-            # Save the results to Excel
-            self.results.to_excel(self.excel_results_filename)
-
     @abstractmethod
     def _execute(self) -> None:
         """Execute the evaluation.
@@ -937,11 +928,45 @@ class GeneratorScript(Script):
         Generate the output files.
         """
 
+@dataclass(frozen=True, slots=True)
+class StatsOutcome:
+    """Base class for statistical analysis results."""
+
+    test: str
+    """Name of the test"""
+
+    data: str
+    """Key for the dataframe containing the data"""
+
+    column: str
+    """Column key in the dataframe"""
+
+    batches: list
+    """Labels of all the analyzed batches"""
+
+    @property
+    def dataframe(self) -> DataFrame:
+        """Analysis result as a DataFrame.
+
+        This property must be overridden by subclasses to return a correct
+        value.
+
+        :rtype: ~pandas.DataFrame
+        """
+        raise NotImplementedError(
+            "The dataframe property has not been implemented in the "
+            f"{self.__class__.__name__} class")
+
+    def __str__(self) -> str:
+        """Pretty print of the analysis results."""
+        return str(self.dataframe)
+
 
 # Exported symbols for this module
 __all__ = [
     'DecisionManager',
     'Evaluation',
     'Script',
-    'GeneratorScript'
+    'GeneratorScript',
+    'StatsOutcome'
 ]

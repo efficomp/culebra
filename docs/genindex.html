@@ -194,6 +194,8 @@
       <ul>
         <li><a href="tools/results_comparison.html#culebra.tools.ResultsComparison.__repr__">(ResultsComparison method)</a>
 </li>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.__repr__">(StatsOutcome method)</a>
+</li>
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.__repr__">(TestOutcome method)</a>
 </li>
       </ul></li>
@@ -221,6 +223,8 @@
         <li><a href="tools/results_comparison.html#culebra.tools.ResultsComparison.__str__">(ResultsComparison method)</a>
 </li>
         <li><a href="solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution.__str__">(Solution method)</a>, <a href="solution/parameter_optimization/solution.html#culebra.solution.parameter_optimization.Solution.__str__">[1]</a>, <a href="solution/tsp/solution.html#culebra.solution.tsp.Solution.__str__">[2]</a>
+</li>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.__str__">(StatsOutcome method)</a>
 </li>
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.__str__">(TestOutcome method)</a>
 </li>
@@ -1974,6 +1978,8 @@
 </li>
         <li><a href="tools/abc/scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer._get_repr_properties">(BatchResultsAnalyzer method)</a>
 </li>
+        <li><a href="tools/scripts/batch_results_viewer.html#culebra.tools.scripts.BatchResultsViewer._get_repr_properties">(BatchResultsViewer method)</a>
+</li>
         <li><a href="solution/feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution._get_repr_properties">(BinarySolution method)</a>
 </li>
         <li><a href="solution/feature_selection/bit_vector.html#culebra.solution.feature_selection.BitVector._get_repr_properties">(BitVector method)</a>
@@ -3144,12 +3150,16 @@
       <li><a href="tools/effect_size.html#culebra.tools.EffectSize.batches">batches (EffectSize attribute)</a>
 
       <ul>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.batches">(StatsOutcome attribute)</a>
+</li>
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.batches">(TestOutcome attribute)</a>
 </li>
       </ul></li>
       <li><a href="tools/abc/scripts/batch_generator.html#culebra.tools.abc.scripts.BatchGenerator">BatchGenerator (class in culebra.tools.abc.scripts)</a>
 </li>
       <li><a href="tools/abc/scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer">BatchResultsAnalyzer (class in culebra.tools.abc.scripts)</a>
+</li>
+      <li><a href="tools/scripts/batch_results_viewer.html#culebra.tools.scripts.BatchResultsViewer">BatchResultsViewer (class in culebra.tools.scripts)</a>
 </li>
       <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.best_cooperators">best_cooperators (Experiment property)</a>
 </li>
@@ -3648,6 +3658,8 @@
       <li><a href="tools/effect_size.html#culebra.tools.EffectSize.column">column (EffectSize attribute)</a>
 
       <ul>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.column">(StatsOutcome attribute)</a>
+</li>
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.column">(TestOutcome attribute)</a>
 </li>
       </ul></li>
@@ -4026,6 +4038,13 @@
 </li>
       </ul></li>
       <li>
+    culebra.tools.scripts
+
+      <ul>
+        <li><a href="tools/scripts.html#module-culebra.tools.scripts">module</a>
+</li>
+      </ul></li>
+      <li>
     culebra.trainer
 
       <ul>
@@ -4231,7 +4250,17 @@
       <li><a href="tools/effect_size.html#culebra.tools.EffectSize.data">data (EffectSize attribute)</a>
 
       <ul>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.data">(StatsOutcome attribute)</a>
+</li>
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.data">(TestOutcome attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="tools/effect_size.html#culebra.tools.EffectSize.dataframe">dataframe (EffectSize property)</a>
+
+      <ul>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.dataframe">(StatsOutcome property)</a>
+</li>
+        <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.dataframe">(TestOutcome property)</a>
 </li>
       </ul></li>
       <li><a href="tools/dataset.html#culebra.tools.Dataset">Dataset (class in culebra.tools)</a>
@@ -4420,10 +4449,10 @@
         <li><a href="abc/solution.html#culebra.abc.Solution.delete_fitness">(Solution method)</a>, <a href="solution/feature_selection/solution.html#culebra.solution.feature_selection.Solution.delete_fitness">[1]</a>, <a href="solution/tsp/solution.html#culebra.solution.tsp.Solution.delete_fitness">[2]</a>
 </li>
       </ul></li>
-      <li><a href="solution/abc/ant.html#culebra.solution.abc.Ant.discard">discard() (Ant method)</a>, <a href="solution/feature_selection/ant.html#culebra.solution.feature_selection.Ant.discard">[1]</a>, <a href="solution/tsp/ant.html#culebra.solution.tsp.Ant.discard">[2]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="solution/abc/ant.html#culebra.solution.abc.Ant.discard">discard() (Ant method)</a>, <a href="solution/feature_selection/ant.html#culebra.solution.feature_selection.Ant.discard">[1]</a>, <a href="solution/tsp/ant.html#culebra.solution.tsp.Ant.discard">[2]</a>
+</li>
       <li><a href="trainer/aco/abc/aco_fs.html#culebra.trainer.aco.abc.ACOFS.discard_prob">discard_prob (ACOFS property)</a>
 
       <ul>
@@ -4484,6 +4513,8 @@
         <li><a href="tools/abc/scripts/batch_generator.html#culebra.tools.abc.scripts.BatchGenerator.dump">(BatchGenerator method)</a>
 </li>
         <li><a href="tools/abc/scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer.dump">(BatchResultsAnalyzer method)</a>
+</li>
+        <li><a href="tools/scripts/batch_results_viewer.html#culebra.tools.scripts.BatchResultsViewer.dump">(BatchResultsViewer method)</a>
 </li>
         <li><a href="solution/feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution.dump">(BinarySolution method)</a>
 </li>
@@ -4738,14 +4769,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation">Evaluation (class in culebra.tools.abc)</a>
 </li>
-      <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.excel_results_filename">excel_results_filename (Batch property)</a>
-
-      <ul>
-        <li><a href="tools/abc/evaluation.html#culebra.tools.abc.Evaluation.excel_results_filename">(Evaluation property)</a>
-</li>
-        <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.excel_results_filename">(Experiment property)</a>
-</li>
-      </ul></li>
       <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment">Experiment (class in culebra.tools.evaluation)</a>
 </li>
       <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.experiment_basename">experiment_basename (Batch property)</a>
@@ -5581,6 +5604,8 @@
 </li>
         <li><a href="tools/abc/scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer.load">(BatchResultsAnalyzer static method)</a>
 </li>
+        <li><a href="tools/scripts/batch_results_viewer.html#culebra.tools.scripts.BatchResultsViewer.load">(BatchResultsViewer static method)</a>
+</li>
         <li><a href="solution/feature_selection/binary_solution.html#culebra.solution.feature_selection.BinarySolution.load">(BinarySolution static method)</a>
 </li>
         <li><a href="solution/feature_selection/bit_vector.html#culebra.solution.feature_selection.BitVector.load">(BitVector static method)</a>
@@ -5941,6 +5966,8 @@
         <li><a href="tools/decision_manager.html#module-culebra.tools.decision_manager">culebra.tools.decision_manager</a>
 </li>
         <li><a href="tools/evaluation.html#module-culebra.tools.evaluation">culebra.tools.evaluation</a>
+</li>
+        <li><a href="tools/scripts.html#module-culebra.tools.scripts">culebra.tools.scripts</a>
 </li>
         <li><a href="trainer.html#module-culebra.trainer">culebra.trainer</a>
 </li>
@@ -6534,6 +6561,8 @@
       <ul>
         <li><a href="tools/abc/scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer.parse_args">(BatchResultsAnalyzer method)</a>
 </li>
+        <li><a href="tools/scripts/batch_results_viewer.html#culebra.tools.scripts.BatchResultsViewer.parse_args">(BatchResultsViewer method)</a>
+</li>
         <li><a href="tools/abc/generator_script.html#culebra.tools.abc.GeneratorScript.parse_args">(GeneratorScript method)</a>
 </li>
         <li><a href="tools/abc/script.html#culebra.tools.abc.Script.parse_args">(Script method)</a>
@@ -6759,6 +6788,8 @@
 
       <ul>
         <li><a href="tools/abc/scripts/batch_results_analyzer.html#culebra.tools.abc.scripts.BatchResultsAnalyzer.process">(BatchResultsAnalyzer method)</a>
+</li>
+        <li><a href="tools/scripts/batch_results_viewer.html#culebra.tools.scripts.BatchResultsViewer.process">(BatchResultsViewer method)</a>
 </li>
         <li><a href="tools/abc/generator_script.html#culebra.tools.abc.GeneratorScript.process">(GeneratorScript method)</a>
 </li>
@@ -7267,8 +7298,6 @@
         <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.serialized_results_filename">(Experiment property)</a>
 </li>
       </ul></li>
-      <li><a href="tools/effect_size.html#culebra.tools.EffectSize.series">series (EffectSize property)</a>
-</li>
       <li><a href="tools/evaluation/batch.html#culebra.tools.evaluation.Batch.setup">setup() (Batch method)</a>
 </li>
       <li><a href="trainer/aco/abc/single_obj_aco.html#culebra.trainer.aco.abc.SingleObjACO">SingleObjACO (class in culebra.trainer.aco.abc)</a>
@@ -7487,6 +7516,8 @@
         <li><a href="tools/evaluation/experiment.html#culebra.tools.evaluation.Experiment.stats_funcs">(Experiment attribute)</a>
 </li>
       </ul></li>
+      <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome">StatsOutcome (class in culebra.tools.abc)</a>
+</li>
       <li><a href="trainer/abc/common_fitness_function_distributed_trainer.html#culebra.trainer.abc.CommonFitnessFunctionDistributedTrainer.subtrainers">subtrainers (CommonFitnessFunctionDistributedTrainer property)</a>
 
       <ul>
@@ -7514,6 +7545,8 @@
       <li><a href="tools/effect_size.html#culebra.tools.EffectSize.test">test (EffectSize attribute)</a>
 
       <ul>
+        <li><a href="tools/abc/stats_outcome.html#culebra.tools.abc.StatsOutcome.test">(StatsOutcome attribute)</a>
+</li>
         <li><a href="tools/test_outcome.html#culebra.tools.TestOutcome.test">(TestOutcome attribute)</a>
 </li>
       </ul></li>

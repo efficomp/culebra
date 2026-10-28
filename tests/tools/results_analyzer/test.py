@@ -36,13 +36,107 @@ from scipy.stats import (
     fligner
 )
 
-from culebra.tools import Results, ResultsAnalyzer
+from culebra.tools import Results, ResultsAnalyzer, TestOutcome, EffectSize
 
 CSV_FILE_EXTENSION = ".csv"
 """Extension for csv files."""
 
 N_SAMPLES = 200
 """Number of samples per batch."""
+
+
+class TestOutcomeTester(unittest.TestCase):
+    """Test the :class:`~culebra.tools.TestOutcome` class."""
+    def test_dataframe(self):
+        """Test the dataframe property."""
+        test = "test"
+        batches = ("Batch3", "Batch2", "Batch1")
+        dataframe_key = "DataframeKey"
+        column_key = "ColumnKey"
+        alpha = 0.01
+
+        # Try an unique p-value for all the batches
+        pvalue = (0,)
+        test_outcome = TestOutcome(
+            test=test,
+            data=dataframe_key,
+            column=column_key,
+            alpha=alpha,
+            batches=batches,
+            pvalue=np.asarray(pvalue)
+        )
+        df = test_outcome.dataframe
+        self.assertEqual(len(df["p-value"]), 1)
+        self.assertEqual(df["p-value"].iloc[0], pvalue[0])
+
+        # Try one p-value per batch
+        pvalue = (3, 2, 1)
+        test_outcome = TestOutcome(
+            test=test,
+            data=dataframe_key,
+            column=column_key,
+            alpha=alpha,
+            batches=batches,
+            pvalue=np.asarray(pvalue)
+        )
+        df = test_outcome.dataframe
+        self.assertEqual(len(df["p-value"]), len(batches))
+        for pval, batch in zip(pvalue, batches):
+            self.assertEqual(df["p-value"].loc[batch], pval)
+
+        # Try on p-value for each pair of batches
+        pvalue = (
+            (33, 23, 13),
+            (23, 22, 12),
+            (13, 12, 11)
+        )
+        test_outcome = TestOutcome(
+            test=test,
+            data=dataframe_key,
+            column=column_key,
+            alpha=alpha,
+            batches=batches,
+            pvalue=np.asarray(pvalue)
+        )
+        df = test_outcome.dataframe
+        self.assertEqual(len(df["p-value"]), len(batches))
+        for index_i, batch_i in enumerate(batches):
+            for index_j in range(index_i + 1, len(batches)):
+                batch_j = batches[index_j]
+                self.assertEqual(
+                    df["p-value"].loc[min(batch_i, batch_j)][max(batch_i, batch_j)],
+                    pvalue[index_i][index_j]
+                )
+
+class TestEffectSize(unittest.TestCase):
+    """Test the :class:`~culebra.tools.EffectSize` class."""
+    def test_dataframe(self):
+        """Test the dataframe property."""
+        test = "test"
+        batches = ("Batch3", "Batch2", "Batch1")
+        dataframe_key = "DataframeKey"
+        column_key = "ColumnKey"
+        value = (
+            (33, 23, 13),
+            (23, 22, 12),
+            (13, 12, 11)
+        )
+        effect_size = EffectSize(
+            test=test,
+            data=dataframe_key,
+            column=column_key,
+            batches=batches,
+            value=np.asarray(value)
+        )
+        df = effect_size.dataframe
+        self.assertEqual(len(df["Value"]), len(batches))
+        for index_i, batch_i in enumerate(batches):
+            for index_j in range(index_i + 1, len(batches)):
+                batch_j = batches[index_j]
+                self.assertEqual(
+                    df["Value"].loc[min(batch_i, batch_j)][max(batch_i, batch_j)],
+                    value[index_i][index_j]
+                )
 
 
 class ResultsAnalyzerTester(unittest.TestCase):
@@ -238,14 +332,14 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_0():
             """No changes. All the series are homoscedastic.
-            
+
             :return: The expected success
             """
             return True
 
         def update_1():
             """Try with non constant heteroscedastic samples.
-            
+
             :return: The expected success
             """
             batch = self.valid_batches[0]
@@ -256,7 +350,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_2():
             """Try with constant and non constant heteroscedastic samples.
-                        
+
             :return: The expected success
             """
             batch = self.valid_batches[0]
@@ -265,7 +359,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_3():
             """Try with constant samples.
-                        
+
             :return: The expected success
             """
             for batch in self.valid_batches:
@@ -303,14 +397,14 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_0():
             """No changes. The three series follow the same distribution.
-            
+
             :return: The expected success and applied test
             """
             return True, "One-way ANOVA test"
 
         def update_1():
             """Change the first series.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[0]
@@ -321,7 +415,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_2():
             """Delete the first series.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[0]
@@ -330,7 +424,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_3():
             """Change the first series.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[1]
@@ -373,14 +467,14 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_0():
             """No changes. The three series follow the same distribution.
-            
+
             :return: The expected success and applied test
             """
             return True, "Kruskal-Wallis H-test"
 
         def update_1():
             """Change the first series.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[0]
@@ -391,7 +485,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_2():
             """Change the first series for a constant.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[0]
@@ -400,7 +494,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_3():
             """All the series are constant but different.
-            
+
             :return: The expected success and applied test
             """
             for batch in self.valid_batches[1:]:
@@ -409,7 +503,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_4():
             """All the series are constant and equal.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[0]
@@ -418,7 +512,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_5():
             """Delete the first series.
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[0]
@@ -427,7 +521,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_6():
             """Both series are constant but different
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[1]
@@ -436,7 +530,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_7():
             """One normal and another constant
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[1]
@@ -447,7 +541,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_8():
             """Two different distributions
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[2]
@@ -458,7 +552,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_9():
             """The same distribution
-            
+
             :return: The expected success and applied test
             """
             batch = self.valid_batches[2]
@@ -548,7 +642,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_0():
             """No changes. The three series follow the same distribution.
-            
+
             :return: The expected success
             """
             num_batches = len(self.valid_batches)
@@ -558,7 +652,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_1():
             """Change the first series.
-            
+
             :return: The expected success
             """
             batch = self.valid_batches[0]
@@ -572,7 +666,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_2():
             """Change the second series for a constant.
-            
+
             :return: The expected success
             """
             batch = self.valid_batches[1]
@@ -584,7 +678,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_3():
             """Change the first series for a constant.
-            
+
             :return: The expected success
             """
             batch = self.valid_batches[0]
@@ -596,7 +690,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_4():
             """Change the third series for a constant.
-            
+
             :return: The expected success
             """
             batch = self.valid_batches[2]
@@ -608,7 +702,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_5():
             """All the series ar constant and equal.
-            
+
             :return: The expected success
             """
             batch = self.valid_batches[0]
@@ -651,7 +745,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
             where: list[tuple[int, int]] | None = None
         ):
             """Generate a cut off matrix.
-            
+
             :param val: Cut off value
             :param where: Coordinates for *val*
             """
@@ -665,11 +759,11 @@ class ResultsAnalyzerTester(unittest.TestCase):
                 for coor in where:
                     cut_off[coor[0]][coor[1]] = val
 
-            return cut_off
+            return np.array(cut_off)
 
         def update_0():
             """No changes. The three series follow the same distribution.
-            
+
             :return: The cut-off threshold
             """
             first_batch = self.valid_batches[0]
@@ -682,7 +776,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_1():
             """The first series is shifted.
-            
+
             :return: The cut-off threshold
             """
             batch = self.valid_batches[0]
@@ -694,7 +788,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_2():
             """The first series is constant.
-            
+
             :return: The cut-off threshold
             """
             batch = self.valid_batches[0]
@@ -706,7 +800,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_3():
             """The second series is constant and equal to the first one.
-            
+
             :return: The cut-off threshold
             """
             batch = self.valid_batches[1]
@@ -718,7 +812,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_4():
             """The third series is constant but different.
-            
+
             :return: The cut-off threshold
             """
             batch = self.valid_batches[2]
@@ -756,7 +850,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_0():
             """The three series follow the same normal distribution.
-            
+
             :return: The pairwise comparison success and applied test
             """
             first_batch = self.valid_batches[0]
@@ -777,7 +871,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_1():
             """Change the first series.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[0]
@@ -792,7 +886,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_2():
             """Change the first series for an exponential distribution.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[0]
@@ -807,7 +901,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_3():
             """The three series follow the same exponential distribution.
-            
+
             :return: The pairwise comparison success and applied test
             """
             first_batch = self.valid_batches[0]
@@ -828,7 +922,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_4():
             """Change the second series for a constant.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[1]
@@ -841,7 +935,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_5():
             """Change the first series for another constant.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[0]
@@ -854,7 +948,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_6():
             """The second and third series are constant and equal.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[2]
@@ -867,7 +961,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_7():
             """Delete the first series. Two constant equal distributions remain.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[0]
@@ -880,7 +974,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_8():
             """Two constant but different distributions.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[1]
@@ -893,7 +987,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_9():
             """One constant and another exponential.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[1]
@@ -908,7 +1002,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_10():
             """One normal and another exponential.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[2]
@@ -923,7 +1017,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_11():
             """Two normal and equal distributions.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[1]
@@ -938,7 +1032,7 @@ class ResultsAnalyzerTester(unittest.TestCase):
 
         def update_12():
             """Two normal but different distributions.
-            
+
             :return: The pairwise comparison success and applied test
             """
             batch = self.valid_batches[1]
@@ -983,7 +1077,6 @@ class ResultsAnalyzerTester(unittest.TestCase):
             for batch in self.discarded_batches:
                 self.assertFalse(batch in test_result.batches)
 
-
     def test_rank(self):
         """Test the rank method."""
         df_key = self.dataframe_key
@@ -1014,6 +1107,73 @@ class ResultsAnalyzerTester(unittest.TestCase):
         # Check the ranks
         for batch, rank in zip(batch_names, expected_ranks):
             self.assertEqual(ranked_results[batch], rank)
+
+    def test_multiple_compare(self):
+        """Test the multiple_compare method."""
+        # Test fitness related results
+        test_fitness_key = "test_fitness"
+        kappa_key = "Kappa"
+        nf_key = "NF"
+
+        # Execution metrics related results
+        execution_metrics_key = "execution_metrics"
+        runtime_key = "Runtime"
+
+        # Prepare the batches
+        self.analyzer = ResultsAnalyzer()
+        batch_names = [f"Results{i}" for i in range(4)]
+
+        kappa_data = [
+            np.random.normal(size=N_SAMPLES, loc=0.9),
+            np.random.normal(size=N_SAMPLES, loc=0.8),
+            np.random.normal(size=N_SAMPLES, loc=0.4),
+            np.random.normal(size=N_SAMPLES, loc=0.9),
+        ]
+        nf_data = [
+            np.random.normal(size=N_SAMPLES, loc=6),
+            np.random.normal(size=N_SAMPLES, loc=6),
+            np.random.normal(size=N_SAMPLES, loc=8),
+            np.random.normal(size=N_SAMPLES, loc=4)
+        ]
+        runtime_data = [
+            np.random.normal(size=N_SAMPLES, loc=125),
+            np.random.normal(size=N_SAMPLES, loc=80),
+            np.random.normal(size=N_SAMPLES, loc=50),
+            np.random.normal(size=N_SAMPLES, loc=80)
+        ]
+        for batch, kappa, nf, runtime in zip(
+            batch_names, kappa_data, nf_data, runtime_data
+        ):
+            self.analyzer[batch] = Results()
+            self.analyzer[batch][test_fitness_key] = DataFrame()
+            self.analyzer[batch][test_fitness_key][kappa_key] = kappa
+            self.analyzer[batch][test_fitness_key][nf_key] = nf
+            self.analyzer[batch][execution_metrics_key] = DataFrame()
+            self.analyzer[batch][execution_metrics_key][runtime_key] = runtime
+
+        # Expected comparison
+        expected_comparison = {
+            nf_key: [True, False, False, False, False, False],
+            kappa_key: [True, False, True, False, True, False],
+            runtime_key: [False, False, False, False, True, False]
+        }
+
+        # Compare
+        dataframe_keys = (
+            test_fitness_key, test_fitness_key, execution_metrics_key
+        )
+        column_keys = (nf_key, kappa_key, runtime_key)
+        multiple_comparison = self.analyzer.multiple_compare(
+            dataframe_keys, column_keys
+        )
+
+        # Check the ranks
+        for df_key, col_key in zip(dataframe_keys, column_keys):
+            for batch_idx, batch in enumerate(batch_names):
+                self.assertTrue(
+                    (multiple_comparison[df_key][col_key] ==
+                    expected_comparison[col_key]).all()
+                )
 
     def test_multiple_rank(self):
         """Test the multiple_rank method."""
@@ -1167,7 +1327,9 @@ class ResultsAnalyzerTester(unittest.TestCase):
             self.assertTrue(
                 np.allclose(
                     multiple_effect_sizes[df_key][col_key],
-                    expected_effect_sizes[(df_key, col_key)]
+                    expected_effect_sizes[(df_key, col_key)],
+                    atol=1e-5,
+                    rtol=0
                 )
             )
 

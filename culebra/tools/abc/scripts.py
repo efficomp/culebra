@@ -810,7 +810,7 @@ class BatchResultsAnalyzer(Script):
             "--method",
             default=self.default_method,
             metavar="METHOD",
-            help="Analysis method."
+            help="Analysis method. Default: %(default)s."
         )
 
         self._parser.add_argument(
@@ -823,9 +823,6 @@ class BatchResultsAnalyzer(Script):
     def parse_args(self) -> None:
         """
         Parse and validate command-line arguments.
-
-        The first argument is expected to be an analysis method, while the
-        remaining arguments provide a list of folders with batch results.
 
         :raises SystemExit: If the command-line arguments are invalid or
             ``--help`` is requested.

@@ -35,6 +35,7 @@ Attributes
 
 Properties
 ----------
+.. autoproperty:: culebra.tools.TestOutcome.dataframe
 .. autoproperty:: culebra.tools.TestOutcome.success
 
 Dunder methods

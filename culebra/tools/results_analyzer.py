@@ -21,7 +21,7 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple
+from dataclasses import dataclass
 from collections import UserDict
 from collections.abc import Sequence, Callable
 from functools import partial
@@ -50,6 +50,7 @@ from culebra.checker import (
     check_float,
     check_str
 )
+from .abc.abc import StatsOutcome
 from .results import Results
 from .constants import (
     DEFAULT_ALPHA,
@@ -67,9 +68,6 @@ __maintainer__ = 'Jesús González'
 __email__ = 'jesusgonzalez@ugr.es'
 __status__ = 'Development'
 
-
-DEFAULT_PRECISION = 5
-"""Default precision to print the results."""
 
 TEST_NAMES = {
     shapiro:      "Shapiro-Wilk test",
@@ -124,27 +122,17 @@ def format_title(text: str, underline: str = '-') -> str:
     return text + "\n" + (underline * len(text)) + "\n\n"
 
 
-class TestOutcome(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class TestOutcome(StatsOutcome):
 
     """Outcome from a statistical test"""
-
-    test: str
-    """Name of the test"""
-
-    data: str
-    """Key for the dataframe containing the data"""
-
-    column: str
-    """Column key in the dataframe"""
 
     alpha: float
     """Significance level"""
 
-    batches: list
-    """Labels of all the analyzed batches"""
-
     pvalue: np.ndarray
     """p-value(s) returned by the test"""
+
 
     @property
     def success(self) -> np.ndarray:
@@ -155,8 +143,12 @@ class TestOutcome(NamedTuple):
         """
         return self.pvalue > self.alpha
 
-    def __str__(self) -> str:
-        """Pretty print of the success and p-values returned by a test."""
+    @property
+    def dataframe(self) -> DataFrame:
+        """Test outcome as a DataFrame.
+
+        :rtype: ~pandas.DataFrame
+        """
         sorted_batches = list(
             sorted(
                 dict(
@@ -166,58 +158,60 @@ class TestOutcome(NamedTuple):
             )
         )
 
-        data = []
         if len(self.pvalue.shape) == 1:
+            # Only one p-value for all the batches
             if self.pvalue.size == 1:
-                headers = ('Batch', 'Success', 'p-value')
-                index = None
-                data = [
-                    [
-                        '\n'.join(self.batches),
-                        self.success,
-                        np.round(self.pvalue, DEFAULT_PRECISION)
-                    ]
-                ]
-            else:
-                headers = ('Batch', 'Success', 'p-value')
-                index = [
-                    batch for (_, batch) in sorted_batches
-                ]
-                data = [
-                    [
-                        self.success[i],
-                        np.round(self.pvalue[i], DEFAULT_PRECISION)
-                    ]
-                    for (i, _) in sorted_batches
-                ]
-        else:
-            headers = ('Batch0', 'Batch1', 'Success', 'p-value')
-            index = None
-            num_batches = len(self.batches)
-            for i in range(num_batches):
-                index_i, batch_i = sorted_batches[i]
-                for j in range(i+1, num_batches):
-                    index_j, batch_j = sorted_batches[j]
-                    data += [
-                        [
-                            batch_i,
-                            batch_j,
-                            self.success[index_i][index_j],
-                            round(
-                                self.pvalue[index_i][index_j],
-                                DEFAULT_PRECISION
-                            )
-                        ]
-                    ]
+                row = {
+                    'Batches': ' '.join(sorted(self.batches)),
+                    'Success': self.success[0],
+                    'p-value': self.pvalue[0]
+                }
 
-        return tabulate(data, headers=headers, showindex=index)
+                df = DataFrame([row])
+                df.set_index('Batches', inplace=True)
+                return df
+
+            # One p-value for each batch
+            data = []
+            for i, batch in sorted_batches:
+                row = {
+                    'Batch': batch,
+                    'Success': self.success[i],
+                    'p-value': self.pvalue[i]
+                }
+                data.append(row)
+
+            df = DataFrame(data)
+            df.set_index('Batch', inplace=True)
+            df.sort_index(inplace=True)
+            return df
+
+        # One p-value for each pair of batches
+        data = []
+        num_batches = len(self.batches)
+        for i in range(num_batches):
+            index_i, batch_i = sorted_batches[i]
+            for j in range(i+1, num_batches):
+                index_j, batch_j = sorted_batches[j]
+                row = {
+                    'Batch0': batch_i,
+                    'Batch1': batch_j,
+                    'Success': self.success[index_i][index_j],
+                    'p-value': self.pvalue[index_i][index_j]
+                }
+                data.append(row)
+
+        df = DataFrame(data)
+        df.set_index(['Batch0', 'Batch1'], inplace=True)
+        df.sort_index(inplace=True)
+        return df
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs returned by a test."""
         output = format_title(self.test)
         # Add the input parameters to the output
         inputs = [
-            ["Batches:", ", ".join(sorted(self.batches))]
+            ["Batches", ", ".join(sorted(self.batches))]
         ]
 
         inputs += [
@@ -232,7 +226,8 @@ class TestOutcome(NamedTuple):
         )
 
 
-class ResultsComparison(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class ResultsComparison:
     """Outcome from the comparison of several results."""
 
     normality: TestOutcome
@@ -260,7 +255,7 @@ class ResultsComparison(NamedTuple):
 
         # Add the input parameters to the output
         inputs = [
-            ["Batches:", batches]
+            ["Batches", batches]
         ]
 
         inputs += [
@@ -327,33 +322,24 @@ class ResultsComparison(NamedTuple):
 
     def __str__(self) -> str:
         """Pretty print of the success and p-values returned by a test."""
+        if self.pairwise_comparison is None:
+            return self.global_comparison.__str__()
+
         return self.pairwise_comparison.__str__()
 
 
-class EffectSize(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class EffectSize(StatsOutcome):
     """Outcome from a effect size estimation."""
-
-    test: str
-    """Name of the test."""
-
-    data: str
-    """Key for the dataframe containing the data"""
-
-    column: str
-    """Column key in the dataframe"""
-
-    batches: list
-    """Labels of all the analyzed batches."""
 
     value: np.ndarray
     """Effect size values."""
 
     @property
-    def series(self) -> Series:
-        """Test outcome as a Series.
+    def dataframe(self) -> DataFrame:
+        """Test outcome as a DataFrame.
 
-        :return: A series with the test outcome
-        :rtype: ~pandas.Series
+        :rtype: ~pandas.DataFrame
         """
         sorted_batches = list(
             sorted(
@@ -364,32 +350,34 @@ class EffectSize(NamedTuple):
             )
         )
 
-        data = {}
+        data = []
         num_batches = len(self.batches)
         for i in range(num_batches):
             index_i, batch_i = sorted_batches[i]
             for j in range(i+1, num_batches):
                 index_j, batch_j = sorted_batches[j]
-                data[(batch_i, batch_j)] = round(
-                    self.value[index_i][index_j],
-                    DEFAULT_PRECISION
-                )
-        series = Series(data)
-        series.index.names = ['Batch0', 'Batch1']
-        series.name = 'Effect size'
+                row = {
+                    'Batch0': batch_i,
+                    'Batch1': batch_j,
+                    'Value': self.value[index_i][index_j]
+                }
+                data.append(row)
 
-        return DataFrame(series)
+        df = DataFrame(data)
+        df.set_index(['Batch0', 'Batch1'], inplace=True)
+        df.sort_index(inplace=True)
+        return df
 
     def __str__(self) -> str:
         """Pretty print of the effect sizes."""
-        return str(self.series)
+        return str(self.dataframe)
 
     def __repr__(self) -> str:
         """Print all the input parameters and outputs."""
         output = format_title(self.test)
         # Add the input parameters to the output
         inputs = [
-            ["Batches:", ", ".join(sorted(self.batches))]
+            ["Batches", ", ".join(sorted(self.batches))]
         ]
 
         inputs += [
@@ -470,7 +458,7 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         test: Callable[
             [Sequence],
-            NamedTuple
+            dataclass
         ] = DEFAULT_NORMALITY_TEST
     ) -> TestOutcome:
         """Assess the normality of the same results for several batches.
@@ -543,7 +531,7 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         test: Callable[
             [Sequence],
-            NamedTuple
+            dataclass
         ] = DEFAULT_HOMOSCEDASTICITY_TEST
     ) -> TestOutcome:
         """Assess the homoscedasticity of the same results for several batches.
@@ -1035,11 +1023,11 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         normality_test: Callable[
             [Sequence],
-            NamedTuple
+            dataclass
         ] = DEFAULT_NORMALITY_TEST,
         homoscedasticity_test: Callable[
                     [Sequence],
-                    NamedTuple
+                    dataclass
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
         p_adjust: str = DEFAULT_P_ADJUST
     ) -> ResultsComparison:
@@ -1152,11 +1140,11 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         normality_test: Callable[
             [Sequence],
-            NamedTuple
+            dataclass
         ] = DEFAULT_NORMALITY_TEST,
         homoscedasticity_test: Callable[
                     [Sequence],
-                    NamedTuple
+                    dataclass
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
         p_adjust: str = DEFAULT_P_ADJUST
     ) -> Series:
@@ -1323,7 +1311,7 @@ class ResultsAnalyzer(UserDict, Base):
         :raises ValueError: If there aren't sufficient data in the analyzed
             results with any given dataframe key and column label
         """
-        multiple_effect_size = DataFrame()
+        multiple_effect_sizes = DataFrame()
         index_tuples = []
         for (
             dataframe_key,
@@ -1331,18 +1319,93 @@ class ResultsAnalyzer(UserDict, Base):
         ) in zip(dataframe_keys, columns):
             effect_sizes = self.effect_size(
                 dataframe_key,
-                column)
+                column
+            )
             index_tuples += [(dataframe_key, column)]
-            multiple_effect_size[column] = effect_sizes.series
+            multiple_effect_sizes[dataframe_key + column] = (
+                effect_sizes.dataframe["Value"]
+            )
 
         multi_index = MultiIndex.from_tuples(
             index_tuples, names=(
                 "Effect size", "Batches"
             )
         )
-        multiple_effect_size.columns = multi_index
-        multiple_effect_size.sort_index(axis=1, inplace=True)
-        return multiple_effect_size
+        multiple_effect_sizes.columns = multi_index
+        multiple_effect_sizes.sort_index(axis=1, inplace=True)
+        return multiple_effect_sizes
+
+    def multiple_compare(
+        self,
+        dataframe_keys: Sequence[str],
+        columns: Sequence[str],
+        alpha: float = DEFAULT_ALPHA,
+        normality_test: Callable[
+            [Sequence],
+            dataclass
+        ] = DEFAULT_NORMALITY_TEST,
+        homoscedasticity_test: Callable[
+                    [Sequence],
+                    dataclass
+                ] = DEFAULT_HOMOSCEDASTICITY_TEST,
+        p_adjust: str = DEFAULT_P_ADJUST
+    ) -> DataFrame:
+        """Effect size for multiple results.
+
+        The *dataframe_keys* and *columns* must have the same length, and will
+        be used to obtain different effect sizes for the results.
+
+        :param dataframe_keys: Sequence of dataframe keys to select the
+            different results of the batches
+        :type dataframe_keys: ~collections.abc.Sequence[str]
+        :param columns: Sequence of column labels to select the different
+            results of the batches
+        :type columns: ~collections.abc.Sequence[str]
+        :param alpha: Significance level, defaults to
+            :data:`~culebra.tools.DEFAULT_ALPHA`
+        :type alpha: float
+        :param normality_test: Normality test to be applied, defaults to
+            :data:`~culebra.tools.DEFAULT_NORMALITY_TEST`
+        :type normality_test: ~collections.abc.Callable
+        :param homoscedasticity_test: Homoscedasticity test to be applied,
+            defaults to :data:`~culebra.tools.DEFAULT_HOMOSCEDASTICITY_TEST`
+        :type homoscedasticity_test: ~collections.abc.Callable
+        :param p_adjust: Method for adjusting the p-values, defaults to
+            :data:`~culebra.tools.DEFAULT_P_ADJUST`
+        :type p_adjust: str
+        :return: The effect size of every couple of batches for all the
+            results
+        :rtype: ~pandas.DataFrame
+        :raises ValueError: If there aren't sufficient data in the analyzed
+            results with any given dataframe key and column label
+        """
+        multiple_comparison = DataFrame()
+        index_tuples = []
+        for (
+            dataframe_key,
+            column,
+        ) in zip(dataframe_keys, columns):
+            comparison = self.compare(
+                dataframe_key,
+                column,
+                alpha,
+                normality_test,
+                homoscedasticity_test,
+                p_adjust
+            )
+            index_tuples += [(dataframe_key, column)]
+            multiple_comparison[dataframe_key + column] = (
+                comparison.pairwise_comparison.dataframe["Success"]
+            )
+
+        multi_index = MultiIndex.from_tuples(
+            index_tuples, names=(
+                f"Comparison (alpha={alpha})", "Batch"
+            )
+        )
+        multiple_comparison.columns = multi_index
+        multiple_comparison.sort_index(axis=1, inplace=True)
+        return multiple_comparison
 
     def multiple_rank(
         self,
@@ -1352,11 +1415,11 @@ class ResultsAnalyzer(UserDict, Base):
         alpha: float = DEFAULT_ALPHA,
         normality_test: Callable[
             [Sequence],
-            NamedTuple
+            dataclass
         ] = DEFAULT_NORMALITY_TEST,
         homoscedasticity_test: Callable[
                     [Sequence],
-                    NamedTuple
+                    dataclass
                 ] = DEFAULT_HOMOSCEDASTICITY_TEST,
         p_adjust: str = DEFAULT_P_ADJUST
     ) -> DataFrame:
@@ -1424,7 +1487,7 @@ class ResultsAnalyzer(UserDict, Base):
                 p_adjust
             )
             index_tuples += [(dataframe_key, column)]
-            multiple_ranking[column] = ranked_results
+            multiple_ranking[dataframe_key + column] = ranked_results
 
         multi_index = MultiIndex.from_tuples(
             index_tuples, names=(

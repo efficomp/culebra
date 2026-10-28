@@ -339,11 +339,9 @@ class BatchTester(unittest.TestCase):
 
         # Check the result files
         isfile(batch.serialized_results_filename)
-        isfile(batch.excel_results_filename)
 
         # Remove the result files
         remove(batch.serialized_results_filename)
-        remove(batch.excel_results_filename)
 
     def test_copy(self):
         """Test the :meth:`~culebra.tools.evaluation.Batch.__copy__` method."""
@@ -376,7 +374,6 @@ class BatchTester(unittest.TestCase):
 
         # Remove the result files
         remove(batch1.serialized_results_filename)
-        remove(batch1.excel_results_filename)
 
     def test_deepcopy(self):
         """Test :meth:`~culebra.tools.evaluation.Batch.__deepcopy__`."""
@@ -403,7 +400,6 @@ class BatchTester(unittest.TestCase):
 
         # Remove the result files
         remove(batch1.serialized_results_filename)
-        remove(batch1.excel_results_filename)
 
     def test_serialization(self):
         """Serialization test.
@@ -436,7 +432,6 @@ class BatchTester(unittest.TestCase):
 
         # Remove the result files
         remove(batch1.serialized_results_filename)
-        remove(batch1.excel_results_filename)
 
         # Remove the serialized file
         remove(serialized_filename)

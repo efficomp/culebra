@@ -28,6 +28,8 @@ This module is composed by:
   to make automated experimentation easier.
 * The :mod:`~culebra.tools.decision_manager` sub-module, which offers several
   decision managers.
+* The :mod:`~culebra.tools.scripts` sub-module, which offers several
+  scripts.
 * The :class:`~culebra.tools.Dataset` class to hold and manage the datasets.
 * The :class:`~culebra.tools.EffectSize` class, to keep the outcome
   of an effect size estimation of several batches results
@@ -69,7 +71,8 @@ from .results_analyzer import (
 from . import (
     abc,
     decision_manager,
-    evaluation
+    evaluation,
+    scripts
 )
 
 
@@ -86,6 +89,7 @@ __all__ = [
     'abc',
     'decision_manager',
     'evaluation',
+    'scripts',
     'Dataset',
     'Results',
     'TestOutcome',

@@ -38,7 +38,6 @@ Class methods
 Properties
 ----------
 .. autoproperty:: culebra.tools.abc.Evaluation.decision_manager
-.. autoproperty:: culebra.tools.abc.Evaluation.excel_results_filename
 .. autoproperty:: culebra.tools.abc.Evaluation.hyperparameters
 .. autoproperty:: culebra.tools.abc.Evaluation.results
 .. autoproperty:: culebra.tools.abc.Evaluation.results_base_filename

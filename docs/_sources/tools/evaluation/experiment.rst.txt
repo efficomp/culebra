@@ -41,7 +41,6 @@ Properties
 .. autoproperty:: culebra.tools.evaluation.Experiment.best_cooperators
 .. autoproperty:: culebra.tools.evaluation.Experiment.best_solutions
 .. autoproperty:: culebra.tools.evaluation.Experiment.decision_manager
-.. autoproperty:: culebra.tools.evaluation.Experiment.excel_results_filename
 .. autoproperty:: culebra.tools.evaluation.Experiment.hyperparameters
 .. autoproperty:: culebra.tools.evaluation.Experiment.results
 .. autoproperty:: culebra.tools.evaluation.Experiment.results_base_filename

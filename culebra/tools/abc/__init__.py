@@ -33,13 +33,16 @@ This module is composed by:
   develop scripts that generate files or objects
 * The :class:`~culebra.tools.abc.Script` class, which is the base for
   command-line scripts
+* :class:`~culebra.tools.abc.StatsOutcome`, which is the base to keep the
+  outcome of statistical analysis of results
 """
 
 from .abc import (
     DecisionManager,
     Evaluation,
     Script,
-    GeneratorScript
+    GeneratorScript,
+    StatsOutcome
 )
 from . import scripts
 
@@ -58,5 +61,6 @@ __all__ = [
     'Evaluation',
     'Script',
     'GeneratorScript',
+    'StatsOutcome',
     'scripts'
 ]

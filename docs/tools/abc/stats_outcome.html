@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>culebra.tools.abc.StatsOutcome class &#8212; culebra</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
+    <script src="../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="culebra.tools.abc.scripts module" href="scripts.html" />
+    <link rel="prev" title="culebra.tools.abc.GeneratorScript class" href="generator_script.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="culebra.tools.abc.scripts module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generator_script.html" title="culebra.tools.abc.GeneratorScript class"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../abc.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.abc.StatsOutcome</span></code> class</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="culebra-tools-abc-statsoutcome-class">
+<h1><a class="reference internal" href="#culebra.tools.abc.StatsOutcome" title="culebra.tools.abc.StatsOutcome"><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.abc.StatsOutcome</span></code></a> class<a class="headerlink" href="#culebra-tools-abc-statsoutcome-class" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StatsOutcome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.abc.StatsOutcome" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base class for statistical analysis results.</p>
+</dd></dl>
+
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.batches">
+<span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">batches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></em><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.batches" title="Link to this definition">¶</a></dt>
+<dd><p>Labels of all the analyzed batches</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.column">
+<span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.column" title="Link to this definition">¶</a></dt>
+<dd><p>Column key in the dataframe</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.data">
+<span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.data" title="Link to this definition">¶</a></dt>
+<dd><p>Key for the dataframe containing the data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.test">
+<span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">test</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></em><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.test" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the test</p>
+</dd></dl>
+
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
+<dl class="py property">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.dataframe">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">dataframe</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.dataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Analysis result as a DataFrame.</p>
+<p>This property must be overridden by subclasses to return a correct
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.1)"><em>DataFrame</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="dunder-methods">
+<h2>Dunder methods<a class="headerlink" href="#dunder-methods" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.__repr__">
+<span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.__repr__" title="Link to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="culebra.tools.abc.StatsOutcome.__str__">
+<span class="sig-prename descclassname"><span class="pre">StatsOutcome.</span></span><span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#culebra.tools.abc.StatsOutcome.__str__" title="Link to this definition">¶</a></dt>
+<dd><p>Pretty print of the analysis results.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="culebra.tools.abc.scripts module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generator_script.html" title="culebra.tools.abc.GeneratorScript class"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">culebra</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../tools.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools</span></code> module</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../abc.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">culebra.tools.abc</span></code> module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-class docutils literal notranslate"><span class="pre">culebra.tools.abc.StatsOutcome</span></code> class</a></li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy;2026, <a href="https://efficomp.ugr.es">EFFICOMP</a>.
+      
+      |
+      <a href="../../_sources/tools/abc/stats_outcome.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    <div class="footer">
+        This work is supported by projects <i>New Computing Paradigms and
+        Heterogeneous Parallel Architectures for High-Performance and Energy
+        Efficiency of Classification and Optimization Tasks on Biomedical
+        Engineering Applications</i>
+        (<a href="https://efficomp.ugr.es/research/projects/hpee-cobe/">HPEE-COBE</a>),
+        with reference PGC2018-098813-B-C31, and <i>Advanced Methods of
+        Biomedical Data Analysis and Brain Modeling Optimized for
+        High-Performance and Energy-Efficient Computing</i>
+        (<a href="https://icarproyectos.ugr.es/msbrainmarker-hpeecbrainmod/">HPEEC-BIOBRAIN</a>),
+        with reference PID2022-137461NB-C31, both funded by the Spanish State
+        Research Agency <a href="https://doi.org/10.13039/501100011033">
+        MCIN/AEI/10.13039/501100011033</a>, and by the
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/">European
+        Regional Development Fund (ERDF)</a>.
+      <div class="footer">
+        <a href="https://www.ciencia.gob.es/"><img style="border: 0;"  height="75" src="../../_static/micinu.png" alt="Ministerio de Ciencia, Innovación y Universidades"/></a>
+        <a href="https://ec.europa.eu/regional_policy/en/funding/erdf/"><img style="border: 0;"  height="75" src="../../_static/erdf.png" alt="European Regional Development Fund (ERDF)"/></a>
+      </div>
+    </div>
+
+    
+  </body>
+</html>

@@ -98,6 +98,7 @@ Attributes
     abc <tools/abc>
     evaluation <tools/evaluation>
     decision_manager <tools/decision_manager>
+    scripts <tools/scripts>
     Dataset <tools/dataset>
     Results <tools/results>
     TestOutcome <tools/test_outcome>

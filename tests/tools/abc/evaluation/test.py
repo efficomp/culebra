@@ -400,11 +400,9 @@ class EvaluationTester(unittest.TestCase):
 
         # Check that backup and results files exist
         self.assertTrue(evaluation.serialized_results_filename)
-        self.assertTrue(evaluation.excel_results_filename)
 
         # Remove the files
         remove(evaluation.serialized_results_filename)
-        remove(evaluation.excel_results_filename)
 
     def test_copy(self):
         """Test the :meth:`~culebra.tools.abc.Evaluation.__copy__` method."""
@@ -427,7 +425,6 @@ class EvaluationTester(unittest.TestCase):
 
         # Remove the files
         remove(evaluation1.serialized_results_filename)
-        remove(evaluation1.excel_results_filename)
 
     def test_deepcopy(self):
         """Test :meth:`~culebra.tools.abc.Evaluation.__deepcopy__`."""
@@ -446,7 +443,6 @@ class EvaluationTester(unittest.TestCase):
 
         # Remove the files
         remove(evaluation1.serialized_results_filename)
-        remove(evaluation1.excel_results_filename)
 
     def test_serialization(self):
         """Serialization test.
@@ -472,7 +468,6 @@ class EvaluationTester(unittest.TestCase):
 
         # Remove the result files
         remove(evaluation1.serialized_results_filename)
-        remove(evaluation1.excel_results_filename)
 
         # Remove the serialized file
         remove(serialized_filename)

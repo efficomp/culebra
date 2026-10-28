@@ -60,7 +60,7 @@ class BatchResultsAnalyzerTester(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Remove the trainre folders."""
+        """Remove the batch folders."""
         for batch in batches:
             rmdir(batch)
 

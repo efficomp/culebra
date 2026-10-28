@@ -190,11 +190,9 @@ class ExperimentTester(unittest.TestCase):
 
         # Check the result files
         isfile(experiment.serialized_results_filename)
-        isfile(experiment.excel_results_filename)
 
         # Remove the files
         remove(experiment.serialized_results_filename)
-        remove(experiment.excel_results_filename)
 
         # Try a different results base filename
         filename = "the_results"
@@ -210,11 +208,9 @@ class ExperimentTester(unittest.TestCase):
 
         # Check the result files
         isfile(experiment.serialized_results_filename)
-        isfile(experiment.excel_results_filename)
 
         # Remove the files
         remove(experiment.serialized_results_filename)
-        remove(experiment.excel_results_filename)
 
 
 if __name__ == '__main__':

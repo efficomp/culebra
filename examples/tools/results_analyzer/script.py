@@ -125,44 +125,33 @@ batches_results = ["nsga2_ea_wrapper"]
 # Init the analyzer with all the results
 analyzer = init_analyzer(batches_results, csv_batches_results)
 
-# Multiple ranking of the results
-if command == "rank":
-    # Keys of the data to be ranked
-    multiple_rank_dataframe_keys = (
-        "test_best",
-        "test_best",
-        "execution_metrics"
-    )
-    multiple_rank_columns = ("Kappa", "NF", "Runtime")
-    multiple_rank_weights = (1, -1, -1)
+# Keys of the data
+multiple_dataframe_keys = (
+    "test_best",
+    "test_best",
+    "execution_metrics"
+)
+multiple_columns = ("Kappa", "NF", "Runtime")
+multiple_rank_weights = (1, -1, -1)
+results = None
 
-    multiple_rank = analyzer.multiple_rank(
-        multiple_rank_dataframe_keys,
-        multiple_rank_columns,
+if command == "rank":
+    results = analyzer.multiple_rank(
+        multiple_dataframe_keys,
+        multiple_columns,
         multiple_rank_weights
     )
-
-    print(multiple_rank)
-# Comparison or effect size estimation of the results
+elif command == "compare":
+    results = analyzer.multiple_compare(
+        multiple_dataframe_keys,
+        multiple_columns
+    )
 else:
-    # Keys of the data to be compared
-    # The dict keys will be used to select a results dataframe
-    # Each value in its associated list is a column key within the dataframe
-    comparison_data_keys = {
-        "execution_metrics": ["Runtime"],
-        "test_best": ["Kappa", "NF"]
-    }
+    results = analyzer.multiple_effect_size(
+        multiple_dataframe_keys,
+        multiple_columns
+    )
 
-    # Process the results
-    for dataframe in comparison_data_keys.keys():
-        for column in comparison_data_keys[dataframe]:
-            print(f"{dataframe}.{column}", end=" ")
+print(results)
 
-            if command == "compare":
-                print("comparison")
-                results = analyzer.compare(dataframe, column)
-            else:
-                print("effect size")
-                results = analyzer.effect_size(dataframe, column)
-            print(results)
-            print()
+

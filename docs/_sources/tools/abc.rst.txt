@@ -32,4 +32,5 @@
     evaluation <abc/evaluation>
     script <abc/script>
     generator_script <abc/generator_script>
+    stats_outcome <abc/stats_outcome>
     scripts <abc/scripts>

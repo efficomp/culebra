@@ -34,7 +34,7 @@ Attributes
 
 Properties
 ----------
-.. autoproperty:: culebra.tools.EffectSize.series
+.. autoproperty:: culebra.tools.EffectSize.dataframe
 
 Dunder methods
 --------------
