@@ -1197,7 +1197,6 @@ class Trainer(Base):
             f"{self.__class__.__name__} class"
         )
 
-
     def train(self):
         """Perform the training process."""
         # Init the training process

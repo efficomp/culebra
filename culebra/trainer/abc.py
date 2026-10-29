@@ -53,6 +53,7 @@ from functools import partial
 from copy import deepcopy
 from time import perf_counter
 import random
+from threadpoolctl import threadpool_limits
 
 import numpy as np
 from multiprocess import (
@@ -878,7 +879,7 @@ class CentralizedTrainer(Trainer):
     @property
     def training_finished(self) -> bool:
         """Check if training has finished.
-        
+
         :return: :data`True` if training has finished
         :rtype: bool
         """
@@ -1747,7 +1748,7 @@ class DistributedTrainer(Trainer):
     @property
     def training_finished(self) -> bool:
         """Check if training has finished.
-        
+
         :return: :data`True` if training has finished
         :rtype: bool
         """
@@ -2035,7 +2036,7 @@ class SequentialDistributedTrainer(DistributedTrainer):
 
     def _init_training(self) -> None:
         """Init the training process.
-        
+
         Overridden to init the training of subtrainers.
         """
         # Init the training
@@ -2047,7 +2048,7 @@ class SequentialDistributedTrainer(DistributedTrainer):
 
     def _finish_training(self) -> None:
         """Finish the training process.
-        
+
         Overridden to finish the training of subtrainers.
         """
         # Finish the training of all the subtrainers
@@ -2129,6 +2130,24 @@ class ParallelDistributedTrainer(DistributedTrainer):
             if hasattr(subtr, "process"):
                 del subtr.process
 
+    @staticmethod
+    def _run_subtrainer_with_single_threadpool(subtr) -> None:
+        """Run a subtrainer limiting native mathematical thread pools.
+
+        This helper is intended to be used as the target of a subprocess
+        launched by a :class:`~culebra.trainer.abc.ParallelDistributedTrainer`.
+
+        Limiting OpenBLAS/OpenMP thread pools to a single thread avoids
+        resource contention and potential deadlocks caused by nested
+        parallelism when several subtrainers simultaneously evaluate
+        solutions using computationally intensive libraries such as
+        NumPy, SciPy, or scikit-learn.
+
+        :param subtr: Subtrainer to be executed.
+        :type subtr: ~culebra.trainer.abc.CentralizedTrainer
+        """
+        with threadpool_limits(limits=1):
+            subtr.train()
 
     def _do_training(self) -> None:
         """Apply the training algorithm.
@@ -2138,7 +2157,8 @@ class ParallelDistributedTrainer(DistributedTrainer):
         # Run all the iterations
         for subtr_idx, subtr in enumerate(self.subtrainers):
             subtr.process = Process(
-                target=subtr.train,
+                target=self._run_subtrainer_with_single_threadpool,
+                args=(subtr,),
                 name=f"subtrainer_{subtr_idx}",
                 daemon=True
             )

@@ -266,7 +266,7 @@ class DatasetScorer(SingleObjectiveFitnessFunction):
     @property
     def cv_splitter(self) -> StratifiedKFold:
         """Return the dataset splitter.
-        
+
         :rtype: ~sklearn.model_selection.StratifiedKFold
         """
         return self._cv_splitter
@@ -633,7 +633,8 @@ class ClassificationScorer(DatasetScorer):
             training_data.inputs,
             training_data.outputs,
             cv=self.cv_splitter,
-            scoring=make_scorer(self.__class__._score)
+            scoring=make_scorer(self.__class__._score),
+            n_jobs=1
         )
 
         return(scores.mean(),)
