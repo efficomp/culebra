@@ -156,7 +156,7 @@ class MyOtherFitnessFunction(SingleObjectiveFitnessFunction):
         return (max_val*2,)
 
 
-class MyTrainer(CentralizedTrainer):
+class MyCentralizedTrainer(CentralizedTrainer):
     """Dummy implementation of a trainer."""
 
     def __init__(
@@ -253,23 +253,25 @@ class TrainerTester(unittest.TestCase):
         invalid_fitness_funcs = (None, 'a', 1)
         for func in invalid_fitness_funcs:
             with self.assertRaises(TypeError):
-                MyTrainer(func, valid_solution_cls, valid_species)
+                MyCentralizedTrainer(func, valid_solution_cls, valid_species)
 
         # Try invalid solution classes. Shoud fail ...
         invalid_solution_classes = (None, 1)
         for solution_cls in invalid_solution_classes:
             with self.assertRaises(TypeError):
-                MyTrainer(valid_fitness_func, solution_cls, valid_species)
+                MyCentralizedTrainer(
+                    valid_fitness_func, solution_cls, valid_species
+                )
 
         # Try invalid species. Shoud fail ...
         invalid_species = (None, 1)
         for species in invalid_species:
             with self.assertRaises(TypeError):
-                MyTrainer(valid_fitness_func, solution_cls, species)
+                MyCentralizedTrainer(valid_fitness_func, solution_cls, species)
 
         # Try an invalid custom termination function. Should fail ...
         with self.assertRaises(TypeError):
-            trainer = MyTrainer(
+            trainer = MyCentralizedTrainer(
             valid_fitness_func,
             valid_solution_cls,
             valid_species,
@@ -280,7 +282,7 @@ class TrainerTester(unittest.TestCase):
         invalid_max_num_iters = (type, 'a', 1.5)
         for max_num_iters in invalid_max_num_iters:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyCentralizedTrainer(
                     valid_fitness_func,
                     valid_solution_cls,
                     valid_species,
@@ -291,7 +293,7 @@ class TrainerTester(unittest.TestCase):
         invalid_max_num_iters = (-1, 0)
         for max_num_iters in invalid_max_num_iters:
             with self.assertRaises(ValueError):
-                MyTrainer(
+                MyCentralizedTrainer(
                     valid_fitness_func,
                     valid_solution_cls,
                     valid_species,
@@ -299,7 +301,7 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Check the default attributes
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             valid_fitness_func,
             valid_solution_cls,
             valid_species
@@ -342,7 +344,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Construct a parameterized trainer
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
 
         # Check the attributes
         self.assertTrue(trainer.fitness_func is params["fitness_func"])
@@ -380,7 +382,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": MySolution,
             "species": MySpecies(),
         }
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
 
         trainer.checkpoint_activation = False
         self.assertFalse(trainer.checkpoint_activation)
@@ -411,7 +413,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": MySolution,
             "species": MySpecies(),
         }
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
 
         with self.assertRaises(TypeError):
             trainer.verbosity = "hello"
@@ -428,7 +430,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": MySolution,
             "species": MySpecies(),
         }
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
         trainer.random_seed = 18
         self.assertEqual(trainer.random_seed, 18)
 
@@ -442,7 +444,7 @@ class TrainerTester(unittest.TestCase):
             "checkpoint_basename": "my_check"
         }
 
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
         self.assertEqual(
             trainer.checkpoint_filename,
             trainer.checkpoint_basename + SERIALIZED_FILE_EXTENSION
@@ -450,7 +452,7 @@ class TrainerTester(unittest.TestCase):
 
         num_subtrainers = 11
         subtrainers = tuple(
-            MyTrainer(**params) for _ in range(num_subtrainers)
+            MyCentralizedTrainer(**params) for _ in range(num_subtrainers)
         )
 
         parallel_trainer = ParallelDistributedTrainer(*subtrainers)
@@ -476,7 +478,7 @@ class TrainerTester(unittest.TestCase):
             "checkpoint_basename": "my_check"
         }
 
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
 
         # Check the default index
         self.assertEqual(trainer.index, DEFAULT_INDEX)
@@ -507,7 +509,9 @@ class TrainerTester(unittest.TestCase):
             "species": MySpecies()
         }
         subtrainers = tuple(
-            MyTrainer(**subtrainer_params) for _ in range(num_subtrainers)
+            MyCentralizedTrainer(
+                **subtrainer_params
+            ) for _ in range(num_subtrainers)
         )
 
         for subtrainer in subtrainers:
@@ -533,7 +537,7 @@ class TrainerTester(unittest.TestCase):
             "species": MySpecies()
         }
 
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
 
         # Try some invalid proxies. It should fail
         invalid_proxies = (1, 'a')
@@ -548,7 +552,9 @@ class TrainerTester(unittest.TestCase):
 
     def test_receive_representatives_func(self):
         """Test the receive_representatives_func property."""
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Try an invalid value. Should fail ...
         with self.assertRaises(TypeError):
@@ -564,7 +570,9 @@ class TrainerTester(unittest.TestCase):
 
     def test_send_representatives_func(self):
         """Test the send_representatives_func property."""
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Try an invalid value. Should fail ...
         with self.assertRaises(TypeError):
@@ -587,7 +595,9 @@ class TrainerTester(unittest.TestCase):
             "species": MySpecies()
         }
         subtrainers = tuple(
-            MyTrainer(**subtrainer_params) for _ in range(num_subtrainers)
+            MyCentralizedTrainer(
+                **subtrainer_params
+            ) for _ in range(num_subtrainers)
         )
 
         # Test the generation when the trainer is isolated
@@ -630,14 +640,16 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Test the selecction when the trainer is isolated
-        trainer = MyTrainer(**subtrainer_params)
+        trainer = MyCentralizedTrainer(**subtrainer_params)
         trainer.train()
         representatives = trainer.select_representatives()
         self.assertEqual(representatives, [])
 
         # Try when the trainer is within a distributed trainer
         subtrainers = tuple(
-            MyTrainer(**subtrainer_params) for _ in range(num_subtrainers)
+            MyCentralizedTrainer(
+                **subtrainer_params
+            ) for _ in range(num_subtrainers)
         )
         cooperative_trainer = MyCooperativeTrainer(*subtrainers)
         trainer = subtrainers[0]
@@ -654,7 +666,7 @@ class TrainerTester(unittest.TestCase):
     def test_integrate_representatives(self):
         """Test the integrate_representatives method."""
         # Create the trainer
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             MyFitnessFunction(),
             MySolution,
             MySpecies(),
@@ -690,7 +702,9 @@ class TrainerTester(unittest.TestCase):
     def test_init_internals(self):
         """Test the _init_internals method."""
         # Create the trainer
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Create the internals
         trainer._init_internals()
@@ -707,7 +721,9 @@ class TrainerTester(unittest.TestCase):
     def test_reset_internals(self):
         """Test the _reset_internals method."""
         # Create the trainer
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Reset the internals
         trainer._reset_internals()
@@ -724,7 +740,7 @@ class TrainerTester(unittest.TestCase):
     def test_new_state(self):
         """Test the _new_state method."""
         # Create the trainer
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             MyFitnessFunction(),
             MySolution,
             MySpecies()
@@ -751,7 +767,9 @@ class TrainerTester(unittest.TestCase):
             "species": MySpecies()
         }
         subtrainers = tuple(
-            MyTrainer(**subtrainer_params) for _ in range(num_subtrainers)
+            MyCentralizedTrainer(
+                **subtrainer_params
+            ) for _ in range(num_subtrainers)
         )
 
         trainer = MyCooperativeTrainer(*subtrainers)
@@ -770,7 +788,9 @@ class TrainerTester(unittest.TestCase):
     def test_reset_state(self):
         """Test the _reset_state method."""
         # Create the trainer
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Try reset
         trainer._reset_state()
@@ -791,7 +811,9 @@ class TrainerTester(unittest.TestCase):
             "species": MySpecies()
         }
         subtrainers = tuple(
-            MyTrainer(**subtrainer_params) for _ in range(num_subtrainers)
+            MyCentralizedTrainer(
+                **subtrainer_params
+            ) for _ in range(num_subtrainers)
         )
 
         container = MyCooperativeTrainer(*subtrainers)
@@ -853,7 +875,7 @@ class TrainerTester(unittest.TestCase):
             "solution_cls": MySolution,
             "species": MySpecies()
         }
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
 
         # Check internals and state before
         self.assertIsNone(trainer._stats)
@@ -869,7 +891,9 @@ class TrainerTester(unittest.TestCase):
     def test_start_iteration(self):
         """Test the _start_iteration method."""
         # Construct a trainer
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Init the training process
         trainer._init_training()
@@ -886,7 +910,7 @@ class TrainerTester(unittest.TestCase):
     def test_default_termination_func(self):
         """Test the default termination criterion."""
         # Construct a trainer
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             MyFitnessFunction(),
             MySolution,
             MySpecies(),
@@ -923,7 +947,7 @@ class TrainerTester(unittest.TestCase):
 
         # Construct a trainer
         my_max_num_iters = 4
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             MyFitnessFunction(),
             MySolution,
             MySpecies(),
@@ -946,7 +970,9 @@ class TrainerTester(unittest.TestCase):
     def test_finish_iteration(self):
         """Test the _finish_iteration method."""
         # Construct a trainer
-        trainer = MyTrainer(MyFitnessFunction(), MySolution, MySpecies())
+        trainer = MyCentralizedTrainer(
+            MyFitnessFunction(), MySolution, MySpecies()
+        )
 
         # Init the training process
         trainer._init_training()
@@ -1011,7 +1037,7 @@ class TrainerTester(unittest.TestCase):
             trainer.sent = True
 
         # Construct a trainer
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             MyFitnessFunction(),
             MySolution,
             MySpecies(),
@@ -1042,7 +1068,7 @@ class TrainerTester(unittest.TestCase):
     def test_finish_training(self):
         """Test _finish_training`."""
         # Construct a trainer
-        trainer = MyTrainer(
+        trainer = MyCentralizedTrainer(
             MyFitnessFunction(),
             MySolution,
             MySpecies(),
@@ -1098,7 +1124,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Construct a parameterized trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyCentralizedTrainer(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -1122,7 +1148,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Construct a parameterized trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyCentralizedTrainer(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -1147,11 +1173,11 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Construct a parameterized trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyCentralizedTrainer(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = MyTrainer.load(serialized_filename)
+        trainer2 = MyCentralizedTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -1172,7 +1198,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Construct a parameterized trainer
-        trainer = MyTrainer(**params)
+        trainer = MyCentralizedTrainer(**params)
         trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

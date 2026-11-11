@@ -39,7 +39,7 @@ from culebra.fitness_func.tsp import (
 )
 
 
-class MyTrainer(ACOTSP, PACO):
+class MyPACOTrainer(ACOTSP, PACO):
     """Dummy implementation of a trainer method."""
 
     @property
@@ -107,7 +107,7 @@ class TrainerTester(unittest.TestCase):
         invalid_pop_size = (type, 'a', 1.5)
         for pop_size in invalid_pop_size:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyPACOTrainer(
                     valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
@@ -119,7 +119,7 @@ class TrainerTester(unittest.TestCase):
         invalid_pop_size = (-1, 0)
         for pop_size in invalid_pop_size:
             with self.assertRaises(ValueError):
-                MyTrainer(
+                MyPACOTrainer(
                     valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
@@ -128,7 +128,7 @@ class TrainerTester(unittest.TestCase):
                 )
 
         # Test default params
-        trainer = MyTrainer(
+        trainer = MyPACOTrainer(
             valid_fitness_func,
             valid_ant_cls,
             valid_species,
@@ -163,7 +163,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
         trainer._init_training()
         trainer._start_iteration()
         trainer._do_iteration()
@@ -208,7 +208,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -230,7 +230,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
 
         # Create a new state
         trainer._init_internals()
@@ -255,7 +255,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
 
         # Create new internal structures
         trainer._init_internals()
@@ -284,7 +284,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
 
         # Create new internal structures
         trainer._init_internals()
@@ -307,7 +307,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
 
         # Try before any colony has been created
         best_ones = trainer.best_solutions()
@@ -368,7 +368,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
         trainer._init_training()
         trainer._start_iteration()
 
@@ -396,7 +396,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
         trainer._init_training()
         trainer._start_iteration()
 
@@ -429,7 +429,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyPACOTrainer(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -459,7 +459,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyPACOTrainer(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -478,11 +478,11 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyPACOTrainer(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = MyTrainer.load(serialized_filename)
+        trainer2 = MyPACOTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -503,7 +503,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyPACOTrainer(**params)
         trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

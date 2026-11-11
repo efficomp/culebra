@@ -38,7 +38,7 @@ from culebra.fitness_func.tsp import (
 )
 
 
-class MyTrainer(ACOTSP,ReseteablePheromoneBasedACO):
+class MyReseteablePheromoneBasedACOTrainer(ACOTSP,ReseteablePheromoneBasedACO):
     """Dummy implementation of a trainer method."""
 
     @property
@@ -73,7 +73,7 @@ class TrainerTester(unittest.TestCase):
         invalid_convergence_check_freq = (type, 'a', 1.5)
         for convergence_check_freq in invalid_convergence_check_freq:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyReseteablePheromoneBasedACOTrainer(
                     valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
@@ -85,7 +85,7 @@ class TrainerTester(unittest.TestCase):
         invalid_convergence_check_freq = (-1, 0)
         for convergence_check_freq in invalid_convergence_check_freq:
             with self.assertRaises(ValueError):
-                MyTrainer(
+                MyReseteablePheromoneBasedACOTrainer(
                     valid_fitness_func,
                     valid_ant_cls,
                     valid_species,
@@ -96,7 +96,7 @@ class TrainerTester(unittest.TestCase):
         # Try valid values for convergence_check_freq
         valid_convergence_check_freq = (1, 10)
         for convergence_check_freq in valid_convergence_check_freq:
-            trainer = MyTrainer(
+            trainer = MyReseteablePheromoneBasedACOTrainer(
                 valid_fitness_func,
                 valid_ant_cls,
                 valid_species,
@@ -109,7 +109,7 @@ class TrainerTester(unittest.TestCase):
             )
 
         # Test default params
-        trainer = MyTrainer(
+        trainer = MyReseteablePheromoneBasedACOTrainer(
             valid_fitness_func,
             valid_ant_cls,
             valid_species,
@@ -124,7 +124,7 @@ class TrainerTester(unittest.TestCase):
         # Test custom params
         pheromone_evaporation_rate = 0.8
         exploitation_prob = 0.7
-        trainer = MyTrainer(
+        trainer = MyReseteablePheromoneBasedACOTrainer(
             valid_fitness_func,
             valid_ant_cls,
             valid_species,
@@ -156,7 +156,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyReseteablePheromoneBasedACOTrainer(**params)
         trainer._init_training()
         trainer._start_iteration()
 
@@ -196,7 +196,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyReseteablePheromoneBasedACOTrainer(**params)
         trainer._init_training()
 
         # Simulate convergence
@@ -232,7 +232,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyReseteablePheromoneBasedACOTrainer(**params)
         trainer._init_training()
         trainer._start_iteration()
 
@@ -290,7 +290,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyReseteablePheromoneBasedACOTrainer(**params)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level (trainer1 != trainerl2)
@@ -320,7 +320,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyReseteablePheromoneBasedACOTrainer(**params)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -339,11 +339,11 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer1 = MyTrainer(**params)
+        trainer1 = MyReseteablePheromoneBasedACOTrainer(**params)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = MyTrainer.load(serialized_filename)
+        trainer2 = MyReseteablePheromoneBasedACOTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -364,7 +364,7 @@ class TrainerTester(unittest.TestCase):
         }
 
         # Create the trainer
-        trainer = MyTrainer(**params)
+        trainer = MyReseteablePheromoneBasedACOTrainer(**params)
         trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

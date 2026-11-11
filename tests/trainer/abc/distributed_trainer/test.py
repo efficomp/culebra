@@ -97,7 +97,7 @@ class MySubtrainer(CentralizedTrainer):
         return self._stats.compile(self.pop) if self._stats else {}
 
 
-class MyTrainer(DistributedTrainer):
+class MyDistributedTrainer(DistributedTrainer):
     """Dummy implementation of a distributed trainer."""
 
     @property
@@ -159,19 +159,19 @@ class TrainerTester(unittest.TestCase):
         insufficient_subtrainers = ((), subtrainers[:1],)
         for subtrainer_seq in insufficient_subtrainers:
             with self.assertRaises(ValueError):
-                MyTrainer(*subtrainer_seq)
+                MyDistributedTrainer(*subtrainer_seq)
 
         # Try invalid subtrainers
         invalid_subtrainers = ((1, subtrainers[1]), (subtrainers[0], 2))
         for subtrainer_seq in invalid_subtrainers:
             with self.assertRaises(ValueError):
-                MyTrainer(*subtrainer_seq)
+                MyDistributedTrainer(*subtrainer_seq)
 
         # Try invalid types for the number of representatives. Should fail
         invalid_num_representatives = (str, 'a', -0.001, 1.001)
         for num_representatives in invalid_num_representatives:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyDistributedTrainer(
                     *subtrainers,
                     num_representatives=num_representatives
                 )
@@ -180,7 +180,7 @@ class TrainerTester(unittest.TestCase):
         invalid_num_representatives = (-1, 0)
         for num_representatives in invalid_num_representatives:
             with self.assertRaises(ValueError):
-                MyTrainer(
+                MyDistributedTrainer(
                     *subtrainers,
                     num_representatives=num_representatives
                 )
@@ -189,7 +189,7 @@ class TrainerTester(unittest.TestCase):
         invalid_funcs = ('a', 1.5)
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyDistributedTrainer(
                     *subtrainers,
                     representatives_selection_func=func
                 )
@@ -199,7 +199,7 @@ class TrainerTester(unittest.TestCase):
         invalid_repr_exchange_freqs = (str, 'a', 1.5)
         for repr_exchange_freq in invalid_repr_exchange_freqs:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyDistributedTrainer(
                     *subtrainers,
                     representatives_exchange_freq=repr_exchange_freq
                 )
@@ -209,7 +209,7 @@ class TrainerTester(unittest.TestCase):
         invalid_repr_exchange_freqs = (-1, 0)
         for repr_exchange_freq in invalid_repr_exchange_freqs:
             with self.assertRaises(ValueError):
-                MyTrainer(
+                MyDistributedTrainer(
                     *subtrainers,
                     representatives_exchange_freq=repr_exchange_freq
                 )
@@ -218,12 +218,12 @@ class TrainerTester(unittest.TestCase):
         invalid_funcs = ('a', 1.5)
         for func in invalid_funcs:
             with self.assertRaises(TypeError):
-                MyTrainer(
+                MyDistributedTrainer(
                     *subtrainers, topology_func=func
                 )
 
         # Test default params
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
 
         self.assertEqual(trainer.subtrainers, subtrainers)
         self.assertEqual(trainer.num_subtrainers, len(subtrainers))
@@ -257,7 +257,7 @@ class TrainerTester(unittest.TestCase):
             "topology_func": len
         }
 
-        trainer = MyTrainer(*subtrainers, **params)
+        trainer = MyDistributedTrainer(*subtrainers, **params)
 
         self.assertEqual(
             trainer.num_representatives, params["num_representatives"]
@@ -286,7 +286,7 @@ class TrainerTester(unittest.TestCase):
             )
 
             # Create the trainer
-            trainer = MyTrainer(*subtrainers)
+            trainer = MyDistributedTrainer(*subtrainers)
             self.assertEqual(
                 trainer.iteration_metric_names,
                 trainer.subtrainers[1].iteration_metric_names
@@ -303,7 +303,7 @@ class TrainerTester(unittest.TestCase):
             )
 
             # Create the trainer
-            trainer = MyTrainer(*subtrainers)
+            trainer = MyDistributedTrainer(*subtrainers)
             self.assertEqual(
                 trainer.iteration_obj_stats,
                 trainer.subtrainers[1].iteration_obj_stats
@@ -320,7 +320,7 @@ class TrainerTester(unittest.TestCase):
             )
 
             # Create the trainer
-            trainer = MyTrainer(*subtrainers)
+            trainer = MyDistributedTrainer(*subtrainers)
             self.assertEqual(trainer.num_subtrainers, num_subtrainers)
 
     def test_training_finished(self):
@@ -333,7 +333,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Create the trainer
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
 
         for subtr in trainer.subtrainers:
             self.assertFalse(trainer.training_finished)
@@ -349,7 +349,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Create the trainer
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
 
         self.assertEqual(trainer.logbook, None)
 
@@ -373,7 +373,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Create the trainer
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
 
         self.assertEqual(trainer.num_evals, None)
 
@@ -396,7 +396,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Create the trainer
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
 
         self.assertEqual(trainer.num_iters, None)
 
@@ -419,7 +419,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Create the trainer
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
         trainer._init_internals()
 
         # Test that the communication queues have been created
@@ -445,7 +445,7 @@ class TrainerTester(unittest.TestCase):
         )
 
         # Create the trainer
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
         trainer._init_internals()
         trainer._reset_internals()
 
@@ -467,7 +467,7 @@ class TrainerTester(unittest.TestCase):
             MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
         )
 
-        trainer1 = MyTrainer(*subtrainers)
+        trainer1 = MyDistributedTrainer(*subtrainers)
         trainer2 = copy(trainer1)
 
         # Copy only copies the first level
@@ -488,7 +488,7 @@ class TrainerTester(unittest.TestCase):
             MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
         )
 
-        trainer1 = MyTrainer(*subtrainers)
+        trainer1 = MyDistributedTrainer(*subtrainers)
         trainer2 = deepcopy(trainer1)
 
         # Check the copy
@@ -504,11 +504,11 @@ class TrainerTester(unittest.TestCase):
             MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
         )
 
-        trainer1 = MyTrainer(*subtrainers)
+        trainer1 = MyDistributedTrainer(*subtrainers)
 
         serialized_filename = "my_file" + SERIALIZED_FILE_EXTENSION
         trainer1.dump(serialized_filename)
-        trainer2 = MyTrainer.load(serialized_filename)
+        trainer2 = MyDistributedTrainer.load(serialized_filename)
 
         # Check the serialization
         self._check_deepcopy(trainer1, trainer2)
@@ -523,7 +523,7 @@ class TrainerTester(unittest.TestCase):
             MySubtrainer(**subtrainer_params) for _ in range(num_subtrainers)
         )
 
-        trainer = MyTrainer(*subtrainers)
+        trainer = MyDistributedTrainer(*subtrainers)
         trainer._init_training()
         self.assertIsInstance(repr(trainer), str)
         self.assertIsInstance(str(trainer), str)

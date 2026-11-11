@@ -2051,7 +2051,7 @@ class PACO(ACO):
         :return: The amount of pheromone to be deposited for each objective
         :rtype: tuple[float]
         """
-        return tuple(self.initial_pheromone)
+        return self.initial_pheromone
 
     def _do_iteration(self) -> None:
         """Implement an iteration of the training process."""
