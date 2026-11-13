@@ -23,7 +23,6 @@
 """Unit test for :class:`culebra.trainer.aco.abc.ACOFS`."""
 
 import unittest
-import math
 
 from copy import copy, deepcopy
 from os import remove
@@ -35,10 +34,8 @@ from culebra.trainer import DEFAULT_MAX_NUM_ITERS
 from culebra.trainer.aco import (
     DEFAULT_PHEROMONE_INFLUENCE,
     DEFAULT_PHEROMONE_DEPOSIT_WEIGHT,
-    DEFAULT_ACOFS_MAX_PHEROMONE,
     DEFAULT_ACOFS_HEURISTIC_INFLUENCE,
-    DEFAULT_ACOFS_EXPLOITATION_PROB,
-    DEFAULT_ACOFS_DISCARD_PROB
+    DEFAULT_ACOFS_EXPLOITATION_PROB
 )
 from culebra.trainer.aco.abc import ACOFS
 
@@ -77,7 +74,7 @@ def KappaNumFeats(
 
 
 class MyACOFS(ACOFS):
-    """Dummy implementation of a trainer method."""
+    """Dummy implementation of a 1D ACOFS trainer."""
 
     @property
     def pheromone_shapes(self):
@@ -109,25 +106,31 @@ class MyACOFS(ACOFS):
     def _deposit_pheromone(
         self, ants, weight = DEFAULT_PHEROMONE_DEPOSIT_WEIGHT
     ) -> None:
-        """Make some ants deposit weighted pheromone.
-
-        The pheromone amount deposited by each ant is equally divided across
-        all possible feature pair combinations derived from its set of
-        selected features.
-
-        :param ants: The ants
-        :type ants:
-            ~collections.abc.Sequence[~culebra.solution.feature_selection.Ant]
-        :param weight: Weight for the pheromone. Defaults to
-            :attr:`~culebra.trainer.aco.DEFAULT_PHEROMONE_DEPOSIT_WEIGHT`
-        :type weight: float
-        """
         for ant in ants:
             for pher, pher_amount in zip(
                 self.pheromone, self._pheromone_amount(ant)
             ):
                 for feat in ant.path:
                     pher[feat] += pher_amount * weight
+
+    def _estimate_max_path_choice_info(self) -> float:
+        return self.choice_info.sum()
+
+
+class MyACOFS2D(MyACOFS):
+    """Dummy implementation of a 1D ACOFS trainer."""
+
+    @property
+    def pheromone_shapes(self):
+        return (
+            ((self.species.num_feats, ) * 2,) * self.num_pheromone_matrices
+        )
+
+    @property
+    def heuristic_shapes(self):
+        return (
+            ((self.species.num_feats, ) * 2,) * self.num_heuristic_matrices
+        )
 
 
 # Dataset
@@ -192,14 +195,10 @@ class ACOFSTester(unittest.TestCase):
         self.assertEqual(trainer.fitness_func, training_fitness_func)
         self.assertEqual(trainer.solution_cls, params["solution_cls"])
         self.assertEqual(trainer.species, species)
-        init_pher = 0.01 / (math.pow(species.num_feats, 1/3))
+        init_pher = 1.0 /species.num_feats
         self.assertEqual(
             trainer.initial_pheromone,
             (init_pher,) * trainer.num_pheromone_matrices
-        )
-        self.assertEqual(
-            trainer.max_pheromone,
-            (DEFAULT_ACOFS_MAX_PHEROMONE,) * trainer.num_pheromone_matrices
         )
         default_heuristic = np.ones((species.num_feats, ))
         for heur in trainer.heuristic:
@@ -215,7 +214,6 @@ class ACOFSTester(unittest.TestCase):
         )
         self.assertEqual(trainer.col_size, species.num_feats)
         self.assertEqual(trainer.pop_size, species.num_feats)
-        self.assertEqual(trainer.discard_prob, DEFAULT_ACOFS_DISCARD_PROB)
         self.assertEqual(trainer.max_num_iters, DEFAULT_MAX_NUM_ITERS)
 
     def test_num_pheromone_matrices(self):
@@ -246,6 +244,28 @@ class ACOFSTester(unittest.TestCase):
 
         self.assertEqual(
             trainer.num_heuristic_matrices, 1
+        )
+
+    def test_default_initial_phermone(self):
+        """Test the default initial pheromone property."""
+        params = {
+            "fitness_func": training_fitness_func,
+            "solution_cls": Ant,
+            "species": species,
+            "verbosity": False
+        }
+        trainer = MyACOFS(**params)
+        init_pher = 1.0 / species.num_feats
+        self.assertEqual(
+            trainer.initial_pheromone,
+            (init_pher,) * trainer.num_pheromone_matrices
+        )
+
+        trainer = MyACOFS2D(**params)
+        init_pher = 1.0 / (species.num_feats * species.num_feats)
+        self.assertEqual(
+            trainer.initial_pheromone,
+            (init_pher,) * trainer.num_pheromone_matrices
         )
 
     def test_initial_pheromone(self):
@@ -282,53 +302,10 @@ class ACOFSTester(unittest.TestCase):
 
         # Try the default value
         trainer = MyACOFS(**params)
-        init_pher = 0.01 / (math.pow(species.num_feats, 1/3))
+        init_pher = 1.0 /species.num_feats
         self.assertEqual(
             trainer.initial_pheromone,
             (init_pher,) * trainer.num_pheromone_matrices
-        )
-
-    def test_max_pheromone(self):
-        """Test the max_pheromone property."""
-        params = {
-            "fitness_func": training_fitness_func,
-            "solution_cls": Ant,
-            "species": species,
-            "verbosity": False
-        }
-
-        # Try invalid types for max_pheromone. Should fail
-        invalid_max_pheromone = (type, max)
-        for max_pheromone in invalid_max_pheromone:
-            with self.assertRaises(TypeError):
-                MyACOFS(**params, max_pheromone=max_pheromone)
-
-        # Try invalid values for max_pheromone. Should fail
-        invalid_max_pheromone = [
-            (-1, ), (max, ), (0, ), (1, 2, 3), [1, 2, 3]
-        ]
-        for max_pheromone in invalid_max_pheromone:
-            with self.assertRaises(ValueError):
-                MyACOFS(**params, max_pheromone=max_pheromone)
-
-        # Try valid values for max_pheromone
-        valid_max_pheromone = [3]
-        trainer = MyACOFS(**params, max_pheromone=valid_max_pheromone)
-        self.assertEqual(trainer.max_pheromone, tuple(valid_max_pheromone))
-
-        # Try valid values for max_pheromone
-        valid_max_pheromone = 4
-        trainer = MyACOFS(**params, max_pheromone=valid_max_pheromone)
-        self.assertEqual(
-            trainer.max_pheromone,
-            (valid_max_pheromone, ) * trainer.num_pheromone_matrices
-        )
-
-        # Test default value
-        trainer = MyACOFS(**params)
-        self.assertEqual(
-            trainer.max_pheromone,
-            (DEFAULT_ACOFS_MAX_PHEROMONE,) * trainer.num_pheromone_matrices
         )
 
     def test_heuristic(self):
@@ -507,38 +484,6 @@ class ACOFSTester(unittest.TestCase):
         trainer = MyACOFS(**params)
         self.assertEqual(trainer.col_size, trainer.species.num_feats)
 
-    def test_discard_prob(self):
-        """Test the discard_prob property."""
-        params = {
-            "fitness_func": training_fitness_func,
-            "solution_cls": Ant,
-            "species": species,
-            "verbosity": False
-        }
-        # Try invalid types for discard_prob. Should fail
-        invalid_probs = ('a', type)
-        for prob in invalid_probs:
-            with self.assertRaises(TypeError):
-                MyACOFS(**params, discard_prob=prob)
-
-        # Try invalid values for discard_prob. Should fail
-        invalid_probs = (-1, -0.001, 0, 1, 1.001, 4)
-        for prob in invalid_probs:
-            with self.assertRaises(ValueError):
-                MyACOFS(**params, discard_prob=prob)
-
-        # Try valid values for discard_prob
-        valid_probs = (0.1, 0.5, 0.9)
-        for prob in valid_probs:
-            trainer = MyACOFS(**params, discard_prob=prob)
-            self.assertEqual(trainer.discard_prob, prob)
-
-        # Test the ddfault value
-        trainer = MyACOFS(**params)
-        self.assertEqual(
-            trainer.discard_prob, DEFAULT_ACOFS_DISCARD_PROB
-        )
-
     def test_unfeasible_nodes(self):
         """Test the _unfeasible_nodes method."""
         params = {
@@ -605,29 +550,38 @@ class ACOFSTester(unittest.TestCase):
 
     def test_generate_ant(self):
         """Test the _generate_ant method."""
-        params = {
-            "fitness_func": training_fitness_func,
-            "solution_cls": Ant,
-            "species": species,
-            "verbosity": False
-        }
-
-        # Create the trainer
-        trainer = MyACOFS(**params)
-
-        # Initialize the training
-        trainer._init_training()
-        trainer._start_iteration()
-
-        species_num_feats = species.max_feat - species.min_feat + 1
-
-        # Generate ants
-        for _ in range(100):
-            ant = trainer._generate_ant()
-            self.assertEqual(
-                species_num_feats,
-                len(ant.path) + len(ant.discarded)
+        banned_feats_species = Species(
+            num_feats=dataset.num_feats,
+            min_size=2,
+            min_feat=1,
+            max_feat=dataset.num_feats-2
             )
+        unbanned_feats_species = Species(num_feats=dataset.num_feats)
+
+        for species in [banned_feats_species, unbanned_feats_species]:
+            params = {
+                "fitness_func": training_fitness_func,
+                "solution_cls": Ant,
+                "species": species,
+                "verbosity": False
+            }
+
+            # Create the trainer
+            trainer = MyACOFS(**params)
+
+            # Initialize the training
+            trainer._init_training()
+            trainer._start_iteration()
+
+            min_size_achieved = False
+            max_size_achieved = False
+            while not min_size_achieved and not max_size_achieved:
+                ant = trainer._generate_ant()
+                self.assertTrue(species.is_member(ant))
+                if ant.num_feats == species.min_size:
+                    min_size_achieved = True
+                if ant.num_feats == species.max_size:
+                    max_size_achieved = True
 
     def test_new_state(self):
         """Test _new_state."""
@@ -756,14 +710,15 @@ class ACOFSTester(unittest.TestCase):
         fitness_values = [(0.9, 8), (1, 10), (0.8, 12), (0.7, 11), (0.5, 20)]
         expected_ranks = [0, 0, 1, 1, 2]
         num_fronts = 3
+        ant_front_sizes = [2, 2, 2, 2, 1]
 
         # Create the trainer
         trainer = MyACOFS(**params)
-        delta = (
-            trainer.max_pheromone[0] - trainer.initial_pheromone[0]
-            ) / (trainer.pop_size * num_fronts)
         expected_pher_amounts = [
-            delta * (num_fronts - r) for r in expected_ranks
+            trainer.initial_pheromone[0] * (num_fronts - r)/s for r,s in zip(
+                expected_ranks,
+                ant_front_sizes
+            )
         ]
 
         # Init the training

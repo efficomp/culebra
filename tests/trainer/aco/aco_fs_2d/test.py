@@ -183,6 +183,27 @@ class ACOFSTester(unittest.TestCase):
         for heur in trainer.heuristic:
             self.assertTrue(np.all(heur == default_heuristic))
 
+    def test_estimate_max_path_choice_info(self):
+        """Test the _estimate_max_path_choice_info method."""
+        params = {
+            "fitness_func": training_fitness_func,
+            "solution_cls": Ant,
+            "species": species,
+            "verbosity": False
+        }
+
+        # Create the trainer
+        trainer = ACOFS2D(**params)
+
+        # Initialize the internal structures
+        trainer._init_internals()
+        trainer._start_iteration()
+
+        self.assertEqual(
+            trainer._estimate_max_path_choice_info(),
+            np.sum(trainer.choice_info.mean(axis=0))
+        )
+
     def test_ant_choice_info(self):
         """Test the _ant_choice_info method."""
         params = {
@@ -251,11 +272,6 @@ class ACOFSTester(unittest.TestCase):
             trainer._pareto_fronts = sortNondominated(
                 trainer.pop, trainer.pop_size
             )
-            trainer._num_pareto_fronts = len(trainer._pareto_fronts)
-            trainer._pheromone_delta = (
-                trainer.max_pheromone[0] - trainer.initial_pheromone[0]
-                ) / (trainer.pop_size * trainer._num_pareto_fronts)
-
 
             # Let the ant deposit pheromone
             trainer._deposit_pheromone([ant])

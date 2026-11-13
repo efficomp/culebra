@@ -38,7 +38,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.cooperators
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.current_iter
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.custom_termination_func
-.. autoproperty:: culebra.trainer.aco.abc.ACOFS.discard_prob
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.exploitation_prob
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.fitness_func
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.heuristic
@@ -50,7 +49,6 @@ Properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.iteration_obj_stats
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.logbook
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.max_num_iters
-.. autoproperty:: culebra.trainer.aco.abc.ACOFS.max_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.num_evals
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.num_iters
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS.num_heuristic_matrices
@@ -76,14 +74,12 @@ Private properties
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_checkpoint_freq
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_col_size
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_cooperative_fitness_estimation_func
-.. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_discard_prob
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_exploitation_prob
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_heuristic
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_heuristic_influence
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_index
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_initial_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_max_num_iters
-.. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_max_pheromone
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_pheromone_influence
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_pop_size
 .. autoproperty:: culebra.trainer.aco.abc.ACOFS._default_receive_representatives_func
@@ -114,6 +110,7 @@ Private methods
 .. automethod:: culebra.trainer.aco.abc.ACOFS._deposit_pheromone
 .. automethod:: culebra.trainer.aco.abc.ACOFS._do_iteration
 .. automethod:: culebra.trainer.aco.abc.ACOFS._do_training
+.. automethod:: culebra.trainer.aco.abc.ACOFS._estimate_max_path_choice_info
 .. automethod:: culebra.trainer.aco.abc.ACOFS._finish_iteration
 .. automethod:: culebra.trainer.aco.abc.ACOFS._finish_training
 .. automethod:: culebra.trainer.aco.abc.ACOFS._generate_ant

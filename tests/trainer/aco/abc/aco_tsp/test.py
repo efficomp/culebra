@@ -353,7 +353,7 @@ class TrainerTester(unittest.TestCase):
         self.assertTrue((ant_choice_info[tsp_banned_nodes] == 0).all())
         self.assertTrue((
             ant_choice_info[tsp_feasible_nodes] ==
-            np.sum(trainer.choice_info, axis=1)[tsp_feasible_nodes]
+            np.mean(trainer.choice_info, axis=0)[tsp_feasible_nodes]
         ).all())
 
     def test_deposit_pheromone(self):

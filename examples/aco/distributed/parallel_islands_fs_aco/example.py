@@ -94,7 +94,7 @@ test_fitness_func = KappaNumFeats(
 
 # Custom termination
 convergence_detector = ACOFSConvergenceDetector(
-    convergence_check_freq=10
+    convergence_check_freq=50
 )
 
 
@@ -113,7 +113,7 @@ subtrainer_params = {
     "species": Species(num_feats=dataset.num_feats, min_size=1),
     "col_size": dataset.num_feats,
     "custom_termination_func": convergence_detector.has_converged,
-    "max_num_iters": 100,
+    "max_num_iters": 1000,
     "checkpoint_activation": False
 }
 

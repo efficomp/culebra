@@ -130,6 +130,23 @@ class ACOFS1D(ACOFS):
             for shape in self.heuristic_shapes
         )
 
+    def _estimate_max_path_choice_info(self) -> float:
+        """Estimate the maximum choice information that an ant can
+        accumulate along its path.
+    
+        This estimate is used to determine the stopping threshold when
+        generating a new ant. A random threshold is drawn uniformly
+        between zero and the estimated maximum path choice information.
+        The ant accumulates choice information as it selects features
+        and stops adding features when the accumulated value exceeds
+        the threshold, provided that the minimum number of features has
+        already been selected.
+    
+        :return: The estimated maximum path choice information
+        :rtype: float
+        """
+        return self.choice_info.sum()
+
     def _ant_choice_info(self, ant: Ant) -> np.ndarray[float]:
         """Return the choice info to obtain the next node the ant will visit.
 
@@ -156,8 +173,7 @@ class ACOFS1D(ACOFS):
         """Make some ants deposit weighted pheromone.
 
         The pheromone amount deposited by each ant is equally divided across
-        all possible feature pair combinations derived from its set of
-        selected features.
+        all its selected features.
 
         :param ants: The ants
         :type ants:
@@ -167,11 +183,13 @@ class ACOFS1D(ACOFS):
         :type weight: float
         """
         for ant in ants:
-            for pher, pher_amount in zip(
-                self.pheromone, self._pheromone_amount(ant)
-            ):
-                for feat in ant.path:
-                    pher[feat] += pher_amount * weight
+            if ant.num_feats > 1:
+                delta = weight / ant.num_feats
+                for pher, pher_amount in zip(
+                    self.pheromone, self._pheromone_amount(ant)
+                ):
+                    for feat in ant.path:
+                        pher[feat] += pher_amount * delta
 
 
 class ACOFS2D(ACOFS):
@@ -222,6 +240,23 @@ class ACOFS2D(ACOFS):
             for shape in self.heuristic_shapes
         )
 
+    def _estimate_max_path_choice_info(self) -> float:
+        """Estimate the maximum choice information that an ant can
+        accumulate along its path.
+    
+        This estimate is used to determine the stopping threshold when
+        generating a new ant. A random threshold is drawn uniformly
+        between zero and the estimated maximum path choice information.
+        The ant accumulates choice information as it selects features
+        and stops adding features when the accumulated value exceeds
+        the threshold, provided that the minimum number of features has
+        already been selected.
+    
+        :return: The estimated maximum path choice information
+        :rtype: float
+        """
+        return np.mean(self.choice_info, axis=0).sum()
+
     # Use the same implementation as ACOTSP for _ant_choice_info
     _ant_choice_info = ACOTSP._ant_choice_info
 
@@ -247,17 +282,17 @@ class ACOFS2D(ACOFS):
         :type weight: float
         """
         for ant in ants:
-            if len(ant.path) > 1:
+            if ant.num_feats > 1:
                 # All the combinations of two features from those in the path
                 indices = combinations(ant.path, 2)
-                num_combinations = math.comb(len(ant.path), 2)
+                num_combinations = math.comb(ant.num_feats, 2)
                 delta = weight / num_combinations
 
                 # Deposit the pheromone
                 for pher, pher_amount in zip(
                     self.pheromone, self._pheromone_amount(ant)
                 ):
-                    amount_per_combination = pher_amount * delta
+                    amount_per_combination = pher_amount * delta / 2
                     for (i, j) in indices:
                         pher[i][j] += amount_per_combination
                         pher[j][i] += amount_per_combination
